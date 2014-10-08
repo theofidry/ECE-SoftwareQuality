@@ -1,33 +1,46 @@
 package plane;
 
+import plane.enums.LightsEnum;
+import plane.enums.WheelsPositionEnum;
+
 /**
  * Software system.
  */
 public class Software {
 
-    public static void process(Handle handle, Wheels wheels, Lights lights) {
+    /**
+     * Actions the wheels and light according to the handle position and the current state fo the lights and wheels.
+     *
+     * @param handle
+     * @param wheels
+     * @param lights
+     *
+     * @exception java.lang.IllegalStateException Unexpected scenario.
+     */
+    public static void process(Handle handle, Wheels wheels, Lights lights) throws IllegalStateException {
 
-        //TODO: implement
+        if (handle.up && wheels.position == WheelsPositionEnum.UP)
+            lights.color = LightsEnum.OFF;
 
-        // case1: handle up wheels up
-            // light off
+        if (handle.up && wheels.position == WheelsPositionEnum.DOWN)
+            throw new IllegalStateException("Unsupported state.");
 
-        // case2: handle up wheels down
-            // exception: not supported
+        if (handle.up && wheels.position == WheelsPositionEnum.MOVING) {
 
-        // case3: handle up wheels moving
-            // light orange
-            // wheels -> up
+            lights.color = LightsEnum.ORANGE;
+            wheels.position = WheelsPositionEnum.UP;
+        }
 
-        // case4: handle down wheels up
-            // light orange
-            // wheels -> moving
+        if (!handle.up && wheels.position == WheelsPositionEnum.UP)
+            lights.color = LightsEnum.ORANGE;
 
-        // case5: handle down wheels down
-            // light green
+        if (!handle.up && wheels.position == WheelsPositionEnum.DOWN)
+            lights.color = LightsEnum.GREEN;
 
-        // case6: handle down wheels moving
-            // light orange
-            // wheels -> down
+        if (!handle.up && wheels.position == WheelsPositionEnum.MOVING) {
+
+            lights.color = LightsEnum.ORANGE;
+            wheels.position = WheelsPositionEnum.DOWN;
+        }
     }
 }
