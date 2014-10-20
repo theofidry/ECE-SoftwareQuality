@@ -17,7 +17,8 @@ public class Software {
      *
      * @exception java.lang.IllegalStateException Unexpected scenario.
      */
-    public static void process(Handle handle, Wheels wheels, Lights lights) throws IllegalStateException {
+    public static void process(Handle handle, Wheels wheels, Lights lights)
+    throws IllegalStateException {
 
         if (handle.up && wheels.position == WheelsPositionEnum.UP)
             lights.color = LightsEnum.OFF;
