@@ -20,28 +20,37 @@ public class Software {
     public static void process(Handle handle, Wheels wheels, Lights lights)
     throws IllegalStateException {
 
-        if (handle.up && wheels.position == WheelsPositionEnum.UP)
+        // Case with the handle up
+        if (handle.up && wheels.position == WheelsPositionEnum.UP) {
             lights.color = LightsEnum.OFF;
+            return;
+        }
 
         if (handle.up && wheels.position == WheelsPositionEnum.DOWN)
             throw new IllegalStateException("Unsupported state.");
 
         if (handle.up && wheels.position == WheelsPositionEnum.MOVING) {
-
             lights.color = LightsEnum.ORANGE;
             wheels.position = WheelsPositionEnum.UP;
+            return;
         }
 
-        if (!handle.up && wheels.position == WheelsPositionEnum.UP)
+        // Case with the handle down
+        if (!handle.up && wheels.position == WheelsPositionEnum.UP) {
             lights.color = LightsEnum.ORANGE;
+            wheels.position = WheelsPositionEnum.MOVING;
+            return;
+        }
 
-        if (!handle.up && wheels.position == WheelsPositionEnum.DOWN)
+        if (!handle.up && wheels.position == WheelsPositionEnum.DOWN) {
             lights.color = LightsEnum.GREEN;
+            return;
+        }
 
         if (!handle.up && wheels.position == WheelsPositionEnum.MOVING) {
-
-            lights.color = LightsEnum.ORANGE;
+            lights.color = LightsEnum.GREEN;
             wheels.position = WheelsPositionEnum.DOWN;
+            return;
         }
     }
 }
