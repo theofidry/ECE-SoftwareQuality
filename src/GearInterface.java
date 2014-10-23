@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
+/**
+ * Plane's interface.
+ */
 public class GearInterface {
 
     private JPanel panel1;
@@ -19,8 +22,8 @@ public class GearInterface {
 
     public Plane plane = new Plane();
 
-    public static final double SLEEPTIME_1 = 1e9;
-    public static final double SLEEPTIME_2 = 1e9;
+    public static final int SLEEPTIME_1 = 2000;
+    public static final int SLEEPTIME_2 = 2000;
 
 
     public GearInterface() {
@@ -33,22 +36,7 @@ public class GearInterface {
             public void actionPerformed(ActionEvent e) {
 
                 plane.handle.up = true;     // correct the plane handle position
-
-                // wait a moment before taking action
-                for (int i = 0; i < SLEEPTIME_1; i++) {
-                    // do nothing
-                }
-
-                plane.process();            // process the plane software
-                updateView();               // update the view
-
-                // wait a moment before taking action
-                for (int i = 0; i < SLEEPTIME_2; i++) {
-                    // do nothing
-                }
-
-                plane.process();            // process the plane software
-                updateView();               // update the view
+                process();
             }
         });
 
@@ -57,22 +45,7 @@ public class GearInterface {
             public void actionPerformed(ActionEvent e) {
 
                 plane.handle.up = false;    // correct the plane handle position
-
-                // wait a moment before taking action
-                for (int i = 0; i < SLEEPTIME_1; i++) {
-                    // do nothing
-                }
-
-                plane.process();            // process the plane software
-                updateView();               // update the view
-
-                // wait a moment before taking action
-                for (int i = 0; i < SLEEPTIME_2; i++) {
-                    // do nothing
-                }
-
-                plane.process();            // process the plane software
-                updateView();               // update the view
+                process();
             }
         });
     }
@@ -191,6 +164,36 @@ public class GearInterface {
 
         for (JRadioButton wheelLightButton: wheelsLight) {
             setButtonState(wheelLightButton, false);
+        }
+    }
+
+    /**
+     * Process the plane software and update the view accordingly. Timers are used to simulate the time taking by the
+     * plane processing.
+     */
+    private void process() {
+
+        // wait a moment before taking action
+        Timer timer1 = new Timer(SLEEPTIME_1, new HandleProcessingActionListener()),
+              timer2 = new Timer(SLEEPTIME_1 + SLEEPTIME_2, new HandleProcessingActionListener());
+
+        timer1.setRepeats(false);
+        timer1.start();
+
+        timer2.setRepeats(false);
+        timer2.start();
+    }
+
+    /**
+     * ActionListener that process the plane software and update the view.
+     */
+    private class HandleProcessingActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+
+            plane.process();            // process the plane software
+            updateView();               // update the view
         }
     }
 }
