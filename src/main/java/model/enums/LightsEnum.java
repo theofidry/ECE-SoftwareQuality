@@ -1,4 +1,4 @@
-package plane.enums;
+package model.enums;
 
 
 /**

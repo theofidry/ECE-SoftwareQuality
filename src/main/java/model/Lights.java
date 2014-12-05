@@ -1,6 +1,6 @@
-package plane;
+package model;
 
-import plane.enums.LightsEnum;
+import model.enums.LightsEnum;
 
 /**
  * Lights system

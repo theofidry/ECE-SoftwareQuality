@@ -1,8 +1,15 @@
-import plane.Plane;
+package view;
+
+import com.jgoodies.binding.beans.PropertyAdapter;
+import model.Door;
+import model.Plane;
+import model.enums.DoorStateEnum;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 /**
@@ -19,8 +26,10 @@ public class GearInterface {
     private JRadioButton MOVINGRadioButton;
     private JButton upButton;
     private JButton downButton;
+    private DoorPanel doorPanelTest;
 
     public Plane plane = new Plane();
+    public static Door door = new Door();
 
     public static final int SLEEPTIME_1 = 2000;
     public static final int SLEEPTIME_2 = 2000;
@@ -28,15 +37,18 @@ public class GearInterface {
 
     public GearInterface() {
 
-        GearInterface instance = this;
+
 
         upButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                plane.handle.up = true;     // correct the plane handle position
-                process();
+//                plane.handle.pushUp();     // correct the model handle position
+//                plane.doors[1].open();
+//                process();
+                doorPanelTest.doorTest.open();
+
             }
         });
 
@@ -44,13 +56,17 @@ public class GearInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                plane.handle.up = false;    // correct the plane handle position
-                process();
+//                plane.handle.pushDown();    // correct the model handle position
+//                plane.doors[1].close();
+//                process();
+                doorPanelTest.doorTest.close();
             }
         });
     }
 
     public static void main(String[] args) {
+
+
 
         JFrame frame = new JFrame("Interface");
         frame.setContentPane(new GearInterface().panel1);
@@ -61,15 +77,15 @@ public class GearInterface {
 
     }
 
-    private void createUIComponents() {
-    }
+//    private void createUIComponents() {
+//    }
 
 
     //
     // PUBLIC HELPERS
     //
     /**
-     * Upate the view according to the plane current state.
+     * Update the plane according to the plane current state.
      */
     public void updateView() {
 
@@ -78,50 +94,58 @@ public class GearInterface {
         // turn off all lights
         turnOffLights();
 
+        if (plane.doors[1].isOpen())
+            setButtonState(UPRadioButton, true);
+        else if (plane.doors[1].isMoving())
+            setButtonState(MOVINGRadioButton, true);
+        else if (plane.doors[1].isClosed())
+            setButtonState(DOWNRadioButton, true);
+
+//        // turn on the proper light
+//        switch (plane.lights.color) {
+//
+//            case GREEN:
+//                setButtonState(GREENRadioButton, true);
+//                break;
+//
+//            case ORANGE:
+//                setButtonState(ORANGERadioButton, true);
+//                break;
+//
+//            case RED:
+//                setButtonState(REDRadioButton, true);
+//                break;
+//
+//            default:
+//                // case OFF
+//                // nothing to do since all lights are already turned off
+//        }
+//
+//
+//        // update the wheels
+//
+//        // turn off all lights
+//        turnOffWheelsLights();
+
         // turn on the proper light
-        switch (plane.lights.color) {
-
-            case GREEN:
-                setButtonState(GREENRadioButton, true);
-                break;
-
-            case ORANGE:
-                setButtonState(ORANGERadioButton, true);
-                break;
-
-            case RED:
-                setButtonState(REDRadioButton, true);
-                break;
-
-            default:
-                // case OFF
-                // nothing to do since all lights are already turned off
-        }
-
-
-        // update the wheels
-
-        // turn off all lights
-        turnOffWheelsLights();
-
-        // turn on the proper light
-        switch (plane.wheels.position) {
-
-            case UP:
-                setButtonState(UPRadioButton, true);
-                break;
-
-            case DOWN:
-                setButtonState(DOWNRadioButton, true);
-                break;
-
-            case MOVING:
-                setButtonState(MOVINGRadioButton, true);
-                break;
-
-            default:
-                setButtonState(UPRadioButton, true);
-        }
+        //TODO
+//        switch (plane.wheels.position) {
+//
+//            case RETRACTED:
+//                setButtonState(UPRadioButton, true);
+//                break;
+//
+//            case DEPLOYED:
+//                setButtonState(DOWNRadioButton, true);
+//                break;
+//
+//            case MOVING:
+//                setButtonState(MOVINGRadioButton, true);
+//                break;
+//
+//            default:
+//                setButtonState(UPRadioButton, true);
+//        }
     }
 
 
@@ -168,7 +192,7 @@ public class GearInterface {
     }
 
     /**
-     * Process the plane software and update the view accordingly. Timers are used to simulate the time taking by the
+     * Process the plane software and update the plane.view accordingly. Timers are used to simulate the time taking by the
      * plane processing.
      */
     private void process() {
@@ -185,15 +209,19 @@ public class GearInterface {
     }
 
     /**
-     * ActionListener that process the plane software and update the view.
+     * ActionListener that process the plane software and update the plane.view.
      */
     private class HandleProcessingActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
 
+
+
             plane.process();            // process the plane software
-            updateView();               // update the view
+            updateView();               // update the plane
         }
     }
+
+
 }
