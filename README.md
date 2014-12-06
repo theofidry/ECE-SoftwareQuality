@@ -1,7 +1,6 @@
 SOFTWARE QUALITY
 ================
 
-
 Project layout: comply to default gradle project
 
 build project and run tests:
