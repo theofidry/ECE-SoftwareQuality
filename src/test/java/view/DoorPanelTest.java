@@ -3,6 +3,7 @@ package view;
 import model.Door;
 import model.enums.DoorStateEnum;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -41,6 +42,7 @@ public class DoorPanelTest {
     }
 
     @Test
+    @Ignore // no GUI test on server because is a Debian without any GUI...
     public void testInstantiation_withProperString_expectSuccess() {
 
         DoorPanel doorPanel = new DoorPanel(door, "My door");
@@ -67,6 +69,7 @@ public class DoorPanelTest {
     }
 
     @Test
+    @Ignore // no GUI test on server because is a Debian without any GUI...
     public void testInstantiation_withEmptyString_expectDefaultValue() {
 
         DoorPanel doorPanel = new DoorPanel(door, "");
