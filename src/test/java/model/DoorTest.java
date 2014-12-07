@@ -1,5 +1,6 @@
+package model;
+
 import edu.umd.cs.mtc.MultithreadedTestCase;
-import model.Door;
 import model.enums.DoorStateEnum;
 import org.junit.Assert;
 import org.junit.Test;
