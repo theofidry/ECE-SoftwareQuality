@@ -5,8 +5,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests for {@link model.Door}.
- */
+* Tests for {@link model.Door}.
+*/
 public class DoorTest extends MultithreadedTestCase {
 
     @Test

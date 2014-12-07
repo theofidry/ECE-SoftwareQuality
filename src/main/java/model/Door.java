@@ -31,10 +31,8 @@ public class Door {
     public DoorStateEnum state = DoorStateEnum.CLOSED;
 
     private Timer timer = new Timer();
-    private long start;
 
     private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(this);
-
 
     public void addPropertyChangeListener(PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
@@ -52,7 +50,7 @@ public class Door {
     /**
      * Check if the door is locked open.
      *
-     * @return
+     * @return true if is locked open, false otherwise
      */
     public boolean isOpen() {
         return (this.state == DoorStateEnum.OPEN);
@@ -61,14 +59,28 @@ public class Door {
     /**
      * Check if the door is locked closed.
      *
-     * @return
+     * @return true if is locked closed, false otherwise
      */
     public boolean isClosed() {
         return (this.state == DoorStateEnum.CLOSED);
     }
 
+    /**
+     * Check if the door is moving.
+     *
+     * @return true if is moving, false otherwise
+     */
     public boolean isMoving() {
         return (this.state == DoorStateEnum.MOVING);
+    }
+
+    /**
+     * Convenience for state.toString()
+     *
+     * @return state of the door
+     */
+    public String getState() {
+        return this.state.toString();
     }
 
     /**
@@ -97,12 +109,10 @@ public class Door {
      */
     private void moves(final DoorStateEnum finalState) {
 
-        long movingTime = MOVING_TIME;
 
         // interrupts all tasks and remove them from the scheduler
         if (state == DoorStateEnum.MOVING) {
             timer.purge();
-            movingTime -= System.currentTimeMillis();
         }
 
         if (state != finalState) {
@@ -120,7 +130,6 @@ public class Door {
             TimerTask taskMoving = new TimerTask() {
                 @Override
                 public void run() {
-                    start = System.currentTimeMillis();
                     state = DoorStateEnum.MOVING;
                     changeSupport.firePropertyChange("state", null, state);
                     timer.schedule(taskFinal, MOVING_TIME);

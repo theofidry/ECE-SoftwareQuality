@@ -3,46 +3,78 @@ package view;
 import model.Door;
 import model.enums.DoorStateEnum;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.GridLayout;
+import java.awt.TextField;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * Created by Theo on 05/12/14.
+ * Door panel, is composed of a label and updates its value accordingly to the given model.
  */
 public class DoorPanel extends JPanel implements PropertyChangeListener {
 
-    public Door doorTest = new Door();
+    private Door door;
+    private JLabel label = new JLabel();
+    private TextField field = new TextField();
 
-    JRadioButton doorRadioButton = new JRadioButton();
+    /**
+     * Instantiate a door panel.
+     *
+     * @param door model to which the view is bound
+     * @param name label content, if empty is set to default value
+     */
+    public DoorPanel(Door door, String name) {
 
-    public DoorPanel() {
+        this.door = door;
 
-        this.setToolTipText("DOOR");
-        this.add(doorRadioButton);
-        doorTest.addPropertyChangeListener(this);
-        modelToView(doorTest.state, true);
+        if (name.isEmpty())
+            name = "Door";
+
+        //
+        // Initialize components
+        //
+        this.setLayout(new GridLayout());
+
+        label.setText(name);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        label.setLabelFor(field);
+        this.add(label);
+
+        field.setEditable(false);
+        this.add(field);
+
+        //
+        // Binds model to view
+        //
+        door.addPropertyChangeListener(this);
+        modelToView(door.state);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param evt
+     */
     public void propertyChange(PropertyChangeEvent evt) {
 
         //switch on new value
-        modelToView((DoorStateEnum) evt.getNewValue(), true);
+        modelToView((DoorStateEnum) evt.getNewValue());
     }
 
-    private void modelToView(DoorStateEnum state, boolean value) {
+    /**
+     * Helper used to update the new model value to the view.
+     *
+     * @param state state of the door
+     */
+    private void modelToView(DoorStateEnum state) {
 
-        switch (state) {
+        // Reformat enum to text in lowercase and with the first letter capitalized
+        String text = state.toString().toLowerCase();
+        text = text.substring(0, 1).toUpperCase() + text.substring(1);
 
-            case CLOSED:
-                doorRadioButton.setText("CLOSED");
-                break;
-            case MOVING:
-                doorRadioButton.setText("MOVING");
-                break;
-            case OPEN:
-                doorRadioButton.setText("OPEN");
-                break;
-        }
+        field.setText(text);
     }
 }
