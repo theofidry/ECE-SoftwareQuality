@@ -6,20 +6,10 @@ sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 version = '0.1'
 
-// publish JAR file
-uploadArchives {
-    repositories {
-        flatDir {
-            dirs 'repos'
-        }
-    }
-}
-
 test {
-    useJUnit()
 
     // explicitly include or exclude tests
-    include '**'
+    exclude 'view/**/*'
 
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
@@ -31,7 +21,7 @@ test {
 
     // listen to standard out and standard error of the test JVM(s)
     onOutput { descriptor, event ->
-        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message)
     }
 }
 
@@ -49,11 +39,19 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
 dependencies {
     compile 'com.jgoodies:jgoodies-binding:2.10.0',
             'com.jgoodies:jgoodies-common:1.7.0',
             'com.jgoodies:forms:1.2.1',
             'org.swinglabs:swingx:1.6.1'
     testCompile 'junit:junit:4.12-beta-3',
-                'com.googlecode.multithreadedtc:multithreadedtc:1.01'
+            'com.googlecode.multithreadedtc:multithreadedtc:1.01'
 }
