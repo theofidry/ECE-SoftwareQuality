@@ -1,9 +1,16 @@
 language: java
-jdk:
-- oraclejdk8
-- oraclejdk7
 
-after_success: gradle javadoc sonarRunner
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+
+branches:
+  only:
+    - master
+
+after_success:
+  - gradle sonarRunner
+  - .utility/push-javadoc-to-gh-pages.sh
 
 deploy:
   provider: releases
@@ -11,9 +18,12 @@ deploy:
   file: build
   skip_cleanup: true
   on:
-    tags: true
-    all_branches: true
+    repo: "theofidry/Software-Quality"
+    branch: master
+    jdk: oraclejdk8
 
 
 notifications:
-  email: true
+  email:
+    recipients:
+      - user:email
