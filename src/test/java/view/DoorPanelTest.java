@@ -42,7 +42,6 @@ public class DoorPanelTest {
     }
 
     @Test
-    @Ignore // no GUI test on server because is a Debian without any GUI...
     public void testInstantiation_withProperString_expectSuccess() {
 
         DoorPanel doorPanel = new DoorPanel(door, "My door");
@@ -69,7 +68,6 @@ public class DoorPanelTest {
     }
 
     @Test
-    @Ignore // no GUI test on server because is a Debian without any GUI...
     public void testInstantiation_withEmptyString_expectDefaultValue() {
 
         DoorPanel doorPanel = new DoorPanel(door, "");
