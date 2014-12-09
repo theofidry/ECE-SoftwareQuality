@@ -22,7 +22,6 @@ public class Main {
 
         JFrame frame = new JFrame("Pilot Interface");
         frame.setContentPane(new PilotInterface(new Plane()));
-        frame.getContentPane().add(new DoorPanel(new Door(), "Test door"));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

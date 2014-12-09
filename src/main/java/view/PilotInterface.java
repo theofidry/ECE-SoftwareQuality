@@ -28,18 +28,19 @@ public class PilotInterface extends JPanel {
      */
     public PilotInterface(Plane plane) {
 
-//        FrontDoorPanel = new DoorPanel(plane.doors[0]);
+        this.plane = plane;
 
         // Form init
         initComponents();
 
-        // Customisation
-        this.plane = plane;
-//
-//        ValueModel doorModel = new DoorAdapter(door);
-//        this.add(BasicComponentFactory.createTextField(doorModel, true));
 
-        DoorsPanel.add(new DoorPanel(this.plane.doors[0], "FRONT DOOR TEST"));
+        /*
+         Customisation
+          */
+        // Doors
+        DoorsPanel.add(new DoorPanel(this.plane.doors[0], "Front Door"));
+        DoorsPanel.add(new DoorPanel(this.plane.doors[1], "Left Door"));
+        DoorsPanel.add(new DoorPanel(this.plane.doors[2], "Right Door"));
 
 
         HandleSlider.addChangeListener(new HandleChangeListener());
@@ -72,15 +73,6 @@ public class PilotInterface extends JPanel {
         vSpacer2 = new JPanel(null);
         DoorsPanelTitle = new JLabel();
         vSpacer4 = new JPanel(null);
-        FrontDoorPanel = new JPanel();
-        FrontDoorTitle = new JLabel();
-        FrontDoorTextFied = new JTextField();
-        LeftDoorPanel = new JPanel();
-        LeftDoorTitle = new JLabel();
-        LeftDoorTextField = new JTextField();
-        RightDoorPanel = new JPanel();
-        RightDoorTitle = new JLabel();
-        RightDoorTextField = new JTextField();
         LandingGearsPanel = new JPanel();
         vSpacer1 = new JPanel(null);
         separator1 = new JSeparator();
@@ -134,56 +126,6 @@ public class PilotInterface extends JPanel {
                     DoorsPanelTitle.setHorizontalAlignment(SwingConstants.CENTER);
                     DoorsPanel.add(DoorsPanelTitle);
                     DoorsPanel.add(vSpacer4);
-
-                    //======== FrontDoorPanel ========
-                    {
-                        FrontDoorPanel.setLayout(new GridLayout());
-
-                        //---- FrontDoorTitle ----
-                        FrontDoorTitle.setText("Front Door");
-                        FrontDoorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-                        FrontDoorTitle.setLabelFor(FrontDoorTextFied);
-                        FrontDoorPanel.add(FrontDoorTitle);
-
-                        //---- FrontDoorTextFied ----
-                        FrontDoorTextFied.setText("Closed");
-                        FrontDoorTextFied.setEditable(false);
-                        FrontDoorPanel.add(FrontDoorTextFied);
-                    }
-                    DoorsPanel.add(FrontDoorPanel);
-
-                    //======== LeftDoorPanel ========
-                    {
-                        LeftDoorPanel.setLayout(new GridLayout());
-
-                        //---- LeftDoorTitle ----
-                        LeftDoorTitle.setText("Left Door");
-                        LeftDoorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-                        LeftDoorTitle.setLabelFor(LeftDoorTextField);
-                        LeftDoorPanel.add(LeftDoorTitle);
-
-                        //---- LeftDoorTextField ----
-                        LeftDoorTextField.setText("Closed");
-                        LeftDoorTextField.setEditable(false);
-                        LeftDoorPanel.add(LeftDoorTextField);
-                    }
-                    DoorsPanel.add(LeftDoorPanel);
-
-                    //======== RightDoorPanel ========
-                    {
-                        RightDoorPanel.setLayout(new GridLayout());
-
-                        //---- RightDoorTitle ----
-                        RightDoorTitle.setText("Right Door");
-                        RightDoorTitle.setLabelFor(RightDoorTextField);
-                        RightDoorPanel.add(RightDoorTitle);
-
-                        //---- RightDoorTextField ----
-                        RightDoorTextField.setText("Closed");
-                        RightDoorTextField.setEditable(false);
-                        RightDoorPanel.add(RightDoorTextField);
-                    }
-                    DoorsPanel.add(RightDoorPanel);
                 }
                 panel1.add(DoorsPanel);
 
@@ -301,15 +243,6 @@ public class PilotInterface extends JPanel {
     private JPanel vSpacer2;
     private JLabel DoorsPanelTitle;
     private JPanel vSpacer4;
-    private JPanel FrontDoorPanel;
-    private JLabel FrontDoorTitle;
-    private JTextField FrontDoorTextFied;
-    private JPanel LeftDoorPanel;
-    private JLabel LeftDoorTitle;
-    private JTextField LeftDoorTextField;
-    private JPanel RightDoorPanel;
-    private JLabel RightDoorTitle;
-    private JTextField RightDoorTextField;
     private JPanel LandingGearsPanel;
     private JPanel vSpacer1;
     private JSeparator separator1;

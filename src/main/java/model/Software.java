@@ -14,7 +14,7 @@ public class Software {
      *
      * @exception java.lang.IllegalStateException Unexpected scenario.
      */
-    public static void process(Door[] doors, Handle handle, LandingGear[] landingGears, Lights lights)
+    public void process(Door[] doors, Handle handle, LandingGear[] landingGears, Lights lights)
     throws IllegalStateException {
 
 
@@ -52,5 +52,29 @@ public class Software {
 //            wheels.position = WheelsPositionEnum.DEPLOYED;
 //            return;
 //        }
+    }
+
+    /**
+     * Open all the doors.
+     *
+     * @param doors array of doors to open
+     */
+    public void openDoors(Door[] doors) {
+
+        for (Door door: doors) {
+            door.open();
+        }
+    }
+
+    /**
+     * Close all the doors.
+     *
+     * @param doors array of doors to close
+     */
+    public void closeDoors(Door[] doors) {
+
+        for (Door door: doors) {
+            door.close();
+        }
     }
 }
