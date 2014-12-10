@@ -42,6 +42,11 @@ public class PilotInterface extends JPanel {
         DoorsPanel.add(new DoorPanel(this.plane.getDoors()[1], "Left Door"));
         DoorsPanel.add(new DoorPanel(this.plane.getDoors()[2], "Right Door"));
 
+        // Gears
+        LandingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[0], "Front Gear"));
+        LandingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[1], "Left Gear"));
+        LandingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[2], "Right Gear"));
+
         // Handle
         this.add(new HandlePanel(plane.getHandle(), plane.getSoftware()));
 
@@ -149,55 +154,55 @@ public class PilotInterface extends JPanel {
                     LandingGearsPanel.add(GearsPanelTitle);
                     LandingGearsPanel.add(vSpacer5);
 
-                    //======== FrontGearPanel ========
-                    {
-                        FrontGearPanel.setLayout(new GridLayout());
-
-                        //---- FrontGearTitle ----
-                        FrontGearTitle.setText("Front Gear");
-                        FrontGearTitle.setHorizontalAlignment(SwingConstants.LEFT);
-                        FrontGearTitle.setLabelFor(FrontGearTextFied);
-                        FrontGearPanel.add(FrontGearTitle);
-
-                        //---- FrontGearTextFied ----
-                        FrontGearTextFied.setText("Closed");
-                        FrontGearTextFied.setEditable(false);
-                        FrontGearPanel.add(FrontGearTextFied);
-                    }
-                    LandingGearsPanel.add(FrontGearPanel);
-
-                    //======== LeftGearPanel ========
-                    {
-                        LeftGearPanel.setLayout(new GridLayout());
-
-                        //---- LeftGearTitle ----
-                        LeftGearTitle.setText("Left Gear");
-                        LeftGearTitle.setHorizontalAlignment(SwingConstants.LEFT);
-                        LeftGearTitle.setLabelFor(LeftGearTextField);
-                        LeftGearPanel.add(LeftGearTitle);
-
-                        //---- LeftGearTextField ----
-                        LeftGearTextField.setText("Closed");
-                        LeftGearTextField.setEditable(false);
-                        LeftGearPanel.add(LeftGearTextField);
-                    }
-                    LandingGearsPanel.add(LeftGearPanel);
-
-                    //======== RightGearPanel ========
-                    {
-                        RightGearPanel.setLayout(new GridLayout());
-
-                        //---- RightGearTitle ----
-                        RightGearTitle.setText("Right Gear");
-                        RightGearTitle.setLabelFor(RightGearTextField);
-                        RightGearPanel.add(RightGearTitle);
-
-                        //---- RightGearTextField ----
-                        RightGearTextField.setText("Closed");
-                        RightGearTextField.setEditable(false);
-                        RightGearPanel.add(RightGearTextField);
-                    }
-                    LandingGearsPanel.add(RightGearPanel);
+//                    //======== FrontGearPanel ========
+//                    {
+//                        FrontGearPanel.setLayout(new GridLayout());
+//
+//                        //---- FrontGearTitle ----
+//                        FrontGearTitle.setText("Front Gear");
+//                        FrontGearTitle.setHorizontalAlignment(SwingConstants.LEFT);
+//                        FrontGearTitle.setLabelFor(FrontGearTextFied);
+//                        FrontGearPanel.add(FrontGearTitle);
+//
+//                        //---- FrontGearTextFied ----
+//                        FrontGearTextFied.setText("Closed");
+//                        FrontGearTextFied.setEditable(false);
+//                        FrontGearPanel.add(FrontGearTextFied);
+//                    }
+//                    LandingGearsPanel.add(FrontGearPanel);
+//
+//                    //======== LeftGearPanel ========
+//                    {
+//                        LeftGearPanel.setLayout(new GridLayout());
+//
+//                        //---- LeftGearTitle ----
+//                        LeftGearTitle.setText("Left Gear");
+//                        LeftGearTitle.setHorizontalAlignment(SwingConstants.LEFT);
+//                        LeftGearTitle.setLabelFor(LeftGearTextField);
+//                        LeftGearPanel.add(LeftGearTitle);
+//
+//                        //---- LeftGearTextField ----
+//                        LeftGearTextField.setText("Closed");
+//                        LeftGearTextField.setEditable(false);
+//                        LeftGearPanel.add(LeftGearTextField);
+//                    }
+//                    LandingGearsPanel.add(LeftGearPanel);
+//
+//                    //======== RightGearPanel ========
+//                    {
+//                        RightGearPanel.setLayout(new GridLayout());
+//
+//                        //---- RightGearTitle ----
+//                        RightGearTitle.setText("Right Gear");
+//                        RightGearTitle.setLabelFor(RightGearTextField);
+//                        RightGearPanel.add(RightGearTitle);
+//
+//                        //---- RightGearTextField ----
+//                        RightGearTextField.setText("Closed");
+//                        RightGearTextField.setEditable(false);
+//                        RightGearPanel.add(RightGearTextField);
+//                    }
+//                    LandingGearsPanel.add(RightGearPanel);
                 }
                 panel1.add(LandingGearsPanel);
             }

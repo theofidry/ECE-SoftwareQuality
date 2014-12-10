@@ -110,8 +110,6 @@ public class Software {
 
     /**
      * Open all the doors.
-     *
-     * @param doors array of doors to open
      */
     public void openDoors() {
 
@@ -122,13 +120,31 @@ public class Software {
 
     /**
      * Close all the doors.
-     *
-     * @param doors array of doors to close
      */
     public void closeDoors() {
 
         for (Door door : doors) {
             door.close();
+        }
+    }
+
+    /**
+     * Open all the landing gears.
+     */
+    public void deployGears() {
+
+        for (LandingGear gear : landingGears) {
+            gear.deploy();
+        }
+    }
+
+    /**
+     * Close all the doors.
+     */
+    public void retractGears() {
+
+        for (LandingGear gear : landingGears) {
+            gear.retract();
         }
     }
 }

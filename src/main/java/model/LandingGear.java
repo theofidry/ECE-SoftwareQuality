@@ -1,6 +1,11 @@
 package model;
 
+import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
 import model.enums.LandingGearPositionEnum;
+
+import java.beans.PropertyChangeListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Aircraft landing gear.
@@ -25,7 +30,11 @@ public class LandingGear {
      */
     public LandingGearPositionEnum position = LandingGearPositionEnum.RETRACTED;
 
-    private MovingThread thread;
+    private long start;
+
+    private Timer timer = new Timer();
+
+    private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(this);
 
 
     //
@@ -59,6 +68,14 @@ public class LandingGear {
         return (position == LandingGearPositionEnum.MOVING);
     }
 
+    /**
+     * Convenience for state.toString()
+     *
+     * @return state of the door
+     */
+    public String getPosition() {
+        return this.position.toString();
+    }
 
     /**
      * Retracts the landing gear. If deployed moves it, if is already moving becomes retracted.
@@ -75,6 +92,15 @@ public class LandingGear {
     }
 
 
+    public void addPropertyChangeListener(PropertyChangeListener x) {
+        changeSupport.addPropertyChangeListener(x);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener x) {
+        changeSupport.removePropertyChangeListener(x);
+    }
+
+
     //
     // HELPERS
     //
@@ -84,75 +110,57 @@ public class LandingGear {
      *
      * @param finalState final state to reach
      */
-    private void moves(LandingGearPositionEnum finalState) {
+    private void moves(final LandingGearPositionEnum finalState) {
 
-        if (thread == null) {
-            thread = new MovingThread(finalState);
-        } else {
-            thread.interrupt();
-            thread = new MovingThread(finalState, thread.movingTime);
+        long movingTime = MOVING_TIME;
+
+        // interrupts all tasks and remove them from the scheduler
+        if (position == LandingGearPositionEnum.MOVING) {
+            timer.cancel();
+            timer.purge();
+            timer = new Timer();
+            movingTime = (System.currentTimeMillis() - start);
         }
 
-        thread.run();
+        if (position != finalState) {
+
+            timer.schedule(new MovingTask(finalState, movingTime), INERTIA);
+        }
     }
 
-    /**
-     * Thread class used to make the gear moving. Meant to be used as a class singleton (one thread per instance).
-     */
-    private class MovingThread extends Thread {
+    final private class MovingTask extends TimerTask {
 
-        private LandingGearPositionEnum finalPosition;
+        LandingGearPositionEnum finalState;
+        private long movingTime;
 
-        /**
-         * Time the gear has been moving in ms.
-         */
-        public long movingTime;
-
-        /**
-         * @param finalPosition state the door will finally reach
-         */
-        public MovingThread(LandingGearPositionEnum finalPosition) {
-            this.finalPosition = finalPosition;
-        }
-
-        /**
-         * When a thread was already working, takes into account its moving time.
-         *
-         * @param finalPosition state the gear will finally reach
-         * @param movingTime    moving time of the previous command working
-         */
-        public MovingThread(LandingGearPositionEnum finalPosition, long movingTime) {
-            this.finalPosition = finalPosition;
+        public MovingTask(LandingGearPositionEnum finalState, long movingTime) {
+            this.finalState = finalState;
             this.movingTime = movingTime;
         }
 
-        /**
-         * Make the doors moving.
-         */
+        @Override
         public void run() {
 
-            long start = 0;
+            start = System.currentTimeMillis();
+            position = LandingGearPositionEnum.MOVING;
+            changeSupport.firePropertyChange("position", null, position);
+            timer.schedule(new LockingTask(finalState), movingTime);
+        }
+    }
 
-            try {
+    final private class LockingTask extends TimerTask {
 
-                // calculate the moving time
-                if (position != LandingGearPositionEnum.MOVING)
-                    movingTime = MOVING_TIME;
+        LandingGearPositionEnum finalState;
 
-                // the door starts moving after the inertia time
-                sleep(INERTIA);
-                position = LandingGearPositionEnum.MOVING;
-                start = System.currentTimeMillis();
+        public LockingTask(LandingGearPositionEnum finalState) {
+            this.finalState = finalState;
+        }
 
-                // moves a given time to reach the final state
-                if (position != finalPosition)
-                    sleep(movingTime);
+        @Override
+        public void run() {
 
-                position = finalPosition;
-
-            } catch (InterruptedException e) {
-                movingTime = System.currentTimeMillis() - start;
-            }
+            position = finalState;
+            changeSupport.firePropertyChange("position", null, position);
         }
     }
 }

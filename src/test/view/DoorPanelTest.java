@@ -19,6 +19,8 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class DoorPanelTest {
 
+    private Door door = new Door();
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
 
@@ -33,12 +35,6 @@ public class DoorPanelTest {
         }
 
         return provider;
-    }
-
-    private Door door;
-
-    public DoorPanelTest(Door door) {
-        this.door = door;
     }
 
     @Test

@@ -3,6 +3,7 @@ package model;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import model.enums.DoorStateEnum;
+import model.enums.LandingGearPositionEnum;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -11,7 +12,13 @@ import org.junit.Test;
  */
 public class SoftwareTest extends MultithreadedTestCase {
 
+    /**
+     * Time error margin in ms
+     */
+    public static final int ERROR_MARGIN = 100;
+
     public static Door[] doors = {new Door(), new Door(), new Door()};
+    public static LandingGear[] gears = {new LandingGear(), new LandingGear(), new LandingGear()};
     public static Software software;
 
     @BeforeClass
@@ -21,7 +28,11 @@ public class SoftwareTest extends MultithreadedTestCase {
             door = new Door();
         }
 
-        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        for (LandingGear gear: gears) {
+            gear = new LandingGear();
+        }
+
+        software = new Software(doors, new Handle(), new Lights(), gears);
     }
 
     @Test
@@ -31,9 +42,9 @@ public class SoftwareTest extends MultithreadedTestCase {
             door.state = DoorStateEnum.OPEN;
         }
 
-        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software = new Software(doors, new Handle(), new Lights(), gears);
         software.closeDoors();
-        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
 
         for (Door door : software.getDoors()) {
             assertTrue(door.isClosed());
@@ -55,9 +66,9 @@ public class SoftwareTest extends MultithreadedTestCase {
             }
         }
 
-        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software = new Software(doors, new Handle(), new Lights(), gears);
         software.closeDoors();
-        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
 
         for (Door door : software.getDoors()) {
             assertTrue(door.isClosed());
@@ -65,13 +76,13 @@ public class SoftwareTest extends MultithreadedTestCase {
     }
 
     @Test
-    public void testCloseDoorsMethod_withAllDoorsClosed_expectAllClosedImmetiately() throws Exception {
+    public void testCloseDoorsMethod_withAllDoorsClosed_expectAllClosedImmediately() throws Exception {
 
         for (Door door : doors) {
             door.state = DoorStateEnum.CLOSED;
         }
 
-        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software = new Software(doors, new Handle(), new Lights(), gears);
         software.closeDoors();
 
         for (Door door : software.getDoors()) {
@@ -80,15 +91,15 @@ public class SoftwareTest extends MultithreadedTestCase {
     }
 
     @Test
-    public void testOpenDoorsMethod_withAllDorsClosed_expectAllOpen() throws Exception {
+    public void testOpenDoorsMethod_withAllDoorsClosed_expectAllOpen() throws Exception {
 
         for (Door door : doors) {
             door.state = DoorStateEnum.CLOSED;
         }
 
-        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software = new Software(doors, new Handle(), new Lights(), gears);
         software.openDoors();
-        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
 
         for (Door door : software.getDoors()) {
             assertTrue(door.isOpen());
@@ -110,9 +121,9 @@ public class SoftwareTest extends MultithreadedTestCase {
             }
         }
 
-        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software = new Software(doors, new Handle(), new Lights(), gears);
         software.openDoors();
-        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
 
         for (Door door : software.getDoors()) {
             assertTrue(door.isOpen());
@@ -126,11 +137,121 @@ public class SoftwareTest extends MultithreadedTestCase {
             door.state = DoorStateEnum.OPEN;
         }
 
-        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software = new Software(doors, new Handle(), new Lights(), gears);
         software.openDoors();
 
         for (Door door : software.getDoors()) {
             assertTrue(door.isOpen());
+        }
+    }
+
+    @Test
+    public void testRetractGearsMethod_withAllGearsDeployed_expectAllRetracted() throws Exception {
+
+        for (LandingGear gear : gears) {
+            gear.position = LandingGearPositionEnum.DEPLOYED;
+        }
+
+        software = new Software(doors, new Handle(), new Lights(), gears);
+        software.retractGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+
+        for (LandingGear gear : software.getLandingGears()) {
+            assertTrue(gear.isRetracted());
+        }
+    }
+
+    @Test
+    public void testCloseDoorsMethod_withVariousStates_expectAllRetractedImmediately() throws Exception {
+
+        LandingGearPositionEnum[] positions = {LandingGearPositionEnum.DEPLOYED, LandingGearPositionEnum.MOVING, LandingGearPositionEnum.RETRACTED};
+
+        for (int i = 0; i < 3; i++) {
+            gears[0].position = positions[i];
+            for (int j = 0; j < 3; j++) {
+                gears[1].position = positions[j];
+                for (int k = 0; k < 3; k++) {
+                    gears[2].position = positions[k];
+                }
+            }
+        }
+
+        software = new Software(doors, new Handle(), new Lights(), gears);
+        software.retractGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+
+        for (LandingGear gear : software.getLandingGears()) {
+            assertTrue(gear.isRetracted());
+        }
+    }
+
+    @Test
+    public void testCloseDoorsMethod_withAllGearsRetractedexpectAllRetractedImmetiately() throws Exception {
+
+        for (LandingGear gear : gears) {
+            gear.position = LandingGearPositionEnum.RETRACTED;
+        }
+
+        software = new Software(doors, new Handle(), new Lights(), gears);
+        software.retractGears();
+
+        for (LandingGear gear : software.getLandingGears()) {
+            assertTrue(gear.isRetracted());
+        }
+    }
+
+    @Test
+    public void testDeployGearsMethod_withAllGearsRetracted_expectAllDeployed() throws Exception {
+
+        for (Door door : doors) {
+            door.state = DoorStateEnum.CLOSED;
+        }
+
+        software = new Software(doors, new Handle(), new Lights(), gears);
+        software.deployGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+
+        for (LandingGear gear : software.getLandingGears()) {
+            assertTrue(gear.isDeployed());
+        }
+    }
+
+    @Test
+    public void testDeployGearsMethod_withVariousStates_expectAllDeployedImmediately() throws Exception {
+
+        LandingGearPositionEnum[] positions = {LandingGearPositionEnum.DEPLOYED, LandingGearPositionEnum.MOVING, LandingGearPositionEnum.RETRACTED};
+
+        for (int i = 0; i < 3; i++) {
+            gears[0].position = positions[i];
+            for (int j = 0; j < 3; j++) {
+                gears[1].position = positions[j];
+                for (int k = 0; k < 3; k++) {
+                    gears[2].position = positions[k];
+                }
+            }
+        }
+
+        software = new Software(doors, new Handle(), new Lights(), gears);
+        software.deployGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+
+        for (LandingGear gear : software.getLandingGears()) {
+            assertTrue(gear.isDeployed());
+        }
+    }
+
+    @Test
+    public void testDeployGearsMethod_withAllGearsDeployed_expectAllDeployedImmetiately() throws Exception {
+
+        for (LandingGear gear : gears) {
+            gear.position = LandingGearPositionEnum.DEPLOYED;
+        }
+
+        software = new Software(doors, new Handle(), new Lights(), gears);
+        software.deployGears();
+
+        for (LandingGear gear : software.getLandingGears()) {
+            assertTrue(gear.isDeployed());
         }
     }
 }
