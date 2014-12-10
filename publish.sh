@@ -1,12 +1,12 @@
 #!/bin/bash
 
-REPO="theofidry/Software-Quality"
+REPO="theofidry/SoftwareQuality-ECEProject"
 
 if [ "$TRAVIS_REPO_SLUG" == ${REPO} ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
   echo -e "Publishing javadoc...\n"
 
-  cp -R build/docs/javadoc $HOME/javadoc-latest
+  cp -R build $HOME/build
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
@@ -15,7 +15,8 @@ if [ "$TRAVIS_REPO_SLUG" == ${REPO} ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8"
 
   cd gh-pages
   git rm -rf ./javadoc
-  cp -Rf $HOME/javadoc-latest ./javadoc
+  git rm -rf ./build
+  cp -Rf $HOME/build ./build
   git add -f .
   git commit -m "Lastest javadoc on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
   git push -fq origin gh-pages > /dev/null
