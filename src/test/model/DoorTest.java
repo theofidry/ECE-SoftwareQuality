@@ -3,6 +3,8 @@ package model;
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import model.enums.DoorStateEnum;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -15,17 +17,22 @@ public class DoorTest extends MultithreadedTestCase {
      */
     public static final int ERROR_MARGIN = 100;
 
+    private Door door;
+
+    @BeforeClass
+    public void setUp() throws Exception {
+
+        door = new Door();
+    }
+
     @Test
     public void testIfDefaultDoorStateIsSetProperly_expectIsClosed() {
 
-        Door door = new Door();
         Assert.assertTrue(door.isClosed());
     }
 
     @Test
     public void testStateCheckers_testIsOpenMethod() {
-
-        Door door = new Door();
 
         door.state = DoorStateEnum.OPEN;
         Assert.assertTrue(door.isOpen());
@@ -38,8 +45,6 @@ public class DoorTest extends MultithreadedTestCase {
     @Test
     public void testStateCheckers_testIsClosedMethod() {
 
-        Door door = new Door();
-
         door.state = DoorStateEnum.CLOSED;
         Assert.assertTrue(door.isClosed());
         door.state = DoorStateEnum.OPEN;
@@ -51,8 +56,6 @@ public class DoorTest extends MultithreadedTestCase {
     @Test
     public void testStateCheckers_testIsMovingMethod() {
 
-        Door door = new Door();
-
         door.state = DoorStateEnum.MOVING;
         Assert.assertTrue(door.isMoving());
         door.state = DoorStateEnum.OPEN;
@@ -63,8 +66,6 @@ public class DoorTest extends MultithreadedTestCase {
 
     @Test
     public void testOpenMethod_normalBehavior_expectDoorOpenAfterMovingTime() {
-
-        Door door = new Door();
 
         try {
 
@@ -79,8 +80,6 @@ public class DoorTest extends MultithreadedTestCase {
 
     @Test
     public void testOpenMethod_whenAlreadyOpened_expectDoorOpenImmedialty() {
-
-        Door door = new Door();
 
         try {
 
@@ -97,8 +96,6 @@ public class DoorTest extends MultithreadedTestCase {
 
     @Test
     public void testOpenMethod_whenClosing_expectDoorOpenAfterMovingTime() {
-
-        Door door = new Door();
 
         try {
 
@@ -118,8 +115,6 @@ public class DoorTest extends MultithreadedTestCase {
     @Test
     public void testCloseMethod_normalBehavior_expectDoorOpenAfterMovingTime() {
 
-        Door door = new Door();
-
         try {
 
             door.state = DoorStateEnum.OPEN;
@@ -133,8 +128,6 @@ public class DoorTest extends MultithreadedTestCase {
 
     @Test
     public void testCloseMethod_whenAlreadyOpened_expectDoorClosedImmediately() {
-
-        Door door = new Door();
 
         try {
 
@@ -151,8 +144,6 @@ public class DoorTest extends MultithreadedTestCase {
 
     @Test
     public void testCloseMethod_whenClosing_expectDoorOpenAfterMovingTime() {
-
-        Door door = new Door();
 
         try {
 

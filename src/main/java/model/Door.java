@@ -91,6 +91,7 @@ public class Door {
         moves(DoorStateEnum.OPEN);
     }
 
+    
     public void addPropertyChangeListener(PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
     }
