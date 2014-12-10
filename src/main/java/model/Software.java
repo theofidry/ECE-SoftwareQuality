@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.LightsColorEnum;
+
 /**
  * Software system.
  */
@@ -42,10 +44,15 @@ public class Software {
             throws IllegalStateException {
 
         // For testing
-        if (handle.isUp())
+        if (handle.isUp()) {
             openDoors();
-        else
+            deployGears();
+            lights.setColor(LightsColorEnum.GREEN);
+        } else {
             closeDoors();
+            retractGears();
+            lights.setColor(LightsColorEnum.RED);
+        }
 
         // OUTGOING SEQUENCE
         //  when gears retracted and doors open

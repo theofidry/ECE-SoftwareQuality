@@ -37,15 +37,18 @@ public class PilotInterface extends JPanel {
         /*
          Customisation
           */
+        // Lights
+        lightsPanel.add(new LightsPanel(this.plane.getLights()));
+
         // Doors
-        DoorsPanel.add(new DoorPanel(this.plane.getDoors()[0], "Front Door"));
-        DoorsPanel.add(new DoorPanel(this.plane.getDoors()[1], "Left Door"));
-        DoorsPanel.add(new DoorPanel(this.plane.getDoors()[2], "Right Door"));
+        doorsPanel.add(new DoorPanel(this.plane.getDoors()[0], "Front Door"));
+        doorsPanel.add(new DoorPanel(this.plane.getDoors()[1], "Left Door"));
+        doorsPanel.add(new DoorPanel(this.plane.getDoors()[2], "Right Door"));
 
         // Gears
-        LandingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[0], "Front Gear"));
-        LandingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[1], "Left Gear"));
-        LandingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[2], "Right Gear"));
+        landingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[0], "Front Gear"));
+        landingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[1], "Left Gear"));
+        landingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[2], "Right Gear"));
 
         // Handle
         this.add(new HandlePanel(plane.getHandle(), plane.getSoftware()));
@@ -83,31 +86,23 @@ public class PilotInterface extends JPanel {
         // Generated using JFormDesigner Evaluation license - ThÃ©o Fidry
         panel2 = new JPanel();
         panel1 = new JPanel();
-        DoorsPanel = new JPanel();
+        doorsPanel = new JPanel();
         vSpacer2 = new JPanel(null);
         DoorsPanelTitle = new JLabel();
         vSpacer4 = new JPanel(null);
-        LandingGearsPanel = new JPanel();
+        landingGearsPanel = new JPanel();
         vSpacer1 = new JPanel(null);
         separator1 = new JSeparator();
         vSpacer3 = new JPanel(null);
         GearsPanelTitle = new JLabel();
         vSpacer5 = new JPanel(null);
         FrontGearPanel = new JPanel();
-        FrontGearTitle = new JLabel();
-        FrontGearTextFied = new JTextField();
         LeftGearPanel = new JPanel();
-        LeftGearTitle = new JLabel();
-        LeftGearTextField = new JTextField();
         RightGearPanel = new JPanel();
-        RightGearTitle = new JLabel();
-        RightGearTextField = new JTextField();
         hSpacer2 = new JPanel(null);
-        panel3 = new JPanel();
-        LightsTitle = new JLabel();
-        LightsState = new JTextField();
+        lightsPanel = new JPanel();
         hSpacer1 = new JPanel(null);
-        HandlePanel = new JPanel();
+        handlePanel = new JPanel();
 
         //======== this ========
 
@@ -128,111 +123,69 @@ public class PilotInterface extends JPanel {
             {
                 panel1.setLayout(new VerticalLayout());
 
-                //======== DoorsPanel ========
+                //======== doorsPanel ========
                 {
-                    DoorsPanel.setLayout(new VerticalLayout());
-                    DoorsPanel.add(vSpacer2);
+                    doorsPanel.setLayout(new VerticalLayout());
+                    doorsPanel.add(vSpacer2);
 
                     //---- DoorsPanelTitle ----
                     DoorsPanelTitle.setText("Doors");
                     DoorsPanelTitle.setHorizontalAlignment(SwingConstants.CENTER);
-                    DoorsPanel.add(DoorsPanelTitle);
-                    DoorsPanel.add(vSpacer4);
+                    doorsPanel.add(DoorsPanelTitle);
+                    doorsPanel.add(vSpacer4);
                 }
-                panel1.add(DoorsPanel);
+                panel1.add(doorsPanel);
 
-                //======== LandingGearsPanel ========
+                //======== landingGearsPanel ========
                 {
-                    LandingGearsPanel.setLayout(new VerticalLayout());
-                    LandingGearsPanel.add(vSpacer1);
-                    LandingGearsPanel.add(separator1);
-                    LandingGearsPanel.add(vSpacer3);
+                    landingGearsPanel.setLayout(new VerticalLayout());
+                    landingGearsPanel.add(vSpacer1);
+                    landingGearsPanel.add(separator1);
+                    landingGearsPanel.add(vSpacer3);
 
                     //---- GearsPanelTitle ----
                     GearsPanelTitle.setText("Landing Gears");
                     GearsPanelTitle.setHorizontalAlignment(SwingConstants.CENTER);
-                    LandingGearsPanel.add(GearsPanelTitle);
-                    LandingGearsPanel.add(vSpacer5);
+                    landingGearsPanel.add(GearsPanelTitle);
+                    landingGearsPanel.add(vSpacer5);
 
-//                    //======== FrontGearPanel ========
-//                    {
-//                        FrontGearPanel.setLayout(new GridLayout());
-//
-//                        //---- FrontGearTitle ----
-//                        FrontGearTitle.setText("Front Gear");
-//                        FrontGearTitle.setHorizontalAlignment(SwingConstants.LEFT);
-//                        FrontGearTitle.setLabelFor(FrontGearTextFied);
-//                        FrontGearPanel.add(FrontGearTitle);
-//
-//                        //---- FrontGearTextFied ----
-//                        FrontGearTextFied.setText("Closed");
-//                        FrontGearTextFied.setEditable(false);
-//                        FrontGearPanel.add(FrontGearTextFied);
-//                    }
-//                    LandingGearsPanel.add(FrontGearPanel);
-//
-//                    //======== LeftGearPanel ========
-//                    {
-//                        LeftGearPanel.setLayout(new GridLayout());
-//
-//                        //---- LeftGearTitle ----
-//                        LeftGearTitle.setText("Left Gear");
-//                        LeftGearTitle.setHorizontalAlignment(SwingConstants.LEFT);
-//                        LeftGearTitle.setLabelFor(LeftGearTextField);
-//                        LeftGearPanel.add(LeftGearTitle);
-//
-//                        //---- LeftGearTextField ----
-//                        LeftGearTextField.setText("Closed");
-//                        LeftGearTextField.setEditable(false);
-//                        LeftGearPanel.add(LeftGearTextField);
-//                    }
-//                    LandingGearsPanel.add(LeftGearPanel);
-//
-//                    //======== RightGearPanel ========
-//                    {
-//                        RightGearPanel.setLayout(new GridLayout());
-//
-//                        //---- RightGearTitle ----
-//                        RightGearTitle.setText("Right Gear");
-//                        RightGearTitle.setLabelFor(RightGearTextField);
-//                        RightGearPanel.add(RightGearTitle);
-//
-//                        //---- RightGearTextField ----
-//                        RightGearTextField.setText("Closed");
-//                        RightGearTextField.setEditable(false);
-//                        RightGearPanel.add(RightGearTextField);
-//                    }
-//                    LandingGearsPanel.add(RightGearPanel);
+                    //======== FrontGearPanel ========
+                    {
+                        FrontGearPanel.setLayout(new GridLayout());
+                    }
+                    landingGearsPanel.add(FrontGearPanel);
+
+                    //======== LeftGearPanel ========
+                    {
+                        LeftGearPanel.setLayout(new GridLayout());
+                    }
+                    landingGearsPanel.add(LeftGearPanel);
+
+                    //======== RightGearPanel ========
+                    {
+                        RightGearPanel.setLayout(new GridLayout());
+                    }
+                    landingGearsPanel.add(RightGearPanel);
                 }
-                panel1.add(LandingGearsPanel);
+                panel1.add(landingGearsPanel);
             }
             panel2.add(panel1, BorderLayout.CENTER);
         }
         add(panel2);
         add(hSpacer2);
 
-        //======== panel3 ========
+        //======== lightsPanel ========
         {
-            panel3.setLayout(new VerticalLayout());
-
-            //---- LightsTitle ----
-            LightsTitle.setText("Lights");
-            LightsTitle.setLabelFor(LightsState);
-            panel3.add(LightsTitle);
-
-            //---- LightsState ----
-            LightsState.setText("Off");
-            LightsState.setEditable(false);
-            panel3.add(LightsState);
+            lightsPanel.setLayout(new VerticalLayout());
         }
-        add(panel3);
+        add(lightsPanel);
         add(hSpacer1);
 
-        //======== HandlePanel ========
+        //======== handlePanel ========
         {
-            HandlePanel.setLayout(new BorderLayout());
+            handlePanel.setLayout(new BorderLayout());
         }
-        add(HandlePanel);
+        add(handlePanel);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
@@ -240,30 +193,22 @@ public class PilotInterface extends JPanel {
     // Generated using JFormDesigner Evaluation license - ThÃ©o Fidry
     private JPanel panel2;
     private JPanel panel1;
-    private JPanel DoorsPanel;
+    private JPanel doorsPanel;
     private JPanel vSpacer2;
     private JLabel DoorsPanelTitle;
     private JPanel vSpacer4;
-    private JPanel LandingGearsPanel;
+    private JPanel landingGearsPanel;
     private JPanel vSpacer1;
     private JSeparator separator1;
     private JPanel vSpacer3;
     private JLabel GearsPanelTitle;
     private JPanel vSpacer5;
     private JPanel FrontGearPanel;
-    private JLabel FrontGearTitle;
-    private JTextField FrontGearTextFied;
     private JPanel LeftGearPanel;
-    private JLabel LeftGearTitle;
-    private JTextField LeftGearTextField;
     private JPanel RightGearPanel;
-    private JLabel RightGearTitle;
-    private JTextField RightGearTextField;
     private JPanel hSpacer2;
-    private JPanel panel3;
-    private JLabel LightsTitle;
-    private JTextField LightsState;
+    private JPanel lightsPanel;
     private JPanel hSpacer1;
-    private JPanel HandlePanel;
+    private JPanel handlePanel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

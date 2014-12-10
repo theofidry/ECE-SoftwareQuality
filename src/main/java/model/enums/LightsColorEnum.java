@@ -9,7 +9,7 @@ package model.enums;
  * RED:    failure, a problem occured
  * OFF:    no ligth
  */
-public enum LightsEnum {
+public enum LightsColorEnum {
 
     GREEN,
     ORANGE,
