@@ -38,10 +38,16 @@ public class PilotInterface extends JPanel {
          Customisation
           */
         // Doors
-        DoorsPanel.add(new DoorPanel(this.plane.doors[0], "Front Door"));
-        DoorsPanel.add(new DoorPanel(this.plane.doors[1], "Left Door"));
-        DoorsPanel.add(new DoorPanel(this.plane.doors[2], "Right Door"));
+        DoorsPanel.add(new DoorPanel(this.plane.getDoors()[0], "Front Door"));
+        DoorsPanel.add(new DoorPanel(this.plane.getDoors()[1], "Left Door"));
+        DoorsPanel.add(new DoorPanel(this.plane.getDoors()[2], "Right Door"));
 
+
+        /*
+        TODO:
+        - if and only if all gears are in deployed state -> gears locked down true displayed
+        - gears manoeuvring: if and only if at least one door or one gear is maneuvering, i.e., at least one door is not locked in closed position or one gear is not locked in extension or retraction position.
+         */
 
         HandleSlider.addChangeListener(new HandleChangeListener());
     }
@@ -56,9 +62,11 @@ public class PilotInterface extends JPanel {
             if (!source.getValueIsAdjusting()) {
 
                 if (source.getValue() == 1) {
-                    plane.doors[0].open();
+                    //TODO: need to be replaced
+                    plane.getSoftware().openDoors();
                 } else {
-                    plane.doors[0].close();
+                    //TODO: need to be replaced
+                    plane.getSoftware().closeDoors();
                 }
             }
         }

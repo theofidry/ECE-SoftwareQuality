@@ -5,18 +5,43 @@ package model;
  */
 public class Plane {
 
-    public Door[]        doors        = {new Door(), new Door(), new Door()};
-    public Handle        handle       = new Handle();
-    public Lights        lights       = new Lights();
-    public Software      software     = new Software();
-    public LandingGear[] landingGears = {new LandingGear(), new LandingGear(), new LandingGear()};
+    private Door[] doors = {new Door(), new Door(), new Door()};
+    private Handle handle = new Handle();
+    private Lights lights = new Lights();
+    private Software software;
+    private LandingGear[] landingGears = {new LandingGear(), new LandingGear(), new LandingGear()};
+
+    public Door[] getDoors() {
+        return doors;
+    }
+
+    public Handle getHandle() {
+        return handle;
+    }
+
+    public Lights getLights() {
+        return lights;
+    }
+
+    public Software getSoftware() {
+        return software;
+    }
+
+    public LandingGear[] getLandingGears() {
+        return landingGears;
+    }
+
+    public Plane() {
+
+        software = new Software(doors, handle, lights, landingGears);
+    }
 
     /**
-     * Activate the software.
+     * Process the software.
      */
     public void process() {
 
-        software.process(doors, handle, landingGears, lights);
+        software.process();
     }
 
 

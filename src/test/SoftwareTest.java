@@ -150,3 +150,14 @@
 //        //TODO
 //    }
 //}
+
+//Doors motion monitoring.
+//        – if the control software does not see the value door closed[x] = false for all x 2 {front, left, right} 7 seconds after stimulation of the opening electro-valve, then the doors are considered as blocked and an anomaly is detected.
+//        – if the control software does not see the value door open[x] = true for all x 2 {front,left,right} 7 seconds after stimulation of the opening electro- valve, then the doors are considered as blocked and an anomaly is detected.
+//        – if the control software does not see the value door open[x] = false for all x 2 {front, left, right} 7 seconds after stimulation of the closure electro-valve, then the doors are considered as blocked and an anomaly is detected.
+//        – if the control software does not see the value door closed[x] = true for all x 2 {front, left, right} 7 seconds after stimulation of the closure electro-valve, then the doors are considered as blocked and an anomaly is detected.
+//        Gears motion monitoring.
+//        – if the control software does not see the value gear extended[x] = false for all x 2 {front,left,right} 7 seconds after stimulation of the retraction electro- valve, then the gears are considered as blocked and an anomaly is detected.
+//        – if the control software does not see the value gear retracted[x] = true for all x 2 {front, left, right} 10 seconds after stimulation of the retraction electro- valve, then the gears are considered as blocked and an anomaly is detected.
+//        – if the control software does not see the value gear retracted[x] = false for all x 2 {front,left,right} 7 seconds after stimulation of the extension electro- valve, then the gears are considered as blocked and an anomaly is detected.
+//        – if the control software does not see the value gear extended[x] = true for all x 2 {front, left, right} 10 seconds after stimulation of the extension electro- valve, then the gears are considered as blocked and an anomaly is detected.

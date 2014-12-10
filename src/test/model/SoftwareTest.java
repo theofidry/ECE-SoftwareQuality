@@ -12,33 +12,36 @@ import org.junit.Test;
 public class SoftwareTest extends MultithreadedTestCase {
 
     public static Door[] doors = {new Door(), new Door(), new Door()};
-    public static Software software = new Software();
+    public static Software software;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        for (Door door: doors) {
+        for (Door door : doors) {
             door = new Door();
         }
+
+        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
     }
 
     @Test
-    public void testCloseDoorsMethod_withAllDorsOpen_expectAllCLosed() throws Exception {
+    public void testCloseDoorsMethod_withAllDoorsOpen_expectAllClosed() throws Exception {
 
-        for (Door door: doors) {
+        for (Door door : doors) {
             door.state = DoorStateEnum.OPEN;
         }
 
-        software.closeDoors(doors);
+        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software.closeDoors();
         Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
 
-        for (Door door: doors) {
+        for (Door door : software.getDoors()) {
             assertTrue(door.isClosed());
         }
     }
 
     @Test
-    public void testCloseDoorsMethod_withVariousStates_expectAllClosedImmediatly() throws Exception {
+    public void testCloseDoorsMethod_withVariousStates_expectAllClosedImmediately() throws Exception {
 
         DoorStateEnum[] states = {DoorStateEnum.OPEN, DoorStateEnum.MOVING, DoorStateEnum.CLOSED};
 
@@ -52,24 +55,26 @@ public class SoftwareTest extends MultithreadedTestCase {
             }
         }
 
-        software.closeDoors(doors);
+        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software.closeDoors();
         Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
 
-        for (Door door: doors) {
+        for (Door door : software.getDoors()) {
             assertTrue(door.isClosed());
         }
     }
 
     @Test
-    public void testCloseDoorsMethod_withAllDorsClosed_expectAllClosedImmetiatly() throws Exception {
+    public void testCloseDoorsMethod_withAllDoorsClosed_expectAllClosedImmetiately() throws Exception {
 
-        for (Door door: doors) {
+        for (Door door : doors) {
             door.state = DoorStateEnum.CLOSED;
         }
 
-        software.closeDoors(doors);
+        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software.closeDoors();
 
-        for (Door door: doors) {
+        for (Door door : software.getDoors()) {
             assertTrue(door.isClosed());
         }
     }
@@ -77,20 +82,21 @@ public class SoftwareTest extends MultithreadedTestCase {
     @Test
     public void testOpenDoorsMethod_withAllDorsClosed_expectAllOpen() throws Exception {
 
-        for (Door door: doors) {
+        for (Door door : doors) {
             door.state = DoorStateEnum.CLOSED;
         }
 
-        software.openDoors(doors);
+        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software.openDoors();
         Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
 
-        for (Door door: doors) {
+        for (Door door : software.getDoors()) {
             assertTrue(door.isOpen());
         }
     }
 
     @Test
-    public void testOpenDoorsMethod_withVariousStates_expectAllOpenImmediatly() throws Exception {
+    public void testOpenDoorsMethod_withVariousStates_expectAllOpenImmediately() throws Exception {
 
         DoorStateEnum[] states = {DoorStateEnum.OPEN, DoorStateEnum.MOVING, DoorStateEnum.CLOSED};
 
@@ -104,24 +110,26 @@ public class SoftwareTest extends MultithreadedTestCase {
             }
         }
 
-        software.openDoors(doors);
+        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software.openDoors();
         Thread.sleep(Door.INERTIA + Door.MOVING_TIME + 100);
 
-        for (Door door: doors) {
+        for (Door door : software.getDoors()) {
             assertTrue(door.isOpen());
         }
     }
 
     @Test
-    public void testOpenDoorsMethod_withAllDorsOpen_expectAllOpenImmetiatly() throws Exception {
+    public void testOpenDoorsMethod_withAllDoorsOpen_expectAllOpenImmetiately() throws Exception {
 
-        for (Door door: doors) {
+        for (Door door : doors) {
             door.state = DoorStateEnum.OPEN;
         }
 
-        software.openDoors(doors);
+        software = new Software(doors, new Handle(), new Lights(), new LandingGear[]{});
+        software.openDoors();
 
-        for (Door door: doors) {
+        for (Door door : software.getDoors()) {
             assertTrue(door.isOpen());
         }
     }
