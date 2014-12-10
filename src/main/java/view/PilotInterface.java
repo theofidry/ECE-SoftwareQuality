@@ -42,6 +42,8 @@ public class PilotInterface extends JPanel {
         DoorsPanel.add(new DoorPanel(this.plane.getDoors()[1], "Left Door"));
         DoorsPanel.add(new DoorPanel(this.plane.getDoors()[2], "Right Door"));
 
+        // Handle
+        this.add(new HandlePanel(plane.getHandle(), plane.getSoftware()));
 
         /*
         TODO:
@@ -49,7 +51,6 @@ public class PilotInterface extends JPanel {
         - gears manoeuvring: if and only if at least one door or one gear is maneuvering, i.e., at least one door is not locked in closed position or one gear is not locked in extension or retraction position.
          */
 
-        HandleSlider.addChangeListener(new HandleChangeListener());
     }
 
     private class HandleChangeListener implements ChangeListener {
@@ -102,8 +103,6 @@ public class PilotInterface extends JPanel {
         LightsState = new JTextField();
         hSpacer1 = new JPanel(null);
         HandlePanel = new JPanel();
-        HandleTitle = new JLabel();
-        HandleSlider = new JSlider();
 
         //======== this ========
 
@@ -227,17 +226,6 @@ public class PilotInterface extends JPanel {
         //======== HandlePanel ========
         {
             HandlePanel.setLayout(new BorderLayout());
-
-            //---- HandleTitle ----
-            HandleTitle.setText("Handle");
-            HandleTitle.setLabelFor(HandleSlider);
-            HandlePanel.add(HandleTitle, BorderLayout.NORTH);
-
-            //---- HandleSlider ----
-            HandleSlider.setOrientation(SwingConstants.VERTICAL);
-            HandleSlider.setValue(0);
-            HandleSlider.setMaximum(1);
-            HandlePanel.add(HandleSlider, BorderLayout.CENTER);
         }
         add(HandlePanel);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -272,7 +260,5 @@ public class PilotInterface extends JPanel {
     private JTextField LightsState;
     private JPanel hSpacer1;
     private JPanel HandlePanel;
-    private JLabel HandleTitle;
-    private JSlider HandleSlider;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

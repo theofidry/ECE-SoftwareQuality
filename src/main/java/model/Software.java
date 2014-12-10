@@ -41,6 +41,12 @@ public class Software {
     public void process()
             throws IllegalStateException {
 
+        // For testing
+        if (handle.isUp())
+            openDoors();
+        else
+            closeDoors();
+
         // OUTGOING SEQUENCE
         //  when gears retracted and doors open
         //  if handle goes down

@@ -17,10 +17,10 @@ public class DoorTest extends MultithreadedTestCase {
      */
     public static final int ERROR_MARGIN = 100;
 
-    private Door door;
+    private static Door door;
 
     @BeforeClass
-    public void setUp() throws Exception {
+    public static void setUp() throws Exception {
 
         door = new Door();
     }
