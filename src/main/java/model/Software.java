@@ -1,7 +1,7 @@
 package model;
 
 import model.enums.DoorStateEnum;
-import model.enums.LightsColorEnum;
+import model.enums.LandingGearPositionEnum;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -15,6 +15,11 @@ public class Software implements PropertyChangeListener {
     private Handle handle;
     private Lights lights;
     private LandingGear[] landingGears;
+
+    private SequenceChecker outgoingSC = new SequenceChecker(),
+            retractingSC = new SequenceChecker();
+
+    private boolean outgoing = true;
 
     public Door[] getDoors() {
         return doors;
@@ -38,7 +43,7 @@ public class Software implements PropertyChangeListener {
         this.lights = lights;
         this.landingGears = landingGears;
 
-        for (Door door: doors) {
+        for (Door door : doors) {
             door.addPropertyChangeListener(this);
         }
     }
@@ -51,31 +56,29 @@ public class Software implements PropertyChangeListener {
     public void process()
             throws IllegalStateException {
 
-        // For testing
+
         if (handle.isUp()) {
-            openDoors();
-            deployGears();
-//            lights.setColor(LightsColorEnum.GREEN);
+
+            // RETRACTING SEQUENCE
+
+            if (areGearsLocked(LandingGearPositionEnum.DEPLOYED) && areDoorsLocked(DoorStateEnum.CLOSED)) {
+
+                outgoing = false;
+
+                openDoors();
+                retractingSC.validateStep(0);
+            }
+
         } else {
-            closeDoors();
-            retractGears();
-//            lights.setColor(LightsColorEnum.RED);
-        }
 
-        // OUTGOING SEQUENCE
-        //  when gears retracted and doors open
-        //  if handle goes down
-        if (!handle.isUp()) {
+            // OUTGOING SEQUENCE
+            if (areGearsLocked(LandingGearPositionEnum.RETRACTED) && areDoorsLocked(DoorStateEnum.OPEN)) {
 
-            //      doors opening
-            // opens doors
-            openDoors();
+                outgoing = true;
 
-            //      when doors open, deploying the gears
-            //      wait for gears deployed
-            //
-            //      closing doors
-            //      wait for doors closed,
+                openDoors();
+                outgoingSC.validateStep(0);
+            }
         }
 
 
@@ -137,10 +140,84 @@ public class Software implements PropertyChangeListener {
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
-        //switch on new value
-//        modelToView((DoorStateEnum) evt.getNewValue());
-        System.out.print("Bou!");
-        lights.setColor(LightsColorEnum.GREEN);
+        if (outgoing) {
+
+            // Outgoing sequence started
+
+            if (outgoingSC.getLastStepValidated() == 0 && areDoorsLocked(DoorStateEnum.OPEN)) {
+
+                // Proceed to step 1
+                deployGears();
+                outgoingSC.validateStep(1);
+            } else if (outgoingSC.getLastStepValidated() == 1 && areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+
+                // Proceed to step 2
+                closeDoors();
+                outgoingSC.validateStep(2);
+            }
+        } else {
+
+            // Retracting sequence started
+
+            if (retractingSC.getLastStepValidated() == 0 && areDoorsLocked(DoorStateEnum.OPEN)) {
+
+                // Proceed to step 1
+                retractGears();
+                retractingSC.validateStep(1);
+            } else if (retractingSC.getLastStepValidated() == 2 && areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+                // Proceed to step 2
+                closeDoors();
+                outgoingSC.validateStep(2);
+            }
+        }
+    }
+
+    /**
+     * Check if the doors are all in the given locked state.
+     *
+     * @param lockedState state the doors must be locked in
+     * @return
+     */
+    public boolean areDoorsLocked(DoorStateEnum lockedState) {
+
+        boolean value = true;
+
+        if (lockedState == DoorStateEnum.MOVING)
+            return false;
+
+        for (Door door : doors) {
+
+            if (door.state != lockedState) {
+                value = false;
+                break;
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * Check if the gears are all in the given locked state.
+     *
+     * @param lockedPosition state the gears must be locked in
+     * @return
+     */
+    public boolean areGearsLocked(LandingGearPositionEnum lockedPosition) {
+
+        boolean value = true;
+
+        if (lockedPosition == LandingGearPositionEnum.MOVING)
+            return false;
+
+        for (LandingGear gear : landingGears) {
+
+            if (gear.position != lockedPosition) {
+                value = false;
+                break;
+            }
+        }
+
+        return value;
     }
 
     /**
@@ -180,6 +257,72 @@ public class Software implements PropertyChangeListener {
 
         for (LandingGear gear : landingGears) {
             gear.retract();
+        }
+    }
+
+    private class SequenceChecker {
+
+        /**
+         * Stimulate the opening of the doors.
+         */
+        private boolean step0;
+
+        /**
+         * For the outgoing sequence: stimulate the deployment of the gears.
+         * For the retracting sequence: stimulate the retraction of the gears.
+         */
+        private boolean step1;
+
+        /**
+         * Stimulate the doors closure.
+         */
+        private boolean step2;
+
+        public void reset() {
+            step0 = false;
+            step1 = false;
+            step2 = false;
+        }
+
+        /**
+         * Get the number of the last test passed.
+         *
+         * @return Step number (0 to 2) or -1 when no step validated
+         */
+        public int getLastStepValidated() {
+
+            if (step2)
+                return 2;
+            if (step1)
+                return 1;
+            if (step0)
+                return 0;
+
+            return -1;
+        }
+
+
+        /**
+         * Validate the given step.
+         *
+         * @param stepNbr step number. Range: 0 to 2 (included)
+         * @throws IndexOutOfBoundsException
+         */
+        public void validateStep(int stepNbr) throws IndexOutOfBoundsException {
+
+            switch (stepNbr) {
+                case 0:
+                    step0 = true;
+                    return;
+                case 1:
+                    step1 = true;
+                    return;
+                case 2:
+                    step2 = true;
+                    return;
+                default:
+                    throw new IndexOutOfBoundsException();
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Plane doors.
+ * Plane landing gears doors.
  */
 public class Door {
 
