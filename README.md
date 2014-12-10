@@ -7,7 +7,7 @@ Javadoc available online [here](http://theofidry.github.io/Software-Quality/java
 
 Travis CI build:
 
-[![Build Status](https://travis-ci.org/theofidry/Software-Quality.svg?branch=master)](https://travis-ci.org/theofidry/Software-Quality)
+[![Build Status](https://travis-ci.org/theofidry/SoftwareQuality-ECEProject.svg?branch=master)](https://travis-ci.org/theofidry/SoftwareQuality-ECEProject)
 
 Compatibilities:
 
