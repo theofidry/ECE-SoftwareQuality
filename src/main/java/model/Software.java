@@ -1,11 +1,15 @@
 package model;
 
+import model.enums.DoorStateEnum;
 import model.enums.LightsColorEnum;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Software system.
  */
-public class Software {
+public class Software implements PropertyChangeListener {
 
     private Door[] doors;
     private Handle handle;
@@ -33,6 +37,10 @@ public class Software {
         this.handle = handle;
         this.lights = lights;
         this.landingGears = landingGears;
+
+        for (Door door: doors) {
+            door.addPropertyChangeListener(this);
+        }
     }
 
     /**
@@ -47,22 +55,29 @@ public class Software {
         if (handle.isUp()) {
             openDoors();
             deployGears();
-            lights.setColor(LightsColorEnum.GREEN);
+//            lights.setColor(LightsColorEnum.GREEN);
         } else {
             closeDoors();
             retractGears();
-            lights.setColor(LightsColorEnum.RED);
+//            lights.setColor(LightsColorEnum.RED);
         }
 
         // OUTGOING SEQUENCE
         //  when gears retracted and doors open
         //  if handle goes down
-        //      doors opening
-        //      when doors open, deploying the gears
-        //      wait for gears deployed
-        //
-        //      closing doors
-        //      wait for doors closed,
+        if (!handle.isUp()) {
+
+            //      doors opening
+            // opens doors
+            openDoors();
+
+            //      when doors open, deploying the gears
+            //      wait for gears deployed
+            //
+            //      closing doors
+            //      wait for doors closed,
+        }
+
 
         // RETRACTION SEQUENCE
         //  when gears deployed and doors closed
@@ -113,6 +128,19 @@ public class Software {
 //            wheels.position = WheelsPositionEnum.DEPLOYED;
 //            return;
 //        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param evt
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+
+        //switch on new value
+//        modelToView((DoorStateEnum) evt.getNewValue());
+        System.out.print("Bou!");
+        lights.setColor(LightsColorEnum.GREEN);
     }
 
     /**
