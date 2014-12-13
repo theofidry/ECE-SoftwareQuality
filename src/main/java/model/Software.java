@@ -59,87 +59,106 @@ public class Software implements PropertyChangeListener {
 
     /**
      * Actions the wheels and light according to the handle position and the current state fo the lights and wheels.
-     *
-     * @throws java.lang.IllegalStateException Unexpected scenario.
      */
-    public void process()
-            throws IllegalStateException {
+    public void process() throws IllegalStateException {
+
+        try {
+            if (handle.isUp()) {
+
+                // RETRACTING SEQUENCE
+
+                if (areGearsLocked(LandingGearPositionEnum.DEPLOYED) && areDoorsLocked(DoorStateEnum.CLOSED)) {
+
+                    outgoing = false;
+
+                    openDoors();
+                    retractingSC.validateStep(0);
+                } else {
+
+                    // Interrupted an outgoing sequence
+                    switch (outgoingSC.getLastStepValidated()) {
+
+                        case 0:
+                            // opening of the doors already requested
+                            retractingSC.validateStep(0);
+                            break;
+                        case 1:
+                            // deploying of the gears has been requested
+                            if (areDoorsLocked(DoorStateEnum.OPEN)) {
+                                retractGears();
+                                retractingSC.validateStep(1);
+                            } else {
+                                throw new IllegalStateException("Expected doors opened");
+                            }
+                            break;
+                        case 2:
+                            // closing of the doors already requested
+                            if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+
+                                openDoors();
+                                retractingSC.validateStep(0);
+                            } else {
+                                throw new IllegalStateException("Expected gears deployed");
+                            }
+                            break;
+
+                        default:
+                            throw new IllegalStateException("Unexpected situation");
+                    }
+
+                    outgoingSC.reset();
+                }
 
 
-        if (handle.isUp()) {
+            } else {
 
-            // RETRACTING SEQUENCE
+                // OUTGOING SEQUENCE
+                if (areGearsLocked(LandingGearPositionEnum.RETRACTED) && areDoorsLocked(DoorStateEnum.CLOSED)) {
 
-            if (areGearsLocked(LandingGearPositionEnum.DEPLOYED) && areDoorsLocked(DoorStateEnum.CLOSED)) {
+                    outgoing = true;
 
-                outgoing = false;
+                    openDoors();
+                    outgoingSC.validateStep(0);
+                } else {
 
-                openDoors();
-                retractingSC.validateStep(0);
+                    // Interrupted an retracting sequence
+                    switch (retractingSC.getLastStepValidated()) {
+
+                        case 0:
+                            // opening of the doors already requested
+                            outgoingSC.validateStep(0);
+                            break;
+                        case 1:
+                            // retracting of the gears has been requested
+                            if (areDoorsLocked(DoorStateEnum.OPEN)) {
+                                deployGears();
+                                outgoingSC.validateStep(1);
+                            } else {
+                                throw new IllegalStateException("Expected doors opened");
+                            }
+                            break;
+                        case 2:
+                            // closing of the doors already requested
+                            if (areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+
+                                openDoors();
+                                outgoingSC.validateStep(0);
+                            } else {
+                                throw new IllegalStateException("Expected gears retracted");
+                            }
+                            break;
+
+                        default:
+                            throw new IllegalStateException("Unexpected situation");
+                    }
+                }
             }
+        } catch (IllegalStateException exception) {
 
-        } else {
-
-            // OUTGOING SEQUENCE
-            if (areGearsLocked(LandingGearPositionEnum.RETRACTED) && areDoorsLocked(DoorStateEnum.CLOSED)) {
-
-                outgoing = true;
-
-                openDoors();
-                outgoingSC.validateStep(0);
-            }
+            //TODO: urgence sequence (not asked for the TP)
+            failure = true;
+            throw exception;
         }
-
-
-        // RETRACTION SEQUENCE
-        //  when gears deployed and doors closed
-        //  if handle goes up
-        //      doors opening
-        //      when doors open, gears retraction
-        //      wait for gears tracted
-        //
-        //      closing doors
-        //      wait for doors closed
-
-
-        // INTERRUPTION
-        //
-//        The previous sequences should be interruptible by counter orders (a retrac-
-//                tion order occurs during the let down sequence and conversely) at any time. In that case, the scenario continues from the point where it was interrupted. For instance, if an outgoing sequence is interrupted in the door closure phase (step 6 of the outgoing sequence) by an “Up” order, then the stimulation of the door closure electro-valve is stopped, and the retraction sequence is executed from step 2: the door opening electro-valve is stimulated and the doors begin opening again. Afterwards, the scenario continues up to the final step or up to a new interruption.
-
-        //TODO
-//        // Case with the handle up
-//        if (handle.up && wheels.position == WheelsPositionEnum.RETRACTED) {
-//            lights.color = LightsEnum.OFF;
-//            return;
-//        }
-//
-//        if (handle.up && wheels.position == WheelsPositionEnum.DEPLOYED)
-//            throw new IllegalStateException("Unsupported state.");
-//
-//        if (handle.up && wheels.position == WheelsPositionEnum.MOVING) {
-//            lights.color = LightsEnum.ORANGE;
-//            wheels.position = WheelsPositionEnum.RETRACTED;
-//            return;
-//        }
-//
-//        // Case with the handle down
-//        if (!handle.up && wheels.position == WheelsPositionEnum.RETRACTED) {
-//            lights.color = LightsEnum.ORANGE;
-//            wheels.position = WheelsPositionEnum.MOVING;
-//            return;
-//        }
-//
-//        if (!handle.up && wheels.position == WheelsPositionEnum.DEPLOYED) {
-//            lights.color = LightsEnum.GREEN;
-//            return;
-//        }
-//
-//        if (!handle.up && wheels.position == WheelsPositionEnum.MOVING) {
-//            lights.color = LightsEnum.GREEN;
-//            wheels.position = WheelsPositionEnum.DEPLOYED;
-//            return;
-//        }
     }
 
     /**
