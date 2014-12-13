@@ -19,8 +19,10 @@ public class HandlePanelTest extends TestCase {
     @BeforeClass
     public void setUp() throws Exception {
 
+        PilotInterface pilotInterface = new PilotInterface(plane);
+
         plane = new Plane();
-        handlePanel = new HandlePanel(plane.getHandle(), plane.getSoftware());
+        handlePanel = (HandlePanel) pilotInterface.getHandlePanel();
         slider = (JSlider) handlePanel.getComponent(1);
     }
 

@@ -17,7 +17,7 @@ public class HandleTest extends TestCase {
     }
 
     public void testDefaultPosition() throws Exception {
-        assertFalse(handle.isUp());
+        assertTrue(handle.isUp());
     }
 
     @Test

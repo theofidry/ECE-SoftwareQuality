@@ -14,7 +14,7 @@ public class Handle {
     /**
      * Position of the handle. If false the handle is down, if true is up.
      */
-    private boolean position = false;
+    private boolean position = true;
 
     /**
      * Test if the handle is up.

@@ -5,17 +5,25 @@
 package view;
 
 import model.Plane;
+import model.Software;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.util.TimerTask;
 
 /**
  * @author unknown
  */
 public class PilotInterface extends JPanel {
+
+    /**
+     * Inertia of the handle in ms (simulation of the handle -> switch).
+     */
+    public static final int HANDLE_INERTIA = 1000;
+    private java.util.Timer timer = new java.util.Timer();
 
 
     Plane plane;
@@ -51,7 +59,7 @@ public class PilotInterface extends JPanel {
         landingGearsPanel.add(new LandingGearPanel(this.plane.getLandingGears()[2], "Right Gear"));
 
         // Handle
-        this.add(new HandlePanel(plane.getHandle(), plane.getSoftware()));
+        this.add(new HandlePanel(plane.getHandle(), new HandleChangeListener()));
 
         /*
         TODO:
@@ -61,6 +69,21 @@ public class PilotInterface extends JPanel {
 
     }
 
+    public JPanel getDoorsPanel() {
+        return doorsPanel;
+    }
+
+    public JPanel getLandingGearsPanel() {
+        return landingGearsPanel;
+    }
+
+    public JPanel getHandlePanel() {
+        return handlePanel;
+    }
+
+    /**
+     * When the slider changes of value, process the software.
+     */
     private class HandleChangeListener implements ChangeListener {
 
         @Override
@@ -71,12 +94,17 @@ public class PilotInterface extends JPanel {
             if (!source.getValueIsAdjusting()) {
 
                 if (source.getValue() == 1) {
-                    //TODO: need to be replaced
-                    plane.getSoftware().openDoors();
+                    plane.getHandle().pushUp();
                 } else {
-                    //TODO: need to be replaced
-                    plane.getSoftware().closeDoors();
+                    plane.getHandle().pushDown();
                 }
+
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        plane.getSoftware().process();
+                    }
+                }, HANDLE_INERTIA);
             }
         }
     }
@@ -108,10 +136,15 @@ public class PilotInterface extends JPanel {
 
         // JFormDesigner evaluation mark
         setBorder(new javax.swing.border.CompoundBorder(
-            new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                java.awt.Color.red), getBorder())); addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
+                new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
+                        "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+                        javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
+                        java.awt.Color.red), getBorder()));
+        addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent e) {
+                if ("border".equals(e.getPropertyName())) throw new RuntimeException();
+            }
+        });
 
         setLayout(new FlowLayout());
 

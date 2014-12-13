@@ -43,8 +43,14 @@ public class Software implements PropertyChangeListener {
         this.lights = lights;
         this.landingGears = landingGears;
 
+        // Add listener to each door
         for (Door door : doors) {
             door.addPropertyChangeListener(this);
+        }
+
+        // Add listener to each gear
+        for (LandingGear gear : landingGears) {
+            gear.addPropertyChangeListener(this);
         }
     }
 
@@ -72,7 +78,7 @@ public class Software implements PropertyChangeListener {
         } else {
 
             // OUTGOING SEQUENCE
-            if (areGearsLocked(LandingGearPositionEnum.RETRACTED) && areDoorsLocked(DoorStateEnum.OPEN)) {
+            if (areGearsLocked(LandingGearPositionEnum.RETRACTED) && areDoorsLocked(DoorStateEnum.CLOSED)) {
 
                 outgoing = true;
 
@@ -140,6 +146,8 @@ public class Software implements PropertyChangeListener {
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
+        System.out.println(evt.getSource().toString());
+
         if (outgoing) {
 
             // Outgoing sequence started
@@ -154,6 +162,10 @@ public class Software implements PropertyChangeListener {
                 // Proceed to step 2
                 closeDoors();
                 outgoingSC.validateStep(2);
+            } else if (outgoingSC.getLastStepValidated() == 2 && areDoorsLocked(DoorStateEnum.CLOSED)) {
+
+                // End of outgoing sequence
+                outgoingSC.reset();
             }
         } else {
 
@@ -164,10 +176,15 @@ public class Software implements PropertyChangeListener {
                 // Proceed to step 1
                 retractGears();
                 retractingSC.validateStep(1);
-            } else if (retractingSC.getLastStepValidated() == 2 && areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+            } else if (retractingSC.getLastStepValidated() == 1 && areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+
                 // Proceed to step 2
                 closeDoors();
-                outgoingSC.validateStep(2);
+                retractingSC.validateStep(2);
+            } else if (retractingSC.getLastStepValidated() == 2 && areDoorsLocked(DoorStateEnum.CLOSED)) {
+
+                // End of retracting sequence
+                retractingSC.reset();
             }
         }
     }
