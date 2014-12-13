@@ -2,6 +2,7 @@ package model;
 
 import model.enums.DoorStateEnum;
 import model.enums.LandingGearPositionEnum;
+import model.enums.LightsColorEnum;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -20,6 +21,7 @@ public class Software implements PropertyChangeListener {
             retractingSC = new SequenceChecker();
 
     private boolean outgoing = true;
+    private boolean failure;
 
     public Door[] getDoors() {
         return doors;
@@ -38,6 +40,7 @@ public class Software implements PropertyChangeListener {
     }
 
     public Software(Door[] doors, Handle handle, Lights lights, LandingGear[] landingGears) {
+
         this.doors = doors;
         this.handle = handle;
         this.lights = lights;
@@ -146,8 +149,22 @@ public class Software implements PropertyChangeListener {
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
-        System.out.println(evt.getSource().toString());
+        // Check if there is no failure
+        if (failure) {
+            lights.setColor(LightsColorEnum.RED);
+        } else if (evt.getSource() instanceof LandingGear) {
 
+            // Case where there is no failure and the event is triggered by a gear
+            if (areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+                lights.setColor(LightsColorEnum.GREEN);
+            } else if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+                lights.setColor(LightsColorEnum.OFF);
+            } else {
+                lights.setColor(LightsColorEnum.ORANGE);
+            }
+        }
+
+        // Proceed to outgoing/retracting sequence
         if (outgoing) {
 
             // Outgoing sequence started

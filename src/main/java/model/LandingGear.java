@@ -23,7 +23,7 @@ public class LandingGear {
     /**
      * Time a gear takes to fully extend or retract.
      */
-    public static final int MOVING_TIME = 3000;
+    public static final int MOVING_TIME = 3500;
 
     /**
      * Landing gear position, can be up (retracted), moving or down (deployed).

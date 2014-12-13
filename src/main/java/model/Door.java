@@ -23,7 +23,7 @@ public class Door {
     /**
      * Time a door takes to fully open or close.
      */
-    public static final int MOVING_TIME = 3000;
+    public static final int MOVING_TIME = 2000;
 
     /**
      * State of the door.
