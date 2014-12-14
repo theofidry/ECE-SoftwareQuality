@@ -20,6 +20,13 @@ public class HandlePanel extends JPanel implements PropertyChangeListener {
     private JLabel label = new JLabel();
     private JSlider slider = new JSlider();
 
+    /**
+     * Default constructor.
+     */
+    public HandlePanel() {
+        super();
+    }
+
     public HandlePanel(Handle handle, ChangeListener listener) {
 
         this.handle = handle;

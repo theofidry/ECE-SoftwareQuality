@@ -21,6 +21,13 @@ public class LandingGearPanel extends JPanel implements PropertyChangeListener {
     private TextField field = new TextField();
 
     /**
+     * Default constructor.
+     */
+    public LandingGearPanel() {
+        super();
+    }
+
+    /**
      * Instantiate a gear panel.
      *
      * @param gear model to which the view is bound

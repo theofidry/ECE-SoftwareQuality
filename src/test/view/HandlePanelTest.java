@@ -2,17 +2,19 @@ package view;
 
 import junit.framework.TestCase;
 import model.Plane;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.swing.JSlider;
+import java.awt.*;
 
 /**
  * Tests for {@link view.HandlePanelTest}
  */
 public class HandlePanelTest extends TestCase {
 
-    private Plane plane;
+    private Plane plane = new Plane();
     private HandlePanel handlePanel;
     private JSlider slider;
 
@@ -21,9 +23,13 @@ public class HandlePanelTest extends TestCase {
 
         PilotInterface pilotInterface = new PilotInterface(plane);
 
-        plane = new Plane();
-        handlePanel = (HandlePanel) pilotInterface.getHandlePanel();
-        slider = (JSlider) handlePanel.getComponent(1);
+        handlePanel = pilotInterface.getHandlePanel();
+
+        for (Component component: handlePanel.getComponents()) {
+
+            if (component instanceof JSlider)
+                slider = (JSlider) component;
+        }
     }
 
 
@@ -31,35 +37,35 @@ public class HandlePanelTest extends TestCase {
     public void testSliderValuesLimits() throws Exception {
 
         slider.setValue(3);
-        assertTrue(slider.getValue() == 1);
+        Assert.assertTrue(slider.getValue() == 1);
 
         slider.setValue(-1);
-        assertTrue(slider.getValue() == 0);
+        Assert.assertTrue(slider.getValue() == 0);
     }
 
     @Test
     public void testModelToViewBinding() throws Exception {
 
         plane.getHandle().pushUp();
-        assertTrue(slider.getValue() == 1);
+        Assert.assertTrue(slider.getValue() == 1);
 
         plane.getHandle().pushDown();
-        assertTrue(slider.getValue() == 0);
+        Assert.assertTrue(slider.getValue() == 0);
 
         plane.getHandle().pushUp();
-        assertTrue(slider.getValue() == 1);
+        Assert.assertTrue(slider.getValue() == 1);
     }
 
     @Test
     public void testViewToModelBinding() throws Exception {
 
         slider.setValue(0);
-        assertFalse(plane.getHandle().isUp());
+        Assert.assertFalse(plane.getHandle().isUp());
 
         slider.setValue(1);
-        assertTrue(plane.getHandle().isUp());
+        Assert.assertTrue(plane.getHandle().isUp());
 
         slider.setValue(0);
-        assertFalse(plane.getHandle().isUp());
+        Assert.assertFalse(plane.getHandle().isUp());
     }
 }

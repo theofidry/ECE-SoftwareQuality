@@ -19,6 +19,13 @@ public class LightsPanel extends JPanel implements PropertyChangeListener {
     private TextField field = new TextField();
 
     /**
+     * Default constructor.
+     */
+    public LightsPanel() {
+        super();
+    }
+
+    /**
      * Instantiate a door panel.
      *
      * @param door model to which the view is bound

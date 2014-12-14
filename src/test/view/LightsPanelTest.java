@@ -22,6 +22,10 @@ public class LightsPanelTest {
 
     private Lights lights = new Lights();
 
+    public LightsPanelTest(Lights lights) {
+        this.lights = lights;
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
 

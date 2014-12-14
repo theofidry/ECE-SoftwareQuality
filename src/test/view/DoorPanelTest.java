@@ -21,6 +21,10 @@ public class DoorPanelTest {
 
     private Door door = new Door();
 
+    public DoorPanelTest(Door door) {
+        this.door = door;
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
 
@@ -35,10 +39,6 @@ public class DoorPanelTest {
         }
 
         return provider;
-    }
-
-    public DoorPanelTest(Door door) {
-        this.door = door;
     }
 
     @Test

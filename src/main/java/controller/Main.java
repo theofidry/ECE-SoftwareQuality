@@ -1,10 +1,8 @@
 package controller;
 
 
-import model.Door;
 import model.Plane;
 import view.PilotInterface;
-import view.DoorPanel;
 
 import javax.swing.JFrame;
 
