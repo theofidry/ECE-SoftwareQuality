@@ -24,17 +24,21 @@ public class DoorPanelTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
 
-
         ArrayList<Object[]> provider = new ArrayList<>();
         Door door = new Door();
 
-        for (DoorStateEnum state: DoorStateEnum.values()) {
+        // Instantiate default doors with all possible states
+        for (DoorStateEnum state : DoorStateEnum.values()) {
 
             door.state = state;
             provider.add(new Object[] {door});
         }
 
         return provider;
+    }
+
+    public DoorPanelTest(Door door) {
+        this.door = door;
     }
 
     @Test
@@ -48,8 +52,8 @@ public class DoorPanelTest {
         Assert.assertTrue(doorPanel.getComponentCount() == 2);
 
         try {
-            label = (JLabel)doorPanel.getComponent(0);
-            field = (TextField)doorPanel.getComponent(1);
+            label = (JLabel) doorPanel.getComponent(0);
+            field = (TextField) doorPanel.getComponent(1);
 
             Assert.assertTrue(label.getText().equals("My door"));
             if (door.isOpen())
@@ -74,8 +78,8 @@ public class DoorPanelTest {
         Assert.assertTrue(doorPanel.getComponentCount() == 2);
 
         try {
-            label = (JLabel)doorPanel.getComponent(0);
-            field = (TextField)doorPanel.getComponent(1);
+            label = (JLabel) doorPanel.getComponent(0);
+            field = (TextField) doorPanel.getComponent(1);
 
             Assert.assertTrue(label.getText().equals("Door"));
             if (door.isOpen())

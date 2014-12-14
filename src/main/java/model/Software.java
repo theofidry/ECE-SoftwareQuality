@@ -6,6 +6,7 @@ import model.enums.LightsColorEnum;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Timer;
 
 /**
  * Software system.
@@ -19,6 +20,8 @@ public class Software implements PropertyChangeListener {
 
     private SequenceChecker outgoingSC = new SequenceChecker(),
             retractingSC = new SequenceChecker();
+
+    private Timer timer = new Timer();
 
     private boolean outgoing = true;
     private boolean failure;
@@ -155,7 +158,7 @@ public class Software implements PropertyChangeListener {
             }
         } catch (IllegalStateException exception) {
 
-            //TODO: urgence sequence (not asked for the TP)
+            //TODO: urgency sequence (not asked for the TP)
             failure = true;
             throw exception;
         }

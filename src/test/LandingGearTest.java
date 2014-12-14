@@ -9,7 +9,7 @@
 // */
 //public class LandingGearTest extends MultithreadedTestCase {
 //
-//    @Test
+//    @Tests
 //    public void testDefaultValue() {
 //
 //        LandingGear landingGear = new LandingGear();
