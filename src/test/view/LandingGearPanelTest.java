@@ -22,6 +22,10 @@ public class LandingGearPanelTest {
 
     private LandingGear gear = new LandingGear();
 
+    public LandingGearPanelTest(LandingGear gear) {
+        this.gear = gear;
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
 
