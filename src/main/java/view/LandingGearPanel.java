@@ -41,8 +41,9 @@ public class LandingGearPanel extends JPanel implements PropertyChangeListener {
 
         this.gear = gear;
 
-        if (name.isEmpty())
+        if (name.isEmpty()) {
             name = "Gear";
+        }
 
         //
         // Initialize components
@@ -60,7 +61,7 @@ public class LandingGearPanel extends JPanel implements PropertyChangeListener {
         //
         // Binds model to view
         //
-        gear.addPropertyChangeListener(this);
+        this.gear.addPropertyChangeListener(this);
         modelToView(gear.position);
     }
 

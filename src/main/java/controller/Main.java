@@ -11,6 +11,11 @@ import javax.swing.JFrame;
 public class Main {
 
     /**
+     * Disallow instantiation of this class.
+     */
+    private Main() {}
+
+    /**
      * Start the program.
      *
      * @param args arguments

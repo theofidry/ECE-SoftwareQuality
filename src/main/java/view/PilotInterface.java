@@ -33,7 +33,7 @@ public class PilotInterface extends JPanel {
     /**
      * Panel's model.
      */
-    Plane plane;
+    private Plane plane;
 
     /**
      * Get the handle panel.
@@ -125,39 +125,31 @@ public class PilotInterface extends JPanel {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - ThÃ©o Fidry
-        panel2 = new JPanel();
+        JPanel panel2 = new JPanel();
         panel1 = new JPanel();
         doorsContainer = new JPanel();
-        vSpacer2 = new JPanel(null);
-        DoorsPanelTitle = new JLabel();
-        vSpacer4 = new JPanel(null);
+        JPanel vSpacer2 = new JPanel(null);
+        JLabel doorsPanelTitle = new JLabel();
+        JPanel vSpacer4 = new JPanel(null);
         landingGearsContainer = new JPanel();
-        vSpacer1 = new JPanel(null);
-        separator1 = new JSeparator();
-        vSpacer3 = new JPanel(null);
-        GearsPanelTitle = new JLabel();
-        vSpacer5 = new JPanel(null);
-        FrontGearPanel = new JPanel();
-        LeftGearPanel = new JPanel();
-        RightGearPanel = new JPanel();
-        hSpacer2 = new JPanel(null);
+        JPanel vSpacer1 = new JPanel(null);
+        JSeparator separator = new JSeparator();
+        JPanel vSpacer3 = new JPanel(null);
+        JLabel gearsPanelTitle = new JLabel();
+        JPanel vSpacer5 = new JPanel(null);
+        JPanel hSpacer2 = new JPanel(null);
         lightsContainer = new JPanel();
-        hSpacer1 = new JPanel(null);
+        JPanel hSpacer1 = new JPanel(null);
         handleContainer = new JPanel();
 
         //======== this ========
 
         // JFormDesigner evaluation mark
         setBorder(new javax.swing.border.CompoundBorder(
-                new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                        "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                        javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                        java.awt.Color.red), getBorder()));
-        addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent e) {
-                if ("border".equals(e.getPropertyName())) throw new RuntimeException();
-            }
-        });
+            new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
+                "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+                javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
+                java.awt.Color.red), getBorder())); addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
 
         setLayout(new FlowLayout());
 
@@ -174,10 +166,10 @@ public class PilotInterface extends JPanel {
                     doorsContainer.setLayout(new VerticalLayout());
                     doorsContainer.add(vSpacer2);
 
-                    //---- DoorsPanelTitle ----
-                    DoorsPanelTitle.setText("Doors");
-                    DoorsPanelTitle.setHorizontalAlignment(SwingConstants.CENTER);
-                    doorsContainer.add(DoorsPanelTitle);
+                    //---- doorsPanelTitle ----
+                    doorsPanelTitle.setText("Doors");
+                    doorsPanelTitle.setHorizontalAlignment(SwingConstants.CENTER);
+                    doorsContainer.add(doorsPanelTitle);
                     doorsContainer.add(vSpacer4);
                 }
                 panel1.add(doorsContainer);
@@ -186,32 +178,14 @@ public class PilotInterface extends JPanel {
                 {
                     landingGearsContainer.setLayout(new VerticalLayout());
                     landingGearsContainer.add(vSpacer1);
-                    landingGearsContainer.add(separator1);
+                    landingGearsContainer.add(separator);
                     landingGearsContainer.add(vSpacer3);
 
-                    //---- GearsPanelTitle ----
-                    GearsPanelTitle.setText("Landing Gears");
-                    GearsPanelTitle.setHorizontalAlignment(SwingConstants.CENTER);
-                    landingGearsContainer.add(GearsPanelTitle);
+                    //---- gearsPanelTitle ----
+                    gearsPanelTitle.setText("Landing Gears");
+                    gearsPanelTitle.setHorizontalAlignment(SwingConstants.CENTER);
+                    landingGearsContainer.add(gearsPanelTitle);
                     landingGearsContainer.add(vSpacer5);
-
-                    //======== FrontGearPanel ========
-                    {
-                        FrontGearPanel.setLayout(new GridLayout());
-                    }
-                    landingGearsContainer.add(FrontGearPanel);
-
-                    //======== LeftGearPanel ========
-                    {
-                        LeftGearPanel.setLayout(new GridLayout());
-                    }
-                    landingGearsContainer.add(LeftGearPanel);
-
-                    //======== RightGearPanel ========
-                    {
-                        RightGearPanel.setLayout(new GridLayout());
-                    }
-                    landingGearsContainer.add(RightGearPanel);
                 }
                 panel1.add(landingGearsContainer);
             }
@@ -237,24 +211,10 @@ public class PilotInterface extends JPanel {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner Evaluation license - ThÃ©o Fidry
-    private JPanel panel2;
     private JPanel panel1;
     private JPanel doorsContainer;
-    private JPanel vSpacer2;
-    private JLabel DoorsPanelTitle;
-    private JPanel vSpacer4;
     private JPanel landingGearsContainer;
-    private JPanel vSpacer1;
-    private JSeparator separator1;
-    private JPanel vSpacer3;
-    private JLabel GearsPanelTitle;
-    private JPanel vSpacer5;
-    private JPanel FrontGearPanel;
-    private JPanel LeftGearPanel;
-    private JPanel RightGearPanel;
-    private JPanel hSpacer2;
     private JPanel lightsContainer;
-    private JPanel hSpacer1;
     private JPanel handleContainer;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

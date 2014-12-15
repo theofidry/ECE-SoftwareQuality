@@ -54,7 +54,7 @@ public class LightsPanel extends JPanel implements PropertyChangeListener {
         //
         // Binds model to view
         //
-        lights.addPropertyChangeListener(this);
+        this.lights.addPropertyChangeListener(this);
         modelToView(lights.getColor());
     }
 

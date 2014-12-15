@@ -115,7 +115,7 @@ public class Door extends Model {
             movingTime = (System.currentTimeMillis() - start);
         }
 
-        if (state != finalState) {
+        if (!state.equals(finalState)) {
 
             timer.schedule(new MovingTask(finalState, movingTime), INERTIA);
         }
@@ -124,7 +124,7 @@ public class Door extends Model {
     /**
      * Timer task used for making the door move.
      */
-    final private class MovingTask extends TimerTask {
+    private final class MovingTask extends TimerTask {
 
         /**
          * Final state the door will reach.
@@ -163,12 +163,12 @@ public class Door extends Model {
     /**
      * Timer task used for locking the door once it's final state has been reached.
      */
-    final private class LockingTask extends TimerTask {
+    private final class LockingTask extends TimerTask {
 
         /**
          * Final state the door will reach.
          */
-        DoorStateEnum finalState;
+        private DoorStateEnum finalState;
 
         /**
          * Instantiate a locking task, used to lock the door once its final state has been reached.

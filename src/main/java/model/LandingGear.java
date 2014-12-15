@@ -124,7 +124,7 @@ public class LandingGear extends Model {
     /**
      * Timer task used for making the door move.
      */
-    final private class MovingTask extends TimerTask {
+    private final class MovingTask extends TimerTask {
 
         /**
          * Final position the gear will reach.
@@ -140,7 +140,7 @@ public class LandingGear extends Model {
          * Instantiate a moving task, used to make the gear moving.
          *
          * @param finalPosition final position the gear will reach
-         * @param movingTime time the gear will be moving before reaching its final state
+         * @param movingTime    time the gear will be moving before reaching its final state
          */
         public MovingTask(LandingGearPositionEnum finalPosition, long movingTime) {
             this.finalPosition = finalPosition;
@@ -163,12 +163,12 @@ public class LandingGear extends Model {
     /**
      * Timer task used for locking the gear once it's position state has been reached.
      */
-    final private class LockingTask extends TimerTask {
+    private final class LockingTask extends TimerTask {
 
         /**
          * Final position the gear will reach.
          */
-        LandingGearPositionEnum finalPosition;
+        private LandingGearPositionEnum finalPosition;
 
         /**
          * Instantiate a locking task, used to lock the gear once its final position has been reached.

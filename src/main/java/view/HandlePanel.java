@@ -78,9 +78,10 @@ public class HandlePanel extends JPanel implements PropertyChangeListener {
      */
     private void modelToView(Handle handle) {
 
-        if (handle.isUp())
+        if (handle.isUp()) {
             slider.setValue(1);
-        else
+        } else {
             slider.setValue(0);
+        }
     }
 }

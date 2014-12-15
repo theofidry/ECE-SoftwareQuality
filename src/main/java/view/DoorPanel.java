@@ -41,8 +41,9 @@ public class DoorPanel extends JPanel implements PropertyChangeListener {
 
         this.door = door;
 
-        if (name.isEmpty())
+        if (name.isEmpty()) {
             name = "Door";
+        }
 
         //
         // Initialize components
@@ -60,7 +61,7 @@ public class DoorPanel extends JPanel implements PropertyChangeListener {
         //
         // Binds model to view
         //
-        door.addPropertyChangeListener(this);
+        this.door.addPropertyChangeListener(this);
         modelToView(door.state);
     }
 

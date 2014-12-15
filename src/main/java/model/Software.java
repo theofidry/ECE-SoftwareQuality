@@ -146,37 +146,7 @@ public class Software implements PropertyChangeListener {
                 } else {
 
                     // Interrupted an outgoing sequence
-                    switch (outgoingSC.getLastStepValidated()) {
-
-                        case 0:
-                            // opening of the doors already requested
-                            retractingSC.validateStep(0);
-                            break;
-                        case 1:
-                            // deploying of the gears has been requested
-                            if (areDoorsLocked(DoorStateEnum.OPEN)) {
-                                retractGears();
-                                retractingSC.validateStep(1);
-                            } else {
-                                throw new IllegalStateException("Expected doors opened");
-                            }
-                            break;
-                        case 2:
-                            // closing of the doors already requested
-                            if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
-
-                                openDoors();
-                                retractingSC.validateStep(0);
-                            } else {
-                                throw new IllegalStateException("Expected gears deployed");
-                            }
-                            break;
-
-                        default:
-                            throw new IllegalStateException("Unexpected situation");
-                    }
-
-                    outgoingSC.reset();
+                    retractWhenOutgoing();
                 }
 
 
@@ -192,35 +162,7 @@ public class Software implements PropertyChangeListener {
                 } else {
 
                     // Interrupted an retracting sequence
-                    switch (retractingSC.getLastStepValidated()) {
-
-                        case 0:
-                            // opening of the doors already requested
-                            outgoingSC.validateStep(0);
-                            break;
-                        case 1:
-                            // retracting of the gears has been requested
-                            if (areDoorsLocked(DoorStateEnum.OPEN)) {
-                                deployGears();
-                                outgoingSC.validateStep(1);
-                            } else {
-                                throw new IllegalStateException("Expected doors opened");
-                            }
-                            break;
-                        case 2:
-                            // closing of the doors already requested
-                            if (areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
-
-                                openDoors();
-                                outgoingSC.validateStep(0);
-                            } else {
-                                throw new IllegalStateException("Expected gears retracted");
-                            }
-                            break;
-
-                        default:
-                            throw new IllegalStateException("Unexpected situation");
-                    }
+                    deployWhenRetracting();
                 }
             }
         } catch (IllegalStateException exception) {
@@ -232,13 +174,107 @@ public class Software implements PropertyChangeListener {
     }
 
     /**
+     * Helper used for when the retracting sequence has been started when the outgoing sequence was already started.
+     */
+    private void retractWhenOutgoing() {
+
+        switch (outgoingSC.getLastStepValidated()) {
+
+            case 0:
+                // opening of the doors already requested
+                retractingSC.validateStep(0);
+                break;
+            case 1:
+                // deploying of the gears has been requested
+                if (areDoorsLocked(DoorStateEnum.OPEN)) {
+                    retractGears();
+                    retractingSC.validateStep(1);
+                } else {
+                    throw new IllegalStateException("Expected doors opened");
+                }
+                break;
+            case 2:
+                // closing of the doors already requested
+                if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+
+                    openDoors();
+                    retractingSC.validateStep(0);
+                } else {
+                    throw new IllegalStateException("Expected gears deployed");
+                }
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected situation");
+        }
+
+        outgoingSC.reset();
+    }
+
+    /**
+     * Helper used for when the retracting sequence has been started when the outgoing sequence was already started.
+     */
+    private void deployWhenRetracting() {
+
+        switch (retractingSC.getLastStepValidated()) {
+
+            case 0:
+                // opening of the doors already requested
+                outgoingSC.validateStep(0);
+                break;
+            case 1:
+                // retracting of the gears has been requested
+                if (areDoorsLocked(DoorStateEnum.OPEN)) {
+                    deployGears();
+                    outgoingSC.validateStep(1);
+                } else {
+                    throw new IllegalStateException("Expected doors opened");
+                }
+                break;
+            case 2:
+                // closing of the doors already requested
+                if (areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+
+                    openDoors();
+                    outgoingSC.validateStep(0);
+                } else {
+                    throw new IllegalStateException("Expected gears retracted");
+                }
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected situation");
+        }
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @param evt
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
-        // Check if there is no failure
+        setLights(evt);
+
+        // Proceed to outgoing/retracting sequence
+        if (outgoing) {
+
+            // Outgoing sequence started
+            proceedOutoingSeq();
+        } else {
+
+            // Retracting sequence started
+            proceedRetractingSeq();
+        }
+    }
+
+    /**
+     * Determine which lights color should be set.
+     *
+     * @param evt
+     */
+    private void setLights(PropertyChangeEvent evt) {
+
         if (failure) {
             lights.setColor(LightsColorEnum.RED);
         } else if (evt.getSource() instanceof LandingGear) {
@@ -252,46 +288,53 @@ public class Software implements PropertyChangeListener {
                 lights.setColor(LightsColorEnum.ORANGE);
             }
         }
+    }
 
-        // Proceed to outgoing/retracting sequence
-        if (outgoing) {
+    /**
+     * Proceed the outgoing sequence.
+     */
+    private void proceedOutoingSeq() {
 
-            // Outgoing sequence started
+        //TODO: move the first step from process here
 
-            if (outgoingSC.getLastStepValidated() == 0 && areDoorsLocked(DoorStateEnum.OPEN)) {
+        if (outgoingSC.getLastStepValidated() == 0 && areDoorsLocked(DoorStateEnum.OPEN)) {
 
-                // Proceed to step 1
-                deployGears();
-                outgoingSC.validateStep(1);
-            } else if (outgoingSC.getLastStepValidated() == 1 && areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+            // Proceed to step 1
+            deployGears();
+            outgoingSC.validateStep(1);
+        } else if (outgoingSC.getLastStepValidated() == 1 && areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
 
-                // Proceed to step 2
-                closeDoors();
-                outgoingSC.validateStep(2);
-            } else if (outgoingSC.getLastStepValidated() == 2 && areDoorsLocked(DoorStateEnum.CLOSED)) {
+            // Proceed to step 2
+            closeDoors();
+            outgoingSC.validateStep(2);
+        } else if (outgoingSC.getLastStepValidated() == 2 && areDoorsLocked(DoorStateEnum.CLOSED)) {
 
-                // End of outgoing sequence
-                outgoingSC.reset();
-            }
-        } else {
+            // End of outgoing sequence
+            outgoingSC.reset();
+        }
+    }
 
-            // Retracting sequence started
+    /**
+     * Proceed to the retracting sequence.
+     */
+    private void proceedRetractingSeq() {
 
-            if (retractingSC.getLastStepValidated() == 0 && areDoorsLocked(DoorStateEnum.OPEN)) {
+        //TODO: move the first step from process here.
 
-                // Proceed to step 1
-                retractGears();
-                retractingSC.validateStep(1);
-            } else if (retractingSC.getLastStepValidated() == 1 && areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+        if (retractingSC.getLastStepValidated() == 0 && areDoorsLocked(DoorStateEnum.OPEN)) {
 
-                // Proceed to step 2
-                closeDoors();
-                retractingSC.validateStep(2);
-            } else if (retractingSC.getLastStepValidated() == 2 && areDoorsLocked(DoorStateEnum.CLOSED)) {
+            // Proceed to step 1
+            retractGears();
+            retractingSC.validateStep(1);
+        } else if (retractingSC.getLastStepValidated() == 1 && areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
 
-                // End of retracting sequence
-                retractingSC.reset();
-            }
+            // Proceed to step 2
+            closeDoors();
+            retractingSC.validateStep(2);
+        } else if (retractingSC.getLastStepValidated() == 2 && areDoorsLocked(DoorStateEnum.CLOSED)) {
+
+            // End of retracting sequence
+            retractingSC.reset();
         }
     }
 
@@ -305,12 +348,13 @@ public class Software implements PropertyChangeListener {
 
         boolean value = true;
 
-        if (lockedState == DoorStateEnum.MOVING)
+        if (lockedState == DoorStateEnum.MOVING) {
             return false;
+        }
 
         for (Door door : doors) {
 
-            if (door.state != lockedState) {
+            if (!door.state.equals(lockedState)) {
                 value = false;
                 break;
             }
@@ -329,8 +373,7 @@ public class Software implements PropertyChangeListener {
 
         boolean value = true;
 
-        if (lockedPosition == LandingGearPositionEnum.MOVING)
-            return false;
+        if (lockedPosition == LandingGearPositionEnum.MOVING) { return false; }
 
         for (LandingGear gear : landingGears) {
 
@@ -420,12 +463,15 @@ public class Software implements PropertyChangeListener {
          */
         public int getLastStepValidated() {
 
-            if (step2)
+            if (step2) {
                 return 2;
-            if (step1)
+            }
+            if (step1) {
                 return 1;
-            if (step0)
+            }
+            if (step0) {
                 return 0;
+            }
 
             return -1;
         }
@@ -434,22 +480,17 @@ public class Software implements PropertyChangeListener {
          * Validate the given step.
          *
          * @param stepNbr step number. Range: 0 to 2 (included)
-         * @throws IndexOutOfBoundsException
          */
-        public void validateStep(int stepNbr) throws IndexOutOfBoundsException {
+        public void validateStep(int stepNbr) {
 
-            switch (stepNbr) {
-                case 0:
-                    step0 = true;
-                    return;
-                case 1:
-                    step1 = true;
-                    return;
-                case 2:
-                    step2 = true;
-                    return;
-                default:
-                    throw new IndexOutOfBoundsException();
+            if (stepNbr == 0) {
+                step0 = true;
+                return;
+            } else if (stepNbr == 1) {
+                step1 = true;
+                return;
+            } else if (stepNbr == 2) {
+                step2 = true;
             }
         }
     }

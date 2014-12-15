@@ -7,7 +7,7 @@ import java.beans.PropertyChangeListener;
 /**
  * Model class. Implements helpers to notify a view of it's properties change.
  */
-abstract public class Model {
+public class Model {
 
     /**
      * Used to notify the view/controller of a change of state.
