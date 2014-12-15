@@ -115,7 +115,7 @@ public class LandingGear extends Model {
             movingTime = (System.currentTimeMillis() - start);
         }
 
-        if (position != finalState) {
+        if (!position.equals(finalState)) {
 
             timer.schedule(new MovingTask(finalState, movingTime), INERTIA);
         }

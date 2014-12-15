@@ -373,7 +373,9 @@ public class Software implements PropertyChangeListener {
 
         boolean value = true;
 
-        if (lockedPosition == LandingGearPositionEnum.MOVING) { return false; }
+        if (lockedPosition == LandingGearPositionEnum.MOVING) {
+            return false;
+        }
 
         for (LandingGear gear : landingGears) {
 

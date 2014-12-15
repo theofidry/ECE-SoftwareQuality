@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 /**
  * Main class; Used to start the program.
  */
-public class Main {
+public final class Main {
 
     /**
      * Disallow instantiation of this class.
