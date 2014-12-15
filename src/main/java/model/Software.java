@@ -6,42 +6,104 @@ import model.enums.LightsColorEnum;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Timer;
 
 /**
  * Software system.
  */
 public class Software implements PropertyChangeListener {
 
+    //
+    // ATTRIBUTES
+    //
+    /**
+     * Landing gears doors, in order: front, right, left.
+     */
     private Door[] doors;
+
+    /**
+     * Handle of the planed, used to initiate the outgoing or retracting sequence.
+     */
     private Handle handle;
-    private Lights lights;
+
+    /**
+     * Landing gears, in order: front, right, left.
+     */
     private LandingGear[] landingGears;
 
+    /**
+     * Lights indicator.
+     */
+    private Lights lights;
+
+    /**
+     * Sequence checkers: used to control each steps of the outgoing and retracting sequence.
+     */
     private SequenceChecker outgoingSC = new SequenceChecker(),
             retractingSC = new SequenceChecker();
 
-    private Timer timer = new Timer();
-
+    /**
+     * If true mean the ongoing sequence is the outgoing sequence, otherwise is the retracting sequence.
+     */
     private boolean outgoing = true;
+
+    /**
+     * Case where the the system failed.
+     */
     private boolean failure;
 
+    //
+    // GETTERS
+    //
+
+    /**
+     * Get the plane landing gears doors. In order: front, right, left.
+     *
+     * @return landing gears doors
+     */
     public Door[] getDoors() {
         return doors;
     }
 
+    /**
+     * Get the plane handle.
+     *
+     * @return handle
+     */
     public Handle getHandle() {
         return handle;
     }
 
-    public Lights getLights() {
-        return lights;
-    }
-
+    /**
+     * Get the plane landing gears. In order: front, right, left.
+     *
+     * @return landing gears
+     */
     public LandingGear[] getLandingGears() {
         return landingGears;
     }
 
+    /**
+     * Get the plane lights.
+     *
+     * @return lights system
+     */
+    public Lights getLights() {
+        return lights;
+    }
+
+
+    //
+    // CONSTRUCTORS
+    //
+
+    /**
+     * Instantiate a software.
+     *
+     * @param doors        plane landing gears doors
+     * @param handle       plane handle
+     * @param lights       plane lights
+     * @param landingGears plane landing gears
+     */
     public Software(Door[] doors, Handle handle, Lights lights, LandingGear[] landingGears) {
 
         this.doors = doors;
@@ -59,6 +121,11 @@ public class Software implements PropertyChangeListener {
             gear.addPropertyChangeListener(this);
         }
     }
+
+
+    //
+    // METHODS
+    //
 
     /**
      * Actions the wheels and light according to the handle position and the current state fo the lights and wheels.
@@ -232,7 +299,7 @@ public class Software implements PropertyChangeListener {
      * Check if the doors are all in the given locked state.
      *
      * @param lockedState state the doors must be locked in
-     * @return
+     * @return true of all doors are locked, false otherwise
      */
     public boolean areDoorsLocked(DoorStateEnum lockedState) {
 
@@ -256,7 +323,7 @@ public class Software implements PropertyChangeListener {
      * Check if the gears are all in the given locked state.
      *
      * @param lockedPosition state the gears must be locked in
-     * @return
+     * @return true of all gears are locked, false otherwise
      */
     public boolean areGearsLocked(LandingGearPositionEnum lockedPosition) {
 
@@ -316,6 +383,9 @@ public class Software implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Helper used to watch each steps of the outgoing and retracting sequence.
+     */
     private class SequenceChecker {
 
         /**
@@ -334,6 +404,9 @@ public class Software implements PropertyChangeListener {
          */
         private boolean step2;
 
+        /**
+         * Reset all steps.
+         */
         public void reset() {
             step0 = false;
             step1 = false;
@@ -356,7 +429,6 @@ public class Software implements PropertyChangeListener {
 
             return -1;
         }
-
 
         /**
          * Validate the given step.

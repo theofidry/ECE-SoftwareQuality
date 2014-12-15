@@ -1,8 +1,6 @@
 package view;
 
-import model.Door;
 import model.Lights;
-import model.enums.DoorStateEnum;
 import model.enums.LightsColorEnum;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public class LightsPanelTest {
         ArrayList<Object[]> provider = new ArrayList<>();
         Lights lights = new Lights();
 
-        for (LightsColorEnum color: LightsColorEnum.values()) {
+        for (LightsColorEnum color : LightsColorEnum.values()) {
 
             lights.setColor(color);
             provider.add(new Object[] {lights});
@@ -53,8 +51,8 @@ public class LightsPanelTest {
         Assert.assertTrue(lightsPanel.getComponentCount() == 2);
 
         try {
-            label = (JLabel)lightsPanel.getComponent(0);
-            field = (TextField)lightsPanel.getComponent(1);
+            label = (JLabel) lightsPanel.getComponent(0);
+            field = (TextField) lightsPanel.getComponent(1);
 
             Assert.assertTrue(label.getText().equals("Lights"));
             if (lights.getColor() == LightsColorEnum.OFF)

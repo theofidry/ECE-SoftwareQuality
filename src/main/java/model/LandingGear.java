@@ -1,16 +1,14 @@
 package model;
 
-import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
 import model.enums.LandingGearPositionEnum;
 
-import java.beans.PropertyChangeListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * Aircraft landing gear.
  */
-public class LandingGear {
+public class LandingGear extends Model {
 
     //
     // ATTRIBUTES
@@ -30,11 +28,15 @@ public class LandingGear {
      */
     public LandingGearPositionEnum position = LandingGearPositionEnum.RETRACTED;
 
+    /**
+     * Field used to calculate how long a closing or opening sequence has been going.
+     */
     private long start;
 
+    /**
+     * Timer used to for delayed threading task.
+     */
     private Timer timer = new Timer();
-
-    private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(this);
 
 
     //
@@ -92,15 +94,6 @@ public class LandingGear {
     }
 
 
-    public void addPropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.addPropertyChangeListener(x);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.removePropertyChangeListener(x);
-    }
-
-
     //
     // HELPERS
     //
@@ -128,38 +121,71 @@ public class LandingGear {
         }
     }
 
+    /**
+     * Timer task used for making the door move.
+     */
     final private class MovingTask extends TimerTask {
 
-        LandingGearPositionEnum finalState;
+        /**
+         * Final position the gear will reach.
+         */
+        LandingGearPositionEnum finalPosition;
+
+        /**
+         * Time the gear will be moving before reaching its final position.
+         */
         private long movingTime;
 
-        public MovingTask(LandingGearPositionEnum finalState, long movingTime) {
-            this.finalState = finalState;
+        /**
+         * Instantiate a moving task, used to make the gear moving.
+         *
+         * @param finalPosition final position the gear will reach
+         * @param movingTime time the gear will be moving before reaching its final state
+         */
+        public MovingTask(LandingGearPositionEnum finalPosition, long movingTime) {
+            this.finalPosition = finalPosition;
             this.movingTime = movingTime;
         }
 
+        /**
+         * Makes the gear moving.
+         */
         @Override
         public void run() {
 
             start = System.currentTimeMillis();
             position = LandingGearPositionEnum.MOVING;
             changeSupport.firePropertyChange("position", null, position);
-            timer.schedule(new LockingTask(finalState), movingTime);
+            timer.schedule(new LockingTask(finalPosition), movingTime);
         }
     }
 
+    /**
+     * Timer task used for locking the gear once it's position state has been reached.
+     */
     final private class LockingTask extends TimerTask {
 
-        LandingGearPositionEnum finalState;
+        /**
+         * Final position the gear will reach.
+         */
+        LandingGearPositionEnum finalPosition;
 
-        public LockingTask(LandingGearPositionEnum finalState) {
-            this.finalState = finalState;
+        /**
+         * Instantiate a locking task, used to lock the gear once its final position has been reached.
+         *
+         * @param finalPosition position in which the gear must be to be locked
+         */
+        public LockingTask(LandingGearPositionEnum finalPosition) {
+            this.finalPosition = finalPosition;
         }
 
+        /**
+         * Locks the gear.
+         */
         @Override
         public void run() {
 
-            position = finalState;
+            position = finalPosition;
             changeSupport.firePropertyChange("position", null, position);
         }
     }

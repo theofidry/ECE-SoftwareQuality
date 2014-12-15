@@ -2,31 +2,39 @@ package view;
 
 
 import model.Handle;
-import model.Software;
-import model.enums.DoorStateEnum;
 
-import javax.swing.*;
-import javax.swing.Timer;
-import javax.swing.event.ChangeEvent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
 
 public class HandlePanel extends JPanel implements PropertyChangeListener {
 
+    /**
+     * Panel's model.
+     */
     private Handle handle;
+
+    /**
+     * Panel's label.
+     */
     private JLabel label = new JLabel();
+
+    /**
+     * Panel's slider, representing the handle.
+     */
     private JSlider slider = new JSlider();
 
     /**
-     * Default constructor.
+     * Instantiate a handle panel.
+     *
+     * @param handle   model to which the view is bound
+     * @param listener listener in which the actions for the slider are implemented
      */
-    public HandlePanel() {
-        super();
-    }
-
     public HandlePanel(Handle handle, ChangeListener listener) {
 
         this.handle = handle;
@@ -54,15 +62,20 @@ public class HandlePanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Updates the view according to the model value.
      *
-     * @param evt
+     * @param evt event triggering the update
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         modelToView(handle);
     }
 
+    /**
+     * Helper used to update the new model value to the view.
+     *
+     * @param handle value of the handle
+     */
     private void modelToView(Handle handle) {
 
         if (handle.isUp())

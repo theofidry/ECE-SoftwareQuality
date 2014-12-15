@@ -1,16 +1,14 @@
 package model;
 
-import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
 import model.enums.DoorStateEnum;
 
-import java.beans.PropertyChangeListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * Plane landing gears doors.
  */
-public class Door {
+public class Door extends Model {
 
     //
     // ATTRIBUTES
@@ -30,11 +28,15 @@ public class Door {
      */
     public DoorStateEnum state = DoorStateEnum.CLOSED;
 
+    /**
+     * Field used to calculate how long a closing or opening sequence has been going.
+     */
     private long start;
 
+    /**
+     * Timer used to for delayed threading task.
+     */
     private Timer timer = new Timer();
-
-    private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(this);
 
 
     //
@@ -91,15 +93,6 @@ public class Door {
         moves(DoorStateEnum.OPEN);
     }
 
-    
-    public void addPropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.addPropertyChangeListener(x);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.removePropertyChangeListener(x);
-    }
-
 
     //
     // HELPERS
@@ -128,16 +121,35 @@ public class Door {
         }
     }
 
+    /**
+     * Timer task used for making the door move.
+     */
     final private class MovingTask extends TimerTask {
 
-        DoorStateEnum finalState;
+        /**
+         * Final state the door will reach.
+         */
+        private DoorStateEnum finalState;
+
+        /**
+         * Time the door will be moving before reaching its final state.
+         */
         private long movingTime;
 
+        /**
+         * Instantiate a moving task, used to make the door moving.
+         *
+         * @param finalState final state the door will reach
+         * @param movingTime time the door will be moving before reaching its final state
+         */
         public MovingTask(DoorStateEnum finalState, long movingTime) {
             this.finalState = finalState;
             this.movingTime = movingTime;
         }
 
+        /**
+         * Makes the door moving.
+         */
         @Override
         public void run() {
 
@@ -148,14 +160,28 @@ public class Door {
         }
     }
 
+    /**
+     * Timer task used for locking the door once it's final state has been reached.
+     */
     final private class LockingTask extends TimerTask {
 
+        /**
+         * Final state the door will reach.
+         */
         DoorStateEnum finalState;
 
+        /**
+         * Instantiate a locking task, used to lock the door once its final state has been reached.
+         *
+         * @param finalState state in which the door must be to be locked
+         */
         public LockingTask(DoorStateEnum finalState) {
             this.finalState = finalState;
         }
 
+        /**
+         * Locks the door.
+         */
         @Override
         public void run() {
 

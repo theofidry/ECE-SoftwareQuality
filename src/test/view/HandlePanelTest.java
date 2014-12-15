@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import javax.swing.JSlider;
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -25,7 +25,7 @@ public class HandlePanelTest extends TestCase {
 
         handlePanel = pilotInterface.getHandlePanel();
 
-        for (Component component: handlePanel.getComponents()) {
+        for (Component component : handlePanel.getComponents()) {
 
             if (component instanceof JSlider)
                 slider = (JSlider) component;

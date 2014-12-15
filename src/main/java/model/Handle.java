@@ -1,15 +1,9 @@
 package model;
 
-import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
-
-import java.beans.PropertyChangeListener;
-
 /**
  * Landing gear handle.
  */
-public class Handle {
-
-    private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(this);
+public class Handle extends Model {
 
     /**
      * Position of the handle. If false the handle is down, if true is up.
@@ -37,13 +31,5 @@ public class Handle {
     public void pushDown() {
         position = false;
         changeSupport.firePropertyChange("position", null, position);
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.addPropertyChangeListener(x);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.removePropertyChangeListener(x);
     }
 }

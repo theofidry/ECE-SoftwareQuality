@@ -1,6 +1,5 @@
 package controller;
 
-
 import model.Plane;
 import view.PilotInterface;
 
@@ -18,6 +17,7 @@ public class Main {
      */
     public static void main(String[] args) {
 
+        // Instantiate a frame and add a PilotInterface in it
         JFrame frame = new JFrame("Pilot Interface");
         frame.setContentPane(new PilotInterface(new Plane()));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -16,16 +16,20 @@ import java.beans.PropertyChangeListener;
  */
 public class DoorPanel extends JPanel implements PropertyChangeListener {
 
+    /**
+     * Door model.
+     */
     private Door door;
-    private JLabel label = new JLabel();
-    private TextField field = new TextField();
 
     /**
-     * Default constructor.
+     * Panel's label.
      */
-    public DoorPanel() {
-        super();
-    }
+    private JLabel label = new JLabel();
+
+    /**
+     * Panel's text field, used to display the door state.
+     */
+    private TextField field = new TextField();
 
     /**
      * Instantiate a door panel.
@@ -61,13 +65,11 @@ public class DoorPanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Updates the view according to the model value.
      *
-     * @param evt
+     * @param evt event triggering the update
      */
     public void propertyChange(PropertyChangeEvent evt) {
-
-        //switch on new value
         modelToView((DoorStateEnum) evt.getNewValue());
     }
 

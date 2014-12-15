@@ -1,8 +1,6 @@
 package view;
 
-import model.Door;
 import model.LandingGear;
-import model.enums.DoorStateEnum;
 import model.enums.LandingGearPositionEnum;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public class LandingGearPanelTest {
         ArrayList<Object[]> provider = new ArrayList<>();
         LandingGear gear = new LandingGear();
 
-        for (LandingGearPositionEnum position: LandingGearPositionEnum.values()) {
+        for (LandingGearPositionEnum position : LandingGearPositionEnum.values()) {
 
             gear.position = position;
             provider.add(new Object[] {gear});
@@ -53,8 +51,8 @@ public class LandingGearPanelTest {
         Assert.assertTrue(gearPanel.getComponentCount() == 2);
 
         try {
-            label = (JLabel)gearPanel.getComponent(0);
-            field = (TextField)gearPanel.getComponent(1);
+            label = (JLabel) gearPanel.getComponent(0);
+            field = (TextField) gearPanel.getComponent(1);
 
             Assert.assertTrue(label.getText().equals("My gear"));
             if (gear.isDeployed())
@@ -79,8 +77,8 @@ public class LandingGearPanelTest {
         Assert.assertTrue(gearPanel.getComponentCount() == 2);
 
         try {
-            label = (JLabel)gearPanel.getComponent(0);
-            field = (TextField)gearPanel.getComponent(1);
+            label = (JLabel) gearPanel.getComponent(0);
+            field = (TextField) gearPanel.getComponent(1);
 
             Assert.assertTrue(label.getText().equals("Gear"));
             if (gear.isDeployed())

@@ -1,7 +1,3 @@
-/*
- * Created by JFormDesigner on Sun Dec 07 15:02:43 CET 2014
- */
-
 package view;
 
 import model.Plane;
@@ -20,7 +16,7 @@ import java.awt.GridLayout;
 import java.util.TimerTask;
 
 /**
- * @author unknown
+ * Plane pilot interface.
  */
 public class PilotInterface extends JPanel {
 
@@ -28,11 +24,25 @@ public class PilotInterface extends JPanel {
      * Inertia of the handle in ms (simulation of the handle -> switch).
      */
     public static final int HANDLE_INERTIA = 1000;
+
+    /**
+     * Timer used to make threaded actions with delays.
+     */
     private java.util.Timer timer = new java.util.Timer();
 
-
+    /**
+     * Panel's model.
+     */
     Plane plane;
 
+    /**
+     * Get the handle panel.
+     *
+     * @return handle panel
+     */
+    public HandlePanel getHandlePanel() {
+        return (HandlePanel) handleContainer.getComponent(0);
+    }
 
     /**
      * Plane pilot interface.
@@ -74,18 +84,6 @@ public class PilotInterface extends JPanel {
 
     }
 
-    public JPanel getDoorsPanel() {
-        return doorsContainer;
-    }
-
-    public JPanel getLandingGearsPanel() {
-        return landingGearsContainer;
-    }
-
-    public HandlePanel getHandlePanel() {
-        return (HandlePanel) handleContainer.getComponent(0);
-    }
-
     /**
      * When the slider changes of value, process the software.
      */
@@ -95,25 +93,35 @@ public class PilotInterface extends JPanel {
         public void stateChanged(ChangeEvent evt) {
 
             JSlider source = (JSlider) evt.getSource();
+            TimerTask task;
 
             if (!source.getValueIsAdjusting()) {
 
                 if (source.getValue() == 1) {
-                    plane.getHandle().pushUp();
+                    task = new TimerTask() {
+                        @Override
+                        public void run() {
+                            plane.getHandle().pushUp();
+                        }
+                    };
                 } else {
-                    plane.getHandle().pushDown();
+                    task = new TimerTask() {
+                        @Override
+                        public void run() {
+                            plane.getHandle().pushDown();
+                        }
+                    };
                 }
 
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        plane.getSoftware().process();
-                    }
-                }, HANDLE_INERTIA);
+                // Change the plane's handle with a little delay to simulate the time of transmission
+                timer.schedule(task, HANDLE_INERTIA);
             }
         }
     }
 
+    /**
+     * JForm designer initializer.
+     */
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - ThÃ©o Fidry
@@ -141,10 +149,15 @@ public class PilotInterface extends JPanel {
 
         // JFormDesigner evaluation mark
         setBorder(new javax.swing.border.CompoundBorder(
-            new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                java.awt.Color.red), getBorder())); addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
+                new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
+                        "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+                        javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
+                        java.awt.Color.red), getBorder()));
+        addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent e) {
+                if ("border".equals(e.getPropertyName())) throw new RuntimeException();
+            }
+        });
 
         setLayout(new FlowLayout());
 

@@ -1,11 +1,12 @@
 package view;
 
 import model.Lights;
-import model.enums.DoorStateEnum;
 import model.enums.LightsColorEnum;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.GridLayout;
+import java.awt.TextField;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -14,22 +15,25 @@ import java.beans.PropertyChangeListener;
  */
 public class LightsPanel extends JPanel implements PropertyChangeListener {
 
+    /**
+     * Panel's model.
+     */
     private Lights lights;
-    private JLabel label = new JLabel();
-    private TextField field = new TextField();
 
     /**
-     * Default constructor.
+     * Panel's label.
      */
-    public LightsPanel() {
-        super();
-    }
+    private JLabel label = new JLabel();
+
+    /**
+     * Panel's text field.
+     */
+    private TextField field = new TextField();
 
     /**
      * Instantiate a door panel.
      *
-     * @param door model to which the view is bound
-     * @param name label content, if empty is set to default value
+     * @param lights model to which the view is bound
      */
     public LightsPanel(Lights lights) {
 
@@ -55,20 +59,18 @@ public class LightsPanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Updates the view according to the model value.
      *
-     * @param evt
+     * @param evt event triggering the update
      */
     public void propertyChange(PropertyChangeEvent evt) {
-
-        //switch on new value
         modelToView((LightsColorEnum) evt.getNewValue());
     }
 
     /**
      * Helper used to update the new model value to the view.
      *
-     * @param state state of the door
+     * @param color state of the door
      */
     private void modelToView(LightsColorEnum color) {
 

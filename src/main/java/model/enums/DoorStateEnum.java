@@ -2,7 +2,7 @@ package model.enums;
 
 /**
  * Door states.
- *
+ * <p/>
  * OPEN: is locked open
  * CLOSED: is locked closed
  * MOVING: is being opened or closed

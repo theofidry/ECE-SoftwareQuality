@@ -1,13 +1,13 @@
 package view;
 
-import model.Door;
 import model.LandingGear;
-import model.enums.DoorStateEnum;
 import model.enums.LandingGearPositionEnum;
-import org.jdesktop.swingx.VerticalLayout;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.GridLayout;
+import java.awt.TextField;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -16,16 +16,20 @@ import java.beans.PropertyChangeListener;
  */
 public class LandingGearPanel extends JPanel implements PropertyChangeListener {
 
+    /**
+     * Panel's model.
+     */
     private LandingGear gear;
-    private JLabel label = new JLabel();
-    private TextField field = new TextField();
 
     /**
-     * Default constructor.
+     * Panel's view.
      */
-    public LandingGearPanel() {
-        super();
-    }
+    private JLabel label = new JLabel();
+
+    /**
+     * Panel's text field, used to display the gear position.
+     */
+    private TextField field = new TextField();
 
     /**
      * Instantiate a gear panel.
@@ -61,13 +65,11 @@ public class LandingGearPanel extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Updates the view according to the model value.
      *
-     * @param evt
+     * @param evt event triggering the update
      */
     public void propertyChange(PropertyChangeEvent evt) {
-
-        //switch on new value
         modelToView((LandingGearPositionEnum) evt.getNewValue());
     }
 

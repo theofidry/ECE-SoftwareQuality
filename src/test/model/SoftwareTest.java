@@ -28,7 +28,7 @@ public class SoftwareTest extends MultithreadedTestCase {
             door = new Door();
         }
 
-        for (LandingGear gear: gears) {
+        for (LandingGear gear : gears) {
             gear = new LandingGear();
         }
 
@@ -327,6 +327,7 @@ public class SoftwareTest extends MultithreadedTestCase {
     public void testR61() {
         //TODO
     }
+
     /**
      * R62:  If one of the three doors is still seen locked in the open position more than 7 seconds after stimulating
      * the closure electro-valve, then the boolean output normal mode is set to false.
@@ -335,6 +336,7 @@ public class SoftwareTest extends MultithreadedTestCase {
     public void testR62() {
         //TODO
     }
+
     /**
      * R63: If one of the three gears is still seen locked in the down position more than 7 seconds after stimulating the retraction electro-valve, then the boolean output normal mode is set to false.
      */
@@ -342,6 +344,7 @@ public class SoftwareTest extends MultithreadedTestCase {
     public void test63() {
         //TODO
     }
+
     /**
      * R64: If one of the three gears is still seen locked in the up position more than 7 seconds after stimulating the outgoing electro-valve, then the boolean output normal mode is set to false.
      */
@@ -349,6 +352,7 @@ public class SoftwareTest extends MultithreadedTestCase {
     public void testR64() {
         //TODO
     }
+
     /**
      * R71: If one of the three doors is not seen locked in the open position more than 7 seconds after stimulating the opening electro-valve, then the boolean output normal mode is set to false.
      */

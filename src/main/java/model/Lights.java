@@ -1,36 +1,33 @@
 package model;
 
-import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
 import model.enums.LightsColorEnum;
-
-import java.beans.PropertyChangeListener;
 
 /**
  * Lights system
  */
-public class Lights {
+public class Lights extends Model {
 
     /**
-     * Color of the lights system.
+     * Color of the lights.
      */
     private LightsColorEnum color = LightsColorEnum.OFF;
 
-    private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(this);
-
+    /**
+     * Gets this lights color.
+     *
+     * @return lights color
+     */
     public LightsColorEnum getColor() {
         return color;
     }
 
+    /**
+     * Sets the lights color.
+     *
+     * @param color color which will be applied
+     */
     public void setColor(LightsColorEnum color) {
         this.color = color;
         changeSupport.firePropertyChange("color", null, color);
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.addPropertyChangeListener(x);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener x) {
-        changeSupport.removePropertyChangeListener(x);
     }
 }

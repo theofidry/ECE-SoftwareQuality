@@ -4,12 +4,11 @@ import model.Door;
 import model.enums.DoorStateEnum;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import javax.swing.*;
-import java.awt.TextField;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 

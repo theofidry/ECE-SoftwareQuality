@@ -3,11 +3,11 @@ package model.enums;
 
 /**
  * Colors for the light functions.
- *
+ * <p/>
  * GREEN:  landed
  * ORANGE: in process
- * RED:    failure, a problem occured
- * OFF:    no ligth
+ * RED:    failure, a problem occurred
+ * OFF:    no light
  */
 public enum LightsColorEnum {
 
