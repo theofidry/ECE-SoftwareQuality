@@ -2,6 +2,7 @@ package model;
 
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
+import exceptions.IllegalActionException;
 import model.enums.DoorStateEnum;
 import model.enums.LandingGearPositionEnum;
 import org.junit.BeforeClass;
@@ -17,6 +18,9 @@ public class SoftwareTest extends MultithreadedTestCase {
      */
     public static final int ERROR_MARGIN = 100;
 
+    public static final long TPS_CSTR1 = 15000l;
+
+    public static Plane plane;
     public static Door[] doors = {new Door(), new Door(), new Door()};
     public static LandingGear[] gears = {new LandingGear(), new LandingGear(), new LandingGear()};
     public static Software software;
@@ -24,15 +28,11 @@ public class SoftwareTest extends MultithreadedTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        for (Door door : doors) {
-            door = new Door();
-        }
+        plane = new Plane();
 
-        for (LandingGear gear : gears) {
-            gear = new LandingGear();
-        }
-
-        software = new Software(doors, new Handle(), new Lights(), gears);
+        doors = plane.getDoors();
+        gears = plane.getLandingGears();
+        software = plane.getSoftware();
     }
 
     @Test
@@ -259,40 +259,103 @@ public class SoftwareTest extends MultithreadedTestCase {
      * R11: handle pushed down and stay down, all gears deployed and doors closed within 15s.
      */
     @Test
-    public void testR11() {
-        //TODO
+    public void testR11() throws Exception {
+
+        // Worst case scenario: gears retracted and doors closed
+        setUp();
+        if (!plane.getHandle().isUp()) {
+            plane.getHandle().pushUp();
+            Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
+        }
+        assertTrue(plane.getHandle().isUp());
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.CLOSED));
+
+        plane.getHandle().pushDown();
+        Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED)
+                && plane.getSoftware().areDoorsLocked(DoorStateEnum.CLOSED));
     }
 
     /**
      * R12: handle pushed up and stay yup, all gears retracted and doors closed within 15s.
      */
     @Test
-    public void testR12() {
-        //TODO
+    public void testR12() throws Exception {
+
+        // Worst case scenario: gears deployed and doors closed
+        setUp();
+        if (plane.getHandle().isUp()) {
+            plane.getHandle().pushDown();
+            Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
+        }
+        assertFalse(plane.getHandle().isUp());
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.CLOSED));
+
+        try {
+            plane.getHandle().pushUp();
+        } catch (IllegalActionException e) {
+            // do nothing
+        } finally {
+            Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
+            assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED) && plane.getSoftware()
+                    .areDoorsLocked(DoorStateEnum.CLOSED));
+        }
     }
 
     /**
      * R21: when handle is down, cannot retract gears.
      */
     @Test
-    public void testR21() {
-        //TODO
+    public void testR21() throws Exception {
+
+        setUp();
+        if (plane.getHandle().isUp()) {
+            plane.getHandle().pushDown();
+            Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
+        }
+        assertFalse(plane.getHandle().isUp());
+
+        try {
+            plane.getSoftware().retractGears();
+            fail();
+        } catch (IllegalActionException e) {
+            // is the expected result
+        }
     }
 
     /**
-     * R22: handle pushed down and stay down, all gears deployed and doors closed within 15s.
+     * R31: cannot stimulate gears to deploy/retract when doors are not locked open.
      */
     @Test
-    public void testR22() {
-        //TODO
-    }
+    public void testR31() throws Exception {
 
-    /**
-     * R31: cannot stimulate gears to deploy/retract when doors are opened.
-     */
-    @Test
-    public void testR31() {
-        //TODO
+        // Worst case scenario: gears deployed and doors closed
+        setUp();
+        if (plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN)) {
+            plane.getDoors()[0].state = DoorStateEnum.CLOSED;
+        }
+        assertFalse(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+
+        // Stimulate deployment
+        // Case 1: already deployed
+        // Case 2: are deploying
+        // Case 3: are retracted
+        try {
+            plane.getSoftware().deployGears();
+        } catch (IllegalActionException e) {
+            // do nothing
+        } finally {
+            Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
+            assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED) && plane.getSoftware()
+                    .areDoorsLocked(DoorStateEnum.CLOSED));
+        }
+
+        // Stimulate retracting
+        // Case 1: already deployed
+        // Case 2: are deploying
+        // Case 3: are retracted
     }
 
     /**

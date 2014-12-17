@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.IllegalActionException;
 import model.enums.DoorStateEnum;
 import model.enums.LandingGearPositionEnum;
 import model.enums.LightsColorEnum;
@@ -178,37 +179,41 @@ public class Software implements PropertyChangeListener {
      */
     private void retractWhenOutgoing() {
 
-        switch (outgoingSC.getLastStepValidated()) {
+        try {
+            switch (outgoingSC.getLastStepValidated()) {
 
-            case 0:
-                // opening of the doors already requested
-                retractingSC.validateStep(0);
-                break;
-            case 1:
-                // deploying of the gears has been requested
-                if (areDoorsLocked(DoorStateEnum.OPEN)) {
-                    retractGears();
-                    retractingSC.validateStep(1);
-                } else {
-                    throw new IllegalStateException("Expected doors opened");
-                }
-                break;
-            case 2:
-                // closing of the doors already requested
-                if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
-
-                    openDoors();
+                case 0:
+                    // opening of the doors already requested
                     retractingSC.validateStep(0);
-                } else {
-                    throw new IllegalStateException("Expected gears deployed");
-                }
-                break;
+                    break;
+                case 1:
+                    // deploying of the gears has been requested
+                    if (areDoorsLocked(DoorStateEnum.OPEN)) {
+                        retractGears();
+                        retractingSC.validateStep(1);
+                    } else {
+                        throw new IllegalStateException("Expected doors opened");
+                    }
+                    break;
+                case 2:
+                    // closing of the doors already requested
+                    if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
 
-            default:
-                throw new IllegalStateException("Unexpected situation");
+                        openDoors();
+                        retractingSC.validateStep(0);
+                    } else {
+                        throw new IllegalStateException("Expected gears deployed");
+                    }
+                    break;
+
+                default:
+                    throw new IllegalStateException("Unexpected situation");
+            }
+
+            outgoingSC.reset();
+        } catch (IllegalActionException e) {
+            failure = true;
         }
-
-        outgoingSC.reset();
     }
 
     /**
@@ -410,21 +415,32 @@ public class Software implements PropertyChangeListener {
 
     /**
      * Open all the landing gears.
+     *
+     * @throws IllegalActionException
      */
-    public void deployGears() {
+    public void deployGears() throws IllegalActionException {
 
-        for (LandingGear gear : landingGears) {
-            gear.deploy();
+        if (areDoorsLocked(DoorStateEnum.OPEN)) {
+            for (LandingGear gear : landingGears) {
+                gear.deploy();
+            }
+        } else {
+            throw new IllegalActionException("Cannot deploy gears when doors are not locked open");
         }
     }
 
     /**
      * Close all the doors.
      */
-    public void retractGears() {
+    public void retractGears() throws IllegalActionException {
 
-        for (LandingGear gear : landingGears) {
-            gear.retract();
+        if (handle.isUp()) {
+
+            for (LandingGear gear : landingGears) {
+                gear.retract();
+            }
+        } else {
+            throw new IllegalActionException("Cannot retract gears when handle down.");
         }
     }
 
