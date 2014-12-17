@@ -27,8 +27,7 @@ public class HandlePanelTest extends TestCase {
 
         for (Component component : handlePanel.getComponents()) {
 
-            if (component instanceof JSlider)
-                slider = (JSlider) component;
+            if (component instanceof JSlider) { slider = (JSlider) component; }
         }
     }
 
@@ -46,8 +45,11 @@ public class HandlePanelTest extends TestCase {
     @Test
     public void testModelToViewBinding() throws Exception {
 
-        plane.getHandle().pushUp();
-        Assert.assertTrue(slider.getValue() == 1);
+        try {
+            plane.getHandle().pushUp();
+        } catch (IllegalStateException e) {
+            Assert.assertTrue(slider.getValue() == 1);
+        }
 
         plane.getHandle().pushDown();
         Assert.assertTrue(slider.getValue() == 0);
@@ -59,13 +61,19 @@ public class HandlePanelTest extends TestCase {
     @Test
     public void testViewToModelBinding() throws Exception {
 
-        slider.setValue(0);
-        Assert.assertFalse(plane.getHandle().isUp());
+        try {
+            slider.setValue(0);
+        } catch (IllegalStateException e) {
+            Assert.assertFalse(plane.getHandle().isUp());
+        }
 
         slider.setValue(1);
         Assert.assertTrue(plane.getHandle().isUp());
 
-        slider.setValue(0);
-        Assert.assertFalse(plane.getHandle().isUp());
+        try {
+            slider.setValue(0);
+        } catch (IllegalStateException e) {
+            Assert.assertFalse(plane.getHandle().isUp());
+        }
     }
 }
