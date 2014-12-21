@@ -314,7 +314,9 @@ public class Software implements PropertyChangeListener {
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
-        setLights(evt);
+        if (failure || evt.getSource() instanceof LandingGear) {
+            setLights(evt);
+        }
 
         if (evt.getSource() instanceof Handle) {
 

@@ -1,12 +1,9 @@
 package model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 /**
  * Plane.
  */
-public class Plane implements PropertyChangeListener {
+public class Plane {
 
 
     //
@@ -98,16 +95,5 @@ public class Plane implements PropertyChangeListener {
     public Plane() {
 
         software = new Software(doors, handle, lights, landingGears);
-//        handle.addPropertyChangeListener(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param evt
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        software.process();
     }
 }
