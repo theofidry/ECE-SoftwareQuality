@@ -38,7 +38,6 @@ gradle assemble # just build the Java classes
 You can the find the jars in `build/libs`.
 
 You can also start the application right away by doing:
-
 ```bash
 gradle run
 ```
