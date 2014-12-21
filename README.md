@@ -3,7 +3,7 @@ SOFTWARE QUALITY
 
 ECE Project for Software Quality class: program a simple landing gear system (cf. [Case study](https://github.com/theofidry/Software-Quality/blob/master/Case%20study.pdf)).
 
-Check this page for the [build results](http://theofidry.github.io/SoftwareQuality-ECEProject) (includes tests, javadoc, artefacts...).
+Check [this page](http://theofidry.github.io/SoftwareQuality-ECEProject) for the build results (includes tests, javadoc, artefacts...).
 
 Travis CI build:
 
