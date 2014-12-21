@@ -98,7 +98,7 @@ public class Plane implements PropertyChangeListener {
     public Plane() {
 
         software = new Software(doors, handle, lights, landingGears);
-        handle.addPropertyChangeListener(this);
+//        handle.addPropertyChangeListener(this);
     }
 
     /**

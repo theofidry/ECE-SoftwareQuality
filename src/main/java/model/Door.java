@@ -21,7 +21,7 @@ public class Door extends Model {
     /**
      * Time a door takes to fully open or close.
      */
-    public static final int MOVING_TIME = 2000;
+    public static final int MOVING_TIME = 2500;
 
     /**
      * State of the door.

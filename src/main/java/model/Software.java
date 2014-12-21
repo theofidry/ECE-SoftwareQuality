@@ -112,6 +112,9 @@ public class Software implements PropertyChangeListener {
         this.lights = lights;
         this.landingGears = landingGears;
 
+        // Add listener to handle
+        handle.addPropertyChangeListener(this);
+
         // Add listener to each door
         for (Door door : doors) {
             door.addPropertyChangeListener(this);
@@ -183,31 +186,57 @@ public class Software implements PropertyChangeListener {
             switch (outgoingSC.getLastStepValidated()) {
 
                 case 0:
-                    // opening of the doors already requested
-                    retractingSC.validateStep(0);
-                    break;
-                case 1:
-                    // deploying of the gears has been requested
-                    if (areDoorsLocked(DoorStateEnum.OPEN)) {
-                        retractGears();
-                        retractingSC.validateStep(1);
+                    // expect doors opening and gears retracted
+                    // stimulate doors closing and finish retracting sequence
+
+                    // check gears state because stimulate the doors closing whatever is their state
+                    if (!areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+                        throw new IllegalStateException("Expected landing gears retracted.");
                     } else {
-                        throw new IllegalStateException("Expected doors opened");
+
+                        // validate skipped steps of the retracting sequence
+                        retractingSC.validateStep(0);
+                        retractingSC.validateStep(1);
+
+                        // initiate the last step of the retracting sequence
+                        closeDoors();
+                        retractingSC.validateStep(2);
                     }
                     break;
+
+                case 1:
+                    // deploying of the gears has been requested
+                    // stimulate gears retracting
+
+                    // check the doors state which must be open
+                    if (!areDoorsLocked(DoorStateEnum.OPEN)) {
+                        throw new IllegalStateException("Expected doors opened.");
+                    } else {
+
+                        // validate skipped steps of the retracting sequence
+                        retractingSC.validateStep(0);
+
+                        // initiate the second step of the retracting sequence
+                        retractGears();
+                        retractingSC.validateStep(1);
+                    }
+                    break;
+
                 case 2:
                     // closing of the doors already requested
-                    if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+                    // stimulate doors opening and initiate retracting sequence
 
+                    // check the gears state which must already deployed
+                    if (!areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+                        throw new IllegalStateException("Expected gears deployed.");
+                    } else {
                         openDoors();
                         retractingSC.validateStep(0);
-                    } else {
-                        throw new IllegalStateException("Expected gears deployed");
                     }
                     break;
 
                 default:
-                    throw new IllegalStateException("Unexpected situation");
+                    throw new IllegalStateException("Unexpected situation.");
             }
 
             outgoingSC.reset();
@@ -224,31 +253,57 @@ public class Software implements PropertyChangeListener {
         switch (retractingSC.getLastStepValidated()) {
 
             case 0:
-                // opening of the doors already requested
-                outgoingSC.validateStep(0);
-                break;
-            case 1:
-                // retracting of the gears has been requested
-                if (areDoorsLocked(DoorStateEnum.OPEN)) {
-                    deployGears();
-                    outgoingSC.validateStep(1);
+                // expect doors opening and gears deployed
+                // stimulate doors closing and finish outgoing sequence
+
+                // check gears state because stimulate the doors closing whatever is their state
+                if (!areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+                    throw new IllegalStateException("Expected landing gears retracted.");
                 } else {
-                    throw new IllegalStateException("Expected doors opened");
+
+                    // validate skipped steps of the outgoing sequence
+                    outgoingSC.validateStep(0);
+                    outgoingSC.validateStep(1);
+
+                    // initiate the last step of the outgoing sequence
+                    closeDoors();
+                    outgoingSC.validateStep(2);
                 }
                 break;
+
+            case 1:
+                // retracting of the gears has been requested
+                // stimulate gears deployment
+
+                // check the doors state which must be open
+                if (!areDoorsLocked(DoorStateEnum.OPEN)) {
+                    throw new IllegalStateException("Expected doors opened.");
+                } else {
+
+                    // validate skipped steps of the outgoing sequence
+                    outgoingSC.validateStep(0);
+
+                    // initiate the second step of the outgoing sequence
+                    retractGears();
+                    outgoingSC.validateStep(1);
+                }
+                break;
+
             case 2:
                 // closing of the doors already requested
-                if (areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+                // stimulate doors opening and initiate deployment sequence
 
+                // check the gears state which must already retracted
+                if (!areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+                    throw new IllegalStateException("Expected gears retracted.");
+                } else {
                     openDoors();
                     outgoingSC.validateStep(0);
-                } else {
-                    throw new IllegalStateException("Expected gears retracted");
                 }
                 break;
 
             default:
-                throw new IllegalStateException("Unexpected situation");
+                throw new IllegalStateException("Unexpected situation.");
         }
     }
 
@@ -261,15 +316,22 @@ public class Software implements PropertyChangeListener {
 
         setLights(evt);
 
-        // Proceed to outgoing/retracting sequence
-        if (outgoing) {
+        if (evt.getSource() instanceof Handle) {
 
-            // Outgoing sequence started
-            proceedOutoingSeq();
+            // Case where the source is the Handle pass it to the process method
+            process();
         } else {
 
-            // Retracting sequence started
-            proceedRetractingSeq();
+            // Proceed to outgoing/retracting sequence
+            if (outgoing) {
+
+                // Outgoing sequence started
+                proceedOutoingSeq();
+            } else {
+
+                // Retracting sequence started
+                proceedRetractingSeq();
+            }
         }
     }
 
@@ -286,9 +348,9 @@ public class Software implements PropertyChangeListener {
 
             // Case where there is no failure and the event is triggered by a gear
             if (areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
-                lights.setColor(LightsColorEnum.GREEN);
-            } else if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
                 lights.setColor(LightsColorEnum.OFF);
+            } else if (areGearsLocked(LandingGearPositionEnum.DEPLOYED)) {
+                lights.setColor(LightsColorEnum.GREEN);
             } else {
                 lights.setColor(LightsColorEnum.ORANGE);
             }
