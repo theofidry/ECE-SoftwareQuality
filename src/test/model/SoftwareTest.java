@@ -5,6 +5,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import exceptions.IllegalActionException;
 import model.enums.DoorStateEnum;
 import model.enums.LandingGearPositionEnum;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,241 +19,139 @@ public class SoftwareTest extends MultithreadedTestCase {
      */
     public static final int ERROR_MARGIN = 100;
 
-    public static final long TPS_CSTR1 = 15000l;
-
-    public static Plane plane;
-    public static Door[] doors = {new Door(), new Door(), new Door()};
-    public static LandingGear[] gears = {new LandingGear(), new LandingGear(), new LandingGear()};
-    public static Software software;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-
-        plane = new Plane();
-
-        doors = plane.getDoors();
-        gears = plane.getLandingGears();
-        software = plane.getSoftware();
-    }
+    /**
+     * Time for R1X
+     */
+    public static final long TPS_CSTR1 = 15000L;
 
     @Test
     public void testCloseDoorsMethod_withAllDoorsOpen_expectAllClosed() throws Exception {
 
-        for (Door door : doors) {
+        Plane plane = new Plane();
+        for (Door door : plane.getDoors()) {
             door.state = DoorStateEnum.OPEN;
         }
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.closeDoors();
+        plane.getSoftware().closeDoors();
         Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
-
-        for (Door door : software.getDoors()) {
-            assertTrue(door.isClosed());
-        }
-    }
-
-    @Test
-    public void testCloseDoorsMethod_withVariousStates_expectAllClosedImmediately() throws Exception {
-
-        DoorStateEnum[] states = {DoorStateEnum.OPEN, DoorStateEnum.MOVING, DoorStateEnum.CLOSED};
-
-        for (int i = 0; i < 3; i++) {
-            doors[0].state = states[i];
-            for (int j = 0; j < 3; j++) {
-                doors[1].state = states[j];
-                for (int k = 0; k < 3; k++) {
-                    doors[2].state = states[k];
-                }
-            }
-        }
-
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.closeDoors();
-        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
-
-        for (Door door : software.getDoors()) {
-            assertTrue(door.isClosed());
-        }
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.CLOSED));
     }
 
     @Test
     public void testCloseDoorsMethod_withAllDoorsClosed_expectAllClosedImmediately() throws Exception {
 
-        for (Door door : doors) {
+        Plane plane = new Plane();
+        for (Door door : plane.getDoors()) {
             door.state = DoorStateEnum.CLOSED;
         }
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.CLOSED));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.closeDoors();
-
-        for (Door door : software.getDoors()) {
-            assertTrue(door.isClosed());
-        }
+        plane.getSoftware().closeDoors();
+        Thread.sleep(Door.INERTIA + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.CLOSED));
     }
 
     @Test
     public void testOpenDoorsMethod_withAllDoorsClosed_expectAllOpen() throws Exception {
 
-        for (Door door : doors) {
+        Plane plane = new Plane();
+        for (Door door : plane.getDoors()) {
             door.state = DoorStateEnum.CLOSED;
         }
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.CLOSED));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.openDoors();
+        plane.getSoftware().openDoors();
         Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
-
-        for (Door door : software.getDoors()) {
-            assertTrue(door.isOpen());
-        }
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
     }
 
     @Test
-    public void testOpenDoorsMethod_withVariousStates_expectAllOpenImmediately() throws Exception {
+    public void testOpenDoorsMethod_withAllDoorsOpen_expectAllOpenImmediately() throws Exception {
 
-        DoorStateEnum[] states = {DoorStateEnum.OPEN, DoorStateEnum.MOVING, DoorStateEnum.CLOSED};
-
-        for (int i = 0; i < 3; i++) {
-            doors[0].state = states[i];
-            for (int j = 0; j < 3; j++) {
-                doors[1].state = states[j];
-                for (int k = 0; k < 3; k++) {
-                    doors[2].state = states[k];
-                }
-            }
-        }
-
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.openDoors();
-        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
-
-        for (Door door : software.getDoors()) {
-            assertTrue(door.isOpen());
-        }
-    }
-
-    @Test
-    public void testOpenDoorsMethod_withAllDoorsOpen_expectAllOpenImmetiately() throws Exception {
-
-        for (Door door : doors) {
+        Plane plane = new Plane();
+        for (Door door : plane.getDoors()) {
             door.state = DoorStateEnum.OPEN;
         }
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.openDoors();
-
-        for (Door door : software.getDoors()) {
-            assertTrue(door.isOpen());
-        }
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
     }
 
     @Test
     public void testRetractGearsMethod_withAllGearsDeployed_expectAllRetracted() throws Exception {
 
-        for (LandingGear gear : gears) {
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        for (LandingGear gear : plane.getLandingGears()) {
             gear.position = LandingGearPositionEnum.DEPLOYED;
         }
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.retractGears();
+        plane.getSoftware().retractGears();
         Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
 
-        for (LandingGear gear : software.getLandingGears()) {
+        for (LandingGear gear : plane.getLandingGears()) {
             assertTrue(gear.isRetracted());
         }
     }
 
-    @Test
-    public void testCloseDoorsMethod_withVariousStates_expectAllRetractedImmediately() throws Exception {
-
-        LandingGearPositionEnum[] positions = {LandingGearPositionEnum.DEPLOYED, LandingGearPositionEnum.MOVING, LandingGearPositionEnum.RETRACTED};
-
-        for (int i = 0; i < 3; i++) {
-            gears[0].position = positions[i];
-            for (int j = 0; j < 3; j++) {
-                gears[1].position = positions[j];
-                for (int k = 0; k < 3; k++) {
-                    gears[2].position = positions[k];
-                }
-            }
-        }
-
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.retractGears();
-        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
-
-        for (LandingGear gear : software.getLandingGears()) {
-            assertTrue(gear.isRetracted());
-        }
-    }
 
     @Test
-    public void testCloseDoorsMethod_withAllGearsRetractedexpectAllRetractedImmetiately() throws Exception {
+    public void testCloseDoorsMethod_withAllGearsRetracted_expectAllRetractedImmediately() throws Exception {
 
-        for (LandingGear gear : gears) {
-            gear.position = LandingGearPositionEnum.RETRACTED;
+        Plane plane = new Plane();
+        if (!plane.getHandle().isUp()) {
+            plane.getHandle().pushUp();
+            Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
         }
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        assertTrue(plane.getHandle().isUp());
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.retractGears();
-
-        for (LandingGear gear : software.getLandingGears()) {
-            assertTrue(gear.isRetracted());
-        }
+        plane.getSoftware().retractGears();
+        Thread.sleep(LandingGear.INERTIA + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
     }
 
     @Test
     public void testDeployGearsMethod_withAllGearsRetracted_expectAllDeployed() throws Exception {
 
-        for (Door door : doors) {
-            door.state = DoorStateEnum.CLOSED;
+        Plane plane = new Plane();
+        for (LandingGear gear : plane.getLandingGears()) {
+            gear.position = LandingGearPositionEnum.RETRACTED;
         }
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.deployGears();
+        plane.getSoftware().deployGears();
         Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
-
-        for (LandingGear gear : software.getLandingGears()) {
-            assertTrue(gear.isDeployed());
-        }
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
     }
 
     @Test
-    public void testDeployGearsMethod_withVariousStates_expectAllDeployedImmediately() throws Exception {
+    public void testDeployGearsMethod_withAllGearsDeployed_expectAllDeployedImmediately() throws Exception {
 
-        LandingGearPositionEnum[] positions = {LandingGearPositionEnum.DEPLOYED, LandingGearPositionEnum.MOVING, LandingGearPositionEnum.RETRACTED};
-
-        for (int i = 0; i < 3; i++) {
-            gears[0].position = positions[i];
-            for (int j = 0; j < 3; j++) {
-                gears[1].position = positions[j];
-                for (int k = 0; k < 3; k++) {
-                    gears[2].position = positions[k];
-                }
-            }
-        }
-
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.deployGears();
-        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
-
-        for (LandingGear gear : software.getLandingGears()) {
-            assertTrue(gear.isDeployed());
-        }
-    }
-
-    @Test
-    public void testDeployGearsMethod_withAllGearsDeployed_expectAllDeployedImmetiately() throws Exception {
-
-        for (LandingGear gear : gears) {
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+        for (LandingGear gear : plane.getLandingGears()) {
             gear.position = LandingGearPositionEnum.DEPLOYED;
         }
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
 
-        software = new Software(doors, new Handle(), new Lights(), gears);
-        software.deployGears();
-
-        for (LandingGear gear : software.getLandingGears()) {
-            assertTrue(gear.isDeployed());
-        }
+        plane.getSoftware().deployGears();
+        Thread.sleep(LandingGear.INERTIA + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
     }
 
     /**
@@ -262,7 +161,7 @@ public class SoftwareTest extends MultithreadedTestCase {
     public void testR11() throws Exception {
 
         // Worst case scenario: gears retracted and doors closed
-        setUp();
+        Plane plane = new Plane();
         if (!plane.getHandle().isUp()) {
             plane.getHandle().pushUp();
             Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
@@ -284,7 +183,8 @@ public class SoftwareTest extends MultithreadedTestCase {
     public void testR12() throws Exception {
 
         // Worst case scenario: gears deployed and doors closed
-        setUp();
+        Plane plane = new Plane();
+
         if (plane.getHandle().isUp()) {
             plane.getHandle().pushDown();
             Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
@@ -310,7 +210,8 @@ public class SoftwareTest extends MultithreadedTestCase {
     @Test
     public void testR21() throws Exception {
 
-        setUp();
+        Plane plane = new Plane();
+
         if (plane.getHandle().isUp()) {
             plane.getHandle().pushDown();
             Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
@@ -329,40 +230,183 @@ public class SoftwareTest extends MultithreadedTestCase {
      * R31: cannot stimulate gears to deploy/retract when doors are not locked open.
      */
     @Test
-    public void testR31() throws Exception {
+    public void testR31_stimulateDeployment_gearsDeployed() throws Exception {
 
         // Worst case scenario: gears deployed and doors closed
-        setUp();
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        plane.getSoftware().deployGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
+        plane.getSoftware().closeDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        assertFalse(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+
+        try {
+            plane.getSoftware().deployGears();
+            fail();
+        } catch (IllegalActionException e) {
+            // is the expected result
+        }
+    }
+
+    /**
+     * R31: cannot stimulate gears to deploy/retract when doors are not locked open.
+     */
+    @Test
+    public void testR31_stimulateDeployment_gearsDeploying() throws Exception {
+
+        // Worst case scenario: gears deployed and doors closed
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        plane.getSoftware().deployGears();
+        Thread.sleep(LandingGear.INERTIA + ERROR_MARGIN);
+        assertFalse(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
+        assertFalse(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
         if (plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN)) {
-            plane.getDoors()[0].state = DoorStateEnum.CLOSED;
+            plane.getSoftware().getDoors()[0].state = DoorStateEnum.CLOSED;
+        }
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        assertFalse(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+
+        try {
+            plane.getSoftware().deployGears();
+            fail();
+        } catch (IllegalActionException e) {
+            // is the expected result
+        }
+    }
+
+    /**
+     * R31: cannot stimulate gears to deploy/retract when doors are not locked open.
+     */
+    @Test
+    public void testR31_stimulateDeployment_gearsRetracted() throws Exception {
+
+        // Worst case scenario: gears deployed and doors closed
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        plane.getSoftware().retractGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
+        if (plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN)) {
+            plane.getSoftware().getDoors()[0].state = DoorStateEnum.CLOSED;
         }
         assertFalse(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
 
-        // Stimulate deployment
-        // Case 1: already deployed
-        // Case 2: are deploying
-        // Case 3: are retracted
         try {
             plane.getSoftware().deployGears();
+            fail();
         } catch (IllegalActionException e) {
-            // do nothing
-        } finally {
-            Thread.sleep(TPS_CSTR1 + ERROR_MARGIN);
-            assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED) && plane.getSoftware()
-                    .areDoorsLocked(DoorStateEnum.CLOSED));
+            // is the expected result
         }
+    }
 
-        // Stimulate retracting
-        // Case 1: already deployed
-        // Case 2: are deploying
-        // Case 3: are retracted
+    /**
+     * R31: cannot stimulate gears to deploy/retract when doors are not locked open.
+     */
+    @Test
+    public void testR31_stimulateRetracting_gearsDeployed() throws Exception {
+
+        // Worst case scenario: gears deployed and doors closed
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        plane.getSoftware().deployGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
+        plane.getSoftware().closeDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        assertFalse(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+
+        try {
+            plane.getSoftware().retractGears();
+            fail();
+        } catch (IllegalActionException e) {
+            // is the expected result
+        }
+    }
+
+    /**
+     * R31: cannot stimulate gears to deploy/retract when doors are not locked open.
+     */
+    @Test
+    public void testR31_stimulateRetracting_gearsDeploying() throws Exception {
+
+        // Worst case scenario: gears deployed and doors closed
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        plane.getSoftware().deployGears();
+        Thread.sleep(LandingGear.INERTIA + ERROR_MARGIN);
+        assertFalse(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
+        assertFalse(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED));
+        if (plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN)) {
+            plane.getSoftware().getDoors()[0].state = DoorStateEnum.CLOSED;
+        }
+        assertFalse(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+
+        try {
+            plane.getSoftware().retractGears();
+            fail();
+        } catch (IllegalActionException e) {
+            // is the expected result
+        }
+    }
+
+    /**
+     * R31: cannot stimulate gears to deploy/retract when doors are not locked open.
+     */
+    @Test
+    public void testR31_stimulateRetracting_gearsRetracted() throws Exception {
+
+        // Worst case scenario: gears deployed and doors closed
+        Plane plane = new Plane();
+        plane.getSoftware().openDoors();
+        Thread.sleep(Door.INERTIA + Door.MOVING_TIME + ERROR_MARGIN);
+        plane.getSoftware().retractGears();
+        Thread.sleep(LandingGear.INERTIA + LandingGear.MOVING_TIME + ERROR_MARGIN);
+        assertTrue(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
+        if (plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN)) {
+            plane.getSoftware().getDoors()[0].state = DoorStateEnum.CLOSED;
+        }
+        assertFalse(plane.getSoftware().areDoorsLocked(DoorStateEnum.OPEN));
+
+        try {
+            plane.getSoftware().retractGears();
+            fail();
+        } catch (IllegalActionException e) {
+            // is the expected result
+        }
     }
 
     /**
      * R32: cannot stimulate doors to open/close when gears are not locked (up or down).
      */
     @Test
-    public void testR32() {
+    public void testR32_stimulateOpening() throws Exception {
+
+        Plane plane = new Plane();
+        plane.getSoftware().getLandingGears()[0].position = LandingGearPositionEnum.MOVING;
+        assertFalse(plane.getSoftware().areGearsLocked(LandingGearPositionEnum.DEPLOYED)
+                || plane.getSoftware().areGearsLocked(LandingGearPositionEnum.RETRACTED));
+
+        try {
+            plane.getSoftware().openDoors();
+            fail();
+        } catch (IllegalActionException e) {
+            // is the expected result
+        }
+    }
+
+    /**
+     * R32: cannot stimulate doors to open/close when gears are not locked (up or down).
+     */
+    @Test
+    public void testR32_stimulateClosing() {
         //TODO
     }
 

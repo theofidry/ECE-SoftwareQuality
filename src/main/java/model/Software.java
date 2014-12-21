@@ -398,8 +398,13 @@ public class Software implements PropertyChangeListener {
      */
     public void openDoors() {
 
-        for (Door door : doors) {
-            door.open();
+        if (areGearsLocked(LandingGearPositionEnum.DEPLOYED) || areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+
+            for (Door door : doors) {
+                door.open();
+            }
+        } else {
+            throw new IllegalActionException("Cannot open doors if gears not locked.");
         }
     }
 
@@ -408,8 +413,13 @@ public class Software implements PropertyChangeListener {
      */
     public void closeDoors() {
 
-        for (Door door : doors) {
-            door.close();
+        if (areGearsLocked(LandingGearPositionEnum.DEPLOYED) || areGearsLocked(LandingGearPositionEnum.RETRACTED)) {
+
+            for (Door door : doors) {
+                door.close();
+            }
+        } else {
+            throw new IllegalActionException("Cannot open doors if gears not locked.");
         }
     }
 
@@ -434,11 +444,13 @@ public class Software implements PropertyChangeListener {
      */
     public void retractGears() throws IllegalActionException {
 
-        if (handle.isUp()) {
+        if (handle.isUp() && areDoorsLocked(DoorStateEnum.OPEN)) {
 
             for (LandingGear gear : landingGears) {
                 gear.retract();
             }
+        } else if (handle.isUp()) {
+            throw new IllegalActionException("Cannot retract gears when doors are not locked open.");
         } else {
             throw new IllegalActionException("Cannot retract gears when handle down.");
         }
