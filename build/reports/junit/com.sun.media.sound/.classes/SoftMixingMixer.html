@@ -1,0 +1,559 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SoftMixingMixer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.media.sound</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SoftMixingMixer (com.sun.media.sound)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SoftMixingMixer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 210)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SoftMixingMixer$Info</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 211)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.media.sound;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.media.sound.SoftAudioPusher;
+<i>9</i>&nbsp;import com.sun.media.sound.SoftMixingClip;
+<i>10</i>&nbsp;import com.sun.media.sound.SoftMixingDataLine;
+<i>11</i>&nbsp;import com.sun.media.sound.SoftMixingMainMixer;
+<i>12</i>&nbsp;import com.sun.media.sound.SoftMixingMixerProvider;
+<i>13</i>&nbsp;import com.sun.media.sound.SoftMixingSourceDataLine;
+<i>14</i>&nbsp;import java.io.IOException;
+<i>15</i>&nbsp;import java.util.ArrayList;
+<i>16</i>&nbsp;import java.util.List;
+<i>17</i>&nbsp;import javax.sound.sampled.AudioFormat;
+<i>18</i>&nbsp;import javax.sound.sampled.AudioInputStream;
+<i>19</i>&nbsp;import javax.sound.sampled.AudioSystem;
+<i>20</i>&nbsp;import javax.sound.sampled.Clip;
+<i>21</i>&nbsp;import javax.sound.sampled.Control;
+<i>22</i>&nbsp;import javax.sound.sampled.Line;
+<i>23</i>&nbsp;import javax.sound.sampled.LineEvent;
+<i>24</i>&nbsp;import javax.sound.sampled.LineListener;
+<i>25</i>&nbsp;import javax.sound.sampled.LineUnavailableException;
+<i>26</i>&nbsp;import javax.sound.sampled.Mixer;
+<i>27</i>&nbsp;import javax.sound.sampled.SourceDataLine;
+<i>28</i>&nbsp;import javax.sound.sampled.AudioFormat.Encoding;
+<i>29</i>&nbsp;import javax.sound.sampled.LineEvent.Type;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;public final class SoftMixingMixer implements Mixer {
+<i>32</i>&nbsp;    static final String INFO_NAME = &quot;Gervill Sound Mixer&quot;;
+<i>33</i>&nbsp;    static final String INFO_VENDOR = &quot;OpenJDK Proposal&quot;;
+<i>34</i>&nbsp;    static final String INFO_DESCRIPTION = &quot;Software Sound Mixer&quot;;
+<i>35</i>&nbsp;    static final String INFO_VERSION = &quot;1.0&quot;;
+<i>36</i>&nbsp;    static final javax.sound.sampled.Mixer.Info info = new SoftMixingMixer.Info();
+<i>37</i>&nbsp;    final Object control_mutex = this;
+<i>38</i>&nbsp;    boolean implicitOpen = false;
+<i>39</i>&nbsp;    private boolean open = false;
+<i>40</i>&nbsp;    private SoftMixingMainMixer mainmixer = null;
+<i>41</i>&nbsp;    private AudioFormat format = new AudioFormat(44100.0F, 16, 2, true, false);
+<i>42</i>&nbsp;    private SourceDataLine sourceDataLine = null;
+<i>43</i>&nbsp;    private SoftAudioPusher pusher = null;
+<i>44</i>&nbsp;    private AudioInputStream pusher_stream = null;
+<i>45</i>&nbsp;    private final float controlrate = 147.0F;
+<i>46</i>&nbsp;    private final long latency = 100000L;
+<i>47</i>&nbsp;    private final boolean jitter_correction = false;
+<i>48</i>&nbsp;    private final List&lt;LineListener&gt; listeners = new ArrayList();
+<i>49</i>&nbsp;    private final javax.sound.sampled.Line.Info[] sourceLineInfo = new javax.sound.sampled.Line.Info[2];
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public SoftMixingMixer() {
+<i>52</i>&nbsp;        ArrayList var1 = new ArrayList();
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;        for(int var2 = 1; var2 &lt;= 2; ++var2) {
+<b class="nc"><i>55</i>&nbsp;            var1.add(new AudioFormat(Encoding.PCM_SIGNED, -1.0F, 8, var2, var2, -1.0F, false));</b>
+<i>56</i>&nbsp;            var1.add(new AudioFormat(Encoding.PCM_UNSIGNED, -1.0F, 8, var2, var2, -1.0F, false));
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;            for(int var3 = 16; var3 &lt; 32; var3 += 8) {
+<i>59</i>&nbsp;                var1.add(new AudioFormat(Encoding.PCM_SIGNED, -1.0F, var3, var2, var2 * var3 / 8, -1.0F, false));
+<i>60</i>&nbsp;                var1.add(new AudioFormat(Encoding.PCM_UNSIGNED, -1.0F, var3, var2, var2 * var3 / 8, -1.0F, false));
+<i>61</i>&nbsp;                var1.add(new AudioFormat(Encoding.PCM_SIGNED, -1.0F, var3, var2, var2 * var3 / 8, -1.0F, true));
+<i>62</i>&nbsp;                var1.add(new AudioFormat(Encoding.PCM_UNSIGNED, -1.0F, var3, var2, var2 * var3 / 8, -1.0F, true));
+<i>63</i>&nbsp;            }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;            var1.add(new AudioFormat(Encoding.PCM_FLOAT, -1.0F, 32, var2, var2 * 4, -1.0F, false));
+<i>66</i>&nbsp;            var1.add(new AudioFormat(Encoding.PCM_FLOAT, -1.0F, 32, var2, var2 * 4, -1.0F, true));
+<b class="nc"><i>67</i>&nbsp;            var1.add(new AudioFormat(Encoding.PCM_FLOAT, -1.0F, 64, var2, var2 * 8, -1.0F, false));</b>
+<i>68</i>&nbsp;            var1.add(new AudioFormat(Encoding.PCM_FLOAT, -1.0F, 64, var2, var2 * 8, -1.0F, true));
+<b class="nc"><i>69</i>&nbsp;        }</b>
+<i>70</i>&nbsp;
+<b class="nc"><i>71</i>&nbsp;        AudioFormat[] var4 = (AudioFormat[])var1.toArray(new AudioFormat[var1.size()]);</b>
+<i>72</i>&nbsp;        this.sourceLineInfo[0] = new javax.sound.sampled.DataLine.Info(SourceDataLine.class, var4, -1, -1);
+<b class="nc"><i>73</i>&nbsp;        this.sourceLineInfo[1] = new javax.sound.sampled.DataLine.Info(Clip.class, var4, -1, -1);</b>
+<i>74</i>&nbsp;    }
+<b class="nc"><i>75</i>&nbsp;</b>
+<i>76</i>&nbsp;    public Line getLine(javax.sound.sampled.Line.Info var1) throws LineUnavailableException {
+<b class="nc"><i>77</i>&nbsp;        if(!this.isLineSupported(var1)) {</b>
+<i>78</i>&nbsp;            throw new IllegalArgumentException(&quot;Line unsupported: &quot; + var1);
+<b class="nc"><i>79</i>&nbsp;        } else if(var1.getLineClass() == SourceDataLine.class) {</b>
+<i>80</i>&nbsp;            return new SoftMixingSourceDataLine(this, (javax.sound.sampled.DataLine.Info)var1);
+<b class="nc"><i>81</i>&nbsp;        } else if(var1.getLineClass() == Clip.class) {</b>
+<i>82</i>&nbsp;            return new SoftMixingClip(this, (javax.sound.sampled.DataLine.Info)var1);
+<b class="nc"><i>83</i>&nbsp;        } else {</b>
+<i>84</i>&nbsp;            throw new IllegalArgumentException(&quot;Line unsupported: &quot; + var1);
+<b class="nc"><i>85</i>&nbsp;        }</b>
+<i>86</i>&nbsp;    }
+<b class="nc"><i>87</i>&nbsp;</b>
+<i>88</i>&nbsp;    public int getMaxLines(javax.sound.sampled.Line.Info var1) {
+<b class="nc"><i>89</i>&nbsp;        return var1.getLineClass() == SourceDataLine.class?-1:(var1.getLineClass() == Clip.class?-1:0);</b>
+<i>90</i>&nbsp;    }
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;    public javax.sound.sampled.Mixer.Info getMixerInfo() {
+<i>93</i>&nbsp;        return info;
+<i>94</i>&nbsp;    }
+<b class="nc"><i>95</i>&nbsp;</b>
+<i>96</i>&nbsp;    public javax.sound.sampled.Line.Info[] getSourceLineInfo() {
+<b class="nc"><i>97</i>&nbsp;        javax.sound.sampled.Line.Info[] var1 = new javax.sound.sampled.Line.Info[this.sourceLineInfo.length];</b>
+<i>98</i>&nbsp;        System.arraycopy(this.sourceLineInfo, 0, var1, 0, this.sourceLineInfo.length);
+<b class="nc"><i>99</i>&nbsp;        return var1;</b>
+<b class="nc"><i>100</i>&nbsp;    }</b>
+<b class="nc"><i>101</i>&nbsp;</b>
+<i>102</i>&nbsp;    public javax.sound.sampled.Line.Info[] getSourceLineInfo(javax.sound.sampled.Line.Info var1) {
+<i>103</i>&nbsp;        ArrayList var3 = new ArrayList();
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;        for(int var2 = 0; var2 &lt; this.sourceLineInfo.length; ++var2) {
+<i>106</i>&nbsp;            if(var1.matches(this.sourceLineInfo[var2])) {
+<b class="nc"><i>107</i>&nbsp;                var3.add(this.sourceLineInfo[var2]);</b>
+<b class="nc"><i>108</i>&nbsp;            }</b>
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;        return (javax.sound.sampled.Line.Info[])var3.toArray(new javax.sound.sampled.Line.Info[var3.size()]);</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<b class="nc"><i>114</i>&nbsp;    public Line[] getSourceLines() {</b>
+<i>115</i>&nbsp;        Object var2 = this.control_mutex;
+<i>116</i>&nbsp;        synchronized(this.control_mutex) {
+<b class="nc"><i>117</i>&nbsp;            if(this.mainmixer == null) {</b>
+<i>118</i>&nbsp;                return new Line[0];
+<i>119</i>&nbsp;            } else {
+<i>120</i>&nbsp;                SoftMixingDataLine[] var3 = this.mainmixer.getOpenLines();
+<b class="nc"><i>121</i>&nbsp;                Line[] var1 = new Line[var3.length];</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;                for(int var4 = 0; var4 &lt; var1.length; ++var4) {
+<b class="nc"><i>124</i>&nbsp;                    var1[var4] = var3[var4];</b>
+<i>125</i>&nbsp;                }
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;                return var1;</b>
+<i>128</i>&nbsp;            }
+<i>129</i>&nbsp;        }
+<b class="nc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public javax.sound.sampled.Line.Info[] getTargetLineInfo() {
+<i>133</i>&nbsp;        return new javax.sound.sampled.Line.Info[0];
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<b class="nc"><i>136</i>&nbsp;    public javax.sound.sampled.Line.Info[] getTargetLineInfo(javax.sound.sampled.Line.Info var1) {</b>
+<i>137</i>&nbsp;        return new javax.sound.sampled.Line.Info[0];
+<i>138</i>&nbsp;    }
+<b class="nc"><i>139</i>&nbsp;</b>
+<i>140</i>&nbsp;    public Line[] getTargetLines() {
+<i>141</i>&nbsp;        return new Line[0];
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public boolean isLineSupported(javax.sound.sampled.Line.Info var1) {
+<b class="nc"><i>145</i>&nbsp;        if(var1 != null) {</b>
+<b class="nc"><i>146</i>&nbsp;            for(int var2 = 0; var2 &lt; this.sourceLineInfo.length; ++var2) {</b>
+<i>147</i>&nbsp;                if(var1.matches(this.sourceLineInfo[var2])) {
+<b class="nc"><i>148</i>&nbsp;                    return true;</b>
+<b class="nc"><i>149</i>&nbsp;                }</b>
+<i>150</i>&nbsp;            }
+<b class="nc"><i>151</i>&nbsp;        }</b>
+<b class="nc"><i>152</i>&nbsp;</b>
+<i>153</i>&nbsp;        return false;
+<i>154</i>&nbsp;    }
+<b class="nc"><i>155</i>&nbsp;</b>
+<i>156</i>&nbsp;    public boolean isSynchronizationSupported(Line[] var1, boolean var2) {
+<i>157</i>&nbsp;        return false;
+<i>158</i>&nbsp;    }
+<b class="nc"><i>159</i>&nbsp;</b>
+<b class="nc"><i>160</i>&nbsp;    public void synchronize(Line[] var1, boolean var2) {</b>
+<b class="nc"><i>161</i>&nbsp;        throw new IllegalArgumentException(&quot;Synchronization not supported by this mixer.&quot;);</b>
+<b class="nc"><i>162</i>&nbsp;    }</b>
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;    public void unsynchronize(Line[] var1) {
+<i>165</i>&nbsp;        throw new IllegalArgumentException(&quot;Synchronization not supported by this mixer.&quot;);
+<i>166</i>&nbsp;    }
+<b class="nc"><i>167</i>&nbsp;</b>
+<i>168</i>&nbsp;    public void addLineListener(LineListener var1) {
+<i>169</i>&nbsp;        Object var2 = this.control_mutex;
+<i>170</i>&nbsp;        synchronized(this.control_mutex) {
+<b class="nc"><i>171</i>&nbsp;            this.listeners.add(var1);</b>
+<b class="nc"><i>172</i>&nbsp;        }</b>
+<i>173</i>&nbsp;    }
+<b class="nc"><i>174</i>&nbsp;</b>
+<i>175</i>&nbsp;    private void sendEvent(LineEvent var1) {
+<i>176</i>&nbsp;        if(this.listeners.size() != 0) {
+<i>177</i>&nbsp;            LineListener[] var2 = (LineListener[])this.listeners.toArray(new LineListener[this.listeners.size()]);
+<i>178</i>&nbsp;            LineListener[] var3 = var2;
+<i>179</i>&nbsp;            int var4 = var2.length;
+<b class="nc"><i>180</i>&nbsp;</b>
+<i>181</i>&nbsp;            for(int var5 = 0; var5 &lt; var4; ++var5) {
+<b class="nc"><i>182</i>&nbsp;                LineListener var6 = var3[var5];</b>
+<b class="nc"><i>183</i>&nbsp;                var6.update(var1);</b>
+<b class="nc"><i>184</i>&nbsp;            }</b>
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;        }
+<b class="nc"><i>187</i>&nbsp;    }</b>
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    public void close() {
+<i>190</i>&nbsp;        if(this.isOpen()) {
+<i>191</i>&nbsp;            this.sendEvent(new LineEvent(this, Type.CLOSE, -1L));
+<i>192</i>&nbsp;            SoftAudioPusher var1 = null;
+<i>193</i>&nbsp;            AudioInputStream var2 = null;
+<b class="nc"><i>194</i>&nbsp;            Object var3 = this.control_mutex;</b>
+<i>195</i>&nbsp;            synchronized(this.control_mutex) {
+<b class="nc"><i>196</i>&nbsp;                if(this.pusher != null) {</b>
+<b class="nc"><i>197</i>&nbsp;                    var1 = this.pusher;</b>
+<b class="nc"><i>198</i>&nbsp;                    var2 = this.pusher_stream;</b>
+<i>199</i>&nbsp;                    this.pusher = null;
+<b class="nc"><i>200</i>&nbsp;                    this.pusher_stream = null;</b>
+<i>201</i>&nbsp;                }
+<b class="nc"><i>202</i>&nbsp;            }</b>
+<b class="nc"><i>203</i>&nbsp;</b>
+<i>204</i>&nbsp;            if(var1 != null) {
+<b class="nc"><i>205</i>&nbsp;                var1.stop();</b>
+<i>206</i>&nbsp;
+<b class="nc"><i>207</i>&nbsp;                try {</b>
+<i>208</i>&nbsp;                    var2.close();
+<i>209</i>&nbsp;                } catch (IOException var7) {
+<i>210</i>&nbsp;                    var7.printStackTrace();
+<b class="nc"><i>211</i>&nbsp;                }</b>
+<i>212</i>&nbsp;            }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;            var3 = this.control_mutex;
+<i>215</i>&nbsp;            synchronized(this.control_mutex) {
+<b class="nc"><i>216</i>&nbsp;                if(this.mainmixer != null) {</b>
+<i>217</i>&nbsp;                    this.mainmixer.close();
+<i>218</i>&nbsp;                }
+<i>219</i>&nbsp;
+<b class="nc"><i>220</i>&nbsp;                this.open = false;</b>
+<i>221</i>&nbsp;                if(this.sourceDataLine != null) {
+<i>222</i>&nbsp;                    this.sourceDataLine.drain();
+<i>223</i>&nbsp;                    this.sourceDataLine.close();
+<b class="nc"><i>224</i>&nbsp;                    this.sourceDataLine = null;</b>
+<b class="nc"><i>225</i>&nbsp;                }</b>
+<b class="nc"><i>226</i>&nbsp;</b>
+<b class="nc"><i>227</i>&nbsp;            }</b>
+<i>228</i>&nbsp;        }
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;    public Control getControl(javax.sound.sampled.Control.Type var1) {</b>
+<i>232</i>&nbsp;        throw new IllegalArgumentException(&quot;Unsupported control type : &quot; + var1);
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<b class="nc"><i>235</i>&nbsp;    public Control[] getControls() {</b>
+<i>236</i>&nbsp;        return new Control[0];
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<b class="nc"><i>239</i>&nbsp;    public javax.sound.sampled.Line.Info getLineInfo() {</b>
+<i>240</i>&nbsp;        return new javax.sound.sampled.Line.Info(Mixer.class);
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    public boolean isControlSupported(javax.sound.sampled.Control.Type var1) {
+<b class="nc"><i>244</i>&nbsp;        return false;</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    public boolean isOpen() {
+<i>248</i>&nbsp;        Object var1 = this.control_mutex;
+<b class="nc"><i>249</i>&nbsp;        synchronized(this.control_mutex) {</b>
+<b class="nc"><i>250</i>&nbsp;            return this.open;</b>
+<b class="nc"><i>251</i>&nbsp;        }</b>
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    public void open() throws LineUnavailableException {
+<b class="nc"><i>255</i>&nbsp;        if(this.isOpen()) {</b>
+<i>256</i>&nbsp;            this.implicitOpen = false;
+<b class="nc"><i>257</i>&nbsp;        } else {</b>
+<i>258</i>&nbsp;            this.open((SourceDataLine)null);
+<b class="nc"><i>259</i>&nbsp;        }</b>
+<b class="nc"><i>260</i>&nbsp;    }</b>
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    public void open(SourceDataLine var1) throws LineUnavailableException {
+<i>263</i>&nbsp;        if(this.isOpen()) {
+<i>264</i>&nbsp;            this.implicitOpen = false;
+<b class="nc"><i>265</i>&nbsp;        } else {</b>
+<i>266</i>&nbsp;            Object var2 = this.control_mutex;
+<i>267</i>&nbsp;            synchronized(this.control_mutex) {
+<b class="nc"><i>268</i>&nbsp;                try {</b>
+<i>269</i>&nbsp;                    if(var1 != null) {
+<i>270</i>&nbsp;                        this.format = var1.getFormat();
+<b class="nc"><i>271</i>&nbsp;                    }</b>
+<b class="nc"><i>272</i>&nbsp;</b>
+<b class="nc"><i>273</i>&nbsp;                    AudioInputStream var3 = this.openStream(this.getFormat());</b>
+<b class="nc"><i>274</i>&nbsp;                    if(var1 == null) {</b>
+<b class="nc"><i>275</i>&nbsp;                        Object var4 = SoftMixingMixerProvider.mutex;</b>
+<b class="nc"><i>276</i>&nbsp;                        synchronized(SoftMixingMixerProvider.mutex) {</b>
+<b class="nc"><i>277</i>&nbsp;                            SoftMixingMixerProvider.lockthread = Thread.currentThread();</b>
+<b class="nc"><i>278</i>&nbsp;                        }</b>
+<i>279</i>&nbsp;
+<b class="nc"><i>280</i>&nbsp;                        boolean var30 = false;</b>
+<i>281</i>&nbsp;
+<b class="nc"><i>282</i>&nbsp;                        try {</b>
+<i>283</i>&nbsp;                            var30 = true;
+<i>284</i>&nbsp;                            Mixer var38 = AudioSystem.getMixer((javax.sound.sampled.Mixer.Info)null);
+<i>285</i>&nbsp;                            if(var38 != null) {
+<b class="nc"><i>286</i>&nbsp;                                javax.sound.sampled.DataLine.Info var5 = null;</b>
+<i>287</i>&nbsp;                                AudioFormat var6 = null;
+<i>288</i>&nbsp;                                javax.sound.sampled.Line.Info[] var7 = var38.getSourceLineInfo();
+<b class="nc"><i>289</i>&nbsp;</b>
+<b class="nc"><i>290</i>&nbsp;                                label303:</b>
+<b class="nc"><i>291</i>&nbsp;                                for(int var8 = 0; var8 &lt; var7.length; ++var8) {</b>
+<b class="nc"><i>292</i>&nbsp;                                    if(var7[var8].getLineClass() == SourceDataLine.class) {</b>
+<i>293</i>&nbsp;                                        javax.sound.sampled.DataLine.Info var9 = (javax.sound.sampled.DataLine.Info)var7[var8];
+<i>294</i>&nbsp;                                        AudioFormat[] var10 = var9.getFormats();
+<b class="nc"><i>295</i>&nbsp;</b>
+<i>296</i>&nbsp;                                        for(int var11 = 0; var11 &lt; var10.length; ++var11) {
+<b class="nc"><i>297</i>&nbsp;                                            AudioFormat var12 = var10[var11];</b>
+<b class="nc"><i>298</i>&nbsp;                                            if((var12.getChannels() == 2 || var12.getChannels() == -1) &amp;&amp; (var12.getEncoding().equals(Encoding.PCM_SIGNED) || var12.getEncoding().equals(Encoding.PCM_UNSIGNED)) &amp;&amp; (var12.getSampleRate() == -1.0F || (double)var12.getSampleRate() == 48000.0D) &amp;&amp; (var12.getSampleSizeInBits() == -1 || var12.getSampleSizeInBits() == 16)) {</b>
+<b class="nc"><i>299</i>&nbsp;                                                var5 = var9;</b>
+<i>300</i>&nbsp;                                                int var13 = var12.getChannels();
+<b class="nc"><i>301</i>&nbsp;                                                boolean var14 = var12.getEncoding().equals(Encoding.PCM_SIGNED);</b>
+<b class="nc"><i>302</i>&nbsp;                                                float var15 = var12.getSampleRate();</b>
+<b class="nc"><i>303</i>&nbsp;                                                boolean var16 = var12.isBigEndian();</b>
+<b class="nc"><i>304</i>&nbsp;                                                int var17 = var12.getSampleSizeInBits();</b>
+<i>305</i>&nbsp;                                                if(var17 == -1) {
+<i>306</i>&nbsp;                                                    var17 = 16;
+<b class="nc"><i>307</i>&nbsp;                                                }</b>
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;                                                if(var13 == -1) {
+<i>310</i>&nbsp;                                                    var13 = 2;
+<i>311</i>&nbsp;                                                }
+<b class="nc"><i>312</i>&nbsp;</b>
+<i>313</i>&nbsp;                                                if(var15 == -1.0F) {
+<i>314</i>&nbsp;                                                    var15 = 48000.0F;
+<i>315</i>&nbsp;                                                }
+<i>316</i>&nbsp;
+<b class="nc"><i>317</i>&nbsp;                                                var6 = new AudioFormat(var15, var17, var13, var14, var16);</b>
+<i>318</i>&nbsp;                                                break label303;
+<i>319</i>&nbsp;                                            }
+<i>320</i>&nbsp;                                        }
+<b class="nc"><i>321</i>&nbsp;                                    }</b>
+<i>322</i>&nbsp;                                }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;                                if(var6 != null) {
+<b class="nc"><i>325</i>&nbsp;                                    this.format = var6;</b>
+<i>326</i>&nbsp;                                    var1 = (SourceDataLine)var38.getLine(var5);
+<i>327</i>&nbsp;                                }
+<i>328</i>&nbsp;                            }
+<b class="nc"><i>329</i>&nbsp;</b>
+<b class="nc"><i>330</i>&nbsp;                            if(var1 == null) {</b>
+<b class="nc"><i>331</i>&nbsp;                                var1 = AudioSystem.getSourceDataLine(this.format);</b>
+<i>332</i>&nbsp;                                var30 = false;
+<i>333</i>&nbsp;                            } else {
+<i>334</i>&nbsp;                                var30 = false;
+<b class="nc"><i>335</i>&nbsp;                            }</b>
+<b class="nc"><i>336</i>&nbsp;                        } finally {</b>
+<i>337</i>&nbsp;                            if(var30) {
+<i>338</i>&nbsp;                                Object var20 = SoftMixingMixerProvider.mutex;
+<b class="nc"><i>339</i>&nbsp;                                synchronized(SoftMixingMixerProvider.mutex) {</b>
+<i>340</i>&nbsp;                                    SoftMixingMixerProvider.lockthread = null;
+<i>341</i>&nbsp;                                }
+<i>342</i>&nbsp;                            }
+<b class="nc"><i>343</i>&nbsp;                        }</b>
+<b class="nc"><i>344</i>&nbsp;</b>
+<i>345</i>&nbsp;                        var4 = SoftMixingMixerProvider.mutex;
+<i>346</i>&nbsp;                        synchronized(SoftMixingMixerProvider.mutex) {
+<b class="nc"><i>347</i>&nbsp;                            SoftMixingMixerProvider.lockthread = null;</b>
+<i>348</i>&nbsp;                        }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;                        if(var1 == null) {
+<b class="nc"><i>351</i>&nbsp;                            throw new IllegalArgumentException(&quot;No line matching &quot; + info.toString() + &quot; is supported.&quot;);</b>
+<b class="nc"><i>352</i>&nbsp;                        }</b>
+<i>353</i>&nbsp;                    }
+<b class="nc"><i>354</i>&nbsp;</b>
+<i>355</i>&nbsp;                    this.getClass();
+<b class="nc"><i>356</i>&nbsp;                    double var39 = 100000.0D;</b>
+<b class="nc"><i>357</i>&nbsp;                    int var41;</b>
+<b class="nc"><i>358</i>&nbsp;                    if(!var1.isOpen()) {</b>
+<i>359</i>&nbsp;                        var41 = this.getFormat().getFrameSize() * (int)((double)this.getFormat().getFrameRate() * (var39 / 1000000.0D));
+<b class="nc"><i>360</i>&nbsp;                        var1.open(this.getFormat(), var41);</b>
+<i>361</i>&nbsp;                        this.sourceDataLine = var1;
+<i>362</i>&nbsp;                    }
+<b class="nc"><i>363</i>&nbsp;</b>
+<b class="nc"><i>364</i>&nbsp;                    if(!var1.isActive()) {</b>
+<i>365</i>&nbsp;                        var1.start();
+<i>366</i>&nbsp;                    }
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;                    var41 = 512;</b>
+<b class="nc"><i>369</i>&nbsp;</b>
+<i>370</i>&nbsp;                    try {
+<b class="nc"><i>371</i>&nbsp;                        var41 = var3.available();</b>
+<i>372</i>&nbsp;                    } catch (IOException var32) {
+<b class="nc"><i>373</i>&nbsp;                        ;</b>
+<b class="nc"><i>374</i>&nbsp;                    }</b>
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;                    int var40 = var1.getBufferSize();</b>
+<b class="nc"><i>377</i>&nbsp;                    var40 -= var40 % var41;</b>
+<b class="nc"><i>378</i>&nbsp;                    if(var40 &lt; 3 * var41) {</b>
+<b class="nc"><i>379</i>&nbsp;                        var40 = 3 * var41;</b>
+<b class="nc"><i>380</i>&nbsp;                    }</b>
+<i>381</i>&nbsp;
+<b class="nc"><i>382</i>&nbsp;                    this.pusher = new SoftAudioPusher(var1, var3, var41);</b>
+<i>383</i>&nbsp;                    this.pusher_stream = var3;
+<b class="nc"><i>384</i>&nbsp;                    this.pusher.start();</b>
+<i>385</i>&nbsp;                } catch (LineUnavailableException var36) {
+<b class="nc"><i>386</i>&nbsp;                    if(this.isOpen()) {</b>
+<i>387</i>&nbsp;                        this.close();
+<i>388</i>&nbsp;                    }
+<b class="nc"><i>389</i>&nbsp;</b>
+<b class="nc"><i>390</i>&nbsp;                    throw new LineUnavailableException(var36.toString());</b>
+<b class="nc"><i>391</i>&nbsp;                }</b>
+<b class="nc"><i>392</i>&nbsp;</b>
+<b class="nc"><i>393</i>&nbsp;            }</b>
+<b class="nc"><i>394</i>&nbsp;        }</b>
+<b class="nc"><i>395</i>&nbsp;    }</b>
+<b class="nc"><i>396</i>&nbsp;</b>
+<b class="nc"><i>397</i>&nbsp;    public AudioInputStream openStream(AudioFormat var1) throws LineUnavailableException {</b>
+<b class="nc"><i>398</i>&nbsp;        if(this.isOpen()) {</b>
+<i>399</i>&nbsp;            throw new LineUnavailableException(&quot;Mixer is already open&quot;);
+<b class="nc"><i>400</i>&nbsp;        } else {</b>
+<i>401</i>&nbsp;            Object var2 = this.control_mutex;
+<i>402</i>&nbsp;            synchronized(this.control_mutex) {
+<i>403</i>&nbsp;                this.open = true;
+<i>404</i>&nbsp;                this.implicitOpen = false;
+<i>405</i>&nbsp;                if(var1 != null) {
+<b class="nc"><i>406</i>&nbsp;                    this.format = var1;</b>
+<i>407</i>&nbsp;                }
+<b class="nc"><i>408</i>&nbsp;</b>
+<b class="nc"><i>409</i>&nbsp;                this.mainmixer = new SoftMixingMainMixer(this);</b>
+<i>410</i>&nbsp;                this.sendEvent(new LineEvent(this, Type.OPEN, -1L));
+<i>411</i>&nbsp;                return this.mainmixer.getInputStream();
+<i>412</i>&nbsp;            }
+<b class="nc"><i>413</i>&nbsp;        }</b>
+<b class="nc"><i>414</i>&nbsp;    }</b>
+<i>415</i>&nbsp;
+<b class="nc"><i>416</i>&nbsp;    public void removeLineListener(LineListener var1) {</b>
+<b class="nc"><i>417</i>&nbsp;        Object var2 = this.control_mutex;</b>
+<b class="nc"><i>418</i>&nbsp;        synchronized(this.control_mutex) {</b>
+<b class="nc"><i>419</i>&nbsp;            this.listeners.remove(var1);</b>
+<i>420</i>&nbsp;        }
+<b class="nc"><i>421</i>&nbsp;    }</b>
+<b class="nc"><i>422</i>&nbsp;</b>
+<i>423</i>&nbsp;    public long getLatency() {
+<i>424</i>&nbsp;        Object var1 = this.control_mutex;
+<i>425</i>&nbsp;        synchronized(this.control_mutex) {
+<b class="nc"><i>426</i>&nbsp;            return 100000L;</b>
+<i>427</i>&nbsp;        }
+<b class="nc"><i>428</i>&nbsp;    }</b>
+<b class="nc"><i>429</i>&nbsp;</b>
+<i>430</i>&nbsp;    public AudioFormat getFormat() {
+<b class="nc"><i>431</i>&nbsp;        Object var1 = this.control_mutex;</b>
+<i>432</i>&nbsp;        synchronized(this.control_mutex) {
+<i>433</i>&nbsp;            return this.format;
+<i>434</i>&nbsp;        }
+<b class="nc"><i>435</i>&nbsp;    }</b>
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;    float getControlRate() {</b>
+<b class="nc"><i>438</i>&nbsp;        return 147.0F;</b>
+<i>439</i>&nbsp;    }
+<b class="nc"><i>440</i>&nbsp;</b>
+<i>441</i>&nbsp;    SoftMixingMainMixer getMainMixer() {
+<b class="nc"><i>442</i>&nbsp;        return !this.isOpen()?null:this.mainmixer;</b>
+<b class="nc"><i>443</i>&nbsp;    }</b>
+<b class="nc"><i>444</i>&nbsp;</b>
+<i>445</i>&nbsp;    private static class Info extends javax.sound.sampled.Mixer.Info {
+<i>446</i>&nbsp;        Info() {
+<i>447</i>&nbsp;            super(&quot;Gervill Sound Mixer&quot;, &quot;OpenJDK Proposal&quot;, &quot;Software Sound Mixer&quot;, &quot;1.0&quot;);
+<i>448</i>&nbsp;        }
+<i>449</i>&nbsp;    }
+<i>450</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

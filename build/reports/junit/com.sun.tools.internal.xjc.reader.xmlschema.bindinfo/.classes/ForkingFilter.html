@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ForkingFilter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.xjc.reader.xmlschema.bindinfo</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ForkingFilter (com.sun.tools.internal.xjc.reader.xmlschema.bindinfo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ForkingFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 53)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.xjc.reader.xmlschema.bindinfo;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.ArrayList;
+<i>9</i>&nbsp;import org.xml.sax.Attributes;
+<i>10</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>11</i>&nbsp;import org.xml.sax.Locator;
+<i>12</i>&nbsp;import org.xml.sax.SAXException;
+<i>13</i>&nbsp;import org.xml.sax.helpers.XMLFilterImpl;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;public class ForkingFilter extends XMLFilterImpl {
+<i>16</i>&nbsp;    private ContentHandler side;
+<i>17</i>&nbsp;    private int depth;
+<i>18</i>&nbsp;    private final ArrayList&lt;String&gt; namespaces = new ArrayList();
+<i>19</i>&nbsp;    private Locator loc;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public ForkingFilter() {
+<i>22</i>&nbsp;    }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public ForkingFilter(ContentHandler next) {
+<i>25</i>&nbsp;        this.setContentHandler(next);
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public ContentHandler getSideHandler() {
+<i>29</i>&nbsp;        return this.side;
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public void setDocumentLocator(Locator locator) {
+<i>33</i>&nbsp;        super.setDocumentLocator(locator);
+<i>34</i>&nbsp;        this.loc = locator;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public Locator getDocumentLocator() {
+<i>38</i>&nbsp;        return this.loc;
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public void startDocument() throws SAXException {
+<i>42</i>&nbsp;        this.reset();
+<i>43</i>&nbsp;        super.startDocument();
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    private void reset() {
+<i>47</i>&nbsp;        this.namespaces.clear();
+<i>48</i>&nbsp;        this.side = null;
+<i>49</i>&nbsp;        this.depth = 0;
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public void endDocument() throws SAXException {
+<i>53</i>&nbsp;        this.loc = null;
+<i>54</i>&nbsp;        this.reset();
+<i>55</i>&nbsp;        super.endDocument();
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public void startPrefixMapping(String prefix, String uri) throws SAXException {
+<i>59</i>&nbsp;        if(!&quot;http://www.w3.org/XML/1998/namespace&quot;.equals(uri)) {
+<i>60</i>&nbsp;            if(this.side != null) {
+<i>61</i>&nbsp;                this.side.startPrefixMapping(prefix, uri);
+<i>62</i>&nbsp;            }
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;            this.namespaces.add(prefix);</b>
+<i>65</i>&nbsp;            this.namespaces.add(uri);
+<i>66</i>&nbsp;            super.startPrefixMapping(prefix, uri);
+<i>67</i>&nbsp;        }
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public void endPrefixMapping(String prefix) throws SAXException {
+<b class="nc"><i>71</i>&nbsp;        if(!&quot;xml&quot;.equals(prefix)) {</b>
+<b class="nc"><i>72</i>&nbsp;            if(this.side != null) {</b>
+<i>73</i>&nbsp;                this.side.endPrefixMapping(prefix);
+<i>74</i>&nbsp;            }
+<i>75</i>&nbsp;
+<b class="nc"><i>76</i>&nbsp;            super.endPrefixMapping(prefix);</b>
+<i>77</i>&nbsp;            this.namespaces.remove(this.namespaces.size() - 1);
+<i>78</i>&nbsp;            this.namespaces.remove(this.namespaces.size() - 1);
+<i>79</i>&nbsp;        }
+<b class="nc"><i>80</i>&nbsp;    }</b>
+<b class="nc"><i>81</i>&nbsp;</b>
+<i>82</i>&nbsp;    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+<i>83</i>&nbsp;        if(this.side != null) {
+<i>84</i>&nbsp;            this.side.startElement(uri, localName, qName, atts);
+<b class="nc"><i>85</i>&nbsp;            ++this.depth;</b>
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;        super.startElement(uri, localName, qName, atts);
+<b class="nc"><i>89</i>&nbsp;    }</b>
+<b class="nc"><i>90</i>&nbsp;</b>
+<i>91</i>&nbsp;    public void startForking(String uri, String localName, String qName, Attributes atts, ContentHandler side) throws SAXException {
+<i>92</i>&nbsp;        if(this.side != null) {
+<i>93</i>&nbsp;            throw new IllegalStateException();
+<b class="nc"><i>94</i>&nbsp;        } else {</b>
+<b class="nc"><i>95</i>&nbsp;            this.side = side;</b>
+<b class="nc"><i>96</i>&nbsp;            this.depth = 1;</b>
+<i>97</i>&nbsp;            side.setDocumentLocator(this.loc);
+<i>98</i>&nbsp;            side.startDocument();
+<i>99</i>&nbsp;
+<b class="nc"><i>100</i>&nbsp;            for(int i = 0; i &lt; this.namespaces.size(); i += 2) {</b>
+<b class="nc"><i>101</i>&nbsp;                side.startPrefixMapping((String)this.namespaces.get(i), (String)this.namespaces.get(i + 1));</b>
+<b class="nc"><i>102</i>&nbsp;            }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;            side.startElement(uri, localName, qName, atts);
+<i>105</i>&nbsp;        }
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<b class="nc"><i>107</i>&nbsp;</b>
+<b class="nc"><i>108</i>&nbsp;    public void endElement(String uri, String localName, String qName) throws SAXException {</b>
+<b class="nc"><i>109</i>&nbsp;        if(this.side != null) {</b>
+<b class="nc"><i>110</i>&nbsp;            this.side.endElement(uri, localName, qName);</b>
+<i>111</i>&nbsp;            --this.depth;
+<i>112</i>&nbsp;            if(this.depth == 0) {
+<i>113</i>&nbsp;                for(int i = this.namespaces.size() - 2; i &gt;= 0; i -= 2) {
+<b class="nc"><i>114</i>&nbsp;                    this.side.endPrefixMapping((String)this.namespaces.get(i));</b>
+<b class="nc"><i>115</i>&nbsp;                }</b>
+<b class="nc"><i>116</i>&nbsp;</b>
+<b class="nc"><i>117</i>&nbsp;                this.side.endDocument();</b>
+<b class="nc"><i>118</i>&nbsp;                this.side = null;</b>
+<i>119</i>&nbsp;            }
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<b class="nc"><i>122</i>&nbsp;        super.endElement(uri, localName, qName);</b>
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<b class="nc"><i>124</i>&nbsp;</b>
+<i>125</i>&nbsp;    public void characters(char[] ch, int start, int length) throws SAXException {
+<b class="nc"><i>126</i>&nbsp;        if(this.side != null) {</b>
+<i>127</i>&nbsp;            this.side.characters(ch, start, length);
+<i>128</i>&nbsp;        }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;        super.characters(ch, start, length);
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<b class="nc"><i>133</i>&nbsp;    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {</b>
+<i>134</i>&nbsp;        if(this.side != null) {
+<b class="nc"><i>135</i>&nbsp;            this.side.ignorableWhitespace(ch, start, length);</b>
+<b class="nc"><i>136</i>&nbsp;        }</b>
+<b class="nc"><i>137</i>&nbsp;</b>
+<b class="nc"><i>138</i>&nbsp;        super.ignorableWhitespace(ch, start, length);</b>
+<b class="nc"><i>139</i>&nbsp;    }</b>
+<b class="nc"><i>140</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

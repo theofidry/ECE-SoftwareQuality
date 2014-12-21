@@ -1,0 +1,238 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LogStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.rmi.server</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LogStream (java.rmi.server)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LogStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 62)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.rmi.server;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.OutputStream;
+<i>11</i>&nbsp;import java.io.OutputStreamWriter;
+<i>12</i>&nbsp;import java.io.PrintStream;
+<i>13</i>&nbsp;import java.util.Date;
+<i>14</i>&nbsp;import java.util.Hashtable;
+<i>15</i>&nbsp;import java.util.logging.LoggingPermission;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;/** @deprecated */
+<i>18</i>&nbsp;@Deprecated
+<i>19</i>&nbsp;public class LogStream extends PrintStream {
+<i>20</i>&nbsp;    private static Hashtable known = new Hashtable(5);
+<i>21</i>&nbsp;    private static PrintStream defaultStream;
+<i>22</i>&nbsp;    private String name;
+<b class="nc"><i>23</i>&nbsp;    private OutputStream logOut;</b>
+<i>24</i>&nbsp;    private OutputStreamWriter logWriter;
+<b class="nc"><i>25</i>&nbsp;    private StringBuffer buffer = new StringBuffer();</b>
+<i>26</i>&nbsp;    private ByteArrayOutputStream bufOut;
+<i>27</i>&nbsp;    public static final int SILENT = 0;
+<i>28</i>&nbsp;    public static final int BRIEF = 10;
+<i>29</i>&nbsp;    public static final int VERBOSE = 20;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    /** @deprecated */
+<i>32</i>&nbsp;    @Deprecated
+<i>33</i>&nbsp;    private LogStream(String var1, OutputStream var2) {
+<i>34</i>&nbsp;        super(new ByteArrayOutputStream());
+<i>35</i>&nbsp;        this.bufOut = (ByteArrayOutputStream)super.out;
+<i>36</i>&nbsp;        this.name = var1;
+<b class="nc"><i>37</i>&nbsp;        this.setOutputStream(var2);</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    /** @deprecated */
+<i>41</i>&nbsp;    @Deprecated
+<i>42</i>&nbsp;    public static LogStream log(String var0) {
+<i>43</i>&nbsp;        Hashtable var2 = known;
+<i>44</i>&nbsp;        synchronized(known) {
+<i>45</i>&nbsp;            LogStream var1 = (LogStream)known.get(var0);
+<i>46</i>&nbsp;            if(var1 == null) {
+<i>47</i>&nbsp;                var1 = new LogStream(var0, defaultStream);
+<i>48</i>&nbsp;            }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;            known.put(var0, var1);
+<i>51</i>&nbsp;            return var1;
+<i>52</i>&nbsp;        }
+<i>53</i>&nbsp;    }
+<b class="nc"><i>54</i>&nbsp;</b>
+<b class="nc"><i>55</i>&nbsp;    /** @deprecated */</b>
+<i>56</i>&nbsp;    @Deprecated
+<b class="nc"><i>57</i>&nbsp;    public static synchronized PrintStream getDefaultStream() {</b>
+<b class="nc"><i>58</i>&nbsp;        return defaultStream;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /** @deprecated */
+<i>62</i>&nbsp;    @Deprecated
+<i>63</i>&nbsp;    public static synchronized void setDefaultStream(PrintStream var0) {
+<i>64</i>&nbsp;        SecurityManager var1 = System.getSecurityManager();
+<i>65</i>&nbsp;        if(var1 != null) {
+<i>66</i>&nbsp;            var1.checkPermission(new LoggingPermission(&quot;control&quot;, (String)null));
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;        defaultStream = var0;
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /** @deprecated */
+<b class="nc"><i>73</i>&nbsp;    @Deprecated</b>
+<b class="nc"><i>74</i>&nbsp;    public synchronized OutputStream getOutputStream() {</b>
+<b class="nc"><i>75</i>&nbsp;        return this.logOut;</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<b class="nc"><i>78</i>&nbsp;    /** @deprecated */</b>
+<b class="nc"><i>79</i>&nbsp;    @Deprecated</b>
+<b class="nc"><i>80</i>&nbsp;    public synchronized void setOutputStream(OutputStream var1) {</b>
+<i>81</i>&nbsp;        this.logOut = var1;
+<i>82</i>&nbsp;        this.logWriter = new OutputStreamWriter(this.logOut);
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /** @deprecated */
+<i>86</i>&nbsp;    @Deprecated
+<i>87</i>&nbsp;    public void write(int var1) {
+<i>88</i>&nbsp;        if(var1 == 10) {
+<i>89</i>&nbsp;            synchronized(this) {
+<i>90</i>&nbsp;                OutputStream var3 = this.logOut;
+<i>91</i>&nbsp;                synchronized(this.logOut) {
+<b class="nc"><i>92</i>&nbsp;                    this.buffer.setLength(0);</b>
+<i>93</i>&nbsp;                    this.buffer.append((new Date()).toString());
+<i>94</i>&nbsp;                    this.buffer.append(&#39;:&#39;);
+<i>95</i>&nbsp;                    this.buffer.append(this.name);
+<i>96</i>&nbsp;                    this.buffer.append(&#39;:&#39;);
+<i>97</i>&nbsp;                    this.buffer.append(Thread.currentThread().getName());
+<i>98</i>&nbsp;                    this.buffer.append(&#39;:&#39;);
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;                    try {
+<i>101</i>&nbsp;                        this.logWriter.write(this.buffer.toString());
+<i>102</i>&nbsp;                        this.logWriter.flush();
+<i>103</i>&nbsp;                        this.bufOut.writeTo(this.logOut);
+<b class="nc"><i>104</i>&nbsp;                        this.logOut.write(var1);</b>
+<i>105</i>&nbsp;                        this.logOut.flush();
+<b class="nc"><i>106</i>&nbsp;                    } catch (IOException var12) {</b>
+<b class="nc"><i>107</i>&nbsp;                        this.setError();</b>
+<i>108</i>&nbsp;                    } finally {
+<i>109</i>&nbsp;                        this.bufOut.reset();
+<i>110</i>&nbsp;                    }
+<b class="nc"><i>111</i>&nbsp;                }</b>
+<i>112</i>&nbsp;            }
+<i>113</i>&nbsp;        } else {
+<i>114</i>&nbsp;            super.write(var1);
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /** @deprecated */
+<i>120</i>&nbsp;    @Deprecated
+<i>121</i>&nbsp;    public void write(byte[] var1, int var2, int var3) {
+<i>122</i>&nbsp;        if(var3 &lt; 0) {
+<i>123</i>&nbsp;            throw new ArrayIndexOutOfBoundsException(var3);
+<b class="nc"><i>124</i>&nbsp;        } else {</b>
+<i>125</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>126</i>&nbsp;                this.write(var1[var2 + var4]);
+<i>127</i>&nbsp;            }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    /** @deprecated */
+<i>133</i>&nbsp;    @Deprecated
+<i>134</i>&nbsp;    public String toString() {
+<i>135</i>&nbsp;        return this.name;
+<i>136</i>&nbsp;    }
+<b class="nc"><i>137</i>&nbsp;</b>
+<i>138</i>&nbsp;    /** @deprecated */
+<i>139</i>&nbsp;    @Deprecated
+<b class="nc"><i>140</i>&nbsp;    public static int parseLevel(String var0) {</b>
+<i>141</i>&nbsp;        if(var0 != null &amp;&amp; var0.length() &gt;= 1) {
+<i>142</i>&nbsp;            try {
+<i>143</i>&nbsp;                return Integer.parseInt(var0);
+<i>144</i>&nbsp;            } catch (NumberFormatException var2) {
+<i>145</i>&nbsp;                return var0.length() &lt; 1?-1:(&quot;SILENT&quot;.startsWith(var0.toUpperCase())?0:(&quot;BRIEF&quot;.startsWith(var0.toUpperCase())?10:(&quot;VERBOSE&quot;.startsWith(var0.toUpperCase())?20:-1)));
+<i>146</i>&nbsp;            }
+<i>147</i>&nbsp;        } else {
+<i>148</i>&nbsp;            return -1;
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    static {
+<i>153</i>&nbsp;        defaultStream = System.err;
+<b class="nc"><i>154</i>&nbsp;    }</b>
+<i>155</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

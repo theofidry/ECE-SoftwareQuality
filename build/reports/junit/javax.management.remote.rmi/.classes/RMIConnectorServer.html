@@ -1,0 +1,576 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RMIConnectorServer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.management.remote.rmi</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RMIConnectorServer (javax.management.remote.rmi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RMIConnectorServer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 225)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.management.remote.rmi;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.remote.internal.IIOPHelper;
+<i>9</i>&nbsp;import com.sun.jmx.remote.security.MBeanServerFileAccessController;
+<i>10</i>&nbsp;import com.sun.jmx.remote.util.ClassLogger;
+<i>11</i>&nbsp;import com.sun.jmx.remote.util.EnvHelp;
+<i>12</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>13</i>&nbsp;import java.io.IOException;
+<i>14</i>&nbsp;import java.io.ObjectOutputStream;
+<i>15</i>&nbsp;import java.net.MalformedURLException;
+<i>16</i>&nbsp;import java.rmi.server.RMIClientSocketFactory;
+<i>17</i>&nbsp;import java.rmi.server.RMIServerSocketFactory;
+<i>18</i>&nbsp;import java.util.Collections;
+<i>19</i>&nbsp;import java.util.HashMap;
+<i>20</i>&nbsp;import java.util.HashSet;
+<i>21</i>&nbsp;import java.util.Hashtable;
+<i>22</i>&nbsp;import java.util.Map;
+<i>23</i>&nbsp;import java.util.Set;
+<i>24</i>&nbsp;import javax.management.InstanceNotFoundException;
+<i>25</i>&nbsp;import javax.management.MBeanServer;
+<i>26</i>&nbsp;import javax.management.remote.JMXConnector;
+<i>27</i>&nbsp;import javax.management.remote.JMXConnectorServer;
+<i>28</i>&nbsp;import javax.management.remote.JMXServiceURL;
+<i>29</i>&nbsp;import javax.management.remote.MBeanServerForwarder;
+<i>30</i>&nbsp;import javax.management.remote.rmi.RMIConnector;
+<i>31</i>&nbsp;import javax.management.remote.rmi.RMIIIOPServerImpl;
+<i>32</i>&nbsp;import javax.management.remote.rmi.RMIJRMPServerImpl;
+<i>33</i>&nbsp;import javax.management.remote.rmi.RMIServer;
+<i>34</i>&nbsp;import javax.management.remote.rmi.RMIServerImpl;
+<i>35</i>&nbsp;import javax.naming.InitialContext;
+<i>36</i>&nbsp;import javax.naming.NamingException;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;public class RMIConnectorServer extends JMXConnectorServer {
+<i>39</i>&nbsp;    public static final String JNDI_REBIND_ATTRIBUTE = &quot;jmx.remote.jndi.rebind&quot;;
+<i>40</i>&nbsp;    public static final String RMI_CLIENT_SOCKET_FACTORY_ATTRIBUTE = &quot;jmx.remote.rmi.client.socket.factory&quot;;
+<i>41</i>&nbsp;    public static final String RMI_SERVER_SOCKET_FACTORY_ATTRIBUTE = &quot;jmx.remote.rmi.server.socket.factory&quot;;
+<i>42</i>&nbsp;    private static final char[] intToAlpha = new char[]{&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39;, &#39;F&#39;, &#39;G&#39;, &#39;H&#39;, &#39;I&#39;, &#39;J&#39;, &#39;K&#39;, &#39;L&#39;, &#39;M&#39;, &#39;N&#39;, &#39;O&#39;, &#39;P&#39;, &#39;Q&#39;, &#39;R&#39;, &#39;S&#39;, &#39;T&#39;, &#39;U&#39;, &#39;V&#39;, &#39;W&#39;, &#39;X&#39;, &#39;Y&#39;, &#39;Z&#39;, &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;, &#39;i&#39;, &#39;j&#39;, &#39;k&#39;, &#39;l&#39;, &#39;m&#39;, &#39;n&#39;, &#39;o&#39;, &#39;p&#39;, &#39;q&#39;, &#39;r&#39;, &#39;s&#39;, &#39;t&#39;, &#39;u&#39;, &#39;v&#39;, &#39;w&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;0&#39;, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;5&#39;, &#39;6&#39;, &#39;7&#39;, &#39;8&#39;, &#39;9&#39;, &#39;+&#39;, &#39;/&#39;};
+<i>43</i>&nbsp;    private static ClassLogger logger = new ClassLogger(&quot;javax.management.remote.rmi&quot;, &quot;RMIConnectorServer&quot;);
+<i>44</i>&nbsp;    private JMXServiceURL address;
+<i>45</i>&nbsp;    private RMIServerImpl rmiServerImpl;
+<i>46</i>&nbsp;    private final Map&lt;String, ?&gt; attributes;
+<i>47</i>&nbsp;    private ClassLoader defaultClassLoader;
+<i>48</i>&nbsp;    private String boundJndiUrl;
+<i>49</i>&nbsp;    private static final int CREATED = 0;
+<i>50</i>&nbsp;    private static final int STARTED = 1;
+<i>51</i>&nbsp;    private static final int STOPPED = 2;
+<i>52</i>&nbsp;    private int state;
+<i>53</i>&nbsp;    private static final Set&lt;RMIConnectorServer&gt; openedServers = new HashSet();
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public RMIConnectorServer(JMXServiceURL var1, Map&lt;String, ?&gt; var2) throws IOException {
+<i>56</i>&nbsp;        this(var1, var2, (MBeanServer)null);
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public RMIConnectorServer(JMXServiceURL var1, Map&lt;String, ?&gt; var2, MBeanServer var3) throws IOException {
+<i>60</i>&nbsp;        this(var1, var2, (RMIServerImpl)null, var3);
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public RMIConnectorServer(JMXServiceURL var1, Map&lt;String, ?&gt; var2, RMIServerImpl var3, MBeanServer var4) throws IOException {
+<i>64</i>&nbsp;        super(var4);
+<i>65</i>&nbsp;        this.defaultClassLoader = null;
+<i>66</i>&nbsp;        this.state = 0;
+<i>67</i>&nbsp;        if(var1 == null) {
+<i>68</i>&nbsp;            throw new IllegalArgumentException(&quot;Null JMXServiceURL&quot;);
+<i>69</i>&nbsp;        } else {
+<i>70</i>&nbsp;            if(var3 == null) {
+<i>71</i>&nbsp;                String var5 = var1.getProtocol();
+<i>72</i>&nbsp;                String var6;
+<i>73</i>&nbsp;                if(var5 == null || !var5.equals(&quot;rmi&quot;) &amp;&amp; !var5.equals(&quot;iiop&quot;)) {
+<i>74</i>&nbsp;                    var6 = &quot;Invalid protocol type: &quot; + var5;
+<i>75</i>&nbsp;                    throw new MalformedURLException(var6);
+<i>76</i>&nbsp;                }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;                var6 = var1.getURLPath();
+<i>79</i>&nbsp;                if(!var6.equals(&quot;&quot;) &amp;&amp; !var6.equals(&quot;/&quot;) &amp;&amp; !var6.startsWith(&quot;/jndi/&quot;)) {
+<i>80</i>&nbsp;                    throw new MalformedURLException(&quot;URL path must be empty or start with /jndi/&quot;);
+<i>81</i>&nbsp;                }
+<i>82</i>&nbsp;            }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;            if(var2 == null) {
+<i>85</i>&nbsp;                this.attributes = Collections.emptyMap();
+<i>86</i>&nbsp;            } else {
+<i>87</i>&nbsp;                EnvHelp.checkAttributes(var2);
+<i>88</i>&nbsp;                this.attributes = Collections.unmodifiableMap(var2);
+<i>89</i>&nbsp;            }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;            this.address = var1;
+<i>92</i>&nbsp;            this.rmiServerImpl = var3;
+<i>93</i>&nbsp;        }
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public JMXConnector toJMXConnector(Map&lt;String, ?&gt; var1) throws IOException {
+<i>97</i>&nbsp;        if(!this.isActive()) {
+<i>98</i>&nbsp;            throw new IllegalStateException(&quot;Connector is not active&quot;);
+<i>99</i>&nbsp;        } else {
+<i>100</i>&nbsp;            HashMap var2 = new HashMap(this.attributes == null?Collections.emptyMap():this.attributes);
+<i>101</i>&nbsp;            if(var1 != null) {
+<i>102</i>&nbsp;                EnvHelp.checkAttributes(var1);
+<i>103</i>&nbsp;                var2.putAll(var1);
+<i>104</i>&nbsp;            }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;            Map var4 = EnvHelp.filterAttributes(var2);
+<i>107</i>&nbsp;            RMIServer var3 = (RMIServer)this.rmiServerImpl.toStub();
+<i>108</i>&nbsp;            return new RMIConnector(var3, var4);
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public synchronized void start() throws IOException {
+<i>113</i>&nbsp;        boolean var1 = logger.traceOn();
+<b class="nc"><i>114</i>&nbsp;        if(this.state == 1) {</b>
+<i>115</i>&nbsp;            if(var1) {
+<i>116</i>&nbsp;                logger.trace(&quot;start&quot;, &quot;already started&quot;);
+<i>117</i>&nbsp;            }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;        } else if(this.state == 2) {
+<i>120</i>&nbsp;            if(var1) {
+<i>121</i>&nbsp;                logger.trace(&quot;start&quot;, &quot;already stopped&quot;);
+<i>122</i>&nbsp;            }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;            throw new IOException(&quot;The server has been stopped.&quot;);
+<i>125</i>&nbsp;        } else if(this.getMBeanServer() == null) {
+<i>126</i>&nbsp;            throw new IllegalStateException(&quot;This connector server is not attached to an MBean server&quot;);
+<i>127</i>&nbsp;        } else {
+<i>128</i>&nbsp;            if(this.attributes != null) {
+<i>129</i>&nbsp;                String var2 = (String)this.attributes.get(&quot;jmx.remote.x.access.file&quot;);
+<i>130</i>&nbsp;                if(var2 != null) {
+<i>131</i>&nbsp;                    MBeanServerFileAccessController var3;
+<i>132</i>&nbsp;                    try {
+<i>133</i>&nbsp;                        var3 = new MBeanServerFileAccessController(var2);
+<i>134</i>&nbsp;                    } catch (IOException var12) {
+<i>135</i>&nbsp;                        throw (IllegalArgumentException)EnvHelp.initCause(new IllegalArgumentException(var12.getMessage()), var12);
+<i>136</i>&nbsp;                    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;                    this.setMBeanServerForwarder(var3);
+<i>139</i>&nbsp;                }
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;            try {
+<i>143</i>&nbsp;                if(var1) {
+<i>144</i>&nbsp;                    logger.trace(&quot;start&quot;, &quot;setting default class loader&quot;);
+<i>145</i>&nbsp;                }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;                this.defaultClassLoader = EnvHelp.resolveServerClassLoader(this.attributes, this.getMBeanServer());
+<i>148</i>&nbsp;            } catch (InstanceNotFoundException var14) {
+<b class="nc"><i>149</i>&nbsp;                IllegalArgumentException var16 = new IllegalArgumentException(&quot;ClassLoader not found: &quot; + var14);</b>
+<i>150</i>&nbsp;                throw (IllegalArgumentException)EnvHelp.initCause(var16, var14);
+<i>151</i>&nbsp;            }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;            if(var1) {
+<i>154</i>&nbsp;                logger.trace(&quot;start&quot;, &quot;setting RMIServer object&quot;);
+<i>155</i>&nbsp;            }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;            RMIServerImpl var15;
+<i>158</i>&nbsp;            if(this.rmiServerImpl != null) {
+<i>159</i>&nbsp;                var15 = this.rmiServerImpl;
+<i>160</i>&nbsp;            } else {
+<i>161</i>&nbsp;                var15 = this.newServer();
+<i>162</i>&nbsp;            }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;            var15.setMBeanServer(this.getMBeanServer());
+<i>165</i>&nbsp;            var15.setDefaultClassLoader(this.defaultClassLoader);
+<i>166</i>&nbsp;            var15.setRMIConnectorServer(this);
+<i>167</i>&nbsp;            var15.export();
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;            try {
+<i>170</i>&nbsp;                if(var1) {
+<i>171</i>&nbsp;                    logger.trace(&quot;start&quot;, &quot;getting RMIServer object to export&quot;);
+<i>172</i>&nbsp;                }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;                RMIServer var17 = objectToBind(var15, this.attributes);
+<i>175</i>&nbsp;                if(this.address != null &amp;&amp; this.address.getURLPath().startsWith(&quot;/jndi/&quot;)) {
+<i>176</i>&nbsp;                    String var4 = this.address.getURLPath().substring(6);
+<i>177</i>&nbsp;                    if(var1) {
+<i>178</i>&nbsp;                        logger.trace(&quot;start&quot;, &quot;Using external directory: &quot; + var4);
+<i>179</i>&nbsp;                    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;                    String var5 = (String)this.attributes.get(&quot;jmx.remote.jndi.rebind&quot;);
+<i>182</i>&nbsp;                    boolean var6 = EnvHelp.computeBooleanFromString(var5);
+<i>183</i>&nbsp;                    if(var1) {
+<i>184</i>&nbsp;                        logger.trace(&quot;start&quot;, &quot;jmx.remote.jndi.rebind=&quot; + var6);
+<i>185</i>&nbsp;                    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;                    try {
+<i>188</i>&nbsp;                        if(var1) {
+<i>189</i>&nbsp;                            logger.trace(&quot;start&quot;, &quot;binding to &quot; + var4);
+<b class="nc"><i>190</i>&nbsp;                        }</b>
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;                        Hashtable var7 = EnvHelp.mapToHashtable(this.attributes);</b>
+<i>193</i>&nbsp;                        this.bind(var4, var7, var17, var6);
+<b class="nc"><i>194</i>&nbsp;                        this.boundJndiUrl = var4;</b>
+<b class="nc"><i>195</i>&nbsp;                    } catch (NamingException var11) {</b>
+<b class="nc"><i>196</i>&nbsp;                        throw newIOException(&quot;Cannot bind to URL [&quot; + var4 + &quot;]: &quot; + var11, var11);</b>
+<b class="nc"><i>197</i>&nbsp;                    }</b>
+<b class="nc"><i>198</i>&nbsp;                } else {</b>
+<i>199</i>&nbsp;                    if(var1) {
+<b class="nc"><i>200</i>&nbsp;                        logger.trace(&quot;start&quot;, &quot;Encoding URL&quot;);</b>
+<b class="nc"><i>201</i>&nbsp;                    }</b>
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;                    this.encodeStubInAddress(var17, this.attributes);
+<i>204</i>&nbsp;                    if(var1) {
+<i>205</i>&nbsp;                        logger.trace(&quot;start&quot;, &quot;Encoded URL: &quot; + this.address);
+<b class="nc"><i>206</i>&nbsp;                    }</b>
+<i>207</i>&nbsp;                }
+<i>208</i>&nbsp;            } catch (Exception var13) {
+<i>209</i>&nbsp;                try {
+<b class="nc"><i>210</i>&nbsp;                    var15.close();</b>
+<b class="nc"><i>211</i>&nbsp;                } catch (Exception var9) {</b>
+<i>212</i>&nbsp;                    ;
+<b class="nc"><i>213</i>&nbsp;                }</b>
+<b class="nc"><i>214</i>&nbsp;</b>
+<i>215</i>&nbsp;                if(var13 instanceof RuntimeException) {
+<i>216</i>&nbsp;                    throw (RuntimeException)var13;
+<b class="nc"><i>217</i>&nbsp;                }</b>
+<b class="nc"><i>218</i>&nbsp;</b>
+<i>219</i>&nbsp;                if(var13 instanceof IOException) {
+<i>220</i>&nbsp;                    throw (IOException)var13;
+<i>221</i>&nbsp;                }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;                throw newIOException(&quot;Got unexpected exception while starting the connector server: &quot; + var13, var13);
+<i>224</i>&nbsp;            }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;            this.rmiServerImpl = var15;
+<i>227</i>&nbsp;            Set var18 = openedServers;
+<i>228</i>&nbsp;            synchronized(openedServers) {
+<i>229</i>&nbsp;                openedServers.add(this);
+<i>230</i>&nbsp;            }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;            this.state = 1;
+<i>233</i>&nbsp;            if(var1) {
+<i>234</i>&nbsp;                logger.trace(&quot;start&quot;, &quot;Connector Server Address = &quot; + this.address);
+<i>235</i>&nbsp;                logger.trace(&quot;start&quot;, &quot;started.&quot;);
+<i>236</i>&nbsp;            }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;        }
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    public void stop() throws IOException {
+<i>242</i>&nbsp;        boolean var1 = logger.traceOn();
+<i>243</i>&nbsp;        synchronized(this) {
+<i>244</i>&nbsp;            if(this.state == 2) {
+<i>245</i>&nbsp;                if(var1) {
+<i>246</i>&nbsp;                    logger.trace(&quot;stop&quot;, &quot;already stopped.&quot;);
+<b class="nc"><i>247</i>&nbsp;                }</b>
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;                return;
+<i>250</i>&nbsp;            }
+<b class="nc"><i>251</i>&nbsp;</b>
+<i>252</i>&nbsp;            if(this.state == 0 &amp;&amp; var1) {
+<i>253</i>&nbsp;                logger.trace(&quot;stop&quot;, &quot;not started yet.&quot;);
+<i>254</i>&nbsp;            }
+<b class="nc"><i>255</i>&nbsp;</b>
+<b class="nc"><i>256</i>&nbsp;            if(var1) {</b>
+<b class="nc"><i>257</i>&nbsp;                logger.trace(&quot;stop&quot;, &quot;stopping.&quot;);</b>
+<i>258</i>&nbsp;            }
+<i>259</i>&nbsp;
+<b class="nc"><i>260</i>&nbsp;            this.state = 2;</b>
+<i>261</i>&nbsp;        }
+<b class="nc"><i>262</i>&nbsp;</b>
+<i>263</i>&nbsp;        Set var2 = openedServers;
+<b class="nc"><i>264</i>&nbsp;        synchronized(openedServers) {</b>
+<i>265</i>&nbsp;            openedServers.remove(this);
+<i>266</i>&nbsp;        }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;        IOException var9 = null;
+<i>269</i>&nbsp;        if(this.rmiServerImpl != null) {
+<i>270</i>&nbsp;            try {
+<i>271</i>&nbsp;                if(var1) {
+<i>272</i>&nbsp;                    logger.trace(&quot;stop&quot;, &quot;closing RMI server.&quot;);
+<i>273</i>&nbsp;                }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;                this.rmiServerImpl.close();
+<i>276</i>&nbsp;            } catch (IOException var7) {
+<i>277</i>&nbsp;                if(var1) {
+<i>278</i>&nbsp;                    logger.trace(&quot;stop&quot;, &quot;failed to close RMI server: &quot; + var7);
+<i>279</i>&nbsp;                }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;                if(logger.debugOn()) {
+<i>282</i>&nbsp;                    logger.debug(&quot;stop&quot;, var7);
+<i>283</i>&nbsp;                }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;                var9 = var7;
+<i>286</i>&nbsp;            }
+<i>287</i>&nbsp;        }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;        if(this.boundJndiUrl != null) {
+<i>290</i>&nbsp;            try {
+<i>291</i>&nbsp;                if(var1) {
+<i>292</i>&nbsp;                    logger.trace(&quot;stop&quot;, &quot;unbind from external directory: &quot; + this.boundJndiUrl);
+<i>293</i>&nbsp;                }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;                Hashtable var3 = EnvHelp.mapToHashtable(this.attributes);
+<i>296</i>&nbsp;                InitialContext var4 = new InitialContext(var3);
+<i>297</i>&nbsp;                var4.unbind(this.boundJndiUrl);
+<i>298</i>&nbsp;                var4.close();
+<i>299</i>&nbsp;            } catch (NamingException var6) {
+<i>300</i>&nbsp;                if(var1) {
+<i>301</i>&nbsp;                    logger.trace(&quot;stop&quot;, &quot;failed to unbind RMI server: &quot; + var6);
+<i>302</i>&nbsp;                }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;                if(logger.debugOn()) {
+<i>305</i>&nbsp;                    logger.debug(&quot;stop&quot;, var6);
+<i>306</i>&nbsp;                }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;                if(var9 == null) {
+<i>309</i>&nbsp;                    var9 = newIOException(&quot;Cannot bind to URL: &quot; + var6, var6);
+<i>310</i>&nbsp;                }
+<i>311</i>&nbsp;            }
+<i>312</i>&nbsp;        }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;        if(var9 != null) {
+<i>315</i>&nbsp;            throw var9;
+<i>316</i>&nbsp;        } else {
+<i>317</i>&nbsp;            if(var1) {
+<i>318</i>&nbsp;                logger.trace(&quot;stop&quot;, &quot;stopped&quot;);
+<i>319</i>&nbsp;            }
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;        }
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    public synchronized boolean isActive() {
+<i>325</i>&nbsp;        return this.state == 1;
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<b class="nc"><i>328</i>&nbsp;    public JMXServiceURL getAddress() {</b>
+<i>329</i>&nbsp;        return !this.isActive()?null:this.address;
+<b class="nc"><i>330</i>&nbsp;    }</b>
+<b class="nc"><i>331</i>&nbsp;</b>
+<i>332</i>&nbsp;    public Map&lt;String, ?&gt; getAttributes() {
+<b class="nc"><i>333</i>&nbsp;        Map var1 = EnvHelp.filterAttributes(this.attributes);</b>
+<b class="nc"><i>334</i>&nbsp;        return Collections.unmodifiableMap(var1);</b>
+<b class="nc"><i>335</i>&nbsp;    }</b>
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    public synchronized void setMBeanServerForwarder(MBeanServerForwarder var1) {
+<b class="nc"><i>338</i>&nbsp;        super.setMBeanServerForwarder(var1);</b>
+<b class="nc"><i>339</i>&nbsp;        if(this.rmiServerImpl != null) {</b>
+<i>340</i>&nbsp;            this.rmiServerImpl.setMBeanServer(this.getMBeanServer());
+<i>341</i>&nbsp;        }
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;    }
+<i>344</i>&nbsp;
+<b class="nc"><i>345</i>&nbsp;    protected void connectionOpened(String var1, String var2, Object var3) {</b>
+<i>346</i>&nbsp;        super.connectionOpened(var1, var2, var3);
+<i>347</i>&nbsp;    }
+<b class="nc"><i>348</i>&nbsp;</b>
+<i>349</i>&nbsp;    protected void connectionClosed(String var1, String var2, Object var3) {
+<b class="nc"><i>350</i>&nbsp;        super.connectionClosed(var1, var2, var3);</b>
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    protected void connectionFailed(String var1, String var2, Object var3) {
+<b class="nc"><i>354</i>&nbsp;        super.connectionFailed(var1, var2, var3);</b>
+<i>355</i>&nbsp;    }
+<b class="nc"><i>356</i>&nbsp;</b>
+<b class="nc"><i>357</i>&nbsp;    void bind(String var1, Hashtable&lt;?, ?&gt; var2, RMIServer var3, boolean var4) throws NamingException, MalformedURLException {</b>
+<b class="nc"><i>358</i>&nbsp;        InitialContext var5 = new InitialContext(var2);</b>
+<i>359</i>&nbsp;        if(var4) {
+<b class="nc"><i>360</i>&nbsp;            var5.rebind(var1, var3);</b>
+<i>361</i>&nbsp;        } else {
+<i>362</i>&nbsp;            var5.bind(var1, var3);
+<b class="nc"><i>363</i>&nbsp;        }</b>
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;        var5.close();
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;    RMIServerImpl newServer() throws IOException {</b>
+<b class="nc"><i>369</i>&nbsp;        boolean var1 = isIiopURL(this.address, true);</b>
+<i>370</i>&nbsp;        int var2;
+<b class="nc"><i>371</i>&nbsp;        if(this.address == null) {</b>
+<b class="nc"><i>372</i>&nbsp;            var2 = 0;</b>
+<i>373</i>&nbsp;        } else {
+<b class="nc"><i>374</i>&nbsp;            var2 = this.address.getPort();</b>
+<b class="nc"><i>375</i>&nbsp;        }</b>
+<i>376</i>&nbsp;
+<b class="nc"><i>377</i>&nbsp;        return var1?newIIOPServer(this.attributes):newJRMPServer(this.attributes, var2);</b>
+<i>378</i>&nbsp;    }
+<i>379</i>&nbsp;
+<b class="nc"><i>380</i>&nbsp;    private void encodeStubInAddress(RMIServer var1, Map&lt;String, ?&gt; var2) throws IOException {</b>
+<b class="nc"><i>381</i>&nbsp;        String var3;</b>
+<i>382</i>&nbsp;        String var4;
+<b class="nc"><i>383</i>&nbsp;        int var5;</b>
+<i>384</i>&nbsp;        if(this.address == null) {
+<b class="nc"><i>385</i>&nbsp;            if(IIOPHelper.isStub(var1)) {</b>
+<b class="nc"><i>386</i>&nbsp;                var3 = &quot;iiop&quot;;</b>
+<b class="nc"><i>387</i>&nbsp;            } else {</b>
+<b class="nc"><i>388</i>&nbsp;                var3 = &quot;rmi&quot;;</b>
+<i>389</i>&nbsp;            }
+<i>390</i>&nbsp;
+<b class="nc"><i>391</i>&nbsp;            var4 = null;</b>
+<b class="nc"><i>392</i>&nbsp;            var5 = 0;</b>
+<i>393</i>&nbsp;        } else {
+<b class="nc"><i>394</i>&nbsp;            var3 = this.address.getProtocol();</b>
+<b class="nc"><i>395</i>&nbsp;            var4 = this.address.getHost().equals(&quot;&quot;)?null:this.address.getHost();</b>
+<i>396</i>&nbsp;            var5 = this.address.getPort();
+<b class="nc"><i>397</i>&nbsp;        }</b>
+<b class="nc"><i>398</i>&nbsp;</b>
+<i>399</i>&nbsp;        String var6 = encodeStub(var1, var2);
+<b class="nc"><i>400</i>&nbsp;        this.address = new JMXServiceURL(var3, var4, var5, var6);</b>
+<i>401</i>&nbsp;    }
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;    static boolean isIiopURL(JMXServiceURL var0, boolean var1) throws MalformedURLException {
+<b class="nc"><i>404</i>&nbsp;        String var2 = var0.getProtocol();</b>
+<b class="nc"><i>405</i>&nbsp;        if(var2.equals(&quot;rmi&quot;)) {</b>
+<i>406</i>&nbsp;            return false;
+<i>407</i>&nbsp;        } else if(var2.equals(&quot;iiop&quot;)) {
+<b class="nc"><i>408</i>&nbsp;            return true;</b>
+<i>409</i>&nbsp;        } else if(var1) {
+<b class="nc"><i>410</i>&nbsp;            throw new MalformedURLException(&quot;URL must have protocol \&quot;rmi\&quot; or \&quot;iiop\&quot;: \&quot;&quot; + var2 + &quot;\&quot;&quot;);</b>
+<i>411</i>&nbsp;        } else {
+<b class="nc"><i>412</i>&nbsp;            return false;</b>
+<i>413</i>&nbsp;        }
+<b class="nc"><i>414</i>&nbsp;    }</b>
+<b class="nc"><i>415</i>&nbsp;</b>
+<i>416</i>&nbsp;    static String encodeStub(RMIServer var0, Map&lt;String, ?&gt; var1) throws IOException {
+<b class="nc"><i>417</i>&nbsp;        return IIOPHelper.isStub(var0)?&quot;/ior/&quot; + encodeIIOPStub(var0, var1):&quot;/stub/&quot; + encodeJRMPStub(var0, var1);</b>
+<i>418</i>&nbsp;    }
+<b class="nc"><i>419</i>&nbsp;</b>
+<b class="nc"><i>420</i>&nbsp;    static String encodeJRMPStub(RMIServer var0, Map&lt;String, ?&gt; var1) throws IOException {</b>
+<i>421</i>&nbsp;        ByteArrayOutputStream var2 = new ByteArrayOutputStream();
+<b class="nc"><i>422</i>&nbsp;        ObjectOutputStream var3 = new ObjectOutputStream(var2);</b>
+<i>423</i>&nbsp;        var3.writeObject(var0);
+<b class="nc"><i>424</i>&nbsp;        var3.close();</b>
+<i>425</i>&nbsp;        byte[] var4 = var2.toByteArray();
+<b class="nc"><i>426</i>&nbsp;        return byteArrayToBase64(var4);</b>
+<i>427</i>&nbsp;    }
+<b class="nc"><i>428</i>&nbsp;</b>
+<i>429</i>&nbsp;    static String encodeIIOPStub(RMIServer var0, Map&lt;String, ?&gt; var1) throws IOException {
+<b class="nc"><i>430</i>&nbsp;        try {</b>
+<b class="nc"><i>431</i>&nbsp;            Object var2 = IIOPHelper.getOrb(var0);</b>
+<i>432</i>&nbsp;            return IIOPHelper.objectToString(var2, var0);
+<b class="nc"><i>433</i>&nbsp;        } catch (RuntimeException var3) {</b>
+<b class="nc"><i>434</i>&nbsp;            throw newIOException(var3.getMessage(), var3);</b>
+<b class="nc"><i>435</i>&nbsp;        }</b>
+<b class="nc"><i>436</i>&nbsp;    }</b>
+<b class="nc"><i>437</i>&nbsp;</b>
+<i>438</i>&nbsp;    private static RMIServer objectToBind(RMIServerImpl var0, Map&lt;String, ?&gt; var1) throws IOException {
+<b class="nc"><i>439</i>&nbsp;        return RMIConnector.connectStub((RMIServer)var0.toStub(), var1);</b>
+<i>440</i>&nbsp;    }
+<i>441</i>&nbsp;
+<b class="nc"><i>442</i>&nbsp;    private static RMIServerImpl newJRMPServer(Map&lt;String, ?&gt; var0, int var1) throws IOException {</b>
+<i>443</i>&nbsp;        RMIClientSocketFactory var2 = (RMIClientSocketFactory)var0.get(&quot;jmx.remote.rmi.client.socket.factory&quot;);
+<b class="nc"><i>444</i>&nbsp;        RMIServerSocketFactory var3 = (RMIServerSocketFactory)var0.get(&quot;jmx.remote.rmi.server.socket.factory&quot;);</b>
+<i>445</i>&nbsp;        return new RMIJRMPServerImpl(var1, var2, var3, var0);
+<b class="nc"><i>446</i>&nbsp;    }</b>
+<b class="nc"><i>447</i>&nbsp;</b>
+<b class="nc"><i>448</i>&nbsp;    private static RMIServerImpl newIIOPServer(Map&lt;String, ?&gt; var0) throws IOException {</b>
+<i>449</i>&nbsp;        return new RMIIIOPServerImpl(var0);
+<b class="nc"><i>450</i>&nbsp;    }</b>
+<i>451</i>&nbsp;
+<b class="nc"><i>452</i>&nbsp;    private static String byteArrayToBase64(byte[] var0) {</b>
+<b class="nc"><i>453</i>&nbsp;        int var1 = var0.length;</b>
+<b class="nc"><i>454</i>&nbsp;        int var2 = var1 / 3;</b>
+<i>455</i>&nbsp;        int var3 = var1 - 3 * var2;
+<i>456</i>&nbsp;        int var4 = 4 * ((var1 + 2) / 3);
+<i>457</i>&nbsp;        StringBuilder var5 = new StringBuilder(var4);
+<i>458</i>&nbsp;        int var6 = 0;
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;        int var7;
+<i>461</i>&nbsp;        int var8;
+<i>462</i>&nbsp;        for(var7 = 0; var7 &lt; var2; ++var7) {
+<i>463</i>&nbsp;            var8 = var0[var6++] &amp; 255;
+<i>464</i>&nbsp;            int var9 = var0[var6++] &amp; 255;
+<i>465</i>&nbsp;            int var10 = var0[var6++] &amp; 255;
+<i>466</i>&nbsp;            var5.append(intToAlpha[var8 &gt;&gt; 2]);
+<i>467</i>&nbsp;            var5.append(intToAlpha[var8 &lt;&lt; 4 &amp; 63 | var9 &gt;&gt; 4]);
+<i>468</i>&nbsp;            var5.append(intToAlpha[var9 &lt;&lt; 2 &amp; 63 | var10 &gt;&gt; 6]);
+<i>469</i>&nbsp;            var5.append(intToAlpha[var10 &amp; 63]);
+<i>470</i>&nbsp;        }
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;        if(var3 != 0) {
+<i>473</i>&nbsp;            var7 = var0[var6++] &amp; 255;
+<i>474</i>&nbsp;            var5.append(intToAlpha[var7 &gt;&gt; 2]);
+<i>475</i>&nbsp;            if(var3 == 1) {
+<i>476</i>&nbsp;                var5.append(intToAlpha[var7 &lt;&lt; 4 &amp; 63]);
+<i>477</i>&nbsp;                var5.append(&quot;==&quot;);
+<i>478</i>&nbsp;            } else {
+<i>479</i>&nbsp;                var8 = var0[var6++] &amp; 255;
+<i>480</i>&nbsp;                var5.append(intToAlpha[var7 &lt;&lt; 4 &amp; 63 | var8 &gt;&gt; 4]);
+<i>481</i>&nbsp;                var5.append(intToAlpha[var8 &lt;&lt; 2 &amp; 63]);
+<i>482</i>&nbsp;                var5.append(&#39;=&#39;);
+<i>483</i>&nbsp;            }
+<i>484</i>&nbsp;        }
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;        return var5.toString();
+<i>487</i>&nbsp;    }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    private static IOException newIOException(String var0, Throwable var1) {
+<i>490</i>&nbsp;        IOException var2 = new IOException(var0);
+<i>491</i>&nbsp;        return (IOException)EnvHelp.initCause(var2, var1);
+<i>492</i>&nbsp;    }
+<i>493</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

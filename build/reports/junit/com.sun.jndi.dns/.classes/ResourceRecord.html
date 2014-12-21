@@ -1,0 +1,522 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ResourceRecord</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jndi.dns</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ResourceRecord (com.sun.jndi.dns)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ResourceRecord</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 206)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jndi.dns;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jndi.dns.DnsName;
+<i>9</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>10</i>&nbsp;import javax.naming.InvalidNameException;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;public class ResourceRecord {
+<i>13</i>&nbsp;    static final int TYPE_A = 1;
+<i>14</i>&nbsp;    static final int TYPE_NS = 2;
+<i>15</i>&nbsp;    static final int TYPE_CNAME = 5;
+<i>16</i>&nbsp;    static final int TYPE_SOA = 6;
+<i>17</i>&nbsp;    static final int TYPE_PTR = 12;
+<i>18</i>&nbsp;    static final int TYPE_HINFO = 13;
+<i>19</i>&nbsp;    static final int TYPE_MX = 15;
+<i>20</i>&nbsp;    static final int TYPE_TXT = 16;
+<i>21</i>&nbsp;    static final int TYPE_AAAA = 28;
+<i>22</i>&nbsp;    static final int TYPE_SRV = 33;
+<i>23</i>&nbsp;    static final int TYPE_NAPTR = 35;
+<i>24</i>&nbsp;    static final int QTYPE_AXFR = 252;
+<i>25</i>&nbsp;    static final int QTYPE_STAR = 255;
+<i>26</i>&nbsp;    static final String[] rrTypeNames = new String[]{null, &quot;A&quot;, &quot;NS&quot;, null, null, &quot;CNAME&quot;, &quot;SOA&quot;, null, null, null, null, null, &quot;PTR&quot;, &quot;HINFO&quot;, null, &quot;MX&quot;, &quot;TXT&quot;, null, null, null, null, null, null, null, null, null, null, null, &quot;AAAA&quot;, null, null, null, null, &quot;SRV&quot;, null, &quot;NAPTR&quot;};
+<i>27</i>&nbsp;    static final int CLASS_INTERNET = 1;
+<i>28</i>&nbsp;    static final int CLASS_HESIOD = 2;
+<i>29</i>&nbsp;    static final int QCLASS_STAR = 255;
+<i>30</i>&nbsp;    static final String[] rrClassNames = new String[]{null, &quot;IN&quot;, null, null, &quot;HS&quot;};
+<i>31</i>&nbsp;    byte[] msg;
+<i>32</i>&nbsp;    int msgLen;
+<i>33</i>&nbsp;    boolean qSection;
+<i>34</i>&nbsp;    int offset;
+<i>35</i>&nbsp;    int rrlen;
+<i>36</i>&nbsp;    DnsName name;
+<i>37</i>&nbsp;    int rrtype;
+<i>38</i>&nbsp;    String rrtypeName;
+<i>39</i>&nbsp;    int rrclass;
+<i>40</i>&nbsp;    String rrclassName;
+<i>41</i>&nbsp;    int ttl = 0;
+<i>42</i>&nbsp;    int rdlen = 0;
+<i>43</i>&nbsp;    Object rdata = null;
+<i>44</i>&nbsp;
+<b class="nc"><i>45</i>&nbsp;    ResourceRecord(byte[] var1, int var2, int var3, boolean var4, boolean var5) throws InvalidNameException {</b>
+<i>46</i>&nbsp;        this.msg = var1;
+<i>47</i>&nbsp;        this.msgLen = var2;
+<i>48</i>&nbsp;        this.offset = var3;
+<i>49</i>&nbsp;        this.qSection = var4;
+<i>50</i>&nbsp;        this.decode(var5);
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public String toString() {
+<i>54</i>&nbsp;        String var1 = this.name + &quot; &quot; + this.rrclassName + &quot; &quot; + this.rrtypeName;
+<i>55</i>&nbsp;        if(!this.qSection) {
+<i>56</i>&nbsp;            var1 = var1 + &quot; &quot; + this.ttl + &quot; &quot; + (this.rdata != null?this.rdata:&quot;[n/a]&quot;);
+<i>57</i>&nbsp;        }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;        return var1;
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public DnsName getName() {
+<i>63</i>&nbsp;        return this.name;
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<b class="nc"><i>66</i>&nbsp;    public int size() {</b>
+<i>67</i>&nbsp;        return this.rrlen;
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public int getType() {
+<i>71</i>&nbsp;        return this.rrtype;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public int getRrclass() {
+<i>75</i>&nbsp;        return this.rrclass;
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public Object getRdata() {
+<i>79</i>&nbsp;        return this.rdata;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;    public static String getTypeName(int var0) {</b>
+<b class="nc"><i>83</i>&nbsp;        return valueToName(var0, rrTypeNames);</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public static int getType(String var0) {
+<i>87</i>&nbsp;        return nameToValue(var0, rrTypeNames);
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public static String getRrclassName(int var0) {
+<i>91</i>&nbsp;        return valueToName(var0, rrClassNames);
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public static int getRrclass(String var0) {
+<i>95</i>&nbsp;        return nameToValue(var0, rrClassNames);
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    private static String valueToName(int var0, String[] var1) {
+<i>99</i>&nbsp;        String var2 = null;
+<i>100</i>&nbsp;        if(var0 &gt; 0 &amp;&amp; var0 &lt; var1.length) {
+<b class="nc"><i>101</i>&nbsp;            var2 = var1[var0];</b>
+<i>102</i>&nbsp;        } else if(var0 == 255) {
+<b class="nc"><i>103</i>&nbsp;            var2 = &quot;*&quot;;</b>
+<b class="nc"><i>104</i>&nbsp;        }</b>
+<b class="nc"><i>105</i>&nbsp;</b>
+<b class="nc"><i>106</i>&nbsp;        if(var2 == null) {</b>
+<b class="nc"><i>107</i>&nbsp;            var2 = Integer.toString(var0);</b>
+<i>108</i>&nbsp;        }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        return var2;
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<b class="nc"><i>113</i>&nbsp;    private static int nameToValue(String var0, String[] var1) {</b>
+<i>114</i>&nbsp;        if(var0.equals(&quot;&quot;)) {
+<i>115</i>&nbsp;            return -1;
+<b class="nc"><i>116</i>&nbsp;        } else if(var0.equals(&quot;*&quot;)) {</b>
+<i>117</i>&nbsp;            return 255;
+<i>118</i>&nbsp;        } else {
+<i>119</i>&nbsp;            if(Character.isDigit(var0.charAt(0))) {
+<i>120</i>&nbsp;                try {
+<i>121</i>&nbsp;                    return Integer.parseInt(var0);
+<i>122</i>&nbsp;                } catch (NumberFormatException var3) {
+<b class="nc"><i>123</i>&nbsp;                    ;</b>
+<i>124</i>&nbsp;                }
+<i>125</i>&nbsp;            }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;            for(int var2 = 1; var2 &lt; var1.length; ++var2) {
+<i>128</i>&nbsp;                if(var1[var2] != null &amp;&amp; var0.equalsIgnoreCase(var1[var2])) {
+<i>129</i>&nbsp;                    return var2;
+<b class="nc"><i>130</i>&nbsp;                }</b>
+<i>131</i>&nbsp;            }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;            return -1;
+<b class="nc"><i>134</i>&nbsp;        }</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    public static int compareSerialNumbers(long var0, long var2) {
+<b class="nc"><i>138</i>&nbsp;        long var4 = var2 - var0;</b>
+<i>139</i>&nbsp;        return var4 == 0L?0:((var4 &lt;= 0L || var4 &gt; 2147483647L) &amp;&amp; (var4 &gt;= 0L || -var4 &lt;= 2147483647L)?1:-1);
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;    private void decode(boolean var1) throws InvalidNameException {</b>
+<i>143</i>&nbsp;        int var2 = this.offset;
+<i>144</i>&nbsp;        this.name = new DnsName();
+<i>145</i>&nbsp;        var2 = this.decodeName(var2, this.name);
+<i>146</i>&nbsp;        this.rrtype = this.getUShort(var2);
+<b class="nc"><i>147</i>&nbsp;        this.rrtypeName = this.rrtype &lt; rrTypeNames.length?rrTypeNames[this.rrtype]:null;</b>
+<i>148</i>&nbsp;        if(this.rrtypeName == null) {
+<i>149</i>&nbsp;            this.rrtypeName = Integer.toString(this.rrtype);
+<i>150</i>&nbsp;        }
+<b class="nc"><i>151</i>&nbsp;</b>
+<i>152</i>&nbsp;        var2 += 2;
+<i>153</i>&nbsp;        this.rrclass = this.getUShort(var2);
+<i>154</i>&nbsp;        this.rrclassName = this.rrclass &lt; rrClassNames.length?rrClassNames[this.rrclass]:null;
+<b class="nc"><i>155</i>&nbsp;        if(this.rrclassName == null) {</b>
+<i>156</i>&nbsp;            this.rrclassName = Integer.toString(this.rrclass);
+<i>157</i>&nbsp;        }
+<i>158</i>&nbsp;
+<b class="nc"><i>159</i>&nbsp;        var2 += 2;</b>
+<i>160</i>&nbsp;        if(!this.qSection) {
+<i>161</i>&nbsp;            this.ttl = this.getInt(var2);
+<i>162</i>&nbsp;            var2 += 4;
+<b class="nc"><i>163</i>&nbsp;            this.rdlen = this.getUShort(var2);</b>
+<b class="nc"><i>164</i>&nbsp;            var2 += 2;</b>
+<b class="nc"><i>165</i>&nbsp;            this.rdata = !var1 &amp;&amp; this.rrtype != 6?null:this.decodeRdata(var2);</b>
+<b class="nc"><i>166</i>&nbsp;            if(this.rdata instanceof DnsName) {</b>
+<b class="nc"><i>167</i>&nbsp;                this.rdata = this.rdata.toString();</b>
+<i>168</i>&nbsp;            }
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;            var2 += this.rdlen;</b>
+<i>171</i>&nbsp;        }
+<b class="nc"><i>172</i>&nbsp;</b>
+<i>173</i>&nbsp;        this.rrlen = var2 - this.offset;
+<i>174</i>&nbsp;        this.msg = null;
+<i>175</i>&nbsp;    }
+<b class="nc"><i>176</i>&nbsp;</b>
+<b class="nc"><i>177</i>&nbsp;    private int getUByte(int var1) {</b>
+<b class="nc"><i>178</i>&nbsp;        return this.msg[var1] &amp; 255;</b>
+<b class="nc"><i>179</i>&nbsp;    }</b>
+<i>180</i>&nbsp;
+<b class="nc"><i>181</i>&nbsp;    private int getUShort(int var1) {</b>
+<i>182</i>&nbsp;        return (this.msg[var1] &amp; 255) &lt;&lt; 8 | this.msg[var1 + 1] &amp; 255;
+<b class="nc"><i>183</i>&nbsp;    }</b>
+<b class="nc"><i>184</i>&nbsp;</b>
+<i>185</i>&nbsp;    private int getInt(int var1) {
+<i>186</i>&nbsp;        return this.getUShort(var1) &lt;&lt; 16 | this.getUShort(var1 + 2);
+<b class="nc"><i>187</i>&nbsp;    }</b>
+<b class="nc"><i>188</i>&nbsp;</b>
+<i>189</i>&nbsp;    private long getUInt(int var1) {
+<b class="nc"><i>190</i>&nbsp;        return (long)this.getInt(var1) &amp; 4294967295L;</b>
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<b class="nc"><i>193</i>&nbsp;    private DnsName decodeName(int var1) throws InvalidNameException {</b>
+<i>194</i>&nbsp;        DnsName var2 = new DnsName();
+<i>195</i>&nbsp;        this.decodeName(var1, var2);
+<i>196</i>&nbsp;        return var2;
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    private int decodeName(int var1, DnsName var2) throws InvalidNameException {
+<i>200</i>&nbsp;        if(this.msg[var1] == 0) {
+<i>201</i>&nbsp;            var2.add(0, &quot;&quot;);
+<i>202</i>&nbsp;            return var1 + 1;
+<i>203</i>&nbsp;        } else if((this.msg[var1] &amp; 192) != 0) {
+<i>204</i>&nbsp;            this.decodeName(this.getUShort(var1) &amp; 16383, var2);
+<b class="nc"><i>205</i>&nbsp;            return var1 + 2;</b>
+<b class="nc"><i>206</i>&nbsp;        } else {</b>
+<b class="nc"><i>207</i>&nbsp;            byte var3 = this.msg[var1++];</b>
+<b class="nc"><i>208</i>&nbsp;</b>
+<i>209</i>&nbsp;            try {
+<b class="nc"><i>210</i>&nbsp;                var2.add(0, new String(this.msg, var1, var3, &quot;ISO-8859-1&quot;));</b>
+<i>211</i>&nbsp;            } catch (UnsupportedEncodingException var5) {
+<b class="nc"><i>212</i>&nbsp;                ;</b>
+<i>213</i>&nbsp;            }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;            return this.decodeName(var1 + var3, var2);
+<i>216</i>&nbsp;        }
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    private Object decodeRdata(int var1) throws InvalidNameException {
+<i>220</i>&nbsp;        if(this.rrclass == 1) {
+<i>221</i>&nbsp;            switch(this.rrtype) {
+<b class="nc"><i>222</i>&nbsp;            case 1:</b>
+<i>223</i>&nbsp;                return this.decodeA(var1);
+<b class="nc"><i>224</i>&nbsp;            case 2:</b>
+<b class="nc"><i>225</i>&nbsp;            case 5:</b>
+<i>226</i>&nbsp;            case 12:
+<b class="nc"><i>227</i>&nbsp;                return this.decodeName(var1);</b>
+<b class="nc"><i>228</i>&nbsp;            case 3:</b>
+<i>229</i>&nbsp;            case 4:
+<i>230</i>&nbsp;            case 7:
+<b class="nc"><i>231</i>&nbsp;            case 8:</b>
+<b class="nc"><i>232</i>&nbsp;            case 9:</b>
+<i>233</i>&nbsp;            case 10:
+<b class="nc"><i>234</i>&nbsp;            case 11:</b>
+<i>235</i>&nbsp;            case 14:
+<b class="nc"><i>236</i>&nbsp;            case 17:</b>
+<b class="nc"><i>237</i>&nbsp;            case 18:</b>
+<i>238</i>&nbsp;            case 19:
+<i>239</i>&nbsp;            case 20:
+<b class="nc"><i>240</i>&nbsp;            case 21:</b>
+<b class="nc"><i>241</i>&nbsp;            case 22:</b>
+<i>242</i>&nbsp;            case 23:
+<b class="nc"><i>243</i>&nbsp;            case 24:</b>
+<i>244</i>&nbsp;            case 25:
+<b class="nc"><i>245</i>&nbsp;            case 26:</b>
+<b class="nc"><i>246</i>&nbsp;            case 27:</b>
+<b class="nc"><i>247</i>&nbsp;            case 29:</b>
+<i>248</i>&nbsp;            case 30:
+<b class="nc"><i>249</i>&nbsp;            case 31:</b>
+<b class="nc"><i>250</i>&nbsp;            case 32:</b>
+<i>251</i>&nbsp;            case 34:
+<b class="nc"><i>252</i>&nbsp;            default:</b>
+<i>253</i>&nbsp;                break;
+<i>254</i>&nbsp;            case 6:
+<i>255</i>&nbsp;                return this.decodeSoa(var1);
+<b class="nc"><i>256</i>&nbsp;            case 13:</b>
+<b class="nc"><i>257</i>&nbsp;                return this.decodeHinfo(var1);</b>
+<i>258</i>&nbsp;            case 15:
+<b class="nc"><i>259</i>&nbsp;                return this.decodeMx(var1);</b>
+<i>260</i>&nbsp;            case 16:
+<i>261</i>&nbsp;                return this.decodeTxt(var1);
+<b class="nc"><i>262</i>&nbsp;            case 28:</b>
+<i>263</i>&nbsp;                return this.decodeAAAA(var1);
+<b class="nc"><i>264</i>&nbsp;            case 33:</b>
+<i>265</i>&nbsp;                return this.decodeSrv(var1);
+<i>266</i>&nbsp;            case 35:
+<i>267</i>&nbsp;                return this.decodeNaptr(var1);
+<i>268</i>&nbsp;            }
+<i>269</i>&nbsp;        }
+<i>270</i>&nbsp;
+<b class="nc"><i>271</i>&nbsp;        byte[] var2 = new byte[this.rdlen];</b>
+<i>272</i>&nbsp;        System.arraycopy(this.msg, var1, var2, 0, this.rdlen);
+<i>273</i>&nbsp;        return var2;
+<i>274</i>&nbsp;    }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    private String decodeMx(int var1) throws InvalidNameException {
+<i>277</i>&nbsp;        int var2 = this.getUShort(var1);
+<i>278</i>&nbsp;        var1 += 2;
+<b class="nc"><i>279</i>&nbsp;        DnsName var3 = this.decodeName(var1);</b>
+<i>280</i>&nbsp;        return var2 + &quot; &quot; + var3;
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    private String decodeSoa(int var1) throws InvalidNameException {
+<i>284</i>&nbsp;        DnsName var2 = new DnsName();
+<i>285</i>&nbsp;        var1 = this.decodeName(var1, var2);
+<i>286</i>&nbsp;        DnsName var3 = new DnsName();
+<i>287</i>&nbsp;        var1 = this.decodeName(var1, var3);
+<b class="nc"><i>288</i>&nbsp;        long var4 = this.getUInt(var1);</b>
+<i>289</i>&nbsp;        var1 += 4;
+<i>290</i>&nbsp;        long var6 = this.getUInt(var1);
+<i>291</i>&nbsp;        var1 += 4;
+<i>292</i>&nbsp;        long var8 = this.getUInt(var1);
+<i>293</i>&nbsp;        var1 += 4;
+<i>294</i>&nbsp;        long var10 = this.getUInt(var1);
+<i>295</i>&nbsp;        var1 += 4;
+<b class="nc"><i>296</i>&nbsp;        long var12 = this.getUInt(var1);</b>
+<i>297</i>&nbsp;        var1 += 4;
+<i>298</i>&nbsp;        return var2 + &quot; &quot; + var3 + &quot; &quot; + var4 + &quot; &quot; + var6 + &quot; &quot; + var8 + &quot; &quot; + var10 + &quot; &quot; + var12;
+<i>299</i>&nbsp;    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    private String decodeSrv(int var1) throws InvalidNameException {
+<i>302</i>&nbsp;        int var2 = this.getUShort(var1);
+<b class="nc"><i>303</i>&nbsp;        var1 += 2;</b>
+<b class="nc"><i>304</i>&nbsp;        int var3 = this.getUShort(var1);</b>
+<b class="nc"><i>305</i>&nbsp;        var1 += 2;</b>
+<i>306</i>&nbsp;        int var4 = this.getUShort(var1);
+<i>307</i>&nbsp;        var1 += 2;
+<i>308</i>&nbsp;        DnsName var5 = this.decodeName(var1);
+<i>309</i>&nbsp;        return var2 + &quot; &quot; + var3 + &quot; &quot; + var4 + &quot; &quot; + var5;
+<i>310</i>&nbsp;    }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    private String decodeNaptr(int var1) throws InvalidNameException {
+<b class="nc"><i>313</i>&nbsp;        int var2 = this.getUShort(var1);</b>
+<b class="nc"><i>314</i>&nbsp;        var1 += 2;</b>
+<b class="nc"><i>315</i>&nbsp;        int var3 = this.getUShort(var1);</b>
+<b class="nc"><i>316</i>&nbsp;        var1 += 2;</b>
+<b class="nc"><i>317</i>&nbsp;        StringBuffer var4 = new StringBuffer();</b>
+<b class="nc"><i>318</i>&nbsp;        var1 += this.decodeCharString(var1, var4);</b>
+<i>319</i>&nbsp;        StringBuffer var5 = new StringBuffer();
+<b class="nc"><i>320</i>&nbsp;        var1 += this.decodeCharString(var1, var5);</b>
+<i>321</i>&nbsp;        StringBuffer var6 = new StringBuffer(this.rdlen);
+<b class="nc"><i>322</i>&nbsp;        var1 += this.decodeCharString(var1, var6);</b>
+<b class="nc"><i>323</i>&nbsp;        DnsName var7 = this.decodeName(var1);</b>
+<i>324</i>&nbsp;        return var2 + &quot; &quot; + var3 + &quot; &quot; + var4 + &quot; &quot; + var5 + &quot; &quot; + var6 + &quot; &quot; + var7;
+<b class="nc"><i>325</i>&nbsp;    }</b>
+<b class="nc"><i>326</i>&nbsp;</b>
+<i>327</i>&nbsp;    private String decodeTxt(int var1) {
+<i>328</i>&nbsp;        StringBuffer var2 = new StringBuffer(this.rdlen);
+<i>329</i>&nbsp;        int var3 = var1 + this.rdlen;
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;        while(var1 &lt; var3) {
+<i>332</i>&nbsp;            var1 += this.decodeCharString(var1, var2);
+<i>333</i>&nbsp;            if(var1 &lt; var3) {
+<i>334</i>&nbsp;                var2.append(&#39; &#39;);
+<i>335</i>&nbsp;            }
+<i>336</i>&nbsp;        }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;        return var2.toString();
+<b class="nc"><i>339</i>&nbsp;    }</b>
+<b class="nc"><i>340</i>&nbsp;</b>
+<i>341</i>&nbsp;    private String decodeHinfo(int var1) {
+<b class="nc"><i>342</i>&nbsp;        StringBuffer var2 = new StringBuffer(this.rdlen);</b>
+<i>343</i>&nbsp;        var1 += this.decodeCharString(var1, var2);
+<b class="nc"><i>344</i>&nbsp;        var2.append(&#39; &#39;);</b>
+<i>345</i>&nbsp;        int var10000 = var1 + this.decodeCharString(var1, var2);
+<i>346</i>&nbsp;        return var2.toString();
+<i>347</i>&nbsp;    }
+<b class="nc"><i>348</i>&nbsp;</b>
+<i>349</i>&nbsp;    private int decodeCharString(int var1, StringBuffer var2) {
+<b class="nc"><i>350</i>&nbsp;        int var3 = var2.length();</b>
+<i>351</i>&nbsp;        int var4 = this.getUByte(var1++);
+<b class="nc"><i>352</i>&nbsp;        boolean var5 = var4 == 0;</b>
+<i>353</i>&nbsp;
+<b class="nc"><i>354</i>&nbsp;        for(int var6 = 0; var6 &lt; var4; ++var6) {</b>
+<i>355</i>&nbsp;            int var7 = this.getUByte(var1++);
+<b class="nc"><i>356</i>&nbsp;            var5 |= var7 == 32;</b>
+<i>357</i>&nbsp;            if(var7 == 92 || var7 == 34) {
+<b class="nc"><i>358</i>&nbsp;                var5 = true;</b>
+<i>359</i>&nbsp;                var2.append(&#39;\\&#39;);
+<b class="nc"><i>360</i>&nbsp;            }</b>
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;            var2.append((char)var7);
+<i>363</i>&nbsp;        }
+<b class="nc"><i>364</i>&nbsp;</b>
+<b class="nc"><i>365</i>&nbsp;        if(var5) {</b>
+<b class="nc"><i>366</i>&nbsp;            var2.insert(var3, &#39;\&quot;&#39;);</b>
+<i>367</i>&nbsp;            var2.append(&#39;\&quot;&#39;);
+<i>368</i>&nbsp;        }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;        return var4 + 1;
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<b class="nc"><i>373</i>&nbsp;    private String decodeA(int var1) {</b>
+<b class="nc"><i>374</i>&nbsp;        return (this.msg[var1] &amp; 255) + &quot;.&quot; + (this.msg[var1 + 1] &amp; 255) + &quot;.&quot; + (this.msg[var1 + 2] &amp; 255) + &quot;.&quot; + (this.msg[var1 + 3] &amp; 255);</b>
+<b class="nc"><i>375</i>&nbsp;    }</b>
+<b class="nc"><i>376</i>&nbsp;</b>
+<i>377</i>&nbsp;    private String decodeAAAA(int var1) {
+<i>378</i>&nbsp;        int[] var2 = new int[8];
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;        int var3;
+<i>381</i>&nbsp;        for(var3 = 0; var3 &lt; 8; ++var3) {
+<i>382</i>&nbsp;            var2[var3] = this.getUShort(var1);
+<b class="nc"><i>383</i>&nbsp;            var1 += 2;</b>
+<b class="nc"><i>384</i>&nbsp;        }</b>
+<b class="nc"><i>385</i>&nbsp;</b>
+<b class="nc"><i>386</i>&nbsp;        var3 = -1;</b>
+<i>387</i>&nbsp;        int var4 = 0;
+<b class="nc"><i>388</i>&nbsp;        int var5 = -1;</b>
+<b class="nc"><i>389</i>&nbsp;        int var6 = 0;</b>
+<b class="nc"><i>390</i>&nbsp;</b>
+<b class="nc"><i>391</i>&nbsp;        for(int var7 = 0; var7 &lt; 8; ++var7) {</b>
+<b class="nc"><i>392</i>&nbsp;            if(var2[var7] == 0) {</b>
+<b class="nc"><i>393</i>&nbsp;                if(var3 == -1) {</b>
+<b class="nc"><i>394</i>&nbsp;                    var3 = var7;</b>
+<b class="nc"><i>395</i>&nbsp;                    var4 = 1;</b>
+<b class="nc"><i>396</i>&nbsp;                } else {</b>
+<b class="nc"><i>397</i>&nbsp;                    ++var4;</b>
+<i>398</i>&nbsp;                    if(var4 &gt;= 2 &amp;&amp; var4 &gt; var6) {
+<b class="nc"><i>399</i>&nbsp;                        var5 = var3;</b>
+<i>400</i>&nbsp;                        var6 = var4;
+<i>401</i>&nbsp;                    }
+<i>402</i>&nbsp;                }
+<i>403</i>&nbsp;            } else {
+<i>404</i>&nbsp;                var3 = -1;
+<i>405</i>&nbsp;            }
+<i>406</i>&nbsp;        }
+<i>407</i>&nbsp;
+<b class="nc"><i>408</i>&nbsp;        if(var5 == 0) {</b>
+<b class="nc"><i>409</i>&nbsp;            if(var6 == 6 || var6 == 7 &amp;&amp; var2[7] &gt; 1) {</b>
+<b class="nc"><i>410</i>&nbsp;                return &quot;::&quot; + this.decodeA(var1 - 4);</b>
+<b class="nc"><i>411</i>&nbsp;            }</b>
+<b class="nc"><i>412</i>&nbsp;</b>
+<b class="nc"><i>413</i>&nbsp;            if(var6 == 5 &amp;&amp; var2[5] == &#39;\uffff&#39;) {</b>
+<b class="nc"><i>414</i>&nbsp;                return &quot;::ffff:&quot; + this.decodeA(var1 - 4);</b>
+<b class="nc"><i>415</i>&nbsp;            }</b>
+<i>416</i>&nbsp;        }
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;        boolean var10 = var5 != -1;
+<i>419</i>&nbsp;        StringBuffer var8 = new StringBuffer(40);
+<i>420</i>&nbsp;        if(var5 == 0) {
+<i>421</i>&nbsp;            var8.append(&#39;:&#39;);
+<i>422</i>&nbsp;        }
+<b class="nc"><i>423</i>&nbsp;</b>
+<b class="nc"><i>424</i>&nbsp;        for(int var9 = 0; var9 &lt; 8; ++var9) {</b>
+<b class="nc"><i>425</i>&nbsp;            if(var10 &amp;&amp; var9 &gt;= var5 &amp;&amp; var9 &lt; var5 + var6) {</b>
+<b class="nc"><i>426</i>&nbsp;                if(var10 &amp;&amp; var9 == var5) {</b>
+<b class="nc"><i>427</i>&nbsp;                    var8.append(&#39;:&#39;);</b>
+<b class="nc"><i>428</i>&nbsp;                }</b>
+<b class="nc"><i>429</i>&nbsp;            } else {</b>
+<b class="nc"><i>430</i>&nbsp;                var8.append(Integer.toHexString(var2[var9]));</b>
+<b class="nc"><i>431</i>&nbsp;                if(var9 &lt; 7) {</b>
+<b class="nc"><i>432</i>&nbsp;                    var8.append(&#39;:&#39;);</b>
+<b class="nc"><i>433</i>&nbsp;                }</b>
+<i>434</i>&nbsp;            }
+<b class="nc"><i>435</i>&nbsp;        }</b>
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;        return var8.toString();
+<i>438</i>&nbsp;    }
+<i>439</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,455 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: OCSPChecker</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.provider.certpath</a> ]
+</div>
+
+<h1>Coverage Summary for Class: OCSPChecker (sun.security.provider.certpath)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OCSPChecker</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 148)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OCSPChecker$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 154)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.provider.certpath;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.math.BigInteger;
+<i>9</i>&nbsp;import java.net.URI;
+<i>10</i>&nbsp;import java.net.URISyntaxException;
+<i>11</i>&nbsp;import java.security.AccessController;
+<i>12</i>&nbsp;import java.security.PrivilegedAction;
+<i>13</i>&nbsp;import java.security.Security;
+<i>14</i>&nbsp;import java.security.cert.CertPath;
+<i>15</i>&nbsp;import java.security.cert.CertPathValidatorException;
+<i>16</i>&nbsp;import java.security.cert.CertStore;
+<i>17</i>&nbsp;import java.security.cert.CertStoreException;
+<i>18</i>&nbsp;import java.security.cert.Certificate;
+<i>19</i>&nbsp;import java.security.cert.CertificateException;
+<i>20</i>&nbsp;import java.security.cert.CertificateRevokedException;
+<i>21</i>&nbsp;import java.security.cert.PKIXCertPathChecker;
+<i>22</i>&nbsp;import java.security.cert.PKIXParameters;
+<i>23</i>&nbsp;import java.security.cert.TrustAnchor;
+<i>24</i>&nbsp;import java.security.cert.X509CertSelector;
+<i>25</i>&nbsp;import java.security.cert.X509Certificate;
+<i>26</i>&nbsp;import java.security.cert.CertPathValidatorException.BasicReason;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.Arrays;
+<i>29</i>&nbsp;import java.util.Collection;
+<i>30</i>&nbsp;import java.util.Collections;
+<i>31</i>&nbsp;import java.util.Iterator;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.Set;
+<i>34</i>&nbsp;import javax.security.auth.x500.X500Principal;
+<i>35</i>&nbsp;import sun.security.provider.certpath.CertId;
+<i>36</i>&nbsp;import sun.security.provider.certpath.OCSP;
+<i>37</i>&nbsp;import sun.security.provider.certpath.OCSPResponse;
+<i>38</i>&nbsp;import sun.security.provider.certpath.OCSP.RevocationStatus.CertStatus;
+<i>39</i>&nbsp;import sun.security.provider.certpath.OCSPResponse.SingleResponse;
+<i>40</i>&nbsp;import sun.security.util.Debug;
+<i>41</i>&nbsp;import sun.security.x509.AccessDescription;
+<i>42</i>&nbsp;import sun.security.x509.AuthorityInfoAccessExtension;
+<i>43</i>&nbsp;import sun.security.x509.GeneralName;
+<b class="nc"><i>44</i>&nbsp;import sun.security.x509.URIName;</b>
+<i>45</i>&nbsp;import sun.security.x509.X509CertImpl;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;class OCSPChecker extends PKIXCertPathChecker {
+<i>48</i>&nbsp;    static final String OCSP_ENABLE_PROP = &quot;ocsp.enable&quot;;
+<i>49</i>&nbsp;    static final String OCSP_URL_PROP = &quot;ocsp.responderURL&quot;;
+<i>50</i>&nbsp;    static final String OCSP_CERT_SUBJECT_PROP = &quot;ocsp.responderCertSubjectName&quot;;
+<b class="nc"><i>51</i>&nbsp;    static final String OCSP_CERT_ISSUER_PROP = &quot;ocsp.responderCertIssuerName&quot;;</b>
+<i>52</i>&nbsp;    static final String OCSP_CERT_NUMBER_PROP = &quot;ocsp.responderCertSerialNumber&quot;;
+<i>53</i>&nbsp;    private static final String HEX_DIGITS = &quot;0123456789ABCDEFabcdef&quot;;
+<i>54</i>&nbsp;    private static final Debug DEBUG = Debug.getInstance(&quot;certpath&quot;);
+<i>55</i>&nbsp;    private static final boolean dump = false;
+<i>56</i>&nbsp;    private int remainingCerts;
+<i>57</i>&nbsp;    private X509Certificate[] certs;
+<i>58</i>&nbsp;    private CertPath cp;
+<i>59</i>&nbsp;    private PKIXParameters pkixParams;
+<i>60</i>&nbsp;    private boolean onlyEECert;
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;    OCSPChecker(CertPath var1, PKIXParameters var2) throws CertPathValidatorException {</b>
+<i>63</i>&nbsp;        this(var1, var2, false);
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<b class="nc"><i>66</i>&nbsp;    OCSPChecker(CertPath var1, PKIXParameters var2, boolean var3) throws CertPathValidatorException {</b>
+<i>67</i>&nbsp;        this.onlyEECert = false;
+<b class="nc"><i>68</i>&nbsp;        this.cp = var1;</b>
+<b class="nc"><i>69</i>&nbsp;        this.pkixParams = var2;</b>
+<b class="nc"><i>70</i>&nbsp;        this.onlyEECert = var3;</b>
+<b class="nc"><i>71</i>&nbsp;        List var4 = this.cp.getCertificates();</b>
+<b class="nc"><i>72</i>&nbsp;        this.certs = (X509Certificate[])var4.toArray(new X509Certificate[var4.size()]);</b>
+<i>73</i>&nbsp;        this.init(false);
+<b class="nc"><i>74</i>&nbsp;    }</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public void init(boolean var1) throws CertPathValidatorException {
+<i>77</i>&nbsp;        if(!var1) {
+<i>78</i>&nbsp;            this.remainingCerts = this.certs.length + 1;
+<i>79</i>&nbsp;        } else {
+<i>80</i>&nbsp;            throw new CertPathValidatorException(&quot;Forward checking not supported&quot;);
+<i>81</i>&nbsp;        }
+<i>82</i>&nbsp;    }
+<b class="nc"><i>83</i>&nbsp;</b>
+<b class="nc"><i>84</i>&nbsp;    public boolean isForwardCheckingSupported() {</b>
+<i>85</i>&nbsp;        return false;
+<b class="nc"><i>86</i>&nbsp;    }</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public Set&lt;String&gt; getSupportedExtensions() {
+<i>89</i>&nbsp;        return Collections.emptySet();
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;    public void check(Certificate var1, Collection&lt;String&gt; var2) throws CertPathValidatorException {</b>
+<i>93</i>&nbsp;        --this.remainingCerts;
+<i>94</i>&nbsp;        X509CertImpl var3 = null;
+<i>95</i>&nbsp;
+<b class="nc"><i>96</i>&nbsp;        try {</b>
+<i>97</i>&nbsp;            var3 = X509CertImpl.toImpl((X509Certificate)var1);
+<i>98</i>&nbsp;        } catch (CertificateException var21) {
+<i>99</i>&nbsp;            throw new CertPathValidatorException(var21);
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;        if(this.onlyEECert &amp;&amp; var3.getBasicConstraints() != -1) {
+<i>103</i>&nbsp;            if(DEBUG != null) {
+<i>104</i>&nbsp;                DEBUG.println(&quot;Skipping revocation check, not end entity cert&quot;);
+<i>105</i>&nbsp;            }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;        } else {
+<i>108</i>&nbsp;            String[] var4 = getOCSPProperties();
+<i>109</i>&nbsp;            URI var5 = getOCSPServerURI(var3, var4[0]);
+<i>110</i>&nbsp;            X500Principal var6 = null;
+<i>111</i>&nbsp;            X500Principal var7 = null;
+<i>112</i>&nbsp;            BigInteger var8 = null;
+<b class="nc"><i>113</i>&nbsp;            if(var4[1] != null) {</b>
+<i>114</i>&nbsp;                var6 = new X500Principal(var4[1]);
+<b class="nc"><i>115</i>&nbsp;            } else if(var4[2] != null &amp;&amp; var4[3] != null) {</b>
+<i>116</i>&nbsp;                var7 = new X500Principal(var4[2]);
+<b class="nc"><i>117</i>&nbsp;                String var9 = stripOutSeparators(var4[3]);</b>
+<b class="nc"><i>118</i>&nbsp;                var8 = new BigInteger(var9, 16);</b>
+<b class="nc"><i>119</i>&nbsp;            } else if(var4[2] != null || var4[3] != null) {</b>
+<b class="nc"><i>120</i>&nbsp;                throw new CertPathValidatorException(&quot;Must specify both ocsp.responderCertIssuerName and ocsp.responderCertSerialNumber properties&quot;);</b>
+<b class="nc"><i>121</i>&nbsp;            }</b>
+<b class="nc"><i>122</i>&nbsp;</b>
+<b class="nc"><i>123</i>&nbsp;            boolean var24 = false;</b>
+<i>124</i>&nbsp;            if(var6 != null || var7 != null) {
+<i>125</i>&nbsp;                var24 = true;
+<i>126</i>&nbsp;            }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;            X509Certificate var10 = null;
+<i>129</i>&nbsp;            boolean var11 = true;
+<i>130</i>&nbsp;            ArrayList var12 = new ArrayList();
+<i>131</i>&nbsp;            if(this.remainingCerts &lt; this.certs.length) {
+<i>132</i>&nbsp;                var10 = this.certs[this.remainingCerts];
+<i>133</i>&nbsp;                var11 = false;
+<i>134</i>&nbsp;                if(!var24) {
+<i>135</i>&nbsp;                    var12.add(var10);
+<b class="nc"><i>136</i>&nbsp;                    if(DEBUG != null) {</b>
+<i>137</i>&nbsp;                        DEBUG.println(&quot;Responder\&#39;s certificate is the same as the issuer of the certificate being validated&quot;);
+<b class="nc"><i>138</i>&nbsp;                    }</b>
+<i>139</i>&nbsp;                }
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;            Iterator var13;</b>
+<b class="nc"><i>143</i>&nbsp;            X500Principal var14;</b>
+<b class="nc"><i>144</i>&nbsp;            if(var11 || var24) {</b>
+<b class="nc"><i>145</i>&nbsp;                if(DEBUG != null &amp;&amp; var24) {</b>
+<b class="nc"><i>146</i>&nbsp;                    DEBUG.println(&quot;Searching trust anchors for issuer or responder certificate&quot;);</b>
+<b class="nc"><i>147</i>&nbsp;                }</b>
+<b class="nc"><i>148</i>&nbsp;</b>
+<i>149</i>&nbsp;                var13 = this.pkixParams.getTrustAnchors().iterator();
+<b class="nc"><i>150</i>&nbsp;                if(!var13.hasNext()) {</b>
+<b class="nc"><i>151</i>&nbsp;                    throw new CertPathValidatorException(&quot;Must specify at least one trust anchor&quot;);</b>
+<b class="nc"><i>152</i>&nbsp;                }</b>
+<b class="nc"><i>153</i>&nbsp;</b>
+<i>154</i>&nbsp;                var14 = var3.getIssuerX500Principal();
+<i>155</i>&nbsp;                byte[] var15 = null;
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;                CertStore var19;
+<i>158</i>&nbsp;                while(var13.hasNext() &amp;&amp; (var11 || var24)) {
+<i>159</i>&nbsp;                    TrustAnchor var16 = (TrustAnchor)var13.next();
+<i>160</i>&nbsp;                    X509Certificate var17 = var16.getTrustedCert();
+<b class="nc"><i>161</i>&nbsp;                    X500Principal var18 = var17.getSubjectX500Principal();</b>
+<b class="nc"><i>162</i>&nbsp;                    if(var11 &amp;&amp; var14.equals(var18)) {</b>
+<b class="nc"><i>163</i>&nbsp;                        if(var15 == null) {</b>
+<i>164</i>&nbsp;                            var15 = var3.getIssuerKeyIdentifier();
+<i>165</i>&nbsp;                            if(var15 == null &amp;&amp; DEBUG != null) {
+<i>166</i>&nbsp;                                DEBUG.println(&quot;No issuer key identifier (AKID) in the certificate being validated&quot;);
+<i>167</i>&nbsp;                            }
+<b class="nc"><i>168</i>&nbsp;                        }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;                        var19 = null;</b>
+<b class="nc"><i>171</i>&nbsp;                        byte[] var32;</b>
+<b class="nc"><i>172</i>&nbsp;                        if(var15 != null &amp;&amp; (var32 = getKeyId(var17)) != null) {</b>
+<b class="nc"><i>173</i>&nbsp;                            if(!Arrays.equals(var15, var32)) {</b>
+<i>174</i>&nbsp;                                continue;
+<i>175</i>&nbsp;                            }
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;                            if(DEBUG != null) {</b>
+<b class="nc"><i>178</i>&nbsp;                                DEBUG.println(&quot;Issuer certificate key ID: &quot; + String.format(&quot;0x%0&quot; + var15.length * 2 + &quot;x&quot;, new Object[]{new BigInteger(1, var15)}));</b>
+<b class="nc"><i>179</i>&nbsp;                            }</b>
+<b class="nc"><i>180</i>&nbsp;                        }</b>
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;                        var10 = var17;
+<i>183</i>&nbsp;                        var11 = false;
+<i>184</i>&nbsp;                        if(!var24 &amp;&amp; var12.isEmpty()) {
+<i>185</i>&nbsp;                            var12.add(var17);
+<i>186</i>&nbsp;                            if(DEBUG != null) {
+<i>187</i>&nbsp;                                DEBUG.println(&quot;Responder\&#39;s certificate is the same as the issuer of the certificate being validated&quot;);
+<i>188</i>&nbsp;                            }
+<b class="nc"><i>189</i>&nbsp;                        }</b>
+<i>190</i>&nbsp;                    }
+<b class="nc"><i>191</i>&nbsp;</b>
+<b class="nc"><i>192</i>&nbsp;                    if(var24 &amp;&amp; (var6 != null &amp;&amp; var6.equals(var18) || var7 != null &amp;&amp; var8 != null &amp;&amp; var7.equals(var17.getIssuerX500Principal()) &amp;&amp; var8.equals(var17.getSerialNumber()))) {</b>
+<i>193</i>&nbsp;                        var12.add(var17);
+<i>194</i>&nbsp;                    }
+<i>195</i>&nbsp;                }
+<i>196</i>&nbsp;
+<b class="nc"><i>197</i>&nbsp;                if(var10 == null) {</b>
+<i>198</i>&nbsp;                    throw new CertPathValidatorException(&quot;No trusted certificate for &quot; + var3.getIssuerDN());
+<b class="nc"><i>199</i>&nbsp;                }</b>
+<b class="nc"><i>200</i>&nbsp;</b>
+<i>201</i>&nbsp;                if(var24) {
+<i>202</i>&nbsp;                    if(DEBUG != null) {
+<i>203</i>&nbsp;                        DEBUG.println(&quot;Searching cert stores for responder\&#39;s certificate&quot;);
+<b class="nc"><i>204</i>&nbsp;                    }</b>
+<i>205</i>&nbsp;
+<b class="nc"><i>206</i>&nbsp;                    X509CertSelector var27 = null;</b>
+<i>207</i>&nbsp;                    if(var6 != null) {
+<b class="nc"><i>208</i>&nbsp;                        var27 = new X509CertSelector();</b>
+<b class="nc"><i>209</i>&nbsp;                        var27.setSubject(var6);</b>
+<b class="nc"><i>210</i>&nbsp;                    } else if(var7 != null &amp;&amp; var8 != null) {</b>
+<i>211</i>&nbsp;                        var27 = new X509CertSelector();
+<i>212</i>&nbsp;                        var27.setIssuer(var7);
+<i>213</i>&nbsp;                        var27.setSerialNumber(var8);
+<i>214</i>&nbsp;                    }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;                    if(var27 != null) {
+<i>217</i>&nbsp;                        List var31 = this.pkixParams.getCertStores();
+<i>218</i>&nbsp;                        Iterator var33 = var31.iterator();
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;                        while(var33.hasNext()) {
+<i>221</i>&nbsp;                            var19 = (CertStore)var33.next();
+<b class="nc"><i>222</i>&nbsp;</b>
+<b class="nc"><i>223</i>&nbsp;                            try {</b>
+<i>224</i>&nbsp;                                var12.addAll(var19.getCertificates(var27));
+<i>225</i>&nbsp;                            } catch (CertStoreException var23) {
+<i>226</i>&nbsp;                                if(DEBUG != null) {
+<b class="nc"><i>227</i>&nbsp;                                    DEBUG.println(&quot;CertStore exception:&quot; + var23);</b>
+<b class="nc"><i>228</i>&nbsp;                                }</b>
+<b class="nc"><i>229</i>&nbsp;                            }</b>
+<b class="nc"><i>230</i>&nbsp;                        }</b>
+<i>231</i>&nbsp;                    }
+<i>232</i>&nbsp;                }
+<i>233</i>&nbsp;            }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;            if(var24 &amp;&amp; var12.isEmpty()) {
+<i>236</i>&nbsp;                throw new CertPathValidatorException(&quot;Cannot find the responder\&#39;s certificate (set using the OCSP security properties).&quot;);
+<i>237</i>&nbsp;            } else {
+<b class="nc"><i>238</i>&nbsp;                if(DEBUG != null) {</b>
+<i>239</i>&nbsp;                    DEBUG.println(&quot;Located &quot; + var12.size() + &quot; trusted responder certificate(s)&quot;);
+<i>240</i>&nbsp;                }
+<i>241</i>&nbsp;
+<b class="nc"><i>242</i>&nbsp;                var13 = null;</b>
+<i>243</i>&nbsp;                var14 = null;
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;                CertId var25;
+<i>246</i>&nbsp;                OCSPResponse var26;
+<i>247</i>&nbsp;                try {
+<i>248</i>&nbsp;                    var25 = new CertId(var10, var3.getSerialNumberObject());
+<i>249</i>&nbsp;                    var26 = OCSP.check(Collections.singletonList(var25), var5, var12, this.pkixParams.getDate());
+<i>250</i>&nbsp;                } catch (Exception var22) {
+<b class="nc"><i>251</i>&nbsp;                    if(var22 instanceof CertPathValidatorException) {</b>
+<b class="nc"><i>252</i>&nbsp;                        throw (CertPathValidatorException)var22;</b>
+<i>253</i>&nbsp;                    }
+<i>254</i>&nbsp;
+<b class="nc"><i>255</i>&nbsp;                    throw new CertPathValidatorException(var22);</b>
+<b class="nc"><i>256</i>&nbsp;                }</b>
+<b class="nc"><i>257</i>&nbsp;</b>
+<i>258</i>&nbsp;                SingleResponse var28 = var26.getSingleResponse(var25);
+<i>259</i>&nbsp;                CertStatus var29 = var28.getCertStatus();
+<i>260</i>&nbsp;                if(var29 == CertStatus.REVOKED) {
+<i>261</i>&nbsp;                    CertificateRevokedException var30 = new CertificateRevokedException(var28.getRevocationTime(), var28.getRevocationReason(), ((X509Certificate)var12.get(0)).getSubjectX500Principal(), var28.getSingleExtensions());
+<b class="nc"><i>262</i>&nbsp;                    throw new CertPathValidatorException(var30.getMessage(), var30, (CertPath)null, -1, BasicReason.REVOKED);</b>
+<b class="nc"><i>263</i>&nbsp;                } else if(var29 == CertStatus.UNKNOWN) {</b>
+<b class="nc"><i>264</i>&nbsp;                    throw new CertPathValidatorException(&quot;Certificate\&#39;s revocation status is unknown&quot;, (Throwable)null, this.cp, this.remainingCerts - 1, BasicReason.UNDETERMINED_REVOCATION_STATUS);</b>
+<i>265</i>&nbsp;                }
+<i>266</i>&nbsp;            }
+<b class="nc"><i>267</i>&nbsp;        }</b>
+<b class="nc"><i>268</i>&nbsp;    }</b>
+<b class="nc"><i>269</i>&nbsp;</b>
+<b class="nc"><i>270</i>&nbsp;    private static URI getOCSPServerURI(X509CertImpl var0, String var1) throws CertPathValidatorException {</b>
+<b class="nc"><i>271</i>&nbsp;        if(var1 != null) {</b>
+<i>272</i>&nbsp;            try {
+<b class="nc"><i>273</i>&nbsp;                return new URI(var1);</b>
+<b class="nc"><i>274</i>&nbsp;            } catch (URISyntaxException var8) {</b>
+<b class="nc"><i>275</i>&nbsp;                throw new CertPathValidatorException(var8);</b>
+<i>276</i>&nbsp;            }
+<b class="nc"><i>277</i>&nbsp;        } else {</b>
+<b class="nc"><i>278</i>&nbsp;            AuthorityInfoAccessExtension var2 = var0.getAuthorityInfoAccessExtension();</b>
+<b class="nc"><i>279</i>&nbsp;            if(var2 == null) {</b>
+<i>280</i>&nbsp;                throw new CertPathValidatorException(&quot;Must specify the location of an OCSP Responder&quot;);
+<b class="nc"><i>281</i>&nbsp;            } else {</b>
+<i>282</i>&nbsp;                List var3 = var2.getAccessDescriptions();
+<i>283</i>&nbsp;                Iterator var4 = var3.iterator();
+<b class="nc"><i>284</i>&nbsp;</b>
+<i>285</i>&nbsp;                while(var4.hasNext()) {
+<i>286</i>&nbsp;                    AccessDescription var5 = (AccessDescription)var4.next();
+<i>287</i>&nbsp;                    if(var5.getAccessMethod().equals(AccessDescription.Ad_OCSP_Id)) {
+<b class="nc"><i>288</i>&nbsp;                        GeneralName var6 = var5.getAccessLocation();</b>
+<i>289</i>&nbsp;                        if(var6.getType() == 6) {
+<b class="nc"><i>290</i>&nbsp;                            URIName var7 = (URIName)var6.getName();</b>
+<b class="nc"><i>291</i>&nbsp;                            return var7.getURI();</b>
+<b class="nc"><i>292</i>&nbsp;                        }</b>
+<b class="nc"><i>293</i>&nbsp;                    }</b>
+<b class="nc"><i>294</i>&nbsp;                }</b>
+<b class="nc"><i>295</i>&nbsp;</b>
+<i>296</i>&nbsp;                throw new CertPathValidatorException(&quot;Cannot find the location of the OCSP Responder&quot;);
+<i>297</i>&nbsp;            }
+<i>298</i>&nbsp;        }
+<b class="nc"><i>299</i>&nbsp;    }</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    private static String[] getOCSPProperties() {
+<b class="nc"><i>302</i>&nbsp;        final String[] var0 = new String[4];</b>
+<b class="nc"><i>303</i>&nbsp;        AccessController.doPrivileged(new PrivilegedAction() {</b>
+<i>304</i>&nbsp;            public Void run() {
+<b class="nc"><i>305</i>&nbsp;                var0[0] = Security.getProperty(&quot;ocsp.responderURL&quot;);</b>
+<i>306</i>&nbsp;                var0[1] = Security.getProperty(&quot;ocsp.responderCertSubjectName&quot;);
+<b class="nc"><i>307</i>&nbsp;                var0[2] = Security.getProperty(&quot;ocsp.responderCertIssuerName&quot;);</b>
+<b class="nc"><i>308</i>&nbsp;                var0[3] = Security.getProperty(&quot;ocsp.responderCertSerialNumber&quot;);</b>
+<i>309</i>&nbsp;                return null;
+<b class="nc"><i>310</i>&nbsp;            }</b>
+<b class="nc"><i>311</i>&nbsp;        });</b>
+<i>312</i>&nbsp;        return var0;
+<i>313</i>&nbsp;    }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    private static String stripOutSeparators(String var0) {
+<i>316</i>&nbsp;        char[] var1 = var0.toCharArray();
+<i>317</i>&nbsp;        StringBuilder var2 = new StringBuilder();
+<b class="nc"><i>318</i>&nbsp;</b>
+<b class="nc"><i>319</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.length; ++var3) {</b>
+<i>320</i>&nbsp;            if(&quot;0123456789ABCDEFabcdef&quot;.indexOf(var1[var3]) != -1) {
+<i>321</i>&nbsp;                var2.append(var1[var3]);
+<i>322</i>&nbsp;            }
+<i>323</i>&nbsp;        }
+<b class="nc"><i>324</i>&nbsp;</b>
+<b class="nc"><i>325</i>&nbsp;        return var2.toString();</b>
+<i>326</i>&nbsp;    }
+<b class="nc"><i>327</i>&nbsp;</b>
+<i>328</i>&nbsp;    static byte[] getKeyId(X509Certificate var0) {
+<b class="nc"><i>329</i>&nbsp;        X509CertImpl var1 = null;</b>
+<i>330</i>&nbsp;        byte[] var2 = null;
+<b class="nc"><i>331</i>&nbsp;</b>
+<b class="nc"><i>332</i>&nbsp;        try {</b>
+<b class="nc"><i>333</i>&nbsp;            var1 = X509CertImpl.toImpl(var0);</b>
+<i>334</i>&nbsp;            var2 = var1.getSubjectKeyIdentifier();
+<i>335</i>&nbsp;            if(var2 == null &amp;&amp; DEBUG != null) {
+<i>336</i>&nbsp;                DEBUG.println(&quot;No subject key identifier (SKID) in the certificate (Subject: &quot; + var0.getSubjectX500Principal() + &quot;)&quot;);
+<b class="nc"><i>337</i>&nbsp;            }</b>
+<i>338</i>&nbsp;        } catch (CertificateException var4) {
+<b class="nc"><i>339</i>&nbsp;            if(DEBUG != null) {</b>
+<i>340</i>&nbsp;                DEBUG.println(&quot;Error parsing X.509 certificate (Subject: &quot; + var0.getSubjectX500Principal() + &quot;) &quot; + var4);
+<b class="nc"><i>341</i>&nbsp;            }</b>
+<b class="nc"><i>342</i>&nbsp;        }</b>
+<b class="nc"><i>343</i>&nbsp;</b>
+<b class="nc"><i>344</i>&nbsp;        return var2;</b>
+<b class="nc"><i>345</i>&nbsp;    }</b>
+<b class="nc"><i>346</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

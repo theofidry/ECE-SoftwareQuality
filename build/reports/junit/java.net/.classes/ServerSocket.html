@@ -1,0 +1,506 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ServerSocket</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.net</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ServerSocket (java.net)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ServerSocket</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 181)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ServerSocket$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 187)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.net;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.Closeable;
+<i>9</i>&nbsp;import java.io.FileDescriptor;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.net.InetAddress;
+<i>12</i>&nbsp;import java.net.InetSocketAddress;
+<i>13</i>&nbsp;import java.net.NetUtil;
+<i>14</i>&nbsp;import java.net.Socket;
+<i>15</i>&nbsp;import java.net.SocketAddress;
+<i>16</i>&nbsp;import java.net.SocketException;
+<i>17</i>&nbsp;import java.net.SocketImpl;
+<i>18</i>&nbsp;import java.net.SocketImplFactory;
+<i>19</i>&nbsp;import java.net.SocksSocketImpl;
+<i>20</i>&nbsp;import java.nio.channels.ServerSocketChannel;
+<i>21</i>&nbsp;import java.security.AccessController;
+<i>22</i>&nbsp;import java.security.PrivilegedActionException;
+<i>23</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;public class ServerSocket implements Closeable {
+<i>26</i>&nbsp;    private boolean created;
+<i>27</i>&nbsp;    private boolean bound;
+<i>28</i>&nbsp;    private boolean closed;
+<i>29</i>&nbsp;    private Object closeLock;
+<i>30</i>&nbsp;    private SocketImpl impl;
+<i>31</i>&nbsp;    private boolean oldImpl;
+<i>32</i>&nbsp;    private static SocketImplFactory factory = null;
+<b class="nc"><i>33</i>&nbsp;</b>
+<i>34</i>&nbsp;    ServerSocket(SocketImpl var1) {
+<i>35</i>&nbsp;        this.created = false;
+<i>36</i>&nbsp;        this.bound = false;
+<b class="nc"><i>37</i>&nbsp;        this.closed = false;</b>
+<b class="nc"><i>38</i>&nbsp;        this.closeLock = new Object();</b>
+<b class="nc"><i>39</i>&nbsp;        this.oldImpl = false;</b>
+<b class="nc"><i>40</i>&nbsp;        this.impl = var1;</b>
+<i>41</i>&nbsp;        var1.setServerSocket(this);
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public ServerSocket() throws IOException {
+<i>45</i>&nbsp;        this.created = false;
+<i>46</i>&nbsp;        this.bound = false;
+<i>47</i>&nbsp;        this.closed = false;
+<i>48</i>&nbsp;        this.closeLock = new Object();
+<i>49</i>&nbsp;        this.oldImpl = false;
+<b class="nc"><i>50</i>&nbsp;        this.setImpl();</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public ServerSocket(int var1) throws IOException {
+<i>54</i>&nbsp;        this(var1, 50, (InetAddress)null);
+<i>55</i>&nbsp;    }
+<b class="nc"><i>56</i>&nbsp;</b>
+<b class="nc"><i>57</i>&nbsp;    public ServerSocket(int var1, int var2) throws IOException {</b>
+<b class="nc"><i>58</i>&nbsp;        this(var1, var2, (InetAddress)null);</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public ServerSocket(int var1, int var2, InetAddress var3) throws IOException {
+<i>62</i>&nbsp;        this.created = false;
+<i>63</i>&nbsp;        this.bound = false;
+<i>64</i>&nbsp;        this.closed = false;
+<i>65</i>&nbsp;        this.closeLock = new Object();
+<i>66</i>&nbsp;        this.oldImpl = false;
+<b class="nc"><i>67</i>&nbsp;        this.setImpl();</b>
+<b class="nc"><i>68</i>&nbsp;        if(var1 &gt;= 0 &amp;&amp; var1 &lt;= &#39;\uffff&#39;) {</b>
+<i>69</i>&nbsp;            if(var2 &lt; 1) {
+<i>70</i>&nbsp;                var2 = 50;
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;            try {
+<i>74</i>&nbsp;                this.bind(new InetSocketAddress(var3, var1), var2);
+<i>75</i>&nbsp;            } catch (SecurityException var5) {
+<i>76</i>&nbsp;                this.close();
+<i>77</i>&nbsp;                throw var5;
+<i>78</i>&nbsp;            } catch (IOException var6) {
+<i>79</i>&nbsp;                this.close();
+<i>80</i>&nbsp;                throw var6;
+<i>81</i>&nbsp;            }
+<i>82</i>&nbsp;        } else {
+<i>83</i>&nbsp;            throw new IllegalArgumentException(&quot;Port value out of range: &quot; + var1);
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    SocketImpl getImpl() throws SocketException {
+<i>88</i>&nbsp;        if(!this.created) {
+<i>89</i>&nbsp;            this.createImpl();
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;        return this.impl;
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    private void checkOldImpl() {
+<i>96</i>&nbsp;        if(this.impl != null) {
+<i>97</i>&nbsp;            try {
+<i>98</i>&nbsp;                AccessController.doPrivileged(new PrivilegedExceptionAction() {
+<i>99</i>&nbsp;                    public Void run() throws NoSuchMethodException {
+<i>100</i>&nbsp;                        Class[] var1 = new Class[]{SocketAddress.class, Integer.TYPE};
+<i>101</i>&nbsp;                        ServerSocket.this.impl.getClass().getDeclaredMethod(&quot;connect&quot;, var1);
+<i>102</i>&nbsp;                        return null;
+<i>103</i>&nbsp;                    }
+<b class="nc"><i>104</i>&nbsp;                });</b>
+<i>105</i>&nbsp;            } catch (PrivilegedActionException var2) {
+<i>106</i>&nbsp;                this.oldImpl = true;
+<i>107</i>&nbsp;            }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    private void setImpl() {
+<i>113</i>&nbsp;        if(factory != null) {
+<i>114</i>&nbsp;            this.impl = factory.createSocketImpl();
+<i>115</i>&nbsp;            this.checkOldImpl();
+<i>116</i>&nbsp;        } else {
+<i>117</i>&nbsp;            this.impl = new SocksSocketImpl();
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;        if(this.impl != null) {
+<i>121</i>&nbsp;            this.impl.setServerSocket(this);
+<i>122</i>&nbsp;        }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    void createImpl() throws SocketException {
+<i>127</i>&nbsp;        if(this.impl == null) {
+<i>128</i>&nbsp;            this.setImpl();
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;        try {
+<i>132</i>&nbsp;            this.impl.create(true);
+<i>133</i>&nbsp;            this.created = true;
+<i>134</i>&nbsp;        } catch (IOException var2) {
+<i>135</i>&nbsp;            throw new SocketException(var2.getMessage());
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    public void bind(SocketAddress var1) throws IOException {
+<i>140</i>&nbsp;        this.bind(var1, 50);
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    public void bind(SocketAddress var1, int var2) throws IOException {
+<i>144</i>&nbsp;        if(this.isClosed()) {
+<i>145</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);
+<i>146</i>&nbsp;        } else if(!this.oldImpl &amp;&amp; this.isBound()) {
+<i>147</i>&nbsp;            throw new SocketException(&quot;Already bound&quot;);
+<b class="nc"><i>148</i>&nbsp;        } else {</b>
+<i>149</i>&nbsp;            if(var1 == null) {
+<i>150</i>&nbsp;                var1 = new InetSocketAddress(0);
+<i>151</i>&nbsp;            }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;            if(!(var1 instanceof InetSocketAddress)) {
+<i>154</i>&nbsp;                throw new IllegalArgumentException(&quot;Unsupported address type&quot;);
+<i>155</i>&nbsp;            } else {
+<i>156</i>&nbsp;                InetSocketAddress var3 = (InetSocketAddress)var1;
+<i>157</i>&nbsp;                if(var3.isUnresolved()) {
+<i>158</i>&nbsp;                    throw new SocketException(&quot;Unresolved address&quot;);
+<i>159</i>&nbsp;                } else {
+<i>160</i>&nbsp;                    if(var2 &lt; 1) {
+<i>161</i>&nbsp;                        var2 = 50;
+<i>162</i>&nbsp;                    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;                    try {
+<i>165</i>&nbsp;                        SecurityManager var4 = System.getSecurityManager();
+<i>166</i>&nbsp;                        if(var4 != null) {
+<i>167</i>&nbsp;                            var4.checkListen(var3.getPort());
+<i>168</i>&nbsp;                        }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;                        this.getImpl().bind(var3.getAddress(), var3.getPort());
+<i>171</i>&nbsp;                        this.getImpl().listen(var2);
+<i>172</i>&nbsp;                        this.bound = true;
+<i>173</i>&nbsp;                    } catch (SecurityException var5) {
+<i>174</i>&nbsp;                        this.bound = false;
+<i>175</i>&nbsp;                        throw var5;
+<i>176</i>&nbsp;                    } catch (IOException var6) {
+<i>177</i>&nbsp;                        this.bound = false;
+<i>178</i>&nbsp;                        throw var6;
+<i>179</i>&nbsp;                    }
+<i>180</i>&nbsp;                }
+<i>181</i>&nbsp;            }
+<i>182</i>&nbsp;        }
+<i>183</i>&nbsp;    }
+<b class="nc"><i>184</i>&nbsp;</b>
+<b class="nc"><i>185</i>&nbsp;    public InetAddress getInetAddress() {</b>
+<b class="nc"><i>186</i>&nbsp;        if(!this.isBound()) {</b>
+<b class="nc"><i>187</i>&nbsp;            return null;</b>
+<i>188</i>&nbsp;        } else {
+<b class="nc"><i>189</i>&nbsp;            try {</b>
+<b class="nc"><i>190</i>&nbsp;                InetAddress var1 = this.getImpl().getInetAddress();</b>
+<i>191</i>&nbsp;                if(!NetUtil.doRevealLocalAddress()) {
+<b class="nc"><i>192</i>&nbsp;                    SecurityManager var2 = System.getSecurityManager();</b>
+<b class="nc"><i>193</i>&nbsp;                    if(var2 != null) {</b>
+<b class="nc"><i>194</i>&nbsp;                        var2.checkConnect(var1.getHostAddress(), -1);</b>
+<b class="nc"><i>195</i>&nbsp;                    }</b>
+<b class="nc"><i>196</i>&nbsp;                }</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<b class="nc"><i>198</i>&nbsp;                return var1;</b>
+<b class="nc"><i>199</i>&nbsp;            } catch (SecurityException var3) {</b>
+<i>200</i>&nbsp;                return InetAddress.getLoopbackAddress();
+<i>201</i>&nbsp;            } catch (SocketException var4) {
+<i>202</i>&nbsp;                return null;
+<i>203</i>&nbsp;            }
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    public int getLocalPort() {
+<i>208</i>&nbsp;        if(!this.isBound()) {
+<i>209</i>&nbsp;            return -1;
+<i>210</i>&nbsp;        } else {
+<b class="nc"><i>211</i>&nbsp;            try {</b>
+<b class="nc"><i>212</i>&nbsp;                return this.getImpl().getLocalPort();</b>
+<b class="nc"><i>213</i>&nbsp;            } catch (SocketException var2) {</b>
+<i>214</i>&nbsp;                return -1;
+<i>215</i>&nbsp;            }
+<i>216</i>&nbsp;        }
+<b class="nc"><i>217</i>&nbsp;    }</b>
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    public SocketAddress getLocalSocketAddress() {
+<i>220</i>&nbsp;        return !this.isBound()?null:new InetSocketAddress(this.getInetAddress(), this.getLocalPort());
+<i>221</i>&nbsp;    }
+<b class="nc"><i>222</i>&nbsp;</b>
+<i>223</i>&nbsp;    public Socket accept() throws IOException {
+<b class="nc"><i>224</i>&nbsp;        if(this.isClosed()) {</b>
+<b class="nc"><i>225</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);</b>
+<b class="nc"><i>226</i>&nbsp;        } else if(!this.isBound()) {</b>
+<b class="nc"><i>227</i>&nbsp;            throw new SocketException(&quot;Socket is not bound yet&quot;);</b>
+<b class="nc"><i>228</i>&nbsp;        } else {</b>
+<i>229</i>&nbsp;            Socket var1 = new Socket((SocketImpl)null);
+<i>230</i>&nbsp;            this.implAccept(var1);
+<b class="nc"><i>231</i>&nbsp;            return var1;</b>
+<b class="nc"><i>232</i>&nbsp;        }</b>
+<b class="nc"><i>233</i>&nbsp;    }</b>
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    protected final void implAccept(Socket var1) throws IOException {
+<i>236</i>&nbsp;        SocketImpl var2 = null;
+<b class="nc"><i>237</i>&nbsp;</b>
+<b class="nc"><i>238</i>&nbsp;        try {</b>
+<b class="nc"><i>239</i>&nbsp;            if(var1.impl == null) {</b>
+<i>240</i>&nbsp;                var1.setImpl();
+<i>241</i>&nbsp;            } else {
+<i>242</i>&nbsp;                var1.impl.reset();
+<b class="nc"><i>243</i>&nbsp;            }</b>
+<i>244</i>&nbsp;
+<b class="nc"><i>245</i>&nbsp;            var2 = var1.impl;</b>
+<b class="nc"><i>246</i>&nbsp;            var1.impl = null;</b>
+<i>247</i>&nbsp;            var2.address = new InetAddress();
+<i>248</i>&nbsp;            var2.fd = new FileDescriptor();
+<i>249</i>&nbsp;            this.getImpl().accept(var2);
+<i>250</i>&nbsp;            SecurityManager var3 = System.getSecurityManager();
+<i>251</i>&nbsp;            if(var3 != null) {
+<i>252</i>&nbsp;                var3.checkAccept(var2.getInetAddress().getHostAddress(), var2.getPort());
+<i>253</i>&nbsp;            }
+<i>254</i>&nbsp;        } catch (IOException var4) {
+<i>255</i>&nbsp;            if(var2 != null) {
+<b class="nc"><i>256</i>&nbsp;                var2.reset();</b>
+<b class="nc"><i>257</i>&nbsp;            }</b>
+<i>258</i>&nbsp;
+<b class="nc"><i>259</i>&nbsp;            var1.impl = var2;</b>
+<b class="nc"><i>260</i>&nbsp;            throw var4;</b>
+<b class="nc"><i>261</i>&nbsp;        } catch (SecurityException var5) {</b>
+<b class="nc"><i>262</i>&nbsp;            if(var2 != null) {</b>
+<b class="nc"><i>263</i>&nbsp;                var2.reset();</b>
+<i>264</i>&nbsp;            }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;            var1.impl = var2;
+<i>267</i>&nbsp;            throw var5;
+<i>268</i>&nbsp;        }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;        var1.impl = var2;
+<i>271</i>&nbsp;        var1.postAccept();
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    public void close() throws IOException {
+<i>275</i>&nbsp;        Object var1 = this.closeLock;
+<i>276</i>&nbsp;        synchronized(this.closeLock) {
+<i>277</i>&nbsp;            if(!this.isClosed()) {
+<i>278</i>&nbsp;                if(this.created) {
+<i>279</i>&nbsp;                    this.impl.close();
+<i>280</i>&nbsp;                }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;                this.closed = true;
+<i>283</i>&nbsp;            }
+<b class="nc"><i>284</i>&nbsp;        }</b>
+<i>285</i>&nbsp;    }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    public ServerSocketChannel getChannel() {
+<i>288</i>&nbsp;        return null;
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    public boolean isBound() {
+<i>292</i>&nbsp;        return this.bound || this.oldImpl;
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    public boolean isClosed() {
+<i>296</i>&nbsp;        Object var1 = this.closeLock;
+<i>297</i>&nbsp;        synchronized(this.closeLock) {
+<i>298</i>&nbsp;            return this.closed;
+<i>299</i>&nbsp;        }
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    public synchronized void setSoTimeout(int var1) throws SocketException {
+<i>303</i>&nbsp;        if(this.isClosed()) {
+<i>304</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);
+<i>305</i>&nbsp;        } else {
+<i>306</i>&nbsp;            this.getImpl().setOption(4102, new Integer(var1));
+<i>307</i>&nbsp;        }
+<i>308</i>&nbsp;    }
+<b class="nc"><i>309</i>&nbsp;</b>
+<b class="nc"><i>310</i>&nbsp;    public synchronized int getSoTimeout() throws IOException {</b>
+<b class="nc"><i>311</i>&nbsp;        if(this.isClosed()) {</b>
+<b class="nc"><i>312</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);</b>
+<b class="nc"><i>313</i>&nbsp;        } else {</b>
+<b class="nc"><i>314</i>&nbsp;            Object var1 = this.getImpl().getOption(4102);</b>
+<b class="nc"><i>315</i>&nbsp;            return var1 instanceof Integer?((Integer)var1).intValue():0;</b>
+<b class="nc"><i>316</i>&nbsp;        }</b>
+<b class="nc"><i>317</i>&nbsp;    }</b>
+<b class="nc"><i>318</i>&nbsp;</b>
+<b class="nc"><i>319</i>&nbsp;    public void setReuseAddress(boolean var1) throws SocketException {</b>
+<b class="nc"><i>320</i>&nbsp;        if(this.isClosed()) {</b>
+<b class="nc"><i>321</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);</b>
+<i>322</i>&nbsp;        } else {
+<b class="nc"><i>323</i>&nbsp;            this.getImpl().setOption(4, Boolean.valueOf(var1));</b>
+<b class="nc"><i>324</i>&nbsp;        }</b>
+<b class="nc"><i>325</i>&nbsp;    }</b>
+<b class="nc"><i>326</i>&nbsp;</b>
+<b class="nc"><i>327</i>&nbsp;    public boolean getReuseAddress() throws SocketException {</b>
+<b class="nc"><i>328</i>&nbsp;        if(this.isClosed()) {</b>
+<b class="nc"><i>329</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);</b>
+<b class="nc"><i>330</i>&nbsp;        } else {</b>
+<b class="nc"><i>331</i>&nbsp;            return ((Boolean)((Boolean)this.getImpl().getOption(4))).booleanValue();</b>
+<b class="nc"><i>332</i>&nbsp;        }</b>
+<b class="nc"><i>333</i>&nbsp;    }</b>
+<b class="nc"><i>334</i>&nbsp;</b>
+<b class="nc"><i>335</i>&nbsp;    public String toString() {</b>
+<i>336</i>&nbsp;        if(!this.isBound()) {
+<i>337</i>&nbsp;            return &quot;ServerSocket[unbound]&quot;;
+<i>338</i>&nbsp;        } else {
+<i>339</i>&nbsp;            InetAddress var1;
+<i>340</i>&nbsp;            if(!NetUtil.doRevealLocalAddress() &amp;&amp; System.getSecurityManager() != null) {
+<i>341</i>&nbsp;                var1 = InetAddress.getLoopbackAddress();
+<i>342</i>&nbsp;            } else {
+<i>343</i>&nbsp;                var1 = this.impl.getInetAddress();
+<i>344</i>&nbsp;            }
+<b class="nc"><i>345</i>&nbsp;</b>
+<b class="nc"><i>346</i>&nbsp;            return &quot;ServerSocket[addr=&quot; + var1 + &quot;,localport=&quot; + this.impl.getLocalPort() + &quot;]&quot;;</b>
+<i>347</i>&nbsp;        }
+<b class="nc"><i>348</i>&nbsp;    }</b>
+<b class="nc"><i>349</i>&nbsp;</b>
+<b class="nc"><i>350</i>&nbsp;    void setBound() {</b>
+<b class="nc"><i>351</i>&nbsp;        this.bound = true;</b>
+<b class="nc"><i>352</i>&nbsp;    }</b>
+<i>353</i>&nbsp;
+<b class="nc"><i>354</i>&nbsp;    void setCreated() {</b>
+<b class="nc"><i>355</i>&nbsp;        this.created = true;</b>
+<b class="nc"><i>356</i>&nbsp;    }</b>
+<b class="nc"><i>357</i>&nbsp;</b>
+<i>358</i>&nbsp;    public static synchronized void setSocketFactory(SocketImplFactory var0) throws IOException {
+<i>359</i>&nbsp;        if(factory != null) {
+<i>360</i>&nbsp;            throw new SocketException(&quot;factory already defined&quot;);
+<i>361</i>&nbsp;        } else {
+<b class="nc"><i>362</i>&nbsp;            SecurityManager var1 = System.getSecurityManager();</b>
+<i>363</i>&nbsp;            if(var1 != null) {
+<i>364</i>&nbsp;                var1.checkSetFactory();
+<i>365</i>&nbsp;            }
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;            factory = var0;
+<i>368</i>&nbsp;        }
+<i>369</i>&nbsp;    }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    public synchronized void setReceiveBufferSize(int var1) throws SocketException {
+<b class="nc"><i>372</i>&nbsp;        if(var1 &lt;= 0) {</b>
+<b class="nc"><i>373</i>&nbsp;            throw new IllegalArgumentException(&quot;negative receive size&quot;);</b>
+<i>374</i>&nbsp;        } else if(this.isClosed()) {
+<b class="nc"><i>375</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);</b>
+<b class="nc"><i>376</i>&nbsp;        } else {</b>
+<i>377</i>&nbsp;            this.getImpl().setOption(4098, new Integer(var1));
+<i>378</i>&nbsp;        }
+<i>379</i>&nbsp;    }
+<i>380</i>&nbsp;
+<b class="nc"><i>381</i>&nbsp;    public synchronized int getReceiveBufferSize() throws SocketException {</b>
+<i>382</i>&nbsp;        if(this.isClosed()) {
+<i>383</i>&nbsp;            throw new SocketException(&quot;Socket is closed&quot;);
+<i>384</i>&nbsp;        } else {
+<i>385</i>&nbsp;            int var1 = 0;
+<i>386</i>&nbsp;            Object var2 = this.getImpl().getOption(4098);
+<i>387</i>&nbsp;            if(var2 instanceof Integer) {
+<i>388</i>&nbsp;                var1 = ((Integer)var2).intValue();
+<i>389</i>&nbsp;            }
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;            return var1;
+<i>392</i>&nbsp;        }
+<i>393</i>&nbsp;    }
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;    public void setPerformancePreferences(int var1, int var2, int var3) {
+<i>396</i>&nbsp;    }
+<b class="nc"><i>397</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

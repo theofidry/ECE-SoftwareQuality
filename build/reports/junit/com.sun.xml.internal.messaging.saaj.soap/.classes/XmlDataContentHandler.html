@@ -1,0 +1,153 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XmlDataContentHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.messaging.saaj.soap</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XmlDataContentHandler (com.sun.xml.internal.messaging.saaj.soap)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XmlDataContentHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.messaging.saaj.soap;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.messaging.saaj.util.transform.EfficientStreamingTransformer;
+<i>9</i>&nbsp;import java.awt.datatransfer.DataFlavor;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.io.OutputStream;
+<i>12</i>&nbsp;import java.io.StringReader;
+<i>13</i>&nbsp;import javax.activation.ActivationDataFlavor;
+<i>14</i>&nbsp;import javax.activation.DataContentHandler;
+<i>15</i>&nbsp;import javax.activation.DataSource;
+<i>16</i>&nbsp;import javax.xml.transform.Source;
+<i>17</i>&nbsp;import javax.xml.transform.Transformer;
+<i>18</i>&nbsp;import javax.xml.transform.stream.StreamResult;
+<i>19</i>&nbsp;import javax.xml.transform.stream.StreamSource;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;public class XmlDataContentHandler implements DataContentHandler {
+<i>22</i>&nbsp;    public final String STR_SRC = &quot;javax.xml.transform.stream.StreamSource&quot;;
+<i>23</i>&nbsp;    private static Class streamSourceClass = null;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public XmlDataContentHandler() throws ClassNotFoundException {
+<i>26</i>&nbsp;        if(streamSourceClass == null) {
+<i>27</i>&nbsp;            streamSourceClass = Class.forName(&quot;javax.xml.transform.stream.StreamSource&quot;);
+<i>28</i>&nbsp;        }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public DataFlavor[] getTransferDataFlavors() {
+<i>33</i>&nbsp;        DataFlavor[] flavors = new DataFlavor[]{new ActivationDataFlavor(streamSourceClass, &quot;text/xml&quot;, &quot;XML&quot;), new ActivationDataFlavor(streamSourceClass, &quot;application/xml&quot;, &quot;XML&quot;)};
+<i>34</i>&nbsp;        return flavors;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public Object getTransferData(DataFlavor flavor, DataSource dataSource) throws IOException {
+<i>38</i>&nbsp;        return (flavor.getMimeType().startsWith(&quot;text/xml&quot;) || flavor.getMimeType().startsWith(&quot;application/xml&quot;)) &amp;&amp; flavor.getRepresentationClass().getName().equals(&quot;javax.xml.transform.stream.StreamSource&quot;)?new StreamSource(dataSource.getInputStream()):null;
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public Object getContent(DataSource dataSource) throws IOException {
+<i>42</i>&nbsp;        return new StreamSource(dataSource.getInputStream());
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public void writeTo(Object obj, String mimeType, OutputStream os) throws IOException {
+<i>46</i>&nbsp;        if(!mimeType.startsWith(&quot;text/xml&quot;) &amp;&amp; !mimeType.startsWith(&quot;application/xml&quot;)) {
+<b class="nc"><i>47</i>&nbsp;            throw new IOException(&quot;Invalid content type \&quot;&quot; + mimeType + &quot;\&quot; for XmlDCH&quot;);</b>
+<b class="nc"><i>48</i>&nbsp;        } else {</b>
+<i>49</i>&nbsp;            try {
+<b class="nc"><i>50</i>&nbsp;                Transformer ex = EfficientStreamingTransformer.newTransformer();</b>
+<b class="nc"><i>51</i>&nbsp;                StreamResult result = new StreamResult(os);</b>
+<b class="nc"><i>52</i>&nbsp;                if(obj instanceof DataSource) {</b>
+<i>53</i>&nbsp;                    ex.transform((Source)this.getContent((DataSource)obj), result);
+<i>54</i>&nbsp;                } else {
+<i>55</i>&nbsp;                    Object src = null;
+<i>56</i>&nbsp;                    if(obj instanceof String) {
+<i>57</i>&nbsp;                        src = new StreamSource(new StringReader((String)obj));
+<i>58</i>&nbsp;                    } else {
+<i>59</i>&nbsp;                        src = (Source)obj;
+<i>60</i>&nbsp;                    }
+<b class="nc"><i>61</i>&nbsp;</b>
+<i>62</i>&nbsp;                    ex.transform((Source)src, result);
+<b class="nc"><i>63</i>&nbsp;                }</b>
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;            } catch (Exception var7) {</b>
+<i>66</i>&nbsp;                throw new IOException(&quot;Unable to run the JAXP transformer on a stream &quot; + var7.getMessage());
+<i>67</i>&nbsp;            }
+<b class="nc"><i>68</i>&nbsp;        }</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

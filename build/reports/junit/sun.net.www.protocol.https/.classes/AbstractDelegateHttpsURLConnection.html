@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AbstractDelegateHttpsURLConnection</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.net.www.protocol.https</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AbstractDelegateHttpsURLConnection (sun.net.www.protocol.https)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AbstractDelegateHttpsURLConnection</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 59)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.net.www.protocol.https;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.net.Proxy;
+<i>10</i>&nbsp;import java.net.SecureCacheResponse;
+<i>11</i>&nbsp;import java.net.URL;
+<i>12</i>&nbsp;import java.security.Principal;
+<i>13</i>&nbsp;import java.security.cert.Certificate;
+<i>14</i>&nbsp;import java.util.List;
+<i>15</i>&nbsp;import javax.net.ssl.HostnameVerifier;
+<i>16</i>&nbsp;import javax.net.ssl.SSLPeerUnverifiedException;
+<i>17</i>&nbsp;import javax.net.ssl.SSLSocketFactory;
+<i>18</i>&nbsp;import javax.security.cert.X509Certificate;
+<i>19</i>&nbsp;import sun.net.www.http.HttpClient;
+<i>20</i>&nbsp;import sun.net.www.protocol.http.Handler;
+<i>21</i>&nbsp;import sun.net.www.protocol.http.HttpURLConnection;
+<i>22</i>&nbsp;import sun.net.www.protocol.https.HttpsClient;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;public abstract class AbstractDelegateHttpsURLConnection extends HttpURLConnection {
+<i>25</i>&nbsp;    protected AbstractDelegateHttpsURLConnection(URL var1, Handler var2) throws IOException {
+<i>26</i>&nbsp;        this(var1, (Proxy)null, var2);
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    protected AbstractDelegateHttpsURLConnection(URL var1, Proxy var2, Handler var3) throws IOException {
+<i>30</i>&nbsp;        super(var1, var2, var3);
+<b class="nc"><i>31</i>&nbsp;    }</b>
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    protected abstract SSLSocketFactory getSSLSocketFactory();
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    protected abstract HostnameVerifier getHostnameVerifier();
+<b class="nc"><i>36</i>&nbsp;</b>
+<i>37</i>&nbsp;    public void setNewClient(URL var1) throws IOException {
+<i>38</i>&nbsp;        this.setNewClient(var1, false);
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public void setNewClient(URL var1, boolean var2) throws IOException {
+<i>42</i>&nbsp;        this.http = HttpsClient.New(this.getSSLSocketFactory(), var1, this.getHostnameVerifier(), var2, this);
+<i>43</i>&nbsp;        ((HttpsClient)this.http).afterConnect();
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public void setProxiedClient(URL var1, String var2, int var3) throws IOException {
+<i>47</i>&nbsp;        this.setProxiedClient(var1, var2, var3, false);
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public void setProxiedClient(URL var1, String var2, int var3, boolean var4) throws IOException {
+<i>51</i>&nbsp;        this.proxiedConnect(var1, var2, var3, var4);
+<i>52</i>&nbsp;        if(!this.http.isCachedConnection()) {
+<i>53</i>&nbsp;            this.doTunneling();
+<i>54</i>&nbsp;        }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;        ((HttpsClient)this.http).afterConnect();
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    protected void proxiedConnect(URL var1, String var2, int var3, boolean var4) throws IOException {
+<i>60</i>&nbsp;        if(!this.connected) {
+<b class="nc"><i>61</i>&nbsp;            this.http = HttpsClient.New(this.getSSLSocketFactory(), var1, this.getHostnameVerifier(), var2, var3, var4, this);</b>
+<i>62</i>&nbsp;            this.connected = true;
+<i>63</i>&nbsp;        }
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public boolean isConnected() {
+<i>67</i>&nbsp;        return this.connected;
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public void setConnected(boolean var1) {
+<i>71</i>&nbsp;        this.connected = var1;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public void connect() throws IOException {
+<i>75</i>&nbsp;        if(!this.connected) {
+<i>76</i>&nbsp;            this.plainConnect();
+<b class="nc"><i>77</i>&nbsp;            if(this.cachedResponse == null) {</b>
+<i>78</i>&nbsp;                if(!this.http.isCachedConnection() &amp;&amp; this.http.needsTunneling()) {
+<i>79</i>&nbsp;                    this.doTunneling();
+<i>80</i>&nbsp;                }
+<b class="nc"><i>81</i>&nbsp;</b>
+<i>82</i>&nbsp;                ((HttpsClient)this.http).afterConnect();
+<i>83</i>&nbsp;            }
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    protected HttpClient getNewHttpClient(URL var1, Proxy var2, int var3) throws IOException {
+<i>88</i>&nbsp;        return HttpsClient.New(this.getSSLSocketFactory(), var1, this.getHostnameVerifier(), var2, true, var3, this);
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    protected HttpClient getNewHttpClient(URL var1, Proxy var2, int var3, boolean var4) throws IOException {
+<i>92</i>&nbsp;        return HttpsClient.New(this.getSSLSocketFactory(), var1, this.getHostnameVerifier(), var2, var4, var3, this);
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public String getCipherSuite() {
+<i>96</i>&nbsp;        if(this.cachedResponse != null) {
+<i>97</i>&nbsp;            return ((SecureCacheResponse)this.cachedResponse).getCipherSuite();
+<i>98</i>&nbsp;        } else if(this.http == null) {
+<b class="nc"><i>99</i>&nbsp;            throw new IllegalStateException(&quot;connection not yet open&quot;);</b>
+<i>100</i>&nbsp;        } else {
+<i>101</i>&nbsp;            return ((HttpsClient)this.http).getCipherSuite();
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public Certificate[] getLocalCertificates() {
+<i>106</i>&nbsp;        if(this.cachedResponse != null) {
+<i>107</i>&nbsp;            List var1 = ((SecureCacheResponse)this.cachedResponse).getLocalCertificateChain();
+<i>108</i>&nbsp;            return var1 == null?null:(Certificate[])((Certificate[])var1.toArray());
+<i>109</i>&nbsp;        } else if(this.http == null) {
+<i>110</i>&nbsp;            throw new IllegalStateException(&quot;connection not yet open&quot;);
+<i>111</i>&nbsp;        } else {
+<i>112</i>&nbsp;            return ((HttpsClient)this.http).getLocalCertificates();
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public Certificate[] getServerCertificates() throws SSLPeerUnverifiedException {
+<i>117</i>&nbsp;        if(this.cachedResponse != null) {
+<i>118</i>&nbsp;            List var1 = ((SecureCacheResponse)this.cachedResponse).getServerCertificateChain();
+<b class="nc"><i>119</i>&nbsp;            return var1 == null?null:(Certificate[])((Certificate[])var1.toArray());</b>
+<b class="nc"><i>120</i>&nbsp;        } else if(this.http == null) {</b>
+<b class="nc"><i>121</i>&nbsp;            throw new IllegalStateException(&quot;connection not yet open&quot;);</b>
+<i>122</i>&nbsp;        } else {
+<b class="nc"><i>123</i>&nbsp;            return ((HttpsClient)this.http).getServerCertificates();</b>
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public X509Certificate[] getServerCertificateChain() throws SSLPeerUnverifiedException {
+<b class="nc"><i>128</i>&nbsp;        if(this.cachedResponse != null) {</b>
+<i>129</i>&nbsp;            throw new UnsupportedOperationException(&quot;this method is not supported when using cache&quot;);
+<b class="nc"><i>130</i>&nbsp;        } else if(this.http == null) {</b>
+<i>131</i>&nbsp;            throw new IllegalStateException(&quot;connection not yet open&quot;);
+<i>132</i>&nbsp;        } else {
+<i>133</i>&nbsp;            return ((HttpsClient)this.http).getServerCertificateChain();
+<b class="nc"><i>134</i>&nbsp;        }</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    Principal getPeerPrincipal() throws SSLPeerUnverifiedException {
+<i>138</i>&nbsp;        if(this.cachedResponse != null) {
+<i>139</i>&nbsp;            return ((SecureCacheResponse)this.cachedResponse).getPeerPrincipal();
+<i>140</i>&nbsp;        } else if(this.http == null) {
+<b class="nc"><i>141</i>&nbsp;            throw new IllegalStateException(&quot;connection not yet open&quot;);</b>
+<i>142</i>&nbsp;        } else {
+<i>143</i>&nbsp;            return ((HttpsClient)this.http).getPeerPrincipal();
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    Principal getLocalPrincipal() {
+<b class="nc"><i>148</i>&nbsp;        if(this.cachedResponse != null) {</b>
+<i>149</i>&nbsp;            return ((SecureCacheResponse)this.cachedResponse).getLocalPrincipal();
+<i>150</i>&nbsp;        } else if(this.http == null) {
+<i>151</i>&nbsp;            throw new IllegalStateException(&quot;connection not yet open&quot;);
+<i>152</i>&nbsp;        } else {
+<i>153</i>&nbsp;            return ((HttpsClient)this.http).getLocalPrincipal();
+<i>154</i>&nbsp;        }
+<i>155</i>&nbsp;    }
+<b class="nc"><i>156</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:51</div>
+</div>
+</body>
+</html>

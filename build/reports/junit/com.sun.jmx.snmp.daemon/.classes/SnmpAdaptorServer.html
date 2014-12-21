@@ -1,0 +1,1366 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SnmpAdaptorServer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jmx.snmp.daemon</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SnmpAdaptorServer (com.sun.jmx.snmp.daemon)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SnmpAdaptorServer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 118)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 575)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jmx.snmp.daemon;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.defaults.JmxProperties;
+<i>9</i>&nbsp;import com.sun.jmx.snmp.InetAddressAcl;
+<i>10</i>&nbsp;import com.sun.jmx.snmp.SnmpDefinitions;
+<i>11</i>&nbsp;import com.sun.jmx.snmp.SnmpIpAddress;
+<i>12</i>&nbsp;import com.sun.jmx.snmp.SnmpMessage;
+<i>13</i>&nbsp;import com.sun.jmx.snmp.SnmpOid;
+<i>14</i>&nbsp;import com.sun.jmx.snmp.SnmpParameters;
+<i>15</i>&nbsp;import com.sun.jmx.snmp.SnmpPduFactory;
+<i>16</i>&nbsp;import com.sun.jmx.snmp.SnmpPduFactoryBER;
+<i>17</i>&nbsp;import com.sun.jmx.snmp.SnmpPduPacket;
+<i>18</i>&nbsp;import com.sun.jmx.snmp.SnmpPduRequest;
+<i>19</i>&nbsp;import com.sun.jmx.snmp.SnmpPduTrap;
+<i>20</i>&nbsp;import com.sun.jmx.snmp.SnmpPeer;
+<i>21</i>&nbsp;import com.sun.jmx.snmp.SnmpStatusException;
+<i>22</i>&nbsp;import com.sun.jmx.snmp.SnmpTimeticks;
+<i>23</i>&nbsp;import com.sun.jmx.snmp.SnmpTooBigException;
+<i>24</i>&nbsp;import com.sun.jmx.snmp.SnmpVarBind;
+<i>25</i>&nbsp;import com.sun.jmx.snmp.SnmpVarBindList;
+<i>26</i>&nbsp;import com.sun.jmx.snmp.IPAcl.SnmpAcl;
+<i>27</i>&nbsp;import com.sun.jmx.snmp.agent.SnmpErrorHandlerAgent;
+<i>28</i>&nbsp;import com.sun.jmx.snmp.agent.SnmpMibAgent;
+<i>29</i>&nbsp;import com.sun.jmx.snmp.agent.SnmpMibHandler;
+<i>30</i>&nbsp;import com.sun.jmx.snmp.agent.SnmpUserDataFactory;
+<i>31</i>&nbsp;import com.sun.jmx.snmp.daemon.CommunicationException;
+<i>32</i>&nbsp;import com.sun.jmx.snmp.daemon.CommunicatorServer;
+<i>33</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpAdaptorServerMBean;
+<i>34</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpInformHandler;
+<i>35</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpInformRequest;
+<i>36</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpMibTree;
+<i>37</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpRequestHandler;
+<i>38</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpSession;
+<i>39</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpSubRequestHandler;
+<i>40</i>&nbsp;import com.sun.jmx.snmp.tasks.ThreadService;
+<i>41</i>&nbsp;import java.io.IOException;
+<i>42</i>&nbsp;import java.io.InterruptedIOException;
+<i>43</i>&nbsp;import java.io.ObjectInputStream;
+<i>44</i>&nbsp;import java.net.DatagramPacket;
+<i>45</i>&nbsp;import java.net.DatagramSocket;
+<i>46</i>&nbsp;import java.net.InetAddress;
+<i>47</i>&nbsp;import java.net.SocketException;
+<i>48</i>&nbsp;import java.net.UnknownHostException;
+<i>49</i>&nbsp;import java.util.Enumeration;
+<i>50</i>&nbsp;import java.util.Vector;
+<i>51</i>&nbsp;import java.util.logging.Level;
+<i>52</i>&nbsp;import javax.management.MBeanRegistration;
+<i>53</i>&nbsp;import javax.management.MBeanServer;
+<i>54</i>&nbsp;import javax.management.ObjectName;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;public class SnmpAdaptorServer extends CommunicatorServer implements SnmpAdaptorServerMBean, MBeanRegistration, SnmpDefinitions, SnmpMibHandler {
+<i>57</i>&nbsp;    private int trapPort;
+<i>58</i>&nbsp;    private int informPort;
+<i>59</i>&nbsp;    InetAddress address;
+<i>60</i>&nbsp;    private Object ipacl;
+<i>61</i>&nbsp;    private SnmpPduFactory pduFactory;
+<i>62</i>&nbsp;    private SnmpUserDataFactory userDataFactory;
+<i>63</i>&nbsp;    private boolean authRespEnabled;
+<i>64</i>&nbsp;    private boolean authTrapEnabled;
+<i>65</i>&nbsp;    private SnmpOid enterpriseOid;
+<i>66</i>&nbsp;    int bufferSize;
+<i>67</i>&nbsp;    private transient long startUpTime;
+<i>68</i>&nbsp;    private transient DatagramSocket socket;
+<i>69</i>&nbsp;    transient DatagramSocket trapSocket;
+<i>70</i>&nbsp;    private transient SnmpSession informSession;
+<i>71</i>&nbsp;    private transient DatagramPacket packet;
+<i>72</i>&nbsp;    transient Vector&lt;SnmpMibAgent&gt; mibs;
+<i>73</i>&nbsp;    private transient SnmpMibTree root;
+<i>74</i>&nbsp;    private transient boolean useAcl;
+<i>75</i>&nbsp;    private int maxTries;
+<i>76</i>&nbsp;    private int timeout;
+<i>77</i>&nbsp;    int snmpOutTraps;
+<i>78</i>&nbsp;    private int snmpOutGetResponses;
+<i>79</i>&nbsp;    private int snmpOutGenErrs;
+<i>80</i>&nbsp;    private int snmpOutBadValues;
+<i>81</i>&nbsp;    private int snmpOutNoSuchNames;
+<i>82</i>&nbsp;    private int snmpOutTooBigs;
+<i>83</i>&nbsp;    int snmpOutPkts;
+<i>84</i>&nbsp;    private int snmpInASNParseErrs;
+<i>85</i>&nbsp;    private int snmpInBadCommunityUses;
+<i>86</i>&nbsp;    private int snmpInBadCommunityNames;
+<i>87</i>&nbsp;    private int snmpInBadVersions;
+<i>88</i>&nbsp;    private int snmpInGetRequests;
+<i>89</i>&nbsp;    private int snmpInGetNexts;
+<i>90</i>&nbsp;    private int snmpInSetRequests;
+<i>91</i>&nbsp;    private int snmpInPkts;
+<i>92</i>&nbsp;    private int snmpInTotalReqVars;
+<i>93</i>&nbsp;    private int snmpInTotalSetVars;
+<i>94</i>&nbsp;    private int snmpSilentDrops;
+<i>95</i>&nbsp;    private static final String InterruptSysCallMsg = &quot;Interrupted system call&quot;;
+<i>96</i>&nbsp;    static final SnmpOid sysUpTimeOid = new SnmpOid(&quot;1.3.6.1.2.1.1.3.0&quot;);
+<i>97</i>&nbsp;    static final SnmpOid snmpTrapOidOid = new SnmpOid(&quot;1.3.6.1.6.3.1.1.4.1.0&quot;);
+<i>98</i>&nbsp;    private ThreadService threadService;
+<i>99</i>&nbsp;    private static int threadNumber = 6;
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public SnmpAdaptorServer() {
+<i>102</i>&nbsp;        this(true, (InetAddressAcl)null, 161, (InetAddress)null);
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public SnmpAdaptorServer(int var1) {
+<i>106</i>&nbsp;        this(true, (InetAddressAcl)null, var1, (InetAddress)null);
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    public SnmpAdaptorServer(InetAddressAcl var1) {
+<i>110</i>&nbsp;        this(false, var1, 161, (InetAddress)null);
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    public SnmpAdaptorServer(InetAddress var1) {
+<i>114</i>&nbsp;        this(true, (InetAddressAcl)null, 161, var1);
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public SnmpAdaptorServer(InetAddressAcl var1, int var2) {
+<i>118</i>&nbsp;        this(false, var1, var2, (InetAddress)null);
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    public SnmpAdaptorServer(int var1, InetAddress var2) {
+<i>122</i>&nbsp;        this(true, (InetAddressAcl)null, var1, var2);
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public SnmpAdaptorServer(InetAddressAcl var1, InetAddress var2) {
+<b class="nc"><i>126</i>&nbsp;        this(false, var1, 161, var2);</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public SnmpAdaptorServer(InetAddressAcl var1, int var2, InetAddress var3) {
+<i>130</i>&nbsp;        this(false, var1, var2, var3);
+<i>131</i>&nbsp;    }
+<b class="nc"><i>132</i>&nbsp;</b>
+<i>133</i>&nbsp;    public SnmpAdaptorServer(boolean var1, int var2, InetAddress var3) {
+<i>134</i>&nbsp;        this(var1, (InetAddressAcl)null, var2, var3);
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    private SnmpAdaptorServer(boolean var1, InetAddressAcl var2, int var3, InetAddress var4) {
+<i>138</i>&nbsp;        super(4);
+<b class="nc"><i>139</i>&nbsp;        this.trapPort = 162;</b>
+<i>140</i>&nbsp;        this.informPort = 162;
+<i>141</i>&nbsp;        this.address = null;
+<i>142</i>&nbsp;        this.ipacl = null;
+<i>143</i>&nbsp;        this.pduFactory = null;
+<b class="nc"><i>144</i>&nbsp;        this.userDataFactory = null;</b>
+<i>145</i>&nbsp;        this.authRespEnabled = true;
+<i>146</i>&nbsp;        this.authTrapEnabled = true;
+<i>147</i>&nbsp;        this.enterpriseOid = new SnmpOid(&quot;1.3.6.1.4.1.42&quot;);
+<i>148</i>&nbsp;        this.bufferSize = 1024;
+<b class="nc"><i>149</i>&nbsp;        this.startUpTime = 0L;</b>
+<i>150</i>&nbsp;        this.socket = null;
+<i>151</i>&nbsp;        this.trapSocket = null;
+<i>152</i>&nbsp;        this.informSession = null;
+<i>153</i>&nbsp;        this.packet = null;
+<b class="nc"><i>154</i>&nbsp;        this.mibs = new Vector();</b>
+<i>155</i>&nbsp;        this.useAcl = true;
+<i>156</i>&nbsp;        this.maxTries = 3;
+<i>157</i>&nbsp;        this.timeout = 3000;
+<i>158</i>&nbsp;        this.snmpOutTraps = 0;
+<i>159</i>&nbsp;        this.snmpOutGetResponses = 0;
+<b class="nc"><i>160</i>&nbsp;        this.snmpOutGenErrs = 0;</b>
+<i>161</i>&nbsp;        this.snmpOutBadValues = 0;
+<i>162</i>&nbsp;        this.snmpOutNoSuchNames = 0;
+<i>163</i>&nbsp;        this.snmpOutTooBigs = 0;
+<i>164</i>&nbsp;        this.snmpOutPkts = 0;
+<b class="nc"><i>165</i>&nbsp;        this.snmpInASNParseErrs = 0;</b>
+<i>166</i>&nbsp;        this.snmpInBadCommunityUses = 0;
+<i>167</i>&nbsp;        this.snmpInBadCommunityNames = 0;
+<i>168</i>&nbsp;        this.snmpInBadVersions = 0;
+<i>169</i>&nbsp;        this.snmpInGetRequests = 0;
+<i>170</i>&nbsp;        this.snmpInGetNexts = 0;
+<b class="nc"><i>171</i>&nbsp;        this.snmpInSetRequests = 0;</b>
+<i>172</i>&nbsp;        this.snmpInPkts = 0;
+<i>173</i>&nbsp;        this.snmpInTotalReqVars = 0;
+<i>174</i>&nbsp;        this.snmpInTotalSetVars = 0;
+<i>175</i>&nbsp;        this.snmpSilentDrops = 0;
+<i>176</i>&nbsp;        if(var2 == null &amp;&amp; var1) {
+<i>177</i>&nbsp;            try {
+<i>178</i>&nbsp;                var2 = new SnmpAcl(&quot;SNMP protocol adaptor IP ACL&quot;);
+<b class="nc"><i>179</i>&nbsp;            } catch (UnknownHostException var6) {</b>
+<i>180</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<b class="nc"><i>181</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;constructor&quot;, &quot;UnknowHostException when creating ACL&quot;, var6);</b>
+<b class="nc"><i>182</i>&nbsp;                }</b>
+<b class="nc"><i>183</i>&nbsp;            }</b>
+<b class="nc"><i>184</i>&nbsp;        } else {</b>
+<b class="nc"><i>185</i>&nbsp;            this.useAcl = var2 != null || var1;</b>
+<b class="nc"><i>186</i>&nbsp;        }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;        this.init(var2, var3, var4);
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    public int getServedClientCount() {
+<b class="nc"><i>192</i>&nbsp;        return super.getServedClientCount();</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public int getActiveClientCount() {
+<i>196</i>&nbsp;        return super.getActiveClientCount();
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    public int getMaxActiveClientCount() {
+<i>200</i>&nbsp;        return super.getMaxActiveClientCount();
+<i>201</i>&nbsp;    }
+<b class="nc"><i>202</i>&nbsp;</b>
+<i>203</i>&nbsp;    public void setMaxActiveClientCount(int var1) throws IllegalStateException {
+<i>204</i>&nbsp;        super.setMaxActiveClientCount(var1);
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    public InetAddressAcl getInetAddressAcl() {
+<b class="nc"><i>208</i>&nbsp;        return (InetAddressAcl)this.ipacl;</b>
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    public Integer getTrapPort() {
+<i>212</i>&nbsp;        return new Integer(this.trapPort);
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    public void setTrapPort(Integer var1) {
+<b class="nc"><i>216</i>&nbsp;        this.setTrapPort(var1.intValue());</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    public void setTrapPort(int var1) {
+<i>220</i>&nbsp;        if(var1 &lt; 0) {
+<b class="nc"><i>221</i>&nbsp;            throw new IllegalArgumentException(&quot;Trap port cannot be a negative value&quot;);</b>
+<i>222</i>&nbsp;        } else {
+<i>223</i>&nbsp;            this.trapPort = var1;
+<i>224</i>&nbsp;        }
+<i>225</i>&nbsp;    }
+<b class="nc"><i>226</i>&nbsp;</b>
+<i>227</i>&nbsp;    public int getInformPort() {
+<i>228</i>&nbsp;        return this.informPort;
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;    public void setInformPort(int var1) {</b>
+<i>232</i>&nbsp;        if(var1 &lt; 0) {
+<i>233</i>&nbsp;            throw new IllegalArgumentException(&quot;Inform request port cannot be a negative value&quot;);
+<i>234</i>&nbsp;        } else {
+<i>235</i>&nbsp;            this.informPort = var1;
+<b class="nc"><i>236</i>&nbsp;        }</b>
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    public String getProtocol() {
+<i>240</i>&nbsp;        return &quot;snmp&quot;;
+<b class="nc"><i>241</i>&nbsp;    }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    public Integer getBufferSize() {
+<i>244</i>&nbsp;        return new Integer(this.bufferSize);
+<i>245</i>&nbsp;    }
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;    public void setBufferSize(Integer var1) throws IllegalStateException {
+<i>248</i>&nbsp;        if(this.state != 0 &amp;&amp; this.state != 3) {
+<i>249</i>&nbsp;            this.bufferSize = var1.intValue();
+<i>250</i>&nbsp;        } else {
+<b class="nc"><i>251</i>&nbsp;            throw new IllegalStateException(&quot;Stop server before carrying out this operation&quot;);</b>
+<i>252</i>&nbsp;        }
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    public final int getMaxTries() {
+<b class="nc"><i>256</i>&nbsp;        return this.maxTries;</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    public final synchronized void setMaxTries(int var1) {
+<i>260</i>&nbsp;        if(var1 &lt; 0) {
+<b class="nc"><i>261</i>&nbsp;            throw new IllegalArgumentException();</b>
+<i>262</i>&nbsp;        } else {
+<i>263</i>&nbsp;            this.maxTries = var1;
+<i>264</i>&nbsp;        }
+<i>265</i>&nbsp;    }
+<b class="nc"><i>266</i>&nbsp;</b>
+<i>267</i>&nbsp;    public final int getTimeout() {
+<i>268</i>&nbsp;        return this.timeout;
+<i>269</i>&nbsp;    }
+<i>270</i>&nbsp;
+<b class="nc"><i>271</i>&nbsp;    public final synchronized void setTimeout(int var1) {</b>
+<i>272</i>&nbsp;        if(var1 &lt; 0) {
+<i>273</i>&nbsp;            throw new IllegalArgumentException();
+<i>274</i>&nbsp;        } else {
+<i>275</i>&nbsp;            this.timeout = var1;
+<b class="nc"><i>276</i>&nbsp;        }</b>
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    public SnmpPduFactory getPduFactory() {
+<i>280</i>&nbsp;        return this.pduFactory;
+<b class="nc"><i>281</i>&nbsp;    }</b>
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    public void setPduFactory(SnmpPduFactory var1) {
+<i>284</i>&nbsp;        if(var1 == null) {
+<i>285</i>&nbsp;            this.pduFactory = new SnmpPduFactoryBER();
+<b class="nc"><i>286</i>&nbsp;        } else {</b>
+<i>287</i>&nbsp;            this.pduFactory = var1;
+<i>288</i>&nbsp;        }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    }
+<b class="nc"><i>291</i>&nbsp;</b>
+<i>292</i>&nbsp;    public void setUserDataFactory(SnmpUserDataFactory var1) {
+<i>293</i>&nbsp;        this.userDataFactory = var1;
+<i>294</i>&nbsp;    }
+<i>295</i>&nbsp;
+<b class="nc"><i>296</i>&nbsp;    public SnmpUserDataFactory getUserDataFactory() {</b>
+<i>297</i>&nbsp;        return this.userDataFactory;
+<i>298</i>&nbsp;    }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;    public boolean getAuthTrapEnabled() {
+<b class="nc"><i>301</i>&nbsp;        return this.authTrapEnabled;</b>
+<i>302</i>&nbsp;    }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    public void setAuthTrapEnabled(boolean var1) {
+<b class="nc"><i>305</i>&nbsp;        this.authTrapEnabled = var1;</b>
+<b class="nc"><i>306</i>&nbsp;    }</b>
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    public boolean getAuthRespEnabled() {
+<i>309</i>&nbsp;        return this.authRespEnabled;
+<b class="nc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    public void setAuthRespEnabled(boolean var1) {
+<b class="nc"><i>313</i>&nbsp;        this.authRespEnabled = var1;</b>
+<i>314</i>&nbsp;    }
+<b class="nc"><i>315</i>&nbsp;</b>
+<i>316</i>&nbsp;    public String getEnterpriseOid() {
+<b class="nc"><i>317</i>&nbsp;        return this.enterpriseOid.toString();</b>
+<b class="nc"><i>318</i>&nbsp;    }</b>
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;    public void setEnterpriseOid(String var1) throws IllegalArgumentException {</b>
+<i>321</i>&nbsp;        this.enterpriseOid = new SnmpOid(var1);
+<b class="nc"><i>322</i>&nbsp;    }</b>
+<b class="nc"><i>323</i>&nbsp;</b>
+<i>324</i>&nbsp;    public String[] getMibs() {
+<i>325</i>&nbsp;        String[] var1 = new String[this.mibs.size()];
+<i>326</i>&nbsp;        int var2 = 0;
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;        SnmpMibAgent var4;
+<i>329</i>&nbsp;        for(Enumeration var3 = this.mibs.elements(); var3.hasMoreElements(); var1[var2++] = var4.getMibName()) {
+<i>330</i>&nbsp;            var4 = (SnmpMibAgent)var3.nextElement();
+<i>331</i>&nbsp;        }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;        return var1;
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<b class="nc"><i>336</i>&nbsp;    public Long getSnmpOutTraps() {</b>
+<i>337</i>&nbsp;        return new Long((long)this.snmpOutTraps);
+<i>338</i>&nbsp;    }
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;    public Long getSnmpOutGetResponses() {
+<i>341</i>&nbsp;        return new Long((long)this.snmpOutGetResponses);
+<i>342</i>&nbsp;    }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    public Long getSnmpOutGenErrs() {
+<i>345</i>&nbsp;        return new Long((long)this.snmpOutGenErrs);
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;    public Long getSnmpOutBadValues() {</b>
+<i>349</i>&nbsp;        return new Long((long)this.snmpOutBadValues);
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    public Long getSnmpOutNoSuchNames() {
+<i>353</i>&nbsp;        return new Long((long)this.snmpOutNoSuchNames);
+<i>354</i>&nbsp;    }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    public Long getSnmpOutTooBigs() {
+<i>357</i>&nbsp;        return new Long((long)this.snmpOutTooBigs);
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    public Long getSnmpInASNParseErrs() {
+<b class="nc"><i>361</i>&nbsp;        return new Long((long)this.snmpInASNParseErrs);</b>
+<i>362</i>&nbsp;    }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;    public Long getSnmpInBadCommunityUses() {
+<i>365</i>&nbsp;        return new Long((long)this.snmpInBadCommunityUses);
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    public Long getSnmpInBadCommunityNames() {
+<i>369</i>&nbsp;        return new Long((long)this.snmpInBadCommunityNames);
+<i>370</i>&nbsp;    }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    public Long getSnmpInBadVersions() {
+<i>373</i>&nbsp;        return new Long((long)this.snmpInBadVersions);
+<i>374</i>&nbsp;    }
+<b class="nc"><i>375</i>&nbsp;</b>
+<i>376</i>&nbsp;    public Long getSnmpOutPkts() {
+<i>377</i>&nbsp;        return new Long((long)this.snmpOutPkts);
+<i>378</i>&nbsp;    }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;    public Long getSnmpInPkts() {
+<i>381</i>&nbsp;        return new Long((long)this.snmpInPkts);
+<i>382</i>&nbsp;    }
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;    public Long getSnmpInGetRequests() {
+<i>385</i>&nbsp;        return new Long((long)this.snmpInGetRequests);
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;    public Long getSnmpInGetNexts() {
+<i>389</i>&nbsp;        return new Long((long)this.snmpInGetNexts);
+<b class="nc"><i>390</i>&nbsp;    }</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    public Long getSnmpInSetRequests() {
+<i>393</i>&nbsp;        return new Long((long)this.snmpInSetRequests);
+<i>394</i>&nbsp;    }
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;    public Long getSnmpInTotalSetVars() {
+<i>397</i>&nbsp;        return new Long((long)this.snmpInTotalSetVars);
+<i>398</i>&nbsp;    }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;    public Long getSnmpInTotalReqVars() {
+<i>401</i>&nbsp;        return new Long((long)this.snmpInTotalReqVars);
+<i>402</i>&nbsp;    }
+<b class="nc"><i>403</i>&nbsp;</b>
+<i>404</i>&nbsp;    public Long getSnmpSilentDrops() {
+<i>405</i>&nbsp;        return new Long((long)this.snmpSilentDrops);
+<i>406</i>&nbsp;    }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;    public Long getSnmpProxyDrops() {
+<i>409</i>&nbsp;        return new Long(0L);
+<i>410</i>&nbsp;    }
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    public ObjectName preRegister(MBeanServer var1, ObjectName var2) throws Exception {
+<i>413</i>&nbsp;        if(var2 == null) {
+<i>414</i>&nbsp;            var2 = new ObjectName(var1.getDefaultDomain() + &quot;:&quot; + &quot;name=SnmpAdaptorServer&quot;);
+<i>415</i>&nbsp;        }
+<i>416</i>&nbsp;
+<b class="nc"><i>417</i>&nbsp;        return super.preRegister(var1, var2);</b>
+<i>418</i>&nbsp;    }
+<i>419</i>&nbsp;
+<i>420</i>&nbsp;    public void postRegister(Boolean var1) {
+<i>421</i>&nbsp;        super.postRegister(var1);
+<i>422</i>&nbsp;    }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;    public void preDeregister() throws Exception {
+<i>425</i>&nbsp;        super.preDeregister();
+<i>426</i>&nbsp;    }
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;    public void postDeregister() {
+<i>429</i>&nbsp;        super.postDeregister();
+<i>430</i>&nbsp;    }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    public SnmpMibHandler addMib(SnmpMibAgent var1) throws IllegalArgumentException {
+<b class="nc"><i>433</i>&nbsp;        if(var1 == null) {</b>
+<i>434</i>&nbsp;            throw new IllegalArgumentException();
+<i>435</i>&nbsp;        } else {
+<i>436</i>&nbsp;            if(!this.mibs.contains(var1)) {
+<i>437</i>&nbsp;                this.mibs.addElement(var1);
+<i>438</i>&nbsp;            }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;            this.root.register(var1);
+<i>441</i>&nbsp;            return this;
+<i>442</i>&nbsp;        }
+<i>443</i>&nbsp;    }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;    public SnmpMibHandler addMib(SnmpMibAgent var1, SnmpOid[] var2) throws IllegalArgumentException {
+<i>446</i>&nbsp;        if(var1 == null) {
+<i>447</i>&nbsp;            throw new IllegalArgumentException();
+<i>448</i>&nbsp;        } else if(var2 == null) {
+<i>449</i>&nbsp;            return this.addMib(var1);
+<i>450</i>&nbsp;        } else {
+<i>451</i>&nbsp;            if(!this.mibs.contains(var1)) {
+<i>452</i>&nbsp;                this.mibs.addElement(var1);
+<b class="nc"><i>453</i>&nbsp;            }</b>
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;            for(int var3 = 0; var3 &lt; var2.length; ++var3) {
+<i>456</i>&nbsp;                this.root.register(var1, var2[var3].longValue());
+<i>457</i>&nbsp;            }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;            return this;
+<i>460</i>&nbsp;        }
+<b class="nc"><i>461</i>&nbsp;    }</b>
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    public SnmpMibHandler addMib(SnmpMibAgent var1, String var2) throws IllegalArgumentException {
+<i>464</i>&nbsp;        return this.addMib(var1);
+<i>465</i>&nbsp;    }
+<b class="nc"><i>466</i>&nbsp;</b>
+<i>467</i>&nbsp;    public SnmpMibHandler addMib(SnmpMibAgent var1, String var2, SnmpOid[] var3) throws IllegalArgumentException {
+<b class="nc"><i>468</i>&nbsp;        return this.addMib(var1, (SnmpOid[])var3);</b>
+<i>469</i>&nbsp;    }
+<b class="nc"><i>470</i>&nbsp;</b>
+<b class="nc"><i>471</i>&nbsp;    public boolean removeMib(SnmpMibAgent var1, String var2) {</b>
+<b class="nc"><i>472</i>&nbsp;        return this.removeMib(var1);</b>
+<i>473</i>&nbsp;    }
+<b class="nc"><i>474</i>&nbsp;</b>
+<i>475</i>&nbsp;    public boolean removeMib(SnmpMibAgent var1) {
+<b class="nc"><i>476</i>&nbsp;        this.root.unregister(var1);</b>
+<i>477</i>&nbsp;        return this.mibs.removeElement(var1);
+<b class="nc"><i>478</i>&nbsp;    }</b>
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;    public boolean removeMib(SnmpMibAgent var1, SnmpOid[] var2) {
+<b class="nc"><i>481</i>&nbsp;        this.root.unregister(var1, var2);</b>
+<i>482</i>&nbsp;        return this.mibs.removeElement(var1);
+<i>483</i>&nbsp;    }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;    public boolean removeMib(SnmpMibAgent var1, String var2, SnmpOid[] var3) {
+<i>486</i>&nbsp;        return this.removeMib(var1, (SnmpOid[])var3);
+<i>487</i>&nbsp;    }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    protected void doBind() throws CommunicationException, InterruptedException {
+<i>490</i>&nbsp;        try {
+<i>491</i>&nbsp;            synchronized(this) {
+<i>492</i>&nbsp;                this.socket = new DatagramSocket(this.port, this.address);
+<i>493</i>&nbsp;            }
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;            this.dbgTag = this.makeDebugTag();
+<b class="nc"><i>496</i>&nbsp;        } catch (SocketException var4) {</b>
+<i>497</i>&nbsp;            if(var4.getMessage().equals(&quot;Interrupted system call&quot;)) {
+<i>498</i>&nbsp;                throw new InterruptedException(var4.toString());
+<i>499</i>&nbsp;            } else {
+<i>500</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>501</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;doBind&quot;, &quot;cannot bind on port &quot; + this.port);
+<i>502</i>&nbsp;                }
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;                throw new CommunicationException(var4);
+<i>505</i>&nbsp;            }
+<i>506</i>&nbsp;        }
+<b class="nc"><i>507</i>&nbsp;    }</b>
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    public int getPort() {
+<i>510</i>&nbsp;        synchronized(this) {
+<i>511</i>&nbsp;            if(this.socket != null) {
+<i>512</i>&nbsp;                return this.socket.getLocalPort();
+<i>513</i>&nbsp;            }
+<i>514</i>&nbsp;        }
+<i>515</i>&nbsp;
+<i>516</i>&nbsp;        return super.getPort();
+<i>517</i>&nbsp;    }
+<b class="nc"><i>518</i>&nbsp;</b>
+<i>519</i>&nbsp;    protected void doUnbind() throws CommunicationException, InterruptedException {
+<i>520</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>521</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;doUnbind&quot;, &quot;Finally close the socket&quot;);
+<i>522</i>&nbsp;        }
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;        synchronized(this) {
+<i>525</i>&nbsp;            if(this.socket != null) {
+<i>526</i>&nbsp;                this.socket.close();
+<i>527</i>&nbsp;                this.socket = null;
+<i>528</i>&nbsp;            }
+<i>529</i>&nbsp;        }
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;        this.closeTrapSocketIfNeeded();
+<b class="nc"><i>532</i>&nbsp;        this.closeInformSocketIfNeeded();</b>
+<i>533</i>&nbsp;    }
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;    void createSnmpRequestHandler(SnmpAdaptorServer var1, int var2, DatagramSocket var3, DatagramPacket var4, SnmpMibTree var5, Vector var6, Object var7, SnmpPduFactory var8, SnmpUserDataFactory var9, MBeanServer var10, ObjectName var11) {
+<i>536</i>&nbsp;        SnmpRequestHandler var12 = new SnmpRequestHandler(this, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11);
+<i>537</i>&nbsp;        this.threadService.submitTask(var12);
+<i>538</i>&nbsp;    }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;    protected void doReceive() throws CommunicationException, InterruptedException {
+<i>541</i>&nbsp;        try {
+<b class="nc"><i>542</i>&nbsp;            this.packet = new DatagramPacket(new byte[this.bufferSize], this.bufferSize);</b>
+<i>543</i>&nbsp;            this.socket.receive(this.packet);
+<i>544</i>&nbsp;            int var1 = this.getState();
+<i>545</i>&nbsp;            if(var1 != 0) {
+<i>546</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>547</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;doReceive&quot;, &quot;received a message but state not online, returning.&quot;);
+<i>548</i>&nbsp;                }
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;                return;
+<i>551</i>&nbsp;            }
+<b class="nc"><i>552</i>&nbsp;</b>
+<i>553</i>&nbsp;            this.createSnmpRequestHandler(this, this.servedClientCount, this.socket, this.packet, this.root, this.mibs, this.ipacl, this.pduFactory, this.userDataFactory, this.topMBS, this.objectName);
+<i>554</i>&nbsp;        } catch (SocketException var2) {
+<i>555</i>&nbsp;            if(var2.getMessage().equals(&quot;Interrupted system call&quot;)) {
+<i>556</i>&nbsp;                throw new InterruptedException(var2.toString());
+<i>557</i>&nbsp;            }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;            throw new CommunicationException(var2);
+<i>560</i>&nbsp;        } catch (InterruptedIOException var3) {
+<b class="nc"><i>561</i>&nbsp;            throw new InterruptedException(var3.toString());</b>
+<i>562</i>&nbsp;        } catch (CommunicationException var4) {
+<i>563</i>&nbsp;            throw var4;
+<i>564</i>&nbsp;        } catch (Exception var5) {
+<i>565</i>&nbsp;            throw new CommunicationException(var5);
+<i>566</i>&nbsp;        }
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>569</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;doReceive&quot;, &quot;received a message&quot;);
+<b class="nc"><i>570</i>&nbsp;        }</b>
+<b class="nc"><i>571</i>&nbsp;</b>
+<i>572</i>&nbsp;    }
+<b class="nc"><i>573</i>&nbsp;</b>
+<i>574</i>&nbsp;    protected void doError(Exception var1) throws CommunicationException {
+<i>575</i>&nbsp;    }
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;    protected void doProcess() throws CommunicationException, InterruptedException {
+<i>578</i>&nbsp;    }
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;    protected int getBindTries() {
+<i>581</i>&nbsp;        return 1;
+<i>582</i>&nbsp;    }
+<b class="nc"><i>583</i>&nbsp;</b>
+<i>584</i>&nbsp;    public void stop() {
+<i>585</i>&nbsp;        int var1 = this.getPort();
+<i>586</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>587</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;stop&quot;, &quot;Stopping: using port &quot; + var1);
+<i>588</i>&nbsp;        }
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;        if(this.state == 0 || this.state == 3) {
+<i>591</i>&nbsp;            super.stop();
+<i>592</i>&nbsp;
+<b class="nc"><i>593</i>&nbsp;            try {</b>
+<b class="nc"><i>594</i>&nbsp;                DatagramSocket var2 = new DatagramSocket(0);</b>
+<i>595</i>&nbsp;
+<b class="nc"><i>596</i>&nbsp;                try {</b>
+<i>597</i>&nbsp;                    byte[] var3 = new byte[1];
+<i>598</i>&nbsp;                    DatagramPacket var4;
+<i>599</i>&nbsp;                    if(this.address != null) {
+<i>600</i>&nbsp;                        var4 = new DatagramPacket(var3, 1, this.address, var1);
+<i>601</i>&nbsp;                    } else {
+<i>602</i>&nbsp;                        var4 = new DatagramPacket(var3, 1, InetAddress.getLocalHost(), var1);
+<i>603</i>&nbsp;                    }
+<i>604</i>&nbsp;
+<b class="nc"><i>605</i>&nbsp;                    if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {</b>
+<i>606</i>&nbsp;                        JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;stop&quot;, &quot;Sending: using port &quot; + var1);
+<i>607</i>&nbsp;                    }
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;                    var2.send(var4);
+<i>610</i>&nbsp;                } finally {
+<i>611</i>&nbsp;                    var2.close();
+<i>612</i>&nbsp;                }
+<i>613</i>&nbsp;            } catch (Throwable var9) {
+<i>614</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>615</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;stop&quot;, &quot;Got unexpected Throwable&quot;, var9);
+<i>616</i>&nbsp;                }
+<b class="nc"><i>617</i>&nbsp;            }</b>
+<i>618</i>&nbsp;        }
+<i>619</i>&nbsp;
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    public void snmpV1Trap(int var1, int var2, SnmpVarBindList var3) throws IOException, SnmpStatusException {
+<i>623</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>624</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpV1Trap&quot;, &quot;generic=&quot; + var1 + &quot;, specific=&quot; + var2);
+<i>625</i>&nbsp;        }
+<i>626</i>&nbsp;
+<i>627</i>&nbsp;        SnmpPduTrap var4 = new SnmpPduTrap();
+<i>628</i>&nbsp;        var4.address = null;
+<i>629</i>&nbsp;        var4.port = this.trapPort;
+<i>630</i>&nbsp;        var4.type = 164;
+<i>631</i>&nbsp;        var4.version = 0;
+<b class="nc"><i>632</i>&nbsp;        var4.community = null;</b>
+<b class="nc"><i>633</i>&nbsp;        var4.enterprise = this.enterpriseOid;</b>
+<i>634</i>&nbsp;        var4.genericTrap = var1;
+<i>635</i>&nbsp;        var4.specificTrap = var2;
+<b class="nc"><i>636</i>&nbsp;        var4.timeStamp = this.getSysUpTime();</b>
+<i>637</i>&nbsp;        if(var3 != null) {
+<i>638</i>&nbsp;            var4.varBindList = new SnmpVarBind[var3.size()];
+<i>639</i>&nbsp;            var3.copyInto(var4.varBindList);
+<i>640</i>&nbsp;        } else {
+<i>641</i>&nbsp;            var4.varBindList = null;
+<i>642</i>&nbsp;        }
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;        try {
+<i>645</i>&nbsp;            if(this.address != null) {
+<b class="nc"><i>646</i>&nbsp;                var4.agentAddr = this.handleMultipleIpVersion(this.address.getAddress());</b>
+<i>647</i>&nbsp;            } else {
+<i>648</i>&nbsp;                var4.agentAddr = this.handleMultipleIpVersion(InetAddress.getLocalHost().getAddress());
+<i>649</i>&nbsp;            }
+<i>650</i>&nbsp;        } catch (UnknownHostException var7) {
+<i>651</i>&nbsp;            byte[] var6 = new byte[4];
+<i>652</i>&nbsp;            var4.agentAddr = this.handleMultipleIpVersion(var6);
+<i>653</i>&nbsp;        }
+<i>654</i>&nbsp;
+<b class="nc"><i>655</i>&nbsp;        this.sendTrapPdu(var4);</b>
+<b class="nc"><i>656</i>&nbsp;    }</b>
+<b class="nc"><i>657</i>&nbsp;</b>
+<i>658</i>&nbsp;    private SnmpIpAddress handleMultipleIpVersion(byte[] var1) {
+<i>659</i>&nbsp;        if(var1.length == 4) {
+<i>660</i>&nbsp;            return new SnmpIpAddress(var1);
+<i>661</i>&nbsp;        } else {
+<i>662</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>663</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;handleMultipleIPVersion&quot;, &quot;Not an IPv4 address, return null&quot;);
+<i>664</i>&nbsp;            }
+<i>665</i>&nbsp;
+<b class="nc"><i>666</i>&nbsp;            return null;</b>
+<i>667</i>&nbsp;        }
+<i>668</i>&nbsp;    }
+<i>669</i>&nbsp;
+<i>670</i>&nbsp;    public void snmpV1Trap(InetAddress var1, String var2, int var3, int var4, SnmpVarBindList var5) throws IOException, SnmpStatusException {
+<i>671</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>672</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpV1Trap&quot;, &quot;generic=&quot; + var3 + &quot;, specific=&quot; + var4);
+<i>673</i>&nbsp;        }
+<b class="nc"><i>674</i>&nbsp;</b>
+<b class="nc"><i>675</i>&nbsp;        SnmpPduTrap var6 = new SnmpPduTrap();</b>
+<b class="nc"><i>676</i>&nbsp;        var6.address = null;</b>
+<i>677</i>&nbsp;        var6.port = this.trapPort;
+<i>678</i>&nbsp;        var6.type = 164;
+<i>679</i>&nbsp;        var6.version = 0;
+<i>680</i>&nbsp;        if(var2 != null) {
+<i>681</i>&nbsp;            var6.community = var2.getBytes();
+<i>682</i>&nbsp;        } else {
+<i>683</i>&nbsp;            var6.community = null;
+<i>684</i>&nbsp;        }
+<b class="nc"><i>685</i>&nbsp;</b>
+<i>686</i>&nbsp;        var6.enterprise = this.enterpriseOid;
+<i>687</i>&nbsp;        var6.genericTrap = var3;
+<i>688</i>&nbsp;        var6.specificTrap = var4;
+<i>689</i>&nbsp;        var6.timeStamp = this.getSysUpTime();
+<i>690</i>&nbsp;        if(var5 != null) {
+<i>691</i>&nbsp;            var6.varBindList = new SnmpVarBind[var5.size()];
+<i>692</i>&nbsp;            var5.copyInto(var6.varBindList);
+<i>693</i>&nbsp;        } else {
+<b class="nc"><i>694</i>&nbsp;            var6.varBindList = null;</b>
+<b class="nc"><i>695</i>&nbsp;        }</b>
+<i>696</i>&nbsp;
+<b class="nc"><i>697</i>&nbsp;        try {</b>
+<i>698</i>&nbsp;            if(this.address != null) {
+<i>699</i>&nbsp;                var6.agentAddr = this.handleMultipleIpVersion(this.address.getAddress());
+<i>700</i>&nbsp;            } else {
+<i>701</i>&nbsp;                var6.agentAddr = this.handleMultipleIpVersion(InetAddress.getLocalHost().getAddress());
+<i>702</i>&nbsp;            }
+<i>703</i>&nbsp;        } catch (UnknownHostException var9) {
+<i>704</i>&nbsp;            byte[] var8 = new byte[4];
+<i>705</i>&nbsp;            var6.agentAddr = this.handleMultipleIpVersion(var8);
+<i>706</i>&nbsp;        }
+<b class="nc"><i>707</i>&nbsp;</b>
+<i>708</i>&nbsp;        if(var1 != null) {
+<i>709</i>&nbsp;            this.sendTrapPdu(var1, var6);
+<i>710</i>&nbsp;        } else {
+<i>711</i>&nbsp;            this.sendTrapPdu(var6);
+<i>712</i>&nbsp;        }
+<i>713</i>&nbsp;
+<i>714</i>&nbsp;    }
+<i>715</i>&nbsp;
+<i>716</i>&nbsp;    public void snmpV1Trap(InetAddress var1, SnmpIpAddress var2, String var3, SnmpOid var4, int var5, int var6, SnmpVarBindList var7, SnmpTimeticks var8) throws IOException, SnmpStatusException {
+<b class="nc"><i>717</i>&nbsp;        this.snmpV1Trap(var1, this.trapPort, var2, var3, var4, var5, var6, var7, var8);</b>
+<i>718</i>&nbsp;    }
+<i>719</i>&nbsp;
+<i>720</i>&nbsp;    public void snmpV1Trap(SnmpPeer var1, SnmpIpAddress var2, SnmpOid var3, int var4, int var5, SnmpVarBindList var6, SnmpTimeticks var7) throws IOException, SnmpStatusException {
+<i>721</i>&nbsp;        SnmpParameters var8 = (SnmpParameters)var1.getParams();
+<i>722</i>&nbsp;        this.snmpV1Trap(var1.getDestAddr(), var1.getDestPort(), var2, var8.getRdCommunity(), var3, var4, var5, var6, var7);
+<i>723</i>&nbsp;    }
+<i>724</i>&nbsp;
+<i>725</i>&nbsp;    private void snmpV1Trap(InetAddress var1, int var2, SnmpIpAddress var3, String var4, SnmpOid var5, int var6, int var7, SnmpVarBindList var8, SnmpTimeticks var9) throws IOException, SnmpStatusException {
+<i>726</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>727</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpV1Trap&quot;, &quot;generic=&quot; + var6 + &quot;, specific=&quot; + var7);
+<i>728</i>&nbsp;        }
+<i>729</i>&nbsp;
+<i>730</i>&nbsp;        SnmpPduTrap var10 = new SnmpPduTrap();
+<i>731</i>&nbsp;        var10.address = null;
+<i>732</i>&nbsp;        var10.port = var2;
+<b class="nc"><i>733</i>&nbsp;        var10.type = 164;</b>
+<i>734</i>&nbsp;        var10.version = 0;
+<i>735</i>&nbsp;        if(var4 != null) {
+<i>736</i>&nbsp;            var10.community = var4.getBytes();
+<i>737</i>&nbsp;        } else {
+<i>738</i>&nbsp;            var10.community = null;
+<i>739</i>&nbsp;        }
+<i>740</i>&nbsp;
+<i>741</i>&nbsp;        if(var5 != null) {
+<i>742</i>&nbsp;            var10.enterprise = var5;
+<b class="nc"><i>743</i>&nbsp;        } else {</b>
+<i>744</i>&nbsp;            var10.enterprise = this.enterpriseOid;
+<i>745</i>&nbsp;        }
+<i>746</i>&nbsp;
+<i>747</i>&nbsp;        var10.genericTrap = var6;
+<i>748</i>&nbsp;        var10.specificTrap = var7;
+<i>749</i>&nbsp;        if(var9 != null) {
+<i>750</i>&nbsp;            var10.timeStamp = var9.longValue();
+<i>751</i>&nbsp;        } else {
+<i>752</i>&nbsp;            var10.timeStamp = this.getSysUpTime();
+<i>753</i>&nbsp;        }
+<i>754</i>&nbsp;
+<i>755</i>&nbsp;        if(var8 != null) {
+<i>756</i>&nbsp;            var10.varBindList = new SnmpVarBind[var8.size()];
+<i>757</i>&nbsp;            var8.copyInto(var10.varBindList);
+<i>758</i>&nbsp;        } else {
+<i>759</i>&nbsp;            var10.varBindList = null;
+<b class="nc"><i>760</i>&nbsp;        }</b>
+<i>761</i>&nbsp;
+<i>762</i>&nbsp;        if(var3 == null) {
+<i>763</i>&nbsp;            try {
+<i>764</i>&nbsp;                InetAddress var11 = this.address != null?this.address:InetAddress.getLocalHost();
+<i>765</i>&nbsp;                var3 = this.handleMultipleIpVersion(var11.getAddress());
+<i>766</i>&nbsp;            } catch (UnknownHostException var13) {
+<i>767</i>&nbsp;                byte[] var12 = new byte[4];
+<i>768</i>&nbsp;                var3 = this.handleMultipleIpVersion(var12);
+<i>769</i>&nbsp;            }
+<b class="nc"><i>770</i>&nbsp;        }</b>
+<i>771</i>&nbsp;
+<i>772</i>&nbsp;        var10.agentAddr = var3;
+<i>773</i>&nbsp;        if(var1 != null) {
+<i>774</i>&nbsp;            this.sendTrapPdu(var1, var10);
+<i>775</i>&nbsp;        } else {
+<i>776</i>&nbsp;            this.sendTrapPdu(var10);
+<i>777</i>&nbsp;        }
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;    }
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;    public void snmpV2Trap(SnmpPeer var1, SnmpOid var2, SnmpVarBindList var3, SnmpTimeticks var4) throws IOException, SnmpStatusException {</b>
+<i>782</i>&nbsp;        SnmpParameters var5 = (SnmpParameters)var1.getParams();
+<i>783</i>&nbsp;        this.snmpV2Trap(var1.getDestAddr(), var1.getDestPort(), var5.getRdCommunity(), var2, var3, var4);
+<i>784</i>&nbsp;    }
+<i>785</i>&nbsp;
+<i>786</i>&nbsp;    public void snmpV2Trap(SnmpOid var1, SnmpVarBindList var2) throws IOException, SnmpStatusException {
+<i>787</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>788</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpV2Trap&quot;, &quot;trapOid=&quot; + var1);
+<i>789</i>&nbsp;        }
+<i>790</i>&nbsp;
+<i>791</i>&nbsp;        SnmpPduRequest var3 = new SnmpPduRequest();
+<b class="nc"><i>792</i>&nbsp;        var3.address = null;</b>
+<i>793</i>&nbsp;        var3.port = this.trapPort;
+<i>794</i>&nbsp;        var3.type = 167;
+<i>795</i>&nbsp;        var3.version = 1;
+<i>796</i>&nbsp;        var3.community = null;
+<i>797</i>&nbsp;        SnmpVarBindList var4;
+<i>798</i>&nbsp;        if(var2 != null) {
+<i>799</i>&nbsp;            var4 = (SnmpVarBindList)var2.clone();
+<i>800</i>&nbsp;        } else {
+<b class="nc"><i>801</i>&nbsp;            var4 = new SnmpVarBindList(2);</b>
+<b class="nc"><i>802</i>&nbsp;        }</b>
+<b class="nc"><i>803</i>&nbsp;</b>
+<b class="nc"><i>804</i>&nbsp;        SnmpTimeticks var5 = new SnmpTimeticks(this.getSysUpTime());</b>
+<b class="nc"><i>805</i>&nbsp;        var4.insertElementAt(new SnmpVarBind(snmpTrapOidOid, var1), 0);</b>
+<b class="nc"><i>806</i>&nbsp;        var4.insertElementAt(new SnmpVarBind(sysUpTimeOid, var5), 0);</b>
+<b class="nc"><i>807</i>&nbsp;        var3.varBindList = new SnmpVarBind[var4.size()];</b>
+<i>808</i>&nbsp;        var4.copyInto(var3.varBindList);
+<i>809</i>&nbsp;        this.sendTrapPdu(var3);
+<i>810</i>&nbsp;    }
+<i>811</i>&nbsp;
+<i>812</i>&nbsp;    public void snmpV2Trap(InetAddress var1, String var2, SnmpOid var3, SnmpVarBindList var4) throws IOException, SnmpStatusException {
+<i>813</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>814</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpV2Trap&quot;, &quot;trapOid=&quot; + var3);
+<i>815</i>&nbsp;        }
+<i>816</i>&nbsp;
+<i>817</i>&nbsp;        SnmpPduRequest var5 = new SnmpPduRequest();
+<i>818</i>&nbsp;        var5.address = null;
+<b class="nc"><i>819</i>&nbsp;        var5.port = this.trapPort;</b>
+<i>820</i>&nbsp;        var5.type = 167;
+<i>821</i>&nbsp;        var5.version = 1;
+<i>822</i>&nbsp;        if(var2 != null) {
+<i>823</i>&nbsp;            var5.community = var2.getBytes();
+<i>824</i>&nbsp;        } else {
+<i>825</i>&nbsp;            var5.community = null;
+<i>826</i>&nbsp;        }
+<i>827</i>&nbsp;
+<b class="nc"><i>828</i>&nbsp;        SnmpVarBindList var6;</b>
+<i>829</i>&nbsp;        if(var4 != null) {
+<i>830</i>&nbsp;            var6 = (SnmpVarBindList)var4.clone();
+<i>831</i>&nbsp;        } else {
+<i>832</i>&nbsp;            var6 = new SnmpVarBindList(2);
+<i>833</i>&nbsp;        }
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;        SnmpTimeticks var7 = new SnmpTimeticks(this.getSysUpTime());
+<i>836</i>&nbsp;        var6.insertElementAt(new SnmpVarBind(snmpTrapOidOid, var3), 0);
+<b class="nc"><i>837</i>&nbsp;        var6.insertElementAt(new SnmpVarBind(sysUpTimeOid, var7), 0);</b>
+<i>838</i>&nbsp;        var5.varBindList = new SnmpVarBind[var6.size()];
+<i>839</i>&nbsp;        var6.copyInto(var5.varBindList);
+<i>840</i>&nbsp;        if(var1 != null) {
+<i>841</i>&nbsp;            this.sendTrapPdu(var1, var5);
+<i>842</i>&nbsp;        } else {
+<i>843</i>&nbsp;            this.sendTrapPdu(var5);
+<i>844</i>&nbsp;        }
+<i>845</i>&nbsp;
+<b class="nc"><i>846</i>&nbsp;    }</b>
+<i>847</i>&nbsp;
+<i>848</i>&nbsp;    public void snmpV2Trap(InetAddress var1, String var2, SnmpOid var3, SnmpVarBindList var4, SnmpTimeticks var5) throws IOException, SnmpStatusException {
+<i>849</i>&nbsp;        this.snmpV2Trap(var1, this.trapPort, var2, var3, var4, var5);
+<i>850</i>&nbsp;    }
+<i>851</i>&nbsp;
+<i>852</i>&nbsp;    private void snmpV2Trap(InetAddress var1, int var2, String var3, SnmpOid var4, SnmpVarBindList var5, SnmpTimeticks var6) throws IOException, SnmpStatusException {
+<i>853</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>854</i>&nbsp;            StringBuilder var7 = (new StringBuilder()).append(&quot;trapOid=&quot;).append(var4).append(&quot;\ncommunity=&quot;).append(var3).append(&quot;\naddr=&quot;).append(var1).append(&quot;\nvarBindList=&quot;).append(var5).append(&quot;\ntime=&quot;).append(var6).append(&quot;\ntrapPort=&quot;).append(var2);
+<b class="nc"><i>855</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpV2Trap&quot;, var7.toString());</b>
+<i>856</i>&nbsp;        }
+<i>857</i>&nbsp;
+<i>858</i>&nbsp;        SnmpPduRequest var10 = new SnmpPduRequest();
+<i>859</i>&nbsp;        var10.address = null;
+<i>860</i>&nbsp;        var10.port = var2;
+<i>861</i>&nbsp;        var10.type = 167;
+<i>862</i>&nbsp;        var10.version = 1;
+<i>863</i>&nbsp;        if(var3 != null) {
+<b class="nc"><i>864</i>&nbsp;            var10.community = var3.getBytes();</b>
+<i>865</i>&nbsp;        } else {
+<i>866</i>&nbsp;            var10.community = null;
+<i>867</i>&nbsp;        }
+<i>868</i>&nbsp;
+<i>869</i>&nbsp;        SnmpVarBindList var8;
+<i>870</i>&nbsp;        if(var5 != null) {
+<i>871</i>&nbsp;            var8 = (SnmpVarBindList)var5.clone();
+<i>872</i>&nbsp;        } else {
+<b class="nc"><i>873</i>&nbsp;            var8 = new SnmpVarBindList(2);</b>
+<i>874</i>&nbsp;        }
+<i>875</i>&nbsp;
+<i>876</i>&nbsp;        SnmpTimeticks var9 = null;
+<i>877</i>&nbsp;        if(var6 != null) {
+<i>878</i>&nbsp;            var9 = var6;
+<i>879</i>&nbsp;        } else {
+<i>880</i>&nbsp;            var9 = new SnmpTimeticks(this.getSysUpTime());
+<i>881</i>&nbsp;        }
+<b class="nc"><i>882</i>&nbsp;</b>
+<i>883</i>&nbsp;        var8.insertElementAt(new SnmpVarBind(snmpTrapOidOid, var4), 0);
+<i>884</i>&nbsp;        var8.insertElementAt(new SnmpVarBind(sysUpTimeOid, var9), 0);
+<i>885</i>&nbsp;        var10.varBindList = new SnmpVarBind[var8.size()];
+<i>886</i>&nbsp;        var8.copyInto(var10.varBindList);
+<i>887</i>&nbsp;        if(var1 != null) {
+<i>888</i>&nbsp;            this.sendTrapPdu(var1, var10);
+<i>889</i>&nbsp;        } else {
+<i>890</i>&nbsp;            this.sendTrapPdu(var10);
+<i>891</i>&nbsp;        }
+<b class="nc"><i>892</i>&nbsp;</b>
+<i>893</i>&nbsp;    }
+<i>894</i>&nbsp;
+<i>895</i>&nbsp;    public void snmpPduTrap(InetAddress var1, SnmpPduPacket var2) throws IOException, SnmpStatusException {
+<i>896</i>&nbsp;        if(var1 != null) {
+<i>897</i>&nbsp;            this.sendTrapPdu(var1, var2);
+<i>898</i>&nbsp;        } else {
+<i>899</i>&nbsp;            this.sendTrapPdu(var2);
+<i>900</i>&nbsp;        }
+<b class="nc"><i>901</i>&nbsp;</b>
+<i>902</i>&nbsp;    }
+<i>903</i>&nbsp;
+<i>904</i>&nbsp;    public void snmpPduTrap(SnmpPeer var1, SnmpPduPacket var2) throws IOException, SnmpStatusException {
+<i>905</i>&nbsp;        if(var1 != null) {
+<i>906</i>&nbsp;            var2.port = var1.getDestPort();
+<i>907</i>&nbsp;            this.sendTrapPdu(var1.getDestAddr(), var2);
+<i>908</i>&nbsp;        } else {
+<i>909</i>&nbsp;            var2.port = this.getTrapPort().intValue();
+<b class="nc"><i>910</i>&nbsp;            this.sendTrapPdu(var2);</b>
+<i>911</i>&nbsp;        }
+<i>912</i>&nbsp;
+<i>913</i>&nbsp;    }
+<i>914</i>&nbsp;
+<i>915</i>&nbsp;    private void sendTrapPdu(SnmpPduPacket var1) throws SnmpStatusException, IOException {
+<i>916</i>&nbsp;        SnmpMessage var2 = null;
+<i>917</i>&nbsp;
+<i>918</i>&nbsp;        try {
+<b class="nc"><i>919</i>&nbsp;            var2 = (SnmpMessage)this.pduFactory.encodeSnmpPdu(var1, this.bufferSize);</b>
+<i>920</i>&nbsp;            if(var2 == null) {
+<i>921</i>&nbsp;                throw new SnmpStatusException(16);
+<i>922</i>&nbsp;            }
+<i>923</i>&nbsp;        } catch (SnmpTooBigException var7) {
+<i>924</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>925</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;sendTrapPdu&quot;, &quot;Trap pdu is too big. Trap hasn\&#39;t been sent to anyone&quot;);
+<i>926</i>&nbsp;            }
+<i>927</i>&nbsp;
+<b class="nc"><i>928</i>&nbsp;            throw new SnmpStatusException(1);</b>
+<i>929</i>&nbsp;        }
+<i>930</i>&nbsp;
+<i>931</i>&nbsp;        int var3 = 0;
+<i>932</i>&nbsp;        this.openTrapSocketIfNeeded();
+<i>933</i>&nbsp;        if(this.ipacl != null) {
+<i>934</i>&nbsp;            Enumeration var4 = ((InetAddressAcl)this.ipacl).getTrapDestinations();
+<i>935</i>&nbsp;
+<i>936</i>&nbsp;            while(var4.hasMoreElements()) {
+<b class="nc"><i>937</i>&nbsp;                var2.address = (InetAddress)var4.nextElement();</b>
+<i>938</i>&nbsp;                Enumeration var5 = ((InetAddressAcl)this.ipacl).getTrapCommunities(var2.address);
+<i>939</i>&nbsp;
+<i>940</i>&nbsp;                while(var5.hasMoreElements()) {
+<i>941</i>&nbsp;                    var2.community = ((String)var5.nextElement()).getBytes();
+<i>942</i>&nbsp;
+<i>943</i>&nbsp;                    try {
+<i>944</i>&nbsp;                        this.sendTrapMessage(var2);
+<i>945</i>&nbsp;                        ++var3;
+<b class="nc"><i>946</i>&nbsp;                    } catch (SnmpTooBigException var10) {</b>
+<i>947</i>&nbsp;                        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>948</i>&nbsp;                            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;sendTrapPdu&quot;, &quot;Trap pdu is too big. Trap hasn\&#39;t been sent to &quot; + var2.address);
+<i>949</i>&nbsp;                        }
+<i>950</i>&nbsp;                    }
+<i>951</i>&nbsp;                }
+<i>952</i>&nbsp;            }
+<i>953</i>&nbsp;        }
+<i>954</i>&nbsp;
+<b class="nc"><i>955</i>&nbsp;        if(var3 == 0) {</b>
+<i>956</i>&nbsp;            try {
+<i>957</i>&nbsp;                var2.address = InetAddress.getLocalHost();
+<i>958</i>&nbsp;                this.sendTrapMessage(var2);
+<i>959</i>&nbsp;            } catch (SnmpTooBigException var8) {
+<i>960</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>961</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;sendTrapPdu&quot;, &quot;Trap pdu is too big. Trap hasn\&#39;t been sent.&quot;);
+<i>962</i>&nbsp;                }
+<i>963</i>&nbsp;            } catch (UnknownHostException var9) {
+<b class="nc"><i>964</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {</b>
+<i>965</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;sendTrapPdu&quot;, &quot;Trap pdu is too big. Trap hasn\&#39;t been sent.&quot;);
+<i>966</i>&nbsp;                }
+<i>967</i>&nbsp;            }
+<i>968</i>&nbsp;        }
+<i>969</i>&nbsp;
+<i>970</i>&nbsp;        this.closeTrapSocketIfNeeded();
+<i>971</i>&nbsp;    }
+<i>972</i>&nbsp;
+<i>973</i>&nbsp;    private void sendTrapPdu(InetAddress var1, SnmpPduPacket var2) throws SnmpStatusException, IOException {
+<i>974</i>&nbsp;        SnmpMessage var3 = null;
+<i>975</i>&nbsp;
+<b class="nc"><i>976</i>&nbsp;        try {</b>
+<i>977</i>&nbsp;            var3 = (SnmpMessage)this.pduFactory.encodeSnmpPdu(var2, this.bufferSize);
+<i>978</i>&nbsp;            if(var3 == null) {
+<i>979</i>&nbsp;                throw new SnmpStatusException(16);
+<i>980</i>&nbsp;            }
+<i>981</i>&nbsp;        } catch (SnmpTooBigException var5) {
+<i>982</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>983</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;sendTrapPdu&quot;, &quot;Trap pdu is too big. Trap hasn\&#39;t been sent to the specified host.&quot;);
+<i>984</i>&nbsp;            }
+<i>985</i>&nbsp;
+<i>986</i>&nbsp;            throw new SnmpStatusException(1);
+<i>987</i>&nbsp;        }
+<b class="nc"><i>988</i>&nbsp;</b>
+<i>989</i>&nbsp;        this.openTrapSocketIfNeeded();
+<i>990</i>&nbsp;        if(var1 != null) {
+<i>991</i>&nbsp;            var3.address = var1;
+<i>992</i>&nbsp;
+<i>993</i>&nbsp;            try {
+<i>994</i>&nbsp;                this.sendTrapMessage(var3);
+<i>995</i>&nbsp;            } catch (SnmpTooBigException var6) {
+<i>996</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>997</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, this.dbgTag, &quot;sendTrapPdu&quot;, &quot;Trap pdu is too big. Trap hasn\&#39;t been sent to &quot; + var3.address);
+<i>998</i>&nbsp;                }
+<i>999</i>&nbsp;            }
+<i>1000</i>&nbsp;        }
+<i>1001</i>&nbsp;
+<i>1002</i>&nbsp;        this.closeTrapSocketIfNeeded();
+<i>1003</i>&nbsp;    }
+<i>1004</i>&nbsp;
+<i>1005</i>&nbsp;    private void sendTrapMessage(SnmpMessage var1) throws IOException, SnmpTooBigException {
+<i>1006</i>&nbsp;        byte[] var2 = new byte[this.bufferSize];
+<i>1007</i>&nbsp;        DatagramPacket var3 = new DatagramPacket(var2, var2.length);
+<i>1008</i>&nbsp;        int var4 = var1.encodeMessage(var2);
+<i>1009</i>&nbsp;        var3.setLength(var4);
+<i>1010</i>&nbsp;        var3.setAddress(var1.address);
+<i>1011</i>&nbsp;        var3.setPort(var1.port);
+<i>1012</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>1013</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;sendTrapMessage&quot;, &quot;sending trap to &quot; + var1.address + &quot;:&quot; + var1.port);
+<i>1014</i>&nbsp;        }
+<i>1015</i>&nbsp;
+<i>1016</i>&nbsp;        this.trapSocket.send(var3);
+<b class="nc"><i>1017</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {</b>
+<b class="nc"><i>1018</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;sendTrapMessage&quot;, &quot;sent to &quot; + var1.address + &quot;:&quot; + var1.port);</b>
+<i>1019</i>&nbsp;        }
+<i>1020</i>&nbsp;
+<b class="nc"><i>1021</i>&nbsp;        ++this.snmpOutTraps;</b>
+<i>1022</i>&nbsp;        ++this.snmpOutPkts;
+<i>1023</i>&nbsp;    }
+<i>1024</i>&nbsp;
+<i>1025</i>&nbsp;    synchronized void openTrapSocketIfNeeded() throws SocketException {
+<i>1026</i>&nbsp;        if(this.trapSocket == null) {
+<i>1027</i>&nbsp;            this.trapSocket = new DatagramSocket(0, this.address);
+<b class="nc"><i>1028</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {</b>
+<i>1029</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;openTrapSocketIfNeeded&quot;, &quot;using port &quot; + this.trapSocket.getLocalPort() + &quot; to send traps&quot;);
+<i>1030</i>&nbsp;            }
+<i>1031</i>&nbsp;        }
+<i>1032</i>&nbsp;
+<i>1033</i>&nbsp;    }
+<i>1034</i>&nbsp;
+<b class="nc"><i>1035</i>&nbsp;    synchronized void closeTrapSocketIfNeeded() {</b>
+<i>1036</i>&nbsp;        if(this.trapSocket != null &amp;&amp; this.state != 0) {
+<i>1037</i>&nbsp;            this.trapSocket.close();
+<i>1038</i>&nbsp;            this.trapSocket = null;
+<i>1039</i>&nbsp;        }
+<i>1040</i>&nbsp;
+<i>1041</i>&nbsp;    }
+<b class="nc"><i>1042</i>&nbsp;</b>
+<i>1043</i>&nbsp;    public Vector snmpInformRequest(SnmpInformHandler var1, SnmpOid var2, SnmpVarBindList var3) throws IllegalStateException, IOException, SnmpStatusException {
+<i>1044</i>&nbsp;        if(!this.isActive()) {
+<i>1045</i>&nbsp;            throw new IllegalStateException(&quot;Start SNMP adaptor server before carrying out this operation&quot;);
+<i>1046</i>&nbsp;        } else {
+<i>1047</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>1048</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpInformRequest&quot;, &quot;trapOid=&quot; + var2);
+<i>1049</i>&nbsp;            }
+<i>1050</i>&nbsp;
+<i>1051</i>&nbsp;            SnmpVarBindList var4;
+<i>1052</i>&nbsp;            if(var3 != null) {
+<i>1053</i>&nbsp;                var4 = (SnmpVarBindList)var3.clone();
+<i>1054</i>&nbsp;            } else {
+<i>1055</i>&nbsp;                var4 = new SnmpVarBindList(2);
+<b class="nc"><i>1056</i>&nbsp;            }</b>
+<b class="nc"><i>1057</i>&nbsp;</b>
+<i>1058</i>&nbsp;            SnmpTimeticks var5 = new SnmpTimeticks(this.getSysUpTime());
+<i>1059</i>&nbsp;            var4.insertElementAt(new SnmpVarBind(snmpTrapOidOid, var2), 0);
+<b class="nc"><i>1060</i>&nbsp;            var4.insertElementAt(new SnmpVarBind(sysUpTimeOid, var5), 0);</b>
+<b class="nc"><i>1061</i>&nbsp;            this.openInformSocketIfNeeded();</b>
+<i>1062</i>&nbsp;            Vector var6 = new Vector();
+<b class="nc"><i>1063</i>&nbsp;            InetAddress var7 = null;</b>
+<i>1064</i>&nbsp;            String var8 = null;
+<b class="nc"><i>1065</i>&nbsp;            if(this.ipacl != null) {</b>
+<i>1066</i>&nbsp;                Enumeration var9 = ((InetAddressAcl)this.ipacl).getInformDestinations();
+<i>1067</i>&nbsp;
+<i>1068</i>&nbsp;                while(var9.hasMoreElements()) {
+<i>1069</i>&nbsp;                    var7 = (InetAddress)var9.nextElement();
+<i>1070</i>&nbsp;                    Enumeration var10 = ((InetAddressAcl)this.ipacl).getInformCommunities(var7);
+<i>1071</i>&nbsp;
+<i>1072</i>&nbsp;                    while(var10.hasMoreElements()) {
+<i>1073</i>&nbsp;                        var8 = (String)var10.nextElement();
+<i>1074</i>&nbsp;                        var6.addElement(this.informSession.makeAsyncRequest(var7, var8, var1, var4, this.getInformPort()));
+<i>1075</i>&nbsp;                    }
+<i>1076</i>&nbsp;                }
+<i>1077</i>&nbsp;            }
+<i>1078</i>&nbsp;
+<i>1079</i>&nbsp;            return var6;
+<i>1080</i>&nbsp;        }
+<i>1081</i>&nbsp;    }
+<i>1082</i>&nbsp;
+<i>1083</i>&nbsp;    public SnmpInformRequest snmpInformRequest(InetAddress var1, String var2, SnmpInformHandler var3, SnmpOid var4, SnmpVarBindList var5) throws IllegalStateException, IOException, SnmpStatusException {
+<i>1084</i>&nbsp;        return this.snmpInformRequest(var1, this.getInformPort(), var2, var3, var4, var5);
+<i>1085</i>&nbsp;    }
+<b class="nc"><i>1086</i>&nbsp;</b>
+<b class="nc"><i>1087</i>&nbsp;    public SnmpInformRequest snmpInformRequest(SnmpPeer var1, SnmpInformHandler var2, SnmpOid var3, SnmpVarBindList var4) throws IllegalStateException, IOException, SnmpStatusException {</b>
+<i>1088</i>&nbsp;        SnmpParameters var5 = (SnmpParameters)var1.getParams();
+<i>1089</i>&nbsp;        return this.snmpInformRequest(var1.getDestAddr(), var1.getDestPort(), var5.getInformCommunity(), var2, var3, var4);
+<i>1090</i>&nbsp;    }
+<b class="nc"><i>1091</i>&nbsp;</b>
+<b class="nc"><i>1092</i>&nbsp;    public static final int mapErrorStatus(int var0, int var1, int var2) {</b>
+<i>1093</i>&nbsp;        return SnmpSubRequestHandler.mapErrorStatus(var0, var1, var2);
+<b class="nc"><i>1094</i>&nbsp;    }</b>
+<b class="nc"><i>1095</i>&nbsp;</b>
+<i>1096</i>&nbsp;    private SnmpInformRequest snmpInformRequest(InetAddress var1, int var2, String var3, SnmpInformHandler var4, SnmpOid var5, SnmpVarBindList var6) throws IllegalStateException, IOException, SnmpStatusException {
+<b class="nc"><i>1097</i>&nbsp;        if(!this.isActive()) {</b>
+<b class="nc"><i>1098</i>&nbsp;            throw new IllegalStateException(&quot;Start SNMP adaptor server before carrying out this operation&quot;);</b>
+<i>1099</i>&nbsp;        } else {
+<b class="nc"><i>1100</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {</b>
+<i>1101</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;snmpInformRequest&quot;, &quot;trapOid=&quot; + var5);
+<i>1102</i>&nbsp;            }
+<i>1103</i>&nbsp;
+<i>1104</i>&nbsp;            SnmpVarBindList var7;
+<i>1105</i>&nbsp;            if(var6 != null) {
+<i>1106</i>&nbsp;                var7 = (SnmpVarBindList)var6.clone();
+<i>1107</i>&nbsp;            } else {
+<i>1108</i>&nbsp;                var7 = new SnmpVarBindList(2);
+<i>1109</i>&nbsp;            }
+<i>1110</i>&nbsp;
+<i>1111</i>&nbsp;            SnmpTimeticks var8 = new SnmpTimeticks(this.getSysUpTime());
+<i>1112</i>&nbsp;            var7.insertElementAt(new SnmpVarBind(snmpTrapOidOid, var5), 0);
+<i>1113</i>&nbsp;            var7.insertElementAt(new SnmpVarBind(sysUpTimeOid, var8), 0);
+<i>1114</i>&nbsp;            this.openInformSocketIfNeeded();
+<i>1115</i>&nbsp;            return this.informSession.makeAsyncRequest(var1, var3, var4, var7, var2);
+<i>1116</i>&nbsp;        }
+<i>1117</i>&nbsp;    }
+<b class="nc"><i>1118</i>&nbsp;</b>
+<i>1119</i>&nbsp;    synchronized void openInformSocketIfNeeded() throws SocketException {
+<i>1120</i>&nbsp;        if(this.informSession == null) {
+<i>1121</i>&nbsp;            this.informSession = new SnmpSession(this);
+<i>1122</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>1123</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;openInformSocketIfNeeded&quot;, &quot;to send inform requests and receive inform responses&quot;);
+<i>1124</i>&nbsp;            }
+<i>1125</i>&nbsp;        }
+<i>1126</i>&nbsp;
+<i>1127</i>&nbsp;    }
+<i>1128</i>&nbsp;
+<i>1129</i>&nbsp;    synchronized void closeInformSocketIfNeeded() {
+<i>1130</i>&nbsp;        if(this.informSession != null &amp;&amp; this.state != 0) {
+<i>1131</i>&nbsp;            this.informSession.destroySession();
+<i>1132</i>&nbsp;            this.informSession = null;
+<i>1133</i>&nbsp;        }
+<i>1134</i>&nbsp;
+<i>1135</i>&nbsp;    }
+<i>1136</i>&nbsp;
+<i>1137</i>&nbsp;    InetAddress getAddress() {
+<i>1138</i>&nbsp;        return this.address;
+<i>1139</i>&nbsp;    }
+<i>1140</i>&nbsp;
+<b class="nc"><i>1141</i>&nbsp;    protected void finalize() {</b>
+<i>1142</i>&nbsp;        try {
+<i>1143</i>&nbsp;            if(this.socket != null) {
+<i>1144</i>&nbsp;                this.socket.close();
+<i>1145</i>&nbsp;                this.socket = null;
+<i>1146</i>&nbsp;            }
+<i>1147</i>&nbsp;
+<i>1148</i>&nbsp;            this.threadService.terminate();
+<i>1149</i>&nbsp;        } catch (Exception var2) {
+<i>1150</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<i>1151</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, this.dbgTag, &quot;finalize&quot;, &quot;Exception in finalizer&quot;, var2);
+<i>1152</i>&nbsp;            }
+<i>1153</i>&nbsp;        }
+<i>1154</i>&nbsp;
+<i>1155</i>&nbsp;    }
+<i>1156</i>&nbsp;
+<i>1157</i>&nbsp;    String makeDebugTag() {
+<i>1158</i>&nbsp;        return &quot;SnmpAdaptorServer[&quot; + this.getProtocol() + &quot;:&quot; + this.getPort() + &quot;]&quot;;
+<b class="nc"><i>1159</i>&nbsp;    }</b>
+<i>1160</i>&nbsp;
+<i>1161</i>&nbsp;    void updateRequestCounters(int var1) {
+<i>1162</i>&nbsp;        switch(var1) {
+<i>1163</i>&nbsp;        case 160:
+<i>1164</i>&nbsp;            ++this.snmpInGetRequests;
+<i>1165</i>&nbsp;            break;
+<i>1166</i>&nbsp;        case 161:
+<i>1167</i>&nbsp;            ++this.snmpInGetNexts;
+<i>1168</i>&nbsp;        case 162:
+<i>1169</i>&nbsp;        default:
+<i>1170</i>&nbsp;            break;
+<b class="nc"><i>1171</i>&nbsp;        case 163:</b>
+<b class="nc"><i>1172</i>&nbsp;            ++this.snmpInSetRequests;</b>
+<i>1173</i>&nbsp;        }
+<i>1174</i>&nbsp;
+<i>1175</i>&nbsp;        ++this.snmpInPkts;
+<i>1176</i>&nbsp;    }
+<i>1177</i>&nbsp;
+<i>1178</i>&nbsp;    void updateErrorCounters(int var1) {
+<i>1179</i>&nbsp;        switch(var1) {
+<i>1180</i>&nbsp;        case 0:
+<i>1181</i>&nbsp;            ++this.snmpOutGetResponses;
+<i>1182</i>&nbsp;            break;
+<i>1183</i>&nbsp;        case 1:
+<i>1184</i>&nbsp;            ++this.snmpOutTooBigs;
+<i>1185</i>&nbsp;            break;
+<i>1186</i>&nbsp;        case 2:
+<b class="nc"><i>1187</i>&nbsp;            ++this.snmpOutNoSuchNames;</b>
+<b class="nc"><i>1188</i>&nbsp;            break;</b>
+<i>1189</i>&nbsp;        case 3:
+<i>1190</i>&nbsp;            ++this.snmpOutBadValues;
+<i>1191</i>&nbsp;        case 4:
+<i>1192</i>&nbsp;        default:
+<i>1193</i>&nbsp;            break;
+<i>1194</i>&nbsp;        case 5:
+<i>1195</i>&nbsp;            ++this.snmpOutGenErrs;
+<i>1196</i>&nbsp;        }
+<i>1197</i>&nbsp;
+<i>1198</i>&nbsp;        ++this.snmpOutPkts;
+<i>1199</i>&nbsp;    }
+<i>1200</i>&nbsp;
+<i>1201</i>&nbsp;    void updateVarCounters(int var1, int var2) {
+<i>1202</i>&nbsp;        switch(var1) {
+<i>1203</i>&nbsp;        case 160:
+<i>1204</i>&nbsp;        case 161:
+<i>1205</i>&nbsp;        case 165:
+<b class="nc"><i>1206</i>&nbsp;            this.snmpInTotalReqVars += var2;</b>
+<i>1207</i>&nbsp;        case 162:
+<i>1208</i>&nbsp;        case 164:
+<i>1209</i>&nbsp;        default:
+<i>1210</i>&nbsp;            break;
+<i>1211</i>&nbsp;        case 163:
+<i>1212</i>&nbsp;            this.snmpInTotalSetVars += var2;
+<i>1213</i>&nbsp;        }
+<i>1214</i>&nbsp;
+<i>1215</i>&nbsp;    }
+<i>1216</i>&nbsp;
+<i>1217</i>&nbsp;    void incSnmpInASNParseErrs(int var1) {
+<i>1218</i>&nbsp;        this.snmpInASNParseErrs += var1;
+<b class="nc"><i>1219</i>&nbsp;    }</b>
+<b class="nc"><i>1220</i>&nbsp;</b>
+<b class="nc"><i>1221</i>&nbsp;    void incSnmpInBadVersions(int var1) {</b>
+<b class="nc"><i>1222</i>&nbsp;        this.snmpInBadVersions += var1;</b>
+<b class="nc"><i>1223</i>&nbsp;    }</b>
+<b class="nc"><i>1224</i>&nbsp;</b>
+<b class="nc"><i>1225</i>&nbsp;    void incSnmpInBadCommunityUses(int var1) {</b>
+<i>1226</i>&nbsp;        this.snmpInBadCommunityUses += var1;
+<b class="nc"><i>1227</i>&nbsp;    }</b>
+<b class="nc"><i>1228</i>&nbsp;</b>
+<i>1229</i>&nbsp;    void incSnmpInBadCommunityNames(int var1) {
+<b class="nc"><i>1230</i>&nbsp;        this.snmpInBadCommunityNames += var1;</b>
+<i>1231</i>&nbsp;    }
+<b class="nc"><i>1232</i>&nbsp;</b>
+<i>1233</i>&nbsp;    void incSnmpSilentDrops(int var1) {
+<i>1234</i>&nbsp;        this.snmpSilentDrops += var1;
+<i>1235</i>&nbsp;    }
+<i>1236</i>&nbsp;
+<i>1237</i>&nbsp;    long getSysUpTime() {
+<i>1238</i>&nbsp;        return (System.currentTimeMillis() - this.startUpTime) / 10L;
+<i>1239</i>&nbsp;    }
+<i>1240</i>&nbsp;
+<i>1241</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<b class="nc"><i>1242</i>&nbsp;        var1.defaultReadObject();</b>
+<b class="nc"><i>1243</i>&nbsp;        this.mibs = new Vector();</b>
+<b class="nc"><i>1244</i>&nbsp;    }</b>
+<b class="nc"><i>1245</i>&nbsp;</b>
+<i>1246</i>&nbsp;    private void init(Object var1, int var2, InetAddress var3) {
+<i>1247</i>&nbsp;        this.root = new SnmpMibTree();
+<i>1248</i>&nbsp;        this.root.setDefaultAgent(new SnmpErrorHandlerAgent());
+<i>1249</i>&nbsp;        this.startUpTime = System.currentTimeMillis();
+<i>1250</i>&nbsp;        this.maxActiveClientCount = 10;
+<i>1251</i>&nbsp;        this.pduFactory = new SnmpPduFactoryBER();
+<i>1252</i>&nbsp;        this.port = var2;
+<b class="nc"><i>1253</i>&nbsp;        this.ipacl = var1;</b>
+<b class="nc"><i>1254</i>&nbsp;        this.address = var3;</b>
+<i>1255</i>&nbsp;        if(this.ipacl == null &amp;&amp; this.useAcl) {
+<b class="nc"><i>1256</i>&nbsp;            throw new IllegalArgumentException(&quot;ACL object cannot be null&quot;);</b>
+<b class="nc"><i>1257</i>&nbsp;        } else {</b>
+<b class="nc"><i>1258</i>&nbsp;            this.threadService = new ThreadService(threadNumber);</b>
+<b class="nc"><i>1259</i>&nbsp;        }</b>
+<i>1260</i>&nbsp;    }
+<i>1261</i>&nbsp;
+<b class="nc"><i>1262</i>&nbsp;    SnmpMibAgent getAgentMib(SnmpOid var1) {</b>
+<b class="nc"><i>1263</i>&nbsp;        return this.root.getAgentMib(var1);</b>
+<b class="nc"><i>1264</i>&nbsp;    }</b>
+<i>1265</i>&nbsp;
+<i>1266</i>&nbsp;    protected Thread createMainThread() {
+<i>1267</i>&nbsp;        Thread var1 = super.createMainThread();
+<i>1268</i>&nbsp;        var1.setDaemon(true);
+<i>1269</i>&nbsp;        return var1;
+<i>1270</i>&nbsp;    }
+<i>1271</i>&nbsp;
+<i>1272</i>&nbsp;    static {
+<b class="nc"><i>1273</i>&nbsp;        String var0 = System.getProperty(&quot;com.sun.jmx.snmp.threadnumber&quot;);</b>
+<i>1274</i>&nbsp;        if(var0 != null) {
+<i>1275</i>&nbsp;            try {
+<b class="nc"><i>1276</i>&nbsp;                threadNumber = Integer.parseInt(System.getProperty(var0));</b>
+<i>1277</i>&nbsp;            } catch (Exception var2) {
+<i>1278</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpAdaptorServer.class.getName(), &quot;&lt;static init&gt;&quot;, &quot;Got wrong value for com.sun.jmx.snmp.threadnumber: &quot; + var0 + &quot;. Use the default value: &quot; + threadNumber);
+<i>1279</i>&nbsp;            }
+<i>1280</i>&nbsp;        }
+<i>1281</i>&nbsp;
+<i>1282</i>&nbsp;    }
+<i>1283</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

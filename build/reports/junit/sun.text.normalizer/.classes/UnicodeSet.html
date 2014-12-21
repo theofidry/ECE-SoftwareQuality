@@ -1,0 +1,1308 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UnicodeSet</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.text.normalizer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UnicodeSet (sun.text.normalizer)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UnicodeSet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 603)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UnicodeSet$VersionFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 606)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.text.normalizer;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.text.ParsePosition;
+<i>9</i>&nbsp;import java.util.Iterator;
+<i>10</i>&nbsp;import java.util.TreeSet;
+<i>11</i>&nbsp;import sun.text.normalizer.RuleCharacterIterator;
+<i>12</i>&nbsp;import sun.text.normalizer.SymbolTable;
+<i>13</i>&nbsp;import sun.text.normalizer.UCharacter;
+<i>14</i>&nbsp;import sun.text.normalizer.UCharacterProperty;
+<i>15</i>&nbsp;import sun.text.normalizer.UTF16;
+<i>16</i>&nbsp;import sun.text.normalizer.UnicodeMatcher;
+<i>17</i>&nbsp;import sun.text.normalizer.Utility;
+<i>18</i>&nbsp;import sun.text.normalizer.VersionInfo;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class UnicodeSet implements UnicodeMatcher {
+<i>21</i>&nbsp;    private static final int LOW = 0;
+<i>22</i>&nbsp;    private static final int HIGH = 1114112;
+<i>23</i>&nbsp;    public static final int MIN_VALUE = 0;
+<i>24</i>&nbsp;    public static final int MAX_VALUE = 1114111;
+<i>25</i>&nbsp;    private int len;
+<i>26</i>&nbsp;    private int[] list;
+<i>27</i>&nbsp;    private int[] rangeList;
+<i>28</i>&nbsp;    private int[] buffer;
+<i>29</i>&nbsp;    TreeSet strings;
+<i>30</i>&nbsp;    private String pat;
+<i>31</i>&nbsp;    private static final int START_EXTRA = 16;
+<i>32</i>&nbsp;    private static final int GROW_EXTRA = 16;
+<i>33</i>&nbsp;    private static UnicodeSet[] INCLUSIONS = null;
+<i>34</i>&nbsp;    static final VersionInfo NO_VERSION = VersionInfo.getInstance(0, 0, 0, 0);
+<i>35</i>&nbsp;    public static final int IGNORE_SPACE = 1;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public UnicodeSet() {
+<i>38</i>&nbsp;        this.strings = new TreeSet();
+<i>39</i>&nbsp;        this.pat = null;
+<i>40</i>&nbsp;        this.list = new int[17];
+<i>41</i>&nbsp;        this.list[this.len++] = 1114112;
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public UnicodeSet(int var1, int var2) {
+<i>45</i>&nbsp;        this();
+<i>46</i>&nbsp;        this.complement(var1, var2);
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public UnicodeSet(String var1) {
+<i>50</i>&nbsp;        this();
+<i>51</i>&nbsp;        this.applyPattern((String)var1, (ParsePosition)null, (SymbolTable)null, 1);
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public UnicodeSet set(UnicodeSet var1) {
+<i>55</i>&nbsp;        this.list = (int[])((int[])var1.list.clone());
+<i>56</i>&nbsp;        this.len = var1.len;
+<i>57</i>&nbsp;        this.pat = var1.pat;
+<i>58</i>&nbsp;        this.strings = (TreeSet)var1.strings.clone();
+<i>59</i>&nbsp;        return this;
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public final UnicodeSet applyPattern(String var1) {
+<i>63</i>&nbsp;        return this.applyPattern((String)var1, (ParsePosition)null, (SymbolTable)null, 1);
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private static void _appendToPat(StringBuffer var0, String var1, boolean var2) {
+<i>67</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.length(); var3 += UTF16.getCharCount(var3)) {
+<i>68</i>&nbsp;            _appendToPat(var0, UTF16.charAt(var1, var3), var2);
+<i>69</i>&nbsp;        }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    private static void _appendToPat(StringBuffer var0, int var1, boolean var2) {
+<i>74</i>&nbsp;        if(!var2 || !Utility.isUnprintable(var1) || !Utility.escapeUnprintable(var0, var1)) {
+<i>75</i>&nbsp;            switch(var1) {
+<i>76</i>&nbsp;            case 36:
+<i>77</i>&nbsp;            case 38:
+<i>78</i>&nbsp;            case 45:
+<i>79</i>&nbsp;            case 58:
+<i>80</i>&nbsp;            case 91:
+<i>81</i>&nbsp;            case 92:
+<i>82</i>&nbsp;            case 93:
+<i>83</i>&nbsp;            case 94:
+<i>84</i>&nbsp;            case 123:
+<i>85</i>&nbsp;            case 125:
+<i>86</i>&nbsp;                var0.append(&#39;\\&#39;);
+<i>87</i>&nbsp;                break;
+<i>88</i>&nbsp;            default:
+<i>89</i>&nbsp;                if(UCharacterProperty.isRuleWhiteSpace(var1)) {
+<i>90</i>&nbsp;                    var0.append(&#39;\\&#39;);
+<i>91</i>&nbsp;                }
+<i>92</i>&nbsp;            }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;            UTF16.append(var0, var1);
+<i>95</i>&nbsp;        }
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    private StringBuffer _toPattern(StringBuffer var1, boolean var2) {
+<i>99</i>&nbsp;        if(this.pat == null) {
+<i>100</i>&nbsp;            return this._generatePattern(var1, var2, true);
+<i>101</i>&nbsp;        } else {
+<i>102</i>&nbsp;            int var4 = 0;
+<i>103</i>&nbsp;            int var3 = 0;
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;            while(var3 &lt; this.pat.length()) {
+<i>106</i>&nbsp;                int var5 = UTF16.charAt(this.pat, var3);
+<i>107</i>&nbsp;                var3 += UTF16.getCharCount(var5);
+<i>108</i>&nbsp;                if(var2 &amp;&amp; Utility.isUnprintable(var5)) {
+<i>109</i>&nbsp;                    if(var4 % 2 == 1) {
+<i>110</i>&nbsp;                        var1.setLength(var1.length() - 1);
+<i>111</i>&nbsp;                    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;                    Utility.escapeUnprintable(var1, var5);
+<i>114</i>&nbsp;                    var4 = 0;
+<i>115</i>&nbsp;                } else {
+<i>116</i>&nbsp;                    UTF16.append(var1, var5);
+<i>117</i>&nbsp;                    if(var5 == 92) {
+<i>118</i>&nbsp;                        ++var4;
+<i>119</i>&nbsp;                    } else {
+<i>120</i>&nbsp;                        var4 = 0;
+<i>121</i>&nbsp;                    }
+<i>122</i>&nbsp;                }
+<i>123</i>&nbsp;            }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;            return var1;
+<i>126</i>&nbsp;        }
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public StringBuffer _generatePattern(StringBuffer var1, boolean var2, boolean var3) {
+<i>130</i>&nbsp;        var1.append(&#39;[&#39;);
+<i>131</i>&nbsp;        int var4 = this.getRangeCount();
+<i>132</i>&nbsp;        int var5;
+<i>133</i>&nbsp;        int var6;
+<i>134</i>&nbsp;        int var7;
+<i>135</i>&nbsp;        if(var4 &gt; 1 &amp;&amp; this.getRangeStart(0) == 0 &amp;&amp; this.getRangeEnd(var4 - 1) == 1114111) {
+<i>136</i>&nbsp;            var1.append(&#39;^&#39;);
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;            for(var5 = 1; var5 &lt; var4; ++var5) {
+<i>139</i>&nbsp;                var6 = this.getRangeEnd(var5 - 1) + 1;
+<i>140</i>&nbsp;                var7 = this.getRangeStart(var5) - 1;
+<i>141</i>&nbsp;                _appendToPat(var1, var6, var2);
+<i>142</i>&nbsp;                if(var6 != var7) {
+<i>143</i>&nbsp;                    if(var6 + 1 != var7) {
+<i>144</i>&nbsp;                        var1.append(&#39;-&#39;);
+<i>145</i>&nbsp;                    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;                    _appendToPat(var1, var7, var2);
+<i>148</i>&nbsp;                }
+<i>149</i>&nbsp;            }
+<i>150</i>&nbsp;        } else {
+<i>151</i>&nbsp;            for(var5 = 0; var5 &lt; var4; ++var5) {
+<i>152</i>&nbsp;                var6 = this.getRangeStart(var5);
+<i>153</i>&nbsp;                var7 = this.getRangeEnd(var5);
+<i>154</i>&nbsp;                _appendToPat(var1, var6, var2);
+<i>155</i>&nbsp;                if(var6 != var7) {
+<i>156</i>&nbsp;                    if(var6 + 1 != var7) {
+<i>157</i>&nbsp;                        var1.append(&#39;-&#39;);
+<i>158</i>&nbsp;                    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;                    _appendToPat(var1, var7, var2);
+<i>161</i>&nbsp;                }
+<i>162</i>&nbsp;            }
+<i>163</i>&nbsp;        }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;        if(var3 &amp;&amp; this.strings.size() &gt; 0) {
+<i>166</i>&nbsp;            Iterator var8 = this.strings.iterator();
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;            while(var8.hasNext()) {
+<i>169</i>&nbsp;                var1.append(&#39;{&#39;);
+<i>170</i>&nbsp;                _appendToPat(var1, (String)var8.next(), var2);
+<i>171</i>&nbsp;                var1.append(&#39;}&#39;);
+<i>172</i>&nbsp;            }
+<i>173</i>&nbsp;        }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;        return var1.append(&#39;]&#39;);
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    private UnicodeSet add_unchecked(int var1, int var2) {
+<i>179</i>&nbsp;        if(var1 &gt;= 0 &amp;&amp; var1 &lt;= 1114111) {
+<i>180</i>&nbsp;            if(var2 &gt;= 0 &amp;&amp; var2 &lt;= 1114111) {
+<i>181</i>&nbsp;                if(var1 &lt; var2) {
+<i>182</i>&nbsp;                    this.add(this.range(var1, var2), 2, 0);
+<i>183</i>&nbsp;                } else if(var1 == var2) {
+<i>184</i>&nbsp;                    this.add(var1);
+<i>185</i>&nbsp;                }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;                return this;
+<i>188</i>&nbsp;            } else {
+<i>189</i>&nbsp;                throw new IllegalArgumentException(&quot;Invalid code point U+&quot; + Utility.hex(var2, 6));
+<i>190</i>&nbsp;            }
+<i>191</i>&nbsp;        } else {
+<i>192</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid code point U+&quot; + Utility.hex(var1, 6));
+<i>193</i>&nbsp;        }
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    public final UnicodeSet add(int var1) {
+<i>197</i>&nbsp;        return this.add_unchecked(var1);
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    private final UnicodeSet add_unchecked(int var1) {
+<i>201</i>&nbsp;        if(var1 &gt;= 0 &amp;&amp; var1 &lt;= 1114111) {
+<i>202</i>&nbsp;            int var2 = this.findCodePoint(var1);
+<i>203</i>&nbsp;            if((var2 &amp; 1) != 0) {
+<i>204</i>&nbsp;                return this;
+<i>205</i>&nbsp;            } else {
+<i>206</i>&nbsp;                if(var1 == this.list[var2] - 1) {
+<i>207</i>&nbsp;                    this.list[var2] = var1;
+<i>208</i>&nbsp;                    if(var1 == 1114111) {
+<i>209</i>&nbsp;                        this.ensureCapacity(this.len + 1);
+<i>210</i>&nbsp;                        this.list[this.len++] = 1114112;
+<i>211</i>&nbsp;                    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;                    if(var2 &gt; 0 &amp;&amp; var1 == this.list[var2 - 1]) {
+<i>214</i>&nbsp;                        System.arraycopy(this.list, var2 + 1, this.list, var2 - 1, this.len - var2 - 1);
+<i>215</i>&nbsp;                        this.len -= 2;
+<i>216</i>&nbsp;                    }
+<i>217</i>&nbsp;                } else if(var2 &gt; 0 &amp;&amp; var1 == this.list[var2 - 1]) {
+<i>218</i>&nbsp;                    ++this.list[var2 - 1];
+<i>219</i>&nbsp;                } else {
+<i>220</i>&nbsp;                    if(this.len + 2 &gt; this.list.length) {
+<i>221</i>&nbsp;                        int[] var3 = new int[this.len + 2 + 16];
+<i>222</i>&nbsp;                        if(var2 != 0) {
+<i>223</i>&nbsp;                            System.arraycopy(this.list, 0, var3, 0, var2);
+<i>224</i>&nbsp;                        }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;                        System.arraycopy(this.list, var2, var3, var2 + 2, this.len - var2);
+<i>227</i>&nbsp;                        this.list = var3;
+<i>228</i>&nbsp;                    } else {
+<i>229</i>&nbsp;                        System.arraycopy(this.list, var2, this.list, var2 + 2, this.len - var2);
+<i>230</i>&nbsp;                    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;                    this.list[var2] = var1;
+<i>233</i>&nbsp;                    this.list[var2 + 1] = var1 + 1;
+<i>234</i>&nbsp;                    this.len += 2;
+<i>235</i>&nbsp;                }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;                this.pat = null;
+<i>238</i>&nbsp;                return this;
+<i>239</i>&nbsp;            }
+<i>240</i>&nbsp;        } else {
+<i>241</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid code point U+&quot; + Utility.hex(var1, 6));
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    public final UnicodeSet add(String var1) {
+<i>246</i>&nbsp;        int var2 = getSingleCP(var1);
+<i>247</i>&nbsp;        if(var2 &lt; 0) {
+<i>248</i>&nbsp;            this.strings.add(var1);
+<i>249</i>&nbsp;            this.pat = null;
+<i>250</i>&nbsp;        } else {
+<i>251</i>&nbsp;            this.add_unchecked(var2, var2);
+<i>252</i>&nbsp;        }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;        return this;
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    private static int getSingleCP(String var0) {
+<i>258</i>&nbsp;        if(var0.length() &lt; 1) {
+<i>259</i>&nbsp;            throw new IllegalArgumentException(&quot;Can\&#39;t use zero-length strings in UnicodeSet&quot;);
+<i>260</i>&nbsp;        } else if(var0.length() &gt; 2) {
+<i>261</i>&nbsp;            return -1;
+<i>262</i>&nbsp;        } else if(var0.length() == 1) {
+<i>263</i>&nbsp;            return var0.charAt(0);
+<i>264</i>&nbsp;        } else {
+<i>265</i>&nbsp;            int var1 = UTF16.charAt(var0, 0);
+<i>266</i>&nbsp;            return var1 &gt; &#39;\uffff&#39;?var1:-1;
+<i>267</i>&nbsp;        }
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public UnicodeSet complement(int var1, int var2) {
+<i>271</i>&nbsp;        if(var1 &gt;= 0 &amp;&amp; var1 &lt;= 1114111) {
+<i>272</i>&nbsp;            if(var2 &gt;= 0 &amp;&amp; var2 &lt;= 1114111) {
+<i>273</i>&nbsp;                if(var1 &lt;= var2) {
+<i>274</i>&nbsp;                    this.xor(this.range(var1, var2), 2, 0);
+<i>275</i>&nbsp;                }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;                this.pat = null;
+<i>278</i>&nbsp;                return this;
+<i>279</i>&nbsp;            } else {
+<i>280</i>&nbsp;                throw new IllegalArgumentException(&quot;Invalid code point U+&quot; + Utility.hex(var2, 6));
+<i>281</i>&nbsp;            }
+<i>282</i>&nbsp;        } else {
+<i>283</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid code point U+&quot; + Utility.hex(var1, 6));
+<i>284</i>&nbsp;        }
+<b class="nc"><i>285</i>&nbsp;    }</b>
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    public UnicodeSet complement() {
+<i>288</i>&nbsp;        if(this.list[0] == 0) {
+<i>289</i>&nbsp;            System.arraycopy(this.list, 1, this.list, 0, this.len - 1);
+<i>290</i>&nbsp;            --this.len;
+<i>291</i>&nbsp;        } else {
+<i>292</i>&nbsp;            this.ensureCapacity(this.len + 1);
+<i>293</i>&nbsp;            System.arraycopy(this.list, 0, this.list, 1, this.len);
+<i>294</i>&nbsp;            this.list[0] = 0;
+<i>295</i>&nbsp;            ++this.len;
+<b class="nc"><i>296</i>&nbsp;        }</b>
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;        this.pat = null;
+<i>299</i>&nbsp;        return this;
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    public boolean contains(int var1) {
+<i>303</i>&nbsp;        if(var1 &gt;= 0 &amp;&amp; var1 &lt;= 1114111) {
+<i>304</i>&nbsp;            int var2 = this.findCodePoint(var1);
+<i>305</i>&nbsp;            return (var2 &amp; 1) != 0;
+<i>306</i>&nbsp;        } else {
+<b class="nc"><i>307</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid code point U+&quot; + Utility.hex(var1, 6));</b>
+<i>308</i>&nbsp;        }
+<i>309</i>&nbsp;    }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    private final int findCodePoint(int var1) {
+<i>312</i>&nbsp;        if(var1 &lt; this.list[0]) {
+<i>313</i>&nbsp;            return 0;
+<i>314</i>&nbsp;        } else if(this.len &gt;= 2 &amp;&amp; var1 &gt;= this.list[this.len - 2]) {
+<i>315</i>&nbsp;            return this.len - 1;
+<i>316</i>&nbsp;        } else {
+<b class="nc"><i>317</i>&nbsp;            int var2 = 0;</b>
+<b class="nc"><i>318</i>&nbsp;            int var3 = this.len - 1;</b>
+<b class="nc"><i>319</i>&nbsp;</b>
+<i>320</i>&nbsp;            while(true) {
+<i>321</i>&nbsp;                int var4 = var2 + var3 &gt;&gt;&gt; 1;
+<i>322</i>&nbsp;                if(var4 == var2) {
+<i>323</i>&nbsp;                    return var3;
+<i>324</i>&nbsp;                }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;                if(var1 &lt; this.list[var4]) {
+<i>327</i>&nbsp;                    var3 = var4;
+<i>328</i>&nbsp;                } else {
+<i>329</i>&nbsp;                    var2 = var4;
+<i>330</i>&nbsp;                }
+<b class="nc"><i>331</i>&nbsp;            }</b>
+<b class="nc"><i>332</i>&nbsp;        }</b>
+<i>333</i>&nbsp;    }
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;    public UnicodeSet addAll(UnicodeSet var1) {
+<i>336</i>&nbsp;        this.add(var1.list, var1.len, 0);
+<i>337</i>&nbsp;        this.strings.addAll(var1.strings);
+<i>338</i>&nbsp;        return this;
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    public UnicodeSet retainAll(UnicodeSet var1) {
+<i>342</i>&nbsp;        this.retain(var1.list, var1.len, 0);
+<i>343</i>&nbsp;        this.strings.retainAll(var1.strings);
+<b class="nc"><i>344</i>&nbsp;        return this;</b>
+<b class="nc"><i>345</i>&nbsp;    }</b>
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;    public UnicodeSet removeAll(UnicodeSet var1) {
+<i>348</i>&nbsp;        this.retain(var1.list, var1.len, 2);
+<i>349</i>&nbsp;        this.strings.removeAll(var1.strings);
+<i>350</i>&nbsp;        return this;
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    public UnicodeSet clear() {
+<i>354</i>&nbsp;        this.list[0] = 1114112;
+<b class="nc"><i>355</i>&nbsp;        this.len = 1;</b>
+<b class="nc"><i>356</i>&nbsp;        this.pat = null;</b>
+<b class="nc"><i>357</i>&nbsp;        this.strings.clear();</b>
+<b class="nc"><i>358</i>&nbsp;        return this;</b>
+<b class="nc"><i>359</i>&nbsp;    }</b>
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    public int getRangeCount() {
+<i>362</i>&nbsp;        return this.len / 2;
+<i>363</i>&nbsp;    }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    public int getRangeStart(int var1) {
+<i>366</i>&nbsp;        return this.list[var1 * 2];
+<i>367</i>&nbsp;    }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    public int getRangeEnd(int var1) {
+<i>370</i>&nbsp;        return this.list[var1 * 2 + 1] - 1;
+<i>371</i>&nbsp;    }
+<b class="nc"><i>372</i>&nbsp;</b>
+<i>373</i>&nbsp;    UnicodeSet applyPattern(String var1, ParsePosition var2, SymbolTable var3, int var4) {
+<i>374</i>&nbsp;        boolean var5 = var2 == null;
+<i>375</i>&nbsp;        if(var5) {
+<i>376</i>&nbsp;            var2 = new ParsePosition(0);
+<i>377</i>&nbsp;        }
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;        StringBuffer var6 = new StringBuffer();
+<b class="nc"><i>380</i>&nbsp;        RuleCharacterIterator var7 = new RuleCharacterIterator(var1, var3, var2);</b>
+<b class="nc"><i>381</i>&nbsp;        this.applyPattern((RuleCharacterIterator)var7, (SymbolTable)var3, (StringBuffer)var6, var4);</b>
+<i>382</i>&nbsp;        if(var7.inVariable()) {
+<i>383</i>&nbsp;            syntaxError(var7, &quot;Extra chars in variable value&quot;);
+<i>384</i>&nbsp;        }
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;        this.pat = var6.toString();
+<i>387</i>&nbsp;        if(var5) {
+<i>388</i>&nbsp;            int var8 = var2.getIndex();
+<i>389</i>&nbsp;            if((var4 &amp; 1) != 0) {
+<b class="nc"><i>390</i>&nbsp;                var8 = Utility.skipWhitespace(var1, var8);</b>
+<i>391</i>&nbsp;            }
+<i>392</i>&nbsp;
+<b class="nc"><i>393</i>&nbsp;            if(var8 != var1.length()) {</b>
+<i>394</i>&nbsp;                throw new IllegalArgumentException(&quot;Parse of \&quot;&quot; + var1 + &quot;\&quot; failed at &quot; + var8);
+<i>395</i>&nbsp;            }
+<i>396</i>&nbsp;        }
+<i>397</i>&nbsp;
+<b class="nc"><i>398</i>&nbsp;        return this;</b>
+<i>399</i>&nbsp;    }
+<i>400</i>&nbsp;
+<i>401</i>&nbsp;    void applyPattern(RuleCharacterIterator var1, SymbolTable var2, StringBuffer var3, int var4) {
+<i>402</i>&nbsp;        int var5 = 3;
+<i>403</i>&nbsp;        if((var4 &amp; 1) != 0) {
+<i>404</i>&nbsp;            var5 |= 4;
+<i>405</i>&nbsp;        }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;        StringBuffer var6 = new StringBuffer();
+<i>408</i>&nbsp;        StringBuffer var7 = null;
+<b class="nc"><i>409</i>&nbsp;        boolean var8 = false;</b>
+<b class="nc"><i>410</i>&nbsp;        UnicodeSet var9 = null;</b>
+<i>411</i>&nbsp;        Object var10 = null;
+<i>412</i>&nbsp;        byte var11 = 0;
+<b class="nc"><i>413</i>&nbsp;        int var12 = 0;</b>
+<b class="nc"><i>414</i>&nbsp;        byte var13 = 0;</b>
+<i>415</i>&nbsp;        char var14 = 0;
+<i>416</i>&nbsp;        boolean var15 = false;
+<i>417</i>&nbsp;        this.clear();
+<b class="nc"><i>418</i>&nbsp;</b>
+<i>419</i>&nbsp;        while(var13 != 2 &amp;&amp; !var1.atEnd()) {
+<i>420</i>&nbsp;            int var16 = 0;
+<i>421</i>&nbsp;            boolean var17 = false;
+<i>422</i>&nbsp;            UnicodeSet var18 = null;
+<i>423</i>&nbsp;            byte var19 = 0;
+<i>424</i>&nbsp;            if(resemblesPropertyPattern(var1, var5)) {
+<i>425</i>&nbsp;                var19 = 2;
+<i>426</i>&nbsp;            } else {
+<i>427</i>&nbsp;                var10 = var1.getPos(var10);
+<b class="nc"><i>428</i>&nbsp;                var16 = var1.next(var5);</b>
+<i>429</i>&nbsp;                var17 = var1.isEscaped();
+<b class="nc"><i>430</i>&nbsp;                if(var16 == 91 &amp;&amp; !var17) {</b>
+<b class="nc"><i>431</i>&nbsp;                    if(var13 == 1) {</b>
+<b class="nc"><i>432</i>&nbsp;                        var1.setPos(var10);</b>
+<b class="nc"><i>433</i>&nbsp;                        var19 = 1;</b>
+<b class="nc"><i>434</i>&nbsp;                    } else {</b>
+<i>435</i>&nbsp;                        var13 = 1;
+<i>436</i>&nbsp;                        var6.append(&#39;[&#39;);
+<i>437</i>&nbsp;                        var10 = var1.getPos(var10);
+<i>438</i>&nbsp;                        var16 = var1.next(var5);
+<b class="nc"><i>439</i>&nbsp;                        var17 = var1.isEscaped();</b>
+<b class="nc"><i>440</i>&nbsp;                        if(var16 == 94 &amp;&amp; !var17) {</b>
+<i>441</i>&nbsp;                            var15 = true;
+<b class="nc"><i>442</i>&nbsp;                            var6.append(&#39;^&#39;);</b>
+<b class="nc"><i>443</i>&nbsp;                            var10 = var1.getPos(var10);</b>
+<i>444</i>&nbsp;                            var16 = var1.next(var5);
+<b class="nc"><i>445</i>&nbsp;                            var17 = var1.isEscaped();</b>
+<b class="nc"><i>446</i>&nbsp;                        }</b>
+<b class="nc"><i>447</i>&nbsp;</b>
+<i>448</i>&nbsp;                        if(var16 != 45) {
+<b class="nc"><i>449</i>&nbsp;                            var1.setPos(var10);</b>
+<i>450</i>&nbsp;                            continue;
+<i>451</i>&nbsp;                        }
+<b class="nc"><i>452</i>&nbsp;</b>
+<b class="nc"><i>453</i>&nbsp;                        var17 = true;</b>
+<i>454</i>&nbsp;                    }
+<i>455</i>&nbsp;                } else if(var2 != null) {
+<b class="nc"><i>456</i>&nbsp;                    UnicodeMatcher var20 = var2.lookupMatcher(var16);</b>
+<i>457</i>&nbsp;                    if(var20 != null) {
+<i>458</i>&nbsp;                        try {
+<i>459</i>&nbsp;                            var18 = (UnicodeSet)var20;
+<i>460</i>&nbsp;                            var19 = 3;
+<i>461</i>&nbsp;                        } catch (ClassCastException var22) {
+<i>462</i>&nbsp;                            syntaxError(var1, &quot;Syntax error&quot;);
+<i>463</i>&nbsp;                        }
+<i>464</i>&nbsp;                    }
+<i>465</i>&nbsp;                }
+<i>466</i>&nbsp;            }
+<b class="nc"><i>467</i>&nbsp;</b>
+<i>468</i>&nbsp;            if(var19 != 0) {
+<b class="nc"><i>469</i>&nbsp;                if(var11 == 1) {</b>
+<i>470</i>&nbsp;                    if(var14 != 0) {
+<i>471</i>&nbsp;                        syntaxError(var1, &quot;Char expected after operator&quot;);
+<i>472</i>&nbsp;                    }
+<i>473</i>&nbsp;
+<b class="nc"><i>474</i>&nbsp;                    this.add_unchecked(var12, var12);</b>
+<i>475</i>&nbsp;                    _appendToPat(var6, var12, false);
+<i>476</i>&nbsp;                    var14 = 0;
+<i>477</i>&nbsp;                    boolean var23 = false;
+<i>478</i>&nbsp;                }
+<b class="nc"><i>479</i>&nbsp;</b>
+<i>480</i>&nbsp;                if(var14 == 45 || var14 == 38) {
+<b class="nc"><i>481</i>&nbsp;                    var6.append(var14);</b>
+<b class="nc"><i>482</i>&nbsp;                }</b>
+<b class="nc"><i>483</i>&nbsp;</b>
+<b class="nc"><i>484</i>&nbsp;                if(var18 == null) {</b>
+<b class="nc"><i>485</i>&nbsp;                    if(var9 == null) {</b>
+<b class="nc"><i>486</i>&nbsp;                        var9 = new UnicodeSet();</b>
+<b class="nc"><i>487</i>&nbsp;                    }</b>
+<i>488</i>&nbsp;
+<b class="nc"><i>489</i>&nbsp;                    var18 = var9;</b>
+<i>490</i>&nbsp;                }
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;                switch(var19) {
+<i>493</i>&nbsp;                case 1:
+<i>494</i>&nbsp;                    var18.applyPattern((RuleCharacterIterator)var1, (SymbolTable)var2, (StringBuffer)var6, var4);
+<i>495</i>&nbsp;                    break;
+<b class="nc"><i>496</i>&nbsp;                case 2:</b>
+<b class="nc"><i>497</i>&nbsp;                    var1.skipIgnored(var5);</b>
+<b class="nc"><i>498</i>&nbsp;                    var18.applyPropertyPattern((RuleCharacterIterator)var1, (StringBuffer)var6, var2);</b>
+<b class="nc"><i>499</i>&nbsp;                    break;</b>
+<b class="nc"><i>500</i>&nbsp;                case 3:</b>
+<b class="nc"><i>501</i>&nbsp;                    var18._toPattern(var6, false);</b>
+<b class="nc"><i>502</i>&nbsp;                }</b>
+<i>503</i>&nbsp;
+<b class="nc"><i>504</i>&nbsp;                var8 = true;</b>
+<i>505</i>&nbsp;                if(var13 == 0) {
+<i>506</i>&nbsp;                    this.set(var18);
+<i>507</i>&nbsp;                    var13 = 2;
+<i>508</i>&nbsp;                    break;
+<b class="nc"><i>509</i>&nbsp;                }</b>
+<b class="nc"><i>510</i>&nbsp;</b>
+<b class="nc"><i>511</i>&nbsp;                switch(var14) {</b>
+<b class="nc"><i>512</i>&nbsp;                case &#39;\u0000&#39;:</b>
+<b class="nc"><i>513</i>&nbsp;                    this.addAll(var18);</b>
+<b class="nc"><i>514</i>&nbsp;                    break;</b>
+<i>515</i>&nbsp;                case &#39;&amp;&#39;:
+<i>516</i>&nbsp;                    this.retainAll(var18);
+<b class="nc"><i>517</i>&nbsp;                    break;</b>
+<i>518</i>&nbsp;                case &#39;-&#39;:
+<i>519</i>&nbsp;                    this.removeAll(var18);
+<i>520</i>&nbsp;                }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;                var14 = 0;
+<i>523</i>&nbsp;                var11 = 2;
+<i>524</i>&nbsp;            } else {
+<i>525</i>&nbsp;                if(var13 == 0) {
+<i>526</i>&nbsp;                    syntaxError(var1, &quot;Missing \&#39;[\&#39;&quot;);
+<i>527</i>&nbsp;                }
+<i>528</i>&nbsp;
+<i>529</i>&nbsp;                if(!var17) {
+<i>530</i>&nbsp;                    switch(var16) {
+<i>531</i>&nbsp;                    case 36:
+<i>532</i>&nbsp;                        var10 = var1.getPos(var10);
+<b class="nc"><i>533</i>&nbsp;                        var16 = var1.next(var5);</b>
+<b class="nc"><i>534</i>&nbsp;                        var17 = var1.isEscaped();</b>
+<i>535</i>&nbsp;                        boolean var21 = var16 == 93 &amp;&amp; !var17;
+<b class="nc"><i>536</i>&nbsp;                        if(var2 == null &amp;&amp; !var21) {</b>
+<b class="nc"><i>537</i>&nbsp;                            var16 = 36;</b>
+<i>538</i>&nbsp;                            var1.setPos(var10);
+<b class="nc"><i>539</i>&nbsp;                        } else {</b>
+<b class="nc"><i>540</i>&nbsp;                            if(var21 &amp;&amp; var14 == 0) {</b>
+<b class="nc"><i>541</i>&nbsp;                                if(var11 == 1) {</b>
+<b class="nc"><i>542</i>&nbsp;                                    this.add_unchecked(var12, var12);</b>
+<i>543</i>&nbsp;                                    _appendToPat(var6, var12, false);
+<b class="nc"><i>544</i>&nbsp;                                }</b>
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;                                this.add_unchecked(&#39;\uffff&#39;);
+<i>547</i>&nbsp;                                var8 = true;
+<i>548</i>&nbsp;                                var6.append(&#39;$&#39;).append(&#39;]&#39;);
+<i>549</i>&nbsp;                                var13 = 2;
+<i>550</i>&nbsp;                                continue;
+<i>551</i>&nbsp;                            }
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;                            syntaxError(var1, &quot;Unquoted \&#39;$\&#39;&quot;);
+<b class="nc"><i>554</i>&nbsp;                        }</b>
+<b class="nc"><i>555</i>&nbsp;                        break;</b>
+<i>556</i>&nbsp;                    case 45:
+<i>557</i>&nbsp;                        if(var14 == 0) {
+<i>558</i>&nbsp;                            if(var11 != 0) {
+<i>559</i>&nbsp;                                var14 = (char)var16;
+<i>560</i>&nbsp;                                continue;
+<b class="nc"><i>561</i>&nbsp;                            }</b>
+<i>562</i>&nbsp;
+<i>563</i>&nbsp;                            this.add_unchecked(var16, var16);
+<b class="nc"><i>564</i>&nbsp;                            var16 = var1.next(var5);</b>
+<i>565</i>&nbsp;                            var17 = var1.isEscaped();
+<i>566</i>&nbsp;                            if(var16 == 93 &amp;&amp; !var17) {
+<i>567</i>&nbsp;                                var6.append(&quot;-]&quot;);
+<i>568</i>&nbsp;                                var13 = 2;
+<i>569</i>&nbsp;                                continue;
+<i>570</i>&nbsp;                            }
+<i>571</i>&nbsp;                        }
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;                        syntaxError(var1, &quot;\&#39;-\&#39; not after char or set&quot;);
+<i>574</i>&nbsp;                    case 38:
+<i>575</i>&nbsp;                        if(var11 == 2 &amp;&amp; var14 == 0) {
+<i>576</i>&nbsp;                            var14 = (char)var16;
+<i>577</i>&nbsp;                            continue;
+<b class="nc"><i>578</i>&nbsp;                        }</b>
+<i>579</i>&nbsp;
+<b class="nc"><i>580</i>&nbsp;                        syntaxError(var1, &quot;\&#39;&amp;\&#39; not after set&quot;);</b>
+<i>581</i>&nbsp;                    case 94:
+<b class="nc"><i>582</i>&nbsp;                        syntaxError(var1, &quot;\&#39;^\&#39; not after \&#39;[\&#39;&quot;);</b>
+<b class="nc"><i>583</i>&nbsp;                    case 123:</b>
+<b class="nc"><i>584</i>&nbsp;                        if(var14 != 0) {</b>
+<i>585</i>&nbsp;                            syntaxError(var1, &quot;Missing operand after operator&quot;);
+<b class="nc"><i>586</i>&nbsp;                        }</b>
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;                        if(var11 == 1) {
+<i>589</i>&nbsp;                            this.add_unchecked(var12, var12);
+<i>590</i>&nbsp;                            _appendToPat(var6, var12, false);
+<i>591</i>&nbsp;                        }
+<b class="nc"><i>592</i>&nbsp;</b>
+<b class="nc"><i>593</i>&nbsp;                        var11 = 0;</b>
+<i>594</i>&nbsp;                        if(var7 == null) {
+<i>595</i>&nbsp;                            var7 = new StringBuffer();
+<i>596</i>&nbsp;                        } else {
+<b class="nc"><i>597</i>&nbsp;                            var7.setLength(0);</b>
+<i>598</i>&nbsp;                        }
+<b class="nc"><i>599</i>&nbsp;</b>
+<i>600</i>&nbsp;                        boolean var24 = false;
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;                        while(!var1.atEnd()) {
+<i>603</i>&nbsp;                            var16 = var1.next(var5);
+<i>604</i>&nbsp;                            var17 = var1.isEscaped();
+<i>605</i>&nbsp;                            if(var16 == 125 &amp;&amp; !var17) {
+<i>606</i>&nbsp;                                var24 = true;
+<i>607</i>&nbsp;                                break;
+<i>608</i>&nbsp;                            }
+<i>609</i>&nbsp;
+<i>610</i>&nbsp;                            UTF16.append(var7, var16);
+<i>611</i>&nbsp;                        }
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;                        if(var7.length() &lt; 1 || !var24) {
+<i>614</i>&nbsp;                            syntaxError(var1, &quot;Invalid multicharacter string&quot;);
+<i>615</i>&nbsp;                        }
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;                        this.add(var7.toString());
+<i>618</i>&nbsp;                        var6.append(&#39;{&#39;);
+<b class="nc"><i>619</i>&nbsp;                        _appendToPat(var6, var7.toString(), false);</b>
+<b class="nc"><i>620</i>&nbsp;                        var6.append(&#39;}&#39;);</b>
+<b class="nc"><i>621</i>&nbsp;                        continue;</b>
+<b class="nc"><i>622</i>&nbsp;                    case 93:</b>
+<b class="nc"><i>623</i>&nbsp;                        if(var11 == 1) {</b>
+<b class="nc"><i>624</i>&nbsp;                            this.add_unchecked(var12, var12);</b>
+<b class="nc"><i>625</i>&nbsp;                            _appendToPat(var6, var12, false);</b>
+<i>626</i>&nbsp;                        }
+<i>627</i>&nbsp;
+<b class="nc"><i>628</i>&nbsp;                        if(var14 == 45) {</b>
+<b class="nc"><i>629</i>&nbsp;                            this.add_unchecked(var14, var14);</b>
+<b class="nc"><i>630</i>&nbsp;                            var6.append(var14);</b>
+<i>631</i>&nbsp;                        } else if(var14 == 38) {
+<i>632</i>&nbsp;                            syntaxError(var1, &quot;Trailing \&#39;&amp;\&#39;&quot;);
+<b class="nc"><i>633</i>&nbsp;                        }</b>
+<b class="nc"><i>634</i>&nbsp;</b>
+<i>635</i>&nbsp;                        var6.append(&#39;]&#39;);
+<i>636</i>&nbsp;                        var13 = 2;
+<i>637</i>&nbsp;                        continue;
+<i>638</i>&nbsp;                    }
+<i>639</i>&nbsp;                }
+<i>640</i>&nbsp;
+<i>641</i>&nbsp;                switch(var11) {
+<i>642</i>&nbsp;                case 0:
+<i>643</i>&nbsp;                    var11 = 1;
+<i>644</i>&nbsp;                    var12 = var16;
+<i>645</i>&nbsp;                    break;
+<i>646</i>&nbsp;                case 1:
+<i>647</i>&nbsp;                    if(var14 == 45) {
+<i>648</i>&nbsp;                        if(var12 &gt;= var16) {
+<b class="nc"><i>649</i>&nbsp;                            syntaxError(var1, &quot;Invalid range&quot;);</b>
+<b class="nc"><i>650</i>&nbsp;                        }</b>
+<b class="nc"><i>651</i>&nbsp;</b>
+<b class="nc"><i>652</i>&nbsp;                        this.add_unchecked(var12, var16);</b>
+<i>653</i>&nbsp;                        _appendToPat(var6, var12, false);
+<b class="nc"><i>654</i>&nbsp;                        var6.append(var14);</b>
+<i>655</i>&nbsp;                        _appendToPat(var6, var16, false);
+<b class="nc"><i>656</i>&nbsp;                        var14 = 0;</b>
+<i>657</i>&nbsp;                        var11 = 0;
+<i>658</i>&nbsp;                    } else {
+<i>659</i>&nbsp;                        this.add_unchecked(var12, var12);
+<i>660</i>&nbsp;                        _appendToPat(var6, var12, false);
+<i>661</i>&nbsp;                        var12 = var16;
+<i>662</i>&nbsp;                    }
+<i>663</i>&nbsp;                    break;
+<i>664</i>&nbsp;                case 2:
+<b class="nc"><i>665</i>&nbsp;                    if(var14 != 0) {</b>
+<b class="nc"><i>666</i>&nbsp;                        syntaxError(var1, &quot;Set expected after operator&quot;);</b>
+<i>667</i>&nbsp;                    }
+<b class="nc"><i>668</i>&nbsp;</b>
+<b class="nc"><i>669</i>&nbsp;                    var12 = var16;</b>
+<i>670</i>&nbsp;                    var11 = 1;
+<i>671</i>&nbsp;                }
+<b class="nc"><i>672</i>&nbsp;            }</b>
+<b class="nc"><i>673</i>&nbsp;        }</b>
+<b class="nc"><i>674</i>&nbsp;</b>
+<i>675</i>&nbsp;        if(var13 != 2) {
+<b class="nc"><i>676</i>&nbsp;            syntaxError(var1, &quot;Missing \&#39;]\&#39;&quot;);</b>
+<i>677</i>&nbsp;        }
+<i>678</i>&nbsp;
+<i>679</i>&nbsp;        var1.skipIgnored(var5);
+<i>680</i>&nbsp;        if(var15) {
+<i>681</i>&nbsp;            this.complement();
+<i>682</i>&nbsp;        }
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;        if(var8) {
+<i>685</i>&nbsp;            var3.append(var6.toString());
+<i>686</i>&nbsp;        } else {
+<i>687</i>&nbsp;            this._generatePattern(var3, false, true);
+<i>688</i>&nbsp;        }
+<i>689</i>&nbsp;
+<i>690</i>&nbsp;    }
+<i>691</i>&nbsp;
+<b class="nc"><i>692</i>&nbsp;    private static void syntaxError(RuleCharacterIterator var0, String var1) {</b>
+<b class="nc"><i>693</i>&nbsp;        throw new IllegalArgumentException(&quot;Error: &quot; + var1 + &quot; at \&quot;&quot; + Utility.escape(var0.toString()) + &#39;\&quot;&#39;);</b>
+<i>694</i>&nbsp;    }
+<b class="nc"><i>695</i>&nbsp;</b>
+<b class="nc"><i>696</i>&nbsp;    private void ensureCapacity(int var1) {</b>
+<i>697</i>&nbsp;        if(var1 &gt; this.list.length) {
+<b class="nc"><i>698</i>&nbsp;            int[] var2 = new int[var1 + 16];</b>
+<b class="nc"><i>699</i>&nbsp;            System.arraycopy(this.list, 0, var2, 0, this.len);</b>
+<i>700</i>&nbsp;            this.list = var2;
+<b class="nc"><i>701</i>&nbsp;        }</b>
+<b class="nc"><i>702</i>&nbsp;    }</b>
+<i>703</i>&nbsp;
+<i>704</i>&nbsp;    private void ensureBufferCapacity(int var1) {
+<i>705</i>&nbsp;        if(this.buffer == null || var1 &gt; this.buffer.length) {
+<i>706</i>&nbsp;            this.buffer = new int[var1 + 16];
+<i>707</i>&nbsp;        }
+<i>708</i>&nbsp;    }
+<i>709</i>&nbsp;
+<i>710</i>&nbsp;    private int[] range(int var1, int var2) {
+<b class="nc"><i>711</i>&nbsp;        if(this.rangeList == null) {</b>
+<b class="nc"><i>712</i>&nbsp;            this.rangeList = new int[]{var1, var2 + 1, 1114112};</b>
+<b class="nc"><i>713</i>&nbsp;        } else {</b>
+<i>714</i>&nbsp;            this.rangeList[0] = var1;
+<b class="nc"><i>715</i>&nbsp;            this.rangeList[1] = var2 + 1;</b>
+<b class="nc"><i>716</i>&nbsp;        }</b>
+<b class="nc"><i>717</i>&nbsp;</b>
+<b class="nc"><i>718</i>&nbsp;        return this.rangeList;</b>
+<i>719</i>&nbsp;    }
+<b class="nc"><i>720</i>&nbsp;</b>
+<b class="nc"><i>721</i>&nbsp;    private UnicodeSet xor(int[] var1, int var2, int var3) {</b>
+<i>722</i>&nbsp;        this.ensureBufferCapacity(this.len + var2);
+<i>723</i>&nbsp;        byte var4 = 0;
+<i>724</i>&nbsp;        int var5 = 0;
+<i>725</i>&nbsp;        int var6 = 0;
+<i>726</i>&nbsp;        int var11 = var4 + 1;
+<i>727</i>&nbsp;        int var7 = this.list[var4];
+<i>728</i>&nbsp;        int var8;
+<i>729</i>&nbsp;        if(var3 != 1 &amp;&amp; var3 != 2) {
+<i>730</i>&nbsp;            var8 = var1[var5++];
+<b class="nc"><i>731</i>&nbsp;        } else {</b>
+<b class="nc"><i>732</i>&nbsp;            var8 = 0;</b>
+<i>733</i>&nbsp;            if(var1[var5] == 0) {
+<i>734</i>&nbsp;                ++var5;
+<i>735</i>&nbsp;                var8 = var1[var5];
+<i>736</i>&nbsp;            }
+<i>737</i>&nbsp;        }
+<i>738</i>&nbsp;
+<i>739</i>&nbsp;        while(true) {
+<i>740</i>&nbsp;            while(var7 &gt;= var8) {
+<i>741</i>&nbsp;                if(var8 &lt; var7) {
+<i>742</i>&nbsp;                    this.buffer[var6++] = var8;
+<i>743</i>&nbsp;                    var8 = var1[var5++];
+<b class="nc"><i>744</i>&nbsp;                } else {</b>
+<i>745</i>&nbsp;                    if(var7 == 1114112) {
+<b class="nc"><i>746</i>&nbsp;                        this.buffer[var6++] = 1114112;</b>
+<i>747</i>&nbsp;                        this.len = var6;
+<i>748</i>&nbsp;                        int[] var9 = this.list;
+<i>749</i>&nbsp;                        this.list = this.buffer;
+<i>750</i>&nbsp;                        this.buffer = var9;
+<i>751</i>&nbsp;                        this.pat = null;
+<i>752</i>&nbsp;                        return this;
+<i>753</i>&nbsp;                    }
+<i>754</i>&nbsp;
+<i>755</i>&nbsp;                    var7 = this.list[var11++];
+<i>756</i>&nbsp;                    var8 = var1[var5++];
+<i>757</i>&nbsp;                }
+<i>758</i>&nbsp;            }
+<i>759</i>&nbsp;
+<i>760</i>&nbsp;            this.buffer[var6++] = var7;
+<i>761</i>&nbsp;            var7 = this.list[var11++];
+<i>762</i>&nbsp;        }
+<i>763</i>&nbsp;    }
+<i>764</i>&nbsp;
+<i>765</i>&nbsp;    private UnicodeSet add(int[] var1, int var2, int var3) {
+<i>766</i>&nbsp;        this.ensureBufferCapacity(this.len + var2);
+<i>767</i>&nbsp;        byte var4 = 0;
+<i>768</i>&nbsp;        byte var5 = 0;
+<i>769</i>&nbsp;        int var6 = 0;
+<i>770</i>&nbsp;        int var11 = var4 + 1;
+<b class="nc"><i>771</i>&nbsp;        int var7 = this.list[var4];</b>
+<i>772</i>&nbsp;        int var12 = var5 + 1;
+<i>773</i>&nbsp;        int var8 = var1[var5];
+<b class="nc"><i>774</i>&nbsp;</b>
+<b class="nc"><i>775</i>&nbsp;        label95:</b>
+<b class="nc"><i>776</i>&nbsp;        while(true) {</b>
+<i>777</i>&nbsp;            switch(var3) {
+<i>778</i>&nbsp;            case 0:
+<i>779</i>&nbsp;                int var10000;
+<b class="nc"><i>780</i>&nbsp;                if(var7 &lt; var8) {</b>
+<b class="nc"><i>781</i>&nbsp;                    if(var6 &gt; 0 &amp;&amp; var7 &lt;= this.buffer[var6 - 1]) {</b>
+<b class="nc"><i>782</i>&nbsp;                        var10000 = this.list[var11];</b>
+<b class="nc"><i>783</i>&nbsp;                        --var6;</b>
+<i>784</i>&nbsp;                        var7 = max(var10000, this.buffer[var6]);
+<b class="nc"><i>785</i>&nbsp;                    } else {</b>
+<i>786</i>&nbsp;                        this.buffer[var6++] = var7;
+<b class="nc"><i>787</i>&nbsp;                        var7 = this.list[var11];</b>
+<i>788</i>&nbsp;                    }
+<i>789</i>&nbsp;
+<i>790</i>&nbsp;                    ++var11;
+<i>791</i>&nbsp;                    var3 ^= 1;
+<i>792</i>&nbsp;                } else if(var8 &lt; var7) {
+<i>793</i>&nbsp;                    if(var6 &gt; 0 &amp;&amp; var8 &lt;= this.buffer[var6 - 1]) {
+<i>794</i>&nbsp;                        var10000 = var1[var12];
+<i>795</i>&nbsp;                        --var6;
+<i>796</i>&nbsp;                        var8 = max(var10000, this.buffer[var6]);
+<i>797</i>&nbsp;                    } else {
+<i>798</i>&nbsp;                        this.buffer[var6++] = var8;
+<i>799</i>&nbsp;                        var8 = var1[var12];
+<i>800</i>&nbsp;                    }
+<b class="nc"><i>801</i>&nbsp;</b>
+<b class="nc"><i>802</i>&nbsp;                    ++var12;</b>
+<b class="nc"><i>803</i>&nbsp;                    var3 ^= 2;</b>
+<i>804</i>&nbsp;                } else {
+<i>805</i>&nbsp;                    if(var7 == 1114112) {
+<i>806</i>&nbsp;                        break label95;
+<i>807</i>&nbsp;                    }
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;                    if(var6 &gt; 0 &amp;&amp; var7 &lt;= this.buffer[var6 - 1]) {
+<i>810</i>&nbsp;                        var10000 = this.list[var11];
+<i>811</i>&nbsp;                        --var6;
+<i>812</i>&nbsp;                        var7 = max(var10000, this.buffer[var6]);
+<i>813</i>&nbsp;                    } else {
+<i>814</i>&nbsp;                        this.buffer[var6++] = var7;
+<i>815</i>&nbsp;                        var7 = this.list[var11];
+<i>816</i>&nbsp;                    }
+<b class="nc"><i>817</i>&nbsp;</b>
+<b class="nc"><i>818</i>&nbsp;                    ++var11;</b>
+<b class="nc"><i>819</i>&nbsp;                    var3 ^= 1;</b>
+<i>820</i>&nbsp;                    var8 = var1[var12++];
+<i>821</i>&nbsp;                    var3 ^= 2;
+<i>822</i>&nbsp;                }
+<i>823</i>&nbsp;                break;
+<i>824</i>&nbsp;            case 1:
+<i>825</i>&nbsp;                if(var7 &lt; var8) {
+<i>826</i>&nbsp;                    this.buffer[var6++] = var7;
+<i>827</i>&nbsp;                    var7 = this.list[var11++];
+<i>828</i>&nbsp;                    var3 ^= 1;
+<i>829</i>&nbsp;                } else {
+<i>830</i>&nbsp;                    if(var8 &lt; var7) {
+<i>831</i>&nbsp;                        var8 = var1[var12++];
+<i>832</i>&nbsp;                        var3 ^= 2;
+<b class="nc"><i>833</i>&nbsp;                        continue;</b>
+<b class="nc"><i>834</i>&nbsp;                    }</b>
+<b class="nc"><i>835</i>&nbsp;</b>
+<i>836</i>&nbsp;                    if(var7 == 1114112) {
+<i>837</i>&nbsp;                        break label95;
+<i>838</i>&nbsp;                    }
+<i>839</i>&nbsp;
+<i>840</i>&nbsp;                    var7 = this.list[var11++];
+<i>841</i>&nbsp;                    var3 ^= 1;
+<i>842</i>&nbsp;                    var8 = var1[var12++];
+<i>843</i>&nbsp;                    var3 ^= 2;
+<b class="nc"><i>844</i>&nbsp;                }</b>
+<b class="nc"><i>845</i>&nbsp;                break;</b>
+<b class="nc"><i>846</i>&nbsp;            case 2:</b>
+<b class="nc"><i>847</i>&nbsp;                if(var8 &lt; var7) {</b>
+<b class="nc"><i>848</i>&nbsp;                    this.buffer[var6++] = var8;</b>
+<i>849</i>&nbsp;                    var8 = var1[var12++];
+<i>850</i>&nbsp;                    var3 ^= 2;
+<i>851</i>&nbsp;                } else {
+<i>852</i>&nbsp;                    if(var7 &lt; var8) {
+<i>853</i>&nbsp;                        var7 = this.list[var11++];
+<i>854</i>&nbsp;                        var3 ^= 1;
+<i>855</i>&nbsp;                        continue;
+<i>856</i>&nbsp;                    }
+<i>857</i>&nbsp;
+<i>858</i>&nbsp;                    if(var7 == 1114112) {
+<b class="nc"><i>859</i>&nbsp;                        break label95;</b>
+<i>860</i>&nbsp;                    }
+<i>861</i>&nbsp;
+<i>862</i>&nbsp;                    var7 = this.list[var11++];
+<i>863</i>&nbsp;                    var3 ^= 1;
+<i>864</i>&nbsp;                    var8 = var1[var12++];
+<i>865</i>&nbsp;                    var3 ^= 2;
+<i>866</i>&nbsp;                }
+<i>867</i>&nbsp;                break;
+<i>868</i>&nbsp;            case 3:
+<i>869</i>&nbsp;                if(var8 &lt;= var7) {
+<i>870</i>&nbsp;                    if(var7 == 1114112) {
+<i>871</i>&nbsp;                        break label95;
+<b class="nc"><i>872</i>&nbsp;                    }</b>
+<i>873</i>&nbsp;
+<i>874</i>&nbsp;                    this.buffer[var6++] = var7;
+<i>875</i>&nbsp;                } else {
+<i>876</i>&nbsp;                    if(var8 == 1114112) {
+<i>877</i>&nbsp;                        break label95;
+<i>878</i>&nbsp;                    }
+<i>879</i>&nbsp;
+<i>880</i>&nbsp;                    this.buffer[var6++] = var8;
+<i>881</i>&nbsp;                }
+<i>882</i>&nbsp;
+<i>883</i>&nbsp;                var7 = this.list[var11++];
+<i>884</i>&nbsp;                var3 ^= 1;
+<b class="nc"><i>885</i>&nbsp;                var8 = var1[var12++];</b>
+<i>886</i>&nbsp;                var3 ^= 2;
+<i>887</i>&nbsp;            }
+<i>888</i>&nbsp;        }
+<i>889</i>&nbsp;
+<i>890</i>&nbsp;        this.buffer[var6++] = 1114112;
+<i>891</i>&nbsp;        this.len = var6;
+<i>892</i>&nbsp;        int[] var9 = this.list;
+<i>893</i>&nbsp;        this.list = this.buffer;
+<i>894</i>&nbsp;        this.buffer = var9;
+<i>895</i>&nbsp;        this.pat = null;
+<i>896</i>&nbsp;        return this;
+<i>897</i>&nbsp;    }
+<i>898</i>&nbsp;
+<i>899</i>&nbsp;    private UnicodeSet retain(int[] var1, int var2, int var3) {
+<i>900</i>&nbsp;        this.ensureBufferCapacity(this.len + var2);
+<i>901</i>&nbsp;        byte var4 = 0;
+<i>902</i>&nbsp;        byte var5 = 0;
+<i>903</i>&nbsp;        int var6 = 0;
+<i>904</i>&nbsp;        int var11 = var4 + 1;
+<i>905</i>&nbsp;        int var7 = this.list[var4];
+<i>906</i>&nbsp;        int var12 = var5 + 1;
+<i>907</i>&nbsp;        int var8 = var1[var5];
+<i>908</i>&nbsp;
+<i>909</i>&nbsp;        label64:
+<i>910</i>&nbsp;        while(true) {
+<i>911</i>&nbsp;            switch(var3) {
+<i>912</i>&nbsp;            case 0:
+<i>913</i>&nbsp;                if(var7 &lt; var8) {
+<i>914</i>&nbsp;                    var7 = this.list[var11++];
+<i>915</i>&nbsp;                    var3 ^= 1;
+<i>916</i>&nbsp;                } else {
+<i>917</i>&nbsp;                    if(var8 &lt; var7) {
+<i>918</i>&nbsp;                        var8 = var1[var12++];
+<i>919</i>&nbsp;                        var3 ^= 2;
+<i>920</i>&nbsp;                        continue;
+<b class="nc"><i>921</i>&nbsp;                    }</b>
+<b class="nc"><i>922</i>&nbsp;</b>
+<b class="nc"><i>923</i>&nbsp;                    if(var7 == 1114112) {</b>
+<i>924</i>&nbsp;                        break label64;
+<i>925</i>&nbsp;                    }
+<b class="nc"><i>926</i>&nbsp;</b>
+<b class="nc"><i>927</i>&nbsp;                    this.buffer[var6++] = var7;</b>
+<i>928</i>&nbsp;                    var7 = this.list[var11++];
+<b class="nc"><i>929</i>&nbsp;                    var3 ^= 1;</b>
+<b class="nc"><i>930</i>&nbsp;                    var8 = var1[var12++];</b>
+<b class="nc"><i>931</i>&nbsp;                    var3 ^= 2;</b>
+<i>932</i>&nbsp;                }
+<b class="nc"><i>933</i>&nbsp;                break;</b>
+<b class="nc"><i>934</i>&nbsp;            case 1:</b>
+<b class="nc"><i>935</i>&nbsp;                if(var7 &lt; var8) {</b>
+<i>936</i>&nbsp;                    var7 = this.list[var11++];
+<i>937</i>&nbsp;                    var3 ^= 1;
+<b class="nc"><i>938</i>&nbsp;                } else {</b>
+<b class="nc"><i>939</i>&nbsp;                    if(var8 &lt; var7) {</b>
+<i>940</i>&nbsp;                        this.buffer[var6++] = var8;
+<i>941</i>&nbsp;                        var8 = var1[var12++];
+<b class="nc"><i>942</i>&nbsp;                        var3 ^= 2;</b>
+<b class="nc"><i>943</i>&nbsp;                        continue;</b>
+<i>944</i>&nbsp;                    }
+<i>945</i>&nbsp;
+<i>946</i>&nbsp;                    if(var7 == 1114112) {
+<b class="nc"><i>947</i>&nbsp;                        break label64;</b>
+<i>948</i>&nbsp;                    }
+<i>949</i>&nbsp;
+<i>950</i>&nbsp;                    var7 = this.list[var11++];
+<i>951</i>&nbsp;                    var3 ^= 1;
+<i>952</i>&nbsp;                    var8 = var1[var12++];
+<i>953</i>&nbsp;                    var3 ^= 2;
+<i>954</i>&nbsp;                }
+<i>955</i>&nbsp;                break;
+<i>956</i>&nbsp;            case 2:
+<i>957</i>&nbsp;                if(var8 &lt; var7) {
+<i>958</i>&nbsp;                    var8 = var1[var12++];
+<i>959</i>&nbsp;                    var3 ^= 2;
+<i>960</i>&nbsp;                } else {
+<i>961</i>&nbsp;                    if(var7 &lt; var8) {
+<i>962</i>&nbsp;                        this.buffer[var6++] = var7;
+<i>963</i>&nbsp;                        var7 = this.list[var11++];
+<i>964</i>&nbsp;                        var3 ^= 1;
+<i>965</i>&nbsp;                        continue;
+<i>966</i>&nbsp;                    }
+<i>967</i>&nbsp;
+<i>968</i>&nbsp;                    if(var7 == 1114112) {
+<i>969</i>&nbsp;                        break label64;
+<i>970</i>&nbsp;                    }
+<b class="nc"><i>971</i>&nbsp;</b>
+<i>972</i>&nbsp;                    var7 = this.list[var11++];
+<b class="nc"><i>973</i>&nbsp;                    var3 ^= 1;</b>
+<b class="nc"><i>974</i>&nbsp;                    var8 = var1[var12++];</b>
+<i>975</i>&nbsp;                    var3 ^= 2;
+<i>976</i>&nbsp;                }
+<b class="nc"><i>977</i>&nbsp;                break;</b>
+<b class="nc"><i>978</i>&nbsp;            case 3:</b>
+<b class="nc"><i>979</i>&nbsp;                if(var7 &lt; var8) {</b>
+<b class="nc"><i>980</i>&nbsp;                    this.buffer[var6++] = var7;</b>
+<i>981</i>&nbsp;                    var7 = this.list[var11++];
+<i>982</i>&nbsp;                    var3 ^= 1;
+<i>983</i>&nbsp;                } else if(var8 &lt; var7) {
+<b class="nc"><i>984</i>&nbsp;                    this.buffer[var6++] = var8;</b>
+<b class="nc"><i>985</i>&nbsp;                    var8 = var1[var12++];</b>
+<i>986</i>&nbsp;                    var3 ^= 2;
+<b class="nc"><i>987</i>&nbsp;                } else {</b>
+<i>988</i>&nbsp;                    if(var7 == 1114112) {
+<b class="nc"><i>989</i>&nbsp;                        break label64;</b>
+<i>990</i>&nbsp;                    }
+<b class="nc"><i>991</i>&nbsp;</b>
+<i>992</i>&nbsp;                    this.buffer[var6++] = var7;
+<i>993</i>&nbsp;                    var7 = this.list[var11++];
+<i>994</i>&nbsp;                    var3 ^= 1;
+<i>995</i>&nbsp;                    var8 = var1[var12++];
+<i>996</i>&nbsp;                    var3 ^= 2;
+<i>997</i>&nbsp;                }
+<i>998</i>&nbsp;            }
+<i>999</i>&nbsp;        }
+<i>1000</i>&nbsp;
+<b class="nc"><i>1001</i>&nbsp;        this.buffer[var6++] = 1114112;</b>
+<b class="nc"><i>1002</i>&nbsp;        this.len = var6;</b>
+<b class="nc"><i>1003</i>&nbsp;        int[] var9 = this.list;</b>
+<i>1004</i>&nbsp;        this.list = this.buffer;
+<i>1005</i>&nbsp;        this.buffer = var9;
+<i>1006</i>&nbsp;        this.pat = null;
+<i>1007</i>&nbsp;        return this;
+<b class="nc"><i>1008</i>&nbsp;    }</b>
+<b class="nc"><i>1009</i>&nbsp;</b>
+<b class="nc"><i>1010</i>&nbsp;    private static final int max(int var0, int var1) {</b>
+<i>1011</i>&nbsp;        return var0 &gt; var1?var0:var1;
+<i>1012</i>&nbsp;    }
+<i>1013</i>&nbsp;
+<i>1014</i>&nbsp;    private static synchronized UnicodeSet getInclusions(int var0) {
+<i>1015</i>&nbsp;        if(INCLUSIONS == null) {
+<i>1016</i>&nbsp;            INCLUSIONS = new UnicodeSet[9];
+<i>1017</i>&nbsp;        }
+<i>1018</i>&nbsp;
+<i>1019</i>&nbsp;        if(INCLUSIONS[var0] == null) {
+<i>1020</i>&nbsp;            UnicodeSet var1 = new UnicodeSet();
+<i>1021</i>&nbsp;            switch(var0) {
+<i>1022</i>&nbsp;            case 2:
+<b class="nc"><i>1023</i>&nbsp;                UCharacterProperty.getInstance().upropsvec_addPropertyStarts(var1);</b>
+<b class="nc"><i>1024</i>&nbsp;                INCLUSIONS[var0] = var1;</b>
+<b class="nc"><i>1025</i>&nbsp;                break;</b>
+<i>1026</i>&nbsp;            default:
+<b class="nc"><i>1027</i>&nbsp;                throw new IllegalStateException(&quot;UnicodeSet.getInclusions(unknown src &quot; + var0 + &quot;)&quot;);</b>
+<b class="nc"><i>1028</i>&nbsp;            }</b>
+<b class="nc"><i>1029</i>&nbsp;        }</b>
+<b class="nc"><i>1030</i>&nbsp;</b>
+<i>1031</i>&nbsp;        return INCLUSIONS[var0];
+<i>1032</i>&nbsp;    }
+<b class="nc"><i>1033</i>&nbsp;</b>
+<b class="nc"><i>1034</i>&nbsp;    private UnicodeSet applyFilter(UnicodeSet.Filter var1, int var2) {</b>
+<b class="nc"><i>1035</i>&nbsp;        this.clear();</b>
+<b class="nc"><i>1036</i>&nbsp;        int var3 = -1;</b>
+<b class="nc"><i>1037</i>&nbsp;        UnicodeSet var4 = getInclusions(var2);</b>
+<b class="nc"><i>1038</i>&nbsp;        int var5 = var4.getRangeCount();</b>
+<b class="nc"><i>1039</i>&nbsp;</b>
+<b class="nc"><i>1040</i>&nbsp;        for(int var6 = 0; var6 &lt; var5; ++var6) {</b>
+<b class="nc"><i>1041</i>&nbsp;            int var7 = var4.getRangeStart(var6);</b>
+<b class="nc"><i>1042</i>&nbsp;            int var8 = var4.getRangeEnd(var6);</b>
+<b class="nc"><i>1043</i>&nbsp;</b>
+<i>1044</i>&nbsp;            for(int var9 = var7; var9 &lt;= var8; ++var9) {
+<i>1045</i>&nbsp;                if(var1.contains(var9)) {
+<i>1046</i>&nbsp;                    if(var3 &lt; 0) {
+<b class="nc"><i>1047</i>&nbsp;                        var3 = var9;</b>
+<b class="nc"><i>1048</i>&nbsp;                    }</b>
+<i>1049</i>&nbsp;                } else if(var3 &gt;= 0) {
+<i>1050</i>&nbsp;                    this.add_unchecked(var3, var9 - 1);
+<b class="nc"><i>1051</i>&nbsp;                    var3 = -1;</b>
+<b class="nc"><i>1052</i>&nbsp;                }</b>
+<i>1053</i>&nbsp;            }
+<i>1054</i>&nbsp;        }
+<b class="nc"><i>1055</i>&nbsp;</b>
+<b class="nc"><i>1056</i>&nbsp;        if(var3 &gt;= 0) {</b>
+<b class="nc"><i>1057</i>&nbsp;            this.add_unchecked(var3, 1114111);</b>
+<i>1058</i>&nbsp;        }
+<b class="nc"><i>1059</i>&nbsp;</b>
+<b class="nc"><i>1060</i>&nbsp;        return this;</b>
+<b class="nc"><i>1061</i>&nbsp;    }</b>
+<b class="nc"><i>1062</i>&nbsp;</b>
+<b class="nc"><i>1063</i>&nbsp;    private static String mungeCharName(String var0) {</b>
+<i>1064</i>&nbsp;        StringBuffer var1 = new StringBuffer();
+<i>1065</i>&nbsp;        int var2 = 0;
+<i>1066</i>&nbsp;
+<i>1067</i>&nbsp;        while(var2 &lt; var0.length()) {
+<i>1068</i>&nbsp;            int var3 = UTF16.charAt(var0, var2);
+<i>1069</i>&nbsp;            var2 += UTF16.getCharCount(var3);
+<i>1070</i>&nbsp;            if(UCharacterProperty.isRuleWhiteSpace(var3)) {
+<i>1071</i>&nbsp;                if(var1.length() == 0 || var1.charAt(var1.length() - 1) == 32) {
+<i>1072</i>&nbsp;                    continue;
+<b class="nc"><i>1073</i>&nbsp;                }</b>
+<b class="nc"><i>1074</i>&nbsp;</b>
+<b class="nc"><i>1075</i>&nbsp;                var3 = 32;</b>
+<b class="nc"><i>1076</i>&nbsp;            }</b>
+<i>1077</i>&nbsp;
+<b class="nc"><i>1078</i>&nbsp;            UTF16.append(var1, var3);</b>
+<b class="nc"><i>1079</i>&nbsp;        }</b>
+<b class="nc"><i>1080</i>&nbsp;</b>
+<i>1081</i>&nbsp;        if(var1.length() != 0 &amp;&amp; var1.charAt(var1.length() - 1) == 32) {
+<i>1082</i>&nbsp;            var1.setLength(var1.length() - 1);
+<b class="nc"><i>1083</i>&nbsp;        }</b>
+<b class="nc"><i>1084</i>&nbsp;</b>
+<i>1085</i>&nbsp;        return var1.toString();
+<i>1086</i>&nbsp;    }
+<b class="nc"><i>1087</i>&nbsp;</b>
+<b class="nc"><i>1088</i>&nbsp;    public UnicodeSet applyPropertyAlias(String var1, String var2, SymbolTable var3) {</b>
+<b class="nc"><i>1089</i>&nbsp;        if(var2.length() &gt; 0 &amp;&amp; var1.equals(&quot;Age&quot;)) {</b>
+<i>1090</i>&nbsp;            VersionInfo var4 = VersionInfo.getInstance(mungeCharName(var2));
+<b class="nc"><i>1091</i>&nbsp;            this.applyFilter(new UnicodeSet.VersionFilter(var4), 2);</b>
+<i>1092</i>&nbsp;            return this;
+<b class="nc"><i>1093</i>&nbsp;        } else {</b>
+<b class="nc"><i>1094</i>&nbsp;            throw new IllegalArgumentException(&quot;Unsupported property: &quot; + var1);</b>
+<i>1095</i>&nbsp;        }
+<b class="nc"><i>1096</i>&nbsp;    }</b>
+<b class="nc"><i>1097</i>&nbsp;</b>
+<b class="nc"><i>1098</i>&nbsp;    private static boolean resemblesPropertyPattern(RuleCharacterIterator var0, int var1) {</b>
+<i>1099</i>&nbsp;        boolean var2 = false;
+<b class="nc"><i>1100</i>&nbsp;        var1 &amp;= -3;</b>
+<i>1101</i>&nbsp;        Object var3 = var0.getPos((Object)null);
+<i>1102</i>&nbsp;        int var4 = var0.next(var1);
+<i>1103</i>&nbsp;        if(var4 == 91 || var4 == 92) {
+<b class="nc"><i>1104</i>&nbsp;            int var5 = var0.next(var1 &amp; -5);</b>
+<i>1105</i>&nbsp;            var2 = var4 == 91?var5 == 58:var5 == 78 || var5 == 112 || var5 == 80;
+<b class="nc"><i>1106</i>&nbsp;        }</b>
+<i>1107</i>&nbsp;
+<b class="nc"><i>1108</i>&nbsp;        var0.setPos(var3);</b>
+<b class="nc"><i>1109</i>&nbsp;        return var2;</b>
+<b class="nc"><i>1110</i>&nbsp;    }</b>
+<i>1111</i>&nbsp;
+<i>1112</i>&nbsp;    private UnicodeSet applyPropertyPattern(String var1, ParsePosition var2, SymbolTable var3) {
+<b class="nc"><i>1113</i>&nbsp;        int var4 = var2.getIndex();</b>
+<i>1114</i>&nbsp;        if(var4 + 5 &gt; var1.length()) {
+<b class="nc"><i>1115</i>&nbsp;            return null;</b>
+<b class="nc"><i>1116</i>&nbsp;        } else {</b>
+<i>1117</i>&nbsp;            boolean var5 = false;
+<b class="nc"><i>1118</i>&nbsp;            boolean var6 = false;</b>
+<b class="nc"><i>1119</i>&nbsp;            boolean var7 = false;</b>
+<i>1120</i>&nbsp;            if(var1.regionMatches(var4, &quot;[:&quot;, 0, 2)) {
+<b class="nc"><i>1121</i>&nbsp;                var5 = true;</b>
+<i>1122</i>&nbsp;                var4 = Utility.skipWhitespace(var1, var4 + 2);
+<i>1123</i>&nbsp;                if(var4 &lt; var1.length() &amp;&amp; var1.charAt(var4) == 94) {
+<i>1124</i>&nbsp;                    ++var4;
+<b class="nc"><i>1125</i>&nbsp;                    var7 = true;</b>
+<b class="nc"><i>1126</i>&nbsp;                }</b>
+<i>1127</i>&nbsp;            } else {
+<b class="nc"><i>1128</i>&nbsp;                if(!var1.regionMatches(true, var4, &quot;\\p&quot;, 0, 2) &amp;&amp; !var1.regionMatches(var4, &quot;\\N&quot;, 0, 2)) {</b>
+<i>1129</i>&nbsp;                    return null;
+<i>1130</i>&nbsp;                }
+<b class="nc"><i>1131</i>&nbsp;</b>
+<b class="nc"><i>1132</i>&nbsp;                char var8 = var1.charAt(var4 + 1);</b>
+<i>1133</i>&nbsp;                var7 = var8 == 80;
+<i>1134</i>&nbsp;                var6 = var8 == 78;
+<i>1135</i>&nbsp;                var4 = Utility.skipWhitespace(var1, var4 + 2);
+<i>1136</i>&nbsp;                if(var4 == var1.length() || var1.charAt(var4++) != 123) {
+<i>1137</i>&nbsp;                    return null;
+<i>1138</i>&nbsp;                }
+<b class="nc"><i>1139</i>&nbsp;            }</b>
+<b class="nc"><i>1140</i>&nbsp;</b>
+<i>1141</i>&nbsp;            int var12 = var1.indexOf(var5?&quot;:]&quot;:&quot;}&quot;, var4);
+<b class="nc"><i>1142</i>&nbsp;            if(var12 &lt; 0) {</b>
+<b class="nc"><i>1143</i>&nbsp;                return null;</b>
+<b class="nc"><i>1144</i>&nbsp;            } else {</b>
+<i>1145</i>&nbsp;                int var9 = var1.indexOf(61, var4);
+<i>1146</i>&nbsp;                String var10;
+<b class="nc"><i>1147</i>&nbsp;                String var11;</b>
+<b class="nc"><i>1148</i>&nbsp;                if(var9 &gt;= 0 &amp;&amp; var9 &lt; var12 &amp;&amp; !var6) {</b>
+<b class="nc"><i>1149</i>&nbsp;                    var10 = var1.substring(var4, var9);</b>
+<b class="nc"><i>1150</i>&nbsp;                    var11 = var1.substring(var9 + 1, var12);</b>
+<b class="nc"><i>1151</i>&nbsp;                } else {</b>
+<i>1152</i>&nbsp;                    var10 = var1.substring(var4, var12);
+<b class="nc"><i>1153</i>&nbsp;                    var11 = &quot;&quot;;</b>
+<b class="nc"><i>1154</i>&nbsp;                    if(var6) {</b>
+<b class="nc"><i>1155</i>&nbsp;                        var11 = var10;</b>
+<i>1156</i>&nbsp;                        var10 = &quot;na&quot;;
+<b class="nc"><i>1157</i>&nbsp;                    }</b>
+<b class="nc"><i>1158</i>&nbsp;                }</b>
+<b class="nc"><i>1159</i>&nbsp;</b>
+<b class="nc"><i>1160</i>&nbsp;                this.applyPropertyAlias(var10, var11, var3);</b>
+<i>1161</i>&nbsp;                if(var7) {
+<i>1162</i>&nbsp;                    this.complement();
+<b class="nc"><i>1163</i>&nbsp;                }</b>
+<b class="nc"><i>1164</i>&nbsp;</b>
+<b class="nc"><i>1165</i>&nbsp;                var2.setIndex(var12 + (var5?2:1));</b>
+<b class="nc"><i>1166</i>&nbsp;                return this;</b>
+<b class="nc"><i>1167</i>&nbsp;            }</b>
+<b class="nc"><i>1168</i>&nbsp;        }</b>
+<b class="nc"><i>1169</i>&nbsp;    }</b>
+<i>1170</i>&nbsp;
+<i>1171</i>&nbsp;    private void applyPropertyPattern(RuleCharacterIterator var1, StringBuffer var2, SymbolTable var3) {
+<i>1172</i>&nbsp;        String var4 = var1.lookahead();
+<b class="nc"><i>1173</i>&nbsp;        ParsePosition var5 = new ParsePosition(0);</b>
+<i>1174</i>&nbsp;        this.applyPropertyPattern((String)var4, (ParsePosition)var5, var3);
+<b class="nc"><i>1175</i>&nbsp;        if(var5.getIndex() == 0) {</b>
+<b class="nc"><i>1176</i>&nbsp;            syntaxError(var1, &quot;Invalid property pattern&quot;);</b>
+<b class="nc"><i>1177</i>&nbsp;        }</b>
+<i>1178</i>&nbsp;
+<b class="nc"><i>1179</i>&nbsp;        var1.jumpahead(var5.getIndex());</b>
+<i>1180</i>&nbsp;        var2.append(var4.substring(0, var5.getIndex()));
+<b class="nc"><i>1181</i>&nbsp;    }</b>
+<i>1182</i>&nbsp;
+<b class="nc"><i>1183</i>&nbsp;    private static class VersionFilter implements UnicodeSet.Filter {</b>
+<b class="nc"><i>1184</i>&nbsp;        VersionInfo version;</b>
+<i>1185</i>&nbsp;
+<b class="nc"><i>1186</i>&nbsp;        VersionFilter(VersionInfo var1) {</b>
+<b class="nc"><i>1187</i>&nbsp;            this.version = var1;</b>
+<b class="nc"><i>1188</i>&nbsp;        }</b>
+<i>1189</i>&nbsp;
+<b class="nc"><i>1190</i>&nbsp;        public boolean contains(int var1) {</b>
+<b class="nc"><i>1191</i>&nbsp;            VersionInfo var2 = UCharacter.getAge(var1);</b>
+<b class="nc"><i>1192</i>&nbsp;            return var2 != UnicodeSet.NO_VERSION &amp;&amp; var2.compareTo(this.version) &lt;= 0;</b>
+<i>1193</i>&nbsp;        }
+<b class="nc"><i>1194</i>&nbsp;    }</b>
+<i>1195</i>&nbsp;
+<b class="nc"><i>1196</i>&nbsp;    private interface Filter {</b>
+<b class="nc"><i>1197</i>&nbsp;        boolean contains(int var1);</b>
+<b class="nc"><i>1198</i>&nbsp;    }</b>
+<b class="nc"><i>1199</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

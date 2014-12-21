@@ -1,0 +1,423 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XSDAttributeTraverser</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.impl.xs.traversers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XSDAttributeTraverser (com.sun.org.apache.xerces.internal.impl.xs.traversers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XSDAttributeTraverser</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 156)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.impl.xs.traversers;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dv.InvalidDatatypeValueException;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dv.ValidatedInfo;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dv.XSSimpleType;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.SchemaGrammar;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.SchemaSymbols;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSAnnotationImpl;
+<i>14</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSAttributeDecl;
+<i>15</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSAttributeUseImpl;
+<i>16</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSComplexTypeDecl;
+<i>17</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSAttributeChecker;
+<i>18</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSDAbstractTraverser;
+<i>19</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSDHandler;
+<i>20</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSDocumentInfo;
+<i>21</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.util.XInt;
+<i>22</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.util.XSObjectListImpl;
+<i>23</i>&nbsp;import com.sun.org.apache.xerces.internal.util.DOMUtil;
+<i>24</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLSymbols;
+<i>25</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.QName;
+<i>26</i>&nbsp;import com.sun.org.apache.xerces.internal.xs.XSTypeDefinition;
+<i>27</i>&nbsp;import org.w3c.dom.Element;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;class XSDAttributeTraverser extends XSDAbstractTraverser {
+<i>30</i>&nbsp;    public XSDAttributeTraverser(XSDHandler handler, XSAttributeChecker gAttrCheck) {
+<i>31</i>&nbsp;        super(handler, gAttrCheck);
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    protected XSAttributeUseImpl traverseLocal(Element attrDecl, XSDocumentInfo schemaDoc, SchemaGrammar grammar, XSComplexTypeDecl enclosingCT) {
+<i>35</i>&nbsp;        Object[] attrValues = this.fAttrChecker.checkAttributes(attrDecl, false, schemaDoc);
+<i>36</i>&nbsp;        String defaultAtt = (String)attrValues[XSAttributeChecker.ATTIDX_DEFAULT];
+<i>37</i>&nbsp;        String fixedAtt = (String)attrValues[XSAttributeChecker.ATTIDX_FIXED];
+<i>38</i>&nbsp;        String nameAtt = (String)attrValues[XSAttributeChecker.ATTIDX_NAME];
+<i>39</i>&nbsp;        QName refAtt = (QName)attrValues[XSAttributeChecker.ATTIDX_REF];
+<i>40</i>&nbsp;        XInt useAtt = (XInt)attrValues[XSAttributeChecker.ATTIDX_USE];
+<i>41</i>&nbsp;        XSAttributeDecl attribute = null;
+<i>42</i>&nbsp;        XSAnnotationImpl annotation = null;
+<i>43</i>&nbsp;        if(attrDecl.getAttributeNode(SchemaSymbols.ATT_REF) != null) {
+<i>44</i>&nbsp;            if(refAtt != null) {
+<i>45</i>&nbsp;                attribute = (XSAttributeDecl)this.fSchemaHandler.getGlobalDecl(schemaDoc, 1, refAtt, attrDecl);
+<i>46</i>&nbsp;                Element consType = DOMUtil.getFirstChildElement(attrDecl);
+<i>47</i>&nbsp;                if(consType != null &amp;&amp; DOMUtil.getLocalName(consType).equals(SchemaSymbols.ELT_ANNOTATION)) {
+<i>48</i>&nbsp;                    annotation = this.traverseAnnotationDecl(consType, attrValues, false, schemaDoc);
+<i>49</i>&nbsp;                    consType = DOMUtil.getNextSiblingElement(consType);
+<i>50</i>&nbsp;                } else {
+<i>51</i>&nbsp;                    String attrUse = DOMUtil.getSyntheticAnnotation(attrDecl);
+<i>52</i>&nbsp;                    if(attrUse != null) {
+<i>53</i>&nbsp;                        annotation = this.traverseSyntheticAnnotation(attrDecl, attrUse, attrValues, false, schemaDoc);
+<i>54</i>&nbsp;                    }
+<i>55</i>&nbsp;                }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;                if(consType != null) {
+<i>58</i>&nbsp;                    this.reportSchemaError(&quot;src-attribute.3.2&quot;, new Object[]{refAtt.rawname}, consType);
+<i>59</i>&nbsp;                }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;                nameAtt = refAtt.localpart;
+<b class="nc"><i>62</i>&nbsp;            } else {</b>
+<i>63</i>&nbsp;                attribute = null;
+<i>64</i>&nbsp;            }
+<i>65</i>&nbsp;        } else {
+<i>66</i>&nbsp;            attribute = this.traverseNamedAttr(attrDecl, attrValues, schemaDoc, grammar, false, enclosingCT);
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;        byte consType1 = 0;
+<i>70</i>&nbsp;        if(defaultAtt != null) {
+<b class="nc"><i>71</i>&nbsp;            consType1 = 1;</b>
+<i>72</i>&nbsp;        } else if(fixedAtt != null) {
+<b class="nc"><i>73</i>&nbsp;            consType1 = 2;</b>
+<b class="nc"><i>74</i>&nbsp;            defaultAtt = fixedAtt;</b>
+<b class="nc"><i>75</i>&nbsp;            fixedAtt = null;</b>
+<b class="nc"><i>76</i>&nbsp;        }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<i>78</i>&nbsp;        XSAttributeUseImpl attrUse1 = null;
+<i>79</i>&nbsp;        if(attribute != null) {
+<b class="nc"><i>80</i>&nbsp;            if(this.fSchemaHandler.fDeclPool != null) {</b>
+<b class="nc"><i>81</i>&nbsp;                attrUse1 = this.fSchemaHandler.fDeclPool.getAttributeUse();</b>
+<b class="nc"><i>82</i>&nbsp;            } else {</b>
+<b class="nc"><i>83</i>&nbsp;                attrUse1 = new XSAttributeUseImpl();</b>
+<i>84</i>&nbsp;            }
+<b class="nc"><i>85</i>&nbsp;</b>
+<b class="nc"><i>86</i>&nbsp;            attrUse1.fAttrDecl = attribute;</b>
+<i>87</i>&nbsp;            attrUse1.fUse = useAtt.shortValue();
+<b class="nc"><i>88</i>&nbsp;            attrUse1.fConstraintType = consType1;</b>
+<b class="nc"><i>89</i>&nbsp;            if(defaultAtt != null) {</b>
+<i>90</i>&nbsp;                attrUse1.fDefault = new ValidatedInfo();
+<i>91</i>&nbsp;                attrUse1.fDefault.normalizedValue = defaultAtt;
+<b class="nc"><i>92</i>&nbsp;            }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;            if(attrDecl.getAttributeNode(SchemaSymbols.ATT_REF) == null) {
+<i>95</i>&nbsp;                attrUse1.fAnnotations = attribute.getAnnotations();
+<b class="nc"><i>96</i>&nbsp;            } else {</b>
+<b class="nc"><i>97</i>&nbsp;                XSObjectListImpl ide;</b>
+<b class="nc"><i>98</i>&nbsp;                if(annotation != null) {</b>
+<i>99</i>&nbsp;                    ide = new XSObjectListImpl();
+<i>100</i>&nbsp;                    ((XSObjectListImpl)ide).addXSObject(annotation);
+<b class="nc"><i>101</i>&nbsp;                } else {</b>
+<i>102</i>&nbsp;                    ide = XSObjectListImpl.EMPTY_LIST;
+<i>103</i>&nbsp;                }
+<i>104</i>&nbsp;
+<b class="nc"><i>105</i>&nbsp;                attrUse1.fAnnotations = ide;</b>
+<b class="nc"><i>106</i>&nbsp;            }</b>
+<b class="nc"><i>107</i>&nbsp;        }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<b class="nc"><i>109</i>&nbsp;        if(defaultAtt != null &amp;&amp; fixedAtt != null) {</b>
+<b class="nc"><i>110</i>&nbsp;            this.reportSchemaError(&quot;src-attribute.1&quot;, new Object[]{nameAtt}, attrDecl);</b>
+<b class="nc"><i>111</i>&nbsp;        }</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;        if(consType1 == 1 &amp;&amp; useAtt != null &amp;&amp; useAtt.intValue() != 0) {
+<b class="nc"><i>114</i>&nbsp;            this.reportSchemaError(&quot;src-attribute.2&quot;, new Object[]{nameAtt}, attrDecl);</b>
+<b class="nc"><i>115</i>&nbsp;            attrUse1.fUse = 0;</b>
+<b class="nc"><i>116</i>&nbsp;        }</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<i>118</i>&nbsp;        if(defaultAtt != null &amp;&amp; attrUse1 != null) {
+<b class="nc"><i>119</i>&nbsp;            this.fValidationState.setNamespaceSupport(schemaDoc.fNamespaceSupport);</b>
+<i>120</i>&nbsp;
+<b class="nc"><i>121</i>&nbsp;            try {</b>
+<b class="nc"><i>122</i>&nbsp;                this.checkDefaultValid((XSAttributeUseImpl)attrUse1);</b>
+<b class="nc"><i>123</i>&nbsp;            } catch (InvalidDatatypeValueException var16) {</b>
+<b class="nc"><i>124</i>&nbsp;                this.reportSchemaError(var16.getKey(), var16.getArgs(), attrDecl);</b>
+<b class="nc"><i>125</i>&nbsp;                this.reportSchemaError(&quot;a-props-correct.2&quot;, new Object[]{nameAtt, defaultAtt}, attrDecl);</b>
+<b class="nc"><i>126</i>&nbsp;                attrUse1.fDefault = null;</b>
+<i>127</i>&nbsp;                attrUse1.fConstraintType = 0;
+<i>128</i>&nbsp;            }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;            if(((XSSimpleType)attribute.getTypeDefinition()).isIDType()) {
+<i>131</i>&nbsp;                this.reportSchemaError(&quot;a-props-correct.3&quot;, new Object[]{nameAtt}, attrDecl);
+<i>132</i>&nbsp;                attrUse1.fDefault = null;
+<b class="nc"><i>133</i>&nbsp;                attrUse1.fConstraintType = 0;</b>
+<b class="nc"><i>134</i>&nbsp;            }</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;            if(attrUse1.fAttrDecl.getConstraintType() == 2 &amp;&amp; attrUse1.fConstraintType != 0 &amp;&amp; (attrUse1.fConstraintType != 2 || !attrUse1.fAttrDecl.getValInfo().actualValue.equals(attrUse1.fDefault.actualValue))) {
+<i>137</i>&nbsp;                this.reportSchemaError(&quot;au-props-correct.2&quot;, new Object[]{nameAtt, attrUse1.fAttrDecl.getValInfo().stringValue()}, attrDecl);
+<b class="nc"><i>138</i>&nbsp;                attrUse1.fDefault = attrUse1.fAttrDecl.getValInfo();</b>
+<i>139</i>&nbsp;                attrUse1.fConstraintType = 2;
+<b class="nc"><i>140</i>&nbsp;            }</b>
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;        this.fAttrChecker.returnAttrArray(attrValues, schemaDoc);
+<i>144</i>&nbsp;        return attrUse1;
+<b class="nc"><i>145</i>&nbsp;    }</b>
+<i>146</i>&nbsp;
+<b class="nc"><i>147</i>&nbsp;    protected XSAttributeDecl traverseGlobal(Element attrDecl, XSDocumentInfo schemaDoc, SchemaGrammar grammar) {</b>
+<i>148</i>&nbsp;        Object[] attrValues = this.fAttrChecker.checkAttributes(attrDecl, true, schemaDoc);
+<b class="nc"><i>149</i>&nbsp;        XSAttributeDecl attribute = this.traverseNamedAttr(attrDecl, attrValues, schemaDoc, grammar, true, (XSComplexTypeDecl)null);</b>
+<i>150</i>&nbsp;        this.fAttrChecker.returnAttrArray(attrValues, schemaDoc);
+<b class="nc"><i>151</i>&nbsp;        return attribute;</b>
+<b class="nc"><i>152</i>&nbsp;    }</b>
+<b class="nc"><i>153</i>&nbsp;</b>
+<b class="nc"><i>154</i>&nbsp;    XSAttributeDecl traverseNamedAttr(Element attrDecl, Object[] attrValues, XSDocumentInfo schemaDoc, SchemaGrammar grammar, boolean isGlobal, XSComplexTypeDecl enclosingCT) {</b>
+<i>155</i>&nbsp;        String defaultAtt = (String)attrValues[XSAttributeChecker.ATTIDX_DEFAULT];
+<i>156</i>&nbsp;        String fixedAtt = (String)attrValues[XSAttributeChecker.ATTIDX_FIXED];
+<b class="nc"><i>157</i>&nbsp;        XInt formAtt = (XInt)attrValues[XSAttributeChecker.ATTIDX_FORM];</b>
+<b class="nc"><i>158</i>&nbsp;        String nameAtt = (String)attrValues[XSAttributeChecker.ATTIDX_NAME];</b>
+<i>159</i>&nbsp;        QName typeAtt = (QName)attrValues[XSAttributeChecker.ATTIDX_TYPE];
+<i>160</i>&nbsp;        XSAttributeDecl attribute = null;
+<i>161</i>&nbsp;        if(this.fSchemaHandler.fDeclPool != null) {
+<i>162</i>&nbsp;            attribute = this.fSchemaHandler.fDeclPool.getAttributeDecl();
+<i>163</i>&nbsp;        } else {
+<b class="nc"><i>164</i>&nbsp;            attribute = new XSAttributeDecl();</b>
+<i>165</i>&nbsp;        }
+<b class="nc"><i>166</i>&nbsp;</b>
+<i>167</i>&nbsp;        if(nameAtt != null) {
+<b class="nc"><i>168</i>&nbsp;            nameAtt = this.fSymbolTable.addSymbol(nameAtt);</b>
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;        String tnsAtt = null;
+<i>172</i>&nbsp;        XSComplexTypeDecl enclCT = null;
+<b class="nc"><i>173</i>&nbsp;        byte scope = 0;</b>
+<b class="nc"><i>174</i>&nbsp;        if(isGlobal) {</b>
+<i>175</i>&nbsp;            tnsAtt = schemaDoc.fTargetNamespace;
+<i>176</i>&nbsp;            scope = 1;
+<i>177</i>&nbsp;        } else {
+<i>178</i>&nbsp;            if(enclosingCT != null) {
+<i>179</i>&nbsp;                enclCT = enclosingCT;
+<i>180</i>&nbsp;                scope = 2;
+<i>181</i>&nbsp;            }
+<b class="nc"><i>182</i>&nbsp;</b>
+<b class="nc"><i>183</i>&nbsp;            if(formAtt != null) {</b>
+<b class="nc"><i>184</i>&nbsp;                if(formAtt.intValue() == 1) {</b>
+<b class="nc"><i>185</i>&nbsp;                    tnsAtt = schemaDoc.fTargetNamespace;</b>
+<i>186</i>&nbsp;                }
+<i>187</i>&nbsp;            } else if(schemaDoc.fAreLocalAttributesQualified) {
+<i>188</i>&nbsp;                tnsAtt = schemaDoc.fTargetNamespace;
+<i>189</i>&nbsp;            }
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;        ValidatedInfo attDefault = null;
+<i>193</i>&nbsp;        byte constraintType = 0;
+<i>194</i>&nbsp;        if(isGlobal) {
+<i>195</i>&nbsp;            if(fixedAtt != null) {
+<i>196</i>&nbsp;                attDefault = new ValidatedInfo();
+<i>197</i>&nbsp;                attDefault.normalizedValue = fixedAtt;
+<i>198</i>&nbsp;                constraintType = 2;
+<i>199</i>&nbsp;            } else if(defaultAtt != null) {
+<i>200</i>&nbsp;                attDefault = new ValidatedInfo();
+<i>201</i>&nbsp;                attDefault.normalizedValue = defaultAtt;
+<i>202</i>&nbsp;                constraintType = 1;
+<i>203</i>&nbsp;            }
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;
+<b class="nc"><i>206</i>&nbsp;        Element child = DOMUtil.getFirstChildElement(attrDecl);</b>
+<b class="nc"><i>207</i>&nbsp;        XSAnnotationImpl annotation = null;</b>
+<b class="nc"><i>208</i>&nbsp;        if(child != null &amp;&amp; DOMUtil.getLocalName(child).equals(SchemaSymbols.ELT_ANNOTATION)) {</b>
+<b class="nc"><i>209</i>&nbsp;            annotation = this.traverseAnnotationDecl(child, attrValues, false, schemaDoc);</b>
+<b class="nc"><i>210</i>&nbsp;            child = DOMUtil.getNextSiblingElement(child);</b>
+<i>211</i>&nbsp;        } else {
+<i>212</i>&nbsp;            String attrType = DOMUtil.getSyntheticAnnotation(attrDecl);
+<b class="nc"><i>213</i>&nbsp;            if(attrType != null) {</b>
+<b class="nc"><i>214</i>&nbsp;                annotation = this.traverseSyntheticAnnotation(attrDecl, attrType, attrValues, false, schemaDoc);</b>
+<b class="nc"><i>215</i>&nbsp;            }</b>
+<i>216</i>&nbsp;        }
+<b class="nc"><i>217</i>&nbsp;</b>
+<i>218</i>&nbsp;        XSSimpleType attrType1 = null;
+<i>219</i>&nbsp;        boolean haveAnonType = false;
+<i>220</i>&nbsp;        if(child != null) {
+<b class="nc"><i>221</i>&nbsp;            String annotations = DOMUtil.getLocalName(child);</b>
+<b class="nc"><i>222</i>&nbsp;            if(annotations.equals(SchemaSymbols.ELT_SIMPLETYPE)) {</b>
+<i>223</i>&nbsp;                attrType1 = this.fSchemaHandler.fSimpleTypeTraverser.traverseLocal(child, schemaDoc, grammar);
+<i>224</i>&nbsp;                haveAnonType = true;
+<b class="nc"><i>225</i>&nbsp;                child = DOMUtil.getNextSiblingElement(child);</b>
+<b class="nc"><i>226</i>&nbsp;            }</b>
+<b class="nc"><i>227</i>&nbsp;        }</b>
+<b class="nc"><i>228</i>&nbsp;</b>
+<b class="nc"><i>229</i>&nbsp;        if(attrType1 == null &amp;&amp; typeAtt != null) {</b>
+<b class="nc"><i>230</i>&nbsp;            XSTypeDefinition annotations1 = (XSTypeDefinition)this.fSchemaHandler.getGlobalDecl(schemaDoc, 7, typeAtt, attrDecl);</b>
+<i>231</i>&nbsp;            if(annotations1 != null &amp;&amp; annotations1.getTypeCategory() == 16) {
+<i>232</i>&nbsp;                attrType1 = (XSSimpleType)annotations1;
+<b class="nc"><i>233</i>&nbsp;            } else {</b>
+<b class="nc"><i>234</i>&nbsp;                this.reportSchemaError(&quot;src-resolve&quot;, new Object[]{typeAtt.rawname, &quot;simpleType definition&quot;}, attrDecl);</b>
+<b class="nc"><i>235</i>&nbsp;                if(annotations1 == null) {</b>
+<i>236</i>&nbsp;                    attribute.fUnresolvedTypeName = typeAtt;
+<b class="nc"><i>237</i>&nbsp;                }</b>
+<b class="nc"><i>238</i>&nbsp;            }</b>
+<b class="nc"><i>239</i>&nbsp;        }</b>
+<b class="nc"><i>240</i>&nbsp;</b>
+<b class="nc"><i>241</i>&nbsp;        if(attrType1 == null) {</b>
+<i>242</i>&nbsp;            attrType1 = SchemaGrammar.fAnySimpleType;
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;        XSObjectListImpl annotations2;
+<b class="nc"><i>246</i>&nbsp;        if(annotation != null) {</b>
+<b class="nc"><i>247</i>&nbsp;            annotations2 = new XSObjectListImpl();</b>
+<b class="nc"><i>248</i>&nbsp;            ((XSObjectListImpl)annotations2).addXSObject(annotation);</b>
+<b class="nc"><i>249</i>&nbsp;        } else {</b>
+<b class="nc"><i>250</i>&nbsp;            annotations2 = XSObjectListImpl.EMPTY_LIST;</b>
+<b class="nc"><i>251</i>&nbsp;        }</b>
+<b class="nc"><i>252</i>&nbsp;</b>
+<b class="nc"><i>253</i>&nbsp;        attribute.setValues(nameAtt, tnsAtt, attrType1, constraintType, scope, attDefault, enclCT, annotations2);</b>
+<b class="nc"><i>254</i>&nbsp;        if(nameAtt == null) {</b>
+<b class="nc"><i>255</i>&nbsp;            if(isGlobal) {</b>
+<b class="nc"><i>256</i>&nbsp;                this.reportSchemaError(&quot;s4s-att-must-appear&quot;, new Object[]{SchemaSymbols.ELT_ATTRIBUTE, SchemaSymbols.ATT_NAME}, attrDecl);</b>
+<i>257</i>&nbsp;            } else {
+<i>258</i>&nbsp;                this.reportSchemaError(&quot;src-attribute.3.1&quot;, (Object[])null, attrDecl);
+<i>259</i>&nbsp;            }
+<i>260</i>&nbsp;
+<b class="nc"><i>261</i>&nbsp;            nameAtt = &quot;(no name)&quot;;</b>
+<b class="nc"><i>262</i>&nbsp;        }</b>
+<b class="nc"><i>263</i>&nbsp;</b>
+<b class="nc"><i>264</i>&nbsp;        if(child != null) {</b>
+<b class="nc"><i>265</i>&nbsp;            this.reportSchemaError(&quot;s4s-elt-must-match.1&quot;, new Object[]{nameAtt, &quot;(annotation?, (simpleType?))&quot;, DOMUtil.getLocalName(child)}, child);</b>
+<i>266</i>&nbsp;        }
+<i>267</i>&nbsp;
+<b class="nc"><i>268</i>&nbsp;        if(defaultAtt != null &amp;&amp; fixedAtt != null) {</b>
+<b class="nc"><i>269</i>&nbsp;            this.reportSchemaError(&quot;src-attribute.1&quot;, new Object[]{nameAtt}, attrDecl);</b>
+<b class="nc"><i>270</i>&nbsp;        }</b>
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;        if(haveAnonType &amp;&amp; typeAtt != null) {
+<i>273</i>&nbsp;            this.reportSchemaError(&quot;src-attribute.4&quot;, new Object[]{nameAtt}, attrDecl);
+<i>274</i>&nbsp;        }
+<b class="nc"><i>275</i>&nbsp;</b>
+<b class="nc"><i>276</i>&nbsp;        this.checkNotationType(nameAtt, attrType1, attrDecl);</b>
+<i>277</i>&nbsp;        if(attDefault != null) {
+<i>278</i>&nbsp;            this.fValidationState.setNamespaceSupport(schemaDoc.fNamespaceSupport);
+<b class="nc"><i>279</i>&nbsp;</b>
+<b class="nc"><i>280</i>&nbsp;            try {</b>
+<i>281</i>&nbsp;                this.checkDefaultValid((XSAttributeDecl)attribute);
+<b class="nc"><i>282</i>&nbsp;            } catch (InvalidDatatypeValueException var25) {</b>
+<b class="nc"><i>283</i>&nbsp;                this.reportSchemaError(var25.getKey(), var25.getArgs(), attrDecl);</b>
+<b class="nc"><i>284</i>&nbsp;                this.reportSchemaError(&quot;a-props-correct.2&quot;, new Object[]{nameAtt, attDefault.normalizedValue}, attrDecl);</b>
+<b class="nc"><i>285</i>&nbsp;                attDefault = null;</b>
+<i>286</i>&nbsp;                constraintType = 0;
+<i>287</i>&nbsp;                attribute.setValues(nameAtt, tnsAtt, attrType1, constraintType, scope, attDefault, enclCT, annotations2);
+<i>288</i>&nbsp;            }
+<i>289</i>&nbsp;        }
+<b class="nc"><i>290</i>&nbsp;</b>
+<b class="nc"><i>291</i>&nbsp;        if(attDefault != null &amp;&amp; attrType1.isIDType()) {</b>
+<b class="nc"><i>292</i>&nbsp;            this.reportSchemaError(&quot;a-props-correct.3&quot;, new Object[]{nameAtt}, attrDecl);</b>
+<b class="nc"><i>293</i>&nbsp;            attDefault = null;</b>
+<i>294</i>&nbsp;            constraintType = 0;
+<b class="nc"><i>295</i>&nbsp;            attribute.setValues(nameAtt, tnsAtt, attrType1, constraintType, scope, attDefault, enclCT, annotations2);</b>
+<i>296</i>&nbsp;        }
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;        if(nameAtt != null &amp;&amp; nameAtt.equals(XMLSymbols.PREFIX_XMLNS)) {</b>
+<b class="nc"><i>299</i>&nbsp;            this.reportSchemaError(&quot;no-xmlns&quot;, (Object[])null, attrDecl);</b>
+<i>300</i>&nbsp;            return null;
+<i>301</i>&nbsp;        } else if(tnsAtt != null &amp;&amp; tnsAtt.equals(SchemaSymbols.URI_XSI)) {
+<b class="nc"><i>302</i>&nbsp;            this.reportSchemaError(&quot;no-xsi&quot;, new Object[]{SchemaSymbols.URI_XSI}, attrDecl);</b>
+<i>303</i>&nbsp;            return null;
+<i>304</i>&nbsp;        } else if(nameAtt.equals(&quot;(no name)&quot;)) {
+<i>305</i>&nbsp;            return null;
+<b class="nc"><i>306</i>&nbsp;        } else {</b>
+<b class="nc"><i>307</i>&nbsp;            if(isGlobal) {</b>
+<i>308</i>&nbsp;                if(grammar.getGlobalAttributeDecl(nameAtt) == null) {
+<i>309</i>&nbsp;                    grammar.addGlobalAttributeDecl(attribute);
+<i>310</i>&nbsp;                }
+<i>311</i>&nbsp;
+<b class="nc"><i>312</i>&nbsp;                String loc = this.fSchemaHandler.schemaDocument2SystemId(schemaDoc);</b>
+<b class="nc"><i>313</i>&nbsp;                XSAttributeDecl attribute2 = grammar.getGlobalAttributeDecl(nameAtt, loc);</b>
+<b class="nc"><i>314</i>&nbsp;                if(attribute2 == null) {</b>
+<i>315</i>&nbsp;                    grammar.addGlobalAttributeDecl(attribute, loc);
+<b class="nc"><i>316</i>&nbsp;                }</b>
+<b class="nc"><i>317</i>&nbsp;</b>
+<i>318</i>&nbsp;                if(this.fSchemaHandler.fTolerateDuplicates) {
+<i>319</i>&nbsp;                    if(attribute2 != null) {
+<i>320</i>&nbsp;                        attribute = attribute2;
+<b class="nc"><i>321</i>&nbsp;                    }</b>
+<b class="nc"><i>322</i>&nbsp;</b>
+<i>323</i>&nbsp;                    this.fSchemaHandler.addGlobalAttributeDecl(attribute);
+<i>324</i>&nbsp;                }
+<i>325</i>&nbsp;            }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;            return attribute;
+<i>328</i>&nbsp;        }
+<i>329</i>&nbsp;    }
+<b class="nc"><i>330</i>&nbsp;</b>
+<b class="nc"><i>331</i>&nbsp;    void checkDefaultValid(XSAttributeDecl attribute) throws InvalidDatatypeValueException {</b>
+<i>332</i>&nbsp;        ((XSSimpleType)attribute.getTypeDefinition()).validate(attribute.getValInfo().normalizedValue, this.fValidationState, attribute.getValInfo());
+<i>333</i>&nbsp;        ((XSSimpleType)attribute.getTypeDefinition()).validate(attribute.getValInfo().stringValue(), this.fValidationState, attribute.getValInfo());
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    void checkDefaultValid(XSAttributeUseImpl attrUse) throws InvalidDatatypeValueException {
+<i>337</i>&nbsp;        ((XSSimpleType)attrUse.fAttrDecl.getTypeDefinition()).validate(attrUse.fDefault.normalizedValue, this.fValidationState, attrUse.fDefault);
+<i>338</i>&nbsp;        ((XSSimpleType)attrUse.fAttrDecl.getTypeDefinition()).validate(attrUse.fDefault.stringValue(), this.fValidationState, attrUse.fDefault);
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:36</div>
+</div>
+</body>
+</html>

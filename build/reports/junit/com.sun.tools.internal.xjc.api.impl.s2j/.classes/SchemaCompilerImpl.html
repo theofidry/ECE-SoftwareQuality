@@ -1,0 +1,332 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SchemaCompilerImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.xjc.api.impl.s2j</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SchemaCompilerImpl (com.sun.tools.internal.xjc.api.impl.s2j)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SchemaCompilerImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 82)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.xjc.api.impl.s2j;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.codemodel.internal.JCodeModel;
+<i>9</i>&nbsp;import com.sun.istack.internal.NotNull;
+<i>10</i>&nbsp;import com.sun.istack.internal.SAXParseException2;
+<i>11</i>&nbsp;import com.sun.tools.internal.xjc.ErrorReceiver;
+<i>12</i>&nbsp;import com.sun.tools.internal.xjc.ModelLoader;
+<i>13</i>&nbsp;import com.sun.tools.internal.xjc.Options;
+<i>14</i>&nbsp;import com.sun.tools.internal.xjc.api.ClassNameAllocator;
+<i>15</i>&nbsp;import com.sun.tools.internal.xjc.api.ErrorListener;
+<i>16</i>&nbsp;import com.sun.tools.internal.xjc.api.SchemaCompiler;
+<i>17</i>&nbsp;import com.sun.tools.internal.xjc.api.SpecVersion;
+<i>18</i>&nbsp;import com.sun.tools.internal.xjc.api.impl.s2j.DowngradingErrorHandler;
+<i>19</i>&nbsp;import com.sun.tools.internal.xjc.api.impl.s2j.JAXBModelImpl;
+<i>20</i>&nbsp;import com.sun.tools.internal.xjc.model.Model;
+<i>21</i>&nbsp;import com.sun.tools.internal.xjc.outline.Outline;
+<i>22</i>&nbsp;import com.sun.tools.internal.xjc.reader.internalizer.DOMForest;
+<i>23</i>&nbsp;import com.sun.tools.internal.xjc.reader.internalizer.SCDBasedBindingSet;
+<i>24</i>&nbsp;import com.sun.tools.internal.xjc.reader.xmlschema.parser.LSInputSAXWrapper;
+<i>25</i>&nbsp;import com.sun.tools.internal.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
+<i>26</i>&nbsp;import com.sun.xml.internal.bind.unmarshaller.DOMScanner;
+<i>27</i>&nbsp;import com.sun.xml.internal.xsom.XSSchemaSet;
+<i>28</i>&nbsp;import java.io.IOException;
+<i>29</i>&nbsp;import java.net.MalformedURLException;
+<i>30</i>&nbsp;import java.net.URI;
+<i>31</i>&nbsp;import java.net.URISyntaxException;
+<i>32</i>&nbsp;import java.net.URL;
+<i>33</i>&nbsp;import javax.xml.stream.XMLStreamException;
+<i>34</i>&nbsp;import javax.xml.stream.XMLStreamReader;
+<i>35</i>&nbsp;import javax.xml.validation.SchemaFactory;
+<i>36</i>&nbsp;import org.w3c.dom.Element;
+<i>37</i>&nbsp;import org.w3c.dom.ls.LSInput;
+<i>38</i>&nbsp;import org.w3c.dom.ls.LSResourceResolver;
+<i>39</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>40</i>&nbsp;import org.xml.sax.EntityResolver;
+<i>41</i>&nbsp;import org.xml.sax.InputSource;
+<i>42</i>&nbsp;import org.xml.sax.SAXException;
+<i>43</i>&nbsp;import org.xml.sax.SAXParseException;
+<i>44</i>&nbsp;import org.xml.sax.helpers.LocatorImpl;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCompiler {
+<i>47</i>&nbsp;    private ErrorListener errorListener;
+<i>48</i>&nbsp;    protected final Options opts = new Options();
+<i>49</i>&nbsp;    @NotNull
+<i>50</i>&nbsp;    protected DOMForest forest;
+<i>51</i>&nbsp;    private boolean hadError;
+<i>52</i>&nbsp;    private static boolean NO_CORRECTNESS_CHECK = false;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public SchemaCompilerImpl() {
+<i>55</i>&nbsp;        this.opts.compatibilityMode = 2;
+<i>56</i>&nbsp;        this.resetSchema();
+<i>57</i>&nbsp;        if(System.getProperty(&quot;xjc-api.test&quot;) != null) {
+<i>58</i>&nbsp;            this.opts.debugMode = true;
+<i>59</i>&nbsp;            this.opts.verbose = true;
+<i>60</i>&nbsp;        }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    @NotNull
+<i>65</i>&nbsp;    public Options getOptions() {
+<i>66</i>&nbsp;        return this.opts;
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public ContentHandler getParserHandler(String systemId) {
+<i>70</i>&nbsp;        return this.forest.getParserHandler(systemId, true);
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public void parseSchema(String systemId, Element element) {
+<i>74</i>&nbsp;        this.checkAbsoluteness(systemId);
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;        try {
+<i>77</i>&nbsp;            DOMScanner e = new DOMScanner();
+<i>78</i>&nbsp;            LocatorImpl loc = new LocatorImpl();
+<i>79</i>&nbsp;            loc.setSystemId(systemId);
+<i>80</i>&nbsp;            e.setLocator(loc);
+<i>81</i>&nbsp;            e.setContentHandler(this.getParserHandler(systemId));
+<b class="nc"><i>82</i>&nbsp;            e.scan(element);</b>
+<i>83</i>&nbsp;        } catch (SAXException var5) {
+<i>84</i>&nbsp;            this.fatalError(new SAXParseException2(var5.getMessage(), (String)null, systemId, -1, -1, var5));
+<i>85</i>&nbsp;        }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public void parseSchema(InputSource source) {
+<i>90</i>&nbsp;        this.checkAbsoluteness(source.getSystemId());
+<b class="nc"><i>91</i>&nbsp;</b>
+<b class="nc"><i>92</i>&nbsp;        try {</b>
+<b class="nc"><i>93</i>&nbsp;            this.forest.parse(source, true);</b>
+<i>94</i>&nbsp;        } catch (SAXException var3) {
+<b class="nc"><i>95</i>&nbsp;            var3.printStackTrace();</b>
+<b class="nc"><i>96</i>&nbsp;        }</b>
+<b class="nc"><i>97</i>&nbsp;</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public void setTargetVersion(SpecVersion version) {
+<i>101</i>&nbsp;        if(version == null) {
+<i>102</i>&nbsp;            version = SpecVersion.LATEST;
+<b class="nc"><i>103</i>&nbsp;        }</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;        this.opts.target = version;
+<i>106</i>&nbsp;    }
+<b class="nc"><i>107</i>&nbsp;</b>
+<i>108</i>&nbsp;    public void parseSchema(String systemId, XMLStreamReader reader) throws XMLStreamException {
+<i>109</i>&nbsp;        this.checkAbsoluteness(systemId);
+<i>110</i>&nbsp;        this.forest.parse(systemId, reader, true);
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;    private void checkAbsoluteness(String systemId) {</b>
+<i>114</i>&nbsp;        try {
+<i>115</i>&nbsp;            new URL(systemId);
+<i>116</i>&nbsp;        } catch (MalformedURLException var5) {
+<i>117</i>&nbsp;            try {
+<i>118</i>&nbsp;                new URI(systemId);
+<b class="nc"><i>119</i>&nbsp;            } catch (URISyntaxException var4) {</b>
+<b class="nc"><i>120</i>&nbsp;                throw new IllegalArgumentException(&quot;system ID \&#39;&quot; + systemId + &quot;\&#39; isn\&#39;t absolute&quot;, var4);</b>
+<b class="nc"><i>121</i>&nbsp;            }</b>
+<i>122</i>&nbsp;        }
+<b class="nc"><i>123</i>&nbsp;</b>
+<b class="nc"><i>124</i>&nbsp;    }</b>
+<b class="nc"><i>125</i>&nbsp;</b>
+<i>126</i>&nbsp;    public void setEntityResolver(EntityResolver entityResolver) {
+<i>127</i>&nbsp;        this.forest.setEntityResolver(entityResolver);
+<i>128</i>&nbsp;        this.opts.entityResolver = entityResolver;
+<b class="nc"><i>129</i>&nbsp;    }</b>
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;    public void setDefaultPackageName(String packageName) {</b>
+<i>132</i>&nbsp;        this.opts.defaultPackage2 = packageName;
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;    public void forcePackageName(String packageName) {</b>
+<i>136</i>&nbsp;        this.opts.defaultPackage = packageName;
+<b class="nc"><i>137</i>&nbsp;    }</b>
+<b class="nc"><i>138</i>&nbsp;</b>
+<i>139</i>&nbsp;    public void setClassNameAllocator(ClassNameAllocator allocator) {
+<i>140</i>&nbsp;        this.opts.classNameAllocator = allocator;
+<b class="nc"><i>141</i>&nbsp;    }</b>
+<b class="nc"><i>142</i>&nbsp;</b>
+<i>143</i>&nbsp;    public void resetSchema() {
+<i>144</i>&nbsp;        this.forest = new DOMForest(new XMLSchemaInternalizationLogic());
+<i>145</i>&nbsp;        this.forest.setErrorHandler(this);
+<b class="nc"><i>146</i>&nbsp;        this.forest.setEntityResolver(this.opts.entityResolver);</b>
+<b class="nc"><i>147</i>&nbsp;    }</b>
+<b class="nc"><i>148</i>&nbsp;</b>
+<i>149</i>&nbsp;    public JAXBModelImpl bind() {
+<i>150</i>&nbsp;        InputSource[] scdBasedBindingSet = this.opts.getBindFiles();
+<i>151</i>&nbsp;        int codeModel = scdBasedBindingSet.length;
+<b class="nc"><i>152</i>&nbsp;</b>
+<b class="nc"><i>153</i>&nbsp;        for(int gl = 0; gl &lt; codeModel; ++gl) {</b>
+<i>154</i>&nbsp;            InputSource e = scdBasedBindingSet[gl];
+<i>155</i>&nbsp;            this.parseSchema(e);
+<i>156</i>&nbsp;        }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;        SCDBasedBindingSet var8 = this.forest.transform(this.opts.isExtensionMode());
+<i>159</i>&nbsp;        if(!NO_CORRECTNESS_CHECK) {
+<i>160</i>&nbsp;            SchemaFactory var9 = SchemaFactory.newInstance(&quot;http://www.w3.org/2001/XMLSchema&quot;);
+<i>161</i>&nbsp;            if(this.opts.entityResolver != null) {
+<i>162</i>&nbsp;                var9.setResourceResolver(new LSResourceResolver() {
+<i>163</i>&nbsp;                    public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
+<i>164</i>&nbsp;                        try {
+<b class="nc"><i>165</i>&nbsp;                            InputSource e = SchemaCompilerImpl.this.opts.entityResolver.resolveEntity(namespaceURI, systemId);</b>
+<b class="nc"><i>166</i>&nbsp;                            return e == null?null:new LSInputSAXWrapper(e);</b>
+<i>167</i>&nbsp;                        } catch (SAXException var7) {
+<b class="nc"><i>168</i>&nbsp;                            return null;</b>
+<b class="nc"><i>169</i>&nbsp;                        } catch (IOException var8) {</b>
+<b class="nc"><i>170</i>&nbsp;                            return null;</b>
+<b class="nc"><i>171</i>&nbsp;                        }</b>
+<b class="nc"><i>172</i>&nbsp;                    }</b>
+<i>173</i>&nbsp;                });
+<i>174</i>&nbsp;            }
+<i>175</i>&nbsp;
+<b class="nc"><i>176</i>&nbsp;            var9.setErrorHandler(new DowngradingErrorHandler(this));</b>
+<b class="nc"><i>177</i>&nbsp;            this.forest.weakSchemaCorrectnessCheck(var9);</b>
+<i>178</i>&nbsp;            if(this.hadError) {
+<i>179</i>&nbsp;                return null;
+<i>180</i>&nbsp;            }
+<b class="nc"><i>181</i>&nbsp;        }</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;        JCodeModel var10 = new JCodeModel();
+<i>184</i>&nbsp;        ModelLoader var11 = new ModelLoader(this.opts, var10, this);
+<b class="nc"><i>185</i>&nbsp;</b>
+<i>186</i>&nbsp;        try {
+<i>187</i>&nbsp;            XSSchemaSet var12 = var11.createXSOM(this.forest, var8);
+<i>188</i>&nbsp;            if(var12 == null) {
+<b class="nc"><i>189</i>&nbsp;                return null;</b>
+<i>190</i>&nbsp;            } else {
+<i>191</i>&nbsp;                Model model = var11.annotateXMLSchema(var12);
+<i>192</i>&nbsp;                if(model == null) {
+<b class="nc"><i>193</i>&nbsp;                    return null;</b>
+<b class="nc"><i>194</i>&nbsp;                } else if(this.hadError) {</b>
+<b class="nc"><i>195</i>&nbsp;                    return null;</b>
+<i>196</i>&nbsp;                } else {
+<i>197</i>&nbsp;                    model.setPackageLevelAnnotations(this.opts.packageLevelAnnotations);
+<i>198</i>&nbsp;                    Outline context = model.generateCode(this.opts, this);
+<i>199</i>&nbsp;                    return context == null?null:(this.hadError?null:new JAXBModelImpl(context));
+<i>200</i>&nbsp;                }
+<i>201</i>&nbsp;            }
+<i>202</i>&nbsp;        } catch (SAXException var7) {
+<i>203</i>&nbsp;            return null;
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;    }
+<b class="nc"><i>206</i>&nbsp;</b>
+<b class="nc"><i>207</i>&nbsp;    public void setErrorListener(ErrorListener errorListener) {</b>
+<i>208</i>&nbsp;        this.errorListener = errorListener;
+<i>209</i>&nbsp;    }
+<b class="nc"><i>210</i>&nbsp;</b>
+<i>211</i>&nbsp;    public void info(SAXParseException exception) {
+<b class="nc"><i>212</i>&nbsp;        if(this.errorListener != null) {</b>
+<i>213</i>&nbsp;            this.errorListener.info(exception);
+<b class="nc"><i>214</i>&nbsp;        }</b>
+<b class="nc"><i>215</i>&nbsp;</b>
+<b class="nc"><i>216</i>&nbsp;    }</b>
+<b class="nc"><i>217</i>&nbsp;</b>
+<b class="nc"><i>218</i>&nbsp;    public void warning(SAXParseException exception) {</b>
+<i>219</i>&nbsp;        if(this.errorListener != null) {
+<i>220</i>&nbsp;            this.errorListener.warning(exception);
+<b class="nc"><i>221</i>&nbsp;        }</b>
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;    }</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    public void error(SAXParseException exception) {
+<b class="nc"><i>226</i>&nbsp;        this.hadError = true;</b>
+<b class="nc"><i>227</i>&nbsp;        if(this.errorListener != null) {</b>
+<b class="nc"><i>228</i>&nbsp;            this.errorListener.error(exception);</b>
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    public void fatalError(SAXParseException exception) {
+<i>234</i>&nbsp;        this.hadError = true;
+<b class="nc"><i>235</i>&nbsp;        if(this.errorListener != null) {</b>
+<b class="nc"><i>236</i>&nbsp;            this.errorListener.fatalError(exception);</b>
+<i>237</i>&nbsp;        }
+<b class="nc"><i>238</i>&nbsp;</b>
+<i>239</i>&nbsp;    }
+<b class="nc"><i>240</i>&nbsp;</b>
+<b class="nc"><i>241</i>&nbsp;    static {</b>
+<i>242</i>&nbsp;        try {
+<b class="nc"><i>243</i>&nbsp;            NO_CORRECTNESS_CHECK = Boolean.getBoolean(SchemaCompilerImpl.class.getName() + &quot;.noCorrectnessCheck&quot;);</b>
+<i>244</i>&nbsp;        } catch (Throwable var1) {
+<b class="nc"><i>245</i>&nbsp;            ;</b>
+<b class="nc"><i>246</i>&nbsp;        }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    }
+<i>249</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,301 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ScriptRun</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ScriptRun (sun.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScriptRun</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 100)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.font;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import sun.font.ScriptRunData;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;public final class ScriptRun {
+<i>11</i>&nbsp;    private char[] text;
+<i>12</i>&nbsp;    private int textStart;
+<i>13</i>&nbsp;    private int textLimit;
+<i>14</i>&nbsp;    private int scriptStart;
+<i>15</i>&nbsp;    private int scriptLimit;
+<i>16</i>&nbsp;    private int scriptCode;
+<i>17</i>&nbsp;    private int[] stack;
+<i>18</i>&nbsp;    private int parenSP;
+<i>19</i>&nbsp;    static final int SURROGATE_START = 65536;
+<i>20</i>&nbsp;    static final int LEAD_START = 55296;
+<i>21</i>&nbsp;    static final int LEAD_LIMIT = 56320;
+<i>22</i>&nbsp;    static final int TAIL_START = 56320;
+<i>23</i>&nbsp;    static final int TAIL_LIMIT = 57344;
+<i>24</i>&nbsp;    static final int LEAD_SURROGATE_SHIFT = 10;
+<i>25</i>&nbsp;    static final int SURROGATE_OFFSET = -56613888;
+<i>26</i>&nbsp;    static final int DONE = -1;
+<i>27</i>&nbsp;    private static int[] pairedChars = new int[]{40, 41, 60, 62, 91, 93, 123, 125, 171, 187, 8216, 8217, 8220, 8221, 8249, 8250, 12296, 12297, 12298, 12299, 12300, 12301, 12302, 12303, 12304, 12305, 12308, 12309, 12310, 12311, 12312, 12313, 12314, 12315};
+<i>28</i>&nbsp;    private static final int pairedCharPower;
+<i>29</i>&nbsp;    private static final int pairedCharExtra;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public ScriptRun() {
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public ScriptRun(char[] var1, int var2, int var3) {
+<i>35</i>&nbsp;        this.init(var1, var2, var3);
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    public void init(char[] var1, int var2, int var3) {
+<i>39</i>&nbsp;        if(var1 != null &amp;&amp; var2 &gt;= 0 &amp;&amp; var3 &gt;= 0 &amp;&amp; var3 &lt;= var1.length - var2) {
+<i>40</i>&nbsp;            this.text = var1;
+<i>41</i>&nbsp;            this.textStart = var2;
+<i>42</i>&nbsp;            this.textLimit = var2 + var3;
+<i>43</i>&nbsp;            this.scriptStart = this.textStart;
+<i>44</i>&nbsp;            this.scriptLimit = this.textStart;
+<i>45</i>&nbsp;            this.scriptCode = -1;
+<i>46</i>&nbsp;            this.parenSP = 0;
+<i>47</i>&nbsp;        } else {
+<i>48</i>&nbsp;            throw new IllegalArgumentException();
+<i>49</i>&nbsp;        }
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public final int getScriptStart() {
+<i>53</i>&nbsp;        return this.scriptStart;
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public final int getScriptLimit() {
+<i>57</i>&nbsp;        return this.scriptLimit;
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public final int getScriptCode() {
+<b class="nc"><i>61</i>&nbsp;        return this.scriptCode;</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public final boolean next() {
+<i>65</i>&nbsp;        int var1 = this.parenSP;
+<i>66</i>&nbsp;        if(this.scriptLimit &gt;= this.textLimit) {
+<i>67</i>&nbsp;            return false;
+<i>68</i>&nbsp;        } else {
+<i>69</i>&nbsp;            this.scriptCode = 0;
+<i>70</i>&nbsp;            this.scriptStart = this.scriptLimit;
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;            int var2;
+<i>73</i>&nbsp;            while((var2 = this.nextCodePoint()) != -1) {
+<b class="nc"><i>74</i>&nbsp;                int var3 = ScriptRunData.getScript(var2);</b>
+<b class="nc"><i>75</i>&nbsp;                int var4 = var3 == 0?getPairIndex(var2):-1;</b>
+<i>76</i>&nbsp;                if(var4 &gt;= 0) {
+<i>77</i>&nbsp;                    if((var4 &amp; 1) == 0) {
+<i>78</i>&nbsp;                        if(this.stack == null) {
+<i>79</i>&nbsp;                            this.stack = new int[32];
+<b class="nc"><i>80</i>&nbsp;                        } else if(this.parenSP == this.stack.length) {</b>
+<b class="nc"><i>81</i>&nbsp;                            int[] var5 = new int[this.stack.length + 32];</b>
+<i>82</i>&nbsp;                            System.arraycopy(this.stack, 0, var5, 0, this.stack.length);
+<i>83</i>&nbsp;                            this.stack = var5;
+<b class="nc"><i>84</i>&nbsp;                        }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<b class="nc"><i>86</i>&nbsp;                        this.stack[this.parenSP++] = var4;</b>
+<i>87</i>&nbsp;                        this.stack[this.parenSP++] = this.scriptCode;
+<b class="nc"><i>88</i>&nbsp;                    } else if(this.parenSP &gt; 0) {</b>
+<b class="nc"><i>89</i>&nbsp;                        int var6 = var4 &amp; -2;</b>
+<b class="nc"><i>90</i>&nbsp;</b>
+<b class="nc"><i>91</i>&nbsp;                        while((this.parenSP -= 2) &gt;= 0 &amp;&amp; this.stack[this.parenSP] != var6) {</b>
+<i>92</i>&nbsp;                            ;
+<i>93</i>&nbsp;                        }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;                        if(this.parenSP &gt;= 0) {
+<i>96</i>&nbsp;                            var3 = this.stack[this.parenSP + 1];
+<i>97</i>&nbsp;                        } else {
+<i>98</i>&nbsp;                            this.parenSP = 0;
+<i>99</i>&nbsp;                        }
+<b class="nc"><i>100</i>&nbsp;</b>
+<i>101</i>&nbsp;                        if(this.parenSP &lt; var1) {
+<i>102</i>&nbsp;                            var1 = this.parenSP;
+<i>103</i>&nbsp;                        }
+<i>104</i>&nbsp;                    }
+<i>105</i>&nbsp;                }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;                if(!sameScript(this.scriptCode, var3)) {
+<i>108</i>&nbsp;                    this.pushback(var2);
+<b class="nc"><i>109</i>&nbsp;                    break;</b>
+<i>110</i>&nbsp;                }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;                if(this.scriptCode &lt;= 1 &amp;&amp; var3 &gt; 1) {
+<i>113</i>&nbsp;                    for(this.scriptCode = var3; var1 &lt; this.parenSP; var1 += 2) {
+<i>114</i>&nbsp;                        this.stack[var1 + 1] = this.scriptCode;
+<i>115</i>&nbsp;                    }
+<i>116</i>&nbsp;                }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;                if(var4 &gt; 0 &amp;&amp; (var4 &amp; 1) != 0 &amp;&amp; this.parenSP &gt; 0) {
+<b class="nc"><i>119</i>&nbsp;                    this.parenSP -= 2;</b>
+<i>120</i>&nbsp;                }
+<i>121</i>&nbsp;            }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;            return true;
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    private final int nextCodePoint() {
+<i>128</i>&nbsp;        if(this.scriptLimit &gt;= this.textLimit) {
+<b class="nc"><i>129</i>&nbsp;            return -1;</b>
+<i>130</i>&nbsp;        } else {
+<i>131</i>&nbsp;            int var1 = this.text[this.scriptLimit++];
+<b class="nc"><i>132</i>&nbsp;            if(var1 &gt;= &#39;\ud800&#39; &amp;&amp; var1 &lt; &#39;\udc00&#39; &amp;&amp; this.scriptLimit &lt; this.textLimit) {</b>
+<b class="nc"><i>133</i>&nbsp;                char var2 = this.text[this.scriptLimit];</b>
+<i>134</i>&nbsp;                if(var2 &gt;= &#39;\udc00&#39; &amp;&amp; var2 &lt; &#39;\ue000&#39;) {
+<i>135</i>&nbsp;                    ++this.scriptLimit;
+<b class="nc"><i>136</i>&nbsp;                    var1 = (var1 &lt;&lt; 10) + var2 + -56613888;</b>
+<b class="nc"><i>137</i>&nbsp;                }</b>
+<i>138</i>&nbsp;            }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;            return var1;
+<b class="nc"><i>141</i>&nbsp;        }</b>
+<b class="nc"><i>142</i>&nbsp;    }</b>
+<b class="nc"><i>143</i>&nbsp;</b>
+<i>144</i>&nbsp;    private final void pushback(int var1) {
+<i>145</i>&nbsp;        if(var1 &gt;= 0) {
+<i>146</i>&nbsp;            if(var1 &gt;= 65536) {
+<i>147</i>&nbsp;                this.scriptLimit -= 2;
+<i>148</i>&nbsp;            } else {
+<i>149</i>&nbsp;                --this.scriptLimit;
+<i>150</i>&nbsp;            }
+<b class="nc"><i>151</i>&nbsp;        }</b>
+<b class="nc"><i>152</i>&nbsp;</b>
+<b class="nc"><i>153</i>&nbsp;    }</b>
+<b class="nc"><i>154</i>&nbsp;</b>
+<b class="nc"><i>155</i>&nbsp;    private static boolean sameScript(int var0, int var1) {</b>
+<b class="nc"><i>156</i>&nbsp;        return var0 == var1 || var0 &lt;= 1 || var1 &lt;= 1;</b>
+<b class="nc"><i>157</i>&nbsp;    }</b>
+<b class="nc"><i>158</i>&nbsp;</b>
+<i>159</i>&nbsp;    private static final byte highBit(int var0) {
+<i>160</i>&nbsp;        if(var0 &lt;= 0) {
+<b class="nc"><i>161</i>&nbsp;            return (byte)-32;</b>
+<b class="nc"><i>162</i>&nbsp;        } else {</b>
+<b class="nc"><i>163</i>&nbsp;            byte var1 = 0;</b>
+<b class="nc"><i>164</i>&nbsp;            if(var0 &gt;= 65536) {</b>
+<i>165</i>&nbsp;                var0 &gt;&gt;= 16;
+<b class="nc"><i>166</i>&nbsp;                var1 = (byte)(var1 + 16);</b>
+<i>167</i>&nbsp;            }
+<b class="nc"><i>168</i>&nbsp;</b>
+<b class="nc"><i>169</i>&nbsp;            if(var0 &gt;= 256) {</b>
+<i>170</i>&nbsp;                var0 &gt;&gt;= 8;
+<b class="nc"><i>171</i>&nbsp;                var1 = (byte)(var1 + 8);</b>
+<i>172</i>&nbsp;            }
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;            if(var0 &gt;= 16) {</b>
+<i>175</i>&nbsp;                var0 &gt;&gt;= 4;
+<i>176</i>&nbsp;                var1 = (byte)(var1 + 4);
+<i>177</i>&nbsp;            }
+<i>178</i>&nbsp;
+<b class="nc"><i>179</i>&nbsp;            if(var0 &gt;= 4) {</b>
+<b class="nc"><i>180</i>&nbsp;                var0 &gt;&gt;= 2;</b>
+<b class="nc"><i>181</i>&nbsp;                var1 = (byte)(var1 + 2);</b>
+<i>182</i>&nbsp;            }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;            if(var0 &gt;= 2) {
+<b class="nc"><i>185</i>&nbsp;                var0 &gt;&gt;= 1;</b>
+<b class="nc"><i>186</i>&nbsp;                ++var1;</b>
+<b class="nc"><i>187</i>&nbsp;            }</b>
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;            return var1;
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<b class="nc"><i>193</i>&nbsp;    private static int getPairIndex(int var0) {</b>
+<b class="nc"><i>194</i>&nbsp;        int var1 = pairedCharPower;</b>
+<i>195</i>&nbsp;        int var2 = 0;
+<i>196</i>&nbsp;        if(var0 &gt;= pairedChars[pairedCharExtra]) {
+<i>197</i>&nbsp;            var2 = pairedCharExtra;
+<i>198</i>&nbsp;        }
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;        while(var1 &gt; 1) {</b>
+<i>201</i>&nbsp;            var1 &gt;&gt;= 1;
+<i>202</i>&nbsp;            if(var0 &gt;= pairedChars[var2 + var1]) {
+<b class="nc"><i>203</i>&nbsp;                var2 += var1;</b>
+<i>204</i>&nbsp;            }
+<b class="nc"><i>205</i>&nbsp;        }</b>
+<i>206</i>&nbsp;
+<b class="nc"><i>207</i>&nbsp;        if(pairedChars[var2] != var0) {</b>
+<i>208</i>&nbsp;            var2 = -1;
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;        return var2;
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    static {
+<i>215</i>&nbsp;        pairedCharPower = 1 &lt;&lt; highBit(pairedChars.length);
+<i>216</i>&nbsp;        pairedCharExtra = pairedChars.length - pairedCharPower;
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

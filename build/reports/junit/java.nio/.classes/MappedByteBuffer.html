@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MappedByteBuffer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.nio</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MappedByteBuffer (java.nio)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MappedByteBuffer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.nio;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.FileDescriptor;
+<i>9</i>&nbsp;import java.nio.Bits;
+<i>10</i>&nbsp;import java.nio.ByteBuffer;
+<i>11</i>&nbsp;import sun.misc.Unsafe;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;public abstract class MappedByteBuffer extends ByteBuffer {
+<i>14</i>&nbsp;    private final FileDescriptor fd;
+<i>15</i>&nbsp;    private static byte unused;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    MappedByteBuffer(int var1, int var2, int var3, int var4, FileDescriptor var5) {
+<i>18</i>&nbsp;        super(var1, var2, var3, var4);
+<i>19</i>&nbsp;        this.fd = var5;
+<i>20</i>&nbsp;    }
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    MappedByteBuffer(int var1, int var2, int var3, int var4) {
+<i>23</i>&nbsp;        super(var1, var2, var3, var4);
+<i>24</i>&nbsp;        this.fd = null;
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    private void checkMapped() {
+<i>28</i>&nbsp;        if(this.fd == null) {
+<i>29</i>&nbsp;            throw new UnsupportedOperationException();
+<i>30</i>&nbsp;        }
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private long mappingOffset() {
+<i>34</i>&nbsp;        int var1 = Bits.pageSize();
+<i>35</i>&nbsp;        long var2 = this.address % (long)var1;
+<i>36</i>&nbsp;        return var2 &gt;= 0L?var2:(long)var1 + var2;
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private long mappingAddress(long var1) {
+<i>40</i>&nbsp;        return this.address - var1;
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    private long mappingLength(long var1) {
+<i>44</i>&nbsp;        return (long)this.capacity() + var1;
+<i>45</i>&nbsp;    }
+<b class="nc"><i>46</i>&nbsp;</b>
+<i>47</i>&nbsp;    public final boolean isLoaded() {
+<i>48</i>&nbsp;        this.checkMapped();
+<i>49</i>&nbsp;        if(this.address != 0L &amp;&amp; this.capacity() != 0) {
+<i>50</i>&nbsp;            long var1 = this.mappingOffset();
+<i>51</i>&nbsp;            long var3 = this.mappingLength(var1);
+<i>52</i>&nbsp;            return this.isLoaded0(this.mappingAddress(var1), var3, Bits.pageCount(var3));
+<i>53</i>&nbsp;        } else {
+<i>54</i>&nbsp;            return true;
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public final MappedByteBuffer load() {
+<i>59</i>&nbsp;        this.checkMapped();
+<i>60</i>&nbsp;        if(this.address != 0L &amp;&amp; this.capacity() != 0) {
+<i>61</i>&nbsp;            long var1 = this.mappingOffset();
+<i>62</i>&nbsp;            long var3 = this.mappingLength(var1);
+<i>63</i>&nbsp;            this.load0(this.mappingAddress(var1), var3);
+<b class="nc"><i>64</i>&nbsp;            Unsafe var5 = Unsafe.getUnsafe();</b>
+<b class="nc"><i>65</i>&nbsp;            int var6 = Bits.pageSize();</b>
+<i>66</i>&nbsp;            int var7 = Bits.pageCount(var3);
+<i>67</i>&nbsp;            long var8 = this.mappingAddress(var1);
+<i>68</i>&nbsp;            byte var10 = 0;
+<b class="nc"><i>69</i>&nbsp;</b>
+<b class="nc"><i>70</i>&nbsp;            for(int var11 = 0; var11 &lt; var7; ++var11) {</b>
+<i>71</i>&nbsp;                var10 ^= var5.getByte(var8);
+<i>72</i>&nbsp;                var8 += (long)var6;
+<i>73</i>&nbsp;            }
+<b class="nc"><i>74</i>&nbsp;</b>
+<i>75</i>&nbsp;            if(unused != 0) {
+<b class="nc"><i>76</i>&nbsp;                unused = var10;</b>
+<i>77</i>&nbsp;            }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;            return this;
+<b class="nc"><i>80</i>&nbsp;        } else {</b>
+<b class="nc"><i>81</i>&nbsp;            return this;</b>
+<b class="nc"><i>82</i>&nbsp;        }</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public final MappedByteBuffer force() {
+<i>86</i>&nbsp;        this.checkMapped();
+<i>87</i>&nbsp;        if(this.address != 0L &amp;&amp; this.capacity() != 0) {
+<i>88</i>&nbsp;            long var1 = this.mappingOffset();
+<i>89</i>&nbsp;            this.force0(this.fd, this.mappingAddress(var1), this.mappingLength(var1));
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;        return this;
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    private native boolean isLoaded0(long var1, long var3, int var5);
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    private native void load0(long var1, long var3);
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    private native void force0(FileDescriptor var1, long var2, long var4);
+<i>100</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

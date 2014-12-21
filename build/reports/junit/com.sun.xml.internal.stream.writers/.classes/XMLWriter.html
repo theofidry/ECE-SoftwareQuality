@@ -1,0 +1,201 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XMLWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.stream.writers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XMLWriter (com.sun.xml.internal.stream.writers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XMLWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.stream.writers;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLStringBuffer;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.Writer;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;public class XMLWriter extends Writer {
+<i>13</i>&nbsp;    private Writer writer;
+<i>14</i>&nbsp;    private int size;
+<i>15</i>&nbsp;    private XMLStringBuffer buffer;
+<i>16</i>&nbsp;    private static final int THRESHHOLD_LENGTH = 4096;
+<i>17</i>&nbsp;    private static final boolean DEBUG = false;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    public XMLWriter(Writer writer) {
+<i>20</i>&nbsp;        this(writer, 4096);
+<i>21</i>&nbsp;    }
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public XMLWriter(Writer writer, int size) {
+<i>24</i>&nbsp;        this.buffer = new XMLStringBuffer(12288);
+<i>25</i>&nbsp;        this.writer = writer;
+<i>26</i>&nbsp;        this.size = size;
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public void write(int c) throws IOException {
+<i>30</i>&nbsp;        this.ensureOpen();
+<i>31</i>&nbsp;        this.buffer.append((char)c);
+<i>32</i>&nbsp;        this.conditionalWrite();
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public void write(char[] cbuf) throws IOException {
+<i>36</i>&nbsp;        this.write((char[])cbuf, 0, cbuf.length);
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public void write(char[] cbuf, int off, int len) throws IOException {
+<i>40</i>&nbsp;        this.ensureOpen();
+<i>41</i>&nbsp;        if(len &gt; this.size) {
+<i>42</i>&nbsp;            this.writeBufferedData();
+<i>43</i>&nbsp;            this.writer.write(cbuf, off, len);
+<i>44</i>&nbsp;        } else {
+<i>45</i>&nbsp;            this.buffer.append(cbuf, off, len);
+<i>46</i>&nbsp;            this.conditionalWrite();
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public void write(String str, int off, int len) throws IOException {
+<i>52</i>&nbsp;        this.write((char[])str.toCharArray(), off, len);
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public void write(String str) throws IOException {
+<i>56</i>&nbsp;        if(str.length() &gt; this.size) {
+<b class="nc"><i>57</i>&nbsp;            this.writeBufferedData();</b>
+<i>58</i>&nbsp;            this.writer.write(str);
+<i>59</i>&nbsp;        } else {
+<i>60</i>&nbsp;            this.buffer.append(str);
+<i>61</i>&nbsp;            this.conditionalWrite();
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    }
+<b class="nc"><i>65</i>&nbsp;</b>
+<i>66</i>&nbsp;    public void close() throws IOException {
+<i>67</i>&nbsp;        if(this.writer != null) {
+<i>68</i>&nbsp;            this.flush();
+<i>69</i>&nbsp;            this.writer.close();
+<i>70</i>&nbsp;            this.writer = null;
+<i>71</i>&nbsp;        }
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;    public void flush() throws IOException {</b>
+<b class="nc"><i>75</i>&nbsp;        this.ensureOpen();</b>
+<b class="nc"><i>76</i>&nbsp;        this.writeBufferedData();</b>
+<i>77</i>&nbsp;        this.writer.flush();
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public void reset() {
+<i>81</i>&nbsp;        this.writer = null;
+<i>82</i>&nbsp;        this.buffer.clear();
+<i>83</i>&nbsp;        this.size = 4096;
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public void setWriter(Writer writer) {
+<i>87</i>&nbsp;        this.writer = writer;
+<i>88</i>&nbsp;        this.buffer.clear();
+<i>89</i>&nbsp;        this.size = 4096;
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;    public void setWriter(Writer writer, int size) {</b>
+<b class="nc"><i>93</i>&nbsp;        this.writer = writer;</b>
+<b class="nc"><i>94</i>&nbsp;        this.size = size;</b>
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    protected Writer getWriter() {
+<i>98</i>&nbsp;        return this.writer;
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    private void conditionalWrite() throws IOException {
+<i>102</i>&nbsp;        if(this.buffer.length &gt; this.size) {
+<i>103</i>&nbsp;            this.writeBufferedData();
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    private void writeBufferedData() throws IOException {
+<i>109</i>&nbsp;        this.writer.write(this.buffer.ch, this.buffer.offset, this.buffer.length);
+<i>110</i>&nbsp;        this.buffer.clear();
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    private void ensureOpen() throws IOException {
+<i>114</i>&nbsp;        if(this.writer == null) {
+<i>115</i>&nbsp;            throw new IOException(&quot;Stream closed&quot;);
+<i>116</i>&nbsp;        }
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

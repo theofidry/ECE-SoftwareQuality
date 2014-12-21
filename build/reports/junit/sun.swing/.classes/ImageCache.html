@@ -1,0 +1,231 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ImageCache</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.swing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ImageCache (sun.swing)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ImageCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 25)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ImageCache$Entry</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 25)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 50)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.swing;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.GraphicsConfiguration;
+<i>9</i>&nbsp;import java.awt.Image;
+<i>10</i>&nbsp;import java.lang.ref.SoftReference;
+<i>11</i>&nbsp;import java.util.LinkedList;
+<i>12</i>&nbsp;import java.util.ListIterator;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public class ImageCache {
+<i>15</i>&nbsp;    private int maxCount;
+<i>16</i>&nbsp;    private final LinkedList&lt;SoftReference&lt;ImageCache.Entry&gt;&gt; entries;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    public ImageCache(int var1) {
+<i>19</i>&nbsp;        this.maxCount = var1;
+<i>20</i>&nbsp;        this.entries = new LinkedList();
+<i>21</i>&nbsp;    }
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    void setMaxCount(int var1) {
+<b class="nc"><i>24</i>&nbsp;        this.maxCount = var1;</b>
+<b class="nc"><i>25</i>&nbsp;    }</b>
+<b class="nc"><i>26</i>&nbsp;</b>
+<i>27</i>&nbsp;    public void flush() {
+<i>28</i>&nbsp;        this.entries.clear();
+<i>29</i>&nbsp;    }
+<b class="nc"><i>30</i>&nbsp;</b>
+<i>31</i>&nbsp;    private ImageCache.Entry getEntry(Object var1, GraphicsConfiguration var2, int var3, int var4, Object[] var5) {
+<i>32</i>&nbsp;        ListIterator var7 = this.entries.listIterator();
+<i>33</i>&nbsp;
+<b class="nc"><i>34</i>&nbsp;        ImageCache.Entry var6;</b>
+<i>35</i>&nbsp;        while(var7.hasNext()) {
+<i>36</i>&nbsp;            SoftReference var8 = (SoftReference)var7.next();
+<i>37</i>&nbsp;            var6 = (ImageCache.Entry)var8.get();
+<i>38</i>&nbsp;            if(var6 == null) {
+<i>39</i>&nbsp;                var7.remove();
+<b class="nc"><i>40</i>&nbsp;            } else if(var6.equals(var2, var3, var4, var5)) {</b>
+<b class="nc"><i>41</i>&nbsp;                var7.remove();</b>
+<b class="nc"><i>42</i>&nbsp;                this.entries.addFirst(var8);</b>
+<b class="nc"><i>43</i>&nbsp;                return var6;</b>
+<b class="nc"><i>44</i>&nbsp;            }</b>
+<i>45</i>&nbsp;        }
+<b class="nc"><i>46</i>&nbsp;</b>
+<i>47</i>&nbsp;        var6 = new ImageCache.Entry(var2, var3, var4, var5);
+<b class="nc"><i>48</i>&nbsp;        if(this.entries.size() &gt;= this.maxCount) {</b>
+<i>49</i>&nbsp;            this.entries.removeLast();
+<b class="nc"><i>50</i>&nbsp;        }</b>
+<b class="nc"><i>51</i>&nbsp;</b>
+<b class="nc"><i>52</i>&nbsp;        this.entries.addFirst(new SoftReference(var6));</b>
+<i>53</i>&nbsp;        return var6;
+<b class="nc"><i>54</i>&nbsp;    }</b>
+<i>55</i>&nbsp;
+<b class="nc"><i>56</i>&nbsp;    public Image getImage(Object var1, GraphicsConfiguration var2, int var3, int var4, Object[] var5) {</b>
+<b class="nc"><i>57</i>&nbsp;        ImageCache.Entry var6 = this.getEntry(var1, var2, var3, var4, var5);</b>
+<b class="nc"><i>58</i>&nbsp;        return var6.getImage();</b>
+<i>59</i>&nbsp;    }
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;    public void setImage(Object var1, GraphicsConfiguration var2, int var3, int var4, Object[] var5, Image var6) {</b>
+<i>62</i>&nbsp;        ImageCache.Entry var7 = this.getEntry(var1, var2, var3, var4, var5);
+<i>63</i>&nbsp;        var7.setImage(var6);
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private static class Entry {
+<i>67</i>&nbsp;        private final GraphicsConfiguration config;
+<i>68</i>&nbsp;        private final int w;
+<b class="nc"><i>69</i>&nbsp;        private final int h;</b>
+<b class="nc"><i>70</i>&nbsp;        private final Object[] args;</b>
+<i>71</i>&nbsp;        private Image image;
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;        Entry(GraphicsConfiguration var1, int var2, int var3, Object[] var4) {
+<i>74</i>&nbsp;            this.config = var1;
+<i>75</i>&nbsp;            this.args = var4;
+<i>76</i>&nbsp;            this.w = var2;
+<i>77</i>&nbsp;            this.h = var3;
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<b class="nc"><i>79</i>&nbsp;</b>
+<i>80</i>&nbsp;        public void setImage(Image var1) {
+<i>81</i>&nbsp;            this.image = var1;
+<i>82</i>&nbsp;        }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;        public Image getImage() {
+<i>85</i>&nbsp;            return this.image;
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;        public String toString() {
+<i>89</i>&nbsp;            String var1 = super.toString() + &quot;[ graphicsConfig=&quot; + this.config + &quot;, image=&quot; + this.image + &quot;, w=&quot; + this.w + &quot;, h=&quot; + this.h;
+<i>90</i>&nbsp;            if(this.args != null) {
+<i>91</i>&nbsp;                for(int var2 = 0; var2 &lt; this.args.length; ++var2) {
+<i>92</i>&nbsp;                    var1 = var1 + &quot;, &quot; + this.args[var2];
+<b class="nc"><i>93</i>&nbsp;                }</b>
+<b class="nc"><i>94</i>&nbsp;            }</b>
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;            var1 = var1 + &quot;]&quot;;</b>
+<b class="nc"><i>97</i>&nbsp;            return var1;</b>
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;        public boolean equals(GraphicsConfiguration var1, int var2, int var3, Object[] var4) {
+<b class="nc"><i>101</i>&nbsp;            if(this.w == var2 &amp;&amp; this.h == var3 &amp;&amp; (this.config != null &amp;&amp; this.config.equals(var1) || this.config == null &amp;&amp; var1 == null)) {</b>
+<i>102</i>&nbsp;                if(this.args == null &amp;&amp; var4 == null) {
+<i>103</i>&nbsp;                    return true;
+<i>104</i>&nbsp;                }
+<b class="nc"><i>105</i>&nbsp;</b>
+<i>106</i>&nbsp;                if(this.args != null &amp;&amp; var4 != null &amp;&amp; this.args.length == var4.length) {
+<i>107</i>&nbsp;                    for(int var5 = var4.length - 1; var5 &gt;= 0; --var5) {
+<i>108</i>&nbsp;                        Object var6 = this.args[var5];
+<b class="nc"><i>109</i>&nbsp;                        Object var7 = var4[var5];</b>
+<i>110</i>&nbsp;                        if(var6 == null &amp;&amp; var7 != null || var6 != null &amp;&amp; !var6.equals(var7)) {
+<i>111</i>&nbsp;                            return false;
+<i>112</i>&nbsp;                        }
+<b class="nc"><i>113</i>&nbsp;                    }</b>
+<b class="nc"><i>114</i>&nbsp;</b>
+<b class="nc"><i>115</i>&nbsp;                    return true;</b>
+<i>116</i>&nbsp;                }
+<i>117</i>&nbsp;            }
+<b class="nc"><i>118</i>&nbsp;</b>
+<b class="nc"><i>119</i>&nbsp;            return false;</b>
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

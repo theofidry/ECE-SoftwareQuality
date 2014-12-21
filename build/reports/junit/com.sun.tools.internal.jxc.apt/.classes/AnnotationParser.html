@@ -1,0 +1,160 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AnnotationParser</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.jxc.apt</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AnnotationParser (com.sun.tools.internal.jxc.apt)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AnnotationParser</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.jxc.apt;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.mirror.apt.AnnotationProcessor;
+<i>9</i>&nbsp;import com.sun.mirror.apt.AnnotationProcessorEnvironment;
+<i>10</i>&nbsp;import com.sun.mirror.declaration.AnnotationTypeDeclaration;
+<i>11</i>&nbsp;import com.sun.tools.internal.jxc.ConfigReader;
+<i>12</i>&nbsp;import com.sun.tools.internal.jxc.apt.ErrorReceiverImpl;
+<i>13</i>&nbsp;import com.sun.tools.internal.jxc.apt.Messages;
+<i>14</i>&nbsp;import com.sun.tools.internal.xjc.ErrorReceiver;
+<i>15</i>&nbsp;import com.sun.tools.internal.xjc.api.J2SJAXBModel;
+<i>16</i>&nbsp;import com.sun.tools.internal.xjc.api.XJC;
+<i>17</i>&nbsp;import java.io.File;
+<i>18</i>&nbsp;import java.io.IOException;
+<i>19</i>&nbsp;import java.util.Collection;
+<i>20</i>&nbsp;import java.util.Collections;
+<i>21</i>&nbsp;import java.util.Iterator;
+<i>22</i>&nbsp;import java.util.Set;
+<i>23</i>&nbsp;import java.util.StringTokenizer;
+<i>24</i>&nbsp;import java.util.Map.Entry;
+<i>25</i>&nbsp;import javax.xml.bind.SchemaOutputResolver;
+<i>26</i>&nbsp;import org.xml.sax.Locator;
+<i>27</i>&nbsp;import org.xml.sax.SAXException;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;final class AnnotationParser implements AnnotationProcessor {
+<i>30</i>&nbsp;    private final AnnotationProcessorEnvironment env;
+<i>31</i>&nbsp;    private ErrorReceiver errorListener;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public AnnotationProcessorEnvironment getEnv() {
+<i>34</i>&nbsp;        return this.env;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    AnnotationParser(Set&lt;AnnotationTypeDeclaration&gt; atds, AnnotationProcessorEnvironment env) {
+<i>38</i>&nbsp;        this.env = env;
+<i>39</i>&nbsp;        this.errorListener = new ErrorReceiverImpl(env.getMessager(), env.getOptions().containsKey(&quot;-Ajaxb.debug&quot;));
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public void process() {
+<i>43</i>&nbsp;        Iterator i$ = this.env.getOptions().entrySet().iterator();
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;        while(i$.hasNext()) {
+<i>46</i>&nbsp;            Entry me = (Entry)i$.next();
+<i>47</i>&nbsp;            String key = (String)me.getKey();
+<i>48</i>&nbsp;            if(key.startsWith(&quot;-Ajaxb.config=&quot;)) {
+<i>49</i>&nbsp;                String value = key.substring(&quot;-Ajaxb.config&quot;.length() + 1);
+<i>50</i>&nbsp;                StringTokenizer st = new StringTokenizer(value, File.pathSeparator);
+<i>51</i>&nbsp;                if(!st.hasMoreTokens()) {
+<i>52</i>&nbsp;                    this.errorListener.error((Locator)null, Messages.OPERAND_MISSING.format(new Object[]{&quot;-Ajaxb.config&quot;}));
+<i>53</i>&nbsp;                } else {
+<i>54</i>&nbsp;                    while(st.hasMoreTokens()) {
+<i>55</i>&nbsp;                        File configFile = new File(st.nextToken());
+<i>56</i>&nbsp;                        if(!configFile.exists()) {
+<i>57</i>&nbsp;                            this.errorListener.error((Locator)null, Messages.NON_EXISTENT_FILE.format(new Object[0]));
+<i>58</i>&nbsp;                        } else {
+<i>59</i>&nbsp;                            try {
+<i>60</i>&nbsp;                                ConfigReader e = new ConfigReader(this.env, this.env.getTypeDeclarations(), configFile, this.errorListener);
+<i>61</i>&nbsp;                                Collection classesToBeIncluded = e.getClassesToBeIncluded();
+<i>62</i>&nbsp;                                J2SJAXBModel model = XJC.createJavaCompiler().bind(classesToBeIncluded, Collections.emptyMap(), (String)null, this.env);
+<i>63</i>&nbsp;                                SchemaOutputResolver schemaOutputResolver = e.getSchemaOutputResolver();
+<i>64</i>&nbsp;                                model.generateSchema(schemaOutputResolver, this.errorListener);
+<i>65</i>&nbsp;                            } catch (IOException var11) {
+<i>66</i>&nbsp;                                this.errorListener.error(var11.getMessage(), var11);
+<i>67</i>&nbsp;                            } catch (SAXException var12) {
+<i>68</i>&nbsp;                                ;
+<i>69</i>&nbsp;                            }
+<b class="nc"><i>70</i>&nbsp;                        }</b>
+<i>71</i>&nbsp;                    }
+<i>72</i>&nbsp;                }
+<i>73</i>&nbsp;            }
+<b class="nc"><i>74</i>&nbsp;        }</b>
+<b class="nc"><i>75</i>&nbsp;</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

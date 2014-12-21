@@ -1,0 +1,1089 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Introspector</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.beans</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Introspector (java.beans)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Introspector</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 35)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 554)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.beans;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.beans.TypeResolver;
+<i>9</i>&nbsp;import com.sun.beans.WeakCache;
+<i>10</i>&nbsp;import com.sun.beans.finder.ClassFinder;
+<i>11</i>&nbsp;import java.awt.Component;
+<i>12</i>&nbsp;import java.beans.BeanDescriptor;
+<i>13</i>&nbsp;import java.beans.BeanInfo;
+<i>14</i>&nbsp;import java.beans.Customizer;
+<i>15</i>&nbsp;import java.beans.EventSetDescriptor;
+<i>16</i>&nbsp;import java.beans.FeatureDescriptor;
+<i>17</i>&nbsp;import java.beans.GenericBeanInfo;
+<i>18</i>&nbsp;import java.beans.IndexedPropertyDescriptor;
+<i>19</i>&nbsp;import java.beans.IntrospectionException;
+<i>20</i>&nbsp;import java.beans.MethodDescriptor;
+<i>21</i>&nbsp;import java.beans.NameGenerator;
+<i>22</i>&nbsp;import java.beans.PropertyDescriptor;
+<i>23</i>&nbsp;import java.beans.PropertyVetoException;
+<i>24</i>&nbsp;import java.beans.ThreadGroupContext;
+<i>25</i>&nbsp;import java.lang.reflect.Method;
+<i>26</i>&nbsp;import java.lang.reflect.Modifier;
+<i>27</i>&nbsp;import java.lang.reflect.Type;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.EventListener;
+<i>30</i>&nbsp;import java.util.EventObject;
+<i>31</i>&nbsp;import java.util.HashMap;
+<i>32</i>&nbsp;import java.util.Iterator;
+<i>33</i>&nbsp;import java.util.List;
+<i>34</i>&nbsp;import java.util.Map;
+<i>35</i>&nbsp;import java.util.TooManyListenersException;
+<i>36</i>&nbsp;import java.util.TreeMap;
+<i>37</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;public class Introspector {
+<i>40</i>&nbsp;    public static final int USE_ALL_BEANINFO = 1;
+<i>41</i>&nbsp;    public static final int IGNORE_IMMEDIATE_BEANINFO = 2;
+<i>42</i>&nbsp;    public static final int IGNORE_ALL_BEANINFO = 3;
+<i>43</i>&nbsp;    private static final WeakCache&lt;Class&lt;?&gt;, Method[]&gt; declaredMethodCache = new WeakCache();
+<i>44</i>&nbsp;    private Class beanClass;
+<i>45</i>&nbsp;    private BeanInfo explicitBeanInfo;
+<i>46</i>&nbsp;    private BeanInfo superBeanInfo;
+<i>47</i>&nbsp;    private BeanInfo[] additionalBeanInfo;
+<i>48</i>&nbsp;    private boolean propertyChangeSource = false;
+<i>49</i>&nbsp;    private static Class eventListenerType = EventListener.class;
+<i>50</i>&nbsp;    private String defaultEventName;
+<i>51</i>&nbsp;    private String defaultPropertyName;
+<i>52</i>&nbsp;    private int defaultEventIndex = -1;
+<i>53</i>&nbsp;    private int defaultPropertyIndex = -1;
+<i>54</i>&nbsp;    private Map methods;
+<i>55</i>&nbsp;    private Map properties;
+<i>56</i>&nbsp;    private Map events;
+<i>57</i>&nbsp;    private static final EventSetDescriptor[] EMPTY_EVENTSETDESCRIPTORS = new EventSetDescriptor[0];
+<i>58</i>&nbsp;    static final String ADD_PREFIX = &quot;add&quot;;
+<i>59</i>&nbsp;    static final String REMOVE_PREFIX = &quot;remove&quot;;
+<i>60</i>&nbsp;    static final String GET_PREFIX = &quot;get&quot;;
+<i>61</i>&nbsp;    static final String SET_PREFIX = &quot;set&quot;;
+<i>62</i>&nbsp;    static final String IS_PREFIX = &quot;is&quot;;
+<i>63</i>&nbsp;    private HashMap pdStore = new HashMap();
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public static BeanInfo getBeanInfo(Class&lt;?&gt; var0) throws IntrospectionException {
+<i>66</i>&nbsp;        if(!ReflectUtil.isPackageAccessible(var0)) {
+<i>67</i>&nbsp;            return (new Introspector(var0, (Class)null, 1)).getBeanInfo();
+<i>68</i>&nbsp;        } else {
+<i>69</i>&nbsp;            ThreadGroupContext var1 = ThreadGroupContext.getContext();
+<i>70</i>&nbsp;            WeakCache var3 = declaredMethodCache;
+<i>71</i>&nbsp;            BeanInfo var2;
+<i>72</i>&nbsp;            synchronized(declaredMethodCache) {
+<i>73</i>&nbsp;                var2 = var1.getBeanInfo(var0);
+<i>74</i>&nbsp;            }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;            if(var2 == null) {
+<i>77</i>&nbsp;                var2 = (new Introspector(var0, (Class)null, 1)).getBeanInfo();
+<i>78</i>&nbsp;                var3 = declaredMethodCache;
+<i>79</i>&nbsp;                synchronized(declaredMethodCache) {
+<i>80</i>&nbsp;                    var1.putBeanInfo(var0, var2);
+<i>81</i>&nbsp;                }
+<i>82</i>&nbsp;            }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;            return var2;
+<i>85</i>&nbsp;        }
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public static BeanInfo getBeanInfo(Class&lt;?&gt; var0, int var1) throws IntrospectionException {
+<i>89</i>&nbsp;        return getBeanInfo(var0, (Class)null, var1);
+<i>90</i>&nbsp;    }
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;    public static BeanInfo getBeanInfo(Class&lt;?&gt; var0, Class&lt;?&gt; var1) throws IntrospectionException {
+<i>93</i>&nbsp;        return getBeanInfo(var0, var1, 1);
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public static BeanInfo getBeanInfo(Class&lt;?&gt; var0, Class&lt;?&gt; var1, int var2) throws IntrospectionException {
+<i>97</i>&nbsp;        BeanInfo var3;
+<i>98</i>&nbsp;        if(var1 == null &amp;&amp; var2 == 1) {
+<i>99</i>&nbsp;            var3 = getBeanInfo(var0);
+<i>100</i>&nbsp;        } else {
+<b class="nc"><i>101</i>&nbsp;            var3 = (new Introspector(var0, var1, var2)).getBeanInfo();</b>
+<b class="nc"><i>102</i>&nbsp;        }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;        return var3;
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<b class="nc"><i>107</i>&nbsp;    public static String decapitalize(String var0) {</b>
+<b class="nc"><i>108</i>&nbsp;        if(var0 != null &amp;&amp; var0.length() != 0) {</b>
+<i>109</i>&nbsp;            if(var0.length() &gt; 1 &amp;&amp; Character.isUpperCase(var0.charAt(1)) &amp;&amp; Character.isUpperCase(var0.charAt(0))) {
+<i>110</i>&nbsp;                return var0;
+<i>111</i>&nbsp;            } else {
+<i>112</i>&nbsp;                char[] var1 = var0.toCharArray();
+<i>113</i>&nbsp;                var1[0] = Character.toLowerCase(var1[0]);
+<i>114</i>&nbsp;                return new String(var1);
+<i>115</i>&nbsp;            }
+<i>116</i>&nbsp;        } else {
+<i>117</i>&nbsp;            return var0;
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<b class="nc"><i>121</i>&nbsp;    public static String[] getBeanInfoSearchPath() {</b>
+<i>122</i>&nbsp;        return ThreadGroupContext.getContext().getBeanInfoFinder().getPackages();
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public static void setBeanInfoSearchPath(String[] var0) {
+<i>126</i>&nbsp;        SecurityManager var1 = System.getSecurityManager();
+<i>127</i>&nbsp;        if(var1 != null) {
+<i>128</i>&nbsp;            var1.checkPropertiesAccess();
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;        ThreadGroupContext.getContext().getBeanInfoFinder().setPackages(var0);
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    public static void flushCaches() {
+<i>135</i>&nbsp;        WeakCache var0 = declaredMethodCache;
+<i>136</i>&nbsp;        synchronized(declaredMethodCache) {
+<i>137</i>&nbsp;            ThreadGroupContext.getContext().clearBeanInfoCache();
+<i>138</i>&nbsp;            declaredMethodCache.clear();
+<i>139</i>&nbsp;        }
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    public static void flushFromCaches(Class&lt;?&gt; var0) {
+<i>143</i>&nbsp;        if(var0 == null) {
+<i>144</i>&nbsp;            throw new NullPointerException();
+<i>145</i>&nbsp;        } else {
+<i>146</i>&nbsp;            WeakCache var1 = declaredMethodCache;
+<i>147</i>&nbsp;            synchronized(declaredMethodCache) {
+<i>148</i>&nbsp;                ThreadGroupContext.getContext().removeBeanInfo(var0);
+<i>149</i>&nbsp;                declaredMethodCache.put(var0, (Object)null);
+<i>150</i>&nbsp;            }
+<i>151</i>&nbsp;        }
+<i>152</i>&nbsp;    }
+<b class="nc"><i>153</i>&nbsp;</b>
+<b class="nc"><i>154</i>&nbsp;    private Introspector(Class var1, Class var2, int var3) throws IntrospectionException {</b>
+<i>155</i>&nbsp;        this.beanClass = var1;
+<i>156</i>&nbsp;        if(var2 != null) {
+<i>157</i>&nbsp;            boolean var4 = false;
+<b class="nc"><i>158</i>&nbsp;</b>
+<b class="nc"><i>159</i>&nbsp;            for(Class var5 = var1.getSuperclass(); var5 != null; var5 = var5.getSuperclass()) {</b>
+<b class="nc"><i>160</i>&nbsp;                if(var5 == var2) {</b>
+<b class="nc"><i>161</i>&nbsp;                    var4 = true;</b>
+<b class="nc"><i>162</i>&nbsp;                }</b>
+<i>163</i>&nbsp;            }
+<b class="nc"><i>164</i>&nbsp;</b>
+<b class="nc"><i>165</i>&nbsp;            if(!var4) {</b>
+<b class="nc"><i>166</i>&nbsp;                throw new IntrospectionException(var2.getName() + &quot; not superclass of &quot; + var1.getName());</b>
+<b class="nc"><i>167</i>&nbsp;            }</b>
+<b class="nc"><i>168</i>&nbsp;        }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;        if(var3 == 1) {</b>
+<i>171</i>&nbsp;            this.explicitBeanInfo = findExplicitBeanInfo(var1);
+<b class="nc"><i>172</i>&nbsp;        }</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;        Class var6 = var1.getSuperclass();
+<i>175</i>&nbsp;        if(var6 != var2) {
+<i>176</i>&nbsp;            int var7 = var3;
+<i>177</i>&nbsp;            if(var3 == 2) {
+<i>178</i>&nbsp;                var7 = 1;
+<i>179</i>&nbsp;            }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;            this.superBeanInfo = getBeanInfo(var6, var2, var7);
+<i>182</i>&nbsp;        }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;        if(this.explicitBeanInfo != null) {
+<i>185</i>&nbsp;            this.additionalBeanInfo = this.explicitBeanInfo.getAdditionalBeanInfo();
+<i>186</i>&nbsp;        }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;        if(this.additionalBeanInfo == null) {
+<i>189</i>&nbsp;            this.additionalBeanInfo = new BeanInfo[0];
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    private BeanInfo getBeanInfo() throws IntrospectionException {
+<i>195</i>&nbsp;        BeanDescriptor var1 = this.getTargetBeanDescriptor();
+<i>196</i>&nbsp;        MethodDescriptor[] var2 = this.getTargetMethodInfo();
+<i>197</i>&nbsp;        EventSetDescriptor[] var3 = this.getTargetEventInfo();
+<b class="nc"><i>198</i>&nbsp;        PropertyDescriptor[] var4 = this.getTargetPropertyInfo();</b>
+<i>199</i>&nbsp;        int var5 = this.getTargetDefaultEventIndex();
+<i>200</i>&nbsp;        int var6 = this.getTargetDefaultPropertyIndex();
+<i>201</i>&nbsp;        return new GenericBeanInfo(var1, var3, var5, var4, var6, var2, this.explicitBeanInfo);
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    private static BeanInfo findExplicitBeanInfo(Class var0) {
+<i>205</i>&nbsp;        return (BeanInfo)ThreadGroupContext.getContext().getBeanInfoFinder().find(var0);
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    private PropertyDescriptor[] getTargetPropertyInfo() {
+<i>209</i>&nbsp;        PropertyDescriptor[] var1 = null;
+<i>210</i>&nbsp;        if(this.explicitBeanInfo != null) {
+<i>211</i>&nbsp;            var1 = this.getPropertyDescriptors(this.explicitBeanInfo);
+<i>212</i>&nbsp;        }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;        if(var1 == null &amp;&amp; this.superBeanInfo != null) {
+<i>215</i>&nbsp;            this.addPropertyDescriptors(this.getPropertyDescriptors(this.superBeanInfo));
+<i>216</i>&nbsp;        }
+<i>217</i>&nbsp;
+<b class="nc"><i>218</i>&nbsp;        for(int var2 = 0; var2 &lt; this.additionalBeanInfo.length; ++var2) {</b>
+<i>219</i>&nbsp;            this.addPropertyDescriptors(this.additionalBeanInfo[var2].getPropertyDescriptors());
+<i>220</i>&nbsp;        }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;        int var3;
+<i>223</i>&nbsp;        if(var1 != null) {
+<i>224</i>&nbsp;            this.addPropertyDescriptors(var1);
+<i>225</i>&nbsp;        } else {
+<i>226</i>&nbsp;            Method[] var13 = getPublicDeclaredMethods(this.beanClass);
+<i>227</i>&nbsp;
+<b class="nc"><i>228</i>&nbsp;            for(var3 = 0; var3 &lt; var13.length; ++var3) {</b>
+<i>229</i>&nbsp;                Method var4 = var13[var3];
+<b class="nc"><i>230</i>&nbsp;                if(var4 != null) {</b>
+<i>231</i>&nbsp;                    int var5 = var4.getModifiers();
+<b class="nc"><i>232</i>&nbsp;                    if(!Modifier.isStatic(var5)) {</b>
+<i>233</i>&nbsp;                        String var6 = var4.getName();
+<b class="nc"><i>234</i>&nbsp;                        Class[] var7 = var4.getParameterTypes();</b>
+<i>235</i>&nbsp;                        Class var8 = var4.getReturnType();
+<i>236</i>&nbsp;                        int var9 = var7.length;
+<i>237</i>&nbsp;                        Object var10 = null;
+<i>238</i>&nbsp;                        if(var6.length() &gt; 3 || var6.startsWith(&quot;is&quot;)) {
+<i>239</i>&nbsp;                            try {
+<i>240</i>&nbsp;                                if(var9 == 0) {
+<i>241</i>&nbsp;                                    if(var6.startsWith(&quot;get&quot;)) {
+<i>242</i>&nbsp;                                        var10 = new PropertyDescriptor(this.beanClass, var6.substring(3), var4, (Method)null);
+<i>243</i>&nbsp;                                    } else if(var8 == Boolean.TYPE &amp;&amp; var6.startsWith(&quot;is&quot;)) {
+<i>244</i>&nbsp;                                        var10 = new PropertyDescriptor(this.beanClass, var6.substring(2), var4, (Method)null);
+<i>245</i>&nbsp;                                    }
+<i>246</i>&nbsp;                                } else if(var9 == 1) {
+<i>247</i>&nbsp;                                    if(Integer.TYPE.equals(var7[0]) &amp;&amp; var6.startsWith(&quot;get&quot;)) {
+<i>248</i>&nbsp;                                        var10 = new IndexedPropertyDescriptor(this.beanClass, var6.substring(3), (Method)null, (Method)null, var4, (Method)null);
+<i>249</i>&nbsp;                                    } else if(Void.TYPE.equals(var8) &amp;&amp; var6.startsWith(&quot;set&quot;)) {
+<i>250</i>&nbsp;                                        var10 = new PropertyDescriptor(this.beanClass, var6.substring(3), (Method)null, var4);
+<i>251</i>&nbsp;                                        if(this.throwsException(var4, PropertyVetoException.class)) {
+<i>252</i>&nbsp;                                            ((PropertyDescriptor)var10).setConstrained(true);
+<i>253</i>&nbsp;                                        }
+<i>254</i>&nbsp;                                    }
+<b class="nc"><i>255</i>&nbsp;                                } else if(var9 == 2 &amp;&amp; Void.TYPE.equals(var8) &amp;&amp; Integer.TYPE.equals(var7[0]) &amp;&amp; var6.startsWith(&quot;set&quot;)) {</b>
+<b class="nc"><i>256</i>&nbsp;                                    var10 = new IndexedPropertyDescriptor(this.beanClass, var6.substring(3), (Method)null, (Method)null, (Method)null, var4);</b>
+<i>257</i>&nbsp;                                    if(this.throwsException(var4, PropertyVetoException.class)) {
+<b class="nc"><i>258</i>&nbsp;                                        ((PropertyDescriptor)var10).setConstrained(true);</b>
+<i>259</i>&nbsp;                                    }
+<b class="nc"><i>260</i>&nbsp;                                }</b>
+<i>261</i>&nbsp;                            } catch (IntrospectionException var12) {
+<b class="nc"><i>262</i>&nbsp;                                var10 = null;</b>
+<b class="nc"><i>263</i>&nbsp;                            }</b>
+<b class="nc"><i>264</i>&nbsp;</b>
+<i>265</i>&nbsp;                            if(var10 != null) {
+<i>266</i>&nbsp;                                if(this.propertyChangeSource) {
+<i>267</i>&nbsp;                                    ((PropertyDescriptor)var10).setBound(true);
+<i>268</i>&nbsp;                                }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;                                this.addPropertyDescriptor((PropertyDescriptor)var10);
+<i>271</i>&nbsp;                            }
+<i>272</i>&nbsp;                        }
+<i>273</i>&nbsp;                    }
+<i>274</i>&nbsp;                }
+<i>275</i>&nbsp;            }
+<i>276</i>&nbsp;        }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;        this.processPropertyDescriptors();
+<b class="nc"><i>279</i>&nbsp;        PropertyDescriptor[] var14 = new PropertyDescriptor[this.properties.size()];</b>
+<b class="nc"><i>280</i>&nbsp;        var14 = (PropertyDescriptor[])((PropertyDescriptor[])this.properties.values().toArray(var14));</b>
+<b class="nc"><i>281</i>&nbsp;        if(this.defaultPropertyName != null) {</b>
+<i>282</i>&nbsp;            for(var3 = 0; var3 &lt; var14.length; ++var3) {
+<b class="nc"><i>283</i>&nbsp;                if(this.defaultPropertyName.equals(var14[var3].getName())) {</b>
+<i>284</i>&nbsp;                    this.defaultPropertyIndex = var3;
+<i>285</i>&nbsp;                }
+<i>286</i>&nbsp;            }
+<i>287</i>&nbsp;        }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;        return var14;
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    private void addPropertyDescriptor(PropertyDescriptor var1) {
+<i>293</i>&nbsp;        String var2 = ((PropertyDescriptor)var1).getName();
+<i>294</i>&nbsp;        Object var3 = (List)this.pdStore.get(var2);
+<i>295</i>&nbsp;        if(var3 == null) {
+<i>296</i>&nbsp;            var3 = new ArrayList();
+<i>297</i>&nbsp;            this.pdStore.put(var2, var3);
+<i>298</i>&nbsp;        }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;        if(this.beanClass != ((PropertyDescriptor)var1).getClass0()) {
+<i>301</i>&nbsp;            Method var4 = ((PropertyDescriptor)var1).getReadMethod();
+<i>302</i>&nbsp;            Method var5 = ((PropertyDescriptor)var1).getWriteMethod();
+<b class="nc"><i>303</i>&nbsp;            boolean var6 = true;</b>
+<b class="nc"><i>304</i>&nbsp;            if(var4 != null) {</b>
+<b class="nc"><i>305</i>&nbsp;                var6 = var6 &amp;&amp; var4.getGenericReturnType() instanceof Class;</b>
+<i>306</i>&nbsp;            }
+<b class="nc"><i>307</i>&nbsp;</b>
+<i>308</i>&nbsp;            if(var5 != null) {
+<i>309</i>&nbsp;                var6 = var6 &amp;&amp; var5.getGenericParameterTypes()[0] instanceof Class;
+<i>310</i>&nbsp;            }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;            if(var1 instanceof IndexedPropertyDescriptor) {
+<i>313</i>&nbsp;                IndexedPropertyDescriptor var7 = (IndexedPropertyDescriptor)var1;
+<i>314</i>&nbsp;                Method var8 = var7.getIndexedReadMethod();
+<i>315</i>&nbsp;                Method var9 = var7.getIndexedWriteMethod();
+<i>316</i>&nbsp;                if(var8 != null) {
+<i>317</i>&nbsp;                    var6 = var6 &amp;&amp; var8.getGenericReturnType() instanceof Class;
+<i>318</i>&nbsp;                }
+<b class="nc"><i>319</i>&nbsp;</b>
+<b class="nc"><i>320</i>&nbsp;                if(var9 != null) {</b>
+<b class="nc"><i>321</i>&nbsp;                    var6 = var6 &amp;&amp; var9.getGenericParameterTypes()[1] instanceof Class;</b>
+<b class="nc"><i>322</i>&nbsp;                }</b>
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;                if(!var6) {
+<b class="nc"><i>325</i>&nbsp;                    var1 = new IndexedPropertyDescriptor(var7);</b>
+<b class="nc"><i>326</i>&nbsp;                    ((PropertyDescriptor)var1).updateGenericsFor(this.beanClass);</b>
+<i>327</i>&nbsp;                }
+<i>328</i>&nbsp;            } else if(!var6) {
+<i>329</i>&nbsp;                var1 = new PropertyDescriptor((PropertyDescriptor)var1);
+<i>330</i>&nbsp;                ((PropertyDescriptor)var1).updateGenericsFor(this.beanClass);
+<i>331</i>&nbsp;            }
+<i>332</i>&nbsp;        }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;        ((List)var3).add(var1);
+<i>335</i>&nbsp;    }
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    private void addPropertyDescriptors(PropertyDescriptor[] var1) {
+<i>338</i>&nbsp;        if(var1 != null) {
+<i>339</i>&nbsp;            PropertyDescriptor[] var2 = var1;
+<i>340</i>&nbsp;            int var3 = var1.length;
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>343</i>&nbsp;                PropertyDescriptor var5 = var2[var4];
+<i>344</i>&nbsp;                this.addPropertyDescriptor(var5);
+<b class="nc"><i>345</i>&nbsp;            }</b>
+<b class="nc"><i>346</i>&nbsp;        }</b>
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;    }</b>
+<b class="nc"><i>349</i>&nbsp;</b>
+<b class="nc"><i>350</i>&nbsp;    private PropertyDescriptor[] getPropertyDescriptors(BeanInfo var1) {</b>
+<b class="nc"><i>351</i>&nbsp;        PropertyDescriptor[] var2 = var1.getPropertyDescriptors();</b>
+<i>352</i>&nbsp;        int var3 = var1.getDefaultPropertyIndex();
+<b class="nc"><i>353</i>&nbsp;        if(0 &lt;= var3 &amp;&amp; var3 &lt; var2.length) {</b>
+<b class="nc"><i>354</i>&nbsp;            this.defaultPropertyName = var2[var3].getName();</b>
+<i>355</i>&nbsp;        }
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;        return var2;
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    private void processPropertyDescriptors() {
+<i>361</i>&nbsp;        if(this.properties == null) {
+<b class="nc"><i>362</i>&nbsp;            this.properties = new TreeMap();</b>
+<b class="nc"><i>363</i>&nbsp;        }</b>
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;        Iterator var8 = this.pdStore.values().iterator();
+<b class="nc"><i>366</i>&nbsp;</b>
+<b class="nc"><i>367</i>&nbsp;        while(var8.hasNext()) {</b>
+<b class="nc"><i>368</i>&nbsp;            PropertyDescriptor var2 = null;</b>
+<b class="nc"><i>369</i>&nbsp;            PropertyDescriptor var3 = null;</b>
+<b class="nc"><i>370</i>&nbsp;            PropertyDescriptor var4 = null;</b>
+<i>371</i>&nbsp;            IndexedPropertyDescriptor var5 = null;
+<i>372</i>&nbsp;            IndexedPropertyDescriptor var6 = null;
+<b class="nc"><i>373</i>&nbsp;            IndexedPropertyDescriptor var7 = null;</b>
+<b class="nc"><i>374</i>&nbsp;            List var1 = (List)var8.next();</b>
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;            int var9;
+<i>377</i>&nbsp;            for(var9 = 0; var9 &lt; var1.size(); ++var9) {
+<i>378</i>&nbsp;                var2 = (PropertyDescriptor)var1.get(var9);
+<b class="nc"><i>379</i>&nbsp;                if(var2 instanceof IndexedPropertyDescriptor) {</b>
+<b class="nc"><i>380</i>&nbsp;                    var5 = (IndexedPropertyDescriptor)var2;</b>
+<i>381</i>&nbsp;                    if(var5.getIndexedReadMethod() != null) {
+<i>382</i>&nbsp;                        if(var6 != null) {
+<b class="nc"><i>383</i>&nbsp;                            var6 = new IndexedPropertyDescriptor(var6, var5);</b>
+<b class="nc"><i>384</i>&nbsp;                        } else {</b>
+<b class="nc"><i>385</i>&nbsp;                            var6 = var5;</b>
+<b class="nc"><i>386</i>&nbsp;                        }</b>
+<b class="nc"><i>387</i>&nbsp;                    }</b>
+<i>388</i>&nbsp;                } else if(var2.getReadMethod() != null) {
+<b class="nc"><i>389</i>&nbsp;                    if(var3 != null) {</b>
+<i>390</i>&nbsp;                        Method var10 = var3.getReadMethod();
+<b class="nc"><i>391</i>&nbsp;                        if(!var10.getName().startsWith(&quot;is&quot;)) {</b>
+<b class="nc"><i>392</i>&nbsp;                            var3 = new PropertyDescriptor(var3, var2);</b>
+<i>393</i>&nbsp;                        }
+<b class="nc"><i>394</i>&nbsp;                    } else {</b>
+<b class="nc"><i>395</i>&nbsp;                        var3 = var2;</b>
+<i>396</i>&nbsp;                    }
+<i>397</i>&nbsp;                }
+<i>398</i>&nbsp;            }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;            for(var9 = 0; var9 &lt; var1.size(); ++var9) {
+<i>401</i>&nbsp;                var2 = (PropertyDescriptor)var1.get(var9);
+<i>402</i>&nbsp;                if(var2 instanceof IndexedPropertyDescriptor) {
+<i>403</i>&nbsp;                    var5 = (IndexedPropertyDescriptor)var2;
+<i>404</i>&nbsp;                    if(var5.getIndexedWriteMethod() != null) {
+<i>405</i>&nbsp;                        if(var6 != null) {
+<i>406</i>&nbsp;                            if(var6.getIndexedPropertyType() == var5.getIndexedPropertyType()) {
+<b class="nc"><i>407</i>&nbsp;                                if(var7 != null) {</b>
+<b class="nc"><i>408</i>&nbsp;                                    var7 = new IndexedPropertyDescriptor(var7, var5);</b>
+<b class="nc"><i>409</i>&nbsp;                                } else {</b>
+<b class="nc"><i>410</i>&nbsp;                                    var7 = var5;</b>
+<i>411</i>&nbsp;                                }
+<b class="nc"><i>412</i>&nbsp;                            }</b>
+<b class="nc"><i>413</i>&nbsp;                        } else if(var7 != null) {</b>
+<i>414</i>&nbsp;                            var7 = new IndexedPropertyDescriptor(var7, var5);
+<b class="nc"><i>415</i>&nbsp;                        } else {</b>
+<i>416</i>&nbsp;                            var7 = var5;
+<i>417</i>&nbsp;                        }
+<i>418</i>&nbsp;                    }
+<i>419</i>&nbsp;                } else if(var2.getWriteMethod() != null) {
+<i>420</i>&nbsp;                    if(var3 != null) {
+<i>421</i>&nbsp;                        if(var3.getPropertyType() == var2.getPropertyType()) {
+<i>422</i>&nbsp;                            if(var4 != null) {
+<i>423</i>&nbsp;                                var4 = new PropertyDescriptor(var4, var2);
+<i>424</i>&nbsp;                            } else {
+<i>425</i>&nbsp;                                var4 = var2;
+<i>426</i>&nbsp;                            }
+<i>427</i>&nbsp;                        }
+<i>428</i>&nbsp;                    } else if(var4 != null) {
+<b class="nc"><i>429</i>&nbsp;                        var4 = new PropertyDescriptor(var4, var2);</b>
+<i>430</i>&nbsp;                    } else {
+<b class="nc"><i>431</i>&nbsp;                        var4 = var2;</b>
+<b class="nc"><i>432</i>&nbsp;                    }</b>
+<i>433</i>&nbsp;                }
+<i>434</i>&nbsp;            }
+<i>435</i>&nbsp;
+<i>436</i>&nbsp;            Object var11 = null;
+<i>437</i>&nbsp;            var5 = null;
+<b class="nc"><i>438</i>&nbsp;            if(var6 != null &amp;&amp; var7 != null) {</b>
+<b class="nc"><i>439</i>&nbsp;                PropertyDescriptor var12;</b>
+<i>440</i>&nbsp;                if(var3 != null) {
+<b class="nc"><i>441</i>&nbsp;                    var12 = this.mergePropertyDescriptor((IndexedPropertyDescriptor)var6, (PropertyDescriptor)var3);</b>
+<i>442</i>&nbsp;                    if(var12 instanceof IndexedPropertyDescriptor) {
+<b class="nc"><i>443</i>&nbsp;                        var6 = (IndexedPropertyDescriptor)var12;</b>
+<i>444</i>&nbsp;                    }
+<b class="nc"><i>445</i>&nbsp;                }</b>
+<i>446</i>&nbsp;
+<b class="nc"><i>447</i>&nbsp;                if(var4 != null) {</b>
+<b class="nc"><i>448</i>&nbsp;                    var12 = this.mergePropertyDescriptor((IndexedPropertyDescriptor)var7, (PropertyDescriptor)var4);</b>
+<i>449</i>&nbsp;                    if(var12 instanceof IndexedPropertyDescriptor) {
+<i>450</i>&nbsp;                        var7 = (IndexedPropertyDescriptor)var12;
+<b class="nc"><i>451</i>&nbsp;                    }</b>
+<i>452</i>&nbsp;                }
+<i>453</i>&nbsp;
+<b class="nc"><i>454</i>&nbsp;                if(var6 == var7) {</b>
+<b class="nc"><i>455</i>&nbsp;                    var11 = var6;</b>
+<i>456</i>&nbsp;                } else {
+<i>457</i>&nbsp;                    var11 = this.mergePropertyDescriptor((IndexedPropertyDescriptor)var6, (IndexedPropertyDescriptor)var7);
+<b class="nc"><i>458</i>&nbsp;                }</b>
+<b class="nc"><i>459</i>&nbsp;            } else if(var3 != null &amp;&amp; var4 != null) {</b>
+<b class="nc"><i>460</i>&nbsp;                if(var3 == var4) {</b>
+<i>461</i>&nbsp;                    var11 = var3;
+<b class="nc"><i>462</i>&nbsp;                } else {</b>
+<b class="nc"><i>463</i>&nbsp;                    var11 = this.mergePropertyDescriptor((PropertyDescriptor)var3, (PropertyDescriptor)var4);</b>
+<b class="nc"><i>464</i>&nbsp;                }</b>
+<b class="nc"><i>465</i>&nbsp;            } else if(var7 != null) {</b>
+<b class="nc"><i>466</i>&nbsp;                var11 = var7;</b>
+<b class="nc"><i>467</i>&nbsp;                if(var4 != null) {</b>
+<i>468</i>&nbsp;                    var11 = this.mergePropertyDescriptor((IndexedPropertyDescriptor)var7, (PropertyDescriptor)var4);
+<b class="nc"><i>469</i>&nbsp;                }</b>
+<b class="nc"><i>470</i>&nbsp;</b>
+<i>471</i>&nbsp;                if(var3 != null) {
+<i>472</i>&nbsp;                    var11 = this.mergePropertyDescriptor((IndexedPropertyDescriptor)var7, (PropertyDescriptor)var3);
+<b class="nc"><i>473</i>&nbsp;                }</b>
+<b class="nc"><i>474</i>&nbsp;            } else if(var6 != null) {</b>
+<b class="nc"><i>475</i>&nbsp;                var11 = var6;</b>
+<b class="nc"><i>476</i>&nbsp;                if(var3 != null) {</b>
+<b class="nc"><i>477</i>&nbsp;                    var11 = this.mergePropertyDescriptor((IndexedPropertyDescriptor)var6, (PropertyDescriptor)var3);</b>
+<b class="nc"><i>478</i>&nbsp;                }</b>
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;                if(var4 != null) {
+<i>481</i>&nbsp;                    var11 = this.mergePropertyDescriptor((IndexedPropertyDescriptor)var6, (PropertyDescriptor)var4);
+<b class="nc"><i>482</i>&nbsp;                }</b>
+<i>483</i>&nbsp;            } else if(var4 != null) {
+<b class="nc"><i>484</i>&nbsp;                var11 = var4;</b>
+<i>485</i>&nbsp;            } else if(var3 != null) {
+<i>486</i>&nbsp;                var11 = var3;
+<b class="nc"><i>487</i>&nbsp;            }</b>
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;            if(var11 instanceof IndexedPropertyDescriptor) {
+<i>490</i>&nbsp;                var5 = (IndexedPropertyDescriptor)var11;
+<i>491</i>&nbsp;                if(var5.getIndexedReadMethod() == null &amp;&amp; var5.getIndexedWriteMethod() == null) {
+<i>492</i>&nbsp;                    var11 = new PropertyDescriptor(var5);
+<i>493</i>&nbsp;                }
+<i>494</i>&nbsp;            }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;            if(var11 == null &amp;&amp; var1.size() &gt; 0) {
+<i>497</i>&nbsp;                var11 = (PropertyDescriptor)var1.get(0);
+<i>498</i>&nbsp;            }
+<b class="nc"><i>499</i>&nbsp;</b>
+<b class="nc"><i>500</i>&nbsp;            if(var11 != null) {</b>
+<b class="nc"><i>501</i>&nbsp;                this.properties.put(((PropertyDescriptor)var11).getName(), var11);</b>
+<b class="nc"><i>502</i>&nbsp;            }</b>
+<b class="nc"><i>503</i>&nbsp;        }</b>
+<b class="nc"><i>504</i>&nbsp;</b>
+<i>505</i>&nbsp;    }
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;    private PropertyDescriptor mergePropertyDescriptor(IndexedPropertyDescriptor var1, PropertyDescriptor var2) {
+<b class="nc"><i>508</i>&nbsp;        Object var3 = null;</b>
+<i>509</i>&nbsp;        Class var4 = var2.getPropertyType();
+<b class="nc"><i>510</i>&nbsp;        Class var5 = var1.getIndexedPropertyType();</b>
+<b class="nc"><i>511</i>&nbsp;        if(var4.isArray() &amp;&amp; var4.getComponentType() == var5) {</b>
+<b class="nc"><i>512</i>&nbsp;            if(var2.getClass0().isAssignableFrom(var1.getClass0())) {</b>
+<i>513</i>&nbsp;                var3 = new IndexedPropertyDescriptor(var2, var1);
+<b class="nc"><i>514</i>&nbsp;            } else {</b>
+<b class="nc"><i>515</i>&nbsp;                var3 = new IndexedPropertyDescriptor(var1, var2);</b>
+<b class="nc"><i>516</i>&nbsp;            }</b>
+<i>517</i>&nbsp;        } else if(var2.getClass0().isAssignableFrom(var1.getClass0())) {
+<i>518</i>&nbsp;            var3 = var1;
+<i>519</i>&nbsp;        } else {
+<b class="nc"><i>520</i>&nbsp;            var3 = var2;</b>
+<b class="nc"><i>521</i>&nbsp;            Method var6 = var2.getWriteMethod();</b>
+<b class="nc"><i>522</i>&nbsp;            Method var7 = var2.getReadMethod();</b>
+<b class="nc"><i>523</i>&nbsp;            if(var7 == null &amp;&amp; var6 != null) {</b>
+<b class="nc"><i>524</i>&nbsp;                var7 = findMethod(var2.getClass0(), &quot;get&quot; + NameGenerator.capitalize(var2.getName()), 0);</b>
+<i>525</i>&nbsp;                if(var7 != null) {
+<i>526</i>&nbsp;                    try {
+<i>527</i>&nbsp;                        ((PropertyDescriptor)var3).setReadMethod(var7);
+<i>528</i>&nbsp;                    } catch (IntrospectionException var10) {
+<b class="nc"><i>529</i>&nbsp;                        ;</b>
+<i>530</i>&nbsp;                    }
+<b class="nc"><i>531</i>&nbsp;                }</b>
+<b class="nc"><i>532</i>&nbsp;            }</b>
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;            if(var6 == null &amp;&amp; var7 != null) {
+<i>535</i>&nbsp;                var6 = findMethod(var2.getClass0(), &quot;set&quot; + NameGenerator.capitalize(var2.getName()), 1, new Class[]{FeatureDescriptor.getReturnType(var2.getClass0(), var7)});
+<i>536</i>&nbsp;                if(var6 != null) {
+<i>537</i>&nbsp;                    try {
+<i>538</i>&nbsp;                        ((PropertyDescriptor)var3).setWriteMethod(var6);
+<i>539</i>&nbsp;                    } catch (IntrospectionException var9) {
+<b class="nc"><i>540</i>&nbsp;                        ;</b>
+<i>541</i>&nbsp;                    }
+<i>542</i>&nbsp;                }
+<b class="nc"><i>543</i>&nbsp;            }</b>
+<b class="nc"><i>544</i>&nbsp;        }</b>
+<b class="nc"><i>545</i>&nbsp;</b>
+<b class="nc"><i>546</i>&nbsp;        return (PropertyDescriptor)var3;</b>
+<i>547</i>&nbsp;    }
+<i>548</i>&nbsp;
+<b class="nc"><i>549</i>&nbsp;    private PropertyDescriptor mergePropertyDescriptor(PropertyDescriptor var1, PropertyDescriptor var2) {</b>
+<b class="nc"><i>550</i>&nbsp;        return var1.getClass0().isAssignableFrom(var2.getClass0())?new PropertyDescriptor(var1, var2):new PropertyDescriptor(var2, var1);</b>
+<b class="nc"><i>551</i>&nbsp;    }</b>
+<i>552</i>&nbsp;
+<b class="nc"><i>553</i>&nbsp;    private PropertyDescriptor mergePropertyDescriptor(IndexedPropertyDescriptor var1, IndexedPropertyDescriptor var2) {</b>
+<b class="nc"><i>554</i>&nbsp;        return var1.getClass0().isAssignableFrom(var2.getClass0())?new IndexedPropertyDescriptor(var1, var2):new IndexedPropertyDescriptor(var2, var1);</b>
+<b class="nc"><i>555</i>&nbsp;    }</b>
+<b class="nc"><i>556</i>&nbsp;</b>
+<b class="nc"><i>557</i>&nbsp;    private EventSetDescriptor[] getTargetEventInfo() throws IntrospectionException {</b>
+<i>558</i>&nbsp;        if(this.events == null) {
+<b class="nc"><i>559</i>&nbsp;            this.events = new HashMap();</b>
+<i>560</i>&nbsp;        }
+<b class="nc"><i>561</i>&nbsp;</b>
+<i>562</i>&nbsp;        EventSetDescriptor[] var1 = null;
+<i>563</i>&nbsp;        int var2;
+<i>564</i>&nbsp;        if(this.explicitBeanInfo != null) {
+<i>565</i>&nbsp;            var1 = this.explicitBeanInfo.getEventSetDescriptors();
+<b class="nc"><i>566</i>&nbsp;            var2 = this.explicitBeanInfo.getDefaultEventIndex();</b>
+<b class="nc"><i>567</i>&nbsp;            if(var2 &gt;= 0 &amp;&amp; var2 &lt; var1.length) {</b>
+<i>568</i>&nbsp;                this.defaultEventName = var1[var2].getName();
+<b class="nc"><i>569</i>&nbsp;            }</b>
+<i>570</i>&nbsp;        }
+<b class="nc"><i>571</i>&nbsp;</b>
+<i>572</i>&nbsp;        int var3;
+<b class="nc"><i>573</i>&nbsp;        EventSetDescriptor[] var17;</b>
+<i>574</i>&nbsp;        if(var1 == null &amp;&amp; this.superBeanInfo != null) {
+<i>575</i>&nbsp;            var17 = this.superBeanInfo.getEventSetDescriptors();
+<b class="nc"><i>576</i>&nbsp;</b>
+<b class="nc"><i>577</i>&nbsp;            for(var3 = 0; var3 &lt; var17.length; ++var3) {</b>
+<b class="nc"><i>578</i>&nbsp;                this.addEvent(var17[var3]);</b>
+<i>579</i>&nbsp;            }
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;            var3 = this.superBeanInfo.getDefaultEventIndex();
+<b class="nc"><i>582</i>&nbsp;            if(var3 &gt;= 0 &amp;&amp; var3 &lt; var17.length) {</b>
+<i>583</i>&nbsp;                this.defaultEventName = var17[var3].getName();
+<b class="nc"><i>584</i>&nbsp;            }</b>
+<i>585</i>&nbsp;        }
+<b class="nc"><i>586</i>&nbsp;</b>
+<b class="nc"><i>587</i>&nbsp;        for(var2 = 0; var2 &lt; this.additionalBeanInfo.length; ++var2) {</b>
+<i>588</i>&nbsp;            EventSetDescriptor[] var19 = this.additionalBeanInfo[var2].getEventSetDescriptors();
+<i>589</i>&nbsp;            if(var19 != null) {
+<b class="nc"><i>590</i>&nbsp;                for(int var4 = 0; var4 &lt; var19.length; ++var4) {</b>
+<b class="nc"><i>591</i>&nbsp;                    this.addEvent(var19[var4]);</b>
+<b class="nc"><i>592</i>&nbsp;                }</b>
+<i>593</i>&nbsp;            }
+<i>594</i>&nbsp;        }
+<i>595</i>&nbsp;
+<b class="nc"><i>596</i>&nbsp;        if(var1 != null) {</b>
+<b class="nc"><i>597</i>&nbsp;            for(var2 = 0; var2 &lt; var1.length; ++var2) {</b>
+<i>598</i>&nbsp;                this.addEvent(var1[var2]);
+<i>599</i>&nbsp;            }
+<i>600</i>&nbsp;        } else {
+<b class="nc"><i>601</i>&nbsp;            Method[] var18 = getPublicDeclaredMethods(this.beanClass);</b>
+<i>602</i>&nbsp;            HashMap var20 = null;
+<i>603</i>&nbsp;            HashMap var21 = null;
+<i>604</i>&nbsp;            HashMap var5 = null;
+<i>605</i>&nbsp;
+<b class="nc"><i>606</i>&nbsp;            Class var12;</b>
+<b class="nc"><i>607</i>&nbsp;            for(int var6 = 0; var6 &lt; var18.length; ++var6) {</b>
+<i>608</i>&nbsp;                Method var7 = var18[var6];
+<b class="nc"><i>609</i>&nbsp;                if(var7 != null) {</b>
+<i>610</i>&nbsp;                    int var8 = var7.getModifiers();
+<i>611</i>&nbsp;                    if(!Modifier.isStatic(var8)) {
+<b class="nc"><i>612</i>&nbsp;                        String var9 = var7.getName();</b>
+<b class="nc"><i>613</i>&nbsp;                        if(var9.startsWith(&quot;add&quot;) || var9.startsWith(&quot;remove&quot;) || var9.startsWith(&quot;get&quot;)) {</b>
+<i>614</i>&nbsp;                            Class var10;
+<b class="nc"><i>615</i>&nbsp;                            Type[] var11;</b>
+<i>616</i>&nbsp;                            String var13;
+<i>617</i>&nbsp;                            if(var9.startsWith(&quot;add&quot;)) {
+<i>618</i>&nbsp;                                var10 = var7.getReturnType();
+<b class="nc"><i>619</i>&nbsp;                                if(var10 == Void.TYPE) {</b>
+<i>620</i>&nbsp;                                    var11 = var7.getGenericParameterTypes();
+<i>621</i>&nbsp;                                    if(var11.length == 1) {
+<b class="nc"><i>622</i>&nbsp;                                        var12 = TypeResolver.erase(TypeResolver.resolveInClass(this.beanClass, var11[0]));</b>
+<b class="nc"><i>623</i>&nbsp;                                        if(isSubclass(var12, eventListenerType)) {</b>
+<i>624</i>&nbsp;                                            var13 = var9.substring(3);
+<i>625</i>&nbsp;                                            if(var13.length() &gt; 0 &amp;&amp; var12.getName().endsWith(var13)) {
+<b class="nc"><i>626</i>&nbsp;                                                if(var20 == null) {</b>
+<b class="nc"><i>627</i>&nbsp;                                                    var20 = new HashMap();</b>
+<b class="nc"><i>628</i>&nbsp;                                                }</b>
+<b class="nc"><i>629</i>&nbsp;</b>
+<i>630</i>&nbsp;                                                var20.put(var13, var7);
+<i>631</i>&nbsp;                                            }
+<i>632</i>&nbsp;                                        }
+<i>633</i>&nbsp;                                    }
+<b class="nc"><i>634</i>&nbsp;                                }</b>
+<i>635</i>&nbsp;                            } else if(var9.startsWith(&quot;remove&quot;)) {
+<i>636</i>&nbsp;                                var10 = var7.getReturnType();
+<b class="nc"><i>637</i>&nbsp;                                if(var10 == Void.TYPE) {</b>
+<i>638</i>&nbsp;                                    var11 = var7.getGenericParameterTypes();
+<i>639</i>&nbsp;                                    if(var11.length == 1) {
+<i>640</i>&nbsp;                                        var12 = TypeResolver.erase(TypeResolver.resolveInClass(this.beanClass, var11[0]));
+<i>641</i>&nbsp;                                        if(isSubclass(var12, eventListenerType)) {
+<i>642</i>&nbsp;                                            var13 = var9.substring(6);
+<b class="nc"><i>643</i>&nbsp;                                            if(var13.length() &gt; 0 &amp;&amp; var12.getName().endsWith(var13)) {</b>
+<b class="nc"><i>644</i>&nbsp;                                                if(var21 == null) {</b>
+<b class="nc"><i>645</i>&nbsp;                                                    var21 = new HashMap();</b>
+<b class="nc"><i>646</i>&nbsp;                                                }</b>
+<b class="nc"><i>647</i>&nbsp;</b>
+<i>648</i>&nbsp;                                                var21.put(var13, var7);
+<b class="nc"><i>649</i>&nbsp;                                            }</b>
+<i>650</i>&nbsp;                                        }
+<i>651</i>&nbsp;                                    }
+<i>652</i>&nbsp;                                }
+<i>653</i>&nbsp;                            } else if(var9.startsWith(&quot;get&quot;)) {
+<i>654</i>&nbsp;                                Class[] var27 = var7.getParameterTypes();
+<i>655</i>&nbsp;                                if(var27.length == 0) {
+<i>656</i>&nbsp;                                    Class var28 = FeatureDescriptor.getReturnType(this.beanClass, var7);
+<b class="nc"><i>657</i>&nbsp;                                    if(var28.isArray()) {</b>
+<b class="nc"><i>658</i>&nbsp;                                        var12 = var28.getComponentType();</b>
+<i>659</i>&nbsp;                                        if(isSubclass(var12, eventListenerType)) {
+<i>660</i>&nbsp;                                            var13 = var9.substring(3, var9.length() - 1);
+<i>661</i>&nbsp;                                            if(var13.length() &gt; 0 &amp;&amp; var12.getName().endsWith(var13)) {
+<i>662</i>&nbsp;                                                if(var5 == null) {
+<i>663</i>&nbsp;                                                    var5 = new HashMap();
+<i>664</i>&nbsp;                                                }
+<i>665</i>&nbsp;
+<b class="nc"><i>666</i>&nbsp;                                                var5.put(var13, var7);</b>
+<b class="nc"><i>667</i>&nbsp;                                            }</b>
+<b class="nc"><i>668</i>&nbsp;                                        }</b>
+<b class="nc"><i>669</i>&nbsp;                                    }</b>
+<i>670</i>&nbsp;                                }
+<b class="nc"><i>671</i>&nbsp;                            }</b>
+<i>672</i>&nbsp;                        }
+<i>673</i>&nbsp;                    }
+<i>674</i>&nbsp;                }
+<b class="nc"><i>675</i>&nbsp;            }</b>
+<b class="nc"><i>676</i>&nbsp;</b>
+<b class="nc"><i>677</i>&nbsp;            if(var20 != null &amp;&amp; var21 != null) {</b>
+<b class="nc"><i>678</i>&nbsp;                Iterator var22 = var20.keySet().iterator();</b>
+<b class="nc"><i>679</i>&nbsp;</b>
+<b class="nc"><i>680</i>&nbsp;                while(var22.hasNext()) {</b>
+<b class="nc"><i>681</i>&nbsp;                    String var23 = (String)var22.next();</b>
+<i>682</i>&nbsp;                    if(var21.get(var23) != null &amp;&amp; var23.endsWith(&quot;Listener&quot;)) {
+<b class="nc"><i>683</i>&nbsp;                        String var24 = decapitalize(var23.substring(0, var23.length() - 8));</b>
+<i>684</i>&nbsp;                        Method var25 = (Method)var20.get(var23);
+<i>685</i>&nbsp;                        Method var26 = (Method)var21.get(var23);
+<i>686</i>&nbsp;                        Method var29 = null;
+<b class="nc"><i>687</i>&nbsp;                        if(var5 != null) {</b>
+<b class="nc"><i>688</i>&nbsp;                            var29 = (Method)var5.get(var23);</b>
+<i>689</i>&nbsp;                        }
+<i>690</i>&nbsp;
+<b class="nc"><i>691</i>&nbsp;                        var12 = FeatureDescriptor.getParameterTypes(this.beanClass, var25)[0];</b>
+<b class="nc"><i>692</i>&nbsp;                        Method[] var30 = getPublicDeclaredMethods(var12);</b>
+<b class="nc"><i>693</i>&nbsp;                        ArrayList var14 = new ArrayList(var30.length);</b>
+<i>694</i>&nbsp;
+<b class="nc"><i>695</i>&nbsp;                        for(int var15 = 0; var15 &lt; var30.length; ++var15) {</b>
+<b class="nc"><i>696</i>&nbsp;                            if(var30[var15] != null &amp;&amp; this.isEventHandler(var30[var15])) {</b>
+<i>697</i>&nbsp;                                var14.add(var30[var15]);
+<i>698</i>&nbsp;                            }
+<i>699</i>&nbsp;                        }
+<i>700</i>&nbsp;
+<i>701</i>&nbsp;                        Method[] var31 = (Method[])((Method[])var14.toArray(new Method[var14.size()]));
+<i>702</i>&nbsp;                        EventSetDescriptor var16 = new EventSetDescriptor(var24, var12, var31, var25, var26, var29);
+<i>703</i>&nbsp;                        if(this.throwsException(var25, TooManyListenersException.class)) {
+<b class="nc"><i>704</i>&nbsp;                            var16.setUnicast(true);</b>
+<b class="nc"><i>705</i>&nbsp;                        }</b>
+<b class="nc"><i>706</i>&nbsp;</b>
+<b class="nc"><i>707</i>&nbsp;                        this.addEvent(var16);</b>
+<b class="nc"><i>708</i>&nbsp;                    }</b>
+<b class="nc"><i>709</i>&nbsp;                }</b>
+<b class="nc"><i>710</i>&nbsp;            }</b>
+<i>711</i>&nbsp;        }
+<b class="nc"><i>712</i>&nbsp;</b>
+<b class="nc"><i>713</i>&nbsp;        if(this.events.size() == 0) {</b>
+<i>714</i>&nbsp;            var17 = EMPTY_EVENTSETDESCRIPTORS;
+<b class="nc"><i>715</i>&nbsp;        } else {</b>
+<i>716</i>&nbsp;            var17 = new EventSetDescriptor[this.events.size()];
+<i>717</i>&nbsp;            var17 = (EventSetDescriptor[])((EventSetDescriptor[])this.events.values().toArray(var17));
+<i>718</i>&nbsp;            if(this.defaultEventName != null) {
+<b class="nc"><i>719</i>&nbsp;                for(var3 = 0; var3 &lt; var17.length; ++var3) {</b>
+<b class="nc"><i>720</i>&nbsp;                    if(this.defaultEventName.equals(var17[var3].getName())) {</b>
+<i>721</i>&nbsp;                        this.defaultEventIndex = var3;
+<b class="nc"><i>722</i>&nbsp;                    }</b>
+<i>723</i>&nbsp;                }
+<i>724</i>&nbsp;            }
+<i>725</i>&nbsp;        }
+<i>726</i>&nbsp;
+<b class="nc"><i>727</i>&nbsp;        return var17;</b>
+<b class="nc"><i>728</i>&nbsp;    }</b>
+<b class="nc"><i>729</i>&nbsp;</b>
+<b class="nc"><i>730</i>&nbsp;    private void addEvent(EventSetDescriptor var1) {</b>
+<b class="nc"><i>731</i>&nbsp;        String var2 = var1.getName();</b>
+<i>732</i>&nbsp;        if(var1.getName().equals(&quot;propertyChange&quot;)) {
+<b class="nc"><i>733</i>&nbsp;            this.propertyChangeSource = true;</b>
+<i>734</i>&nbsp;        }
+<i>735</i>&nbsp;
+<i>736</i>&nbsp;        EventSetDescriptor var3 = (EventSetDescriptor)this.events.get(var2);
+<b class="nc"><i>737</i>&nbsp;        if(var3 == null) {</b>
+<b class="nc"><i>738</i>&nbsp;            this.events.put(var2, var1);</b>
+<i>739</i>&nbsp;        } else {
+<b class="nc"><i>740</i>&nbsp;            EventSetDescriptor var4 = new EventSetDescriptor(var3, var1);</b>
+<i>741</i>&nbsp;            this.events.put(var2, var4);
+<i>742</i>&nbsp;        }
+<i>743</i>&nbsp;    }
+<i>744</i>&nbsp;
+<i>745</i>&nbsp;    private MethodDescriptor[] getTargetMethodInfo() {
+<i>746</i>&nbsp;        if(this.methods == null) {
+<i>747</i>&nbsp;            this.methods = new HashMap(100);
+<i>748</i>&nbsp;        }
+<i>749</i>&nbsp;
+<i>750</i>&nbsp;        MethodDescriptor[] var1 = null;
+<b class="nc"><i>751</i>&nbsp;        if(this.explicitBeanInfo != null) {</b>
+<i>752</i>&nbsp;            var1 = this.explicitBeanInfo.getMethodDescriptors();
+<b class="nc"><i>753</i>&nbsp;        }</b>
+<i>754</i>&nbsp;
+<i>755</i>&nbsp;        MethodDescriptor[] var2;
+<b class="nc"><i>756</i>&nbsp;        int var3;</b>
+<b class="nc"><i>757</i>&nbsp;        if(var1 == null &amp;&amp; this.superBeanInfo != null) {</b>
+<b class="nc"><i>758</i>&nbsp;            var2 = this.superBeanInfo.getMethodDescriptors();</b>
+<b class="nc"><i>759</i>&nbsp;</b>
+<i>760</i>&nbsp;            for(var3 = 0; var3 &lt; var2.length; ++var3) {
+<i>761</i>&nbsp;                this.addMethod(var2[var3]);
+<b class="nc"><i>762</i>&nbsp;            }</b>
+<b class="nc"><i>763</i>&nbsp;        }</b>
+<b class="nc"><i>764</i>&nbsp;</b>
+<b class="nc"><i>765</i>&nbsp;        int var6;</b>
+<i>766</i>&nbsp;        for(var6 = 0; var6 &lt; this.additionalBeanInfo.length; ++var6) {
+<i>767</i>&nbsp;            MethodDescriptor[] var7 = this.additionalBeanInfo[var6].getMethodDescriptors();
+<b class="nc"><i>768</i>&nbsp;            if(var7 != null) {</b>
+<b class="nc"><i>769</i>&nbsp;                for(int var4 = 0; var4 &lt; var7.length; ++var4) {</b>
+<i>770</i>&nbsp;                    this.addMethod(var7[var4]);
+<b class="nc"><i>771</i>&nbsp;                }</b>
+<i>772</i>&nbsp;            }
+<b class="nc"><i>773</i>&nbsp;        }</b>
+<i>774</i>&nbsp;
+<b class="nc"><i>775</i>&nbsp;        if(var1 != null) {</b>
+<b class="nc"><i>776</i>&nbsp;            for(var6 = 0; var6 &lt; var1.length; ++var6) {</b>
+<i>777</i>&nbsp;                this.addMethod(var1[var6]);
+<b class="nc"><i>778</i>&nbsp;            }</b>
+<i>779</i>&nbsp;        } else {
+<b class="nc"><i>780</i>&nbsp;            Method[] var8 = getPublicDeclaredMethods(this.beanClass);</b>
+<i>781</i>&nbsp;
+<b class="nc"><i>782</i>&nbsp;            for(var3 = 0; var3 &lt; var8.length; ++var3) {</b>
+<i>783</i>&nbsp;                Method var9 = var8[var3];
+<b class="nc"><i>784</i>&nbsp;                if(var9 != null) {</b>
+<b class="nc"><i>785</i>&nbsp;                    MethodDescriptor var5 = new MethodDescriptor(var9);</b>
+<i>786</i>&nbsp;                    this.addMethod(var5);
+<b class="nc"><i>787</i>&nbsp;                }</b>
+<b class="nc"><i>788</i>&nbsp;            }</b>
+<i>789</i>&nbsp;        }
+<b class="nc"><i>790</i>&nbsp;</b>
+<i>791</i>&nbsp;        var2 = new MethodDescriptor[this.methods.size()];
+<b class="nc"><i>792</i>&nbsp;        var2 = (MethodDescriptor[])((MethodDescriptor[])this.methods.values().toArray(var2));</b>
+<i>793</i>&nbsp;        return var2;
+<b class="nc"><i>794</i>&nbsp;    }</b>
+<b class="nc"><i>795</i>&nbsp;</b>
+<i>796</i>&nbsp;    private void addMethod(MethodDescriptor var1) {
+<b class="nc"><i>797</i>&nbsp;        String var2 = var1.getName();</b>
+<b class="nc"><i>798</i>&nbsp;        MethodDescriptor var3 = (MethodDescriptor)this.methods.get(var2);</b>
+<i>799</i>&nbsp;        if(var3 == null) {
+<b class="nc"><i>800</i>&nbsp;            this.methods.put(var2, var1);</b>
+<i>801</i>&nbsp;        } else {
+<b class="nc"><i>802</i>&nbsp;            String[] var4 = var1.getParamNames();</b>
+<b class="nc"><i>803</i>&nbsp;            String[] var5 = var3.getParamNames();</b>
+<i>804</i>&nbsp;            boolean var6 = false;
+<b class="nc"><i>805</i>&nbsp;            if(var4.length == var5.length) {</b>
+<i>806</i>&nbsp;                var6 = true;
+<i>807</i>&nbsp;
+<i>808</i>&nbsp;                for(int var7 = 0; var7 &lt; var4.length; ++var7) {
+<i>809</i>&nbsp;                    if(var4[var7] != var5[var7]) {
+<i>810</i>&nbsp;                        var6 = false;
+<i>811</i>&nbsp;                        break;
+<b class="nc"><i>812</i>&nbsp;                    }</b>
+<b class="nc"><i>813</i>&nbsp;                }</b>
+<b class="nc"><i>814</i>&nbsp;            }</b>
+<b class="nc"><i>815</i>&nbsp;</b>
+<i>816</i>&nbsp;            if(var6) {
+<i>817</i>&nbsp;                MethodDescriptor var9 = new MethodDescriptor(var3, var1);
+<i>818</i>&nbsp;                this.methods.put(var2, var9);
+<i>819</i>&nbsp;            } else {
+<i>820</i>&nbsp;                String var10 = makeQualifiedMethodName(var2, var4);
+<i>821</i>&nbsp;                var3 = (MethodDescriptor)this.methods.get(var10);
+<b class="nc"><i>822</i>&nbsp;                if(var3 == null) {</b>
+<b class="nc"><i>823</i>&nbsp;                    this.methods.put(var10, var1);</b>
+<i>824</i>&nbsp;                } else {
+<i>825</i>&nbsp;                    MethodDescriptor var8 = new MethodDescriptor(var3, var1);
+<b class="nc"><i>826</i>&nbsp;                    this.methods.put(var10, var8);</b>
+<b class="nc"><i>827</i>&nbsp;                }</b>
+<i>828</i>&nbsp;            }
+<i>829</i>&nbsp;        }
+<i>830</i>&nbsp;    }
+<i>831</i>&nbsp;
+<i>832</i>&nbsp;    private static String makeQualifiedMethodName(String var0, String[] var1) {
+<i>833</i>&nbsp;        StringBuffer var2 = new StringBuffer(var0);
+<i>834</i>&nbsp;        var2.append(&#39;=&#39;);
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.length; ++var3) {
+<i>837</i>&nbsp;            var2.append(&#39;:&#39;);
+<i>838</i>&nbsp;            var2.append(var1[var3]);
+<i>839</i>&nbsp;        }
+<b class="nc"><i>840</i>&nbsp;</b>
+<i>841</i>&nbsp;        return var2.toString();
+<b class="nc"><i>842</i>&nbsp;    }</b>
+<b class="nc"><i>843</i>&nbsp;</b>
+<i>844</i>&nbsp;    private int getTargetDefaultEventIndex() {
+<b class="nc"><i>845</i>&nbsp;        return this.defaultEventIndex;</b>
+<b class="nc"><i>846</i>&nbsp;    }</b>
+<b class="nc"><i>847</i>&nbsp;</b>
+<i>848</i>&nbsp;    private int getTargetDefaultPropertyIndex() {
+<b class="nc"><i>849</i>&nbsp;        return this.defaultPropertyIndex;</b>
+<i>850</i>&nbsp;    }
+<i>851</i>&nbsp;
+<i>852</i>&nbsp;    private BeanDescriptor getTargetBeanDescriptor() {
+<i>853</i>&nbsp;        if(this.explicitBeanInfo != null) {
+<b class="nc"><i>854</i>&nbsp;            BeanDescriptor var1 = this.explicitBeanInfo.getBeanDescriptor();</b>
+<b class="nc"><i>855</i>&nbsp;            if(var1 != null) {</b>
+<i>856</i>&nbsp;                return var1;
+<b class="nc"><i>857</i>&nbsp;            }</b>
+<i>858</i>&nbsp;        }
+<i>859</i>&nbsp;
+<b class="nc"><i>860</i>&nbsp;        return new BeanDescriptor(this.beanClass, findCustomizerClass(this.beanClass));</b>
+<b class="nc"><i>861</i>&nbsp;    }</b>
+<i>862</i>&nbsp;
+<b class="nc"><i>863</i>&nbsp;    private static Class&lt;?&gt; findCustomizerClass(Class&lt;?&gt; var0) {</b>
+<b class="nc"><i>864</i>&nbsp;        String var1 = var0.getName() + &quot;Customizer&quot;;</b>
+<i>865</i>&nbsp;
+<b class="nc"><i>866</i>&nbsp;        try {</b>
+<i>867</i>&nbsp;            var0 = ClassFinder.findClass(var1, var0.getClassLoader());
+<b class="nc"><i>868</i>&nbsp;            if(Component.class.isAssignableFrom(var0) &amp;&amp; Customizer.class.isAssignableFrom(var0)) {</b>
+<b class="nc"><i>869</i>&nbsp;                return var0;</b>
+<i>870</i>&nbsp;            }
+<b class="nc"><i>871</i>&nbsp;        } catch (Exception var3) {</b>
+<i>872</i>&nbsp;            ;
+<i>873</i>&nbsp;        }
+<b class="nc"><i>874</i>&nbsp;</b>
+<b class="nc"><i>875</i>&nbsp;        return null;</b>
+<i>876</i>&nbsp;    }
+<i>877</i>&nbsp;
+<b class="nc"><i>878</i>&nbsp;    private boolean isEventHandler(Method var1) {</b>
+<i>879</i>&nbsp;        Type[] var2 = var1.getGenericParameterTypes();
+<b class="nc"><i>880</i>&nbsp;        return var2.length != 1?false:isSubclass(TypeResolver.erase(TypeResolver.resolveInClass(this.beanClass, var2[0])), EventObject.class);</b>
+<b class="nc"><i>881</i>&nbsp;    }</b>
+<i>882</i>&nbsp;
+<b class="nc"><i>883</i>&nbsp;    private static Method[] getPublicDeclaredMethods(Class var0) {</b>
+<i>884</i>&nbsp;        if(!ReflectUtil.isPackageAccessible(var0)) {
+<i>885</i>&nbsp;            return new Method[0];
+<i>886</i>&nbsp;        } else {
+<i>887</i>&nbsp;            WeakCache var1 = declaredMethodCache;
+<b class="nc"><i>888</i>&nbsp;            synchronized(declaredMethodCache) {</b>
+<i>889</i>&nbsp;                Method[] var2 = (Method[])declaredMethodCache.get(var0);
+<i>890</i>&nbsp;                if(var2 == null) {
+<i>891</i>&nbsp;                    var2 = var0.getMethods();
+<i>892</i>&nbsp;
+<i>893</i>&nbsp;                    for(int var3 = 0; var3 &lt; var2.length; ++var3) {
+<b class="nc"><i>894</i>&nbsp;                        Method var4 = var2[var3];</b>
+<b class="nc"><i>895</i>&nbsp;                        if(!var4.getDeclaringClass().equals(var0)) {</b>
+<i>896</i>&nbsp;                            var2[var3] = null;
+<b class="nc"><i>897</i>&nbsp;                        }</b>
+<i>898</i>&nbsp;                    }
+<i>899</i>&nbsp;
+<i>900</i>&nbsp;                    declaredMethodCache.put(var0, var2);
+<i>901</i>&nbsp;                }
+<i>902</i>&nbsp;
+<i>903</i>&nbsp;                return var2;
+<b class="nc"><i>904</i>&nbsp;            }</b>
+<b class="nc"><i>905</i>&nbsp;        }</b>
+<i>906</i>&nbsp;    }
+<b class="nc"><i>907</i>&nbsp;</b>
+<i>908</i>&nbsp;    private static Method internalFindMethod(Class var0, String var1, int var2, Class[] var3) {
+<i>909</i>&nbsp;        Method var4 = null;
+<i>910</i>&nbsp;
+<i>911</i>&nbsp;        for(Class var5 = var0; var5 != null; var5 = var5.getSuperclass()) {
+<i>912</i>&nbsp;            Method[] var6 = getPublicDeclaredMethods(var5);
+<i>913</i>&nbsp;
+<i>914</i>&nbsp;            for(int var7 = 0; var7 &lt; var6.length; ++var7) {
+<i>915</i>&nbsp;                var4 = var6[var7];
+<b class="nc"><i>916</i>&nbsp;                if(var4 != null &amp;&amp; var4.getName().equals(var1)) {</b>
+<b class="nc"><i>917</i>&nbsp;                    Type[] var8 = var4.getGenericParameterTypes();</b>
+<i>918</i>&nbsp;                    if(var8.length == var2) {
+<i>919</i>&nbsp;                        if(var3 == null) {
+<i>920</i>&nbsp;                            return var4;
+<i>921</i>&nbsp;                        }
+<b class="nc"><i>922</i>&nbsp;</b>
+<b class="nc"><i>923</i>&nbsp;                        boolean var9 = false;</b>
+<b class="nc"><i>924</i>&nbsp;                        if(var2 &lt;= 0) {</b>
+<b class="nc"><i>925</i>&nbsp;                            return var4;</b>
+<b class="nc"><i>926</i>&nbsp;                        }</b>
+<b class="nc"><i>927</i>&nbsp;</b>
+<i>928</i>&nbsp;                        for(int var10 = 0; var10 &lt; var2; ++var10) {
+<i>929</i>&nbsp;                            if(TypeResolver.erase(TypeResolver.resolveInClass(var0, var8[var10])) != var3[var10]) {
+<i>930</i>&nbsp;                                var9 = true;
+<b class="nc"><i>931</i>&nbsp;                            }</b>
+<i>932</i>&nbsp;                        }
+<b class="nc"><i>933</i>&nbsp;</b>
+<b class="nc"><i>934</i>&nbsp;                        if(!var9) {</b>
+<b class="nc"><i>935</i>&nbsp;                            return var4;</b>
+<i>936</i>&nbsp;                        }
+<b class="nc"><i>937</i>&nbsp;                    }</b>
+<b class="nc"><i>938</i>&nbsp;                }</b>
+<b class="nc"><i>939</i>&nbsp;            }</b>
+<i>940</i>&nbsp;        }
+<i>941</i>&nbsp;
+<i>942</i>&nbsp;        var4 = null;
+<b class="nc"><i>943</i>&nbsp;        Class[] var11 = var0.getInterfaces();</b>
+<b class="nc"><i>944</i>&nbsp;</b>
+<b class="nc"><i>945</i>&nbsp;        for(int var12 = 0; var12 &lt; var11.length; ++var12) {</b>
+<b class="nc"><i>946</i>&nbsp;            var4 = internalFindMethod(var11[var12], var1, var2, (Class[])null);</b>
+<b class="nc"><i>947</i>&nbsp;            if(var4 != null) {</b>
+<i>948</i>&nbsp;                break;
+<i>949</i>&nbsp;            }
+<i>950</i>&nbsp;        }
+<i>951</i>&nbsp;
+<b class="nc"><i>952</i>&nbsp;        return var4;</b>
+<i>953</i>&nbsp;    }
+<b class="nc"><i>954</i>&nbsp;</b>
+<b class="nc"><i>955</i>&nbsp;    static Method findMethod(Class var0, String var1, int var2) {</b>
+<i>956</i>&nbsp;        return findMethod(var0, var1, var2, (Class[])null);
+<i>957</i>&nbsp;    }
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;    static Method findMethod(Class var0, String var1, int var2, Class[] var3) {
+<i>960</i>&nbsp;        return var1 == null?null:internalFindMethod(var0, var1, var2, var3);
+<i>961</i>&nbsp;    }
+<i>962</i>&nbsp;
+<b class="nc"><i>963</i>&nbsp;    static boolean isSubclass(Class var0, Class var1) {</b>
+<i>964</i>&nbsp;        if(var0 == var1) {
+<i>965</i>&nbsp;            return true;
+<i>966</i>&nbsp;        } else if(var0 != null &amp;&amp; var1 != null) {
+<i>967</i>&nbsp;            for(Class var2 = var0; var2 != null; var2 = var2.getSuperclass()) {
+<b class="nc"><i>968</i>&nbsp;                if(var2 == var1) {</b>
+<b class="nc"><i>969</i>&nbsp;                    return true;</b>
+<b class="nc"><i>970</i>&nbsp;                }</b>
+<i>971</i>&nbsp;
+<b class="nc"><i>972</i>&nbsp;                if(var1.isInterface()) {</b>
+<b class="nc"><i>973</i>&nbsp;                    Class[] var3 = var2.getInterfaces();</b>
+<b class="nc"><i>974</i>&nbsp;</b>
+<b class="nc"><i>975</i>&nbsp;                    for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<i>976</i>&nbsp;                        if(isSubclass(var3[var4], var1)) {
+<i>977</i>&nbsp;                            return true;
+<b class="nc"><i>978</i>&nbsp;                        }</b>
+<b class="nc"><i>979</i>&nbsp;                    }</b>
+<b class="nc"><i>980</i>&nbsp;                }</b>
+<i>981</i>&nbsp;            }
+<b class="nc"><i>982</i>&nbsp;</b>
+<i>983</i>&nbsp;            return false;
+<b class="nc"><i>984</i>&nbsp;        } else {</b>
+<i>985</i>&nbsp;            return false;
+<b class="nc"><i>986</i>&nbsp;        }</b>
+<i>987</i>&nbsp;    }
+<i>988</i>&nbsp;
+<b class="nc"><i>989</i>&nbsp;    private boolean throwsException(Method var1, Class var2) {</b>
+<b class="nc"><i>990</i>&nbsp;        Class[] var3 = var1.getExceptionTypes();</b>
+<i>991</i>&nbsp;
+<b class="nc"><i>992</i>&nbsp;        for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<i>993</i>&nbsp;            if(var3[var4] == var2) {
+<i>994</i>&nbsp;                return true;
+<b class="nc"><i>995</i>&nbsp;            }</b>
+<b class="nc"><i>996</i>&nbsp;        }</b>
+<i>997</i>&nbsp;
+<b class="nc"><i>998</i>&nbsp;        return false;</b>
+<b class="nc"><i>999</i>&nbsp;    }</b>
+<i>1000</i>&nbsp;
+<b class="nc"><i>1001</i>&nbsp;    static Object instantiate(Class var0, String var1) throws InstantiationException, IllegalAccessException, ClassNotFoundException {</b>
+<i>1002</i>&nbsp;        ClassLoader var2 = var0.getClassLoader();
+<b class="nc"><i>1003</i>&nbsp;        Class var3 = ClassFinder.findClass(var1, var2);</b>
+<b class="nc"><i>1004</i>&nbsp;        return var3.newInstance();</b>
+<i>1005</i>&nbsp;    }
+<i>1006</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

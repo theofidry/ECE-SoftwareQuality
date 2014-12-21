@@ -1,0 +1,377 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XMLDTDLoader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.impl.dtd</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XMLDTDLoader (com.sun.org.apache.xerces.internal.impl.dtd)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XMLDTDLoader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 99)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.impl.dtd;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.XMLDTDScannerImpl;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.XMLEntityManager;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.XMLErrorReporter;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dtd.BalancedDTDGrammar;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dtd.DTDGrammar;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dtd.DTDGrammarBucket;
+<i>14</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dtd.XMLDTDDescription;
+<i>15</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dtd.XMLDTDProcessor;
+<i>16</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dtd.XMLDTDValidator;
+<i>17</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.msg.XMLMessageFormatter;
+<i>18</i>&nbsp;import com.sun.org.apache.xerces.internal.util.DefaultErrorHandler;
+<i>19</i>&nbsp;import com.sun.org.apache.xerces.internal.util.Status;
+<i>20</i>&nbsp;import com.sun.org.apache.xerces.internal.util.SymbolTable;
+<i>21</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XNIException;
+<i>22</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.grammars.Grammar;
+<i>23</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarLoader;
+<i>24</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarPool;
+<i>25</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLConfigurationException;
+<i>26</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLEntityResolver;
+<i>27</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLErrorHandler;
+<i>28</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLInputSource;
+<i>29</i>&nbsp;import java.io.EOFException;
+<i>30</i>&nbsp;import java.io.IOException;
+<i>31</i>&nbsp;import java.io.StringReader;
+<i>32</i>&nbsp;import java.util.Locale;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;public class XMLDTDLoader extends XMLDTDProcessor implements XMLGrammarLoader {
+<i>35</i>&nbsp;    protected static final String STANDARD_URI_CONFORMANT_FEATURE = &quot;http://apache.org/xml/features/standard-uri-conformant&quot;;
+<i>36</i>&nbsp;    protected static final String BALANCE_SYNTAX_TREES = &quot;http://apache.org/xml/features/validation/balance-syntax-trees&quot;;
+<i>37</i>&nbsp;    private static final String[] LOADER_RECOGNIZED_FEATURES = new String[]{&quot;http://xml.org/sax/features/validation&quot;, &quot;http://apache.org/xml/features/validation/warn-on-duplicate-attdef&quot;, &quot;http://apache.org/xml/features/validation/warn-on-undeclared-elemdef&quot;, &quot;http://apache.org/xml/features/scanner/notify-char-refs&quot;, &quot;http://apache.org/xml/features/standard-uri-conformant&quot;, &quot;http://apache.org/xml/features/validation/balance-syntax-trees&quot;};
+<i>38</i>&nbsp;    protected static final String ERROR_HANDLER = &quot;http://apache.org/xml/properties/internal/error-handler&quot;;
+<i>39</i>&nbsp;    public static final String ENTITY_RESOLVER = &quot;http://apache.org/xml/properties/internal/entity-resolver&quot;;
+<i>40</i>&nbsp;    public static final String LOCALE = &quot;http://apache.org/xml/properties/locale&quot;;
+<i>41</i>&nbsp;    private static final String[] LOADER_RECOGNIZED_PROPERTIES = new String[]{&quot;http://apache.org/xml/properties/internal/symbol-table&quot;, &quot;http://apache.org/xml/properties/internal/error-reporter&quot;, &quot;http://apache.org/xml/properties/internal/error-handler&quot;, &quot;http://apache.org/xml/properties/internal/entity-resolver&quot;, &quot;http://apache.org/xml/properties/internal/grammar-pool&quot;, &quot;http://apache.org/xml/properties/internal/validator/dtd&quot;, &quot;http://apache.org/xml/properties/locale&quot;};
+<i>42</i>&nbsp;    private boolean fStrictURI;
+<i>43</i>&nbsp;    private boolean fBalanceSyntaxTrees;
+<i>44</i>&nbsp;    protected XMLEntityResolver fEntityResolver;
+<i>45</i>&nbsp;    protected XMLDTDScannerImpl fDTDScanner;
+<i>46</i>&nbsp;    protected XMLEntityManager fEntityManager;
+<i>47</i>&nbsp;    protected Locale fLocale;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public XMLDTDLoader() {
+<i>50</i>&nbsp;        this(new SymbolTable());
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public XMLDTDLoader(SymbolTable symbolTable) {
+<i>54</i>&nbsp;        this(symbolTable, (XMLGrammarPool)null);
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public XMLDTDLoader(SymbolTable symbolTable, XMLGrammarPool grammarPool) {
+<i>58</i>&nbsp;        this(symbolTable, grammarPool, (XMLErrorReporter)null, new XMLEntityManager());
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    XMLDTDLoader(SymbolTable symbolTable, XMLGrammarPool grammarPool, XMLErrorReporter errorReporter, XMLEntityResolver entityResolver) {
+<i>62</i>&nbsp;        this.fStrictURI = false;
+<i>63</i>&nbsp;        this.fBalanceSyntaxTrees = false;
+<i>64</i>&nbsp;        this.fSymbolTable = symbolTable;
+<i>65</i>&nbsp;        this.fGrammarPool = grammarPool;
+<i>66</i>&nbsp;        if(errorReporter == null) {
+<i>67</i>&nbsp;            errorReporter = new XMLErrorReporter();
+<i>68</i>&nbsp;            errorReporter.setProperty(&quot;http://apache.org/xml/properties/internal/error-handler&quot;, new DefaultErrorHandler());
+<i>69</i>&nbsp;        }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;        this.fErrorReporter = errorReporter;
+<i>72</i>&nbsp;        if(this.fErrorReporter.getMessageFormatter(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;) == null) {
+<i>73</i>&nbsp;            XMLMessageFormatter xmft = new XMLMessageFormatter();
+<i>74</i>&nbsp;            this.fErrorReporter.putMessageFormatter(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, xmft);
+<i>75</i>&nbsp;            this.fErrorReporter.putMessageFormatter(&quot;http://www.w3.org/TR/1999/REC-xml-names-19990114&quot;, xmft);
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        this.fEntityResolver = entityResolver;
+<i>79</i>&nbsp;        if(this.fEntityResolver instanceof XMLEntityManager) {
+<i>80</i>&nbsp;            this.fEntityManager = (XMLEntityManager)this.fEntityResolver;
+<i>81</i>&nbsp;        } else {
+<i>82</i>&nbsp;            this.fEntityManager = new XMLEntityManager();
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;        this.fEntityManager.setProperty(&quot;http://apache.org/xml/properties/internal/error-reporter&quot;, errorReporter);
+<i>86</i>&nbsp;        this.fDTDScanner = this.createDTDScanner(this.fSymbolTable, this.fErrorReporter, this.fEntityManager);
+<i>87</i>&nbsp;        this.fDTDScanner.setDTDHandler(this);
+<i>88</i>&nbsp;        this.fDTDScanner.setDTDContentModelHandler(this);
+<i>89</i>&nbsp;        this.reset();
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public String[] getRecognizedFeatures() {
+<i>93</i>&nbsp;        return (String[])((String[])LOADER_RECOGNIZED_FEATURES.clone());
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public void setFeature(String featureId, boolean state) throws XMLConfigurationException {
+<i>97</i>&nbsp;        if(featureId.equals(&quot;http://xml.org/sax/features/validation&quot;)) {
+<i>98</i>&nbsp;            this.fValidation = state;
+<i>99</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/validation/warn-on-duplicate-attdef&quot;)) {
+<i>100</i>&nbsp;            this.fWarnDuplicateAttdef = state;
+<i>101</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/validation/warn-on-undeclared-elemdef&quot;)) {
+<i>102</i>&nbsp;            this.fWarnOnUndeclaredElemdef = state;
+<i>103</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/scanner/notify-char-refs&quot;)) {
+<i>104</i>&nbsp;            this.fDTDScanner.setFeature(featureId, state);
+<i>105</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/standard-uri-conformant&quot;)) {
+<i>106</i>&nbsp;            this.fStrictURI = state;
+<i>107</i>&nbsp;        } else {
+<i>108</i>&nbsp;            if(!featureId.equals(&quot;http://apache.org/xml/features/validation/balance-syntax-trees&quot;)) {
+<i>109</i>&nbsp;                throw new XMLConfigurationException(Status.NOT_RECOGNIZED, featureId);
+<i>110</i>&nbsp;            }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;            this.fBalanceSyntaxTrees = state;
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public String[] getRecognizedProperties() {
+<i>118</i>&nbsp;        return (String[])((String[])LOADER_RECOGNIZED_PROPERTIES.clone());
+<i>119</i>&nbsp;    }
+<b class="nc"><i>120</i>&nbsp;</b>
+<i>121</i>&nbsp;    public Object getProperty(String propertyId) throws XMLConfigurationException {
+<i>122</i>&nbsp;        if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/symbol-table&quot;)) {
+<i>123</i>&nbsp;            return this.fSymbolTable;
+<i>124</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/error-reporter&quot;)) {
+<i>125</i>&nbsp;            return this.fErrorReporter;
+<i>126</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/error-handler&quot;)) {
+<i>127</i>&nbsp;            return this.fErrorReporter.getErrorHandler();
+<i>128</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/entity-resolver&quot;)) {
+<i>129</i>&nbsp;            return this.fEntityResolver;
+<i>130</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/locale&quot;)) {
+<i>131</i>&nbsp;            return this.getLocale();
+<i>132</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/grammar-pool&quot;)) {
+<i>133</i>&nbsp;            return this.fGrammarPool;
+<i>134</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/validator/dtd&quot;)) {
+<i>135</i>&nbsp;            return this.fValidator;
+<i>136</i>&nbsp;        } else {
+<i>137</i>&nbsp;            throw new XMLConfigurationException(Status.NOT_RECOGNIZED, propertyId);
+<b class="nc"><i>138</i>&nbsp;        }</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public void setProperty(String propertyId, Object value) throws XMLConfigurationException {
+<i>142</i>&nbsp;        if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/symbol-table&quot;)) {
+<i>143</i>&nbsp;            this.fSymbolTable = (SymbolTable)value;
+<i>144</i>&nbsp;            this.fDTDScanner.setProperty(propertyId, value);
+<i>145</i>&nbsp;            this.fEntityManager.setProperty(propertyId, value);
+<i>146</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/error-reporter&quot;)) {
+<i>147</i>&nbsp;            this.fErrorReporter = (XMLErrorReporter)value;
+<b class="nc"><i>148</i>&nbsp;            if(this.fErrorReporter.getMessageFormatter(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;) == null) {</b>
+<i>149</i>&nbsp;                XMLMessageFormatter xmft = new XMLMessageFormatter();
+<i>150</i>&nbsp;                this.fErrorReporter.putMessageFormatter(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, xmft);
+<i>151</i>&nbsp;                this.fErrorReporter.putMessageFormatter(&quot;http://www.w3.org/TR/1999/REC-xml-names-19990114&quot;, xmft);
+<i>152</i>&nbsp;            }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;            this.fDTDScanner.setProperty(propertyId, value);
+<i>155</i>&nbsp;            this.fEntityManager.setProperty(propertyId, value);
+<i>156</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/error-handler&quot;)) {
+<i>157</i>&nbsp;            this.fErrorReporter.setProperty(propertyId, value);
+<i>158</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/internal/entity-resolver&quot;)) {
+<i>159</i>&nbsp;            this.fEntityResolver = (XMLEntityResolver)value;
+<i>160</i>&nbsp;            this.fEntityManager.setProperty(propertyId, value);
+<i>161</i>&nbsp;        } else if(propertyId.equals(&quot;http://apache.org/xml/properties/locale&quot;)) {
+<i>162</i>&nbsp;            this.setLocale((Locale)value);
+<i>163</i>&nbsp;        } else {
+<i>164</i>&nbsp;            if(!propertyId.equals(&quot;http://apache.org/xml/properties/internal/grammar-pool&quot;)) {
+<i>165</i>&nbsp;                throw new XMLConfigurationException(Status.NOT_RECOGNIZED, propertyId);
+<i>166</i>&nbsp;            }
+<i>167</i>&nbsp;
+<b class="nc"><i>168</i>&nbsp;            this.fGrammarPool = (XMLGrammarPool)value;</b>
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    }
+<b class="nc"><i>172</i>&nbsp;</b>
+<i>173</i>&nbsp;    public boolean getFeature(String featureId) throws XMLConfigurationException {
+<i>174</i>&nbsp;        if(featureId.equals(&quot;http://xml.org/sax/features/validation&quot;)) {
+<i>175</i>&nbsp;            return this.fValidation;
+<i>176</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/validation/warn-on-duplicate-attdef&quot;)) {
+<b class="nc"><i>177</i>&nbsp;            return this.fWarnDuplicateAttdef;</b>
+<i>178</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/validation/warn-on-undeclared-elemdef&quot;)) {
+<i>179</i>&nbsp;            return this.fWarnOnUndeclaredElemdef;
+<i>180</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/scanner/notify-char-refs&quot;)) {
+<i>181</i>&nbsp;            return this.fDTDScanner.getFeature(featureId);
+<b class="nc"><i>182</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/standard-uri-conformant&quot;)) {</b>
+<b class="nc"><i>183</i>&nbsp;            return this.fStrictURI;</b>
+<b class="nc"><i>184</i>&nbsp;        } else if(featureId.equals(&quot;http://apache.org/xml/features/validation/balance-syntax-trees&quot;)) {</b>
+<b class="nc"><i>185</i>&nbsp;            return this.fBalanceSyntaxTrees;</b>
+<b class="nc"><i>186</i>&nbsp;        } else {</b>
+<b class="nc"><i>187</i>&nbsp;            throw new XMLConfigurationException(Status.NOT_RECOGNIZED, featureId);</b>
+<i>188</i>&nbsp;        }
+<b class="nc"><i>189</i>&nbsp;    }</b>
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;    public void setLocale(Locale locale) {</b>
+<b class="nc"><i>192</i>&nbsp;        this.fLocale = locale;</b>
+<b class="nc"><i>193</i>&nbsp;        this.fErrorReporter.setLocale(locale);</b>
+<b class="nc"><i>194</i>&nbsp;    }</b>
+<i>195</i>&nbsp;
+<b class="nc"><i>196</i>&nbsp;    public Locale getLocale() {</b>
+<b class="nc"><i>197</i>&nbsp;        return this.fLocale;</b>
+<b class="nc"><i>198</i>&nbsp;    }</b>
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;    public void setErrorHandler(XMLErrorHandler errorHandler) {</b>
+<i>201</i>&nbsp;        this.fErrorReporter.setProperty(&quot;http://apache.org/xml/properties/internal/error-handler&quot;, errorHandler);
+<b class="nc"><i>202</i>&nbsp;    }</b>
+<b class="nc"><i>203</i>&nbsp;</b>
+<b class="nc"><i>204</i>&nbsp;    public XMLErrorHandler getErrorHandler() {</b>
+<b class="nc"><i>205</i>&nbsp;        return this.fErrorReporter.getErrorHandler();</b>
+<b class="nc"><i>206</i>&nbsp;    }</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    public void setEntityResolver(XMLEntityResolver entityResolver) {
+<i>209</i>&nbsp;        this.fEntityResolver = entityResolver;
+<i>210</i>&nbsp;        this.fEntityManager.setProperty(&quot;http://apache.org/xml/properties/internal/entity-resolver&quot;, entityResolver);
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    public XMLEntityResolver getEntityResolver() {
+<i>214</i>&nbsp;        return this.fEntityResolver;
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    public Grammar loadGrammar(XMLInputSource source) throws IOException, XNIException {
+<i>218</i>&nbsp;        this.reset();
+<i>219</i>&nbsp;        String eid = XMLEntityManager.expandSystemId(source.getSystemId(), source.getBaseSystemId(), this.fStrictURI);
+<i>220</i>&nbsp;        XMLDTDDescription desc = new XMLDTDDescription(source.getPublicId(), source.getSystemId(), source.getBaseSystemId(), eid, (String)null);
+<i>221</i>&nbsp;        if(!this.fBalanceSyntaxTrees) {
+<i>222</i>&nbsp;            this.fDTDGrammar = new DTDGrammar(this.fSymbolTable, desc);
+<i>223</i>&nbsp;        } else {
+<i>224</i>&nbsp;            this.fDTDGrammar = new BalancedDTDGrammar(this.fSymbolTable, desc);
+<i>225</i>&nbsp;        }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;        this.fGrammarBucket = new DTDGrammarBucket();
+<b class="nc"><i>228</i>&nbsp;        this.fGrammarBucket.setStandalone(false);</b>
+<b class="nc"><i>229</i>&nbsp;        this.fGrammarBucket.setActiveGrammar(this.fDTDGrammar);</b>
+<b class="nc"><i>230</i>&nbsp;</b>
+<b class="nc"><i>231</i>&nbsp;        try {</b>
+<b class="nc"><i>232</i>&nbsp;            this.fDTDScanner.setInputSource(source);</b>
+<b class="nc"><i>233</i>&nbsp;            this.fDTDScanner.scanDTDExternalSubset(true);</b>
+<b class="nc"><i>234</i>&nbsp;        } catch (EOFException var8) {</b>
+<b class="nc"><i>235</i>&nbsp;            ;</b>
+<i>236</i>&nbsp;        } finally {
+<b class="nc"><i>237</i>&nbsp;            this.fEntityManager.closeReaders();</b>
+<i>238</i>&nbsp;        }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;        if(this.fDTDGrammar != null &amp;&amp; this.fGrammarPool != null) {
+<i>241</i>&nbsp;            this.fGrammarPool.cacheGrammars(&quot;http://www.w3.org/TR/REC-xml&quot;, new Grammar[]{this.fDTDGrammar});
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        return this.fDTDGrammar;
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<b class="nc"><i>247</i>&nbsp;    public void loadGrammarWithContext(XMLDTDValidator validator, String rootName, String publicId, String systemId, String baseSystemId, String internalSubset) throws IOException, XNIException {</b>
+<i>248</i>&nbsp;        DTDGrammarBucket grammarBucket = validator.getGrammarBucket();
+<i>249</i>&nbsp;        DTDGrammar activeGrammar = grammarBucket.getActiveGrammar();
+<i>250</i>&nbsp;        if(activeGrammar != null &amp;&amp; !activeGrammar.isImmutable()) {
+<i>251</i>&nbsp;            this.fGrammarBucket = grammarBucket;
+<i>252</i>&nbsp;            this.fEntityManager.setScannerVersion(this.getScannerVersion());
+<i>253</i>&nbsp;            this.reset();
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;            try {
+<i>256</i>&nbsp;                XMLInputSource source;
+<i>257</i>&nbsp;                if(internalSubset != null) {
+<i>258</i>&nbsp;                    StringBuffer e = new StringBuffer(internalSubset.length() + 2);
+<b class="nc"><i>259</i>&nbsp;                    e.append(internalSubset).append(&quot;]&gt;&quot;);</b>
+<b class="nc"><i>260</i>&nbsp;                    source = new XMLInputSource((String)null, baseSystemId, (String)null, new StringReader(e.toString()), (String)null);</b>
+<b class="nc"><i>261</i>&nbsp;                    this.fEntityManager.startDocumentEntity(source);</b>
+<b class="nc"><i>262</i>&nbsp;                    this.fDTDScanner.scanDTDInternalSubset(true, false, systemId != null);</b>
+<b class="nc"><i>263</i>&nbsp;                }</b>
+<b class="nc"><i>264</i>&nbsp;</b>
+<b class="nc"><i>265</i>&nbsp;                if(systemId != null) {</b>
+<b class="nc"><i>266</i>&nbsp;                    XMLDTDDescription e1 = new XMLDTDDescription(publicId, systemId, baseSystemId, (String)null, rootName);</b>
+<b class="nc"><i>267</i>&nbsp;                    source = this.fEntityManager.resolveEntity(e1);</b>
+<b class="nc"><i>268</i>&nbsp;                    this.fDTDScanner.setInputSource(source);</b>
+<b class="nc"><i>269</i>&nbsp;                    this.fDTDScanner.scanDTDExternalSubset(true);</b>
+<b class="nc"><i>270</i>&nbsp;                }</b>
+<i>271</i>&nbsp;            } catch (EOFException var14) {
+<b class="nc"><i>272</i>&nbsp;                ;</b>
+<i>273</i>&nbsp;            } finally {
+<i>274</i>&nbsp;                this.fEntityManager.closeReaders();
+<i>275</i>&nbsp;            }
+<i>276</i>&nbsp;        }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    protected void reset() {
+<i>281</i>&nbsp;        super.reset();
+<i>282</i>&nbsp;        this.fDTDScanner.reset();
+<i>283</i>&nbsp;        this.fEntityManager.reset();
+<i>284</i>&nbsp;        this.fErrorReporter.setDocumentLocator(this.fEntityManager.getEntityScanner());
+<i>285</i>&nbsp;    }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    protected XMLDTDScannerImpl createDTDScanner(SymbolTable symbolTable, XMLErrorReporter errorReporter, XMLEntityManager entityManager) {
+<i>288</i>&nbsp;        return new XMLDTDScannerImpl(symbolTable, errorReporter, entityManager);
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    protected short getScannerVersion() {
+<b class="nc"><i>292</i>&nbsp;        return (short)1;</b>
+<b class="nc"><i>293</i>&nbsp;    }</b>
+<b class="nc"><i>294</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

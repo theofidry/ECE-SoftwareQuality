@@ -1,0 +1,648 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Introspector</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jmx.mbeanserver</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Introspector (com.sun.jmx.mbeanserver)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Introspector</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 138)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jmx.mbeanserver;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.mbeanserver.MBeanAnalyzer;
+<i>9</i>&nbsp;import com.sun.jmx.mbeanserver.MBeanIntrospector;
+<i>10</i>&nbsp;import com.sun.jmx.mbeanserver.MXBeanIntrospector;
+<i>11</i>&nbsp;import com.sun.jmx.mbeanserver.MXBeanSupport;
+<i>12</i>&nbsp;import com.sun.jmx.mbeanserver.PerInterface;
+<i>13</i>&nbsp;import com.sun.jmx.mbeanserver.StandardMBeanIntrospector;
+<i>14</i>&nbsp;import com.sun.jmx.mbeanserver.StandardMBeanSupport;
+<i>15</i>&nbsp;import com.sun.jmx.mbeanserver.Util;
+<i>16</i>&nbsp;import com.sun.jmx.remote.util.EnvHelp;
+<i>17</i>&nbsp;import java.lang.annotation.Annotation;
+<i>18</i>&nbsp;import java.lang.ref.SoftReference;
+<i>19</i>&nbsp;import java.lang.reflect.AnnotatedElement;
+<i>20</i>&nbsp;import java.lang.reflect.Array;
+<i>21</i>&nbsp;import java.lang.reflect.Constructor;
+<i>22</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>23</i>&nbsp;import java.lang.reflect.Method;
+<i>24</i>&nbsp;import java.lang.reflect.Modifier;
+<i>25</i>&nbsp;import java.lang.reflect.Proxy;
+<i>26</i>&nbsp;import java.lang.reflect.UndeclaredThrowableException;
+<i>27</i>&nbsp;import java.util.Arrays;
+<i>28</i>&nbsp;import java.util.Collections;
+<i>29</i>&nbsp;import java.util.HashMap;
+<i>30</i>&nbsp;import java.util.Iterator;
+<i>31</i>&nbsp;import java.util.LinkedList;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.Locale;
+<i>34</i>&nbsp;import java.util.Map;
+<i>35</i>&nbsp;import java.util.WeakHashMap;
+<i>36</i>&nbsp;import javax.management.AttributeNotFoundException;
+<i>37</i>&nbsp;import javax.management.Descriptor;
+<i>38</i>&nbsp;import javax.management.DescriptorKey;
+<i>39</i>&nbsp;import javax.management.DynamicMBean;
+<i>40</i>&nbsp;import javax.management.ImmutableDescriptor;
+<i>41</i>&nbsp;import javax.management.MBeanInfo;
+<i>42</i>&nbsp;import javax.management.NotCompliantMBeanException;
+<i>43</i>&nbsp;import javax.management.openmbean.CompositeData;
+<i>44</i>&nbsp;import sun.reflect.misc.MethodUtil;
+<i>45</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;public class Introspector {
+<i>48</i>&nbsp;    private Introspector() {
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public static final boolean isDynamic(Class&lt;?&gt; var0) {
+<i>52</i>&nbsp;        return DynamicMBean.class.isAssignableFrom(var0);
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public static void testCreation(Class&lt;?&gt; var0) throws NotCompliantMBeanException {
+<i>56</i>&nbsp;        int var1 = var0.getModifiers();
+<i>57</i>&nbsp;        if(!Modifier.isAbstract(var1) &amp;&amp; !Modifier.isInterface(var1)) {
+<i>58</i>&nbsp;            Constructor[] var2 = var0.getConstructors();
+<i>59</i>&nbsp;            if(var2.length == 0) {
+<i>60</i>&nbsp;                throw new NotCompliantMBeanException(&quot;MBean class must have public constructor&quot;);
+<i>61</i>&nbsp;            }
+<i>62</i>&nbsp;        } else {
+<i>63</i>&nbsp;            throw new NotCompliantMBeanException(&quot;MBean class must be concrete&quot;);
+<i>64</i>&nbsp;        }
+<i>65</i>&nbsp;    }
+<b class="nc"><i>66</i>&nbsp;</b>
+<i>67</i>&nbsp;    public static void checkCompliance(Class&lt;?&gt; var0) throws NotCompliantMBeanException {
+<i>68</i>&nbsp;        if(!DynamicMBean.class.isAssignableFrom(var0)) {
+<i>69</i>&nbsp;            try {
+<i>70</i>&nbsp;                getStandardMBeanInterface(var0);
+<i>71</i>&nbsp;            } catch (NotCompliantMBeanException var5) {
+<i>72</i>&nbsp;                try {
+<i>73</i>&nbsp;                    getMXBeanInterface(var0);
+<i>74</i>&nbsp;                } catch (NotCompliantMBeanException var4) {
+<i>75</i>&nbsp;                    String var3 = &quot;MBean class &quot; + var0.getName() + &quot; does not implement &quot; + &quot;DynamicMBean, and neither follows the Standard MBean conventions (&quot; + var5.toString() + &quot;) nor the MXBean conventions (&quot; + var4.toString() + &quot;)&quot;;
+<i>76</i>&nbsp;                    throw new NotCompliantMBeanException(var3);
+<i>77</i>&nbsp;                }
+<i>78</i>&nbsp;            }
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public static &lt;T&gt; DynamicMBean makeDynamicMBean(T var0) throws NotCompliantMBeanException {
+<i>83</i>&nbsp;        if(var0 instanceof DynamicMBean) {
+<i>84</i>&nbsp;            return (DynamicMBean)var0;
+<i>85</i>&nbsp;        } else {
+<i>86</i>&nbsp;            Class var1 = var0.getClass();
+<i>87</i>&nbsp;            Class var2 = null;
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;            try {
+<i>90</i>&nbsp;                var2 = (Class)Util.cast(getStandardMBeanInterface(var1));
+<i>91</i>&nbsp;            } catch (NotCompliantMBeanException var5) {
+<i>92</i>&nbsp;                ;
+<i>93</i>&nbsp;            }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;            if(var2 != null) {
+<i>96</i>&nbsp;                return new StandardMBeanSupport(var0, var2);
+<i>97</i>&nbsp;            } else {
+<i>98</i>&nbsp;                try {
+<i>99</i>&nbsp;                    var2 = (Class)Util.cast(getMXBeanInterface(var1));
+<i>100</i>&nbsp;                } catch (NotCompliantMBeanException var4) {
+<b class="nc"><i>101</i>&nbsp;                    ;</b>
+<i>102</i>&nbsp;                }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;                if(var2 != null) {
+<i>105</i>&nbsp;                    return new MXBeanSupport(var0, var2);
+<i>106</i>&nbsp;                } else {
+<i>107</i>&nbsp;                    checkCompliance(var1);
+<i>108</i>&nbsp;                    throw new NotCompliantMBeanException(&quot;Not compliant&quot;);
+<i>109</i>&nbsp;                }
+<i>110</i>&nbsp;            }
+<i>111</i>&nbsp;        }
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public static MBeanInfo testCompliance(Class&lt;?&gt; var0) throws NotCompliantMBeanException {
+<i>115</i>&nbsp;        return isDynamic(var0)?null:testCompliance(var0, (Class)null);
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public static void testComplianceMXBeanInterface(Class&lt;?&gt; var0) throws NotCompliantMBeanException {
+<i>119</i>&nbsp;        MXBeanIntrospector.getInstance().getAnalyzer(var0);
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<b class="nc"><i>122</i>&nbsp;    public static void testComplianceMBeanInterface(Class&lt;?&gt; var0) throws NotCompliantMBeanException {</b>
+<b class="nc"><i>123</i>&nbsp;        StandardMBeanIntrospector.getInstance().getAnalyzer(var0);</b>
+<b class="nc"><i>124</i>&nbsp;    }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public static synchronized MBeanInfo testCompliance(Class&lt;?&gt; var0, Class&lt;?&gt; var1) throws NotCompliantMBeanException {
+<i>127</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>128</i>&nbsp;            var1 = getStandardMBeanInterface(var0);</b>
+<b class="nc"><i>129</i>&nbsp;        }</b>
+<b class="nc"><i>130</i>&nbsp;</b>
+<i>131</i>&nbsp;        ReflectUtil.checkPackageAccess(var1);
+<i>132</i>&nbsp;        StandardMBeanIntrospector var2 = StandardMBeanIntrospector.getInstance();
+<i>133</i>&nbsp;        return getClassMBeanInfo(var2, var0, var1);
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    private static &lt;M&gt; MBeanInfo getClassMBeanInfo(MBeanIntrospector&lt;M&gt; var0, Class&lt;?&gt; var1, Class&lt;?&gt; var2) throws NotCompliantMBeanException {
+<i>137</i>&nbsp;        PerInterface var3 = var0.getPerInterface(var2);
+<b class="nc"><i>138</i>&nbsp;        return var0.getClassMBeanInfo(var1, var3);</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public static Class&lt;?&gt; getMBeanInterface(Class&lt;?&gt; var0) {
+<i>142</i>&nbsp;        if(isDynamic(var0)) {
+<i>143</i>&nbsp;            return null;
+<b class="nc"><i>144</i>&nbsp;        } else {</b>
+<i>145</i>&nbsp;            try {
+<b class="nc"><i>146</i>&nbsp;                return getStandardMBeanInterface(var0);</b>
+<b class="nc"><i>147</i>&nbsp;            } catch (NotCompliantMBeanException var2) {</b>
+<i>148</i>&nbsp;                return null;
+<i>149</i>&nbsp;            }
+<i>150</i>&nbsp;        }
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<b class="nc"><i>153</i>&nbsp;    public static &lt;T&gt; Class&lt;? super T&gt; getStandardMBeanInterface(Class&lt;T&gt; var0) throws NotCompliantMBeanException {</b>
+<i>154</i>&nbsp;        Class var1 = var0;
+<b class="nc"><i>155</i>&nbsp;</b>
+<b class="nc"><i>156</i>&nbsp;        Class var2;</b>
+<i>157</i>&nbsp;        for(var2 = null; var1 != null; var1 = var1.getSuperclass()) {
+<b class="nc"><i>158</i>&nbsp;            var2 = findMBeanInterface(var1, var1.getName());</b>
+<i>159</i>&nbsp;            if(var2 != null) {
+<i>160</i>&nbsp;                break;
+<i>161</i>&nbsp;            }
+<i>162</i>&nbsp;        }
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;        if(var2 != null) {
+<i>165</i>&nbsp;            return var2;
+<i>166</i>&nbsp;        } else {
+<i>167</i>&nbsp;            String var3 = &quot;Class &quot; + var0.getName() + &quot; is not a JMX compliant Standard MBean&quot;;
+<b class="nc"><i>168</i>&nbsp;            throw new NotCompliantMBeanException(var3);</b>
+<b class="nc"><i>169</i>&nbsp;        }</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<b class="nc"><i>171</i>&nbsp;</b>
+<i>172</i>&nbsp;    public static &lt;T&gt; Class&lt;? super T&gt; getMXBeanInterface(Class&lt;T&gt; var0) throws NotCompliantMBeanException {
+<b class="nc"><i>173</i>&nbsp;        try {</b>
+<b class="nc"><i>174</i>&nbsp;            return MXBeanSupport.findMXBeanInterface(var0);</b>
+<i>175</i>&nbsp;        } catch (Exception var2) {
+<i>176</i>&nbsp;            throw throwException(var0, var2);
+<b class="nc"><i>177</i>&nbsp;        }</b>
+<b class="nc"><i>178</i>&nbsp;    }</b>
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    private static &lt;T&gt; Class&lt;? super T&gt; findMBeanInterface(Class&lt;T&gt; var0, String var1) {
+<b class="nc"><i>181</i>&nbsp;        for(Class var2 = var0; var2 != null; var2 = var2.getSuperclass()) {</b>
+<b class="nc"><i>182</i>&nbsp;            Class[] var3 = var2.getInterfaces();</b>
+<i>183</i>&nbsp;            int var4 = var3.length;
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;            for(int var5 = 0; var5 &lt; var4; ++var5) {
+<b class="nc"><i>186</i>&nbsp;                Class var6 = (Class)Util.cast(var3[var5]);</b>
+<b class="nc"><i>187</i>&nbsp;                var6 = implementsMBean(var6, var1);</b>
+<b class="nc"><i>188</i>&nbsp;                if(var6 != null) {</b>
+<b class="nc"><i>189</i>&nbsp;                    return var6;</b>
+<i>190</i>&nbsp;                }
+<i>191</i>&nbsp;            }
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;        return null;
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    public static Descriptor descriptorForElement(AnnotatedElement var0) {
+<i>198</i>&nbsp;        if(var0 == null) {
+<i>199</i>&nbsp;            return ImmutableDescriptor.EMPTY_DESCRIPTOR;
+<i>200</i>&nbsp;        } else {
+<i>201</i>&nbsp;            Annotation[] var1 = var0.getAnnotations();
+<i>202</i>&nbsp;            return descriptorForAnnotations(var1);
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public static Descriptor descriptorForAnnotations(Annotation[] var0) {
+<i>207</i>&nbsp;        if(var0.length == 0) {
+<i>208</i>&nbsp;            return ImmutableDescriptor.EMPTY_DESCRIPTOR;
+<i>209</i>&nbsp;        } else {
+<b class="nc"><i>210</i>&nbsp;            HashMap var1 = new HashMap();</b>
+<b class="nc"><i>211</i>&nbsp;            Annotation[] var2 = var0;</b>
+<i>212</i>&nbsp;            int var3 = var0.length;
+<b class="nc"><i>213</i>&nbsp;</b>
+<i>214</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>215</i>&nbsp;                Annotation var5 = var2[var4];
+<i>216</i>&nbsp;                Class var6 = var5.annotationType();
+<i>217</i>&nbsp;                Method[] var7 = var6.getMethods();
+<b class="nc"><i>218</i>&nbsp;                boolean var8 = false;</b>
+<i>219</i>&nbsp;                Method[] var9 = var7;
+<i>220</i>&nbsp;                int var10 = var7.length;
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;                for(int var11 = 0; var11 &lt; var10; ++var11) {
+<b class="nc"><i>223</i>&nbsp;                    Method var12 = var9[var11];</b>
+<i>224</i>&nbsp;                    DescriptorKey var13 = (DescriptorKey)var12.getAnnotation(DescriptorKey.class);
+<i>225</i>&nbsp;                    if(var13 != null) {
+<i>226</i>&nbsp;                        String var14 = var13.value();
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;                        Object var15;
+<i>229</i>&nbsp;                        try {
+<i>230</i>&nbsp;                            if(!var8) {
+<i>231</i>&nbsp;                                ReflectUtil.checkPackageAccess(var6);
+<i>232</i>&nbsp;                                var8 = true;
+<i>233</i>&nbsp;                            }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;                            var15 = MethodUtil.invoke(var12, var5, (Object[])null);
+<i>236</i>&nbsp;                        } catch (RuntimeException var18) {
+<i>237</i>&nbsp;                            throw var18;
+<i>238</i>&nbsp;                        } catch (Exception var19) {
+<i>239</i>&nbsp;                            throw new UndeclaredThrowableException(var19);
+<i>240</i>&nbsp;                        }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;                        var15 = annotationToField(var15);
+<i>243</i>&nbsp;                        Object var16 = var1.put(var14, var15);
+<b class="nc"><i>244</i>&nbsp;                        if(var16 != null &amp;&amp; !equals(var16, var15)) {</b>
+<b class="nc"><i>245</i>&nbsp;                            String var17 = &quot;Inconsistent values for descriptor field &quot; + var14 + &quot; from annotations: &quot; + var15 + &quot; :: &quot; + var16;</b>
+<b class="nc"><i>246</i>&nbsp;                            throw new IllegalArgumentException(var17);</b>
+<b class="nc"><i>247</i>&nbsp;                        }</b>
+<b class="nc"><i>248</i>&nbsp;                    }</b>
+<b class="nc"><i>249</i>&nbsp;                }</b>
+<i>250</i>&nbsp;            }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;            if(var1.isEmpty()) {
+<i>253</i>&nbsp;                return ImmutableDescriptor.EMPTY_DESCRIPTOR;
+<i>254</i>&nbsp;            } else {
+<i>255</i>&nbsp;                return new ImmutableDescriptor(var1);
+<i>256</i>&nbsp;            }
+<i>257</i>&nbsp;        }
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    static NotCompliantMBeanException throwException(Class&lt;?&gt; var0, Throwable var1) throws NotCompliantMBeanException, SecurityException {
+<i>261</i>&nbsp;        if(var1 instanceof SecurityException) {
+<i>262</i>&nbsp;            throw (SecurityException)var1;
+<i>263</i>&nbsp;        } else if(var1 instanceof NotCompliantMBeanException) {
+<i>264</i>&nbsp;            throw (NotCompliantMBeanException)var1;
+<i>265</i>&nbsp;        } else {
+<b class="nc"><i>266</i>&nbsp;            String var2 = var0 == null?&quot;null class&quot;:var0.getName();</b>
+<i>267</i>&nbsp;            String var3 = var1 == null?&quot;Not compliant&quot;:var1.getMessage();
+<b class="nc"><i>268</i>&nbsp;            NotCompliantMBeanException var4 = new NotCompliantMBeanException(var2 + &quot;: &quot; + var3);</b>
+<b class="nc"><i>269</i>&nbsp;            var4.initCause(var1);</b>
+<b class="nc"><i>270</i>&nbsp;            throw var4;</b>
+<i>271</i>&nbsp;        }
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    private static Object annotationToField(Object var0) {
+<i>275</i>&nbsp;        if(var0 == null) {
+<i>276</i>&nbsp;            return null;
+<i>277</i>&nbsp;        } else if(!(var0 instanceof Number) &amp;&amp; !(var0 instanceof String) &amp;&amp; !(var0 instanceof Character) &amp;&amp; !(var0 instanceof Boolean) &amp;&amp; !(var0 instanceof String[])) {
+<i>278</i>&nbsp;            Class var1 = var0.getClass();
+<i>279</i>&nbsp;            if(!var1.isArray()) {
+<i>280</i>&nbsp;                if(var0 instanceof Class) {
+<i>281</i>&nbsp;                    return ((Class)var0).getName();
+<i>282</i>&nbsp;                } else if(var0 instanceof Enum) {
+<i>283</i>&nbsp;                    return ((Enum)var0).name();
+<i>284</i>&nbsp;                } else {
+<i>285</i>&nbsp;                    if(Proxy.isProxyClass(var1)) {
+<b class="nc"><i>286</i>&nbsp;                        var1 = var1.getInterfaces()[0];</b>
+<b class="nc"><i>287</i>&nbsp;                    }</b>
+<b class="nc"><i>288</i>&nbsp;</b>
+<b class="nc"><i>289</i>&nbsp;                    throw new IllegalArgumentException(&quot;Illegal type for annotation element using @DescriptorKey: &quot; + var1.getName());</b>
+<i>290</i>&nbsp;                }
+<b class="nc"><i>291</i>&nbsp;            } else if(var1.getComponentType().isPrimitive()) {</b>
+<b class="nc"><i>292</i>&nbsp;                return var0;</b>
+<i>293</i>&nbsp;            } else {
+<b class="nc"><i>294</i>&nbsp;                Object[] var2 = (Object[])((Object[])var0);</b>
+<b class="nc"><i>295</i>&nbsp;                String[] var3 = new String[var2.length];</b>
+<i>296</i>&nbsp;
+<b class="nc"><i>297</i>&nbsp;                for(int var4 = 0; var4 &lt; var2.length; ++var4) {</b>
+<i>298</i>&nbsp;                    var3[var4] = (String)annotationToField(var2[var4]);
+<i>299</i>&nbsp;                }
+<b class="nc"><i>300</i>&nbsp;</b>
+<i>301</i>&nbsp;                return var3;
+<i>302</i>&nbsp;            }
+<i>303</i>&nbsp;        } else {
+<i>304</i>&nbsp;            return var0;
+<i>305</i>&nbsp;        }
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    private static boolean equals(Object var0, Object var1) {
+<i>309</i>&nbsp;        return Arrays.deepEquals(new Object[]{var0}, new Object[]{var1});
+<i>310</i>&nbsp;    }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    private static &lt;T&gt; Class&lt;? super T&gt; implementsMBean(Class&lt;T&gt; var0, String var1) {
+<i>313</i>&nbsp;        String var2 = var1 + &quot;MBean&quot;;
+<i>314</i>&nbsp;        if(var0.getName().equals(var2)) {
+<i>315</i>&nbsp;            return var0;
+<i>316</i>&nbsp;        } else {
+<b class="nc"><i>317</i>&nbsp;            Class[] var3 = var0.getInterfaces();</b>
+<b class="nc"><i>318</i>&nbsp;</b>
+<b class="nc"><i>319</i>&nbsp;            for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<i>320</i>&nbsp;                if(var3[var4].getName().equals(var2)) {
+<i>321</i>&nbsp;                    return (Class)Util.cast(var3[var4]);
+<i>322</i>&nbsp;                }
+<i>323</i>&nbsp;            }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;            return null;
+<i>326</i>&nbsp;        }
+<i>327</i>&nbsp;    }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    public static Object elementFromComplex(Object var0, String var1) throws AttributeNotFoundException {
+<i>330</i>&nbsp;        try {
+<i>331</i>&nbsp;            if(var0.getClass().isArray() &amp;&amp; var1.equals(&quot;length&quot;)) {
+<i>332</i>&nbsp;                return Integer.valueOf(Array.getLength(var0));
+<i>333</i>&nbsp;            } else if(var0 instanceof CompositeData) {
+<i>334</i>&nbsp;                return ((CompositeData)var0).get(var1);
+<b class="nc"><i>335</i>&nbsp;            } else {</b>
+<b class="nc"><i>336</i>&nbsp;                Class var2 = var0.getClass();</b>
+<b class="nc"><i>337</i>&nbsp;                Method var3 = null;</b>
+<b class="nc"><i>338</i>&nbsp;                if(Introspector.BeansHelper.isAvailable()) {</b>
+<b class="nc"><i>339</i>&nbsp;                    Object var4 = Introspector.BeansHelper.getBeanInfo(var2);</b>
+<b class="nc"><i>340</i>&nbsp;                    Object[] var5 = Introspector.BeansHelper.getPropertyDescriptors(var4);</b>
+<i>341</i>&nbsp;                    Object[] var6 = var5;
+<b class="nc"><i>342</i>&nbsp;                    int var7 = var5.length;</b>
+<i>343</i>&nbsp;
+<b class="nc"><i>344</i>&nbsp;                    for(int var8 = 0; var8 &lt; var7; ++var8) {</b>
+<b class="nc"><i>345</i>&nbsp;                        Object var9 = var6[var8];</b>
+<b class="nc"><i>346</i>&nbsp;                        if(Introspector.BeansHelper.getPropertyName(var9).equals(var1)) {</b>
+<i>347</i>&nbsp;                            var3 = Introspector.BeansHelper.getReadMethod(var9);
+<i>348</i>&nbsp;                            break;
+<i>349</i>&nbsp;                        }
+<b class="nc"><i>350</i>&nbsp;                    }</b>
+<b class="nc"><i>351</i>&nbsp;                } else {</b>
+<b class="nc"><i>352</i>&nbsp;                    var3 = Introspector.SimpleIntrospector.getReadMethod(var2, var1);</b>
+<b class="nc"><i>353</i>&nbsp;                }</b>
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;                if(var3 != null) {
+<i>356</i>&nbsp;                    ReflectUtil.checkPackageAccess(var3.getDeclaringClass());
+<b class="nc"><i>357</i>&nbsp;                    return MethodUtil.invoke(var3, var0, new Class[0]);</b>
+<b class="nc"><i>358</i>&nbsp;                } else {</b>
+<b class="nc"><i>359</i>&nbsp;                    throw new AttributeNotFoundException(&quot;Could not find the getter method for the property &quot; + var1 + &quot; using the Java Beans introspector&quot;);</b>
+<b class="nc"><i>360</i>&nbsp;                }</b>
+<b class="nc"><i>361</i>&nbsp;            }</b>
+<b class="nc"><i>362</i>&nbsp;        } catch (InvocationTargetException var10) {</b>
+<b class="nc"><i>363</i>&nbsp;            throw new IllegalArgumentException(var10);</b>
+<b class="nc"><i>364</i>&nbsp;        } catch (AttributeNotFoundException var11) {</b>
+<b class="nc"><i>365</i>&nbsp;            throw var11;</b>
+<b class="nc"><i>366</i>&nbsp;        } catch (Exception var12) {</b>
+<b class="nc"><i>367</i>&nbsp;            throw (AttributeNotFoundException)EnvHelp.initCause(new AttributeNotFoundException(var12.getMessage()), var12);</b>
+<i>368</i>&nbsp;        }
+<i>369</i>&nbsp;    }
+<i>370</i>&nbsp;
+<b class="nc"><i>371</i>&nbsp;    private static class BeansHelper {</b>
+<b class="nc"><i>372</i>&nbsp;        private static final Class&lt;?&gt; introspectorClass = getClass(&quot;java.beans.Introspector&quot;);</b>
+<b class="nc"><i>373</i>&nbsp;        private static final Class&lt;?&gt; beanInfoClass;</b>
+<i>374</i>&nbsp;        private static final Class&lt;?&gt; getPropertyDescriptorClass;
+<b class="nc"><i>375</i>&nbsp;        private static final Method getBeanInfo;</b>
+<b class="nc"><i>376</i>&nbsp;        private static final Method getPropertyDescriptors;</b>
+<i>377</i>&nbsp;        private static final Method getPropertyName;
+<i>378</i>&nbsp;        private static final Method getReadMethod;
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;        private static Class&lt;?&gt; getClass(String var0) {
+<i>381</i>&nbsp;            try {
+<b class="nc"><i>382</i>&nbsp;                return Class.forName(var0, true, (ClassLoader)null);</b>
+<b class="nc"><i>383</i>&nbsp;            } catch (ClassNotFoundException var2) {</b>
+<i>384</i>&nbsp;                return null;
+<b class="nc"><i>385</i>&nbsp;            }</b>
+<b class="nc"><i>386</i>&nbsp;        }</b>
+<b class="nc"><i>387</i>&nbsp;</b>
+<b class="nc"><i>388</i>&nbsp;        private static Method getMethod(Class&lt;?&gt; var0, String var1, Class&lt;?&gt;... var2) {</b>
+<b class="nc"><i>389</i>&nbsp;            if(var0 != null) {</b>
+<b class="nc"><i>390</i>&nbsp;                try {</b>
+<i>391</i>&nbsp;                    return var0.getMethod(var1, var2);
+<i>392</i>&nbsp;                } catch (NoSuchMethodException var4) {
+<b class="nc"><i>393</i>&nbsp;                    throw new AssertionError(var4);</b>
+<i>394</i>&nbsp;                }
+<i>395</i>&nbsp;            } else {
+<i>396</i>&nbsp;                return null;
+<i>397</i>&nbsp;            }
+<i>398</i>&nbsp;        }
+<b class="nc"><i>399</i>&nbsp;</b>
+<b class="nc"><i>400</i>&nbsp;        private BeansHelper() {</b>
+<i>401</i>&nbsp;        }
+<b class="nc"><i>402</i>&nbsp;</b>
+<i>403</i>&nbsp;        static boolean isAvailable() {
+<i>404</i>&nbsp;            return introspectorClass != null;
+<i>405</i>&nbsp;        }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;        static Object getBeanInfo(Class&lt;?&gt; var0) throws Exception {
+<i>408</i>&nbsp;            try {
+<i>409</i>&nbsp;                return getBeanInfo.invoke((Object)null, new Object[]{var0});
+<i>410</i>&nbsp;            } catch (InvocationTargetException var3) {
+<i>411</i>&nbsp;                Throwable var2 = var3.getCause();
+<i>412</i>&nbsp;                if(var2 instanceof Exception) {
+<i>413</i>&nbsp;                    throw (Exception)var2;
+<i>414</i>&nbsp;                } else {
+<i>415</i>&nbsp;                    throw new AssertionError(var3);
+<i>416</i>&nbsp;                }
+<i>417</i>&nbsp;            } catch (IllegalAccessException var4) {
+<i>418</i>&nbsp;                throw new AssertionError(var4);
+<b class="nc"><i>419</i>&nbsp;            }</b>
+<b class="nc"><i>420</i>&nbsp;        }</b>
+<b class="nc"><i>421</i>&nbsp;</b>
+<b class="nc"><i>422</i>&nbsp;        static Object[] getPropertyDescriptors(Object var0) {</b>
+<b class="nc"><i>423</i>&nbsp;            try {</b>
+<i>424</i>&nbsp;                return (Object[])((Object[])getPropertyDescriptors.invoke(var0, new Object[0]));
+<b class="nc"><i>425</i>&nbsp;            } catch (InvocationTargetException var3) {</b>
+<i>426</i>&nbsp;                Throwable var2 = var3.getCause();
+<b class="nc"><i>427</i>&nbsp;                if(var2 instanceof RuntimeException) {</b>
+<i>428</i>&nbsp;                    throw (RuntimeException)var2;
+<b class="nc"><i>429</i>&nbsp;                } else {</b>
+<b class="nc"><i>430</i>&nbsp;                    throw new AssertionError(var3);</b>
+<i>431</i>&nbsp;                }
+<i>432</i>&nbsp;            } catch (IllegalAccessException var4) {
+<i>433</i>&nbsp;                throw new AssertionError(var4);
+<i>434</i>&nbsp;            }
+<i>435</i>&nbsp;        }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;        static String getPropertyName(Object var0) {
+<b class="nc"><i>438</i>&nbsp;            try {</b>
+<b class="nc"><i>439</i>&nbsp;                return (String)getPropertyName.invoke(var0, new Object[0]);</b>
+<b class="nc"><i>440</i>&nbsp;            } catch (InvocationTargetException var3) {</b>
+<i>441</i>&nbsp;                Throwable var2 = var3.getCause();
+<i>442</i>&nbsp;                if(var2 instanceof RuntimeException) {
+<b class="nc"><i>443</i>&nbsp;                    throw (RuntimeException)var2;</b>
+<i>444</i>&nbsp;                } else {
+<i>445</i>&nbsp;                    throw new AssertionError(var3);
+<b class="nc"><i>446</i>&nbsp;                }</b>
+<b class="nc"><i>447</i>&nbsp;            } catch (IllegalAccessException var4) {</b>
+<b class="nc"><i>448</i>&nbsp;                throw new AssertionError(var4);</b>
+<b class="nc"><i>449</i>&nbsp;            }</b>
+<b class="nc"><i>450</i>&nbsp;        }</b>
+<b class="nc"><i>451</i>&nbsp;</b>
+<b class="nc"><i>452</i>&nbsp;        static Method getReadMethod(Object var0) {</b>
+<b class="nc"><i>453</i>&nbsp;            try {</b>
+<b class="nc"><i>454</i>&nbsp;                return (Method)getReadMethod.invoke(var0, new Object[0]);</b>
+<i>455</i>&nbsp;            } catch (InvocationTargetException var3) {
+<b class="nc"><i>456</i>&nbsp;                Throwable var2 = var3.getCause();</b>
+<b class="nc"><i>457</i>&nbsp;                if(var2 instanceof RuntimeException) {</b>
+<b class="nc"><i>458</i>&nbsp;                    throw (RuntimeException)var2;</b>
+<b class="nc"><i>459</i>&nbsp;                } else {</b>
+<i>460</i>&nbsp;                    throw new AssertionError(var3);
+<i>461</i>&nbsp;                }
+<i>462</i>&nbsp;            } catch (IllegalAccessException var4) {
+<b class="nc"><i>463</i>&nbsp;                throw new AssertionError(var4);</b>
+<i>464</i>&nbsp;            }
+<i>465</i>&nbsp;        }
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;        static {
+<i>468</i>&nbsp;            beanInfoClass = introspectorClass == null?null:getClass(&quot;java.beans.BeanInfo&quot;);
+<i>469</i>&nbsp;            getPropertyDescriptorClass = beanInfoClass == null?null:getClass(&quot;java.beans.PropertyDescriptor&quot;);
+<i>470</i>&nbsp;            getBeanInfo = getMethod(introspectorClass, &quot;getBeanInfo&quot;, new Class[]{Class.class});
+<b class="nc"><i>471</i>&nbsp;            getPropertyDescriptors = getMethod(beanInfoClass, &quot;getPropertyDescriptors&quot;, new Class[0]);</b>
+<i>472</i>&nbsp;            getPropertyName = getMethod(getPropertyDescriptorClass, &quot;getName&quot;, new Class[0]);
+<i>473</i>&nbsp;            getReadMethod = getMethod(getPropertyDescriptorClass, &quot;getReadMethod&quot;, new Class[0]);
+<i>474</i>&nbsp;        }
+<i>475</i>&nbsp;    }
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;    private static class SimpleIntrospector {
+<i>478</i>&nbsp;        private static final String GET_METHOD_PREFIX = &quot;get&quot;;
+<i>479</i>&nbsp;        private static final String IS_METHOD_PREFIX = &quot;is&quot;;
+<i>480</i>&nbsp;        private static final Map&lt;Class&lt;?&gt;, SoftReference&lt;List&lt;Method&gt;&gt;&gt; cache = Collections.synchronizedMap(new WeakHashMap());
+<b class="nc"><i>481</i>&nbsp;</b>
+<b class="nc"><i>482</i>&nbsp;        private SimpleIntrospector() {</b>
+<b class="nc"><i>483</i>&nbsp;        }</b>
+<i>484</i>&nbsp;
+<b class="nc"><i>485</i>&nbsp;        private static List&lt;Method&gt; getCachedMethods(Class&lt;?&gt; var0) {</b>
+<b class="nc"><i>486</i>&nbsp;            SoftReference var1 = (SoftReference)cache.get(var0);</b>
+<b class="nc"><i>487</i>&nbsp;            if(var1 != null) {</b>
+<b class="nc"><i>488</i>&nbsp;                List var2 = (List)var1.get();</b>
+<b class="nc"><i>489</i>&nbsp;                if(var2 != null) {</b>
+<i>490</i>&nbsp;                    return var2;
+<i>491</i>&nbsp;                }
+<b class="nc"><i>492</i>&nbsp;            }</b>
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;            return null;
+<i>495</i>&nbsp;        }
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;        static boolean isReadMethod(Method var0) {
+<i>498</i>&nbsp;            int var1 = var0.getModifiers();
+<i>499</i>&nbsp;            if(Modifier.isStatic(var1)) {
+<i>500</i>&nbsp;                return false;
+<i>501</i>&nbsp;            } else {
+<i>502</i>&nbsp;                String var2 = var0.getName();
+<i>503</i>&nbsp;                Class[] var3 = var0.getParameterTypes();
+<i>504</i>&nbsp;                int var4 = var3.length;
+<i>505</i>&nbsp;                if(var4 == 0 &amp;&amp; var2.length() &gt; 2) {
+<i>506</i>&nbsp;                    if(var2.startsWith(&quot;is&quot;)) {
+<i>507</i>&nbsp;                        return var0.getReturnType() == Boolean.TYPE;
+<i>508</i>&nbsp;                    }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;                    if(var2.length() &gt; 3 &amp;&amp; var2.startsWith(&quot;get&quot;)) {
+<i>511</i>&nbsp;                        return var0.getReturnType() != Void.TYPE;
+<i>512</i>&nbsp;                    }
+<i>513</i>&nbsp;                }
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;                return false;
+<i>516</i>&nbsp;            }
+<i>517</i>&nbsp;        }
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;        static List&lt;Method&gt; getReadMethods(Class&lt;?&gt; var0) {
+<i>520</i>&nbsp;            List var1 = getCachedMethods(var0);
+<i>521</i>&nbsp;            if(var1 != null) {
+<i>522</i>&nbsp;                return var1;
+<i>523</i>&nbsp;            } else {
+<i>524</i>&nbsp;                List var2 = StandardMBeanIntrospector.getInstance().getMethods(var0);
+<i>525</i>&nbsp;                var2 = MBeanAnalyzer.eliminateCovariantMethods(var2);
+<i>526</i>&nbsp;                LinkedList var3 = new LinkedList();
+<i>527</i>&nbsp;                Iterator var4 = var2.iterator();
+<i>528</i>&nbsp;
+<i>529</i>&nbsp;                while(var4.hasNext()) {
+<i>530</i>&nbsp;                    Method var5 = (Method)var4.next();
+<i>531</i>&nbsp;                    if(isReadMethod(var5)) {
+<i>532</i>&nbsp;                        if(var5.getName().startsWith(&quot;is&quot;)) {
+<i>533</i>&nbsp;                            var3.add(0, var5);
+<i>534</i>&nbsp;                        } else {
+<i>535</i>&nbsp;                            var3.add(var5);
+<i>536</i>&nbsp;                        }
+<i>537</i>&nbsp;                    }
+<i>538</i>&nbsp;                }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;                cache.put(var0, new SoftReference(var3));
+<i>541</i>&nbsp;                return var3;
+<i>542</i>&nbsp;            }
+<i>543</i>&nbsp;        }
+<i>544</i>&nbsp;
+<i>545</i>&nbsp;        static Method getReadMethod(Class&lt;?&gt; var0, String var1) {
+<i>546</i>&nbsp;            var1 = var1.substring(0, 1).toUpperCase(Locale.ENGLISH) + var1.substring(1);
+<i>547</i>&nbsp;            String var2 = &quot;get&quot; + var1;
+<i>548</i>&nbsp;            String var3 = &quot;is&quot; + var1;
+<i>549</i>&nbsp;            Iterator var4 = getReadMethods(var0).iterator();
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;            Method var5;
+<i>552</i>&nbsp;            String var6;
+<i>553</i>&nbsp;            do {
+<i>554</i>&nbsp;                if(!var4.hasNext()) {
+<i>555</i>&nbsp;                    return null;
+<i>556</i>&nbsp;                }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;                var5 = (Method)var4.next();
+<i>559</i>&nbsp;                var6 = var5.getName();
+<i>560</i>&nbsp;            } while(!var6.equals(var3) &amp;&amp; !var6.equals(var2));
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;            return var5;
+<i>563</i>&nbsp;        }
+<i>564</i>&nbsp;    }
+<i>565</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

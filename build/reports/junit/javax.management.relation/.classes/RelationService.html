@@ -1,0 +1,1798 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RelationService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.management.relation</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RelationService (javax.management.relation)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RelationService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 56)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1204)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.management.relation;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.defaults.JmxProperties;
+<i>9</i>&nbsp;import com.sun.jmx.mbeanserver.Util;
+<i>10</i>&nbsp;import java.util.ArrayList;
+<i>11</i>&nbsp;import java.util.Collection;
+<i>12</i>&nbsp;import java.util.Date;
+<i>13</i>&nbsp;import java.util.HashMap;
+<i>14</i>&nbsp;import java.util.Iterator;
+<i>15</i>&nbsp;import java.util.List;
+<i>16</i>&nbsp;import java.util.Map;
+<i>17</i>&nbsp;import java.util.Set;
+<i>18</i>&nbsp;import java.util.Map.Entry;
+<i>19</i>&nbsp;import java.util.concurrent.atomic.AtomicLong;
+<i>20</i>&nbsp;import javax.management.Attribute;
+<i>21</i>&nbsp;import javax.management.AttributeNotFoundException;
+<i>22</i>&nbsp;import javax.management.InstanceNotFoundException;
+<i>23</i>&nbsp;import javax.management.InvalidAttributeValueException;
+<i>24</i>&nbsp;import javax.management.MBeanException;
+<i>25</i>&nbsp;import javax.management.MBeanNotificationInfo;
+<i>26</i>&nbsp;import javax.management.MBeanRegistration;
+<i>27</i>&nbsp;import javax.management.MBeanServer;
+<i>28</i>&nbsp;import javax.management.MBeanServerDelegate;
+<i>29</i>&nbsp;import javax.management.MBeanServerNotification;
+<i>30</i>&nbsp;import javax.management.Notification;
+<i>31</i>&nbsp;import javax.management.NotificationBroadcasterSupport;
+<i>32</i>&nbsp;import javax.management.NotificationListener;
+<i>33</i>&nbsp;import javax.management.ObjectName;
+<i>34</i>&nbsp;import javax.management.ReflectionException;
+<i>35</i>&nbsp;import javax.management.relation.InvalidRelationIdException;
+<i>36</i>&nbsp;import javax.management.relation.InvalidRelationServiceException;
+<i>37</i>&nbsp;import javax.management.relation.InvalidRelationTypeException;
+<i>38</i>&nbsp;import javax.management.relation.InvalidRoleValueException;
+<i>39</i>&nbsp;import javax.management.relation.MBeanServerNotificationFilter;
+<i>40</i>&nbsp;import javax.management.relation.RelationNotFoundException;
+<i>41</i>&nbsp;import javax.management.relation.RelationNotification;
+<i>42</i>&nbsp;import javax.management.relation.RelationServiceMBean;
+<i>43</i>&nbsp;import javax.management.relation.RelationServiceNotRegisteredException;
+<i>44</i>&nbsp;import javax.management.relation.RelationSupport;
+<i>45</i>&nbsp;import javax.management.relation.RelationType;
+<i>46</i>&nbsp;import javax.management.relation.RelationTypeNotFoundException;
+<i>47</i>&nbsp;import javax.management.relation.RelationTypeSupport;
+<i>48</i>&nbsp;import javax.management.relation.Role;
+<i>49</i>&nbsp;import javax.management.relation.RoleInfo;
+<i>50</i>&nbsp;import javax.management.relation.RoleInfoNotFoundException;
+<i>51</i>&nbsp;import javax.management.relation.RoleList;
+<i>52</i>&nbsp;import javax.management.relation.RoleNotFoundException;
+<i>53</i>&nbsp;import javax.management.relation.RoleResult;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;public class RelationService extends NotificationBroadcasterSupport implements RelationServiceMBean, MBeanRegistration, NotificationListener {
+<i>56</i>&nbsp;    private Map&lt;String, Object&gt; myRelId2ObjMap = new HashMap();
+<i>57</i>&nbsp;    private Map&lt;String, String&gt; myRelId2RelTypeMap = new HashMap();
+<i>58</i>&nbsp;    private Map&lt;ObjectName, String&gt; myRelMBeanObjName2RelIdMap = new HashMap();
+<i>59</i>&nbsp;    private Map&lt;String, RelationType&gt; myRelType2ObjMap = new HashMap();
+<i>60</i>&nbsp;    private Map&lt;String, List&lt;String&gt;&gt; myRelType2RelIdsMap = new HashMap();
+<b class="nc"><i>61</i>&nbsp;    private final Map&lt;ObjectName, Map&lt;String, List&lt;String&gt;&gt;&gt; myRefedMBeanObjName2RelIdsMap = new HashMap();</b>
+<i>62</i>&nbsp;    private boolean myPurgeFlag = true;
+<i>63</i>&nbsp;    private final AtomicLong atomicSeqNo = new AtomicLong();
+<i>64</i>&nbsp;    private ObjectName myObjName = null;
+<b class="nc"><i>65</i>&nbsp;    private MBeanServer myMBeanServer = null;</b>
+<i>66</i>&nbsp;    private MBeanServerNotificationFilter myUnregNtfFilter = null;
+<i>67</i>&nbsp;    private List&lt;MBeanServerNotification&gt; myUnregNtfList = new ArrayList();
+<i>68</i>&nbsp;
+<b class="nc"><i>69</i>&nbsp;    public RelationService(boolean var1) {</b>
+<i>70</i>&nbsp;        JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;RelationService&quot;);
+<i>71</i>&nbsp;        this.setPurgeFlag(var1);
+<i>72</i>&nbsp;        JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;RelationService&quot;);
+<i>73</i>&nbsp;    }
+<b class="nc"><i>74</i>&nbsp;</b>
+<i>75</i>&nbsp;    public void isActive() throws RelationServiceNotRegisteredException {
+<i>76</i>&nbsp;        if(this.myMBeanServer == null) {
+<i>77</i>&nbsp;            String var1 = &quot;Relation Service not registered in the MBean Server.&quot;;
+<i>78</i>&nbsp;            throw new RelationServiceNotRegisteredException(var1);
+<i>79</i>&nbsp;        }
+<b class="nc"><i>80</i>&nbsp;    }</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public ObjectName preRegister(MBeanServer var1, ObjectName var2) throws Exception {
+<i>83</i>&nbsp;        this.myMBeanServer = var1;
+<i>84</i>&nbsp;        this.myObjName = var2;
+<i>85</i>&nbsp;        return var2;
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;    public void postRegister(Boolean var1) {</b>
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public void preDeregister() throws Exception {
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public void postDeregister() {
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public boolean getPurgeFlag() {
+<b class="nc"><i>98</i>&nbsp;        return this.myPurgeFlag;</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public void setPurgeFlag(boolean var1) {
+<i>102</i>&nbsp;        this.myPurgeFlag = var1;
+<b class="nc"><i>103</i>&nbsp;    }</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public void createRelationType(String var1, RoleInfo[] var2) throws IllegalArgumentException, InvalidRelationTypeException {
+<b class="nc"><i>106</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {</b>
+<i>107</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;createRelationType&quot;, var1);
+<i>108</i>&nbsp;            RelationTypeSupport var4 = new RelationTypeSupport(var1, var2);
+<b class="nc"><i>109</i>&nbsp;            this.addRelationTypeInt(var4);</b>
+<i>110</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;createRelationType&quot;);
+<i>111</i>&nbsp;        } else {
+<i>112</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;
+<b class="nc"><i>113</i>&nbsp;            throw new IllegalArgumentException(var3);</b>
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public void addRelationType(RelationType var1) throws IllegalArgumentException, InvalidRelationTypeException {
+<b class="nc"><i>118</i>&nbsp;        if(var1 == null) {</b>
+<i>119</i>&nbsp;            String var7 = &quot;Invalid parameter.&quot;;
+<i>120</i>&nbsp;            throw new IllegalArgumentException(var7);
+<i>121</i>&nbsp;        } else {
+<i>122</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;addRelationType&quot;);
+<i>123</i>&nbsp;            List var2 = var1.getRoleInfos();
+<i>124</i>&nbsp;            if(var2 == null) {
+<i>125</i>&nbsp;                String var8 = &quot;No role info provided.&quot;;
+<i>126</i>&nbsp;                throw new InvalidRelationTypeException(var8);
+<i>127</i>&nbsp;            } else {
+<i>128</i>&nbsp;                RoleInfo[] var3 = new RoleInfo[var2.size()];
+<i>129</i>&nbsp;                int var4 = 0;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;                for(Iterator var5 = var2.iterator(); var5.hasNext(); ++var4) {
+<i>132</i>&nbsp;                    RoleInfo var6 = (RoleInfo)var5.next();
+<i>133</i>&nbsp;                    var3[var4] = var6;
+<i>134</i>&nbsp;                }
+<b class="nc"><i>135</i>&nbsp;</b>
+<i>136</i>&nbsp;                RelationTypeSupport.checkRoleInfos(var3);
+<b class="nc"><i>137</i>&nbsp;                this.addRelationTypeInt(var1);</b>
+<b class="nc"><i>138</i>&nbsp;                JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;addRelationType&quot;);</b>
+<i>139</i>&nbsp;            }
+<b class="nc"><i>140</i>&nbsp;        }</b>
+<i>141</i>&nbsp;    }
+<b class="nc"><i>142</i>&nbsp;</b>
+<b class="nc"><i>143</i>&nbsp;    public List&lt;String&gt; getAllRelationTypeNames() {</b>
+<i>144</i>&nbsp;        Map var2 = this.myRelType2ObjMap;
+<i>145</i>&nbsp;        synchronized(this.myRelType2ObjMap) {
+<i>146</i>&nbsp;            ArrayList var1 = new ArrayList(this.myRelType2ObjMap.keySet());
+<i>147</i>&nbsp;            return var1;
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public List&lt;RoleInfo&gt; getRoleInfos(String var1) throws IllegalArgumentException, RelationTypeNotFoundException {
+<i>152</i>&nbsp;        if(var1 == null) {
+<i>153</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;
+<i>154</i>&nbsp;            throw new IllegalArgumentException(var3);
+<i>155</i>&nbsp;        } else {
+<i>156</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRoleInfos&quot;, var1);
+<b class="nc"><i>157</i>&nbsp;            RelationType var2 = this.getRelationType(var1);</b>
+<i>158</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRoleInfos&quot;);
+<i>159</i>&nbsp;            return var2.getRoleInfos();
+<b class="nc"><i>160</i>&nbsp;        }</b>
+<i>161</i>&nbsp;    }
+<b class="nc"><i>162</i>&nbsp;</b>
+<i>163</i>&nbsp;    public RoleInfo getRoleInfo(String var1, String var2) throws IllegalArgumentException, RelationTypeNotFoundException, RoleInfoNotFoundException {
+<i>164</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {
+<i>165</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRoleInfo&quot;, new Object[]{var1, var2});
+<i>166</i>&nbsp;            RelationType var5 = this.getRelationType(var1);
+<i>167</i>&nbsp;            RoleInfo var4 = var5.getRoleInfo(var2);
+<i>168</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRoleInfo&quot;);
+<i>169</i>&nbsp;            return var4;
+<i>170</i>&nbsp;        } else {
+<i>171</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;
+<i>172</i>&nbsp;            throw new IllegalArgumentException(var3);
+<i>173</i>&nbsp;        }
+<i>174</i>&nbsp;    }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;    public void removeRelationType(String var1) throws RelationServiceNotRegisteredException, IllegalArgumentException, RelationTypeNotFoundException {
+<i>177</i>&nbsp;        this.isActive();
+<b class="nc"><i>178</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>179</i>&nbsp;            String var2 = &quot;Invalid parameter.&quot;;</b>
+<b class="nc"><i>180</i>&nbsp;            throw new IllegalArgumentException(var2);</b>
+<i>181</i>&nbsp;        } else {
+<i>182</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;removeRelationType&quot;, var1);
+<i>183</i>&nbsp;            this.getRelationType(var1);
+<i>184</i>&nbsp;            ArrayList var3 = null;
+<i>185</i>&nbsp;            Map var4 = this.myRelType2RelIdsMap;
+<i>186</i>&nbsp;            synchronized(this.myRelType2RelIdsMap) {
+<i>187</i>&nbsp;                List var5 = (List)this.myRelType2RelIdsMap.get(var1);
+<i>188</i>&nbsp;                if(var5 != null) {
+<i>189</i>&nbsp;                    var3 = new ArrayList(var5);
+<i>190</i>&nbsp;                }
+<i>191</i>&nbsp;            }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;            var4 = this.myRelType2ObjMap;
+<i>194</i>&nbsp;            synchronized(this.myRelType2ObjMap) {
+<i>195</i>&nbsp;                this.myRelType2ObjMap.remove(var1);
+<i>196</i>&nbsp;            }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;            var4 = this.myRelType2RelIdsMap;
+<i>199</i>&nbsp;            synchronized(this.myRelType2RelIdsMap) {
+<i>200</i>&nbsp;                this.myRelType2RelIdsMap.remove(var1);
+<i>201</i>&nbsp;            }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;            if(var3 != null) {
+<i>204</i>&nbsp;                Iterator var14 = var3.iterator();
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;                while(var14.hasNext()) {
+<i>207</i>&nbsp;                    String var13 = (String)var14.next();
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;                    try {
+<i>210</i>&nbsp;                        this.removeRelation(var13);
+<i>211</i>&nbsp;                    } catch (RelationNotFoundException var9) {
+<i>212</i>&nbsp;                        throw new RuntimeException(var9.getMessage());
+<i>213</i>&nbsp;                    }
+<i>214</i>&nbsp;                }
+<i>215</i>&nbsp;            }
+<b class="nc"><i>216</i>&nbsp;</b>
+<i>217</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;removeRelationType&quot;);
+<i>218</i>&nbsp;        }
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    public void createRelation(String var1, String var2, RoleList var3) throws RelationServiceNotRegisteredException, IllegalArgumentException, RoleNotFoundException, InvalidRelationIdException, RelationTypeNotFoundException, InvalidRoleValueException {
+<i>222</i>&nbsp;        this.isActive();
+<i>223</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {
+<i>224</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;createRelation&quot;, new Object[]{var1, var2, var3});
+<i>225</i>&nbsp;            RelationSupport var5 = new RelationSupport(var1, this.myObjName, var2, var3);
+<i>226</i>&nbsp;            this.addRelationInt(true, var5, (ObjectName)null, var1, var2, var3);
+<i>227</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;createRelation&quot;);
+<i>228</i>&nbsp;        } else {
+<i>229</i>&nbsp;            String var4 = &quot;Invalid parameter.&quot;;
+<i>230</i>&nbsp;            throw new IllegalArgumentException(var4);
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;    }
+<b class="nc"><i>233</i>&nbsp;</b>
+<i>234</i>&nbsp;    public void addRelation(ObjectName var1) throws IllegalArgumentException, RelationServiceNotRegisteredException, NoSuchMethodException, InvalidRelationIdException, InstanceNotFoundException, InvalidRelationServiceException, RelationTypeNotFoundException, RoleNotFoundException, InvalidRoleValueException {
+<i>235</i>&nbsp;        String var2;
+<i>236</i>&nbsp;        if(var1 == null) {
+<i>237</i>&nbsp;            var2 = &quot;Invalid parameter.&quot;;
+<i>238</i>&nbsp;            throw new IllegalArgumentException(var2);
+<i>239</i>&nbsp;        } else {
+<i>240</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;addRelation&quot;, var1);
+<i>241</i>&nbsp;            this.isActive();
+<b class="nc"><i>242</i>&nbsp;            if(!this.myMBeanServer.isInstanceOf(var1, &quot;javax.management.relation.Relation&quot;)) {</b>
+<b class="nc"><i>243</i>&nbsp;                var2 = &quot;This MBean does not implement the Relation interface.&quot;;</b>
+<b class="nc"><i>244</i>&nbsp;                throw new NoSuchMethodException(var2);</b>
+<b class="nc"><i>245</i>&nbsp;            } else {</b>
+<b class="nc"><i>246</i>&nbsp;                try {</b>
+<b class="nc"><i>247</i>&nbsp;                    var2 = (String)((String)this.myMBeanServer.getAttribute(var1, &quot;RelationId&quot;));</b>
+<i>248</i>&nbsp;                } catch (MBeanException var19) {
+<i>249</i>&nbsp;                    throw new RuntimeException(var19.getTargetException().getMessage());
+<i>250</i>&nbsp;                } catch (ReflectionException var20) {
+<i>251</i>&nbsp;                    throw new RuntimeException(var20.getMessage());
+<i>252</i>&nbsp;                } catch (AttributeNotFoundException var21) {
+<i>253</i>&nbsp;                    throw new RuntimeException(var21.getMessage());
+<i>254</i>&nbsp;                }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;                if(var2 == null) {
+<i>257</i>&nbsp;                    String var22 = &quot;This MBean does not provide a relation id.&quot;;
+<i>258</i>&nbsp;                    throw new InvalidRelationIdException(var22);
+<i>259</i>&nbsp;                } else {
+<i>260</i>&nbsp;                    ObjectName var3;
+<i>261</i>&nbsp;                    try {
+<i>262</i>&nbsp;                        var3 = (ObjectName)((ObjectName)this.myMBeanServer.getAttribute(var1, &quot;RelationServiceName&quot;));
+<i>263</i>&nbsp;                    } catch (MBeanException var16) {
+<i>264</i>&nbsp;                        throw new RuntimeException(var16.getTargetException().getMessage());
+<i>265</i>&nbsp;                    } catch (ReflectionException var17) {
+<i>266</i>&nbsp;                        throw new RuntimeException(var17.getMessage());
+<i>267</i>&nbsp;                    } catch (AttributeNotFoundException var18) {
+<i>268</i>&nbsp;                        throw new RuntimeException(var18.getMessage());
+<i>269</i>&nbsp;                    }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;                    boolean var4 = false;
+<i>272</i>&nbsp;                    if(var3 == null) {
+<i>273</i>&nbsp;                        var4 = true;
+<b class="nc"><i>274</i>&nbsp;                    } else if(!var3.equals(this.myObjName)) {</b>
+<b class="nc"><i>275</i>&nbsp;                        var4 = true;</b>
+<b class="nc"><i>276</i>&nbsp;                    }</b>
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;                    String var5;
+<b class="nc"><i>279</i>&nbsp;                    if(var4) {</b>
+<b class="nc"><i>280</i>&nbsp;                        var5 = &quot;The Relation Service referenced in the MBean is not the current one.&quot;;</b>
+<i>281</i>&nbsp;                        throw new InvalidRelationServiceException(var5);
+<i>282</i>&nbsp;                    } else {
+<b class="nc"><i>283</i>&nbsp;                        try {</b>
+<i>284</i>&nbsp;                            var5 = (String)((String)this.myMBeanServer.getAttribute(var1, &quot;RelationTypeName&quot;));
+<i>285</i>&nbsp;                        } catch (MBeanException var13) {
+<b class="nc"><i>286</i>&nbsp;                            throw new RuntimeException(var13.getTargetException().getMessage());</b>
+<i>287</i>&nbsp;                        } catch (ReflectionException var14) {
+<b class="nc"><i>288</i>&nbsp;                            throw new RuntimeException(var14.getMessage());</b>
+<b class="nc"><i>289</i>&nbsp;                        } catch (AttributeNotFoundException var15) {</b>
+<i>290</i>&nbsp;                            throw new RuntimeException(var15.getMessage());
+<i>291</i>&nbsp;                        }
+<i>292</i>&nbsp;
+<i>293</i>&nbsp;                        if(var5 == null) {
+<i>294</i>&nbsp;                            String var23 = &quot;No relation type provided.&quot;;
+<i>295</i>&nbsp;                            throw new RelationTypeNotFoundException(var23);
+<i>296</i>&nbsp;                        } else {
+<i>297</i>&nbsp;                            RoleList var6;
+<i>298</i>&nbsp;                            try {
+<i>299</i>&nbsp;                                var6 = (RoleList)((RoleList)this.myMBeanServer.invoke(var1, &quot;retrieveAllRoles&quot;, (Object[])null, (String[])null));
+<i>300</i>&nbsp;                            } catch (MBeanException var11) {
+<i>301</i>&nbsp;                                throw new RuntimeException(var11.getTargetException().getMessage());
+<i>302</i>&nbsp;                            } catch (ReflectionException var12) {
+<i>303</i>&nbsp;                                throw new RuntimeException(var12.getMessage());
+<i>304</i>&nbsp;                            }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;                            this.addRelationInt(false, (RelationSupport)null, var1, var2, var5, var6);
+<i>307</i>&nbsp;                            Map var7 = this.myRelMBeanObjName2RelIdMap;
+<i>308</i>&nbsp;                            synchronized(this.myRelMBeanObjName2RelIdMap) {
+<i>309</i>&nbsp;                                this.myRelMBeanObjName2RelIdMap.put(var1, var2);
+<i>310</i>&nbsp;                            }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;                            try {
+<b class="nc"><i>313</i>&nbsp;                                this.myMBeanServer.setAttribute(var1, new Attribute(&quot;RelationServiceManagementFlag&quot;, Boolean.TRUE));</b>
+<b class="nc"><i>314</i>&nbsp;                            } catch (Exception var9) {</b>
+<b class="nc"><i>315</i>&nbsp;                                ;</b>
+<i>316</i>&nbsp;                            }
+<i>317</i>&nbsp;
+<b class="nc"><i>318</i>&nbsp;                            ArrayList var24 = new ArrayList();</b>
+<b class="nc"><i>319</i>&nbsp;                            var24.add(var1);</b>
+<i>320</i>&nbsp;                            this.updateUnregistrationListener(var24, (List)null);
+<i>321</i>&nbsp;                            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;addRelation&quot;);
+<b class="nc"><i>322</i>&nbsp;                        }</b>
+<b class="nc"><i>323</i>&nbsp;                    }</b>
+<b class="nc"><i>324</i>&nbsp;                }</b>
+<b class="nc"><i>325</i>&nbsp;            }</b>
+<i>326</i>&nbsp;        }
+<i>327</i>&nbsp;    }
+<b class="nc"><i>328</i>&nbsp;</b>
+<b class="nc"><i>329</i>&nbsp;    public ObjectName isRelationMBean(String var1) throws IllegalArgumentException, RelationNotFoundException {</b>
+<b class="nc"><i>330</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>331</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;</b>
+<b class="nc"><i>332</i>&nbsp;            throw new IllegalArgumentException(var3);</b>
+<i>333</i>&nbsp;        } else {
+<i>334</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;isRelationMBean&quot;, var1);
+<b class="nc"><i>335</i>&nbsp;            Object var2 = this.getRelation(var1);</b>
+<i>336</i>&nbsp;            return var2 instanceof ObjectName?(ObjectName)var2:null;
+<b class="nc"><i>337</i>&nbsp;        }</b>
+<i>338</i>&nbsp;    }
+<b class="nc"><i>339</i>&nbsp;</b>
+<b class="nc"><i>340</i>&nbsp;    public String isRelation(ObjectName var1) throws IllegalArgumentException {</b>
+<i>341</i>&nbsp;        String var2;
+<i>342</i>&nbsp;        if(var1 == null) {
+<i>343</i>&nbsp;            var2 = &quot;Invalid parameter.&quot;;
+<i>344</i>&nbsp;            throw new IllegalArgumentException(var2);
+<i>345</i>&nbsp;        } else {
+<i>346</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;isRelation&quot;, var1);
+<i>347</i>&nbsp;            var2 = null;
+<i>348</i>&nbsp;            Map var3 = this.myRelMBeanObjName2RelIdMap;
+<i>349</i>&nbsp;            synchronized(this.myRelMBeanObjName2RelIdMap) {
+<b class="nc"><i>350</i>&nbsp;                String var4 = (String)this.myRelMBeanObjName2RelIdMap.get(var1);</b>
+<b class="nc"><i>351</i>&nbsp;                if(var4 != null) {</b>
+<b class="nc"><i>352</i>&nbsp;                    var2 = var4;</b>
+<b class="nc"><i>353</i>&nbsp;                }</b>
+<b class="nc"><i>354</i>&nbsp;</b>
+<i>355</i>&nbsp;                return var2;
+<i>356</i>&nbsp;            }
+<i>357</i>&nbsp;        }
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    public Boolean hasRelation(String var1) throws IllegalArgumentException {
+<i>361</i>&nbsp;        if(var1 == null) {
+<i>362</i>&nbsp;            String var2 = &quot;Invalid parameter.&quot;;
+<i>363</i>&nbsp;            throw new IllegalArgumentException(var2);
+<i>364</i>&nbsp;        } else {
+<i>365</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;hasRelation&quot;, var1);
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;            try {
+<i>368</i>&nbsp;                this.getRelation(var1);
+<i>369</i>&nbsp;                return Boolean.valueOf(true);
+<i>370</i>&nbsp;            } catch (RelationNotFoundException var3) {
+<i>371</i>&nbsp;                return Boolean.valueOf(false);
+<i>372</i>&nbsp;            }
+<b class="nc"><i>373</i>&nbsp;        }</b>
+<b class="nc"><i>374</i>&nbsp;    }</b>
+<b class="nc"><i>375</i>&nbsp;</b>
+<i>376</i>&nbsp;    public List&lt;String&gt; getAllRelationIds() {
+<i>377</i>&nbsp;        Map var2 = this.myRelId2ObjMap;
+<b class="nc"><i>378</i>&nbsp;        synchronized(this.myRelId2ObjMap) {</b>
+<b class="nc"><i>379</i>&nbsp;            ArrayList var1 = new ArrayList(this.myRelId2ObjMap.keySet());</b>
+<i>380</i>&nbsp;            return var1;
+<i>381</i>&nbsp;        }
+<b class="nc"><i>382</i>&nbsp;    }</b>
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;    public Integer checkRoleReading(String var1, String var2) throws IllegalArgumentException, RelationTypeNotFoundException {</b>
+<b class="nc"><i>385</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {</b>
+<b class="nc"><i>386</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;checkRoleReading&quot;, new Object[]{var1, var2});</b>
+<i>387</i>&nbsp;            RelationType var4 = this.getRelationType(var2);
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;            Integer var7;
+<i>390</i>&nbsp;            try {
+<i>391</i>&nbsp;                RoleInfo var5 = var4.getRoleInfo(var1);
+<i>392</i>&nbsp;                var7 = this.checkRoleInt(1, var1, (List)null, var5, false);
+<i>393</i>&nbsp;            } catch (RoleInfoNotFoundException var6) {
+<i>394</i>&nbsp;                var7 = Integer.valueOf(1);
+<i>395</i>&nbsp;            }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleReading&quot;);
+<i>398</i>&nbsp;            return var7;
+<i>399</i>&nbsp;        } else {
+<i>400</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;
+<i>401</i>&nbsp;            throw new IllegalArgumentException(var3);
+<i>402</i>&nbsp;        }
+<i>403</i>&nbsp;    }
+<i>404</i>&nbsp;
+<i>405</i>&nbsp;    public Integer checkRoleWriting(Role var1, String var2, Boolean var3) throws IllegalArgumentException, RelationTypeNotFoundException {
+<i>406</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null &amp;&amp; var3 != null) {
+<i>407</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;checkRoleWriting&quot;, new Object[]{var1, var2, var3});
+<i>408</i>&nbsp;            RelationType var11 = this.getRelationType(var2);
+<b class="nc"><i>409</i>&nbsp;            String var5 = var1.getRoleName();</b>
+<b class="nc"><i>410</i>&nbsp;            List var6 = var1.getRoleValue();</b>
+<b class="nc"><i>411</i>&nbsp;            boolean var7 = true;</b>
+<i>412</i>&nbsp;            if(var3.booleanValue()) {
+<i>413</i>&nbsp;                var7 = false;
+<b class="nc"><i>414</i>&nbsp;            }</b>
+<b class="nc"><i>415</i>&nbsp;</b>
+<i>416</i>&nbsp;            RoleInfo var8;
+<b class="nc"><i>417</i>&nbsp;            try {</b>
+<i>418</i>&nbsp;                var8 = var11.getRoleInfo(var5);
+<i>419</i>&nbsp;            } catch (RoleInfoNotFoundException var10) {
+<i>420</i>&nbsp;                JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleWriting&quot;);
+<b class="nc"><i>421</i>&nbsp;                return Integer.valueOf(1);</b>
+<i>422</i>&nbsp;            }
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;            Integer var9 = this.checkRoleInt(2, var5, var6, var8, var7);</b>
+<i>425</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleWriting&quot;);
+<b class="nc"><i>426</i>&nbsp;            return var9;</b>
+<b class="nc"><i>427</i>&nbsp;        } else {</b>
+<b class="nc"><i>428</i>&nbsp;            String var4 = &quot;Invalid parameter.&quot;;</b>
+<i>429</i>&nbsp;            throw new IllegalArgumentException(var4);
+<i>430</i>&nbsp;        }
+<i>431</i>&nbsp;    }
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    public void sendRelationCreationNotification(String var1) throws IllegalArgumentException, RelationNotFoundException {
+<i>434</i>&nbsp;        if(var1 == null) {
+<i>435</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;
+<i>436</i>&nbsp;            throw new IllegalArgumentException(var3);
+<i>437</i>&nbsp;        } else {
+<i>438</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;sendRelationCreationNotification&quot;, var1);
+<i>439</i>&nbsp;            StringBuilder var2 = new StringBuilder(&quot;Creation of relation &quot;);
+<i>440</i>&nbsp;            var2.append(var1);
+<i>441</i>&nbsp;            this.sendNotificationInt(1, var2.toString(), var1, (List)null, (String)null, (List)null, (List)null);
+<i>442</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;sendRelationCreationNotification&quot;);
+<i>443</i>&nbsp;        }
+<i>444</i>&nbsp;    }
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;    public void sendRoleUpdateNotification(String var1, Role var2, List&lt;ObjectName&gt; var3) throws IllegalArgumentException, RelationNotFoundException {
+<i>447</i>&nbsp;        String var4;
+<i>448</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null &amp;&amp; var3 != null) {
+<i>449</i>&nbsp;            if(!(var3 instanceof ArrayList)) {
+<b class="nc"><i>450</i>&nbsp;                var3 = new ArrayList((Collection)var3);</b>
+<i>451</i>&nbsp;            }
+<b class="nc"><i>452</i>&nbsp;</b>
+<b class="nc"><i>453</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;sendRoleUpdateNotification&quot;, new Object[]{var1, var2, var3});</b>
+<b class="nc"><i>454</i>&nbsp;            var4 = var2.getRoleName();</b>
+<i>455</i>&nbsp;            List var5 = var2.getRoleValue();
+<i>456</i>&nbsp;            String var6 = Role.roleValueToString(var5);
+<b class="nc"><i>457</i>&nbsp;            String var7 = Role.roleValueToString((List)var3);</b>
+<b class="nc"><i>458</i>&nbsp;            StringBuilder var8 = new StringBuilder(&quot;Value of role &quot;);</b>
+<i>459</i>&nbsp;            var8.append(var4);
+<i>460</i>&nbsp;            var8.append(&quot; has changed\nOld value:\n&quot;);
+<i>461</i>&nbsp;            var8.append(var7);
+<b class="nc"><i>462</i>&nbsp;            var8.append(&quot;\nNew value:\n&quot;);</b>
+<i>463</i>&nbsp;            var8.append(var6);
+<i>464</i>&nbsp;            this.sendNotificationInt(2, var8.toString(), var1, (List)null, var4, var5, (List)var3);
+<b class="nc"><i>465</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;sendRoleUpdateNotification&quot;);</b>
+<b class="nc"><i>466</i>&nbsp;        } else {</b>
+<i>467</i>&nbsp;            var4 = &quot;Invalid parameter.&quot;;
+<i>468</i>&nbsp;            throw new IllegalArgumentException(var4);
+<b class="nc"><i>469</i>&nbsp;        }</b>
+<i>470</i>&nbsp;    }
+<b class="nc"><i>471</i>&nbsp;</b>
+<b class="nc"><i>472</i>&nbsp;    public void sendRelationRemovalNotification(String var1, List&lt;ObjectName&gt; var2) throws IllegalArgumentException, RelationNotFoundException {</b>
+<i>473</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>474</i>&nbsp;            String var3 = &quot;Invalid parameter&quot;;</b>
+<i>475</i>&nbsp;            throw new IllegalArgumentException(var3);
+<i>476</i>&nbsp;        } else {
+<b class="nc"><i>477</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;sendRelationRemovalNotification&quot;, new Object[]{var1, var2});</b>
+<b class="nc"><i>478</i>&nbsp;            this.sendNotificationInt(3, &quot;Removal of relation &quot; + var1, var1, var2, (String)null, (List)null, (List)null);</b>
+<b class="nc"><i>479</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;sendRelationRemovalNotification&quot;);</b>
+<b class="nc"><i>480</i>&nbsp;        }</b>
+<b class="nc"><i>481</i>&nbsp;    }</b>
+<b class="nc"><i>482</i>&nbsp;</b>
+<i>483</i>&nbsp;    public void updateRoleMap(String var1, Role var2, List&lt;ObjectName&gt; var3) throws IllegalArgumentException, RelationServiceNotRegisteredException, RelationNotFoundException {
+<i>484</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null &amp;&amp; var3 != null) {
+<b class="nc"><i>485</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;updateRoleMap&quot;, new Object[]{var1, var2, var3});</b>
+<b class="nc"><i>486</i>&nbsp;            this.isActive();</b>
+<i>487</i>&nbsp;            this.getRelation(var1);
+<i>488</i>&nbsp;            String var5 = var2.getRoleName();
+<i>489</i>&nbsp;            List var6 = var2.getRoleValue();
+<i>490</i>&nbsp;            ArrayList var7 = new ArrayList(var3);
+<i>491</i>&nbsp;            ArrayList var8 = new ArrayList();
+<i>492</i>&nbsp;            Iterator var9 = var6.iterator();
+<b class="nc"><i>493</i>&nbsp;</b>
+<b class="nc"><i>494</i>&nbsp;            boolean var12;</b>
+<b class="nc"><i>495</i>&nbsp;            while(var9.hasNext()) {</b>
+<b class="nc"><i>496</i>&nbsp;                ObjectName var10 = (ObjectName)var9.next();</b>
+<i>497</i>&nbsp;                int var11 = var7.indexOf(var10);
+<i>498</i>&nbsp;                if(var11 == -1) {
+<i>499</i>&nbsp;                    var12 = this.addNewMBeanReference(var10, var1, var5);
+<b class="nc"><i>500</i>&nbsp;                    if(var12) {</b>
+<b class="nc"><i>501</i>&nbsp;                        var8.add(var10);</b>
+<i>502</i>&nbsp;                    }
+<i>503</i>&nbsp;                } else {
+<i>504</i>&nbsp;                    var7.remove(var11);
+<i>505</i>&nbsp;                }
+<i>506</i>&nbsp;            }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;            ArrayList var15 = new ArrayList();
+<i>509</i>&nbsp;            Iterator var14 = var7.iterator();
+<i>510</i>&nbsp;
+<i>511</i>&nbsp;            while(var14.hasNext()) {
+<i>512</i>&nbsp;                ObjectName var13 = (ObjectName)var14.next();
+<i>513</i>&nbsp;                var12 = this.removeMBeanReference(var13, var1, var5, false);
+<i>514</i>&nbsp;                if(var12) {
+<i>515</i>&nbsp;                    var15.add(var13);
+<i>516</i>&nbsp;                }
+<i>517</i>&nbsp;            }
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;            this.updateUnregistrationListener(var8, var15);
+<i>520</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;updateRoleMap&quot;);
+<i>521</i>&nbsp;        } else {
+<i>522</i>&nbsp;            String var4 = &quot;Invalid parameter.&quot;;
+<i>523</i>&nbsp;            throw new IllegalArgumentException(var4);
+<i>524</i>&nbsp;        }
+<i>525</i>&nbsp;    }
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;    public void removeRelation(String var1) throws RelationServiceNotRegisteredException, IllegalArgumentException, RelationNotFoundException {
+<i>528</i>&nbsp;        this.isActive();
+<i>529</i>&nbsp;        if(var1 == null) {
+<i>530</i>&nbsp;            String var19 = &quot;Invalid parameter.&quot;;
+<i>531</i>&nbsp;            throw new IllegalArgumentException(var19);
+<i>532</i>&nbsp;        } else {
+<i>533</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;removeRelation&quot;, var1);
+<i>534</i>&nbsp;            Object var2 = this.getRelation(var1);
+<i>535</i>&nbsp;            ArrayList var3;
+<i>536</i>&nbsp;            if(var2 instanceof ObjectName) {
+<i>537</i>&nbsp;                var3 = new ArrayList();
+<i>538</i>&nbsp;                var3.add((ObjectName)var2);
+<i>539</i>&nbsp;                this.updateUnregistrationListener((List)null, var3);
+<i>540</i>&nbsp;            }
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;            this.sendRelationRemovalNotification(var1, (List)null);
+<i>543</i>&nbsp;            var3 = new ArrayList();
+<i>544</i>&nbsp;            ArrayList var4 = new ArrayList();
+<i>545</i>&nbsp;            Map var5 = this.myRefedMBeanObjName2RelIdsMap;
+<i>546</i>&nbsp;            synchronized(this.myRefedMBeanObjName2RelIdsMap) {
+<i>547</i>&nbsp;                Iterator var6 = this.myRefedMBeanObjName2RelIdsMap.keySet().iterator();
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;                ObjectName var7;
+<i>550</i>&nbsp;                while(var6.hasNext()) {
+<i>551</i>&nbsp;                    var7 = (ObjectName)var6.next();
+<i>552</i>&nbsp;                    Map var8 = (Map)this.myRefedMBeanObjName2RelIdsMap.get(var7);
+<i>553</i>&nbsp;                    if(var8.containsKey(var1)) {
+<b class="nc"><i>554</i>&nbsp;                        var8.remove(var1);</b>
+<i>555</i>&nbsp;                        var3.add(var7);
+<b class="nc"><i>556</i>&nbsp;                    }</b>
+<i>557</i>&nbsp;
+<b class="nc"><i>558</i>&nbsp;                    if(var8.isEmpty()) {</b>
+<b class="nc"><i>559</i>&nbsp;                        var4.add(var7);</b>
+<i>560</i>&nbsp;                    }
+<i>561</i>&nbsp;                }
+<b class="nc"><i>562</i>&nbsp;</b>
+<b class="nc"><i>563</i>&nbsp;                var6 = var4.iterator();</b>
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;                while(var6.hasNext()) {
+<b class="nc"><i>566</i>&nbsp;                    var7 = (ObjectName)var6.next();</b>
+<b class="nc"><i>567</i>&nbsp;                    this.myRefedMBeanObjName2RelIdsMap.remove(var7);</b>
+<i>568</i>&nbsp;                }
+<b class="nc"><i>569</i>&nbsp;            }</b>
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;            var5 = this.myRelId2ObjMap;
+<i>572</i>&nbsp;            synchronized(this.myRelId2ObjMap) {
+<i>573</i>&nbsp;                this.myRelId2ObjMap.remove(var1);
+<b class="nc"><i>574</i>&nbsp;            }</b>
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;            if(var2 instanceof ObjectName) {
+<i>577</i>&nbsp;                var5 = this.myRelMBeanObjName2RelIdMap;
+<i>578</i>&nbsp;                synchronized(this.myRelMBeanObjName2RelIdMap) {
+<i>579</i>&nbsp;                    this.myRelMBeanObjName2RelIdMap.remove((ObjectName)var2);
+<i>580</i>&nbsp;                }
+<i>581</i>&nbsp;            }
+<i>582</i>&nbsp;
+<i>583</i>&nbsp;            Map var21 = this.myRelId2RelTypeMap;
+<b class="nc"><i>584</i>&nbsp;            String var20;</b>
+<i>585</i>&nbsp;            synchronized(this.myRelId2RelTypeMap) {
+<i>586</i>&nbsp;                var20 = (String)this.myRelId2RelTypeMap.get(var1);
+<i>587</i>&nbsp;                this.myRelId2RelTypeMap.remove(var1);
+<i>588</i>&nbsp;            }
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;            var21 = this.myRelType2RelIdsMap;
+<b class="nc"><i>591</i>&nbsp;            synchronized(this.myRelType2RelIdsMap) {</b>
+<b class="nc"><i>592</i>&nbsp;                List var22 = (List)this.myRelType2RelIdsMap.get(var20);</b>
+<i>593</i>&nbsp;                if(var22 != null) {
+<i>594</i>&nbsp;                    var22.remove(var1);
+<i>595</i>&nbsp;                    if(var22.isEmpty()) {
+<i>596</i>&nbsp;                        this.myRelType2RelIdsMap.remove(var20);
+<i>597</i>&nbsp;                    }
+<i>598</i>&nbsp;                }
+<i>599</i>&nbsp;            }
+<i>600</i>&nbsp;
+<i>601</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;removeRelation&quot;);
+<i>602</i>&nbsp;        }
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    public void purgeRelations() throws RelationServiceNotRegisteredException {
+<i>606</i>&nbsp;        JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;purgeRelations&quot;);
+<i>607</i>&nbsp;        this.isActive();
+<i>608</i>&nbsp;        Map var2 = this.myRefedMBeanObjName2RelIdsMap;
+<i>609</i>&nbsp;        ArrayList var1;
+<i>610</i>&nbsp;        synchronized(this.myRefedMBeanObjName2RelIdsMap) {
+<i>611</i>&nbsp;            var1 = new ArrayList(this.myUnregNtfList);
+<i>612</i>&nbsp;            this.myUnregNtfList = new ArrayList();
+<i>613</i>&nbsp;        }
+<i>614</i>&nbsp;
+<i>615</i>&nbsp;        ArrayList var17 = new ArrayList();
+<i>616</i>&nbsp;        HashMap var3 = new HashMap();
+<i>617</i>&nbsp;        Map var4 = this.myRefedMBeanObjName2RelIdsMap;
+<i>618</i>&nbsp;        synchronized(this.myRefedMBeanObjName2RelIdsMap) {
+<i>619</i>&nbsp;            Iterator var5 = var1.iterator();
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;            while(true) {
+<i>622</i>&nbsp;                if(!var5.hasNext()) {
+<i>623</i>&nbsp;                    break;
+<i>624</i>&nbsp;                }
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;                MBeanServerNotification var6 = (MBeanServerNotification)var5.next();
+<i>627</i>&nbsp;                ObjectName var7 = var6.getMBeanName();
+<i>628</i>&nbsp;                var17.add(var7);
+<i>629</i>&nbsp;                Map var8 = (Map)this.myRefedMBeanObjName2RelIdsMap.get(var7);
+<i>630</i>&nbsp;                var3.put(var7, var8);
+<i>631</i>&nbsp;                this.myRefedMBeanObjName2RelIdsMap.remove(var7);
+<i>632</i>&nbsp;            }
+<i>633</i>&nbsp;        }
+<i>634</i>&nbsp;
+<i>635</i>&nbsp;        this.updateUnregistrationListener((List)null, var17);
+<i>636</i>&nbsp;        Iterator var18 = var1.iterator();
+<i>637</i>&nbsp;
+<i>638</i>&nbsp;        while(var18.hasNext()) {
+<i>639</i>&nbsp;            MBeanServerNotification var19 = (MBeanServerNotification)var18.next();
+<i>640</i>&nbsp;            ObjectName var20 = var19.getMBeanName();
+<i>641</i>&nbsp;            Map var21 = (Map)var3.get(var20);
+<i>642</i>&nbsp;            Iterator var22 = var21.entrySet().iterator();
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;            while(var22.hasNext()) {
+<i>645</i>&nbsp;                Entry var9 = (Entry)var22.next();
+<i>646</i>&nbsp;                String var10 = (String)var9.getKey();
+<i>647</i>&nbsp;                List var11 = (List)var9.getValue();
+<i>648</i>&nbsp;
+<i>649</i>&nbsp;                try {
+<i>650</i>&nbsp;                    this.handleReferenceUnregistration(var10, var20, var11);
+<i>651</i>&nbsp;                } catch (RelationNotFoundException var13) {
+<b class="nc"><i>652</i>&nbsp;                    throw new RuntimeException(var13.getMessage());</b>
+<b class="nc"><i>653</i>&nbsp;                } catch (RoleNotFoundException var14) {</b>
+<b class="nc"><i>654</i>&nbsp;                    throw new RuntimeException(var14.getMessage());</b>
+<i>655</i>&nbsp;                }
+<i>656</i>&nbsp;            }
+<b class="nc"><i>657</i>&nbsp;        }</b>
+<b class="nc"><i>658</i>&nbsp;</b>
+<i>659</i>&nbsp;        JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;purgeRelations&quot;);
+<i>660</i>&nbsp;    }
+<b class="nc"><i>661</i>&nbsp;</b>
+<i>662</i>&nbsp;    public Map&lt;String, List&lt;String&gt;&gt; findReferencingRelations(ObjectName var1, String var2, String var3) throws IllegalArgumentException {
+<i>663</i>&nbsp;        if(var1 == null) {
+<i>664</i>&nbsp;            String var19 = &quot;Invalid parameter.&quot;;
+<i>665</i>&nbsp;            throw new IllegalArgumentException(var19);
+<b class="nc"><i>666</i>&nbsp;        } else {</b>
+<b class="nc"><i>667</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;findReferencingRelations&quot;, new Object[]{var1, var2, var3});</b>
+<b class="nc"><i>668</i>&nbsp;            HashMap var4 = new HashMap();</b>
+<i>669</i>&nbsp;            Map var5 = this.myRefedMBeanObjName2RelIdsMap;
+<i>670</i>&nbsp;            synchronized(this.myRefedMBeanObjName2RelIdsMap) {
+<i>671</i>&nbsp;                Map var6 = (Map)this.myRefedMBeanObjName2RelIdsMap.get(var1);
+<i>672</i>&nbsp;                if(var6 != null) {
+<i>673</i>&nbsp;                    Set var7 = var6.keySet();
+<i>674</i>&nbsp;                    ArrayList var8;
+<b class="nc"><i>675</i>&nbsp;                    Iterator var9;</b>
+<i>676</i>&nbsp;                    String var10;
+<b class="nc"><i>677</i>&nbsp;                    if(var2 == null) {</b>
+<i>678</i>&nbsp;                        var8 = new ArrayList(var7);
+<i>679</i>&nbsp;                    } else {
+<b class="nc"><i>680</i>&nbsp;                        var8 = new ArrayList();</b>
+<b class="nc"><i>681</i>&nbsp;                        var9 = var7.iterator();</b>
+<i>682</i>&nbsp;
+<b class="nc"><i>683</i>&nbsp;                        while(var9.hasNext()) {</b>
+<b class="nc"><i>684</i>&nbsp;                            var10 = (String)var9.next();</b>
+<b class="nc"><i>685</i>&nbsp;                            Map var12 = this.myRelId2RelTypeMap;</b>
+<b class="nc"><i>686</i>&nbsp;                            String var11;</b>
+<b class="nc"><i>687</i>&nbsp;                            synchronized(this.myRelId2RelTypeMap) {</b>
+<i>688</i>&nbsp;                                var11 = (String)this.myRelId2RelTypeMap.get(var10);
+<b class="nc"><i>689</i>&nbsp;                            }</b>
+<b class="nc"><i>690</i>&nbsp;</b>
+<b class="nc"><i>691</i>&nbsp;                            if(var11.equals(var2)) {</b>
+<i>692</i>&nbsp;                                var8.add(var10);
+<i>693</i>&nbsp;                            }
+<i>694</i>&nbsp;                        }
+<i>695</i>&nbsp;                    }
+<i>696</i>&nbsp;
+<i>697</i>&nbsp;                    var9 = var8.iterator();
+<b class="nc"><i>698</i>&nbsp;</b>
+<i>699</i>&nbsp;                    while(var9.hasNext()) {
+<b class="nc"><i>700</i>&nbsp;                        var10 = (String)var9.next();</b>
+<i>701</i>&nbsp;                        List var17 = (List)var6.get(var10);
+<i>702</i>&nbsp;                        if(var3 == null) {
+<i>703</i>&nbsp;                            var4.put(var10, new ArrayList(var17));
+<b class="nc"><i>704</i>&nbsp;                        } else if(var17.contains(var3)) {</b>
+<b class="nc"><i>705</i>&nbsp;                            ArrayList var18 = new ArrayList();</b>
+<i>706</i>&nbsp;                            var18.add(var3);
+<b class="nc"><i>707</i>&nbsp;                            var4.put(var10, var18);</b>
+<b class="nc"><i>708</i>&nbsp;                        }</b>
+<b class="nc"><i>709</i>&nbsp;                    }</b>
+<b class="nc"><i>710</i>&nbsp;                }</b>
+<b class="nc"><i>711</i>&nbsp;            }</b>
+<i>712</i>&nbsp;
+<b class="nc"><i>713</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;findReferencingRelations&quot;);</b>
+<b class="nc"><i>714</i>&nbsp;            return var4;</b>
+<b class="nc"><i>715</i>&nbsp;        }</b>
+<i>716</i>&nbsp;    }
+<b class="nc"><i>717</i>&nbsp;</b>
+<b class="nc"><i>718</i>&nbsp;    public Map&lt;ObjectName, List&lt;String&gt;&gt; findAssociatedMBeans(ObjectName var1, String var2, String var3) throws IllegalArgumentException {</b>
+<i>719</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>720</i>&nbsp;            String var14 = &quot;Invalid parameter.&quot;;</b>
+<b class="nc"><i>721</i>&nbsp;            throw new IllegalArgumentException(var14);</b>
+<b class="nc"><i>722</i>&nbsp;        } else {</b>
+<i>723</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;findAssociatedMBeans&quot;, new Object[]{var1, var2, var3});
+<i>724</i>&nbsp;            Map var4 = this.findReferencingRelations(var1, var2, var3);
+<i>725</i>&nbsp;            HashMap var5 = new HashMap();
+<i>726</i>&nbsp;            Iterator var6 = var4.keySet().iterator();
+<i>727</i>&nbsp;
+<b class="nc"><i>728</i>&nbsp;            while(var6.hasNext()) {</b>
+<i>729</i>&nbsp;                String var7 = (String)var6.next();
+<b class="nc"><i>730</i>&nbsp;</b>
+<i>731</i>&nbsp;                Map var8;
+<i>732</i>&nbsp;                try {
+<b class="nc"><i>733</i>&nbsp;                    var8 = this.getReferencedMBeans(var7);</b>
+<b class="nc"><i>734</i>&nbsp;                } catch (RelationNotFoundException var12) {</b>
+<i>735</i>&nbsp;                    throw new RuntimeException(var12.getMessage());
+<b class="nc"><i>736</i>&nbsp;                }</b>
+<b class="nc"><i>737</i>&nbsp;</b>
+<b class="nc"><i>738</i>&nbsp;                Iterator var9 = var8.keySet().iterator();</b>
+<b class="nc"><i>739</i>&nbsp;</b>
+<b class="nc"><i>740</i>&nbsp;                while(var9.hasNext()) {</b>
+<b class="nc"><i>741</i>&nbsp;                    ObjectName var10 = (ObjectName)var9.next();</b>
+<b class="nc"><i>742</i>&nbsp;                    if(!var10.equals(var1)) {</b>
+<b class="nc"><i>743</i>&nbsp;                        List var11 = (List)var5.get(var10);</b>
+<i>744</i>&nbsp;                        if(var11 == null) {
+<i>745</i>&nbsp;                            ArrayList var13 = new ArrayList();
+<i>746</i>&nbsp;                            var13.add(var7);
+<i>747</i>&nbsp;                            var5.put(var10, var13);
+<i>748</i>&nbsp;                        } else {
+<b class="nc"><i>749</i>&nbsp;                            var11.add(var7);</b>
+<i>750</i>&nbsp;                        }
+<b class="nc"><i>751</i>&nbsp;                    }</b>
+<i>752</i>&nbsp;                }
+<i>753</i>&nbsp;            }
+<i>754</i>&nbsp;
+<b class="nc"><i>755</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;findAssociatedMBeans&quot;);</b>
+<b class="nc"><i>756</i>&nbsp;            return var5;</b>
+<i>757</i>&nbsp;        }
+<b class="nc"><i>758</i>&nbsp;    }</b>
+<b class="nc"><i>759</i>&nbsp;</b>
+<b class="nc"><i>760</i>&nbsp;    public List&lt;String&gt; findRelationsOfType(String var1) throws IllegalArgumentException, RelationTypeNotFoundException {</b>
+<i>761</i>&nbsp;        if(var1 == null) {
+<i>762</i>&nbsp;            String var2 = &quot;Invalid parameter.&quot;;
+<i>763</i>&nbsp;            throw new IllegalArgumentException(var2);
+<b class="nc"><i>764</i>&nbsp;        } else {</b>
+<i>765</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;findRelationsOfType&quot;);
+<i>766</i>&nbsp;            this.getRelationType(var1);
+<i>767</i>&nbsp;            Map var4 = this.myRelType2RelIdsMap;
+<i>768</i>&nbsp;            ArrayList var3;
+<i>769</i>&nbsp;            synchronized(this.myRelType2RelIdsMap) {
+<i>770</i>&nbsp;                List var5 = (List)this.myRelType2RelIdsMap.get(var1);
+<b class="nc"><i>771</i>&nbsp;                if(var5 == null) {</b>
+<b class="nc"><i>772</i>&nbsp;                    var3 = new ArrayList();</b>
+<b class="nc"><i>773</i>&nbsp;                } else {</b>
+<i>774</i>&nbsp;                    var3 = new ArrayList(var5);
+<i>775</i>&nbsp;                }
+<i>776</i>&nbsp;            }
+<i>777</i>&nbsp;
+<i>778</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;findRelationsOfType&quot;);
+<i>779</i>&nbsp;            return var3;
+<b class="nc"><i>780</i>&nbsp;        }</b>
+<i>781</i>&nbsp;    }
+<i>782</i>&nbsp;
+<i>783</i>&nbsp;    public List&lt;ObjectName&gt; getRole(String var1, String var2) throws RelationServiceNotRegisteredException, IllegalArgumentException, RelationNotFoundException, RoleNotFoundException {
+<b class="nc"><i>784</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {</b>
+<i>785</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRole&quot;, new Object[]{var1, var2});
+<b class="nc"><i>786</i>&nbsp;            this.isActive();</b>
+<i>787</i>&nbsp;            Object var12 = this.getRelation(var1);
+<i>788</i>&nbsp;            Object var4;
+<i>789</i>&nbsp;            if(var12 instanceof RelationSupport) {
+<b class="nc"><i>790</i>&nbsp;                var4 = (List)Util.cast(((RelationSupport)var12).getRoleInt(var2, true, this, false));</b>
+<b class="nc"><i>791</i>&nbsp;            } else {</b>
+<b class="nc"><i>792</i>&nbsp;                Object[] var5 = new Object[]{var2};</b>
+<i>793</i>&nbsp;                String[] var6 = new String[]{&quot;java.lang.String&quot;};
+<b class="nc"><i>794</i>&nbsp;</b>
+<b class="nc"><i>795</i>&nbsp;                try {</b>
+<i>796</i>&nbsp;                    List var7 = (List)Util.cast(this.myMBeanServer.invoke((ObjectName)var12, &quot;getRole&quot;, var5, var6));
+<i>797</i>&nbsp;                    if(var7 != null &amp;&amp; !(var7 instanceof ArrayList)) {
+<i>798</i>&nbsp;                        var4 = new ArrayList(var7);
+<i>799</i>&nbsp;                    } else {
+<i>800</i>&nbsp;                        var4 = var7;
+<i>801</i>&nbsp;                    }
+<i>802</i>&nbsp;                } catch (InstanceNotFoundException var9) {
+<i>803</i>&nbsp;                    throw new RuntimeException(var9.getMessage());
+<i>804</i>&nbsp;                } catch (ReflectionException var10) {
+<i>805</i>&nbsp;                    throw new RuntimeException(var10.getMessage());
+<i>806</i>&nbsp;                } catch (MBeanException var11) {
+<i>807</i>&nbsp;                    Exception var8 = var11.getTargetException();
+<i>808</i>&nbsp;                    if(var8 instanceof RoleNotFoundException) {
+<i>809</i>&nbsp;                        throw (RoleNotFoundException)var8;
+<i>810</i>&nbsp;                    }
+<i>811</i>&nbsp;
+<i>812</i>&nbsp;                    throw new RuntimeException(var8.getMessage());
+<i>813</i>&nbsp;                }
+<i>814</i>&nbsp;            }
+<i>815</i>&nbsp;
+<i>816</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRole&quot;);
+<b class="nc"><i>817</i>&nbsp;            return (List)var4;</b>
+<b class="nc"><i>818</i>&nbsp;        } else {</b>
+<b class="nc"><i>819</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;</b>
+<i>820</i>&nbsp;            throw new IllegalArgumentException(var3);
+<i>821</i>&nbsp;        }
+<b class="nc"><i>822</i>&nbsp;    }</b>
+<b class="nc"><i>823</i>&nbsp;</b>
+<i>824</i>&nbsp;    public RoleResult getRoles(String var1, String[] var2) throws RelationServiceNotRegisteredException, IllegalArgumentException, RelationNotFoundException {
+<i>825</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {
+<b class="nc"><i>826</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRoles&quot;, var1);</b>
+<b class="nc"><i>827</i>&nbsp;            this.isActive();</b>
+<b class="nc"><i>828</i>&nbsp;            Object var12 = this.getRelation(var1);</b>
+<i>829</i>&nbsp;            RoleResult var4;
+<b class="nc"><i>830</i>&nbsp;            if(var12 instanceof RelationSupport) {</b>
+<i>831</i>&nbsp;                var4 = ((RelationSupport)var12).getRolesInt(var2, true, this);
+<i>832</i>&nbsp;            } else {
+<i>833</i>&nbsp;                Object[] var5 = new Object[]{var2};
+<i>834</i>&nbsp;                String[] var6 = new String[1];
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;                try {
+<i>837</i>&nbsp;                    var6[0] = var2.getClass().getName();
+<i>838</i>&nbsp;                } catch (Exception var11) {
+<i>839</i>&nbsp;                    ;
+<i>840</i>&nbsp;                }
+<i>841</i>&nbsp;
+<i>842</i>&nbsp;                try {
+<i>843</i>&nbsp;                    var4 = (RoleResult)((RoleResult)this.myMBeanServer.invoke((ObjectName)var12, &quot;getRoles&quot;, var5, var6));
+<i>844</i>&nbsp;                } catch (InstanceNotFoundException var8) {
+<i>845</i>&nbsp;                    throw new RuntimeException(var8.getMessage());
+<i>846</i>&nbsp;                } catch (ReflectionException var9) {
+<i>847</i>&nbsp;                    throw new RuntimeException(var9.getMessage());
+<b class="nc"><i>848</i>&nbsp;                } catch (MBeanException var10) {</b>
+<b class="nc"><i>849</i>&nbsp;                    throw new RuntimeException(var10.getTargetException().getMessage());</b>
+<b class="nc"><i>850</i>&nbsp;                }</b>
+<i>851</i>&nbsp;            }
+<i>852</i>&nbsp;
+<b class="nc"><i>853</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRoles&quot;);</b>
+<b class="nc"><i>854</i>&nbsp;            return var4;</b>
+<i>855</i>&nbsp;        } else {
+<b class="nc"><i>856</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;</b>
+<b class="nc"><i>857</i>&nbsp;            throw new IllegalArgumentException(var3);</b>
+<b class="nc"><i>858</i>&nbsp;        }</b>
+<b class="nc"><i>859</i>&nbsp;    }</b>
+<b class="nc"><i>860</i>&nbsp;</b>
+<i>861</i>&nbsp;    public RoleResult getAllRoles(String var1) throws IllegalArgumentException, RelationNotFoundException, RelationServiceNotRegisteredException {
+<b class="nc"><i>862</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>863</i>&nbsp;            String var6 = &quot;Invalid parameter.&quot;;</b>
+<i>864</i>&nbsp;            throw new IllegalArgumentException(var6);
+<i>865</i>&nbsp;        } else {
+<i>866</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRoles&quot;, var1);
+<i>867</i>&nbsp;            Object var2 = this.getRelation(var1);
+<i>868</i>&nbsp;            RoleResult var3;
+<i>869</i>&nbsp;            if(var2 instanceof RelationSupport) {
+<i>870</i>&nbsp;                var3 = ((RelationSupport)var2).getAllRolesInt(true, this);
+<i>871</i>&nbsp;            } else {
+<i>872</i>&nbsp;                try {
+<i>873</i>&nbsp;                    var3 = (RoleResult)((RoleResult)this.myMBeanServer.getAttribute((ObjectName)var2, &quot;AllRoles&quot;));
+<i>874</i>&nbsp;                } catch (Exception var5) {
+<i>875</i>&nbsp;                    throw new RuntimeException(var5.getMessage());
+<i>876</i>&nbsp;                }
+<i>877</i>&nbsp;            }
+<i>878</i>&nbsp;
+<b class="nc"><i>879</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRoles&quot;);</b>
+<b class="nc"><i>880</i>&nbsp;            return var3;</b>
+<b class="nc"><i>881</i>&nbsp;        }</b>
+<i>882</i>&nbsp;    }
+<i>883</i>&nbsp;
+<b class="nc"><i>884</i>&nbsp;    public Integer getRoleCardinality(String var1, String var2) throws IllegalArgumentException, RelationNotFoundException, RoleNotFoundException {</b>
+<b class="nc"><i>885</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {</b>
+<i>886</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRoleCardinality&quot;, new Object[]{var1, var2});
+<i>887</i>&nbsp;            Object var12 = this.getRelation(var1);
+<i>888</i>&nbsp;            Integer var4;
+<b class="nc"><i>889</i>&nbsp;            if(var12 instanceof RelationSupport) {</b>
+<b class="nc"><i>890</i>&nbsp;                var4 = ((RelationSupport)var12).getRoleCardinality(var2);</b>
+<b class="nc"><i>891</i>&nbsp;            } else {</b>
+<b class="nc"><i>892</i>&nbsp;                Object[] var5 = new Object[]{var2};</b>
+<i>893</i>&nbsp;                String[] var6 = new String[]{&quot;java.lang.String&quot;};
+<i>894</i>&nbsp;
+<i>895</i>&nbsp;                try {
+<i>896</i>&nbsp;                    var4 = (Integer)((Integer)this.myMBeanServer.invoke((ObjectName)var12, &quot;getRoleCardinality&quot;, var5, var6));
+<i>897</i>&nbsp;                } catch (InstanceNotFoundException var9) {
+<i>898</i>&nbsp;                    throw new RuntimeException(var9.getMessage());
+<i>899</i>&nbsp;                } catch (ReflectionException var10) {
+<i>900</i>&nbsp;                    throw new RuntimeException(var10.getMessage());
+<i>901</i>&nbsp;                } catch (MBeanException var11) {
+<i>902</i>&nbsp;                    Exception var8 = var11.getTargetException();
+<b class="nc"><i>903</i>&nbsp;                    if(var8 instanceof RoleNotFoundException) {</b>
+<b class="nc"><i>904</i>&nbsp;                        throw (RoleNotFoundException)var8;</b>
+<b class="nc"><i>905</i>&nbsp;                    }</b>
+<b class="nc"><i>906</i>&nbsp;</b>
+<b class="nc"><i>907</i>&nbsp;                    throw new RuntimeException(var8.getMessage());</b>
+<i>908</i>&nbsp;                }
+<i>909</i>&nbsp;            }
+<i>910</i>&nbsp;
+<i>911</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRoleCardinality&quot;);
+<i>912</i>&nbsp;            return var4;
+<i>913</i>&nbsp;        } else {
+<i>914</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;
+<i>915</i>&nbsp;            throw new IllegalArgumentException(var3);
+<i>916</i>&nbsp;        }
+<i>917</i>&nbsp;    }
+<i>918</i>&nbsp;
+<i>919</i>&nbsp;    public void setRole(String var1, Role var2) throws RelationServiceNotRegisteredException, IllegalArgumentException, RelationNotFoundException, RoleNotFoundException, InvalidRoleValueException {
+<i>920</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {
+<i>921</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;setRole&quot;, new Object[]{var1, var2});
+<i>922</i>&nbsp;            this.isActive();
+<i>923</i>&nbsp;            Object var14 = this.getRelation(var1);
+<i>924</i>&nbsp;            if(var14 instanceof RelationSupport) {
+<i>925</i>&nbsp;                try {
+<i>926</i>&nbsp;                    ((RelationSupport)var14).setRoleInt(var2, true, this, false);
+<i>927</i>&nbsp;                } catch (RelationTypeNotFoundException var8) {
+<i>928</i>&nbsp;                    throw new RuntimeException(var8.getMessage());
+<i>929</i>&nbsp;                }
+<i>930</i>&nbsp;            } else {
+<b class="nc"><i>931</i>&nbsp;                Object[] var4 = new Object[]{var2};</b>
+<b class="nc"><i>932</i>&nbsp;                String[] var5 = new String[]{&quot;javax.management.relation.Role&quot;};</b>
+<b class="nc"><i>933</i>&nbsp;</b>
+<i>934</i>&nbsp;                try {
+<i>935</i>&nbsp;                    this.myMBeanServer.setAttribute((ObjectName)var14, new Attribute(&quot;Role&quot;, var2));
+<b class="nc"><i>936</i>&nbsp;                } catch (InstanceNotFoundException var9) {</b>
+<b class="nc"><i>937</i>&nbsp;                    throw new RuntimeException(var9.getMessage());</b>
+<i>938</i>&nbsp;                } catch (ReflectionException var10) {
+<b class="nc"><i>939</i>&nbsp;                    throw new RuntimeException(var10.getMessage());</b>
+<i>940</i>&nbsp;                } catch (MBeanException var11) {
+<i>941</i>&nbsp;                    Exception var7 = var11.getTargetException();
+<b class="nc"><i>942</i>&nbsp;                    if(var7 instanceof RoleNotFoundException) {</b>
+<i>943</i>&nbsp;                        throw (RoleNotFoundException)var7;
+<i>944</i>&nbsp;                    }
+<b class="nc"><i>945</i>&nbsp;</b>
+<i>946</i>&nbsp;                    if(var7 instanceof InvalidRoleValueException) {
+<i>947</i>&nbsp;                        throw (InvalidRoleValueException)var7;
+<i>948</i>&nbsp;                    }
+<i>949</i>&nbsp;
+<b class="nc"><i>950</i>&nbsp;                    throw new RuntimeException(var7.getMessage());</b>
+<i>951</i>&nbsp;                } catch (AttributeNotFoundException var12) {
+<b class="nc"><i>952</i>&nbsp;                    throw new RuntimeException(var12.getMessage());</b>
+<i>953</i>&nbsp;                } catch (InvalidAttributeValueException var13) {
+<i>954</i>&nbsp;                    throw new RuntimeException(var13.getMessage());
+<i>955</i>&nbsp;                }
+<i>956</i>&nbsp;            }
+<i>957</i>&nbsp;
+<b class="nc"><i>958</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;setRole&quot;);</b>
+<b class="nc"><i>959</i>&nbsp;        } else {</b>
+<b class="nc"><i>960</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;</b>
+<i>961</i>&nbsp;            throw new IllegalArgumentException(var3);
+<b class="nc"><i>962</i>&nbsp;        }</b>
+<b class="nc"><i>963</i>&nbsp;    }</b>
+<b class="nc"><i>964</i>&nbsp;</b>
+<i>965</i>&nbsp;    public RoleResult setRoles(String var1, RoleList var2) throws RelationServiceNotRegisteredException, IllegalArgumentException, RelationNotFoundException {
+<i>966</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {
+<i>967</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;setRoles&quot;, new Object[]{var1, var2});
+<i>968</i>&nbsp;            this.isActive();
+<i>969</i>&nbsp;            Object var12 = this.getRelation(var1);
+<i>970</i>&nbsp;            RoleResult var4;
+<i>971</i>&nbsp;            if(var12 instanceof RelationSupport) {
+<i>972</i>&nbsp;                try {
+<i>973</i>&nbsp;                    var4 = ((RelationSupport)var12).setRolesInt(var2, true, this);
+<i>974</i>&nbsp;                } catch (RelationTypeNotFoundException var11) {
+<i>975</i>&nbsp;                    throw new RuntimeException(var11.getMessage());
+<i>976</i>&nbsp;                }
+<i>977</i>&nbsp;            } else {
+<i>978</i>&nbsp;                Object[] var5 = new Object[]{var2};
+<i>979</i>&nbsp;                String[] var6 = new String[]{&quot;javax.management.relation.RoleList&quot;};
+<i>980</i>&nbsp;
+<i>981</i>&nbsp;                try {
+<i>982</i>&nbsp;                    var4 = (RoleResult)((RoleResult)this.myMBeanServer.invoke((ObjectName)var12, &quot;setRoles&quot;, var5, var6));
+<i>983</i>&nbsp;                } catch (InstanceNotFoundException var8) {
+<i>984</i>&nbsp;                    throw new RuntimeException(var8.getMessage());
+<i>985</i>&nbsp;                } catch (ReflectionException var9) {
+<i>986</i>&nbsp;                    throw new RuntimeException(var9.getMessage());
+<i>987</i>&nbsp;                } catch (MBeanException var10) {
+<i>988</i>&nbsp;                    throw new RuntimeException(var10.getTargetException().getMessage());
+<i>989</i>&nbsp;                }
+<i>990</i>&nbsp;            }
+<i>991</i>&nbsp;
+<i>992</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;setRoles&quot;);
+<i>993</i>&nbsp;            return var4;
+<b class="nc"><i>994</i>&nbsp;        } else {</b>
+<i>995</i>&nbsp;            String var3 = &quot;Invalid parameter.&quot;;
+<i>996</i>&nbsp;            throw new IllegalArgumentException(var3);
+<b class="nc"><i>997</i>&nbsp;        }</b>
+<b class="nc"><i>998</i>&nbsp;    }</b>
+<i>999</i>&nbsp;
+<i>1000</i>&nbsp;    public Map&lt;ObjectName, List&lt;String&gt;&gt; getReferencedMBeans(String var1) throws IllegalArgumentException, RelationNotFoundException {
+<b class="nc"><i>1001</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>1002</i>&nbsp;            String var6 = &quot;Invalid parameter.&quot;;</b>
+<i>1003</i>&nbsp;            throw new IllegalArgumentException(var6);
+<i>1004</i>&nbsp;        } else {
+<b class="nc"><i>1005</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getReferencedMBeans&quot;, var1);</b>
+<i>1006</i>&nbsp;            Object var2 = this.getRelation(var1);
+<i>1007</i>&nbsp;            Map var3;
+<i>1008</i>&nbsp;            if(var2 instanceof RelationSupport) {
+<b class="nc"><i>1009</i>&nbsp;                var3 = ((RelationSupport)var2).getReferencedMBeans();</b>
+<i>1010</i>&nbsp;            } else {
+<b class="nc"><i>1011</i>&nbsp;                try {</b>
+<b class="nc"><i>1012</i>&nbsp;                    var3 = (Map)Util.cast(this.myMBeanServer.getAttribute((ObjectName)var2, &quot;ReferencedMBeans&quot;));</b>
+<b class="nc"><i>1013</i>&nbsp;                } catch (Exception var5) {</b>
+<b class="nc"><i>1014</i>&nbsp;                    throw new RuntimeException(var5.getMessage());</b>
+<b class="nc"><i>1015</i>&nbsp;                }</b>
+<i>1016</i>&nbsp;            }
+<i>1017</i>&nbsp;
+<b class="nc"><i>1018</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getReferencedMBeans&quot;);</b>
+<i>1019</i>&nbsp;            return var3;
+<b class="nc"><i>1020</i>&nbsp;        }</b>
+<b class="nc"><i>1021</i>&nbsp;    }</b>
+<b class="nc"><i>1022</i>&nbsp;</b>
+<b class="nc"><i>1023</i>&nbsp;    public String getRelationTypeName(String var1) throws IllegalArgumentException, RelationNotFoundException {</b>
+<b class="nc"><i>1024</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>1025</i>&nbsp;            String var6 = &quot;Invalid parameter.&quot;;</b>
+<i>1026</i>&nbsp;            throw new IllegalArgumentException(var6);
+<b class="nc"><i>1027</i>&nbsp;        } else {</b>
+<i>1028</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRelationTypeName&quot;, var1);
+<i>1029</i>&nbsp;            Object var2 = this.getRelation(var1);
+<i>1030</i>&nbsp;            String var3;
+<i>1031</i>&nbsp;            if(var2 instanceof RelationSupport) {
+<i>1032</i>&nbsp;                var3 = ((RelationSupport)var2).getRelationTypeName();
+<b class="nc"><i>1033</i>&nbsp;            } else {</b>
+<b class="nc"><i>1034</i>&nbsp;                try {</b>
+<b class="nc"><i>1035</i>&nbsp;                    var3 = (String)((String)this.myMBeanServer.getAttribute((ObjectName)var2, &quot;RelationTypeName&quot;));</b>
+<i>1036</i>&nbsp;                } catch (Exception var5) {
+<i>1037</i>&nbsp;                    throw new RuntimeException(var5.getMessage());
+<i>1038</i>&nbsp;                }
+<i>1039</i>&nbsp;            }
+<i>1040</i>&nbsp;
+<i>1041</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRelationTypeName&quot;);
+<i>1042</i>&nbsp;            return var3;
+<i>1043</i>&nbsp;        }
+<i>1044</i>&nbsp;    }
+<i>1045</i>&nbsp;
+<i>1046</i>&nbsp;    public void handleNotification(Notification var1, Object var2) {
+<i>1047</i>&nbsp;        if(var1 == null) {
+<i>1048</i>&nbsp;            String var17 = &quot;Invalid parameter.&quot;;
+<i>1049</i>&nbsp;            throw new IllegalArgumentException(var17);
+<i>1050</i>&nbsp;        } else {
+<i>1051</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;handleNotification&quot;, var1);
+<i>1052</i>&nbsp;            if(var1 instanceof MBeanServerNotification) {
+<i>1053</i>&nbsp;                MBeanServerNotification var3 = (MBeanServerNotification)var1;
+<i>1054</i>&nbsp;                String var4 = var1.getType();
+<i>1055</i>&nbsp;                if(var4.equals(&quot;JMX.mbean.unregistered&quot;)) {
+<i>1056</i>&nbsp;                    ObjectName var5 = ((MBeanServerNotification)var1).getMBeanName();
+<i>1057</i>&nbsp;                    boolean var6 = false;
+<i>1058</i>&nbsp;                    Map var7 = this.myRefedMBeanObjName2RelIdsMap;
+<b class="nc"><i>1059</i>&nbsp;                    synchronized(this.myRefedMBeanObjName2RelIdsMap) {</b>
+<b class="nc"><i>1060</i>&nbsp;                        if(this.myRefedMBeanObjName2RelIdsMap.containsKey(var5)) {</b>
+<b class="nc"><i>1061</i>&nbsp;                            List var8 = this.myUnregNtfList;</b>
+<i>1062</i>&nbsp;                            synchronized(this.myUnregNtfList) {
+<i>1063</i>&nbsp;                                this.myUnregNtfList.add(var3);
+<b class="nc"><i>1064</i>&nbsp;                            }</b>
+<b class="nc"><i>1065</i>&nbsp;</b>
+<i>1066</i>&nbsp;                            var6 = true;
+<i>1067</i>&nbsp;                        }
+<b class="nc"><i>1068</i>&nbsp;</b>
+<b class="nc"><i>1069</i>&nbsp;                        if(var6 &amp;&amp; this.myPurgeFlag) {</b>
+<i>1070</i>&nbsp;                            try {
+<i>1071</i>&nbsp;                                this.purgeRelations();
+<b class="nc"><i>1072</i>&nbsp;                            } catch (Exception var14) {</b>
+<i>1073</i>&nbsp;                                throw new RuntimeException(var14.getMessage());
+<i>1074</i>&nbsp;                            }
+<i>1075</i>&nbsp;                        }
+<i>1076</i>&nbsp;                    }
+<i>1077</i>&nbsp;
+<i>1078</i>&nbsp;                    Map var19 = this.myRelMBeanObjName2RelIdMap;
+<i>1079</i>&nbsp;                    String var18;
+<b class="nc"><i>1080</i>&nbsp;                    synchronized(this.myRelMBeanObjName2RelIdMap) {</b>
+<b class="nc"><i>1081</i>&nbsp;                        var18 = (String)this.myRelMBeanObjName2RelIdMap.get(var5);</b>
+<i>1082</i>&nbsp;                    }
+<i>1083</i>&nbsp;
+<i>1084</i>&nbsp;                    if(var18 != null) {
+<i>1085</i>&nbsp;                        try {
+<i>1086</i>&nbsp;                            this.removeRelation(var18);
+<i>1087</i>&nbsp;                        } catch (Exception var12) {
+<i>1088</i>&nbsp;                            throw new RuntimeException(var12.getMessage());
+<i>1089</i>&nbsp;                        }
+<i>1090</i>&nbsp;                    }
+<i>1091</i>&nbsp;                }
+<i>1092</i>&nbsp;            }
+<i>1093</i>&nbsp;
+<i>1094</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;handleNotification&quot;);
+<i>1095</i>&nbsp;        }
+<i>1096</i>&nbsp;    }
+<i>1097</i>&nbsp;
+<i>1098</i>&nbsp;    public MBeanNotificationInfo[] getNotificationInfo() {
+<i>1099</i>&nbsp;        JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getNotificationInfo&quot;);
+<i>1100</i>&nbsp;        String var1 = &quot;javax.management.relation.RelationNotification&quot;;
+<i>1101</i>&nbsp;        String[] var2 = new String[]{&quot;jmx.relation.creation.basic&quot;, &quot;jmx.relation.creation.mbean&quot;, &quot;jmx.relation.update.basic&quot;, &quot;jmx.relation.update.mbean&quot;, &quot;jmx.relation.removal.basic&quot;, &quot;jmx.relation.removal.mbean&quot;};
+<i>1102</i>&nbsp;        String var3 = &quot;Sent when a relation is created, updated or deleted.&quot;;
+<i>1103</i>&nbsp;        MBeanNotificationInfo var4 = new MBeanNotificationInfo(var2, var1, var3);
+<i>1104</i>&nbsp;        JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getNotificationInfo&quot;);
+<i>1105</i>&nbsp;        return new MBeanNotificationInfo[]{var4};
+<i>1106</i>&nbsp;    }
+<i>1107</i>&nbsp;
+<i>1108</i>&nbsp;    private void addRelationTypeInt(RelationType var1) throws IllegalArgumentException, InvalidRelationTypeException {
+<i>1109</i>&nbsp;        String var2;
+<i>1110</i>&nbsp;        if(var1 == null) {
+<i>1111</i>&nbsp;            var2 = &quot;Invalid parameter.&quot;;
+<i>1112</i>&nbsp;            throw new IllegalArgumentException(var2);
+<b class="nc"><i>1113</i>&nbsp;        } else {</b>
+<i>1114</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;addRelationTypeInt&quot;);
+<i>1115</i>&nbsp;            var2 = var1.getRelationTypeName();
+<b class="nc"><i>1116</i>&nbsp;</b>
+<b class="nc"><i>1117</i>&nbsp;            try {</b>
+<i>1118</i>&nbsp;                RelationType var3 = this.getRelationType(var2);
+<i>1119</i>&nbsp;                if(var3 != null) {
+<b class="nc"><i>1120</i>&nbsp;                    String var4 = &quot;There is already a relation type in the Relation Service with name &quot;;</b>
+<b class="nc"><i>1121</i>&nbsp;                    StringBuilder var5 = new StringBuilder(var4);</b>
+<i>1122</i>&nbsp;                    var5.append(var2);
+<b class="nc"><i>1123</i>&nbsp;                    throw new InvalidRelationTypeException(var5.toString());</b>
+<b class="nc"><i>1124</i>&nbsp;                }</b>
+<i>1125</i>&nbsp;            } catch (RelationTypeNotFoundException var8) {
+<i>1126</i>&nbsp;                ;
+<i>1127</i>&nbsp;            }
+<b class="nc"><i>1128</i>&nbsp;</b>
+<i>1129</i>&nbsp;            Map var9 = this.myRelType2ObjMap;
+<i>1130</i>&nbsp;            synchronized(this.myRelType2ObjMap) {
+<b class="nc"><i>1131</i>&nbsp;                this.myRelType2ObjMap.put(var2, var1);</b>
+<b class="nc"><i>1132</i>&nbsp;            }</b>
+<i>1133</i>&nbsp;
+<i>1134</i>&nbsp;            if(var1 instanceof RelationTypeSupport) {
+<b class="nc"><i>1135</i>&nbsp;                ((RelationTypeSupport)var1).setRelationServiceFlag(true);</b>
+<b class="nc"><i>1136</i>&nbsp;            }</b>
+<b class="nc"><i>1137</i>&nbsp;</b>
+<b class="nc"><i>1138</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;addRelationTypeInt&quot;);</b>
+<b class="nc"><i>1139</i>&nbsp;        }</b>
+<b class="nc"><i>1140</i>&nbsp;    }</b>
+<b class="nc"><i>1141</i>&nbsp;</b>
+<b class="nc"><i>1142</i>&nbsp;    RelationType getRelationType(String var1) throws IllegalArgumentException, RelationTypeNotFoundException {</b>
+<i>1143</i>&nbsp;        if(var1 == null) {
+<i>1144</i>&nbsp;            String var6 = &quot;Invalid parameter.&quot;;
+<b class="nc"><i>1145</i>&nbsp;            throw new IllegalArgumentException(var6);</b>
+<i>1146</i>&nbsp;        } else {
+<i>1147</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRelationType&quot;, var1);
+<i>1148</i>&nbsp;            Map var3 = this.myRelType2ObjMap;
+<i>1149</i>&nbsp;            RelationType var2;
+<i>1150</i>&nbsp;            synchronized(this.myRelType2ObjMap) {
+<i>1151</i>&nbsp;                var2 = (RelationType)this.myRelType2ObjMap.get(var1);
+<i>1152</i>&nbsp;            }
+<b class="nc"><i>1153</i>&nbsp;</b>
+<b class="nc"><i>1154</i>&nbsp;            if(var2 == null) {</b>
+<i>1155</i>&nbsp;                String var7 = &quot;No relation type created in the Relation Service with the name &quot;;
+<i>1156</i>&nbsp;                StringBuilder var4 = new StringBuilder(var7);
+<i>1157</i>&nbsp;                var4.append(var1);
+<i>1158</i>&nbsp;                throw new RelationTypeNotFoundException(var4.toString());
+<i>1159</i>&nbsp;            } else {
+<i>1160</i>&nbsp;                JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRelationType&quot;);
+<i>1161</i>&nbsp;                return var2;
+<i>1162</i>&nbsp;            }
+<i>1163</i>&nbsp;        }
+<i>1164</i>&nbsp;    }
+<i>1165</i>&nbsp;
+<i>1166</i>&nbsp;    Object getRelation(String var1) throws IllegalArgumentException, RelationNotFoundException {
+<i>1167</i>&nbsp;        if(var1 == null) {
+<i>1168</i>&nbsp;            String var6 = &quot;Invalid parameter.&quot;;
+<i>1169</i>&nbsp;            throw new IllegalArgumentException(var6);
+<i>1170</i>&nbsp;        } else {
+<i>1171</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;getRelation&quot;, var1);
+<i>1172</i>&nbsp;            Map var3 = this.myRelId2ObjMap;
+<i>1173</i>&nbsp;            Object var2;
+<i>1174</i>&nbsp;            synchronized(this.myRelId2ObjMap) {
+<i>1175</i>&nbsp;                var2 = this.myRelId2ObjMap.get(var1);
+<i>1176</i>&nbsp;            }
+<i>1177</i>&nbsp;
+<i>1178</i>&nbsp;            if(var2 == null) {
+<i>1179</i>&nbsp;                String var7 = &quot;No relation associated to relation id &quot; + var1;
+<i>1180</i>&nbsp;                throw new RelationNotFoundException(var7);
+<b class="nc"><i>1181</i>&nbsp;            } else {</b>
+<b class="nc"><i>1182</i>&nbsp;                JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;getRelation&quot;);</b>
+<b class="nc"><i>1183</i>&nbsp;                return var2;</b>
+<i>1184</i>&nbsp;            }
+<i>1185</i>&nbsp;        }
+<b class="nc"><i>1186</i>&nbsp;    }</b>
+<b class="nc"><i>1187</i>&nbsp;</b>
+<b class="nc"><i>1188</i>&nbsp;    private boolean addNewMBeanReference(ObjectName var1, String var2, String var3) throws IllegalArgumentException {</b>
+<b class="nc"><i>1189</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null &amp;&amp; var3 != null) {</b>
+<i>1190</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;addNewMBeanReference&quot;, new Object[]{var1, var2, var3});
+<i>1191</i>&nbsp;            boolean var10 = false;
+<b class="nc"><i>1192</i>&nbsp;            Map var5 = this.myRefedMBeanObjName2RelIdsMap;</b>
+<i>1193</i>&nbsp;            synchronized(this.myRefedMBeanObjName2RelIdsMap) {
+<i>1194</i>&nbsp;                Map var6 = (Map)this.myRefedMBeanObjName2RelIdsMap.get(var1);
+<i>1195</i>&nbsp;                ArrayList var7;
+<i>1196</i>&nbsp;                if(var6 == null) {
+<b class="nc"><i>1197</i>&nbsp;                    var10 = true;</b>
+<i>1198</i>&nbsp;                    var7 = new ArrayList();
+<i>1199</i>&nbsp;                    var7.add(var3);
+<i>1200</i>&nbsp;                    HashMap var11 = new HashMap();
+<i>1201</i>&nbsp;                    var11.put(var2, var7);
+<i>1202</i>&nbsp;                    this.myRefedMBeanObjName2RelIdsMap.put(var1, var11);
+<i>1203</i>&nbsp;                } else {
+<i>1204</i>&nbsp;                    List var12 = (List)var6.get(var2);
+<b class="nc"><i>1205</i>&nbsp;                    if(var12 == null) {</b>
+<b class="nc"><i>1206</i>&nbsp;                        var7 = new ArrayList();</b>
+<i>1207</i>&nbsp;                        var7.add(var3);
+<i>1208</i>&nbsp;                        var6.put(var2, var7);
+<i>1209</i>&nbsp;                    } else {
+<i>1210</i>&nbsp;                        var12.add(var3);
+<i>1211</i>&nbsp;                    }
+<i>1212</i>&nbsp;                }
+<i>1213</i>&nbsp;            }
+<i>1214</i>&nbsp;
+<i>1215</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;addNewMBeanReference&quot;);
+<i>1216</i>&nbsp;            return var10;
+<i>1217</i>&nbsp;        } else {
+<i>1218</i>&nbsp;            String var4 = &quot;Invalid parameter.&quot;;
+<i>1219</i>&nbsp;            throw new IllegalArgumentException(var4);
+<i>1220</i>&nbsp;        }
+<i>1221</i>&nbsp;    }
+<i>1222</i>&nbsp;
+<i>1223</i>&nbsp;    private boolean removeMBeanReference(ObjectName var1, String var2, String var3, boolean var4) throws IllegalArgumentException {
+<i>1224</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null &amp;&amp; var3 != null) {
+<i>1225</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;removeMBeanReference&quot;, new Object[]{var1, var2, var3, Boolean.valueOf(var4)});
+<i>1226</i>&nbsp;            boolean var12 = false;
+<i>1227</i>&nbsp;            Map var6 = this.myRefedMBeanObjName2RelIdsMap;
+<i>1228</i>&nbsp;            synchronized(this.myRefedMBeanObjName2RelIdsMap) {
+<i>1229</i>&nbsp;                Map var7 = (Map)this.myRefedMBeanObjName2RelIdsMap.get(var1);
+<i>1230</i>&nbsp;                if(var7 == null) {
+<i>1231</i>&nbsp;                    JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;removeMBeanReference&quot;);
+<i>1232</i>&nbsp;                    return true;
+<i>1233</i>&nbsp;                }
+<i>1234</i>&nbsp;
+<i>1235</i>&nbsp;                List var8 = null;
+<i>1236</i>&nbsp;                if(!var4) {
+<i>1237</i>&nbsp;                    var8 = (List)var7.get(var2);
+<b class="nc"><i>1238</i>&nbsp;                    int var9 = var8.indexOf(var3);</b>
+<i>1239</i>&nbsp;                    if(var9 != -1) {
+<i>1240</i>&nbsp;                        var8.remove(var9);
+<b class="nc"><i>1241</i>&nbsp;                    }</b>
+<b class="nc"><i>1242</i>&nbsp;                }</b>
+<i>1243</i>&nbsp;
+<i>1244</i>&nbsp;                if(var8.isEmpty() || var4) {
+<b class="nc"><i>1245</i>&nbsp;                    var7.remove(var2);</b>
+<b class="nc"><i>1246</i>&nbsp;                }</b>
+<i>1247</i>&nbsp;
+<i>1248</i>&nbsp;                if(var7.isEmpty()) {
+<i>1249</i>&nbsp;                    this.myRefedMBeanObjName2RelIdsMap.remove(var1);
+<b class="nc"><i>1250</i>&nbsp;                    var12 = true;</b>
+<i>1251</i>&nbsp;                }
+<i>1252</i>&nbsp;            }
+<i>1253</i>&nbsp;
+<b class="nc"><i>1254</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;removeMBeanReference&quot;);</b>
+<i>1255</i>&nbsp;            return var12;
+<i>1256</i>&nbsp;        } else {
+<i>1257</i>&nbsp;            String var5 = &quot;Invalid parameter.&quot;;
+<b class="nc"><i>1258</i>&nbsp;            throw new IllegalArgumentException(var5);</b>
+<i>1259</i>&nbsp;        }
+<b class="nc"><i>1260</i>&nbsp;    }</b>
+<b class="nc"><i>1261</i>&nbsp;</b>
+<i>1262</i>&nbsp;    private void updateUnregistrationListener(List&lt;ObjectName&gt; var1, List&lt;ObjectName&gt; var2) throws RelationServiceNotRegisteredException {
+<i>1263</i>&nbsp;        if(var1 == null || var2 == null || !var1.isEmpty() || !var2.isEmpty()) {
+<b class="nc"><i>1264</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;updateUnregistrationListener&quot;, new Object[]{var1, var2});</b>
+<i>1265</i>&nbsp;            this.isActive();
+<i>1266</i>&nbsp;            if(var1 != null || var2 != null) {
+<i>1267</i>&nbsp;                boolean var3 = false;
+<b class="nc"><i>1268</i>&nbsp;                if(this.myUnregNtfFilter == null) {</b>
+<i>1269</i>&nbsp;                    this.myUnregNtfFilter = new MBeanServerNotificationFilter();
+<b class="nc"><i>1270</i>&nbsp;                    var3 = true;</b>
+<i>1271</i>&nbsp;                }
+<i>1272</i>&nbsp;
+<i>1273</i>&nbsp;                MBeanServerNotificationFilter var4 = this.myUnregNtfFilter;
+<i>1274</i>&nbsp;                synchronized(this.myUnregNtfFilter) {
+<i>1275</i>&nbsp;                    Iterator var5;
+<b class="nc"><i>1276</i>&nbsp;                    ObjectName var6;</b>
+<i>1277</i>&nbsp;                    if(var1 != null) {
+<b class="nc"><i>1278</i>&nbsp;                        var5 = var1.iterator();</b>
+<i>1279</i>&nbsp;
+<i>1280</i>&nbsp;                        while(var5.hasNext()) {
+<i>1281</i>&nbsp;                            var6 = (ObjectName)var5.next();
+<i>1282</i>&nbsp;                            this.myUnregNtfFilter.enableObjectName(var6);
+<i>1283</i>&nbsp;                        }
+<b class="nc"><i>1284</i>&nbsp;                    }</b>
+<i>1285</i>&nbsp;
+<i>1286</i>&nbsp;                    if(var2 != null) {
+<i>1287</i>&nbsp;                        var5 = var2.iterator();
+<b class="nc"><i>1288</i>&nbsp;</b>
+<i>1289</i>&nbsp;                        while(var5.hasNext()) {
+<b class="nc"><i>1290</i>&nbsp;                            var6 = (ObjectName)var5.next();</b>
+<i>1291</i>&nbsp;                            this.myUnregNtfFilter.disableObjectName(var6);
+<i>1292</i>&nbsp;                        }
+<b class="nc"><i>1293</i>&nbsp;                    }</b>
+<i>1294</i>&nbsp;
+<i>1295</i>&nbsp;                    if(var3) {
+<i>1296</i>&nbsp;                        try {
+<i>1297</i>&nbsp;                            this.myMBeanServer.addNotificationListener(MBeanServerDelegate.DELEGATE_NAME, this, this.myUnregNtfFilter, (Object)null);
+<b class="nc"><i>1298</i>&nbsp;                        } catch (InstanceNotFoundException var8) {</b>
+<i>1299</i>&nbsp;                            throw new RelationServiceNotRegisteredException(var8.getMessage());
+<b class="nc"><i>1300</i>&nbsp;                        }</b>
+<i>1301</i>&nbsp;                    }
+<i>1302</i>&nbsp;                }
+<b class="nc"><i>1303</i>&nbsp;            }</b>
+<i>1304</i>&nbsp;
+<i>1305</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;updateUnregistrationListener&quot;);
+<i>1306</i>&nbsp;        }
+<b class="nc"><i>1307</i>&nbsp;    }</b>
+<i>1308</i>&nbsp;
+<i>1309</i>&nbsp;    private void addRelationInt(boolean var1, RelationSupport var2, ObjectName var3, String var4, String var5, RoleList var6) throws IllegalArgumentException, RelationServiceNotRegisteredException, RoleNotFoundException, InvalidRelationIdException, RelationTypeNotFoundException, InvalidRoleValueException {
+<i>1310</i>&nbsp;        if(var4 != null &amp;&amp; var5 != null &amp;&amp; (!var1 || var2 != null &amp;&amp; var3 == null) &amp;&amp; (var1 || var3 != null &amp;&amp; var2 == null)) {
+<b class="nc"><i>1311</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;addRelationInt&quot;, new Object[]{Boolean.valueOf(var1), var2, var3, var4, var5, var6});</b>
+<i>1312</i>&nbsp;            this.isActive();
+<i>1313</i>&nbsp;
+<i>1314</i>&nbsp;            try {
+<i>1315</i>&nbsp;                Object var27 = this.getRelation(var4);
+<b class="nc"><i>1316</i>&nbsp;                if(var27 != null) {</b>
+<i>1317</i>&nbsp;                    String var29 = &quot;There is already a relation with id &quot;;
+<b class="nc"><i>1318</i>&nbsp;                    StringBuilder var33 = new StringBuilder(var29);</b>
+<i>1319</i>&nbsp;                    var33.append(var4);
+<b class="nc"><i>1320</i>&nbsp;                    throw new InvalidRelationIdException(var33.toString());</b>
+<i>1321</i>&nbsp;                }
+<i>1322</i>&nbsp;            } catch (RelationNotFoundException var25) {
+<i>1323</i>&nbsp;                ;
+<i>1324</i>&nbsp;            }
+<b class="nc"><i>1325</i>&nbsp;</b>
+<i>1326</i>&nbsp;            RelationType var28 = this.getRelationType(var5);
+<b class="nc"><i>1327</i>&nbsp;            ArrayList var8 = new ArrayList(var28.getRoleInfos());</b>
+<b class="nc"><i>1328</i>&nbsp;            Iterator var9;</b>
+<i>1329</i>&nbsp;            Role var10;
+<i>1330</i>&nbsp;            if(var6 != null) {
+<i>1331</i>&nbsp;                var9 = var6.asList().iterator();
+<i>1332</i>&nbsp;
+<i>1333</i>&nbsp;                while(var9.hasNext()) {
+<i>1334</i>&nbsp;                    var10 = (Role)var9.next();
+<i>1335</i>&nbsp;                    String var11 = var10.getRoleName();
+<i>1336</i>&nbsp;                    List var12 = var10.getRoleValue();
+<i>1337</i>&nbsp;
+<i>1338</i>&nbsp;                    RoleInfo var13;
+<i>1339</i>&nbsp;                    try {
+<i>1340</i>&nbsp;                        var13 = var28.getRoleInfo(var11);
+<i>1341</i>&nbsp;                    } catch (RoleInfoNotFoundException var24) {
+<i>1342</i>&nbsp;                        throw new RoleNotFoundException(var24.getMessage());
+<i>1343</i>&nbsp;                    }
+<i>1344</i>&nbsp;
+<i>1345</i>&nbsp;                    Integer var14 = this.checkRoleInt(2, var11, var12, var13, false);
+<i>1346</i>&nbsp;                    int var15 = var14.intValue();
+<i>1347</i>&nbsp;                    if(var15 != 0) {
+<i>1348</i>&nbsp;                        throwRoleProblemException(var15, var11);
+<i>1349</i>&nbsp;                    }
+<i>1350</i>&nbsp;
+<i>1351</i>&nbsp;                    int var16 = var8.indexOf(var13);
+<i>1352</i>&nbsp;                    var8.remove(var16);
+<i>1353</i>&nbsp;                }
+<i>1354</i>&nbsp;            }
+<b class="nc"><i>1355</i>&nbsp;</b>
+<i>1356</i>&nbsp;            this.initializeMissingRoles(var1, var2, var3, var4, var5, var8);
+<b class="nc"><i>1357</i>&nbsp;            Map var30 = this.myRelId2ObjMap;</b>
+<b class="nc"><i>1358</i>&nbsp;            synchronized(this.myRelId2ObjMap) {</b>
+<b class="nc"><i>1359</i>&nbsp;                if(var1) {</b>
+<i>1360</i>&nbsp;                    this.myRelId2ObjMap.put(var4, var2);
+<i>1361</i>&nbsp;                } else {
+<b class="nc"><i>1362</i>&nbsp;                    this.myRelId2ObjMap.put(var4, var3);</b>
+<b class="nc"><i>1363</i>&nbsp;                }</b>
+<i>1364</i>&nbsp;            }
+<i>1365</i>&nbsp;
+<i>1366</i>&nbsp;            var30 = this.myRelId2RelTypeMap;
+<b class="nc"><i>1367</i>&nbsp;            synchronized(this.myRelId2RelTypeMap) {</b>
+<i>1368</i>&nbsp;                this.myRelId2RelTypeMap.put(var4, var5);
+<i>1369</i>&nbsp;            }
+<b class="nc"><i>1370</i>&nbsp;</b>
+<b class="nc"><i>1371</i>&nbsp;            var30 = this.myRelType2RelIdsMap;</b>
+<b class="nc"><i>1372</i>&nbsp;            synchronized(this.myRelType2RelIdsMap) {</b>
+<i>1373</i>&nbsp;                Object var32 = (List)this.myRelType2RelIdsMap.get(var5);
+<b class="nc"><i>1374</i>&nbsp;                boolean var31 = false;</b>
+<i>1375</i>&nbsp;                if(var32 == null) {
+<i>1376</i>&nbsp;                    var31 = true;
+<i>1377</i>&nbsp;                    var32 = new ArrayList();
+<i>1378</i>&nbsp;                }
+<i>1379</i>&nbsp;
+<i>1380</i>&nbsp;                ((List)var32).add(var4);
+<i>1381</i>&nbsp;                if(var31) {
+<i>1382</i>&nbsp;                    this.myRelType2RelIdsMap.put(var5, var32);
+<i>1383</i>&nbsp;                }
+<i>1384</i>&nbsp;            }
+<i>1385</i>&nbsp;
+<i>1386</i>&nbsp;            var9 = var6.asList().iterator();
+<i>1387</i>&nbsp;
+<b class="nc"><i>1388</i>&nbsp;            while(var9.hasNext()) {</b>
+<i>1389</i>&nbsp;                var10 = (Role)var9.next();
+<i>1390</i>&nbsp;                ArrayList var34 = new ArrayList();
+<i>1391</i>&nbsp;
+<i>1392</i>&nbsp;                try {
+<i>1393</i>&nbsp;                    this.updateRoleMap(var4, var10, var34);
+<i>1394</i>&nbsp;                } catch (RelationNotFoundException var21) {
+<i>1395</i>&nbsp;                    ;
+<i>1396</i>&nbsp;                }
+<i>1397</i>&nbsp;            }
+<i>1398</i>&nbsp;
+<i>1399</i>&nbsp;            try {
+<b class="nc"><i>1400</i>&nbsp;                this.sendRelationCreationNotification(var4);</b>
+<i>1401</i>&nbsp;            } catch (RelationNotFoundException var20) {
+<i>1402</i>&nbsp;                ;
+<b class="nc"><i>1403</i>&nbsp;            }</b>
+<i>1404</i>&nbsp;
+<b class="nc"><i>1405</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;addRelationInt&quot;);</b>
+<i>1406</i>&nbsp;        } else {
+<i>1407</i>&nbsp;            String var7 = &quot;Invalid parameter.&quot;;
+<b class="nc"><i>1408</i>&nbsp;            throw new IllegalArgumentException(var7);</b>
+<i>1409</i>&nbsp;        }
+<i>1410</i>&nbsp;    }
+<b class="nc"><i>1411</i>&nbsp;</b>
+<i>1412</i>&nbsp;    private Integer checkRoleInt(int var1, String var2, List&lt;ObjectName&gt; var3, RoleInfo var4, boolean var5) throws IllegalArgumentException {
+<i>1413</i>&nbsp;        String var6;
+<b class="nc"><i>1414</i>&nbsp;        if(var2 != null &amp;&amp; var4 != null &amp;&amp; (var1 != 2 || var3 != null)) {</b>
+<b class="nc"><i>1415</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;checkRoleInt&quot;, new Object[]{Integer.valueOf(var1), var2, var3, var4, Boolean.valueOf(var5)});</b>
+<b class="nc"><i>1416</i>&nbsp;            var6 = var4.getName();</b>
+<i>1417</i>&nbsp;            if(!var2.equals(var6)) {
+<i>1418</i>&nbsp;                JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);
+<b class="nc"><i>1419</i>&nbsp;                return Integer.valueOf(1);</b>
+<i>1420</i>&nbsp;            } else {
+<i>1421</i>&nbsp;                boolean var7;
+<i>1422</i>&nbsp;                if(var1 == 1) {
+<b class="nc"><i>1423</i>&nbsp;                    var7 = var4.isReadable();</b>
+<i>1424</i>&nbsp;                    if(!var7) {
+<b class="nc"><i>1425</i>&nbsp;                        JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);</b>
+<i>1426</i>&nbsp;                        return Integer.valueOf(2);
+<i>1427</i>&nbsp;                    } else {
+<i>1428</i>&nbsp;                        JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);
+<b class="nc"><i>1429</i>&nbsp;                        return new Integer(0);</b>
+<b class="nc"><i>1430</i>&nbsp;                    }</b>
+<i>1431</i>&nbsp;                } else {
+<b class="nc"><i>1432</i>&nbsp;                    if(var5) {</b>
+<i>1433</i>&nbsp;                        var7 = var4.isWritable();
+<i>1434</i>&nbsp;                        if(!var7) {
+<b class="nc"><i>1435</i>&nbsp;                            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);</b>
+<b class="nc"><i>1436</i>&nbsp;                            return new Integer(3);</b>
+<b class="nc"><i>1437</i>&nbsp;                        }</b>
+<i>1438</i>&nbsp;                    }
+<b class="nc"><i>1439</i>&nbsp;</b>
+<i>1440</i>&nbsp;                    int var15 = var3.size();
+<b class="nc"><i>1441</i>&nbsp;                    boolean var8 = var4.checkMinDegree(var15);</b>
+<b class="nc"><i>1442</i>&nbsp;                    if(!var8) {</b>
+<b class="nc"><i>1443</i>&nbsp;                        JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);</b>
+<i>1444</i>&nbsp;                        return new Integer(4);
+<i>1445</i>&nbsp;                    } else {
+<i>1446</i>&nbsp;                        boolean var9 = var4.checkMaxDegree(var15);
+<i>1447</i>&nbsp;                        if(!var9) {
+<b class="nc"><i>1448</i>&nbsp;                            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);</b>
+<b class="nc"><i>1449</i>&nbsp;                            return new Integer(5);</b>
+<b class="nc"><i>1450</i>&nbsp;                        } else {</b>
+<b class="nc"><i>1451</i>&nbsp;                            String var10 = var4.getRefMBeanClassName();</b>
+<b class="nc"><i>1452</i>&nbsp;                            Iterator var11 = var3.iterator();</b>
+<i>1453</i>&nbsp;
+<b class="nc"><i>1454</i>&nbsp;                            while(var11.hasNext()) {</b>
+<b class="nc"><i>1455</i>&nbsp;                                ObjectName var12 = (ObjectName)var11.next();</b>
+<b class="nc"><i>1456</i>&nbsp;                                if(var12 == null) {</b>
+<i>1457</i>&nbsp;                                    JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);
+<b class="nc"><i>1458</i>&nbsp;                                    return new Integer(7);</b>
+<b class="nc"><i>1459</i>&nbsp;                                }</b>
+<i>1460</i>&nbsp;
+<b class="nc"><i>1461</i>&nbsp;                                try {</b>
+<i>1462</i>&nbsp;                                    boolean var13 = this.myMBeanServer.isInstanceOf(var12, var10);
+<i>1463</i>&nbsp;                                    if(!var13) {
+<b class="nc"><i>1464</i>&nbsp;                                        JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);</b>
+<i>1465</i>&nbsp;                                        return new Integer(6);
+<b class="nc"><i>1466</i>&nbsp;                                    }</b>
+<b class="nc"><i>1467</i>&nbsp;                                } catch (InstanceNotFoundException var14) {</b>
+<i>1468</i>&nbsp;                                    JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);
+<i>1469</i>&nbsp;                                    return new Integer(7);
+<i>1470</i>&nbsp;                                }
+<i>1471</i>&nbsp;                            }
+<i>1472</i>&nbsp;
+<i>1473</i>&nbsp;                            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;checkRoleInt&quot;);
+<i>1474</i>&nbsp;                            return new Integer(0);
+<i>1475</i>&nbsp;                        }
+<i>1476</i>&nbsp;                    }
+<i>1477</i>&nbsp;                }
+<i>1478</i>&nbsp;            }
+<i>1479</i>&nbsp;        } else {
+<i>1480</i>&nbsp;            var6 = &quot;Invalid parameter.&quot;;
+<i>1481</i>&nbsp;            throw new IllegalArgumentException(var6);
+<i>1482</i>&nbsp;        }
+<i>1483</i>&nbsp;    }
+<i>1484</i>&nbsp;
+<i>1485</i>&nbsp;    private void initializeMissingRoles(boolean var1, RelationSupport var2, ObjectName var3, String var4, String var5, List&lt;RoleInfo&gt; var6) throws IllegalArgumentException, RelationServiceNotRegisteredException, InvalidRoleValueException {
+<i>1486</i>&nbsp;        if((!var1 || var2 != null &amp;&amp; var3 == null) &amp;&amp; (var1 || var3 != null &amp;&amp; var2 == null) &amp;&amp; var4 != null &amp;&amp; var5 != null &amp;&amp; var6 != null) {
+<i>1487</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;initializeMissingRoles&quot;, new Object[]{Boolean.valueOf(var1), var2, var3, var4, var5, var6});
+<i>1488</i>&nbsp;            this.isActive();
+<i>1489</i>&nbsp;            Iterator var24 = var6.iterator();
+<i>1490</i>&nbsp;
+<i>1491</i>&nbsp;            while(var24.hasNext()) {
+<i>1492</i>&nbsp;                RoleInfo var8 = (RoleInfo)var24.next();
+<i>1493</i>&nbsp;                String var9 = var8.getName();
+<i>1494</i>&nbsp;                ArrayList var10 = new ArrayList();
+<i>1495</i>&nbsp;                Role var11 = new Role(var9, var10);
+<i>1496</i>&nbsp;                if(var1) {
+<i>1497</i>&nbsp;                    try {
+<i>1498</i>&nbsp;                        var2.setRoleInt(var11, true, this, false);
+<i>1499</i>&nbsp;                    } catch (RoleNotFoundException var16) {
+<b class="nc"><i>1500</i>&nbsp;                        throw new RuntimeException(var16.getMessage());</b>
+<b class="nc"><i>1501</i>&nbsp;                    } catch (RelationNotFoundException var17) {</b>
+<i>1502</i>&nbsp;                        throw new RuntimeException(var17.getMessage());
+<i>1503</i>&nbsp;                    } catch (RelationTypeNotFoundException var18) {
+<b class="nc"><i>1504</i>&nbsp;                        throw new RuntimeException(var18.getMessage());</b>
+<i>1505</i>&nbsp;                    }
+<i>1506</i>&nbsp;                } else {
+<i>1507</i>&nbsp;                    Object[] var12 = new Object[]{var11};
+<i>1508</i>&nbsp;                    String[] var13 = new String[]{&quot;javax.management.relation.Role&quot;};
+<i>1509</i>&nbsp;
+<i>1510</i>&nbsp;                    try {
+<i>1511</i>&nbsp;                        this.myMBeanServer.setAttribute(var3, new Attribute(&quot;Role&quot;, var11));
+<i>1512</i>&nbsp;                    } catch (InstanceNotFoundException var19) {
+<i>1513</i>&nbsp;                        throw new RuntimeException(var19.getMessage());
+<i>1514</i>&nbsp;                    } catch (ReflectionException var20) {
+<i>1515</i>&nbsp;                        throw new RuntimeException(var20.getMessage());
+<b class="nc"><i>1516</i>&nbsp;                    } catch (MBeanException var21) {</b>
+<b class="nc"><i>1517</i>&nbsp;                        Exception var15 = var21.getTargetException();</b>
+<i>1518</i>&nbsp;                        if(var15 instanceof InvalidRoleValueException) {
+<i>1519</i>&nbsp;                            throw (InvalidRoleValueException)var15;
+<b class="nc"><i>1520</i>&nbsp;                        }</b>
+<b class="nc"><i>1521</i>&nbsp;</b>
+<i>1522</i>&nbsp;                        throw new RuntimeException(var15.getMessage());
+<i>1523</i>&nbsp;                    } catch (AttributeNotFoundException var22) {
+<i>1524</i>&nbsp;                        throw new RuntimeException(var22.getMessage());
+<i>1525</i>&nbsp;                    } catch (InvalidAttributeValueException var23) {
+<i>1526</i>&nbsp;                        throw new RuntimeException(var23.getMessage());
+<i>1527</i>&nbsp;                    }
+<i>1528</i>&nbsp;                }
+<i>1529</i>&nbsp;            }
+<b class="nc"><i>1530</i>&nbsp;</b>
+<i>1531</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;initializeMissingRoles&quot;);
+<i>1532</i>&nbsp;        } else {
+<b class="nc"><i>1533</i>&nbsp;            String var7 = &quot;Invalid parameter.&quot;;</b>
+<i>1534</i>&nbsp;            throw new IllegalArgumentException(var7);
+<i>1535</i>&nbsp;        }
+<b class="nc"><i>1536</i>&nbsp;    }</b>
+<b class="nc"><i>1537</i>&nbsp;</b>
+<i>1538</i>&nbsp;    static void throwRoleProblemException(int var0, String var1) throws IllegalArgumentException, RoleNotFoundException, InvalidRoleValueException {
+<b class="nc"><i>1539</i>&nbsp;        if(var1 == null) {</b>
+<i>1540</i>&nbsp;            String var6 = &quot;Invalid parameter.&quot;;
+<i>1541</i>&nbsp;            throw new IllegalArgumentException(var6);
+<i>1542</i>&nbsp;        } else {
+<b class="nc"><i>1543</i>&nbsp;            byte var2 = 0;</b>
+<i>1544</i>&nbsp;            String var3 = null;
+<i>1545</i>&nbsp;            switch(var0) {
+<b class="nc"><i>1546</i>&nbsp;            case 1:</b>
+<i>1547</i>&nbsp;                var3 = &quot; does not exist in relation.&quot;;
+<b class="nc"><i>1548</i>&nbsp;                var2 = 1;</b>
+<i>1549</i>&nbsp;                break;
+<b class="nc"><i>1550</i>&nbsp;            case 2:</b>
+<b class="nc"><i>1551</i>&nbsp;                var3 = &quot; is not readable.&quot;;</b>
+<b class="nc"><i>1552</i>&nbsp;                var2 = 1;</b>
+<i>1553</i>&nbsp;                break;
+<i>1554</i>&nbsp;            case 3:
+<i>1555</i>&nbsp;                var3 = &quot; is not writable.&quot;;
+<b class="nc"><i>1556</i>&nbsp;                var2 = 1;</b>
+<i>1557</i>&nbsp;                break;
+<b class="nc"><i>1558</i>&nbsp;            case 4:</b>
+<i>1559</i>&nbsp;                var3 = &quot; has a number of MBean references less than the expected minimum degree.&quot;;
+<b class="nc"><i>1560</i>&nbsp;                var2 = 2;</b>
+<i>1561</i>&nbsp;                break;
+<i>1562</i>&nbsp;            case 5:
+<b class="nc"><i>1563</i>&nbsp;                var3 = &quot; has a number of MBean references greater than the expected maximum degree.&quot;;</b>
+<i>1564</i>&nbsp;                var2 = 2;
+<i>1565</i>&nbsp;                break;
+<i>1566</i>&nbsp;            case 6:
+<i>1567</i>&nbsp;                var3 = &quot; has an MBean reference to an MBean not of the expected class of references for that role.&quot;;
+<b class="nc"><i>1568</i>&nbsp;                var2 = 2;</b>
+<i>1569</i>&nbsp;                break;
+<i>1570</i>&nbsp;            case 7:
+<i>1571</i>&nbsp;                var3 = &quot; has a reference to null or to an MBean not registered.&quot;;
+<b class="nc"><i>1572</i>&nbsp;                var2 = 2;</b>
+<i>1573</i>&nbsp;            }
+<i>1574</i>&nbsp;
+<i>1575</i>&nbsp;            StringBuilder var4 = new StringBuilder(var1);
+<i>1576</i>&nbsp;            var4.append(var3);
+<i>1577</i>&nbsp;            String var5 = var4.toString();
+<i>1578</i>&nbsp;            if(var2 == 1) {
+<i>1579</i>&nbsp;                throw new RoleNotFoundException(var5);
+<i>1580</i>&nbsp;            } else if(var2 == 2) {
+<i>1581</i>&nbsp;                throw new InvalidRoleValueException(var5);
+<i>1582</i>&nbsp;            }
+<i>1583</i>&nbsp;        }
+<i>1584</i>&nbsp;    }
+<i>1585</i>&nbsp;
+<b class="nc"><i>1586</i>&nbsp;    private void sendNotificationInt(int var1, String var2, String var3, List&lt;ObjectName&gt; var4, String var5, List&lt;ObjectName&gt; var6, List&lt;ObjectName&gt; var7) throws IllegalArgumentException, RelationNotFoundException {</b>
+<i>1587</i>&nbsp;        String var8;
+<i>1588</i>&nbsp;        if(var2 != null &amp;&amp; var3 != null &amp;&amp; (var1 == 3 || var4 == null) &amp;&amp; (var1 != 2 || var5 != null &amp;&amp; var6 != null &amp;&amp; var7 != null)) {
+<b class="nc"><i>1589</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;sendNotificationInt&quot;, new Object[]{Integer.valueOf(var1), var2, var3, var4, var5, var6, var7});</b>
+<b class="nc"><i>1590</i>&nbsp;            Map var9 = this.myRelId2RelTypeMap;</b>
+<b class="nc"><i>1591</i>&nbsp;            synchronized(this.myRelId2RelTypeMap) {</b>
+<b class="nc"><i>1592</i>&nbsp;                var8 = (String)this.myRelId2RelTypeMap.get(var3);</b>
+<b class="nc"><i>1593</i>&nbsp;            }</b>
+<b class="nc"><i>1594</i>&nbsp;</b>
+<b class="nc"><i>1595</i>&nbsp;            ObjectName var17 = this.isRelationMBean(var3);</b>
+<i>1596</i>&nbsp;            String var10 = null;
+<b class="nc"><i>1597</i>&nbsp;            if(var17 != null) {</b>
+<b class="nc"><i>1598</i>&nbsp;                switch(var1) {</b>
+<i>1599</i>&nbsp;                case 1:
+<i>1600</i>&nbsp;                    var10 = &quot;jmx.relation.creation.mbean&quot;;
+<i>1601</i>&nbsp;                    break;
+<i>1602</i>&nbsp;                case 2:
+<i>1603</i>&nbsp;                    var10 = &quot;jmx.relation.update.mbean&quot;;
+<i>1604</i>&nbsp;                    break;
+<i>1605</i>&nbsp;                case 3:
+<i>1606</i>&nbsp;                    var10 = &quot;jmx.relation.removal.mbean&quot;;
+<i>1607</i>&nbsp;                }
+<i>1608</i>&nbsp;            } else {
+<i>1609</i>&nbsp;                switch(var1) {
+<i>1610</i>&nbsp;                case 1:
+<i>1611</i>&nbsp;                    var10 = &quot;jmx.relation.creation.basic&quot;;
+<i>1612</i>&nbsp;                    break;
+<i>1613</i>&nbsp;                case 2:
+<i>1614</i>&nbsp;                    var10 = &quot;jmx.relation.update.basic&quot;;
+<i>1615</i>&nbsp;                    break;
+<i>1616</i>&nbsp;                case 3:
+<i>1617</i>&nbsp;                    var10 = &quot;jmx.relation.removal.basic&quot;;
+<i>1618</i>&nbsp;                }
+<i>1619</i>&nbsp;            }
+<i>1620</i>&nbsp;
+<i>1621</i>&nbsp;            Long var11 = Long.valueOf(this.atomicSeqNo.incrementAndGet());
+<i>1622</i>&nbsp;            Date var12 = new Date();
+<i>1623</i>&nbsp;            long var13 = var12.getTime();
+<i>1624</i>&nbsp;            RelationNotification var15 = null;
+<i>1625</i>&nbsp;            if(!var10.equals(&quot;jmx.relation.creation.basic&quot;) &amp;&amp; !var10.equals(&quot;jmx.relation.creation.mbean&quot;) &amp;&amp; !var10.equals(&quot;jmx.relation.removal.basic&quot;) &amp;&amp; !var10.equals(&quot;jmx.relation.removal.mbean&quot;)) {
+<i>1626</i>&nbsp;                if(var10.equals(&quot;jmx.relation.update.basic&quot;) || var10.equals(&quot;jmx.relation.update.mbean&quot;)) {
+<i>1627</i>&nbsp;                    var15 = new RelationNotification(var10, this, var11.longValue(), var13, var2, var3, var8, var17, var5, var6, var7);
+<b class="nc"><i>1628</i>&nbsp;                }</b>
+<b class="nc"><i>1629</i>&nbsp;            } else {</b>
+<b class="nc"><i>1630</i>&nbsp;                var15 = new RelationNotification(var10, this, var11.longValue(), var13, var2, var3, var8, var17, var4);</b>
+<i>1631</i>&nbsp;            }
+<i>1632</i>&nbsp;
+<b class="nc"><i>1633</i>&nbsp;            this.sendNotification(var15);</b>
+<b class="nc"><i>1634</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;sendNotificationInt&quot;);</b>
+<i>1635</i>&nbsp;        } else {
+<i>1636</i>&nbsp;            var8 = &quot;Invalid parameter.&quot;;
+<b class="nc"><i>1637</i>&nbsp;            throw new IllegalArgumentException(var8);</b>
+<i>1638</i>&nbsp;        }
+<i>1639</i>&nbsp;    }
+<b class="nc"><i>1640</i>&nbsp;</b>
+<i>1641</i>&nbsp;    private void handleReferenceUnregistration(String var1, ObjectName var2, List&lt;String&gt; var3) throws IllegalArgumentException, RelationServiceNotRegisteredException, RelationNotFoundException, RoleNotFoundException {
+<b class="nc"><i>1642</i>&nbsp;        String var4;</b>
+<i>1643</i>&nbsp;        if(var1 != null &amp;&amp; var3 != null &amp;&amp; var2 != null) {
+<i>1644</i>&nbsp;            JmxProperties.RELATION_LOGGER.entering(RelationService.class.getName(), &quot;handleReferenceUnregistration&quot;, new Object[]{var1, var2, var3});
+<b class="nc"><i>1645</i>&nbsp;            this.isActive();</b>
+<i>1646</i>&nbsp;            var4 = this.getRelationTypeName(var1);
+<i>1647</i>&nbsp;            Object var5 = this.getRelation(var1);
+<b class="nc"><i>1648</i>&nbsp;            boolean var6 = false;</b>
+<i>1649</i>&nbsp;            Iterator var7 = var3.iterator();
+<i>1650</i>&nbsp;
+<b class="nc"><i>1651</i>&nbsp;            String var8;</b>
+<i>1652</i>&nbsp;            while(var7.hasNext()) {
+<i>1653</i>&nbsp;                var8 = (String)var7.next();
+<i>1654</i>&nbsp;                if(var6) {
+<b class="nc"><i>1655</i>&nbsp;                    break;</b>
+<b class="nc"><i>1656</i>&nbsp;                }</b>
+<i>1657</i>&nbsp;
+<b class="nc"><i>1658</i>&nbsp;                int var9 = this.getRoleCardinality(var1, var8).intValue();</b>
+<i>1659</i>&nbsp;                int var10 = var9 - 1;
+<i>1660</i>&nbsp;
+<i>1661</i>&nbsp;                RoleInfo var11;
+<b class="nc"><i>1662</i>&nbsp;                try {</b>
+<i>1663</i>&nbsp;                    var11 = this.getRoleInfo(var4, var8);
+<i>1664</i>&nbsp;                } catch (RelationTypeNotFoundException var18) {
+<i>1665</i>&nbsp;                    throw new RuntimeException(var18.getMessage());
+<b class="nc"><i>1666</i>&nbsp;                } catch (RoleInfoNotFoundException var19) {</b>
+<i>1667</i>&nbsp;                    throw new RuntimeException(var19.getMessage());
+<i>1668</i>&nbsp;                }
+<b class="nc"><i>1669</i>&nbsp;</b>
+<b class="nc"><i>1670</i>&nbsp;                boolean var12 = var11.checkMinDegree(var10);</b>
+<b class="nc"><i>1671</i>&nbsp;                if(!var12) {</b>
+<i>1672</i>&nbsp;                    var6 = true;
+<b class="nc"><i>1673</i>&nbsp;                }</b>
+<i>1674</i>&nbsp;            }
+<b class="nc"><i>1675</i>&nbsp;</b>
+<i>1676</i>&nbsp;            if(var6) {
+<b class="nc"><i>1677</i>&nbsp;                this.removeRelation(var1);</b>
+<i>1678</i>&nbsp;            } else {
+<i>1679</i>&nbsp;                var7 = var3.iterator();
+<b class="nc"><i>1680</i>&nbsp;</b>
+<i>1681</i>&nbsp;                while(var7.hasNext()) {
+<i>1682</i>&nbsp;                    var8 = (String)var7.next();
+<i>1683</i>&nbsp;                    if(var5 instanceof RelationSupport) {
+<i>1684</i>&nbsp;                        try {
+<i>1685</i>&nbsp;                            ((RelationSupport)var5).handleMBeanUnregistrationInt(var2, var8, true, this);
+<b class="nc"><i>1686</i>&nbsp;                        } catch (RelationTypeNotFoundException var16) {</b>
+<i>1687</i>&nbsp;                            throw new RuntimeException(var16.getMessage());
+<i>1688</i>&nbsp;                        } catch (InvalidRoleValueException var17) {
+<b class="nc"><i>1689</i>&nbsp;                            throw new RuntimeException(var17.getMessage());</b>
+<i>1690</i>&nbsp;                        }
+<i>1691</i>&nbsp;                    } else {
+<b class="nc"><i>1692</i>&nbsp;                        Object[] var20 = new Object[]{var2, var8};</b>
+<i>1693</i>&nbsp;                        String[] var21 = new String[]{&quot;javax.management.ObjectName&quot;, &quot;java.lang.String&quot;};
+<i>1694</i>&nbsp;
+<i>1695</i>&nbsp;                        try {
+<b class="nc"><i>1696</i>&nbsp;                            this.myMBeanServer.invoke((ObjectName)var5, &quot;handleMBeanUnregistration&quot;, var20, var21);</b>
+<i>1697</i>&nbsp;                        } catch (InstanceNotFoundException var13) {
+<i>1698</i>&nbsp;                            throw new RuntimeException(var13.getMessage());
+<b class="nc"><i>1699</i>&nbsp;                        } catch (ReflectionException var14) {</b>
+<i>1700</i>&nbsp;                            throw new RuntimeException(var14.getMessage());
+<i>1701</i>&nbsp;                        } catch (MBeanException var15) {
+<b class="nc"><i>1702</i>&nbsp;                            Exception var22 = var15.getTargetException();</b>
+<b class="nc"><i>1703</i>&nbsp;                            throw new RuntimeException(var22.getMessage());</b>
+<b class="nc"><i>1704</i>&nbsp;                        }</b>
+<i>1705</i>&nbsp;                    }
+<b class="nc"><i>1706</i>&nbsp;                }</b>
+<i>1707</i>&nbsp;            }
+<b class="nc"><i>1708</i>&nbsp;</b>
+<i>1709</i>&nbsp;            JmxProperties.RELATION_LOGGER.exiting(RelationService.class.getName(), &quot;handleReferenceUnregistration&quot;);
+<b class="nc"><i>1710</i>&nbsp;        } else {</b>
+<b class="nc"><i>1711</i>&nbsp;            var4 = &quot;Invalid parameter.&quot;;</b>
+<b class="nc"><i>1712</i>&nbsp;            throw new IllegalArgumentException(var4);</b>
+<i>1713</i>&nbsp;        }
+<i>1714</i>&nbsp;    }
+<i>1715</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

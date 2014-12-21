@@ -1,0 +1,717 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ForwardBuilder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.provider.certpath</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ForwardBuilder (sun.security.provider.certpath)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ForwardBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 226)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ForwardBuilder$PKIXCertComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 188)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 414)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.provider.certpath;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.security.GeneralSecurityException;
+<i>10</i>&nbsp;import java.security.InvalidKeyException;
+<i>11</i>&nbsp;import java.security.PublicKey;
+<i>12</i>&nbsp;import java.security.cert.CertPath;
+<i>13</i>&nbsp;import java.security.cert.CertPathValidatorException;
+<i>14</i>&nbsp;import java.security.cert.CertStore;
+<i>15</i>&nbsp;import java.security.cert.CertStoreException;
+<i>16</i>&nbsp;import java.security.cert.CertificateException;
+<i>17</i>&nbsp;import java.security.cert.PKIXBuilderParameters;
+<i>18</i>&nbsp;import java.security.cert.PKIXCertPathChecker;
+<i>19</i>&nbsp;import java.security.cert.PKIXReason;
+<i>20</i>&nbsp;import java.security.cert.TrustAnchor;
+<i>21</i>&nbsp;import java.security.cert.X509CertSelector;
+<i>22</i>&nbsp;import java.security.cert.X509Certificate;
+<i>23</i>&nbsp;import java.util.Collection;
+<i>24</i>&nbsp;import java.util.Collections;
+<i>25</i>&nbsp;import java.util.Comparator;
+<i>26</i>&nbsp;import java.util.HashSet;
+<i>27</i>&nbsp;import java.util.Iterator;
+<i>28</i>&nbsp;import java.util.LinkedList;
+<i>29</i>&nbsp;import java.util.List;
+<i>30</i>&nbsp;import java.util.Set;
+<i>31</i>&nbsp;import java.util.TreeSet;
+<i>32</i>&nbsp;import javax.security.auth.x500.X500Principal;
+<i>33</i>&nbsp;import sun.security.provider.certpath.AdaptableX509CertSelector;
+<i>34</i>&nbsp;import sun.security.provider.certpath.Builder;
+<i>35</i>&nbsp;import sun.security.provider.certpath.CertPathHelper;
+<i>36</i>&nbsp;import sun.security.provider.certpath.CrlRevocationChecker;
+<i>37</i>&nbsp;import sun.security.provider.certpath.ForwardState;
+<i>38</i>&nbsp;import sun.security.provider.certpath.KeyChecker;
+<i>39</i>&nbsp;import sun.security.provider.certpath.State;
+<i>40</i>&nbsp;import sun.security.provider.certpath.URICertStore;
+<i>41</i>&nbsp;import sun.security.util.Debug;
+<i>42</i>&nbsp;import sun.security.x509.AccessDescription;
+<i>43</i>&nbsp;import sun.security.x509.AuthorityInfoAccessExtension;
+<i>44</i>&nbsp;import sun.security.x509.AuthorityKeyIdentifierExtension;
+<i>45</i>&nbsp;import sun.security.x509.PKIXExtensions;
+<i>46</i>&nbsp;import sun.security.x509.PolicyMappingsExtension;
+<b class="nc"><i>47</i>&nbsp;import sun.security.x509.X500Name;</b>
+<i>48</i>&nbsp;import sun.security.x509.X509CertImpl;
+<b class="nc"><i>49</i>&nbsp;</b>
+<i>50</i>&nbsp;class ForwardBuilder extends Builder {
+<i>51</i>&nbsp;    private static final Debug debug = Debug.getInstance(&quot;certpath&quot;);
+<i>52</i>&nbsp;    private final Set&lt;X509Certificate&gt; trustedCerts;
+<i>53</i>&nbsp;    private final Set&lt;X500Principal&gt; trustedSubjectDNs;
+<i>54</i>&nbsp;    private final Set&lt;TrustAnchor&gt; trustAnchors;
+<i>55</i>&nbsp;    private X509CertSelector eeSelector;
+<i>56</i>&nbsp;    private AdaptableX509CertSelector caSelector;
+<i>57</i>&nbsp;    private X509CertSelector caTargetSelector;
+<i>58</i>&nbsp;    TrustAnchor trustAnchor;
+<b class="nc"><i>59</i>&nbsp;    private Comparator&lt;X509Certificate&gt; comparator;</b>
+<i>60</i>&nbsp;    private boolean searchAllCertStores = true;
+<i>61</i>&nbsp;    private boolean onlyEECert = false;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    ForwardBuilder(PKIXBuilderParameters var1, X500Principal var2, boolean var3, boolean var4) {
+<i>64</i>&nbsp;        super(var1, var2);
+<i>65</i>&nbsp;        this.trustAnchors = var1.getTrustAnchors();
+<i>66</i>&nbsp;        this.trustedCerts = new HashSet(this.trustAnchors.size());
+<i>67</i>&nbsp;        this.trustedSubjectDNs = new HashSet(this.trustAnchors.size());
+<i>68</i>&nbsp;        Iterator var5 = this.trustAnchors.iterator();
+<b class="nc"><i>69</i>&nbsp;</b>
+<i>70</i>&nbsp;        while(var5.hasNext()) {
+<i>71</i>&nbsp;            TrustAnchor var6 = (TrustAnchor)var5.next();
+<b class="nc"><i>72</i>&nbsp;            X509Certificate var7 = var6.getTrustedCert();</b>
+<b class="nc"><i>73</i>&nbsp;            if(var7 != null) {</b>
+<b class="nc"><i>74</i>&nbsp;                this.trustedCerts.add(var7);</b>
+<i>75</i>&nbsp;                this.trustedSubjectDNs.add(var7.getSubjectX500Principal());
+<i>76</i>&nbsp;            } else {
+<i>77</i>&nbsp;                this.trustedSubjectDNs.add(var6.getCA());
+<b class="nc"><i>78</i>&nbsp;            }</b>
+<b class="nc"><i>79</i>&nbsp;        }</b>
+<b class="nc"><i>80</i>&nbsp;</b>
+<b class="nc"><i>81</i>&nbsp;        this.comparator = new ForwardBuilder.PKIXCertComparator(this.trustedSubjectDNs);</b>
+<b class="nc"><i>82</i>&nbsp;        this.searchAllCertStores = var3;</b>
+<b class="nc"><i>83</i>&nbsp;        this.onlyEECert = var4;</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<i>86</i>&nbsp;    Collection&lt;X509Certificate&gt; getMatchingCerts(State var1, List&lt;CertStore&gt; var2) throws CertStoreException, CertificateException, IOException {
+<b class="nc"><i>87</i>&nbsp;        if(debug != null) {</b>
+<i>88</i>&nbsp;            debug.println(&quot;ForwardBuilder.getMatchingCerts()...&quot;);
+<b class="nc"><i>89</i>&nbsp;        }</b>
+<b class="nc"><i>90</i>&nbsp;</b>
+<b class="nc"><i>91</i>&nbsp;        ForwardState var3 = (ForwardState)var1;</b>
+<i>92</i>&nbsp;        TreeSet var4 = new TreeSet(this.comparator);
+<i>93</i>&nbsp;        if(var3.isInitial()) {
+<i>94</i>&nbsp;            this.getMatchingEECerts(var3, var2, var4);
+<i>95</i>&nbsp;        }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;        this.getMatchingCACerts(var3, var2, var4);
+<i>98</i>&nbsp;        return var4;
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    private void getMatchingEECerts(ForwardState var1, List&lt;CertStore&gt; var2, Collection&lt;X509Certificate&gt; var3) throws IOException {
+<i>102</i>&nbsp;        if(debug != null) {
+<i>103</i>&nbsp;            debug.println(&quot;ForwardBuilder.getMatchingEECerts()...&quot;);
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;        if(this.eeSelector == null) {
+<b class="nc"><i>107</i>&nbsp;            this.eeSelector = (X509CertSelector)this.targetCertConstraints.clone();</b>
+<b class="nc"><i>108</i>&nbsp;            this.eeSelector.setCertificateValid(this.date);</b>
+<i>109</i>&nbsp;            if(this.buildParams.isExplicitPolicyRequired()) {
+<i>110</i>&nbsp;                this.eeSelector.setPolicy(this.getMatchingPolicies());
+<b class="nc"><i>111</i>&nbsp;            }</b>
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;            this.eeSelector.setBasicConstraints(-2);</b>
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;        this.addMatchingCerts(this.eeSelector, var2, var3, this.searchAllCertStores);
+<i>117</i>&nbsp;    }
+<b class="nc"><i>118</i>&nbsp;</b>
+<b class="nc"><i>119</i>&nbsp;    private void getMatchingCACerts(ForwardState var1, List&lt;CertStore&gt; var2, Collection&lt;X509Certificate&gt; var3) throws IOException {</b>
+<i>120</i>&nbsp;        if(debug != null) {
+<b class="nc"><i>121</i>&nbsp;            debug.println(&quot;ForwardBuilder.getMatchingCACerts()...&quot;);</b>
+<i>122</i>&nbsp;        }
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;        int var4 = var3.size();</b>
+<i>125</i>&nbsp;        Object var5 = null;
+<b class="nc"><i>126</i>&nbsp;        if(var1.isInitial()) {</b>
+<i>127</i>&nbsp;            if(this.targetCertConstraints.getBasicConstraints() == -2) {
+<i>128</i>&nbsp;                return;
+<i>129</i>&nbsp;            }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;            if(debug != null) {
+<i>132</i>&nbsp;                debug.println(&quot;ForwardBuilder.getMatchingCACerts(): ca is target&quot;);
+<i>133</i>&nbsp;            }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;            if(this.caTargetSelector == null) {
+<i>136</i>&nbsp;                this.caTargetSelector = (X509CertSelector)this.targetCertConstraints.clone();
+<b class="nc"><i>137</i>&nbsp;                if(this.buildParams.isExplicitPolicyRequired()) {</b>
+<b class="nc"><i>138</i>&nbsp;                    this.caTargetSelector.setPolicy(this.getMatchingPolicies());</b>
+<i>139</i>&nbsp;                }
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;            var5 = this.caTargetSelector;
+<i>143</i>&nbsp;        } else {
+<i>144</i>&nbsp;            if(this.caSelector == null) {
+<i>145</i>&nbsp;                this.caSelector = new AdaptableX509CertSelector();
+<i>146</i>&nbsp;                if(this.buildParams.isExplicitPolicyRequired()) {
+<i>147</i>&nbsp;                    this.caSelector.setPolicy(this.getMatchingPolicies());
+<b class="nc"><i>148</i>&nbsp;                }</b>
+<b class="nc"><i>149</i>&nbsp;            }</b>
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;            this.caSelector.setSubject(var1.issuerDN);
+<i>152</i>&nbsp;            CertPathHelper.setPathToNames(this.caSelector, var1.subjectNamesTraversed);
+<i>153</i>&nbsp;            AuthorityKeyIdentifierExtension var6 = var1.cert.getAuthorityKeyIdentifierExtension();
+<i>154</i>&nbsp;            this.caSelector.parseAuthorityKeyIdentifierExtension(var6);
+<b class="nc"><i>155</i>&nbsp;            this.caSelector.setValidityPeriod(var1.cert.getNotBefore(), var1.cert.getNotAfter());</b>
+<i>156</i>&nbsp;            var5 = this.caSelector;
+<i>157</i>&nbsp;        }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;        ((X509CertSelector)var5).setBasicConstraints(-1);
+<b class="nc"><i>160</i>&nbsp;        Iterator var9 = this.trustedCerts.iterator();</b>
+<b class="nc"><i>161</i>&nbsp;</b>
+<i>162</i>&nbsp;        while(var9.hasNext()) {
+<i>163</i>&nbsp;            X509Certificate var7 = (X509Certificate)var9.next();
+<i>164</i>&nbsp;            if(((X509CertSelector)var5).match(var7)) {
+<i>165</i>&nbsp;                if(debug != null) {
+<b class="nc"><i>166</i>&nbsp;                    debug.println(&quot;ForwardBuilder.getMatchingCACerts: found matching trust anchor&quot;);</b>
+<i>167</i>&nbsp;                }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;                if(var3.add(var7) &amp;&amp; !this.searchAllCertStores) {
+<b class="nc"><i>170</i>&nbsp;                    return;</b>
+<b class="nc"><i>171</i>&nbsp;                }</b>
+<b class="nc"><i>172</i>&nbsp;            }</b>
+<i>173</i>&nbsp;        }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;        ((X509CertSelector)var5).setCertificateValid(this.date);
+<i>176</i>&nbsp;        ((X509CertSelector)var5).setBasicConstraints(var1.traversedCACerts);
+<i>177</i>&nbsp;        if(!var1.isInitial() &amp;&amp; this.buildParams.getMaxPathLength() != -1 &amp;&amp; this.buildParams.getMaxPathLength() &lt;= var1.traversedCACerts || !this.addMatchingCerts((X509CertSelector)var5, var2, var3, this.searchAllCertStores) || this.searchAllCertStores) {
+<i>178</i>&nbsp;            if(!var1.isInitial() &amp;&amp; Builder.USE_AIA) {
+<i>179</i>&nbsp;                AuthorityInfoAccessExtension var8 = var1.cert.getAuthorityInfoAccessExtension();
+<i>180</i>&nbsp;                if(var8 != null) {
+<i>181</i>&nbsp;                    this.getCerts(var8, var3);
+<i>182</i>&nbsp;                }
+<b class="nc"><i>183</i>&nbsp;            }</b>
+<b class="nc"><i>184</i>&nbsp;</b>
+<i>185</i>&nbsp;            if(debug != null) {
+<i>186</i>&nbsp;                int var10 = var3.size() - var4;
+<i>187</i>&nbsp;                debug.println(&quot;ForwardBuilder.getMatchingCACerts: found &quot; + var10 + &quot; CA certs&quot;);
+<i>188</i>&nbsp;            }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;        }
+<b class="nc"><i>191</i>&nbsp;    }</b>
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    private boolean getCerts(AuthorityInfoAccessExtension var1, Collection&lt;X509Certificate&gt; var2) {
+<i>194</i>&nbsp;        if(!Builder.USE_AIA) {
+<i>195</i>&nbsp;            return false;
+<i>196</i>&nbsp;        } else {
+<i>197</i>&nbsp;            List var3 = var1.getAccessDescriptions();
+<b class="nc"><i>198</i>&nbsp;            if(var3 != null &amp;&amp; !var3.isEmpty()) {</b>
+<i>199</i>&nbsp;                boolean var4 = false;
+<b class="nc"><i>200</i>&nbsp;                Iterator var5 = var3.iterator();</b>
+<b class="nc"><i>201</i>&nbsp;</b>
+<i>202</i>&nbsp;                while(var5.hasNext()) {
+<b class="nc"><i>203</i>&nbsp;                    AccessDescription var6 = (AccessDescription)var5.next();</b>
+<i>204</i>&nbsp;                    CertStore var7 = URICertStore.getInstance(var6);
+<b class="nc"><i>205</i>&nbsp;</b>
+<i>206</i>&nbsp;                    try {
+<i>207</i>&nbsp;                        if(var2.addAll(var7.getCertificates(this.caSelector))) {
+<i>208</i>&nbsp;                            var4 = true;
+<i>209</i>&nbsp;                            if(!this.searchAllCertStores) {
+<i>210</i>&nbsp;                                return true;
+<b class="nc"><i>211</i>&nbsp;                            }</b>
+<b class="nc"><i>212</i>&nbsp;                        }</b>
+<i>213</i>&nbsp;                    } catch (CertStoreException var9) {
+<i>214</i>&nbsp;                        if(debug != null) {
+<b class="nc"><i>215</i>&nbsp;                            debug.println(&quot;exception getting certs from CertStore:&quot;);</b>
+<b class="nc"><i>216</i>&nbsp;                            var9.printStackTrace();</b>
+<i>217</i>&nbsp;                        }
+<i>218</i>&nbsp;                    }
+<i>219</i>&nbsp;                }
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;                return var4;</b>
+<i>222</i>&nbsp;            } else {
+<i>223</i>&nbsp;                return false;
+<i>224</i>&nbsp;            }
+<i>225</i>&nbsp;        }
+<b class="nc"><i>226</i>&nbsp;    }</b>
+<b class="nc"><i>227</i>&nbsp;</b>
+<i>228</i>&nbsp;    void verifyCert(X509Certificate var1, State var2, List&lt;X509Certificate&gt; var3) throws GeneralSecurityException {
+<i>229</i>&nbsp;        if(debug != null) {
+<i>230</i>&nbsp;            debug.println(&quot;ForwardBuilder.verifyCert(SN: &quot; + Debug.toHexString(var1.getSerialNumber()) + &quot;\n  Issuer: &quot; + var1.getIssuerX500Principal() + &quot;)&quot; + &quot;\n  Subject: &quot; + var1.getSubjectX500Principal() + &quot;)&quot;);
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;        ForwardState var4 = (ForwardState)var2;
+<b class="nc"><i>234</i>&nbsp;        var4.untrustedChecker.check(var1, Collections.emptySet());</b>
+<b class="nc"><i>235</i>&nbsp;        boolean var5;</b>
+<i>236</i>&nbsp;        if(var3 != null) {
+<b class="nc"><i>237</i>&nbsp;            var5 = false;</b>
+<i>238</i>&nbsp;            Iterator var6 = var3.iterator();
+<b class="nc"><i>239</i>&nbsp;</b>
+<b class="nc"><i>240</i>&nbsp;            while(var6.hasNext()) {</b>
+<i>241</i>&nbsp;                X509Certificate var7 = (X509Certificate)var6.next();
+<i>242</i>&nbsp;                X509CertImpl var8 = X509CertImpl.toImpl(var7);
+<i>243</i>&nbsp;                PolicyMappingsExtension var9 = var8.getPolicyMappingsExtension();
+<i>244</i>&nbsp;                if(var9 != null) {
+<b class="nc"><i>245</i>&nbsp;                    var5 = true;</b>
+<i>246</i>&nbsp;                }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;                if(debug != null) {
+<i>249</i>&nbsp;                    debug.println(&quot;policyMappingFound = &quot; + var5);
+<b class="nc"><i>250</i>&nbsp;                }</b>
+<b class="nc"><i>251</i>&nbsp;</b>
+<i>252</i>&nbsp;                if(var1.equals(var7) &amp;&amp; (this.buildParams.isPolicyMappingInhibited() || !var5)) {
+<i>253</i>&nbsp;                    if(debug != null) {
+<i>254</i>&nbsp;                        debug.println(&quot;loop detected!!&quot;);
+<i>255</i>&nbsp;                    }
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;                    throw new CertPathValidatorException(&quot;loop detected&quot;);</b>
+<i>258</i>&nbsp;                }
+<i>259</i>&nbsp;            }
+<i>260</i>&nbsp;        }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;        var5 = this.trustedCerts.contains(var1);
+<i>263</i>&nbsp;        if(!var5) {
+<b class="nc"><i>264</i>&nbsp;            Set var10 = var1.getCriticalExtensionOIDs();</b>
+<i>265</i>&nbsp;            if(var10 == null) {
+<i>266</i>&nbsp;                var10 = Collections.emptySet();
+<i>267</i>&nbsp;            }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;            Iterator var11 = var4.forwardCheckers.iterator();
+<i>270</i>&nbsp;
+<b class="nc"><i>271</i>&nbsp;            PKIXCertPathChecker var12;</b>
+<b class="nc"><i>272</i>&nbsp;            while(var11.hasNext()) {</b>
+<i>273</i>&nbsp;                var12 = (PKIXCertPathChecker)var11.next();
+<i>274</i>&nbsp;                var12.check(var1, var10);
+<i>275</i>&nbsp;            }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;            var11 = this.buildParams.getCertPathCheckers().iterator();
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;            while(var11.hasNext()) {
+<i>280</i>&nbsp;                var12 = (PKIXCertPathChecker)var11.next();
+<b class="nc"><i>281</i>&nbsp;                if(!var12.isForwardCheckingSupported()) {</b>
+<i>282</i>&nbsp;                    Set var13 = var12.getSupportedExtensions();
+<b class="nc"><i>283</i>&nbsp;                    if(var13 != null) {</b>
+<b class="nc"><i>284</i>&nbsp;                        var10.removeAll(var13);</b>
+<i>285</i>&nbsp;                    }
+<i>286</i>&nbsp;                }
+<b class="nc"><i>287</i>&nbsp;            }</b>
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;            if(!var10.isEmpty()) {
+<b class="nc"><i>290</i>&nbsp;                var10.remove(PKIXExtensions.BasicConstraints_Id.toString());</b>
+<b class="nc"><i>291</i>&nbsp;                var10.remove(PKIXExtensions.NameConstraints_Id.toString());</b>
+<b class="nc"><i>292</i>&nbsp;                var10.remove(PKIXExtensions.CertificatePolicies_Id.toString());</b>
+<b class="nc"><i>293</i>&nbsp;                var10.remove(PKIXExtensions.PolicyMappings_Id.toString());</b>
+<i>294</i>&nbsp;                var10.remove(PKIXExtensions.PolicyConstraints_Id.toString());
+<i>295</i>&nbsp;                var10.remove(PKIXExtensions.InhibitAnyPolicy_Id.toString());
+<b class="nc"><i>296</i>&nbsp;                var10.remove(PKIXExtensions.SubjectAlternativeName_Id.toString());</b>
+<i>297</i>&nbsp;                var10.remove(PKIXExtensions.KeyUsage_Id.toString());
+<i>298</i>&nbsp;                var10.remove(PKIXExtensions.ExtendedKeyUsage_Id.toString());
+<i>299</i>&nbsp;                if(!var10.isEmpty()) {
+<b class="nc"><i>300</i>&nbsp;                    throw new CertPathValidatorException(&quot;Unrecognized critical extension(s)&quot;, (Throwable)null, (CertPath)null, -1, PKIXReason.UNRECOGNIZED_CRIT_EXT);</b>
+<b class="nc"><i>301</i>&nbsp;                }</b>
+<i>302</i>&nbsp;            }
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;        if(!var4.isInitial()) {
+<i>306</i>&nbsp;            if(!var5) {
+<i>307</i>&nbsp;                if(var1.getBasicConstraints() == -1) {
+<i>308</i>&nbsp;                    throw new CertificateException(&quot;cert is NOT a CA cert&quot;);
+<i>309</i>&nbsp;                }
+<i>310</i>&nbsp;
+<b class="nc"><i>311</i>&nbsp;                KeyChecker.verifyCAKeyUsage(var1);</b>
+<i>312</i>&nbsp;            }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;            if(this.buildParams.isRevocationEnabled() &amp;&amp; CrlRevocationChecker.certCanSignCrl(var1) &amp;&amp; !var4.keyParamsNeeded()) {
+<b class="nc"><i>315</i>&nbsp;                var4.crlChecker.check(var4.cert, var1.getPublicKey(), true);</b>
+<i>316</i>&nbsp;            }
+<i>317</i>&nbsp;
+<b class="nc"><i>318</i>&nbsp;            if(!var4.keyParamsNeeded()) {</b>
+<b class="nc"><i>319</i>&nbsp;                var4.cert.verify(var1.getPublicKey(), this.buildParams.getSigProvider());</b>
+<i>320</i>&nbsp;            }
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;        }</b>
+<i>323</i>&nbsp;    }
+<b class="nc"><i>324</i>&nbsp;</b>
+<i>325</i>&nbsp;    boolean isPathCompleted(X509Certificate var1) {
+<b class="nc"><i>326</i>&nbsp;        Iterator var2 = this.trustAnchors.iterator();</b>
+<b class="nc"><i>327</i>&nbsp;</b>
+<i>328</i>&nbsp;        TrustAnchor var3;
+<i>329</i>&nbsp;        while(true) {
+<i>330</i>&nbsp;            while(true) {
+<b class="nc"><i>331</i>&nbsp;                X500Principal var4;</b>
+<b class="nc"><i>332</i>&nbsp;                do {</b>
+<i>333</i>&nbsp;                    label52:
+<i>334</i>&nbsp;                    do {
+<b class="nc"><i>335</i>&nbsp;                        do {</b>
+<i>336</i>&nbsp;                            if(!var2.hasNext()) {
+<i>337</i>&nbsp;                                return false;
+<i>338</i>&nbsp;                            }
+<i>339</i>&nbsp;
+<b class="nc"><i>340</i>&nbsp;                            var3 = (TrustAnchor)var2.next();</b>
+<b class="nc"><i>341</i>&nbsp;                            if(var3.getTrustedCert() == null) {</b>
+<i>342</i>&nbsp;                                var4 = var3.getCA();
+<i>343</i>&nbsp;                                PublicKey var5 = var3.getCAPublicKey();
+<b class="nc"><i>344</i>&nbsp;                                if(var4 != null &amp;&amp; var5 != null &amp;&amp; var4.equals(var1.getSubjectX500Principal()) &amp;&amp; var5.equals(var1.getPublicKey())) {</b>
+<b class="nc"><i>345</i>&nbsp;                                    this.trustAnchor = var3;</b>
+<i>346</i>&nbsp;                                    return true;
+<i>347</i>&nbsp;                                }
+<b class="nc"><i>348</i>&nbsp;                                continue label52;</b>
+<b class="nc"><i>349</i>&nbsp;                            }</b>
+<b class="nc"><i>350</i>&nbsp;                        } while(!var1.equals(var3.getTrustedCert()));</b>
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;                        this.trustAnchor = var3;
+<b class="nc"><i>353</i>&nbsp;                        return true;</b>
+<i>354</i>&nbsp;                    } while(var4 == null);
+<b class="nc"><i>355</i>&nbsp;                } while(!var4.equals(var1.getIssuerX500Principal()));</b>
+<b class="nc"><i>356</i>&nbsp;</b>
+<b class="nc"><i>357</i>&nbsp;                if(!this.buildParams.isRevocationEnabled()) {</b>
+<i>358</i>&nbsp;                    break;
+<b class="nc"><i>359</i>&nbsp;                }</b>
+<b class="nc"><i>360</i>&nbsp;</b>
+<b class="nc"><i>361</i>&nbsp;                try {</b>
+<i>362</i>&nbsp;                    CrlRevocationChecker var9 = new CrlRevocationChecker(var3, this.buildParams, (Collection)null, this.onlyEECert);
+<b class="nc"><i>363</i>&nbsp;                    var9.check(var1, var3.getCAPublicKey(), true);</b>
+<b class="nc"><i>364</i>&nbsp;                    break;</b>
+<b class="nc"><i>365</i>&nbsp;                } catch (CertPathValidatorException var6) {</b>
+<i>366</i>&nbsp;                    if(debug != null) {
+<i>367</i>&nbsp;                        debug.println(&quot;ForwardBuilder.isPathCompleted() cpve&quot;);
+<b class="nc"><i>368</i>&nbsp;                        var6.printStackTrace();</b>
+<b class="nc"><i>369</i>&nbsp;                    }</b>
+<b class="nc"><i>370</i>&nbsp;                }</b>
+<b class="nc"><i>371</i>&nbsp;            }</b>
+<b class="nc"><i>372</i>&nbsp;</b>
+<i>373</i>&nbsp;            try {
+<i>374</i>&nbsp;                var1.verify(var3.getCAPublicKey(), this.buildParams.getSigProvider());
+<b class="nc"><i>375</i>&nbsp;                break;</b>
+<b class="nc"><i>376</i>&nbsp;            } catch (InvalidKeyException var7) {</b>
+<i>377</i>&nbsp;                if(debug != null) {
+<b class="nc"><i>378</i>&nbsp;                    debug.println(&quot;ForwardBuilder.isPathCompleted() invalid DSA key found&quot;);</b>
+<i>379</i>&nbsp;                }
+<b class="nc"><i>380</i>&nbsp;            } catch (Exception var8) {</b>
+<i>381</i>&nbsp;                if(debug != null) {
+<b class="nc"><i>382</i>&nbsp;                    debug.println(&quot;ForwardBuilder.isPathCompleted() unexpected exception&quot;);</b>
+<i>383</i>&nbsp;                    var8.printStackTrace();
+<b class="nc"><i>384</i>&nbsp;                }</b>
+<b class="nc"><i>385</i>&nbsp;            }</b>
+<b class="nc"><i>386</i>&nbsp;        }</b>
+<b class="nc"><i>387</i>&nbsp;</b>
+<b class="nc"><i>388</i>&nbsp;        this.trustAnchor = var3;</b>
+<i>389</i>&nbsp;        return true;
+<i>390</i>&nbsp;    }
+<b class="nc"><i>391</i>&nbsp;</b>
+<b class="nc"><i>392</i>&nbsp;    void addCertToPath(X509Certificate var1, LinkedList&lt;X509Certificate&gt; var2) {</b>
+<b class="nc"><i>393</i>&nbsp;        var2.addFirst(var1);</b>
+<i>394</i>&nbsp;    }
+<b class="nc"><i>395</i>&nbsp;</b>
+<i>396</i>&nbsp;    void removeFinalCertFromPath(LinkedList&lt;X509Certificate&gt; var1) {
+<b class="nc"><i>397</i>&nbsp;        var1.removeFirst();</b>
+<b class="nc"><i>398</i>&nbsp;    }</b>
+<b class="nc"><i>399</i>&nbsp;</b>
+<b class="nc"><i>400</i>&nbsp;    static class PKIXCertComparator implements Comparator&lt;X509Certificate&gt; {</b>
+<b class="nc"><i>401</i>&nbsp;        static final String METHOD_NME = &quot;PKIXCertComparator.compare()&quot;;</b>
+<i>402</i>&nbsp;        private final Set&lt;X500Principal&gt; trustedSubjectDNs;
+<b class="nc"><i>403</i>&nbsp;</b>
+<b class="nc"><i>404</i>&nbsp;        PKIXCertComparator(Set&lt;X500Principal&gt; var1) {</b>
+<i>405</i>&nbsp;            this.trustedSubjectDNs = var1;
+<i>406</i>&nbsp;        }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;        public int compare(X509Certificate var1, X509Certificate var2) {
+<i>409</i>&nbsp;            if(var1.equals(var2)) {
+<i>410</i>&nbsp;                return 0;
+<i>411</i>&nbsp;            } else {
+<i>412</i>&nbsp;                X500Principal var3 = var1.getIssuerX500Principal();
+<i>413</i>&nbsp;                X500Principal var4 = var2.getIssuerX500Principal();
+<i>414</i>&nbsp;                X500Name var5 = X500Name.asX500Name(var3);
+<i>415</i>&nbsp;                X500Name var6 = X500Name.asX500Name(var4);
+<i>416</i>&nbsp;                if(ForwardBuilder.debug != null) {
+<i>417</i>&nbsp;                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() o1 Issuer:  &quot; + var3);
+<i>418</i>&nbsp;                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() o2 Issuer:  &quot; + var4);
+<i>419</i>&nbsp;                }
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;                if(ForwardBuilder.debug != null) {
+<i>422</i>&nbsp;                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() MATCH TRUSTED SUBJECT TEST...&quot;);
+<i>423</i>&nbsp;                }
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;                boolean var7 = this.trustedSubjectDNs.contains(var3);
+<i>426</i>&nbsp;                boolean var8 = this.trustedSubjectDNs.contains(var4);
+<i>427</i>&nbsp;                if(ForwardBuilder.debug != null) {
+<i>428</i>&nbsp;                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() m1: &quot; + var7);
+<i>429</i>&nbsp;                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() m2: &quot; + var8);
+<i>430</i>&nbsp;                }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;                if(var7 &amp;&amp; var8) {
+<i>433</i>&nbsp;                    return -1;
+<i>434</i>&nbsp;                } else if(var7) {
+<i>435</i>&nbsp;                    return -1;
+<i>436</i>&nbsp;                } else if(var8) {
+<i>437</i>&nbsp;                    return 1;
+<i>438</i>&nbsp;                } else {
+<i>439</i>&nbsp;                    if(ForwardBuilder.debug != null) {
+<i>440</i>&nbsp;                        ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() NAMING DESCENDANT TEST...&quot;);
+<i>441</i>&nbsp;                    }
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;                    Iterator var9 = this.trustedSubjectDNs.iterator();
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;                    while(true) {
+<i>446</i>&nbsp;                        X500Principal var10;
+<i>447</i>&nbsp;                        X500Name var11;
+<i>448</i>&nbsp;                        int var17;
+<i>449</i>&nbsp;                        int var18;
+<i>450</i>&nbsp;                        if(var9.hasNext()) {
+<b class="nc"><i>451</i>&nbsp;                            var10 = (X500Principal)var9.next();</b>
+<b class="nc"><i>452</i>&nbsp;                            var11 = X500Name.asX500Name(var10);</b>
+<i>453</i>&nbsp;                            var17 = Builder.distance(var11, var5, -1);
+<i>454</i>&nbsp;                            var18 = Builder.distance(var11, var6, -1);
+<i>455</i>&nbsp;                            if(ForwardBuilder.debug != null) {
+<i>456</i>&nbsp;                                ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() distanceTto1: &quot; + var17);
+<i>457</i>&nbsp;                                ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() distanceTto2: &quot; + var18);
+<i>458</i>&nbsp;                            }
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;                            if(var17 &lt;= 0 &amp;&amp; var18 &lt;= 0) {
+<i>461</i>&nbsp;                                continue;
+<i>462</i>&nbsp;                            }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;                            if(var17 == var18) {
+<i>465</i>&nbsp;                                return -1;
+<b class="nc"><i>466</i>&nbsp;                            }</b>
+<b class="nc"><i>467</i>&nbsp;</b>
+<b class="nc"><i>468</i>&nbsp;                            if(var17 &gt; 0 &amp;&amp; var18 &lt;= 0) {</b>
+<b class="nc"><i>469</i>&nbsp;                                return -1;</b>
+<i>470</i>&nbsp;                            }
+<b class="nc"><i>471</i>&nbsp;</b>
+<b class="nc"><i>472</i>&nbsp;                            if(var17 &lt;= 0 &amp;&amp; var18 &gt; 0) {</b>
+<b class="nc"><i>473</i>&nbsp;                                return 1;</b>
+<i>474</i>&nbsp;                            }
+<i>475</i>&nbsp;
+<i>476</i>&nbsp;                            if(var17 &lt; var18) {
+<i>477</i>&nbsp;                                return -1;
+<i>478</i>&nbsp;                            }
+<b class="nc"><i>479</i>&nbsp;</b>
+<b class="nc"><i>480</i>&nbsp;                            return 1;</b>
+<i>481</i>&nbsp;                        }
+<i>482</i>&nbsp;
+<b class="nc"><i>483</i>&nbsp;                        if(ForwardBuilder.debug != null) {</b>
+<b class="nc"><i>484</i>&nbsp;                            ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() NAMING ANCESTOR TEST...&quot;);</b>
+<b class="nc"><i>485</i>&nbsp;                        }</b>
+<b class="nc"><i>486</i>&nbsp;</b>
+<b class="nc"><i>487</i>&nbsp;                        var9 = this.trustedSubjectDNs.iterator();</b>
+<b class="nc"><i>488</i>&nbsp;</b>
+<b class="nc"><i>489</i>&nbsp;                        while(true) {</b>
+<b class="nc"><i>490</i>&nbsp;                            if(var9.hasNext()) {</b>
+<b class="nc"><i>491</i>&nbsp;                                var10 = (X500Principal)var9.next();</b>
+<b class="nc"><i>492</i>&nbsp;                                var11 = X500Name.asX500Name(var10);</b>
+<b class="nc"><i>493</i>&nbsp;                                var17 = Builder.distance(var11, var5, 2147483647);</b>
+<b class="nc"><i>494</i>&nbsp;                                var18 = Builder.distance(var11, var6, 2147483647);</b>
+<b class="nc"><i>495</i>&nbsp;                                if(ForwardBuilder.debug != null) {</b>
+<b class="nc"><i>496</i>&nbsp;                                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() distanceTto1: &quot; + var17);</b>
+<b class="nc"><i>497</i>&nbsp;                                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() distanceTto2: &quot; + var18);</b>
+<i>498</i>&nbsp;                                }
+<b class="nc"><i>499</i>&nbsp;</b>
+<i>500</i>&nbsp;                                if(var17 &gt;= 0 &amp;&amp; var18 &gt;= 0) {
+<i>501</i>&nbsp;                                    continue;
+<i>502</i>&nbsp;                                }
+<i>503</i>&nbsp;
+<b class="nc"><i>504</i>&nbsp;                                if(var17 == var18) {</b>
+<b class="nc"><i>505</i>&nbsp;                                    return -1;</b>
+<b class="nc"><i>506</i>&nbsp;                                }</b>
+<b class="nc"><i>507</i>&nbsp;</b>
+<i>508</i>&nbsp;                                if(var17 &lt; 0 &amp;&amp; var18 &gt;= 0) {
+<i>509</i>&nbsp;                                    return -1;
+<i>510</i>&nbsp;                                }
+<b class="nc"><i>511</i>&nbsp;</b>
+<b class="nc"><i>512</i>&nbsp;                                if(var17 &gt;= 0 &amp;&amp; var18 &lt; 0) {</b>
+<b class="nc"><i>513</i>&nbsp;                                    return 1;</b>
+<b class="nc"><i>514</i>&nbsp;                                }</b>
+<i>515</i>&nbsp;
+<b class="nc"><i>516</i>&nbsp;                                if(var17 &gt; var18) {</b>
+<b class="nc"><i>517</i>&nbsp;                                    return -1;</b>
+<b class="nc"><i>518</i>&nbsp;                                }</b>
+<b class="nc"><i>519</i>&nbsp;</b>
+<b class="nc"><i>520</i>&nbsp;                                return 1;</b>
+<b class="nc"><i>521</i>&nbsp;                            }</b>
+<b class="nc"><i>522</i>&nbsp;</b>
+<i>523</i>&nbsp;                            if(ForwardBuilder.debug != null) {
+<b class="nc"><i>524</i>&nbsp;                                ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() SAME NAMESPACE AS TRUSTED TEST...&quot;);</b>
+<b class="nc"><i>525</i>&nbsp;                            }</b>
+<b class="nc"><i>526</i>&nbsp;</b>
+<i>527</i>&nbsp;                            var9 = this.trustedSubjectDNs.iterator();
+<b class="nc"><i>528</i>&nbsp;</b>
+<b class="nc"><i>529</i>&nbsp;                            int var14;</b>
+<b class="nc"><i>530</i>&nbsp;                            int var15;</b>
+<i>531</i>&nbsp;                            do {
+<b class="nc"><i>532</i>&nbsp;                                X500Name var12;</b>
+<b class="nc"><i>533</i>&nbsp;                                X500Name var13;</b>
+<b class="nc"><i>534</i>&nbsp;                                do {</b>
+<b class="nc"><i>535</i>&nbsp;                                    if(!var9.hasNext()) {</b>
+<i>536</i>&nbsp;                                        if(ForwardBuilder.debug != null) {
+<b class="nc"><i>537</i>&nbsp;                                            ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() CERT ISSUER/SUBJECT COMPARISON TEST...&quot;);</b>
+<b class="nc"><i>538</i>&nbsp;                                        }</b>
+<b class="nc"><i>539</i>&nbsp;</b>
+<b class="nc"><i>540</i>&nbsp;                                        X500Principal var16 = var1.getSubjectX500Principal();</b>
+<i>541</i>&nbsp;                                        var10 = var2.getSubjectX500Principal();
+<b class="nc"><i>542</i>&nbsp;                                        var11 = X500Name.asX500Name(var16);</b>
+<b class="nc"><i>543</i>&nbsp;                                        var12 = X500Name.asX500Name(var10);</b>
+<b class="nc"><i>544</i>&nbsp;                                        if(ForwardBuilder.debug != null) {</b>
+<b class="nc"><i>545</i>&nbsp;                                            ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() o1 Subject: &quot; + var16);</b>
+<i>546</i>&nbsp;                                            ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() o2 Subject: &quot; + var10);
+<b class="nc"><i>547</i>&nbsp;                                        }</b>
+<i>548</i>&nbsp;
+<b class="nc"><i>549</i>&nbsp;                                        var18 = Builder.distance(var11, var5, 2147483647);</b>
+<b class="nc"><i>550</i>&nbsp;                                        var14 = Builder.distance(var12, var6, 2147483647);</b>
+<i>551</i>&nbsp;                                        if(ForwardBuilder.debug != null) {
+<b class="nc"><i>552</i>&nbsp;                                            ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() distanceStoI1: &quot; + var18);</b>
+<i>553</i>&nbsp;                                            ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() distanceStoI2: &quot; + var14);
+<i>554</i>&nbsp;                                        }
+<b class="nc"><i>555</i>&nbsp;</b>
+<i>556</i>&nbsp;                                        if(var14 &gt; var18) {
+<i>557</i>&nbsp;                                            return -1;
+<i>558</i>&nbsp;                                        }
+<i>559</i>&nbsp;
+<b class="nc"><i>560</i>&nbsp;                                        if(var14 &lt; var18) {</b>
+<b class="nc"><i>561</i>&nbsp;                                            return 1;</b>
+<b class="nc"><i>562</i>&nbsp;                                        }</b>
+<b class="nc"><i>563</i>&nbsp;</b>
+<i>564</i>&nbsp;                                        if(ForwardBuilder.debug != null) {
+<b class="nc"><i>565</i>&nbsp;                                            ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() no tests matched; RETURN 0&quot;);</b>
+<b class="nc"><i>566</i>&nbsp;                                        }</b>
+<i>567</i>&nbsp;
+<b class="nc"><i>568</i>&nbsp;                                        return -1;</b>
+<b class="nc"><i>569</i>&nbsp;                                    }</b>
+<b class="nc"><i>570</i>&nbsp;</b>
+<b class="nc"><i>571</i>&nbsp;                                    var10 = (X500Principal)var9.next();</b>
+<i>572</i>&nbsp;                                    var11 = X500Name.asX500Name(var10);
+<b class="nc"><i>573</i>&nbsp;                                    var12 = var11.commonAncestor(var5);</b>
+<b class="nc"><i>574</i>&nbsp;                                    var13 = var11.commonAncestor(var6);</b>
+<b class="nc"><i>575</i>&nbsp;                                    if(ForwardBuilder.debug != null) {</b>
+<b class="nc"><i>576</i>&nbsp;                                        ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() tAo1: &quot; + String.valueOf(var12));</b>
+<b class="nc"><i>577</i>&nbsp;                                        ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() tAo2: &quot; + String.valueOf(var13));</b>
+<b class="nc"><i>578</i>&nbsp;                                    }</b>
+<b class="nc"><i>579</i>&nbsp;                                } while(var12 == null &amp;&amp; var13 == null);</b>
+<i>580</i>&nbsp;
+<b class="nc"><i>581</i>&nbsp;                                if(var12 == null || var13 == null) {</b>
+<b class="nc"><i>582</i>&nbsp;                                    if(var12 == null) {</b>
+<b class="nc"><i>583</i>&nbsp;                                        return 1;</b>
+<i>584</i>&nbsp;                                    }
+<b class="nc"><i>585</i>&nbsp;</b>
+<b class="nc"><i>586</i>&nbsp;                                    return -1;</b>
+<b class="nc"><i>587</i>&nbsp;                                }</b>
+<b class="nc"><i>588</i>&nbsp;</b>
+<b class="nc"><i>589</i>&nbsp;                                var14 = Builder.hops(var11, var5, 2147483647);</b>
+<b class="nc"><i>590</i>&nbsp;                                var15 = Builder.hops(var11, var6, 2147483647);</b>
+<b class="nc"><i>591</i>&nbsp;                                if(ForwardBuilder.debug != null) {</b>
+<i>592</i>&nbsp;                                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() hopsTto1: &quot; + var14);
+<b class="nc"><i>593</i>&nbsp;                                    ForwardBuilder.debug.println(&quot;PKIXCertComparator.compare() hopsTto2: &quot; + var15);</b>
+<b class="nc"><i>594</i>&nbsp;                                }</b>
+<b class="nc"><i>595</i>&nbsp;                            } while(var14 == var15);</b>
+<b class="nc"><i>596</i>&nbsp;</b>
+<i>597</i>&nbsp;                            if(var14 &gt; var15) {
+<b class="nc"><i>598</i>&nbsp;                                return 1;</b>
+<b class="nc"><i>599</i>&nbsp;                            }</b>
+<b class="nc"><i>600</i>&nbsp;</b>
+<b class="nc"><i>601</i>&nbsp;                            return -1;</b>
+<i>602</i>&nbsp;                        }
+<b class="nc"><i>603</i>&nbsp;                    }</b>
+<i>604</i>&nbsp;                }
+<b class="nc"><i>605</i>&nbsp;            }</b>
+<b class="nc"><i>606</i>&nbsp;        }</b>
+<i>607</i>&nbsp;    }
+<b class="nc"><i>608</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

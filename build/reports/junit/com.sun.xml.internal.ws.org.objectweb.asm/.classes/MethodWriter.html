@@ -1,0 +1,1960 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MethodWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.org.objectweb.asm</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MethodWriter (com.sun.xml.internal.ws.org.objectweb.asm)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MethodWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1054)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.org.objectweb.asm;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.AnnotationVisitor;
+<i>9</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.AnnotationWriter;
+<i>10</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.Attribute;
+<i>11</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.ByteVector;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.ClassWriter;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.Edge;
+<i>14</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.Frame;
+<i>15</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.Handler;
+<i>16</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.Item;
+<i>17</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.Label;
+<i>18</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.MethodVisitor;
+<i>19</i>&nbsp;import com.sun.xml.internal.ws.org.objectweb.asm.Type;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;class MethodWriter implements MethodVisitor {
+<i>22</i>&nbsp;    static final int ACC_CONSTRUCTOR = 262144;
+<i>23</i>&nbsp;    static final int SAME_FRAME = 0;
+<i>24</i>&nbsp;    static final int SAME_LOCALS_1_STACK_ITEM_FRAME = 64;
+<i>25</i>&nbsp;    static final int RESERVED = 128;
+<i>26</i>&nbsp;    static final int SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED = 247;
+<i>27</i>&nbsp;    static final int CHOP_FRAME = 248;
+<i>28</i>&nbsp;    static final int SAME_FRAME_EXTENDED = 251;
+<i>29</i>&nbsp;    static final int APPEND_FRAME = 252;
+<i>30</i>&nbsp;    static final int FULL_FRAME = 255;
+<i>31</i>&nbsp;    private static final int FRAMES = 0;
+<i>32</i>&nbsp;    private static final int MAXS = 1;
+<i>33</i>&nbsp;    private static final int NOTHING = 2;
+<i>34</i>&nbsp;    MethodWriter next;
+<i>35</i>&nbsp;    final ClassWriter cw;
+<i>36</i>&nbsp;    private int access;
+<i>37</i>&nbsp;    private final int name;
+<i>38</i>&nbsp;    private final int desc;
+<i>39</i>&nbsp;    private final String descriptor;
+<i>40</i>&nbsp;    String signature;
+<i>41</i>&nbsp;    int classReaderOffset;
+<i>42</i>&nbsp;    int classReaderLength;
+<i>43</i>&nbsp;    int exceptionCount;
+<i>44</i>&nbsp;    int[] exceptions;
+<i>45</i>&nbsp;    private ByteVector annd;
+<i>46</i>&nbsp;    private AnnotationWriter anns;
+<i>47</i>&nbsp;    private AnnotationWriter ianns;
+<i>48</i>&nbsp;    private AnnotationWriter[] panns;
+<i>49</i>&nbsp;    private AnnotationWriter[] ipanns;
+<i>50</i>&nbsp;    private int synthetics;
+<i>51</i>&nbsp;    private Attribute attrs;
+<i>52</i>&nbsp;    private ByteVector code = new ByteVector();
+<i>53</i>&nbsp;    private int maxStack;
+<i>54</i>&nbsp;    private int maxLocals;
+<i>55</i>&nbsp;    private int frameCount;
+<i>56</i>&nbsp;    private ByteVector stackMap;
+<i>57</i>&nbsp;    private int previousFrameOffset;
+<i>58</i>&nbsp;    private int[] previousFrame;
+<i>59</i>&nbsp;    private int frameIndex;
+<i>60</i>&nbsp;    private int[] frame;
+<i>61</i>&nbsp;    private int handlerCount;
+<i>62</i>&nbsp;    private Handler firstHandler;
+<i>63</i>&nbsp;    private Handler lastHandler;
+<i>64</i>&nbsp;    private int localVarCount;
+<i>65</i>&nbsp;    private ByteVector localVar;
+<i>66</i>&nbsp;    private int localVarTypeCount;
+<i>67</i>&nbsp;    private ByteVector localVarType;
+<i>68</i>&nbsp;    private int lineNumberCount;
+<i>69</i>&nbsp;    private ByteVector lineNumber;
+<i>70</i>&nbsp;    private Attribute cattrs;
+<i>71</i>&nbsp;    private boolean resize;
+<i>72</i>&nbsp;    private int subroutines;
+<i>73</i>&nbsp;    private final int compute;
+<i>74</i>&nbsp;    private Label labels;
+<i>75</i>&nbsp;    private Label previousBlock;
+<i>76</i>&nbsp;    private Label currentBlock;
+<i>77</i>&nbsp;    private int stackSize;
+<i>78</i>&nbsp;    private int maxStackSize;
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    MethodWriter(ClassWriter cw, int access, String name, String desc, String signature, String[] exceptions, boolean computeMaxs, boolean computeFrames) {
+<i>81</i>&nbsp;        if(cw.firstMethod == null) {
+<i>82</i>&nbsp;            cw.firstMethod = this;
+<i>83</i>&nbsp;        } else {
+<i>84</i>&nbsp;            cw.lastMethod.next = this;
+<i>85</i>&nbsp;        }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;        cw.lastMethod = this;
+<i>88</i>&nbsp;        this.cw = cw;
+<i>89</i>&nbsp;        this.access = access;
+<i>90</i>&nbsp;        this.name = cw.newUTF8(name);
+<i>91</i>&nbsp;        this.desc = cw.newUTF8(desc);
+<i>92</i>&nbsp;        this.descriptor = desc;
+<i>93</i>&nbsp;        this.signature = signature;
+<i>94</i>&nbsp;        int size;
+<i>95</i>&nbsp;        if(exceptions != null &amp;&amp; exceptions.length &gt; 0) {
+<i>96</i>&nbsp;            this.exceptionCount = exceptions.length;
+<i>97</i>&nbsp;            this.exceptions = new int[this.exceptionCount];
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;            for(size = 0; size &lt; this.exceptionCount; ++size) {
+<i>100</i>&nbsp;                this.exceptions[size] = cw.newClass(exceptions[size]);
+<i>101</i>&nbsp;            }
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;        this.compute = computeFrames?0:(computeMaxs?1:2);
+<i>105</i>&nbsp;        if(computeMaxs || computeFrames) {
+<i>106</i>&nbsp;            if(computeFrames &amp;&amp; &quot;&lt;init&gt;&quot;.equals(name)) {
+<i>107</i>&nbsp;                this.access |= 262144;
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;            size = getArgumentsAndReturnSizes(this.descriptor) &gt;&gt; 2;
+<i>111</i>&nbsp;            if((access &amp; 8) != 0) {
+<i>112</i>&nbsp;                --size;
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;            this.maxLocals = size;
+<i>116</i>&nbsp;            this.labels = new Label();
+<i>117</i>&nbsp;            this.labels.status |= 8;
+<i>118</i>&nbsp;            this.visitLabel(this.labels);
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public AnnotationVisitor visitAnnotationDefault() {
+<i>124</i>&nbsp;        this.annd = new ByteVector();
+<i>125</i>&nbsp;        return new AnnotationWriter(this.cw, false, this.annd, (ByteVector)null, 0);
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+<i>129</i>&nbsp;        ByteVector bv = new ByteVector();
+<i>130</i>&nbsp;        bv.putShort(this.cw.newUTF8(desc)).putShort(0);
+<i>131</i>&nbsp;        AnnotationWriter aw = new AnnotationWriter(this.cw, true, bv, bv, 2);
+<i>132</i>&nbsp;        if(visible) {
+<i>133</i>&nbsp;            aw.next = this.anns;
+<i>134</i>&nbsp;            this.anns = aw;
+<i>135</i>&nbsp;        } else {
+<i>136</i>&nbsp;            aw.next = this.ianns;
+<i>137</i>&nbsp;            this.ianns = aw;
+<i>138</i>&nbsp;        }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;        return aw;
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
+<i>144</i>&nbsp;        ByteVector bv = new ByteVector();
+<i>145</i>&nbsp;        if(&quot;Ljava/lang/Synthetic;&quot;.equals(desc)) {
+<i>146</i>&nbsp;            this.synthetics = Math.max(this.synthetics, parameter + 1);
+<i>147</i>&nbsp;            return new AnnotationWriter(this.cw, false, bv, (ByteVector)null, 0);
+<i>148</i>&nbsp;        } else {
+<i>149</i>&nbsp;            bv.putShort(this.cw.newUTF8(desc)).putShort(0);
+<i>150</i>&nbsp;            AnnotationWriter aw = new AnnotationWriter(this.cw, true, bv, bv, 2);
+<i>151</i>&nbsp;            if(visible) {
+<i>152</i>&nbsp;                if(this.panns == null) {
+<i>153</i>&nbsp;                    this.panns = new AnnotationWriter[Type.getArgumentTypes(this.descriptor).length];
+<i>154</i>&nbsp;                }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;                aw.next = this.panns[parameter];
+<i>157</i>&nbsp;                this.panns[parameter] = aw;
+<i>158</i>&nbsp;            } else {
+<i>159</i>&nbsp;                if(this.ipanns == null) {
+<i>160</i>&nbsp;                    this.ipanns = new AnnotationWriter[Type.getArgumentTypes(this.descriptor).length];
+<i>161</i>&nbsp;                }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;                aw.next = this.ipanns[parameter];
+<i>164</i>&nbsp;                this.ipanns[parameter] = aw;
+<i>165</i>&nbsp;            }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;            return aw;
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    public void visitAttribute(Attribute attr) {
+<i>172</i>&nbsp;        if(attr.isCodeAttribute()) {
+<i>173</i>&nbsp;            attr.next = this.cattrs;
+<i>174</i>&nbsp;            this.cattrs = attr;
+<i>175</i>&nbsp;        } else {
+<i>176</i>&nbsp;            attr.next = this.attrs;
+<i>177</i>&nbsp;            this.attrs = attr;
+<i>178</i>&nbsp;        }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    public void visitCode() {
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    public void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack) {
+<i>186</i>&nbsp;        if(this.compute != 0) {
+<i>187</i>&nbsp;            int delta;
+<i>188</i>&nbsp;            if(type == -1) {
+<i>189</i>&nbsp;                this.startFrame(this.code.length, nLocal, nStack);
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;                for(delta = 0; delta &lt; nLocal; ++delta) {
+<i>192</i>&nbsp;                    if(local[delta] instanceof String) {
+<i>193</i>&nbsp;                        this.frame[this.frameIndex++] = 24117248 | this.cw.addType((String)local[delta]);
+<i>194</i>&nbsp;                    } else if(local[delta] instanceof Integer) {
+<i>195</i>&nbsp;                        this.frame[this.frameIndex++] = ((Integer)local[delta]).intValue();
+<i>196</i>&nbsp;                    } else {
+<i>197</i>&nbsp;                        this.frame[this.frameIndex++] = 25165824 | this.cw.addUninitializedType(&quot;&quot;, ((Label)local[delta]).position);
+<i>198</i>&nbsp;                    }
+<i>199</i>&nbsp;                }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;                for(delta = 0; delta &lt; nStack; ++delta) {
+<i>202</i>&nbsp;                    if(stack[delta] instanceof String) {
+<i>203</i>&nbsp;                        this.frame[this.frameIndex++] = 24117248 | this.cw.addType((String)stack[delta]);
+<i>204</i>&nbsp;                    } else if(stack[delta] instanceof Integer) {
+<i>205</i>&nbsp;                        this.frame[this.frameIndex++] = ((Integer)stack[delta]).intValue();
+<i>206</i>&nbsp;                    } else {
+<i>207</i>&nbsp;                        this.frame[this.frameIndex++] = 25165824 | this.cw.addUninitializedType(&quot;&quot;, ((Label)stack[delta]).position);
+<i>208</i>&nbsp;                    }
+<i>209</i>&nbsp;                }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;                this.endFrame();
+<i>212</i>&nbsp;            } else {
+<i>213</i>&nbsp;                if(this.stackMap == null) {
+<i>214</i>&nbsp;                    this.stackMap = new ByteVector();
+<i>215</i>&nbsp;                    delta = this.code.length;
+<i>216</i>&nbsp;                } else {
+<i>217</i>&nbsp;                    delta = this.code.length - this.previousFrameOffset - 1;
+<i>218</i>&nbsp;                }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;                int i;
+<i>221</i>&nbsp;                label76:
+<i>222</i>&nbsp;                switch(type) {
+<i>223</i>&nbsp;                case 0:
+<b class="nc"><i>224</i>&nbsp;                    this.stackMap.putByte(255).putShort(delta).putShort(nLocal);</b>
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;                    for(i = 0; i &lt; nLocal; ++i) {
+<i>227</i>&nbsp;                        this.writeFrameType(local[i]);
+<i>228</i>&nbsp;                    }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;                    this.stackMap.putShort(nStack);
+<i>231</i>&nbsp;                    i = 0;
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;                    while(true) {
+<i>234</i>&nbsp;                        if(i &gt;= nStack) {
+<i>235</i>&nbsp;                            break label76;
+<i>236</i>&nbsp;                        }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;                        this.writeFrameType(stack[i]);
+<i>239</i>&nbsp;                        ++i;
+<i>240</i>&nbsp;                    }
+<i>241</i>&nbsp;                case 1:
+<i>242</i>&nbsp;                    this.stackMap.putByte(251 + nLocal).putShort(delta);
+<i>243</i>&nbsp;                    i = 0;
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;                    while(true) {
+<i>246</i>&nbsp;                        if(i &gt;= nLocal) {
+<i>247</i>&nbsp;                            break label76;
+<i>248</i>&nbsp;                        }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;                        this.writeFrameType(local[i]);
+<i>251</i>&nbsp;                        ++i;
+<i>252</i>&nbsp;                    }
+<i>253</i>&nbsp;                case 2:
+<i>254</i>&nbsp;                    this.stackMap.putByte(251 - nLocal).putShort(delta);
+<i>255</i>&nbsp;                    break;
+<i>256</i>&nbsp;                case 3:
+<i>257</i>&nbsp;                    if(delta &lt; 64) {
+<i>258</i>&nbsp;                        this.stackMap.putByte(delta);
+<i>259</i>&nbsp;                    } else {
+<i>260</i>&nbsp;                        this.stackMap.putByte(251).putShort(delta);
+<i>261</i>&nbsp;                    }
+<i>262</i>&nbsp;                    break;
+<i>263</i>&nbsp;                case 4:
+<i>264</i>&nbsp;                    if(delta &lt; 64) {
+<i>265</i>&nbsp;                        this.stackMap.putByte(64 + delta);
+<i>266</i>&nbsp;                    } else {
+<i>267</i>&nbsp;                        this.stackMap.putByte(247).putShort(delta);
+<i>268</i>&nbsp;                    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;                    this.writeFrameType(stack[0]);
+<i>271</i>&nbsp;                }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;                this.previousFrameOffset = this.code.length;
+<i>274</i>&nbsp;                ++this.frameCount;
+<i>275</i>&nbsp;            }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;        }
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    public void visitInsn(int opcode) {
+<i>281</i>&nbsp;        this.code.putByte(opcode);
+<i>282</i>&nbsp;        if(this.currentBlock != null) {
+<i>283</i>&nbsp;            if(this.compute == 0) {
+<i>284</i>&nbsp;                this.currentBlock.frame.execute(opcode, 0, (ClassWriter)null, (Item)null);
+<i>285</i>&nbsp;            } else {
+<i>286</i>&nbsp;                int size = this.stackSize + Frame.SIZE[opcode];
+<i>287</i>&nbsp;                if(size &gt; this.maxStackSize) {
+<i>288</i>&nbsp;                    this.maxStackSize = size;
+<i>289</i>&nbsp;                }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;                this.stackSize = size;
+<i>292</i>&nbsp;            }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;            if(opcode &gt;= 172 &amp;&amp; opcode &lt;= 177 || opcode == 191) {
+<i>295</i>&nbsp;                this.noSuccessor();
+<i>296</i>&nbsp;            }
+<i>297</i>&nbsp;        }
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    public void visitIntInsn(int opcode, int operand) {
+<i>302</i>&nbsp;        if(this.currentBlock != null) {
+<i>303</i>&nbsp;            if(this.compute == 0) {
+<i>304</i>&nbsp;                this.currentBlock.frame.execute(opcode, operand, (ClassWriter)null, (Item)null);
+<i>305</i>&nbsp;            } else if(opcode != 188) {
+<i>306</i>&nbsp;                int size = this.stackSize + 1;
+<i>307</i>&nbsp;                if(size &gt; this.maxStackSize) {
+<i>308</i>&nbsp;                    this.maxStackSize = size;
+<i>309</i>&nbsp;                }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;                this.stackSize = size;
+<i>312</i>&nbsp;            }
+<i>313</i>&nbsp;        }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;        if(opcode == 17) {
+<i>316</i>&nbsp;            this.code.put12(opcode, operand);
+<i>317</i>&nbsp;        } else {
+<i>318</i>&nbsp;            this.code.put11(opcode, operand);
+<i>319</i>&nbsp;        }
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;    }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    public void visitVarInsn(int opcode, int var) {
+<i>324</i>&nbsp;        int opt;
+<i>325</i>&nbsp;        if(this.currentBlock != null) {
+<i>326</i>&nbsp;            if(this.compute == 0) {
+<i>327</i>&nbsp;                this.currentBlock.frame.execute(opcode, var, (ClassWriter)null, (Item)null);
+<i>328</i>&nbsp;            } else if(opcode == 169) {
+<i>329</i>&nbsp;                this.currentBlock.status |= 256;
+<i>330</i>&nbsp;                this.currentBlock.inputStackTop = this.stackSize;
+<i>331</i>&nbsp;                this.noSuccessor();
+<i>332</i>&nbsp;            } else {
+<i>333</i>&nbsp;                opt = this.stackSize + Frame.SIZE[opcode];
+<i>334</i>&nbsp;                if(opt &gt; this.maxStackSize) {
+<i>335</i>&nbsp;                    this.maxStackSize = opt;
+<i>336</i>&nbsp;                }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;                this.stackSize = opt;
+<i>339</i>&nbsp;            }
+<i>340</i>&nbsp;        }
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;        if(this.compute != 2) {
+<i>343</i>&nbsp;            if(opcode != 22 &amp;&amp; opcode != 24 &amp;&amp; opcode != 55 &amp;&amp; opcode != 57) {
+<i>344</i>&nbsp;                opt = var + 1;
+<i>345</i>&nbsp;            } else {
+<i>346</i>&nbsp;                opt = var + 2;
+<i>347</i>&nbsp;            }
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;            if(opt &gt; this.maxLocals) {
+<i>350</i>&nbsp;                this.maxLocals = opt;
+<i>351</i>&nbsp;            }
+<i>352</i>&nbsp;        }
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;        if(var &lt; 4 &amp;&amp; opcode != 169) {
+<i>355</i>&nbsp;            if(opcode &lt; 54) {
+<i>356</i>&nbsp;                opt = 26 + (opcode - 21 &lt;&lt; 2) + var;
+<i>357</i>&nbsp;            } else {
+<i>358</i>&nbsp;                opt = 59 + (opcode - 54 &lt;&lt; 2) + var;
+<i>359</i>&nbsp;            }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;            this.code.putByte(opt);
+<i>362</i>&nbsp;        } else if(var &gt;= 256) {
+<i>363</i>&nbsp;            this.code.putByte(196).put12(opcode, var);
+<i>364</i>&nbsp;        } else {
+<i>365</i>&nbsp;            this.code.put11(opcode, var);
+<i>366</i>&nbsp;        }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;        if(opcode &gt;= 54 &amp;&amp; this.compute == 0 &amp;&amp; this.handlerCount &gt; 0) {
+<i>369</i>&nbsp;            this.visitLabel(new Label());
+<i>370</i>&nbsp;        }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    }
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;    public void visitTypeInsn(int opcode, String type) {
+<i>375</i>&nbsp;        Item i = this.cw.newClassItem(type);
+<i>376</i>&nbsp;        if(this.currentBlock != null) {
+<i>377</i>&nbsp;            if(this.compute == 0) {
+<i>378</i>&nbsp;                this.currentBlock.frame.execute(opcode, this.code.length, this.cw, i);
+<i>379</i>&nbsp;            } else if(opcode == 187) {
+<i>380</i>&nbsp;                int size = this.stackSize + 1;
+<i>381</i>&nbsp;                if(size &gt; this.maxStackSize) {
+<i>382</i>&nbsp;                    this.maxStackSize = size;
+<i>383</i>&nbsp;                }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;                this.stackSize = size;
+<i>386</i>&nbsp;            }
+<i>387</i>&nbsp;        }
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;        this.code.put12(opcode, i.index);
+<i>390</i>&nbsp;    }
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+<i>393</i>&nbsp;        Item i = this.cw.newFieldItem(owner, name, desc);
+<i>394</i>&nbsp;        if(this.currentBlock != null) {
+<i>395</i>&nbsp;            if(this.compute == 0) {
+<i>396</i>&nbsp;                this.currentBlock.frame.execute(opcode, 0, this.cw, i);
+<i>397</i>&nbsp;            } else {
+<i>398</i>&nbsp;                char c = desc.charAt(0);
+<i>399</i>&nbsp;                int size;
+<i>400</i>&nbsp;                switch(opcode) {
+<i>401</i>&nbsp;                case 178:
+<i>402</i>&nbsp;                    size = this.stackSize + (c != 68 &amp;&amp; c != 74?1:2);
+<i>403</i>&nbsp;                    break;
+<i>404</i>&nbsp;                case 179:
+<i>405</i>&nbsp;                    size = this.stackSize + (c != 68 &amp;&amp; c != 74?-1:-2);
+<i>406</i>&nbsp;                    break;
+<i>407</i>&nbsp;                case 180:
+<i>408</i>&nbsp;                    size = this.stackSize + (c != 68 &amp;&amp; c != 74?0:1);
+<i>409</i>&nbsp;                    break;
+<i>410</i>&nbsp;                default:
+<i>411</i>&nbsp;                    size = this.stackSize + (c != 68 &amp;&amp; c != 74?-2:-3);
+<i>412</i>&nbsp;                }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;                if(size &gt; this.maxStackSize) {
+<i>415</i>&nbsp;                    this.maxStackSize = size;
+<i>416</i>&nbsp;                }
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;                this.stackSize = size;
+<i>419</i>&nbsp;            }
+<b class="nc"><i>420</i>&nbsp;        }</b>
+<b class="nc"><i>421</i>&nbsp;</b>
+<b class="nc"><i>422</i>&nbsp;        this.code.put12(opcode, i.index);</b>
+<i>423</i>&nbsp;    }
+<b class="nc"><i>424</i>&nbsp;</b>
+<i>425</i>&nbsp;    public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+<b class="nc"><i>426</i>&nbsp;        boolean itf = opcode == 185;</b>
+<b class="nc"><i>427</i>&nbsp;        Item i = this.cw.newMethodItem(owner, name, desc, itf);</b>
+<b class="nc"><i>428</i>&nbsp;        int argSize = i.intVal;</b>
+<b class="nc"><i>429</i>&nbsp;        if(this.currentBlock != null) {</b>
+<b class="nc"><i>430</i>&nbsp;            if(this.compute == 0) {</b>
+<b class="nc"><i>431</i>&nbsp;                this.currentBlock.frame.execute(opcode, 0, this.cw, i);</b>
+<i>432</i>&nbsp;            } else {
+<b class="nc"><i>433</i>&nbsp;                if(argSize == 0) {</b>
+<i>434</i>&nbsp;                    argSize = getArgumentsAndReturnSizes(desc);
+<b class="nc"><i>435</i>&nbsp;                    i.intVal = argSize;</b>
+<b class="nc"><i>436</i>&nbsp;                }</b>
+<b class="nc"><i>437</i>&nbsp;</b>
+<b class="nc"><i>438</i>&nbsp;                int size;</b>
+<b class="nc"><i>439</i>&nbsp;                if(opcode == 184) {</b>
+<i>440</i>&nbsp;                    size = this.stackSize - (argSize &gt;&gt; 2) + (argSize &amp; 3) + 1;
+<i>441</i>&nbsp;                } else {
+<b class="nc"><i>442</i>&nbsp;                    size = this.stackSize - (argSize &gt;&gt; 2) + (argSize &amp; 3);</b>
+<b class="nc"><i>443</i>&nbsp;                }</b>
+<b class="nc"><i>444</i>&nbsp;</b>
+<b class="nc"><i>445</i>&nbsp;                if(size &gt; this.maxStackSize) {</b>
+<i>446</i>&nbsp;                    this.maxStackSize = size;
+<i>447</i>&nbsp;                }
+<b class="nc"><i>448</i>&nbsp;</b>
+<b class="nc"><i>449</i>&nbsp;                this.stackSize = size;</b>
+<b class="nc"><i>450</i>&nbsp;            }</b>
+<i>451</i>&nbsp;        }
+<b class="nc"><i>452</i>&nbsp;</b>
+<i>453</i>&nbsp;        if(itf) {
+<b class="nc"><i>454</i>&nbsp;            if(argSize == 0) {</b>
+<b class="nc"><i>455</i>&nbsp;                argSize = getArgumentsAndReturnSizes(desc);</b>
+<b class="nc"><i>456</i>&nbsp;                i.intVal = argSize;</b>
+<i>457</i>&nbsp;            }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;            this.code.put12(185, i.index).put11(argSize &gt;&gt; 2, 0);
+<i>460</i>&nbsp;        } else {
+<i>461</i>&nbsp;            this.code.put12(opcode, i.index);
+<i>462</i>&nbsp;        }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;    }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;    public void visitJumpInsn(int opcode, Label label) {
+<i>467</i>&nbsp;        Label nextInsn = null;
+<b class="nc"><i>468</i>&nbsp;        if(this.currentBlock != null) {</b>
+<b class="nc"><i>469</i>&nbsp;            if(this.compute == 0) {</b>
+<i>470</i>&nbsp;                this.currentBlock.frame.execute(opcode, 0, (ClassWriter)null, (Item)null);
+<i>471</i>&nbsp;                Label var10000 = label.getFirst();
+<i>472</i>&nbsp;                var10000.status |= 16;
+<i>473</i>&nbsp;                this.addSuccessor(0, label);
+<i>474</i>&nbsp;                if(opcode != 167) {
+<i>475</i>&nbsp;                    nextInsn = new Label();
+<i>476</i>&nbsp;                }
+<i>477</i>&nbsp;            } else if(opcode == 168) {
+<i>478</i>&nbsp;                if((label.status &amp; 512) == 0) {
+<b class="nc"><i>479</i>&nbsp;                    label.status |= 512;</b>
+<i>480</i>&nbsp;                    ++this.subroutines;
+<b class="nc"><i>481</i>&nbsp;                }</b>
+<b class="nc"><i>482</i>&nbsp;</b>
+<b class="nc"><i>483</i>&nbsp;                this.currentBlock.status |= 128;</b>
+<b class="nc"><i>484</i>&nbsp;                this.addSuccessor(this.stackSize + 1, label);</b>
+<b class="nc"><i>485</i>&nbsp;                nextInsn = new Label();</b>
+<i>486</i>&nbsp;            } else {
+<b class="nc"><i>487</i>&nbsp;                this.stackSize += Frame.SIZE[opcode];</b>
+<b class="nc"><i>488</i>&nbsp;                this.addSuccessor(this.stackSize, label);</b>
+<i>489</i>&nbsp;            }
+<b class="nc"><i>490</i>&nbsp;        }</b>
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;        if((label.status &amp; 2) != 0 &amp;&amp; label.position - this.code.length &lt; -32768) {
+<i>493</i>&nbsp;            if(opcode == 167) {
+<i>494</i>&nbsp;                this.code.putByte(200);
+<i>495</i>&nbsp;            } else if(opcode == 168) {
+<i>496</i>&nbsp;                this.code.putByte(201);
+<i>497</i>&nbsp;            } else {
+<i>498</i>&nbsp;                if(nextInsn != null) {
+<i>499</i>&nbsp;                    nextInsn.status |= 16;
+<i>500</i>&nbsp;                }
+<b class="nc"><i>501</i>&nbsp;</b>
+<b class="nc"><i>502</i>&nbsp;                this.code.putByte(opcode &lt;= 166?(opcode + 1 ^ 1) - 1:opcode ^ 1);</b>
+<i>503</i>&nbsp;                this.code.putShort(8);
+<i>504</i>&nbsp;                this.code.putByte(200);
+<b class="nc"><i>505</i>&nbsp;            }</b>
+<b class="nc"><i>506</i>&nbsp;</b>
+<i>507</i>&nbsp;            label.put(this, this.code, this.code.length - 1, true);
+<i>508</i>&nbsp;        } else {
+<b class="nc"><i>509</i>&nbsp;            this.code.putByte(opcode);</b>
+<b class="nc"><i>510</i>&nbsp;            label.put(this, this.code, this.code.length - 1, false);</b>
+<b class="nc"><i>511</i>&nbsp;        }</b>
+<b class="nc"><i>512</i>&nbsp;</b>
+<b class="nc"><i>513</i>&nbsp;        if(this.currentBlock != null) {</b>
+<i>514</i>&nbsp;            if(nextInsn != null) {
+<b class="nc"><i>515</i>&nbsp;                this.visitLabel(nextInsn);</b>
+<b class="nc"><i>516</i>&nbsp;            }</b>
+<i>517</i>&nbsp;
+<b class="nc"><i>518</i>&nbsp;            if(opcode == 167) {</b>
+<b class="nc"><i>519</i>&nbsp;                this.noSuccessor();</b>
+<i>520</i>&nbsp;            }
+<b class="nc"><i>521</i>&nbsp;        }</b>
+<b class="nc"><i>522</i>&nbsp;</b>
+<i>523</i>&nbsp;    }
+<b class="nc"><i>524</i>&nbsp;</b>
+<i>525</i>&nbsp;    public void visitLabel(Label label) {
+<i>526</i>&nbsp;        this.resize |= label.resolve(this, this.code.length, this.code.data);
+<i>527</i>&nbsp;        if((label.status &amp; 1) == 0) {
+<b class="nc"><i>528</i>&nbsp;            if(this.compute == 0) {</b>
+<b class="nc"><i>529</i>&nbsp;                if(this.currentBlock != null) {</b>
+<b class="nc"><i>530</i>&nbsp;                    if(label.position == this.currentBlock.position) {</b>
+<i>531</i>&nbsp;                        this.currentBlock.status |= label.status &amp; 16;
+<b class="nc"><i>532</i>&nbsp;                        label.frame = this.currentBlock.frame;</b>
+<b class="nc"><i>533</i>&nbsp;                        return;</b>
+<i>534</i>&nbsp;                    }
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;                    this.addSuccessor(0, label);
+<i>537</i>&nbsp;                }
+<i>538</i>&nbsp;
+<i>539</i>&nbsp;                this.currentBlock = label;
+<i>540</i>&nbsp;                if(label.frame == null) {
+<i>541</i>&nbsp;                    label.frame = new Frame();
+<i>542</i>&nbsp;                    label.frame.owner = label;
+<i>543</i>&nbsp;                }
+<i>544</i>&nbsp;
+<i>545</i>&nbsp;                if(this.previousBlock != null) {
+<i>546</i>&nbsp;                    if(label.position == this.previousBlock.position) {
+<b class="nc"><i>547</i>&nbsp;                        this.previousBlock.status |= label.status &amp; 16;</b>
+<i>548</i>&nbsp;                        label.frame = this.previousBlock.frame;
+<i>549</i>&nbsp;                        this.currentBlock = this.previousBlock;
+<i>550</i>&nbsp;                        return;
+<b class="nc"><i>551</i>&nbsp;                    }</b>
+<b class="nc"><i>552</i>&nbsp;</b>
+<b class="nc"><i>553</i>&nbsp;                    this.previousBlock.successor = label;</b>
+<b class="nc"><i>554</i>&nbsp;                }</b>
+<b class="nc"><i>555</i>&nbsp;</b>
+<i>556</i>&nbsp;                this.previousBlock = label;
+<b class="nc"><i>557</i>&nbsp;            } else if(this.compute == 1) {</b>
+<b class="nc"><i>558</i>&nbsp;                if(this.currentBlock != null) {</b>
+<i>559</i>&nbsp;                    this.currentBlock.outputStackMax = this.maxStackSize;
+<b class="nc"><i>560</i>&nbsp;                    this.addSuccessor(this.stackSize, label);</b>
+<i>561</i>&nbsp;                }
+<i>562</i>&nbsp;
+<i>563</i>&nbsp;                this.currentBlock = label;
+<i>564</i>&nbsp;                this.stackSize = 0;
+<b class="nc"><i>565</i>&nbsp;                this.maxStackSize = 0;</b>
+<b class="nc"><i>566</i>&nbsp;                if(this.previousBlock != null) {</b>
+<b class="nc"><i>567</i>&nbsp;                    this.previousBlock.successor = label;</b>
+<i>568</i>&nbsp;                }
+<b class="nc"><i>569</i>&nbsp;</b>
+<b class="nc"><i>570</i>&nbsp;                this.previousBlock = label;</b>
+<i>571</i>&nbsp;            }
+<b class="nc"><i>572</i>&nbsp;</b>
+<i>573</i>&nbsp;        }
+<i>574</i>&nbsp;    }
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;    public void visitLdcInsn(Object cst) {
+<b class="nc"><i>577</i>&nbsp;        Item i = this.cw.newConstItem(cst);</b>
+<i>578</i>&nbsp;        int index;
+<i>579</i>&nbsp;        if(this.currentBlock != null) {
+<b class="nc"><i>580</i>&nbsp;            if(this.compute == 0) {</b>
+<b class="nc"><i>581</i>&nbsp;                this.currentBlock.frame.execute(18, 0, this.cw, i);</b>
+<b class="nc"><i>582</i>&nbsp;            } else {</b>
+<i>583</i>&nbsp;                if(i.type != 5 &amp;&amp; i.type != 6) {
+<b class="nc"><i>584</i>&nbsp;                    index = this.stackSize + 1;</b>
+<i>585</i>&nbsp;                } else {
+<i>586</i>&nbsp;                    index = this.stackSize + 2;
+<b class="nc"><i>587</i>&nbsp;                }</b>
+<i>588</i>&nbsp;
+<b class="nc"><i>589</i>&nbsp;                if(index &gt; this.maxStackSize) {</b>
+<i>590</i>&nbsp;                    this.maxStackSize = index;
+<i>591</i>&nbsp;                }
+<b class="nc"><i>592</i>&nbsp;</b>
+<b class="nc"><i>593</i>&nbsp;                this.stackSize = index;</b>
+<i>594</i>&nbsp;            }
+<b class="nc"><i>595</i>&nbsp;        }</b>
+<b class="nc"><i>596</i>&nbsp;</b>
+<b class="nc"><i>597</i>&nbsp;        index = i.index;</b>
+<i>598</i>&nbsp;        if(i.type != 5 &amp;&amp; i.type != 6) {
+<b class="nc"><i>599</i>&nbsp;            if(index &gt;= 256) {</b>
+<i>600</i>&nbsp;                this.code.put12(19, index);
+<b class="nc"><i>601</i>&nbsp;            } else {</b>
+<i>602</i>&nbsp;                this.code.put11(18, index);
+<b class="nc"><i>603</i>&nbsp;            }</b>
+<b class="nc"><i>604</i>&nbsp;        } else {</b>
+<i>605</i>&nbsp;            this.code.put12(20, index);
+<b class="nc"><i>606</i>&nbsp;        }</b>
+<i>607</i>&nbsp;
+<b class="nc"><i>608</i>&nbsp;    }</b>
+<i>609</i>&nbsp;
+<b class="nc"><i>610</i>&nbsp;    public void visitIincInsn(int var, int increment) {</b>
+<i>611</i>&nbsp;        if(this.currentBlock != null &amp;&amp; this.compute == 0) {
+<b class="nc"><i>612</i>&nbsp;            this.currentBlock.frame.execute(132, var, (ClassWriter)null, (Item)null);</b>
+<b class="nc"><i>613</i>&nbsp;        }</b>
+<i>614</i>&nbsp;
+<b class="nc"><i>615</i>&nbsp;        if(this.compute != 2) {</b>
+<i>616</i>&nbsp;            int n = var + 1;
+<b class="nc"><i>617</i>&nbsp;            if(n &gt; this.maxLocals) {</b>
+<i>618</i>&nbsp;                this.maxLocals = n;
+<b class="nc"><i>619</i>&nbsp;            }</b>
+<b class="nc"><i>620</i>&nbsp;        }</b>
+<i>621</i>&nbsp;
+<b class="nc"><i>622</i>&nbsp;        if(var &lt;= 255 &amp;&amp; increment &lt;= 127 &amp;&amp; increment &gt;= -128) {</b>
+<i>623</i>&nbsp;            this.code.putByte(132).put11(var, increment);
+<i>624</i>&nbsp;        } else {
+<b class="nc"><i>625</i>&nbsp;            this.code.putByte(196).put12(132, var).putShort(increment);</b>
+<i>626</i>&nbsp;        }
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;    }
+<b class="nc"><i>629</i>&nbsp;</b>
+<b class="nc"><i>630</i>&nbsp;    public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {</b>
+<i>631</i>&nbsp;        int source = this.code.length;
+<i>632</i>&nbsp;        this.code.putByte(170);
+<i>633</i>&nbsp;        this.code.length += (4 - this.code.length % 4) % 4;
+<i>634</i>&nbsp;        dflt.put(this, this.code, source, true);
+<i>635</i>&nbsp;        this.code.putInt(min).putInt(max);
+<b class="nc"><i>636</i>&nbsp;</b>
+<i>637</i>&nbsp;        for(int i = 0; i &lt; labels.length; ++i) {
+<i>638</i>&nbsp;            labels[i].put(this, this.code, source, true);
+<b class="nc"><i>639</i>&nbsp;        }</b>
+<b class="nc"><i>640</i>&nbsp;</b>
+<b class="nc"><i>641</i>&nbsp;        this.visitSwitchInsn(dflt, labels);</b>
+<i>642</i>&nbsp;    }
+<i>643</i>&nbsp;
+<b class="nc"><i>644</i>&nbsp;    public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {</b>
+<b class="nc"><i>645</i>&nbsp;        int source = this.code.length;</b>
+<b class="nc"><i>646</i>&nbsp;        this.code.putByte(171);</b>
+<i>647</i>&nbsp;        this.code.length += (4 - this.code.length % 4) % 4;
+<b class="nc"><i>648</i>&nbsp;        dflt.put(this, this.code, source, true);</b>
+<i>649</i>&nbsp;        this.code.putInt(labels.length);
+<i>650</i>&nbsp;
+<b class="nc"><i>651</i>&nbsp;        for(int i = 0; i &lt; labels.length; ++i) {</b>
+<i>652</i>&nbsp;            this.code.putInt(keys[i]);
+<i>653</i>&nbsp;            labels[i].put(this, this.code, source, true);
+<b class="nc"><i>654</i>&nbsp;        }</b>
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;        this.visitSwitchInsn(dflt, labels);
+<i>657</i>&nbsp;    }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;    private void visitSwitchInsn(Label dflt, Label[] labels) {
+<i>660</i>&nbsp;        if(this.currentBlock != null) {
+<b class="nc"><i>661</i>&nbsp;            int i;</b>
+<b class="nc"><i>662</i>&nbsp;            if(this.compute == 0) {</b>
+<b class="nc"><i>663</i>&nbsp;                this.currentBlock.frame.execute(171, 0, (ClassWriter)null, (Item)null);</b>
+<b class="nc"><i>664</i>&nbsp;                this.addSuccessor(0, dflt);</b>
+<i>665</i>&nbsp;                Label var10000 = dflt.getFirst();
+<i>666</i>&nbsp;                var10000.status |= 16;
+<b class="nc"><i>667</i>&nbsp;</b>
+<b class="nc"><i>668</i>&nbsp;                for(i = 0; i &lt; labels.length; ++i) {</b>
+<b class="nc"><i>669</i>&nbsp;                    this.addSuccessor(0, labels[i]);</b>
+<i>670</i>&nbsp;                    var10000 = labels[i].getFirst();
+<b class="nc"><i>671</i>&nbsp;                    var10000.status |= 16;</b>
+<i>672</i>&nbsp;                }
+<i>673</i>&nbsp;            } else {
+<i>674</i>&nbsp;                --this.stackSize;
+<b class="nc"><i>675</i>&nbsp;                this.addSuccessor(this.stackSize, dflt);</b>
+<b class="nc"><i>676</i>&nbsp;</b>
+<i>677</i>&nbsp;                for(i = 0; i &lt; labels.length; ++i) {
+<b class="nc"><i>678</i>&nbsp;                    this.addSuccessor(this.stackSize, labels[i]);</b>
+<i>679</i>&nbsp;                }
+<i>680</i>&nbsp;            }
+<i>681</i>&nbsp;
+<i>682</i>&nbsp;            this.noSuccessor();
+<i>683</i>&nbsp;        }
+<b class="nc"><i>684</i>&nbsp;</b>
+<b class="nc"><i>685</i>&nbsp;    }</b>
+<b class="nc"><i>686</i>&nbsp;</b>
+<i>687</i>&nbsp;    public void visitMultiANewArrayInsn(String desc, int dims) {
+<i>688</i>&nbsp;        Item i = this.cw.newClassItem(desc);
+<b class="nc"><i>689</i>&nbsp;        if(this.currentBlock != null) {</b>
+<i>690</i>&nbsp;            if(this.compute == 0) {
+<b class="nc"><i>691</i>&nbsp;                this.currentBlock.frame.execute(197, dims, this.cw, i);</b>
+<i>692</i>&nbsp;            } else {
+<i>693</i>&nbsp;                this.stackSize += 1 - dims;
+<b class="nc"><i>694</i>&nbsp;            }</b>
+<b class="nc"><i>695</i>&nbsp;        }</b>
+<i>696</i>&nbsp;
+<b class="nc"><i>697</i>&nbsp;        this.code.put12(197, i.index).putByte(dims);</b>
+<b class="nc"><i>698</i>&nbsp;    }</b>
+<b class="nc"><i>699</i>&nbsp;</b>
+<i>700</i>&nbsp;    public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
+<b class="nc"><i>701</i>&nbsp;        ++this.handlerCount;</b>
+<i>702</i>&nbsp;        Handler h = new Handler();
+<i>703</i>&nbsp;        h.start = start;
+<i>704</i>&nbsp;        h.end = end;
+<b class="nc"><i>705</i>&nbsp;        h.handler = handler;</b>
+<i>706</i>&nbsp;        h.desc = type;
+<i>707</i>&nbsp;        h.type = type != null?this.cw.newClass(type):0;
+<b class="nc"><i>708</i>&nbsp;        if(this.lastHandler == null) {</b>
+<i>709</i>&nbsp;            this.firstHandler = h;
+<i>710</i>&nbsp;        } else {
+<b class="nc"><i>711</i>&nbsp;            this.lastHandler.next = h;</b>
+<i>712</i>&nbsp;        }
+<b class="nc"><i>713</i>&nbsp;</b>
+<i>714</i>&nbsp;        this.lastHandler = h;
+<b class="nc"><i>715</i>&nbsp;    }</b>
+<b class="nc"><i>716</i>&nbsp;</b>
+<i>717</i>&nbsp;    public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
+<i>718</i>&nbsp;        if(signature != null) {
+<i>719</i>&nbsp;            if(this.localVarType == null) {
+<b class="nc"><i>720</i>&nbsp;                this.localVarType = new ByteVector();</b>
+<i>721</i>&nbsp;            }
+<b class="nc"><i>722</i>&nbsp;</b>
+<i>723</i>&nbsp;            ++this.localVarTypeCount;
+<b class="nc"><i>724</i>&nbsp;            this.localVarType.putShort(start.position).putShort(end.position - start.position).putShort(this.cw.newUTF8(name)).putShort(this.cw.newUTF8(signature)).putShort(index);</b>
+<i>725</i>&nbsp;        }
+<i>726</i>&nbsp;
+<b class="nc"><i>727</i>&nbsp;        if(this.localVar == null) {</b>
+<i>728</i>&nbsp;            this.localVar = new ByteVector();
+<b class="nc"><i>729</i>&nbsp;        }</b>
+<b class="nc"><i>730</i>&nbsp;</b>
+<b class="nc"><i>731</i>&nbsp;        ++this.localVarCount;</b>
+<i>732</i>&nbsp;        this.localVar.putShort(start.position).putShort(end.position - start.position).putShort(this.cw.newUTF8(name)).putShort(this.cw.newUTF8(desc)).putShort(index);
+<b class="nc"><i>733</i>&nbsp;        if(this.compute != 2) {</b>
+<i>734</i>&nbsp;            char c = desc.charAt(0);
+<b class="nc"><i>735</i>&nbsp;            int n = index + (c != 74 &amp;&amp; c != 68?1:2);</b>
+<b class="nc"><i>736</i>&nbsp;            if(n &gt; this.maxLocals) {</b>
+<i>737</i>&nbsp;                this.maxLocals = n;
+<i>738</i>&nbsp;            }
+<i>739</i>&nbsp;        }
+<i>740</i>&nbsp;
+<b class="nc"><i>741</i>&nbsp;    }</b>
+<i>742</i>&nbsp;
+<b class="nc"><i>743</i>&nbsp;    public void visitLineNumber(int line, Label start) {</b>
+<b class="nc"><i>744</i>&nbsp;        if(this.lineNumber == null) {</b>
+<b class="nc"><i>745</i>&nbsp;            this.lineNumber = new ByteVector();</b>
+<b class="nc"><i>746</i>&nbsp;        }</b>
+<i>747</i>&nbsp;
+<i>748</i>&nbsp;        ++this.lineNumberCount;
+<b class="nc"><i>749</i>&nbsp;        this.lineNumber.putShort(start.position);</b>
+<b class="nc"><i>750</i>&nbsp;        this.lineNumber.putShort(line);</b>
+<b class="nc"><i>751</i>&nbsp;    }</b>
+<i>752</i>&nbsp;
+<b class="nc"><i>753</i>&nbsp;    public void visitMaxs(int maxStack, int maxLocals) {</b>
+<i>754</i>&nbsp;        Handler handler;
+<i>755</i>&nbsp;        Label max;
+<i>756</i>&nbsp;        Label stack;
+<b class="nc"><i>757</i>&nbsp;        Label l;</b>
+<i>758</i>&nbsp;        int blockMax;
+<i>759</i>&nbsp;        Edge b;
+<i>760</i>&nbsp;        Label var17;
+<i>761</i>&nbsp;        if(this.compute == 0) {
+<i>762</i>&nbsp;            for(handler = this.firstHandler; handler != null; handler = handler.next) {
+<i>763</i>&nbsp;                max = handler.start.getFirst();
+<i>764</i>&nbsp;                stack = handler.handler.getFirst();
+<i>765</i>&nbsp;                l = handler.end.getFirst();
+<b class="nc"><i>766</i>&nbsp;                String start = handler.desc == null?&quot;java/lang/Throwable&quot;:handler.desc;</b>
+<i>767</i>&nbsp;                blockMax = 24117248 | this.cw.addType(start);
+<b class="nc"><i>768</i>&nbsp;</b>
+<b class="nc"><i>769</i>&nbsp;                for(stack.status |= 16; max != l; max = max.successor) {</b>
+<b class="nc"><i>770</i>&nbsp;                    b = new Edge();</b>
+<i>771</i>&nbsp;                    b.info = blockMax;
+<i>772</i>&nbsp;                    b.successor = stack;
+<i>773</i>&nbsp;                    b.next = max.successors;
+<b class="nc"><i>774</i>&nbsp;                    max.successors = b;</b>
+<b class="nc"><i>775</i>&nbsp;                }</b>
+<i>776</i>&nbsp;            }
+<b class="nc"><i>777</i>&nbsp;</b>
+<b class="nc"><i>778</i>&nbsp;            Frame var13 = this.labels.frame;</b>
+<i>779</i>&nbsp;            Type[] var14 = Type.getArgumentTypes(this.descriptor);
+<b class="nc"><i>780</i>&nbsp;            var13.initInputFrame(this.cw, this.access, var14, this.maxLocals);</b>
+<b class="nc"><i>781</i>&nbsp;            this.visitFrame(var13);</b>
+<i>782</i>&nbsp;            int var16 = 0;
+<b class="nc"><i>783</i>&nbsp;            var17 = this.labels;</b>
+<b class="nc"><i>784</i>&nbsp;</b>
+<i>785</i>&nbsp;            Label var19;
+<i>786</i>&nbsp;            while(var17 != null) {
+<b class="nc"><i>787</i>&nbsp;                var19 = var17;</b>
+<i>788</i>&nbsp;                var17 = var17.next;
+<i>789</i>&nbsp;                var19.next = null;
+<i>790</i>&nbsp;                var13 = var19.frame;
+<b class="nc"><i>791</i>&nbsp;                if((var19.status &amp; 16) != 0) {</b>
+<b class="nc"><i>792</i>&nbsp;                    var19.status |= 32;</b>
+<i>793</i>&nbsp;                }
+<b class="nc"><i>794</i>&nbsp;</b>
+<i>795</i>&nbsp;                var19.status |= 64;
+<i>796</i>&nbsp;                int var20 = var13.inputStack.length + var19.outputStackMax;
+<i>797</i>&nbsp;                if(var20 &gt; var16) {
+<b class="nc"><i>798</i>&nbsp;                    var16 = var20;</b>
+<i>799</i>&nbsp;                }
+<i>800</i>&nbsp;
+<i>801</i>&nbsp;                for(Edge start1 = var19.successors; start1 != null; start1 = start1.next) {
+<i>802</i>&nbsp;                    Label end = start1.successor.getFirst();
+<i>803</i>&nbsp;                    boolean i = var13.merge(this.cw, end.frame, start1.info);
+<i>804</i>&nbsp;                    if(i &amp;&amp; end.next == null) {
+<i>805</i>&nbsp;                        end.next = var17;
+<i>806</i>&nbsp;                        var17 = end;
+<b class="nc"><i>807</i>&nbsp;                    }</b>
+<b class="nc"><i>808</i>&nbsp;                }</b>
+<b class="nc"><i>809</i>&nbsp;            }</b>
+<i>810</i>&nbsp;
+<b class="nc"><i>811</i>&nbsp;            this.maxStack = var16;</b>
+<b class="nc"><i>812</i>&nbsp;</b>
+<b class="nc"><i>813</i>&nbsp;            for(var19 = this.labels; var19 != null; var19 = var19.successor) {</b>
+<i>814</i>&nbsp;                var13 = var19.frame;
+<i>815</i>&nbsp;                if((var19.status &amp; 32) != 0) {
+<i>816</i>&nbsp;                    this.visitFrame(var13);
+<i>817</i>&nbsp;                }
+<i>818</i>&nbsp;
+<i>819</i>&nbsp;                if((var19.status &amp; 64) == 0) {
+<i>820</i>&nbsp;                    Label var22 = var19.successor;
+<i>821</i>&nbsp;                    int var24 = var19.position;
+<i>822</i>&nbsp;                    int var23 = (var22 == null?this.code.length:var22.position) - 1;
+<b class="nc"><i>823</i>&nbsp;                    if(var23 &gt;= var24) {</b>
+<i>824</i>&nbsp;                        for(int var25 = var24; var25 &lt; var23; ++var25) {
+<i>825</i>&nbsp;                            this.code.data[var25] = 0;
+<b class="nc"><i>826</i>&nbsp;                        }</b>
+<i>827</i>&nbsp;
+<i>828</i>&nbsp;                        this.code.data[var23] = -65;
+<b class="nc"><i>829</i>&nbsp;                        this.startFrame(var24, 0, 1);</b>
+<i>830</i>&nbsp;                        this.frame[this.frameIndex++] = 24117248 | this.cw.addType(&quot;java/lang/Throwable&quot;);
+<i>831</i>&nbsp;                        this.endFrame();
+<b class="nc"><i>832</i>&nbsp;                    }</b>
+<b class="nc"><i>833</i>&nbsp;                }</b>
+<i>834</i>&nbsp;            }
+<b class="nc"><i>835</i>&nbsp;        } else if(this.compute == 1) {</b>
+<i>836</i>&nbsp;            for(handler = this.firstHandler; handler != null; handler = handler.next) {
+<i>837</i>&nbsp;                max = handler.start;
+<b class="nc"><i>838</i>&nbsp;                stack = handler.handler;</b>
+<b class="nc"><i>839</i>&nbsp;</b>
+<i>840</i>&nbsp;                for(l = handler.end; max != l; max = max.successor) {
+<b class="nc"><i>841</i>&nbsp;                    Edge var18 = new Edge();</b>
+<i>842</i>&nbsp;                    var18.info = 2147483647;
+<i>843</i>&nbsp;                    var18.successor = stack;
+<i>844</i>&nbsp;                    if((max.status &amp; 128) == 0) {
+<b class="nc"><i>845</i>&nbsp;                        var18.next = max.successors;</b>
+<b class="nc"><i>846</i>&nbsp;                        max.successors = var18;</b>
+<b class="nc"><i>847</i>&nbsp;                    } else {</b>
+<b class="nc"><i>848</i>&nbsp;                        var18.next = max.successors.next.next;</b>
+<i>849</i>&nbsp;                        max.successors.next.next = var18;
+<b class="nc"><i>850</i>&nbsp;                    }</b>
+<i>851</i>&nbsp;                }
+<b class="nc"><i>852</i>&nbsp;            }</b>
+<i>853</i>&nbsp;
+<i>854</i>&nbsp;            int var15;
+<i>855</i>&nbsp;            if(this.subroutines &gt; 0) {
+<i>856</i>&nbsp;                var15 = 0;
+<b class="nc"><i>857</i>&nbsp;                this.labels.visitSubroutine((Label)null, 1L, this.subroutines);</b>
+<i>858</i>&nbsp;
+<b class="nc"><i>859</i>&nbsp;                for(stack = this.labels; stack != null; stack = stack.successor) {</b>
+<b class="nc"><i>860</i>&nbsp;                    if((stack.status &amp; 128) != 0) {</b>
+<b class="nc"><i>861</i>&nbsp;                        l = stack.successors.next.successor;</b>
+<i>862</i>&nbsp;                        if((l.status &amp; 1024) == 0) {
+<b class="nc"><i>863</i>&nbsp;                            ++var15;</b>
+<i>864</i>&nbsp;                            l.visitSubroutine((Label)null, (long)var15 / 32L &lt;&lt; 32 | 1L &lt;&lt; var15 % 32, this.subroutines);
+<b class="nc"><i>865</i>&nbsp;                        }</b>
+<b class="nc"><i>866</i>&nbsp;                    }</b>
+<i>867</i>&nbsp;                }
+<b class="nc"><i>868</i>&nbsp;</b>
+<i>869</i>&nbsp;                for(stack = this.labels; stack != null; stack = stack.successor) {
+<i>870</i>&nbsp;                    if((stack.status &amp; 128) != 0) {
+<b class="nc"><i>871</i>&nbsp;                        for(l = this.labels; l != null; l = l.successor) {</b>
+<b class="nc"><i>872</i>&nbsp;                            l.status &amp;= -1025;</b>
+<b class="nc"><i>873</i>&nbsp;                        }</b>
+<b class="nc"><i>874</i>&nbsp;</b>
+<i>875</i>&nbsp;                        var17 = stack.successors.next.successor;
+<b class="nc"><i>876</i>&nbsp;                        var17.visitSubroutine(stack, 0L, this.subroutines);</b>
+<b class="nc"><i>877</i>&nbsp;                    }</b>
+<i>878</i>&nbsp;                }
+<b class="nc"><i>879</i>&nbsp;            }</b>
+<i>880</i>&nbsp;
+<i>881</i>&nbsp;            var15 = 0;
+<i>882</i>&nbsp;            stack = this.labels;
+<i>883</i>&nbsp;
+<i>884</i>&nbsp;            while(stack != null) {
+<i>885</i>&nbsp;                l = stack;
+<i>886</i>&nbsp;                stack = stack.next;
+<i>887</i>&nbsp;                int var21 = l.inputStackTop;
+<i>888</i>&nbsp;                blockMax = var21 + l.outputStackMax;
+<i>889</i>&nbsp;                if(blockMax &gt; var15) {
+<b class="nc"><i>890</i>&nbsp;                    var15 = blockMax;</b>
+<b class="nc"><i>891</i>&nbsp;                }</b>
+<i>892</i>&nbsp;
+<i>893</i>&nbsp;                b = l.successors;
+<i>894</i>&nbsp;                if((l.status &amp; 128) != 0) {
+<i>895</i>&nbsp;                    b = b.next;
+<b class="nc"><i>896</i>&nbsp;                }</b>
+<i>897</i>&nbsp;
+<i>898</i>&nbsp;                for(; b != null; b = b.next) {
+<i>899</i>&nbsp;                    l = b.successor;
+<i>900</i>&nbsp;                    if((l.status &amp; 8) == 0) {
+<i>901</i>&nbsp;                        l.inputStackTop = b.info == 2147483647?1:var21 + b.info;
+<i>902</i>&nbsp;                        l.status |= 8;
+<i>903</i>&nbsp;                        l.next = stack;
+<i>904</i>&nbsp;                        stack = l;
+<i>905</i>&nbsp;                    }
+<b class="nc"><i>906</i>&nbsp;                }</b>
+<b class="nc"><i>907</i>&nbsp;            }</b>
+<b class="nc"><i>908</i>&nbsp;</b>
+<b class="nc"><i>909</i>&nbsp;            this.maxStack = var15;</b>
+<i>910</i>&nbsp;        } else {
+<i>911</i>&nbsp;            this.maxStack = maxStack;
+<i>912</i>&nbsp;            this.maxLocals = maxLocals;
+<b class="nc"><i>913</i>&nbsp;        }</b>
+<b class="nc"><i>914</i>&nbsp;</b>
+<i>915</i>&nbsp;    }
+<b class="nc"><i>916</i>&nbsp;</b>
+<i>917</i>&nbsp;    public void visitEnd() {
+<i>918</i>&nbsp;    }
+<b class="nc"><i>919</i>&nbsp;</b>
+<b class="nc"><i>920</i>&nbsp;    static int getArgumentsAndReturnSizes(String desc) {</b>
+<i>921</i>&nbsp;        int n = 1;
+<b class="nc"><i>922</i>&nbsp;        int c = 1;</b>
+<i>923</i>&nbsp;
+<i>924</i>&nbsp;        while(true) {
+<i>925</i>&nbsp;            char car = desc.charAt(c++);
+<i>926</i>&nbsp;            if(car == 41) {
+<i>927</i>&nbsp;                car = desc.charAt(c);
+<i>928</i>&nbsp;                return n &lt;&lt; 2 | (car == 86?0:(car != 68 &amp;&amp; car != 74?1:2));
+<i>929</i>&nbsp;            }
+<b class="nc"><i>930</i>&nbsp;</b>
+<b class="nc"><i>931</i>&nbsp;            if(car == 76) {</b>
+<i>932</i>&nbsp;                while(desc.charAt(c++) != 59) {
+<b class="nc"><i>933</i>&nbsp;                    ;</b>
+<b class="nc"><i>934</i>&nbsp;                }</b>
+<i>935</i>&nbsp;
+<i>936</i>&nbsp;                ++n;
+<i>937</i>&nbsp;            } else if(car != 91) {
+<i>938</i>&nbsp;                if(car != 68 &amp;&amp; car != 74) {
+<b class="nc"><i>939</i>&nbsp;                    ++n;</b>
+<i>940</i>&nbsp;                } else {
+<b class="nc"><i>941</i>&nbsp;                    n += 2;</b>
+<b class="nc"><i>942</i>&nbsp;                }</b>
+<i>943</i>&nbsp;            } else {
+<i>944</i>&nbsp;                while((car = desc.charAt(c)) == 91) {
+<i>945</i>&nbsp;                    ++c;
+<i>946</i>&nbsp;                }
+<i>947</i>&nbsp;
+<i>948</i>&nbsp;                if(car == 68 || car == 74) {
+<b class="nc"><i>949</i>&nbsp;                    --n;</b>
+<i>950</i>&nbsp;                }
+<b class="nc"><i>951</i>&nbsp;            }</b>
+<i>952</i>&nbsp;        }
+<i>953</i>&nbsp;    }
+<b class="nc"><i>954</i>&nbsp;</b>
+<b class="nc"><i>955</i>&nbsp;    private void addSuccessor(int info, Label successor) {</b>
+<b class="nc"><i>956</i>&nbsp;        Edge b = new Edge();</b>
+<i>957</i>&nbsp;        b.info = info;
+<b class="nc"><i>958</i>&nbsp;        b.successor = successor;</b>
+<b class="nc"><i>959</i>&nbsp;        b.next = this.currentBlock.successors;</b>
+<i>960</i>&nbsp;        this.currentBlock.successors = b;
+<i>961</i>&nbsp;    }
+<i>962</i>&nbsp;
+<b class="nc"><i>963</i>&nbsp;    private void noSuccessor() {</b>
+<i>964</i>&nbsp;        if(this.compute == 0) {
+<i>965</i>&nbsp;            Label l = new Label();
+<b class="nc"><i>966</i>&nbsp;            l.frame = new Frame();</b>
+<b class="nc"><i>967</i>&nbsp;            l.frame.owner = l;</b>
+<b class="nc"><i>968</i>&nbsp;            l.resolve(this, this.code.length, this.code.data);</b>
+<b class="nc"><i>969</i>&nbsp;            this.previousBlock.successor = l;</b>
+<i>970</i>&nbsp;            this.previousBlock = l;
+<i>971</i>&nbsp;        } else {
+<b class="nc"><i>972</i>&nbsp;            this.currentBlock.outputStackMax = this.maxStackSize;</b>
+<b class="nc"><i>973</i>&nbsp;        }</b>
+<b class="nc"><i>974</i>&nbsp;</b>
+<b class="nc"><i>975</i>&nbsp;        this.currentBlock = null;</b>
+<b class="nc"><i>976</i>&nbsp;    }</b>
+<i>977</i>&nbsp;
+<i>978</i>&nbsp;    private void visitFrame(Frame f) {
+<b class="nc"><i>979</i>&nbsp;        int nTop = 0;</b>
+<i>980</i>&nbsp;        int nLocal = 0;
+<b class="nc"><i>981</i>&nbsp;        int nStack = 0;</b>
+<b class="nc"><i>982</i>&nbsp;        int[] locals = f.inputLocals;</b>
+<b class="nc"><i>983</i>&nbsp;        int[] stacks = f.inputStack;</b>
+<i>984</i>&nbsp;
+<b class="nc"><i>985</i>&nbsp;        int i;</b>
+<b class="nc"><i>986</i>&nbsp;        int t;</b>
+<i>987</i>&nbsp;        for(i = 0; i &lt; locals.length; ++i) {
+<i>988</i>&nbsp;            t = locals[i];
+<b class="nc"><i>989</i>&nbsp;            if(t == 16777216) {</b>
+<i>990</i>&nbsp;                ++nTop;
+<b class="nc"><i>991</i>&nbsp;            } else {</b>
+<b class="nc"><i>992</i>&nbsp;                nLocal += nTop + 1;</b>
+<i>993</i>&nbsp;                nTop = 0;
+<b class="nc"><i>994</i>&nbsp;            }</b>
+<b class="nc"><i>995</i>&nbsp;</b>
+<i>996</i>&nbsp;            if(t == 16777220 || t == 16777219) {
+<b class="nc"><i>997</i>&nbsp;                ++i;</b>
+<i>998</i>&nbsp;            }
+<i>999</i>&nbsp;        }
+<i>1000</i>&nbsp;
+<i>1001</i>&nbsp;        for(i = 0; i &lt; stacks.length; ++i) {
+<b class="nc"><i>1002</i>&nbsp;            t = stacks[i];</b>
+<i>1003</i>&nbsp;            ++nStack;
+<b class="nc"><i>1004</i>&nbsp;            if(t == 16777220 || t == 16777219) {</b>
+<b class="nc"><i>1005</i>&nbsp;                ++i;</b>
+<b class="nc"><i>1006</i>&nbsp;            }</b>
+<i>1007</i>&nbsp;        }
+<i>1008</i>&nbsp;
+<i>1009</i>&nbsp;        this.startFrame(f.owner.position, nLocal, nStack);
+<b class="nc"><i>1010</i>&nbsp;</b>
+<i>1011</i>&nbsp;        for(i = 0; nLocal &gt; 0; --nLocal) {
+<b class="nc"><i>1012</i>&nbsp;            t = locals[i];</b>
+<i>1013</i>&nbsp;            this.frame[this.frameIndex++] = t;
+<b class="nc"><i>1014</i>&nbsp;            if(t == 16777220 || t == 16777219) {</b>
+<i>1015</i>&nbsp;                ++i;
+<i>1016</i>&nbsp;            }
+<b class="nc"><i>1017</i>&nbsp;</b>
+<b class="nc"><i>1018</i>&nbsp;            ++i;</b>
+<i>1019</i>&nbsp;        }
+<b class="nc"><i>1020</i>&nbsp;</b>
+<i>1021</i>&nbsp;        for(i = 0; i &lt; stacks.length; ++i) {
+<i>1022</i>&nbsp;            t = stacks[i];
+<i>1023</i>&nbsp;            this.frame[this.frameIndex++] = t;
+<b class="nc"><i>1024</i>&nbsp;            if(t == 16777220 || t == 16777219) {</b>
+<b class="nc"><i>1025</i>&nbsp;                ++i;</b>
+<b class="nc"><i>1026</i>&nbsp;            }</b>
+<b class="nc"><i>1027</i>&nbsp;        }</b>
+<b class="nc"><i>1028</i>&nbsp;</b>
+<i>1029</i>&nbsp;        this.endFrame();
+<b class="nc"><i>1030</i>&nbsp;    }</b>
+<i>1031</i>&nbsp;
+<i>1032</i>&nbsp;    private void startFrame(int offset, int nLocal, int nStack) {
+<i>1033</i>&nbsp;        int n = 3 + nLocal + nStack;
+<i>1034</i>&nbsp;        if(this.frame == null || this.frame.length &lt; n) {
+<b class="nc"><i>1035</i>&nbsp;            this.frame = new int[n];</b>
+<b class="nc"><i>1036</i>&nbsp;        }</b>
+<b class="nc"><i>1037</i>&nbsp;</b>
+<i>1038</i>&nbsp;        this.frame[0] = offset;
+<i>1039</i>&nbsp;        this.frame[1] = nLocal;
+<b class="nc"><i>1040</i>&nbsp;        this.frame[2] = nStack;</b>
+<i>1041</i>&nbsp;        this.frameIndex = 3;
+<b class="nc"><i>1042</i>&nbsp;    }</b>
+<b class="nc"><i>1043</i>&nbsp;</b>
+<b class="nc"><i>1044</i>&nbsp;    private void endFrame() {</b>
+<i>1045</i>&nbsp;        if(this.previousFrame != null) {
+<i>1046</i>&nbsp;            if(this.stackMap == null) {
+<i>1047</i>&nbsp;                this.stackMap = new ByteVector();
+<b class="nc"><i>1048</i>&nbsp;            }</b>
+<b class="nc"><i>1049</i>&nbsp;</b>
+<i>1050</i>&nbsp;            this.writeFrame();
+<i>1051</i>&nbsp;            ++this.frameCount;
+<i>1052</i>&nbsp;        }
+<b class="nc"><i>1053</i>&nbsp;</b>
+<i>1054</i>&nbsp;        this.previousFrame = this.frame;
+<i>1055</i>&nbsp;        this.frame = null;
+<i>1056</i>&nbsp;    }
+<i>1057</i>&nbsp;
+<i>1058</i>&nbsp;    private void writeFrame() {
+<i>1059</i>&nbsp;        int clocalsSize = this.frame[1];
+<i>1060</i>&nbsp;        int cstackSize = this.frame[2];
+<i>1061</i>&nbsp;        if((this.cw.version &amp; &#39;\uffff&#39;) &lt; 50) {
+<i>1062</i>&nbsp;            this.stackMap.putShort(this.frame[0]).putShort(clocalsSize);
+<i>1063</i>&nbsp;            this.writeFrameTypes(3, 3 + clocalsSize);
+<b class="nc"><i>1064</i>&nbsp;            this.stackMap.putShort(cstackSize);</b>
+<b class="nc"><i>1065</i>&nbsp;            this.writeFrameTypes(3 + clocalsSize, 3 + clocalsSize + cstackSize);</b>
+<b class="nc"><i>1066</i>&nbsp;        } else {</b>
+<b class="nc"><i>1067</i>&nbsp;            int localsSize = this.previousFrame[1];</b>
+<b class="nc"><i>1068</i>&nbsp;            int type = 255;</b>
+<b class="nc"><i>1069</i>&nbsp;            int k = 0;</b>
+<b class="nc"><i>1070</i>&nbsp;            int delta;</b>
+<i>1071</i>&nbsp;            if(this.frameCount == 0) {
+<i>1072</i>&nbsp;                delta = this.frame[0];
+<b class="nc"><i>1073</i>&nbsp;            } else {</b>
+<i>1074</i>&nbsp;                delta = this.frame[0] - this.previousFrame[0] - 1;
+<i>1075</i>&nbsp;            }
+<i>1076</i>&nbsp;
+<i>1077</i>&nbsp;            if(cstackSize == 0) {
+<i>1078</i>&nbsp;                k = clocalsSize - localsSize;
+<i>1079</i>&nbsp;                switch(k) {
+<i>1080</i>&nbsp;                case -3:
+<i>1081</i>&nbsp;                case -2:
+<b class="nc"><i>1082</i>&nbsp;                case -1:</b>
+<b class="nc"><i>1083</i>&nbsp;                    type = 248;</b>
+<b class="nc"><i>1084</i>&nbsp;                    localsSize = clocalsSize;</b>
+<b class="nc"><i>1085</i>&nbsp;                    break;</b>
+<b class="nc"><i>1086</i>&nbsp;                case 0:</b>
+<b class="nc"><i>1087</i>&nbsp;                    type = delta &lt; 64?0:251;</b>
+<b class="nc"><i>1088</i>&nbsp;                    break;</b>
+<b class="nc"><i>1089</i>&nbsp;                case 1:</b>
+<i>1090</i>&nbsp;                case 2:
+<i>1091</i>&nbsp;                case 3:
+<b class="nc"><i>1092</i>&nbsp;                    type = 252;</b>
+<i>1093</i>&nbsp;                }
+<i>1094</i>&nbsp;            } else if(clocalsSize == localsSize &amp;&amp; cstackSize == 1) {
+<i>1095</i>&nbsp;                type = delta &lt; 63?64:247;
+<i>1096</i>&nbsp;            }
+<b class="nc"><i>1097</i>&nbsp;</b>
+<b class="nc"><i>1098</i>&nbsp;            if(type != 255) {</b>
+<b class="nc"><i>1099</i>&nbsp;                int l = 3;</b>
+<i>1100</i>&nbsp;
+<b class="nc"><i>1101</i>&nbsp;                for(int j = 0; j &lt; localsSize; ++j) {</b>
+<b class="nc"><i>1102</i>&nbsp;                    if(this.frame[l] != this.previousFrame[l]) {</b>
+<b class="nc"><i>1103</i>&nbsp;                        type = 255;</b>
+<b class="nc"><i>1104</i>&nbsp;                        break;</b>
+<b class="nc"><i>1105</i>&nbsp;                    }</b>
+<i>1106</i>&nbsp;
+<i>1107</i>&nbsp;                    ++l;
+<i>1108</i>&nbsp;                }
+<b class="nc"><i>1109</i>&nbsp;            }</b>
+<i>1110</i>&nbsp;
+<b class="nc"><i>1111</i>&nbsp;            switch(type) {</b>
+<b class="nc"><i>1112</i>&nbsp;            case 0:</b>
+<b class="nc"><i>1113</i>&nbsp;                this.stackMap.putByte(delta);</b>
+<i>1114</i>&nbsp;                break;
+<i>1115</i>&nbsp;            case 64:
+<i>1116</i>&nbsp;                this.stackMap.putByte(64 + delta);
+<b class="nc"><i>1117</i>&nbsp;                this.writeFrameTypes(3 + clocalsSize, 4 + clocalsSize);</b>
+<i>1118</i>&nbsp;                break;
+<i>1119</i>&nbsp;            case 247:
+<i>1120</i>&nbsp;                this.stackMap.putByte(247).putShort(delta);
+<i>1121</i>&nbsp;                this.writeFrameTypes(3 + clocalsSize, 4 + clocalsSize);
+<b class="nc"><i>1122</i>&nbsp;                break;</b>
+<i>1123</i>&nbsp;            case 248:
+<b class="nc"><i>1124</i>&nbsp;                this.stackMap.putByte(251 + k).putShort(delta);</b>
+<b class="nc"><i>1125</i>&nbsp;                break;</b>
+<b class="nc"><i>1126</i>&nbsp;            case 251:</b>
+<i>1127</i>&nbsp;                this.stackMap.putByte(251).putShort(delta);
+<i>1128</i>&nbsp;                break;
+<i>1129</i>&nbsp;            case 252:
+<b class="nc"><i>1130</i>&nbsp;                this.stackMap.putByte(251 + k).putShort(delta);</b>
+<i>1131</i>&nbsp;                this.writeFrameTypes(3 + localsSize, 3 + clocalsSize);
+<i>1132</i>&nbsp;                break;
+<i>1133</i>&nbsp;            default:
+<b class="nc"><i>1134</i>&nbsp;                this.stackMap.putByte(255).putShort(delta).putShort(clocalsSize);</b>
+<i>1135</i>&nbsp;                this.writeFrameTypes(3, 3 + clocalsSize);
+<i>1136</i>&nbsp;                this.stackMap.putShort(cstackSize);
+<i>1137</i>&nbsp;                this.writeFrameTypes(3 + clocalsSize, 3 + clocalsSize + cstackSize);
+<i>1138</i>&nbsp;            }
+<i>1139</i>&nbsp;
+<i>1140</i>&nbsp;        }
+<i>1141</i>&nbsp;    }
+<i>1142</i>&nbsp;
+<b class="nc"><i>1143</i>&nbsp;    private void writeFrameTypes(int start, int end) {</b>
+<b class="nc"><i>1144</i>&nbsp;        for(int i = start; i &lt; end; ++i) {</b>
+<b class="nc"><i>1145</i>&nbsp;            int t = this.frame[i];</b>
+<b class="nc"><i>1146</i>&nbsp;            int d = t &amp; -268435456;</b>
+<b class="nc"><i>1147</i>&nbsp;            if(d == 0) {</b>
+<b class="nc"><i>1148</i>&nbsp;                int buf = t &amp; 1048575;</b>
+<b class="nc"><i>1149</i>&nbsp;                switch(t &amp; 267386880) {</b>
+<b class="nc"><i>1150</i>&nbsp;                case 24117248:</b>
+<b class="nc"><i>1151</i>&nbsp;                    this.stackMap.putByte(7).putShort(this.cw.newClass(this.cw.typeTable[buf].strVal1));</b>
+<i>1152</i>&nbsp;                    break;
+<b class="nc"><i>1153</i>&nbsp;                case 25165824:</b>
+<i>1154</i>&nbsp;                    this.stackMap.putByte(8).putShort(this.cw.typeTable[buf].intVal);
+<b class="nc"><i>1155</i>&nbsp;                    break;</b>
+<i>1156</i>&nbsp;                default:
+<i>1157</i>&nbsp;                    this.stackMap.putByte(buf);
+<i>1158</i>&nbsp;                }
+<i>1159</i>&nbsp;            } else {
+<i>1160</i>&nbsp;                StringBuffer var7 = new StringBuffer();
+<i>1161</i>&nbsp;                d &gt;&gt;= 28;
+<i>1162</i>&nbsp;
+<i>1163</i>&nbsp;                while(d-- &gt; 0) {
+<i>1164</i>&nbsp;                    var7.append(&#39;[&#39;);
+<i>1165</i>&nbsp;                }
+<b class="nc"><i>1166</i>&nbsp;</b>
+<b class="nc"><i>1167</i>&nbsp;                if((t &amp; 267386880) == 24117248) {</b>
+<b class="nc"><i>1168</i>&nbsp;                    var7.append(&#39;L&#39;);</b>
+<i>1169</i>&nbsp;                    var7.append(this.cw.typeTable[t &amp; 1048575].strVal1);
+<b class="nc"><i>1170</i>&nbsp;                    var7.append(&#39;;&#39;);</b>
+<b class="nc"><i>1171</i>&nbsp;                } else {</b>
+<i>1172</i>&nbsp;                    switch(t &amp; 15) {
+<i>1173</i>&nbsp;                    case 1:
+<i>1174</i>&nbsp;                        var7.append(&#39;I&#39;);
+<i>1175</i>&nbsp;                        break;
+<i>1176</i>&nbsp;                    case 2:
+<b class="nc"><i>1177</i>&nbsp;                        var7.append(&#39;F&#39;);</b>
+<b class="nc"><i>1178</i>&nbsp;                        break;</b>
+<i>1179</i>&nbsp;                    case 3:
+<b class="nc"><i>1180</i>&nbsp;                        var7.append(&#39;D&#39;);</b>
+<b class="nc"><i>1181</i>&nbsp;                        break;</b>
+<i>1182</i>&nbsp;                    case 4:
+<i>1183</i>&nbsp;                    case 5:
+<i>1184</i>&nbsp;                    case 6:
+<i>1185</i>&nbsp;                    case 7:
+<b class="nc"><i>1186</i>&nbsp;                    case 8:</b>
+<i>1187</i>&nbsp;                    default:
+<b class="nc"><i>1188</i>&nbsp;                        var7.append(&#39;J&#39;);</b>
+<b class="nc"><i>1189</i>&nbsp;                        break;</b>
+<b class="nc"><i>1190</i>&nbsp;                    case 9:</b>
+<b class="nc"><i>1191</i>&nbsp;                        var7.append(&#39;Z&#39;);</b>
+<i>1192</i>&nbsp;                        break;
+<i>1193</i>&nbsp;                    case 10:
+<i>1194</i>&nbsp;                        var7.append(&#39;B&#39;);
+<i>1195</i>&nbsp;                        break;
+<i>1196</i>&nbsp;                    case 11:
+<b class="nc"><i>1197</i>&nbsp;                        var7.append(&#39;C&#39;);</b>
+<b class="nc"><i>1198</i>&nbsp;                        break;</b>
+<i>1199</i>&nbsp;                    case 12:
+<b class="nc"><i>1200</i>&nbsp;                        var7.append(&#39;S&#39;);</b>
+<b class="nc"><i>1201</i>&nbsp;                    }</b>
+<b class="nc"><i>1202</i>&nbsp;                }</b>
+<i>1203</i>&nbsp;
+<i>1204</i>&nbsp;                this.stackMap.putByte(7).putShort(this.cw.newClass(var7.toString()));
+<i>1205</i>&nbsp;            }
+<b class="nc"><i>1206</i>&nbsp;        }</b>
+<i>1207</i>&nbsp;
+<b class="nc"><i>1208</i>&nbsp;    }</b>
+<b class="nc"><i>1209</i>&nbsp;</b>
+<b class="nc"><i>1210</i>&nbsp;    private void writeFrameType(Object type) {</b>
+<b class="nc"><i>1211</i>&nbsp;        if(type instanceof String) {</b>
+<b class="nc"><i>1212</i>&nbsp;            this.stackMap.putByte(7).putShort(this.cw.newClass((String)type));</b>
+<i>1213</i>&nbsp;        } else if(type instanceof Integer) {
+<b class="nc"><i>1214</i>&nbsp;            this.stackMap.putByte(((Integer)type).intValue());</b>
+<i>1215</i>&nbsp;        } else {
+<i>1216</i>&nbsp;            this.stackMap.putByte(8).putShort(((Label)type).position);
+<b class="nc"><i>1217</i>&nbsp;        }</b>
+<i>1218</i>&nbsp;
+<b class="nc"><i>1219</i>&nbsp;    }</b>
+<i>1220</i>&nbsp;
+<b class="nc"><i>1221</i>&nbsp;    final int getSize() {</b>
+<i>1222</i>&nbsp;        if(this.classReaderOffset != 0) {
+<b class="nc"><i>1223</i>&nbsp;            return 6 + this.classReaderLength;</b>
+<b class="nc"><i>1224</i>&nbsp;        } else {</b>
+<b class="nc"><i>1225</i>&nbsp;            if(this.resize) {</b>
+<i>1226</i>&nbsp;                this.resizeInstructions();
+<b class="nc"><i>1227</i>&nbsp;            }</b>
+<b class="nc"><i>1228</i>&nbsp;</b>
+<i>1229</i>&nbsp;            int size = 8;
+<b class="nc"><i>1230</i>&nbsp;            if(this.code.length &gt; 0) {</b>
+<b class="nc"><i>1231</i>&nbsp;                this.cw.newUTF8(&quot;Code&quot;);</b>
+<b class="nc"><i>1232</i>&nbsp;                size += 18 + this.code.length + 8 * this.handlerCount;</b>
+<b class="nc"><i>1233</i>&nbsp;                if(this.localVar != null) {</b>
+<i>1234</i>&nbsp;                    this.cw.newUTF8(&quot;LocalVariableTable&quot;);
+<i>1235</i>&nbsp;                    size += 8 + this.localVar.length;
+<b class="nc"><i>1236</i>&nbsp;                }</b>
+<b class="nc"><i>1237</i>&nbsp;</b>
+<b class="nc"><i>1238</i>&nbsp;                if(this.localVarType != null) {</b>
+<b class="nc"><i>1239</i>&nbsp;                    this.cw.newUTF8(&quot;LocalVariableTypeTable&quot;);</b>
+<i>1240</i>&nbsp;                    size += 8 + this.localVarType.length;
+<i>1241</i>&nbsp;                }
+<i>1242</i>&nbsp;
+<i>1243</i>&nbsp;                if(this.lineNumber != null) {
+<i>1244</i>&nbsp;                    this.cw.newUTF8(&quot;LineNumberTable&quot;);
+<i>1245</i>&nbsp;                    size += 8 + this.lineNumber.length;
+<i>1246</i>&nbsp;                }
+<b class="nc"><i>1247</i>&nbsp;</b>
+<b class="nc"><i>1248</i>&nbsp;                if(this.stackMap != null) {</b>
+<b class="nc"><i>1249</i>&nbsp;                    boolean i = (this.cw.version &amp; &#39;\uffff&#39;) &gt;= 50;</b>
+<i>1250</i>&nbsp;                    this.cw.newUTF8(i?&quot;StackMapTable&quot;:&quot;StackMap&quot;);
+<b class="nc"><i>1251</i>&nbsp;                    size += 8 + this.stackMap.length;</b>
+<b class="nc"><i>1252</i>&nbsp;                }</b>
+<b class="nc"><i>1253</i>&nbsp;</b>
+<b class="nc"><i>1254</i>&nbsp;                if(this.cattrs != null) {</b>
+<i>1255</i>&nbsp;                    size += this.cattrs.getSize(this.cw, this.code.data, this.code.length, this.maxStack, this.maxLocals);
+<b class="nc"><i>1256</i>&nbsp;                }</b>
+<b class="nc"><i>1257</i>&nbsp;            }</b>
+<i>1258</i>&nbsp;
+<i>1259</i>&nbsp;            if(this.exceptionCount &gt; 0) {
+<b class="nc"><i>1260</i>&nbsp;                this.cw.newUTF8(&quot;Exceptions&quot;);</b>
+<i>1261</i>&nbsp;                size += 8 + 2 * this.exceptionCount;
+<b class="nc"><i>1262</i>&nbsp;            }</b>
+<b class="nc"><i>1263</i>&nbsp;</b>
+<b class="nc"><i>1264</i>&nbsp;            if((this.access &amp; 4096) != 0 &amp;&amp; (this.cw.version &amp; &#39;\uffff&#39;) &lt; 49) {</b>
+<i>1265</i>&nbsp;                this.cw.newUTF8(&quot;Synthetic&quot;);
+<i>1266</i>&nbsp;                size += 6;
+<b class="nc"><i>1267</i>&nbsp;            }</b>
+<b class="nc"><i>1268</i>&nbsp;</b>
+<b class="nc"><i>1269</i>&nbsp;            if((this.access &amp; 131072) != 0) {</b>
+<b class="nc"><i>1270</i>&nbsp;                this.cw.newUTF8(&quot;Deprecated&quot;);</b>
+<b class="nc"><i>1271</i>&nbsp;                size += 6;</b>
+<i>1272</i>&nbsp;            }
+<i>1273</i>&nbsp;
+<b class="nc"><i>1274</i>&nbsp;            if(this.signature != null) {</b>
+<b class="nc"><i>1275</i>&nbsp;                this.cw.newUTF8(&quot;Signature&quot;);</b>
+<i>1276</i>&nbsp;                this.cw.newUTF8(this.signature);
+<b class="nc"><i>1277</i>&nbsp;                size += 8;</b>
+<b class="nc"><i>1278</i>&nbsp;            }</b>
+<b class="nc"><i>1279</i>&nbsp;</b>
+<b class="nc"><i>1280</i>&nbsp;            if(this.annd != null) {</b>
+<i>1281</i>&nbsp;                this.cw.newUTF8(&quot;AnnotationDefault&quot;);
+<i>1282</i>&nbsp;                size += 6 + this.annd.length;
+<b class="nc"><i>1283</i>&nbsp;            }</b>
+<b class="nc"><i>1284</i>&nbsp;</b>
+<b class="nc"><i>1285</i>&nbsp;            if(this.anns != null) {</b>
+<b class="nc"><i>1286</i>&nbsp;                this.cw.newUTF8(&quot;RuntimeVisibleAnnotations&quot;);</b>
+<b class="nc"><i>1287</i>&nbsp;                size += 8 + this.anns.getSize();</b>
+<i>1288</i>&nbsp;            }
+<b class="nc"><i>1289</i>&nbsp;</b>
+<i>1290</i>&nbsp;            if(this.ianns != null) {
+<b class="nc"><i>1291</i>&nbsp;                this.cw.newUTF8(&quot;RuntimeInvisibleAnnotations&quot;);</b>
+<b class="nc"><i>1292</i>&nbsp;                size += 8 + this.ianns.getSize();</b>
+<b class="nc"><i>1293</i>&nbsp;            }</b>
+<i>1294</i>&nbsp;
+<b class="nc"><i>1295</i>&nbsp;            int var3;</b>
+<i>1296</i>&nbsp;            if(this.panns != null) {
+<b class="nc"><i>1297</i>&nbsp;                this.cw.newUTF8(&quot;RuntimeVisibleParameterAnnotations&quot;);</b>
+<b class="nc"><i>1298</i>&nbsp;                size += 7 + 2 * (this.panns.length - this.synthetics);</b>
+<i>1299</i>&nbsp;
+<b class="nc"><i>1300</i>&nbsp;                for(var3 = this.panns.length - 1; var3 &gt;= this.synthetics; --var3) {</b>
+<i>1301</i>&nbsp;                    size += this.panns[var3] == null?0:this.panns[var3].getSize();
+<b class="nc"><i>1302</i>&nbsp;                }</b>
+<b class="nc"><i>1303</i>&nbsp;            }</b>
+<i>1304</i>&nbsp;
+<b class="nc"><i>1305</i>&nbsp;            if(this.ipanns != null) {</b>
+<i>1306</i>&nbsp;                this.cw.newUTF8(&quot;RuntimeInvisibleParameterAnnotations&quot;);
+<i>1307</i>&nbsp;                size += 7 + 2 * (this.ipanns.length - this.synthetics);
+<b class="nc"><i>1308</i>&nbsp;</b>
+<i>1309</i>&nbsp;                for(var3 = this.ipanns.length - 1; var3 &gt;= this.synthetics; --var3) {
+<b class="nc"><i>1310</i>&nbsp;                    size += this.ipanns[var3] == null?0:this.ipanns[var3].getSize();</b>
+<i>1311</i>&nbsp;                }
+<b class="nc"><i>1312</i>&nbsp;            }</b>
+<b class="nc"><i>1313</i>&nbsp;</b>
+<b class="nc"><i>1314</i>&nbsp;            if(this.attrs != null) {</b>
+<b class="nc"><i>1315</i>&nbsp;                size += this.attrs.getSize(this.cw, (byte[])null, 0, -1, -1);</b>
+<b class="nc"><i>1316</i>&nbsp;            }</b>
+<i>1317</i>&nbsp;
+<b class="nc"><i>1318</i>&nbsp;            return size;</b>
+<i>1319</i>&nbsp;        }
+<b class="nc"><i>1320</i>&nbsp;    }</b>
+<b class="nc"><i>1321</i>&nbsp;</b>
+<b class="nc"><i>1322</i>&nbsp;    final void put(ByteVector out) {</b>
+<i>1323</i>&nbsp;        out.putShort(this.access).putShort(this.name).putShort(this.desc);
+<b class="nc"><i>1324</i>&nbsp;        if(this.classReaderOffset != 0) {</b>
+<b class="nc"><i>1325</i>&nbsp;            out.putByteArray(this.cw.cr.b, this.classReaderOffset, this.classReaderLength);</b>
+<b class="nc"><i>1326</i>&nbsp;        } else {</b>
+<i>1327</i>&nbsp;            int attributeCount = 0;
+<i>1328</i>&nbsp;            if(this.code.length &gt; 0) {
+<i>1329</i>&nbsp;                ++attributeCount;
+<i>1330</i>&nbsp;            }
+<b class="nc"><i>1331</i>&nbsp;</b>
+<b class="nc"><i>1332</i>&nbsp;            if(this.exceptionCount &gt; 0) {</b>
+<i>1333</i>&nbsp;                ++attributeCount;
+<i>1334</i>&nbsp;            }
+<b class="nc"><i>1335</i>&nbsp;</b>
+<b class="nc"><i>1336</i>&nbsp;            if((this.access &amp; 4096) != 0 &amp;&amp; (this.cw.version &amp; &#39;\uffff&#39;) &lt; 49) {</b>
+<b class="nc"><i>1337</i>&nbsp;                ++attributeCount;</b>
+<b class="nc"><i>1338</i>&nbsp;            }</b>
+<i>1339</i>&nbsp;
+<b class="nc"><i>1340</i>&nbsp;            if((this.access &amp; 131072) != 0) {</b>
+<i>1341</i>&nbsp;                ++attributeCount;
+<i>1342</i>&nbsp;            }
+<i>1343</i>&nbsp;
+<i>1344</i>&nbsp;            if(this.signature != null) {
+<i>1345</i>&nbsp;                ++attributeCount;
+<i>1346</i>&nbsp;            }
+<b class="nc"><i>1347</i>&nbsp;</b>
+<b class="nc"><i>1348</i>&nbsp;            if(this.annd != null) {</b>
+<i>1349</i>&nbsp;                ++attributeCount;
+<b class="nc"><i>1350</i>&nbsp;            }</b>
+<b class="nc"><i>1351</i>&nbsp;</b>
+<b class="nc"><i>1352</i>&nbsp;            if(this.anns != null) {</b>
+<i>1353</i>&nbsp;                ++attributeCount;
+<b class="nc"><i>1354</i>&nbsp;            }</b>
+<i>1355</i>&nbsp;
+<b class="nc"><i>1356</i>&nbsp;            if(this.ianns != null) {</b>
+<i>1357</i>&nbsp;                ++attributeCount;
+<b class="nc"><i>1358</i>&nbsp;            }</b>
+<b class="nc"><i>1359</i>&nbsp;</b>
+<i>1360</i>&nbsp;            if(this.panns != null) {
+<i>1361</i>&nbsp;                ++attributeCount;
+<i>1362</i>&nbsp;            }
+<b class="nc"><i>1363</i>&nbsp;</b>
+<i>1364</i>&nbsp;            if(this.ipanns != null) {
+<i>1365</i>&nbsp;                ++attributeCount;
+<b class="nc"><i>1366</i>&nbsp;            }</b>
+<b class="nc"><i>1367</i>&nbsp;</b>
+<b class="nc"><i>1368</i>&nbsp;            if(this.attrs != null) {</b>
+<b class="nc"><i>1369</i>&nbsp;                attributeCount += this.attrs.getCount();</b>
+<b class="nc"><i>1370</i>&nbsp;            }</b>
+<b class="nc"><i>1371</i>&nbsp;</b>
+<b class="nc"><i>1372</i>&nbsp;            out.putShort(attributeCount);</b>
+<i>1373</i>&nbsp;            int i;
+<i>1374</i>&nbsp;            if(this.code.length &gt; 0) {
+<b class="nc"><i>1375</i>&nbsp;                i = 12 + this.code.length + 8 * this.handlerCount;</b>
+<b class="nc"><i>1376</i>&nbsp;                if(this.localVar != null) {</b>
+<i>1377</i>&nbsp;                    i += 8 + this.localVar.length;
+<b class="nc"><i>1378</i>&nbsp;                }</b>
+<i>1379</i>&nbsp;
+<i>1380</i>&nbsp;                if(this.localVarType != null) {
+<i>1381</i>&nbsp;                    i += 8 + this.localVarType.length;
+<i>1382</i>&nbsp;                }
+<i>1383</i>&nbsp;
+<i>1384</i>&nbsp;                if(this.lineNumber != null) {
+<i>1385</i>&nbsp;                    i += 8 + this.lineNumber.length;
+<i>1386</i>&nbsp;                }
+<i>1387</i>&nbsp;
+<i>1388</i>&nbsp;                if(this.stackMap != null) {
+<i>1389</i>&nbsp;                    i += 8 + this.stackMap.length;
+<i>1390</i>&nbsp;                }
+<i>1391</i>&nbsp;
+<b class="nc"><i>1392</i>&nbsp;                if(this.cattrs != null) {</b>
+<b class="nc"><i>1393</i>&nbsp;                    i += this.cattrs.getSize(this.cw, this.code.data, this.code.length, this.maxStack, this.maxLocals);</b>
+<b class="nc"><i>1394</i>&nbsp;                }</b>
+<i>1395</i>&nbsp;
+<b class="nc"><i>1396</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;Code&quot;)).putInt(i);</b>
+<b class="nc"><i>1397</i>&nbsp;                out.putShort(this.maxStack).putShort(this.maxLocals);</b>
+<i>1398</i>&nbsp;                out.putInt(this.code.length).putByteArray(this.code.data, 0, this.code.length);
+<b class="nc"><i>1399</i>&nbsp;                out.putShort(this.handlerCount);</b>
+<b class="nc"><i>1400</i>&nbsp;                if(this.handlerCount &gt; 0) {</b>
+<i>1401</i>&nbsp;                    for(Handler zip = this.firstHandler; zip != null; zip = zip.next) {
+<b class="nc"><i>1402</i>&nbsp;                        out.putShort(zip.start.position).putShort(zip.end.position).putShort(zip.handler.position).putShort(zip.type);</b>
+<b class="nc"><i>1403</i>&nbsp;                    }</b>
+<i>1404</i>&nbsp;                }
+<i>1405</i>&nbsp;
+<b class="nc"><i>1406</i>&nbsp;                attributeCount = 0;</b>
+<b class="nc"><i>1407</i>&nbsp;                if(this.localVar != null) {</b>
+<i>1408</i>&nbsp;                    ++attributeCount;
+<b class="nc"><i>1409</i>&nbsp;                }</b>
+<i>1410</i>&nbsp;
+<b class="nc"><i>1411</i>&nbsp;                if(this.localVarType != null) {</b>
+<b class="nc"><i>1412</i>&nbsp;                    ++attributeCount;</b>
+<i>1413</i>&nbsp;                }
+<b class="nc"><i>1414</i>&nbsp;</b>
+<i>1415</i>&nbsp;                if(this.lineNumber != null) {
+<b class="nc"><i>1416</i>&nbsp;                    ++attributeCount;</b>
+<i>1417</i>&nbsp;                }
+<i>1418</i>&nbsp;
+<b class="nc"><i>1419</i>&nbsp;                if(this.stackMap != null) {</b>
+<b class="nc"><i>1420</i>&nbsp;                    ++attributeCount;</b>
+<b class="nc"><i>1421</i>&nbsp;                }</b>
+<i>1422</i>&nbsp;
+<b class="nc"><i>1423</i>&nbsp;                if(this.cattrs != null) {</b>
+<i>1424</i>&nbsp;                    attributeCount += this.cattrs.getCount();
+<b class="nc"><i>1425</i>&nbsp;                }</b>
+<b class="nc"><i>1426</i>&nbsp;</b>
+<b class="nc"><i>1427</i>&nbsp;                out.putShort(attributeCount);</b>
+<b class="nc"><i>1428</i>&nbsp;                if(this.localVar != null) {</b>
+<b class="nc"><i>1429</i>&nbsp;                    out.putShort(this.cw.newUTF8(&quot;LocalVariableTable&quot;));</b>
+<i>1430</i>&nbsp;                    out.putInt(this.localVar.length + 2).putShort(this.localVarCount);
+<i>1431</i>&nbsp;                    out.putByteArray(this.localVar.data, 0, this.localVar.length);
+<i>1432</i>&nbsp;                }
+<i>1433</i>&nbsp;
+<i>1434</i>&nbsp;                if(this.localVarType != null) {
+<i>1435</i>&nbsp;                    out.putShort(this.cw.newUTF8(&quot;LocalVariableTypeTable&quot;));
+<i>1436</i>&nbsp;                    out.putInt(this.localVarType.length + 2).putShort(this.localVarTypeCount);
+<i>1437</i>&nbsp;                    out.putByteArray(this.localVarType.data, 0, this.localVarType.length);
+<i>1438</i>&nbsp;                }
+<i>1439</i>&nbsp;
+<i>1440</i>&nbsp;                if(this.lineNumber != null) {
+<i>1441</i>&nbsp;                    out.putShort(this.cw.newUTF8(&quot;LineNumberTable&quot;));
+<i>1442</i>&nbsp;                    out.putInt(this.lineNumber.length + 2).putShort(this.lineNumberCount);
+<i>1443</i>&nbsp;                    out.putByteArray(this.lineNumber.data, 0, this.lineNumber.length);
+<i>1444</i>&nbsp;                }
+<i>1445</i>&nbsp;
+<i>1446</i>&nbsp;                if(this.stackMap != null) {
+<i>1447</i>&nbsp;                    boolean var5 = (this.cw.version &amp; &#39;\uffff&#39;) &gt;= 50;
+<i>1448</i>&nbsp;                    out.putShort(this.cw.newUTF8(var5?&quot;StackMapTable&quot;:&quot;StackMap&quot;));
+<i>1449</i>&nbsp;                    out.putInt(this.stackMap.length + 2).putShort(this.frameCount);
+<i>1450</i>&nbsp;                    out.putByteArray(this.stackMap.data, 0, this.stackMap.length);
+<b class="nc"><i>1451</i>&nbsp;                }</b>
+<b class="nc"><i>1452</i>&nbsp;</b>
+<i>1453</i>&nbsp;                if(this.cattrs != null) {
+<b class="nc"><i>1454</i>&nbsp;                    this.cattrs.put(this.cw, this.code.data, this.code.length, this.maxLocals, this.maxStack, out);</b>
+<b class="nc"><i>1455</i>&nbsp;                }</b>
+<b class="nc"><i>1456</i>&nbsp;            }</b>
+<b class="nc"><i>1457</i>&nbsp;</b>
+<i>1458</i>&nbsp;            if(this.exceptionCount &gt; 0) {
+<b class="nc"><i>1459</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;Exceptions&quot;)).putInt(2 * this.exceptionCount + 2);</b>
+<b class="nc"><i>1460</i>&nbsp;                out.putShort(this.exceptionCount);</b>
+<i>1461</i>&nbsp;
+<b class="nc"><i>1462</i>&nbsp;                for(i = 0; i &lt; this.exceptionCount; ++i) {</b>
+<b class="nc"><i>1463</i>&nbsp;                    out.putShort(this.exceptions[i]);</b>
+<b class="nc"><i>1464</i>&nbsp;                }</b>
+<b class="nc"><i>1465</i>&nbsp;            }</b>
+<i>1466</i>&nbsp;
+<b class="nc"><i>1467</i>&nbsp;            if((this.access &amp; 4096) != 0 &amp;&amp; (this.cw.version &amp; &#39;\uffff&#39;) &lt; 49) {</b>
+<b class="nc"><i>1468</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;Synthetic&quot;)).putInt(0);</b>
+<i>1469</i>&nbsp;            }
+<b class="nc"><i>1470</i>&nbsp;</b>
+<b class="nc"><i>1471</i>&nbsp;            if((this.access &amp; 131072) != 0) {</b>
+<i>1472</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;Deprecated&quot;)).putInt(0);
+<b class="nc"><i>1473</i>&nbsp;            }</b>
+<i>1474</i>&nbsp;
+<b class="nc"><i>1475</i>&nbsp;            if(this.signature != null) {</b>
+<i>1476</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;Signature&quot;)).putInt(2).putShort(this.cw.newUTF8(this.signature));
+<i>1477</i>&nbsp;            }
+<i>1478</i>&nbsp;
+<i>1479</i>&nbsp;            if(this.annd != null) {
+<i>1480</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;AnnotationDefault&quot;));
+<i>1481</i>&nbsp;                out.putInt(this.annd.length);
+<i>1482</i>&nbsp;                out.putByteArray(this.annd.data, 0, this.annd.length);
+<i>1483</i>&nbsp;            }
+<i>1484</i>&nbsp;
+<i>1485</i>&nbsp;            if(this.anns != null) {
+<b class="nc"><i>1486</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;RuntimeVisibleAnnotations&quot;));</b>
+<b class="nc"><i>1487</i>&nbsp;                this.anns.put(out);</b>
+<b class="nc"><i>1488</i>&nbsp;            }</b>
+<i>1489</i>&nbsp;
+<b class="nc"><i>1490</i>&nbsp;            if(this.ianns != null) {</b>
+<b class="nc"><i>1491</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;RuntimeInvisibleAnnotations&quot;));</b>
+<i>1492</i>&nbsp;                this.ianns.put(out);
+<i>1493</i>&nbsp;            }
+<i>1494</i>&nbsp;
+<i>1495</i>&nbsp;            if(this.panns != null) {
+<i>1496</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;RuntimeVisibleParameterAnnotations&quot;));
+<i>1497</i>&nbsp;                AnnotationWriter.put(this.panns, this.synthetics, out);
+<i>1498</i>&nbsp;            }
+<b class="nc"><i>1499</i>&nbsp;</b>
+<b class="nc"><i>1500</i>&nbsp;            if(this.ipanns != null) {</b>
+<b class="nc"><i>1501</i>&nbsp;                out.putShort(this.cw.newUTF8(&quot;RuntimeInvisibleParameterAnnotations&quot;));</b>
+<b class="nc"><i>1502</i>&nbsp;                AnnotationWriter.put(this.ipanns, this.synthetics, out);</b>
+<b class="nc"><i>1503</i>&nbsp;            }</b>
+<b class="nc"><i>1504</i>&nbsp;</b>
+<b class="nc"><i>1505</i>&nbsp;            if(this.attrs != null) {</b>
+<b class="nc"><i>1506</i>&nbsp;                this.attrs.put(this.cw, (byte[])null, 0, -1, -1, out);</b>
+<b class="nc"><i>1507</i>&nbsp;            }</b>
+<i>1508</i>&nbsp;
+<b class="nc"><i>1509</i>&nbsp;        }</b>
+<i>1510</i>&nbsp;    }
+<i>1511</i>&nbsp;
+<i>1512</i>&nbsp;    private void resizeInstructions() {
+<i>1513</i>&nbsp;        byte[] b = this.code.data;
+<i>1514</i>&nbsp;        int[] allIndexes = new int[0];
+<i>1515</i>&nbsp;        int[] allSizes = new int[0];
+<i>1516</i>&nbsp;        boolean[] resize = new boolean[this.code.length];
+<i>1517</i>&nbsp;        int state = 3;
+<i>1518</i>&nbsp;
+<i>1519</i>&nbsp;        int u;
+<i>1520</i>&nbsp;        int label;
+<i>1521</i>&nbsp;        int newOffset;
+<i>1522</i>&nbsp;        int h;
+<b class="nc"><i>1523</i>&nbsp;        do {</b>
+<b class="nc"><i>1524</i>&nbsp;            if(state == 3) {</b>
+<b class="nc"><i>1525</i>&nbsp;                state = 2;</b>
+<b class="nc"><i>1526</i>&nbsp;            }</b>
+<b class="nc"><i>1527</i>&nbsp;</b>
+<i>1528</i>&nbsp;            u = 0;
+<i>1529</i>&nbsp;
+<b class="nc"><i>1530</i>&nbsp;            while(u &lt; b.length) {</b>
+<b class="nc"><i>1531</i>&nbsp;                int newCode = b[u] &amp; 255;</b>
+<b class="nc"><i>1532</i>&nbsp;                h = 0;</b>
+<b class="nc"><i>1533</i>&nbsp;                switch(ClassWriter.TYPE[newCode]) {</b>
+<i>1534</i>&nbsp;                case 0:
+<b class="nc"><i>1535</i>&nbsp;                case 4:</b>
+<b class="nc"><i>1536</i>&nbsp;                    ++u;</b>
+<i>1537</i>&nbsp;                    break;
+<b class="nc"><i>1538</i>&nbsp;                case 1:</b>
+<b class="nc"><i>1539</i>&nbsp;                case 3:</b>
+<i>1540</i>&nbsp;                case 10:
+<i>1541</i>&nbsp;                    u += 2;
+<i>1542</i>&nbsp;                    break;
+<i>1543</i>&nbsp;                case 2:
+<b class="nc"><i>1544</i>&nbsp;                case 5:</b>
+<b class="nc"><i>1545</i>&nbsp;                case 6:</b>
+<b class="nc"><i>1546</i>&nbsp;                case 11:</b>
+<b class="nc"><i>1547</i>&nbsp;                case 12:</b>
+<b class="nc"><i>1548</i>&nbsp;                    u += 3;</b>
+<i>1549</i>&nbsp;                    break;
+<i>1550</i>&nbsp;                case 7:
+<i>1551</i>&nbsp;                    u += 5;
+<b class="nc"><i>1552</i>&nbsp;                    break;</b>
+<b class="nc"><i>1553</i>&nbsp;                case 8:</b>
+<b class="nc"><i>1554</i>&nbsp;                    if(newCode &gt; 201) {</b>
+<b class="nc"><i>1555</i>&nbsp;                        newCode = newCode &lt; 218?newCode - 49:newCode - 20;</b>
+<b class="nc"><i>1556</i>&nbsp;                        label = u + readUnsignedShort(b, u + 1);</b>
+<b class="nc"><i>1557</i>&nbsp;                    } else {</b>
+<i>1558</i>&nbsp;                        label = u + readShort(b, u + 1);
+<i>1559</i>&nbsp;                    }
+<b class="nc"><i>1560</i>&nbsp;</b>
+<b class="nc"><i>1561</i>&nbsp;                    newOffset = getNewOffset(allIndexes, allSizes, u, label);</b>
+<b class="nc"><i>1562</i>&nbsp;                    if((newOffset &lt; -32768 || newOffset &gt; 32767) &amp;&amp; !resize[u]) {</b>
+<b class="nc"><i>1563</i>&nbsp;                        if(newCode != 167 &amp;&amp; newCode != 168) {</b>
+<b class="nc"><i>1564</i>&nbsp;                            h = 5;</b>
+<i>1565</i>&nbsp;                        } else {
+<i>1566</i>&nbsp;                            h = 2;
+<b class="nc"><i>1567</i>&nbsp;                        }</b>
+<i>1568</i>&nbsp;
+<i>1569</i>&nbsp;                        resize[u] = true;
+<i>1570</i>&nbsp;                    }
+<i>1571</i>&nbsp;
+<i>1572</i>&nbsp;                    u += 3;
+<i>1573</i>&nbsp;                    break;
+<i>1574</i>&nbsp;                case 9:
+<i>1575</i>&nbsp;                    u += 5;
+<i>1576</i>&nbsp;                    break;
+<i>1577</i>&nbsp;                case 13:
+<i>1578</i>&nbsp;                    if(state == 1) {
+<i>1579</i>&nbsp;                        newOffset = getNewOffset(allIndexes, allSizes, 0, u);
+<b class="nc"><i>1580</i>&nbsp;                        h = -(newOffset &amp; 3);</b>
+<b class="nc"><i>1581</i>&nbsp;                    } else if(!resize[u]) {</b>
+<b class="nc"><i>1582</i>&nbsp;                        h = u &amp; 3;</b>
+<i>1583</i>&nbsp;                        resize[u] = true;
+<b class="nc"><i>1584</i>&nbsp;                    }</b>
+<b class="nc"><i>1585</i>&nbsp;</b>
+<b class="nc"><i>1586</i>&nbsp;                    u = u + 4 - (u &amp; 3);</b>
+<b class="nc"><i>1587</i>&nbsp;                    u += 4 * (readInt(b, u + 8) - readInt(b, u + 4) + 1) + 12;</b>
+<i>1588</i>&nbsp;                    break;
+<i>1589</i>&nbsp;                case 14:
+<i>1590</i>&nbsp;                    if(state == 1) {
+<i>1591</i>&nbsp;                        newOffset = getNewOffset(allIndexes, allSizes, 0, u);
+<i>1592</i>&nbsp;                        h = -(newOffset &amp; 3);
+<i>1593</i>&nbsp;                    } else if(!resize[u]) {
+<i>1594</i>&nbsp;                        h = u &amp; 3;
+<b class="nc"><i>1595</i>&nbsp;                        resize[u] = true;</b>
+<b class="nc"><i>1596</i>&nbsp;                    }</b>
+<b class="nc"><i>1597</i>&nbsp;</b>
+<i>1598</i>&nbsp;                    u = u + 4 - (u &amp; 3);
+<b class="nc"><i>1599</i>&nbsp;                    u += 8 * readInt(b, u + 4) + 8;</b>
+<b class="nc"><i>1600</i>&nbsp;                    break;</b>
+<i>1601</i>&nbsp;                case 15:
+<b class="nc"><i>1602</i>&nbsp;                default:</b>
+<b class="nc"><i>1603</i>&nbsp;                    u += 4;</b>
+<i>1604</i>&nbsp;                    break;
+<i>1605</i>&nbsp;                case 16:
+<i>1606</i>&nbsp;                    newCode = b[u + 1] &amp; 255;
+<i>1607</i>&nbsp;                    if(newCode == 132) {
+<i>1608</i>&nbsp;                        u += 6;
+<i>1609</i>&nbsp;                    } else {
+<i>1610</i>&nbsp;                        u += 4;
+<b class="nc"><i>1611</i>&nbsp;                    }</b>
+<b class="nc"><i>1612</i>&nbsp;                }</b>
+<b class="nc"><i>1613</i>&nbsp;</b>
+<b class="nc"><i>1614</i>&nbsp;                if(h != 0) {</b>
+<b class="nc"><i>1615</i>&nbsp;                    int[] attr = new int[allIndexes.length + 1];</b>
+<b class="nc"><i>1616</i>&nbsp;                    int[] labels = new int[allSizes.length + 1];</b>
+<b class="nc"><i>1617</i>&nbsp;                    System.arraycopy(allIndexes, 0, attr, 0, allIndexes.length);</b>
+<i>1618</i>&nbsp;                    System.arraycopy(allSizes, 0, labels, 0, allSizes.length);
+<i>1619</i>&nbsp;                    attr[allIndexes.length] = u;
+<b class="nc"><i>1620</i>&nbsp;                    labels[allSizes.length] = h;</b>
+<b class="nc"><i>1621</i>&nbsp;                    allIndexes = attr;</b>
+<b class="nc"><i>1622</i>&nbsp;                    allSizes = labels;</b>
+<i>1623</i>&nbsp;                    if(h &gt; 0) {
+<b class="nc"><i>1624</i>&nbsp;                        state = 3;</b>
+<b class="nc"><i>1625</i>&nbsp;                    }</b>
+<i>1626</i>&nbsp;                }
+<b class="nc"><i>1627</i>&nbsp;            }</b>
+<i>1628</i>&nbsp;
+<b class="nc"><i>1629</i>&nbsp;            if(state &lt; 3) {</b>
+<b class="nc"><i>1630</i>&nbsp;                --state;</b>
+<b class="nc"><i>1631</i>&nbsp;            }</b>
+<i>1632</i>&nbsp;        } while(state != 0);
+<i>1633</i>&nbsp;
+<i>1634</i>&nbsp;        ByteVector var16 = new ByteVector(this.code.length);
+<b class="nc"><i>1635</i>&nbsp;        u = 0;</b>
+<b class="nc"><i>1636</i>&nbsp;</b>
+<b class="nc"><i>1637</i>&nbsp;        label217:</b>
+<i>1638</i>&nbsp;        while(u &lt; this.code.length) {
+<b class="nc"><i>1639</i>&nbsp;            h = b[u] &amp; 255;</b>
+<b class="nc"><i>1640</i>&nbsp;            int v;</b>
+<i>1641</i>&nbsp;            int j;
+<i>1642</i>&nbsp;            switch(ClassWriter.TYPE[h]) {
+<i>1643</i>&nbsp;            case 0:
+<b class="nc"><i>1644</i>&nbsp;            case 4:</b>
+<b class="nc"><i>1645</i>&nbsp;                var16.putByte(h);</b>
+<i>1646</i>&nbsp;                ++u;
+<b class="nc"><i>1647</i>&nbsp;                break;</b>
+<b class="nc"><i>1648</i>&nbsp;            case 1:</b>
+<i>1649</i>&nbsp;            case 3:
+<i>1650</i>&nbsp;            case 10:
+<i>1651</i>&nbsp;                var16.putByteArray(b, u, 2);
+<b class="nc"><i>1652</i>&nbsp;                u += 2;</b>
+<i>1653</i>&nbsp;                break;
+<b class="nc"><i>1654</i>&nbsp;            case 2:</b>
+<b class="nc"><i>1655</i>&nbsp;            case 5:</b>
+<b class="nc"><i>1656</i>&nbsp;            case 6:</b>
+<b class="nc"><i>1657</i>&nbsp;            case 11:</b>
+<b class="nc"><i>1658</i>&nbsp;            case 12:</b>
+<i>1659</i>&nbsp;                var16.putByteArray(b, u, 3);
+<b class="nc"><i>1660</i>&nbsp;                u += 3;</b>
+<i>1661</i>&nbsp;                break;
+<i>1662</i>&nbsp;            case 7:
+<b class="nc"><i>1663</i>&nbsp;                var16.putByteArray(b, u, 5);</b>
+<i>1664</i>&nbsp;                u += 5;
+<b class="nc"><i>1665</i>&nbsp;                break;</b>
+<b class="nc"><i>1666</i>&nbsp;            case 8:</b>
+<i>1667</i>&nbsp;                if(h &gt; 201) {
+<b class="nc"><i>1668</i>&nbsp;                    h = h &lt; 218?h - 49:h - 20;</b>
+<b class="nc"><i>1669</i>&nbsp;                    label = u + readUnsignedShort(b, u + 1);</b>
+<b class="nc"><i>1670</i>&nbsp;                } else {</b>
+<i>1671</i>&nbsp;                    label = u + readShort(b, u + 1);
+<b class="nc"><i>1672</i>&nbsp;                }</b>
+<i>1673</i>&nbsp;
+<b class="nc"><i>1674</i>&nbsp;                newOffset = getNewOffset(allIndexes, allSizes, u, label);</b>
+<b class="nc"><i>1675</i>&nbsp;                if(resize[u]) {</b>
+<i>1676</i>&nbsp;                    if(h == 167) {
+<b class="nc"><i>1677</i>&nbsp;                        var16.putByte(200);</b>
+<b class="nc"><i>1678</i>&nbsp;                    } else if(h == 168) {</b>
+<i>1679</i>&nbsp;                        var16.putByte(201);
+<b class="nc"><i>1680</i>&nbsp;                    } else {</b>
+<b class="nc"><i>1681</i>&nbsp;                        var16.putByte(h &lt;= 166?(h + 1 ^ 1) - 1:h ^ 1);</b>
+<i>1682</i>&nbsp;                        var16.putShort(8);
+<b class="nc"><i>1683</i>&nbsp;                        var16.putByte(200);</b>
+<b class="nc"><i>1684</i>&nbsp;                        newOffset -= 3;</b>
+<b class="nc"><i>1685</i>&nbsp;                    }</b>
+<i>1686</i>&nbsp;
+<i>1687</i>&nbsp;                    var16.putInt(newOffset);
+<b class="nc"><i>1688</i>&nbsp;                } else {</b>
+<i>1689</i>&nbsp;                    var16.putByte(h);
+<i>1690</i>&nbsp;                    var16.putShort(newOffset);
+<b class="nc"><i>1691</i>&nbsp;                }</b>
+<b class="nc"><i>1692</i>&nbsp;</b>
+<b class="nc"><i>1693</i>&nbsp;                u += 3;</b>
+<i>1694</i>&nbsp;                break;
+<i>1695</i>&nbsp;            case 9:
+<i>1696</i>&nbsp;                label = u + readInt(b, u + 1);
+<i>1697</i>&nbsp;                newOffset = getNewOffset(allIndexes, allSizes, u, label);
+<i>1698</i>&nbsp;                var16.putByte(h);
+<i>1699</i>&nbsp;                var16.putInt(newOffset);
+<i>1700</i>&nbsp;                u += 5;
+<i>1701</i>&nbsp;                break;
+<i>1702</i>&nbsp;            case 13:
+<i>1703</i>&nbsp;                v = u;
+<i>1704</i>&nbsp;                u = u + 4 - (u &amp; 3);
+<i>1705</i>&nbsp;                var16.putByte(170);
+<i>1706</i>&nbsp;                var16.length += (4 - var16.length % 4) % 4;
+<b class="nc"><i>1707</i>&nbsp;                label = v + readInt(b, u);</b>
+<b class="nc"><i>1708</i>&nbsp;                u += 4;</b>
+<b class="nc"><i>1709</i>&nbsp;                newOffset = getNewOffset(allIndexes, allSizes, v, label);</b>
+<b class="nc"><i>1710</i>&nbsp;                var16.putInt(newOffset);</b>
+<b class="nc"><i>1711</i>&nbsp;                j = readInt(b, u);</b>
+<b class="nc"><i>1712</i>&nbsp;                u += 4;</b>
+<i>1713</i>&nbsp;                var16.putInt(j);
+<b class="nc"><i>1714</i>&nbsp;                j = readInt(b, u) - j + 1;</b>
+<i>1715</i>&nbsp;                u += 4;
+<b class="nc"><i>1716</i>&nbsp;                var16.putInt(readInt(b, u - 4));</b>
+<i>1717</i>&nbsp;
+<b class="nc"><i>1718</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>1719</i>&nbsp;                    if(j &lt;= 0) {</b>
+<i>1720</i>&nbsp;                        continue label217;
+<b class="nc"><i>1721</i>&nbsp;                    }</b>
+<i>1722</i>&nbsp;
+<b class="nc"><i>1723</i>&nbsp;                    label = v + readInt(b, u);</b>
+<b class="nc"><i>1724</i>&nbsp;                    u += 4;</b>
+<b class="nc"><i>1725</i>&nbsp;                    newOffset = getNewOffset(allIndexes, allSizes, v, label);</b>
+<b class="nc"><i>1726</i>&nbsp;                    var16.putInt(newOffset);</b>
+<b class="nc"><i>1727</i>&nbsp;                    --j;</b>
+<i>1728</i>&nbsp;                }
+<b class="nc"><i>1729</i>&nbsp;            case 14:</b>
+<b class="nc"><i>1730</i>&nbsp;                v = u;</b>
+<b class="nc"><i>1731</i>&nbsp;                u = u + 4 - (u &amp; 3);</b>
+<b class="nc"><i>1732</i>&nbsp;                var16.putByte(171);</b>
+<i>1733</i>&nbsp;                var16.length += (4 - var16.length % 4) % 4;
+<b class="nc"><i>1734</i>&nbsp;                label = v + readInt(b, u);</b>
+<i>1735</i>&nbsp;                u += 4;
+<b class="nc"><i>1736</i>&nbsp;                newOffset = getNewOffset(allIndexes, allSizes, v, label);</b>
+<b class="nc"><i>1737</i>&nbsp;                var16.putInt(newOffset);</b>
+<i>1738</i>&nbsp;                j = readInt(b, u);
+<b class="nc"><i>1739</i>&nbsp;                u += 4;</b>
+<b class="nc"><i>1740</i>&nbsp;                var16.putInt(j);</b>
+<i>1741</i>&nbsp;
+<b class="nc"><i>1742</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>1743</i>&nbsp;                    if(j &lt;= 0) {</b>
+<i>1744</i>&nbsp;                        continue label217;
+<b class="nc"><i>1745</i>&nbsp;                    }</b>
+<b class="nc"><i>1746</i>&nbsp;</b>
+<i>1747</i>&nbsp;                    var16.putInt(readInt(b, u));
+<b class="nc"><i>1748</i>&nbsp;                    u += 4;</b>
+<b class="nc"><i>1749</i>&nbsp;                    label = v + readInt(b, u);</b>
+<i>1750</i>&nbsp;                    u += 4;
+<b class="nc"><i>1751</i>&nbsp;                    newOffset = getNewOffset(allIndexes, allSizes, v, label);</b>
+<b class="nc"><i>1752</i>&nbsp;                    var16.putInt(newOffset);</b>
+<i>1753</i>&nbsp;                    --j;
+<b class="nc"><i>1754</i>&nbsp;                }</b>
+<b class="nc"><i>1755</i>&nbsp;            case 15:</b>
+<i>1756</i>&nbsp;            default:
+<b class="nc"><i>1757</i>&nbsp;                var16.putByteArray(b, u, 4);</b>
+<i>1758</i>&nbsp;                u += 4;
+<i>1759</i>&nbsp;                break;
+<b class="nc"><i>1760</i>&nbsp;            case 16:</b>
+<i>1761</i>&nbsp;                h = b[u + 1] &amp; 255;
+<i>1762</i>&nbsp;                if(h == 132) {
+<i>1763</i>&nbsp;                    var16.putByteArray(b, u, 6);
+<i>1764</i>&nbsp;                    u += 6;
+<i>1765</i>&nbsp;                } else {
+<b class="nc"><i>1766</i>&nbsp;                    var16.putByteArray(b, u, 4);</b>
+<b class="nc"><i>1767</i>&nbsp;                    u += 4;</b>
+<b class="nc"><i>1768</i>&nbsp;                }</b>
+<b class="nc"><i>1769</i>&nbsp;            }</b>
+<i>1770</i>&nbsp;        }
+<b class="nc"><i>1771</i>&nbsp;</b>
+<i>1772</i>&nbsp;        if(this.frameCount &gt; 0) {
+<i>1773</i>&nbsp;            if(this.compute == 0) {
+<i>1774</i>&nbsp;                this.frameCount = 0;
+<i>1775</i>&nbsp;                this.stackMap = null;
+<i>1776</i>&nbsp;                this.previousFrame = null;
+<i>1777</i>&nbsp;                this.frame = null;
+<i>1778</i>&nbsp;                Frame var23 = new Frame();
+<i>1779</i>&nbsp;                var23.owner = this.labels;
+<i>1780</i>&nbsp;                Type[] var19 = Type.getArgumentTypes(this.descriptor);
+<i>1781</i>&nbsp;                var23.initInputFrame(this.cw, this.access, var19, this.maxLocals);
+<i>1782</i>&nbsp;                this.visitFrame(var23);
+<i>1783</i>&nbsp;
+<i>1784</i>&nbsp;                for(Label var18 = this.labels; var18 != null; var18 = var18.successor) {
+<b class="nc"><i>1785</i>&nbsp;                    u = var18.position - 3;</b>
+<b class="nc"><i>1786</i>&nbsp;                    if((var18.status &amp; 32) != 0 || u &gt;= 0 &amp;&amp; resize[u]) {</b>
+<i>1787</i>&nbsp;                        getNewOffset(allIndexes, allSizes, var18);
+<b class="nc"><i>1788</i>&nbsp;                        this.visitFrame(var18.frame);</b>
+<i>1789</i>&nbsp;                    }
+<i>1790</i>&nbsp;                }
+<b class="nc"><i>1791</i>&nbsp;            } else {</b>
+<i>1792</i>&nbsp;                this.cw.invalidFrames = true;
+<i>1793</i>&nbsp;            }
+<i>1794</i>&nbsp;        }
+<i>1795</i>&nbsp;
+<b class="nc"><i>1796</i>&nbsp;        for(Handler var22 = this.firstHandler; var22 != null; var22 = var22.next) {</b>
+<b class="nc"><i>1797</i>&nbsp;            getNewOffset(allIndexes, allSizes, var22.start);</b>
+<b class="nc"><i>1798</i>&nbsp;            getNewOffset(allIndexes, allSizes, var22.end);</b>
+<b class="nc"><i>1799</i>&nbsp;            getNewOffset(allIndexes, allSizes, var22.handler);</b>
+<b class="nc"><i>1800</i>&nbsp;        }</b>
+<b class="nc"><i>1801</i>&nbsp;</b>
+<b class="nc"><i>1802</i>&nbsp;        int i;</b>
+<i>1803</i>&nbsp;        for(i = 0; i &lt; 2; ++i) {
+<b class="nc"><i>1804</i>&nbsp;            ByteVector var20 = i == 0?this.localVar:this.localVarType;</b>
+<b class="nc"><i>1805</i>&nbsp;            if(var20 != null) {</b>
+<b class="nc"><i>1806</i>&nbsp;                b = var20.data;</b>
+<i>1807</i>&nbsp;
+<b class="nc"><i>1808</i>&nbsp;                for(u = 0; u &lt; var20.length; u += 10) {</b>
+<b class="nc"><i>1809</i>&nbsp;                    label = readUnsignedShort(b, u);</b>
+<b class="nc"><i>1810</i>&nbsp;                    newOffset = getNewOffset(allIndexes, allSizes, 0, label);</b>
+<i>1811</i>&nbsp;                    writeShort(b, u, newOffset);
+<b class="nc"><i>1812</i>&nbsp;                    label += readUnsignedShort(b, u + 2);</b>
+<b class="nc"><i>1813</i>&nbsp;                    newOffset = getNewOffset(allIndexes, allSizes, 0, label) - newOffset;</b>
+<b class="nc"><i>1814</i>&nbsp;                    writeShort(b, u + 2, newOffset);</b>
+<b class="nc"><i>1815</i>&nbsp;                }</b>
+<i>1816</i>&nbsp;            }
+<b class="nc"><i>1817</i>&nbsp;        }</b>
+<b class="nc"><i>1818</i>&nbsp;</b>
+<i>1819</i>&nbsp;        if(this.lineNumber != null) {
+<i>1820</i>&nbsp;            b = this.lineNumber.data;
+<i>1821</i>&nbsp;
+<i>1822</i>&nbsp;            for(u = 0; u &lt; this.lineNumber.length; u += 4) {
+<i>1823</i>&nbsp;                writeShort(b, u, getNewOffset(allIndexes, allSizes, 0, readUnsignedShort(b, u)));
+<i>1824</i>&nbsp;            }
+<b class="nc"><i>1825</i>&nbsp;        }</b>
+<b class="nc"><i>1826</i>&nbsp;</b>
+<b class="nc"><i>1827</i>&nbsp;        for(Attribute var17 = this.cattrs; var17 != null; var17 = var17.next) {</b>
+<i>1828</i>&nbsp;            Label[] var21 = var17.getLabels();
+<b class="nc"><i>1829</i>&nbsp;            if(var21 != null) {</b>
+<i>1830</i>&nbsp;                for(i = var21.length - 1; i &gt;= 0; --i) {
+<i>1831</i>&nbsp;                    getNewOffset(allIndexes, allSizes, var21[i]);
+<b class="nc"><i>1832</i>&nbsp;                }</b>
+<b class="nc"><i>1833</i>&nbsp;            }</b>
+<i>1834</i>&nbsp;        }
+<b class="nc"><i>1835</i>&nbsp;</b>
+<b class="nc"><i>1836</i>&nbsp;        this.code = var16;</b>
+<b class="nc"><i>1837</i>&nbsp;    }</b>
+<i>1838</i>&nbsp;
+<b class="nc"><i>1839</i>&nbsp;    static int readUnsignedShort(byte[] b, int index) {</b>
+<b class="nc"><i>1840</i>&nbsp;        return (b[index] &amp; 255) &lt;&lt; 8 | b[index + 1] &amp; 255;</b>
+<b class="nc"><i>1841</i>&nbsp;    }</b>
+<b class="nc"><i>1842</i>&nbsp;</b>
+<i>1843</i>&nbsp;    static short readShort(byte[] b, int index) {
+<b class="nc"><i>1844</i>&nbsp;        return (short)((b[index] &amp; 255) &lt;&lt; 8 | b[index + 1] &amp; 255);</b>
+<b class="nc"><i>1845</i>&nbsp;    }</b>
+<b class="nc"><i>1846</i>&nbsp;</b>
+<i>1847</i>&nbsp;    static int readInt(byte[] b, int index) {
+<b class="nc"><i>1848</i>&nbsp;        return (b[index] &amp; 255) &lt;&lt; 24 | (b[index + 1] &amp; 255) &lt;&lt; 16 | (b[index + 2] &amp; 255) &lt;&lt; 8 | b[index + 3] &amp; 255;</b>
+<b class="nc"><i>1849</i>&nbsp;    }</b>
+<b class="nc"><i>1850</i>&nbsp;</b>
+<i>1851</i>&nbsp;    static void writeShort(byte[] b, int index, int s) {
+<b class="nc"><i>1852</i>&nbsp;        b[index] = (byte)(s &gt;&gt;&gt; 8);</b>
+<b class="nc"><i>1853</i>&nbsp;        b[index + 1] = (byte)s;</b>
+<b class="nc"><i>1854</i>&nbsp;    }</b>
+<i>1855</i>&nbsp;
+<b class="nc"><i>1856</i>&nbsp;    static int getNewOffset(int[] indexes, int[] sizes, int begin, int end) {</b>
+<b class="nc"><i>1857</i>&nbsp;        int offset = end - begin;</b>
+<b class="nc"><i>1858</i>&nbsp;</b>
+<b class="nc"><i>1859</i>&nbsp;        for(int i = 0; i &lt; indexes.length; ++i) {</b>
+<b class="nc"><i>1860</i>&nbsp;            if(begin &lt; indexes[i] &amp;&amp; indexes[i] &lt;= end) {</b>
+<i>1861</i>&nbsp;                offset += sizes[i];
+<i>1862</i>&nbsp;            } else if(end &lt; indexes[i] &amp;&amp; indexes[i] &lt;= begin) {
+<b class="nc"><i>1863</i>&nbsp;                offset -= sizes[i];</b>
+<b class="nc"><i>1864</i>&nbsp;            }</b>
+<b class="nc"><i>1865</i>&nbsp;        }</b>
+<b class="nc"><i>1866</i>&nbsp;</b>
+<b class="nc"><i>1867</i>&nbsp;        return offset;</b>
+<i>1868</i>&nbsp;    }
+<i>1869</i>&nbsp;
+<b class="nc"><i>1870</i>&nbsp;    static void getNewOffset(int[] indexes, int[] sizes, Label label) {</b>
+<b class="nc"><i>1871</i>&nbsp;        if((label.status &amp; 4) == 0) {</b>
+<i>1872</i>&nbsp;            label.position = getNewOffset(indexes, sizes, 0, label.position);
+<b class="nc"><i>1873</i>&nbsp;            label.status |= 4;</b>
+<i>1874</i>&nbsp;        }
+<i>1875</i>&nbsp;
+<i>1876</i>&nbsp;    }
+<i>1877</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:57</div>
+</div>
+</body>
+</html>

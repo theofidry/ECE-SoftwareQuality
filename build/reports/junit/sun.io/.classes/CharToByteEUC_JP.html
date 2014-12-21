@@ -1,0 +1,233 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CharToByteEUC_JP</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.io</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CharToByteEUC_JP (sun.io)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CharToByteEUC_JP</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 81)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.io;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import sun.io.CharToByteJIS0201;
+<i>9</i>&nbsp;import sun.io.CharToByteJIS0208;
+<i>10</i>&nbsp;import sun.io.CharToByteJIS0212;
+<i>11</i>&nbsp;import sun.io.ConversionBufferFullException;
+<i>12</i>&nbsp;import sun.io.MalformedInputException;
+<i>13</i>&nbsp;import sun.io.UnknownCharacterException;
+<b class="nc"><i>14</i>&nbsp;</b>
+<b class="nc"><i>15</i>&nbsp;public class CharToByteEUC_JP extends CharToByteJIS0208 {</b>
+<b class="nc"><i>16</i>&nbsp;    CharToByteJIS0201 cbJIS0201 = new CharToByteJIS0201();</b>
+<i>17</i>&nbsp;    CharToByteJIS0212 cbJIS0212 = new CharToByteJIS0212();
+<i>18</i>&nbsp;
+<b class="nc"><i>19</i>&nbsp;    public CharToByteEUC_JP() {</b>
+<i>20</i>&nbsp;    }
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public String getCharacterEncoding() {
+<i>23</i>&nbsp;        return &quot;EUC_JP&quot;;
+<i>24</i>&nbsp;    }
+<b class="nc"><i>25</i>&nbsp;</b>
+<b class="nc"><i>26</i>&nbsp;    protected int convSingleByte(char var1, byte[] var2) {</b>
+<b class="nc"><i>27</i>&nbsp;        if(var1 == 0) {</b>
+<i>28</i>&nbsp;            var2[0] = 0;
+<i>29</i>&nbsp;            return 1;
+<b class="nc"><i>30</i>&nbsp;        } else {</b>
+<b class="nc"><i>31</i>&nbsp;            byte var3;</b>
+<i>32</i>&nbsp;            if((var3 = this.cbJIS0201.getNative(var1)) == 0) {
+<b class="nc"><i>33</i>&nbsp;                return 0;</b>
+<b class="nc"><i>34</i>&nbsp;            } else if(var3 &gt; 0 &amp;&amp; var3 &lt; 128) {</b>
+<b class="nc"><i>35</i>&nbsp;                var2[0] = var3;</b>
+<i>36</i>&nbsp;                return 1;
+<b class="nc"><i>37</i>&nbsp;            } else {</b>
+<b class="nc"><i>38</i>&nbsp;                var2[0] = -114;</b>
+<b class="nc"><i>39</i>&nbsp;                var2[1] = var3;</b>
+<i>40</i>&nbsp;                return 2;
+<i>41</i>&nbsp;            }
+<i>42</i>&nbsp;        }
+<b class="nc"><i>43</i>&nbsp;    }</b>
+<b class="nc"><i>44</i>&nbsp;</b>
+<b class="nc"><i>45</i>&nbsp;    protected int getNative(char var1) {</b>
+<b class="nc"><i>46</i>&nbsp;        int var2 = this.index1[(var1 &amp; &#39;\uff00&#39;) &gt;&gt; 8] &lt;&lt; 8;</b>
+<b class="nc"><i>47</i>&nbsp;        char var3 = this.index2[var2 &gt;&gt; 12].charAt((var2 &amp; 4095) + (var1 &amp; 255));</b>
+<b class="nc"><i>48</i>&nbsp;        if(var3 != 0) {</b>
+<b class="nc"><i>49</i>&nbsp;            return var3 + &#39;肀&#39;;</b>
+<b class="nc"><i>50</i>&nbsp;        } else {</b>
+<i>51</i>&nbsp;            int var4 = this.cbJIS0212.getNative(var1);
+<i>52</i>&nbsp;            return var4 == 0?var4:var4 + 9404544;
+<i>53</i>&nbsp;        }
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public int convert(char[] var1, int var2, int var3, byte[] var4, int var5, int var6) throws MalformedInputException, UnknownCharacterException, ConversionBufferFullException {
+<i>57</i>&nbsp;        boolean var9 = false;
+<i>58</i>&nbsp;        boolean var10 = false;
+<i>59</i>&nbsp;        byte[] var11 = new byte[4];
+<i>60</i>&nbsp;        this.charOff = var2;
+<i>61</i>&nbsp;        this.byteOff = var5;
+<i>62</i>&nbsp;        char var7;
+<i>63</i>&nbsp;        if(this.highHalfZoneCode != 0) {
+<i>64</i>&nbsp;            var7 = this.highHalfZoneCode;
+<i>65</i>&nbsp;            this.highHalfZoneCode = 0;
+<i>66</i>&nbsp;            if(var1[var2] &gt;= &#39;\udc00&#39; &amp;&amp; var1[var2] &lt;= &#39;\udfff&#39;) {
+<i>67</i>&nbsp;                this.badInputLength = 1;
+<i>68</i>&nbsp;                throw new UnknownCharacterException();
+<i>69</i>&nbsp;            } else {
+<i>70</i>&nbsp;                this.badInputLength = 0;
+<i>71</i>&nbsp;                throw new MalformedInputException();
+<i>72</i>&nbsp;            }
+<i>73</i>&nbsp;        } else {
+<i>74</i>&nbsp;            while(this.charOff &lt; var3) {
+<b class="nc"><i>75</i>&nbsp;                byte var13 = 1;</b>
+<b class="nc"><i>76</i>&nbsp;                byte[] var8 = var11;</b>
+<b class="nc"><i>77</i>&nbsp;                var7 = var1[this.charOff];</b>
+<i>78</i>&nbsp;                int var12;
+<i>79</i>&nbsp;                int var14;
+<b class="nc"><i>80</i>&nbsp;                if(var7 &gt;= &#39;\ud800&#39; &amp;&amp; var7 &lt;= &#39;\udbff&#39;) {</b>
+<b class="nc"><i>81</i>&nbsp;                    if(this.charOff + 1 &gt;= var3) {</b>
+<i>82</i>&nbsp;                        this.highHalfZoneCode = var7;
+<b class="nc"><i>83</i>&nbsp;                        return this.byteOff - var5;</b>
+<b class="nc"><i>84</i>&nbsp;                    }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<b class="nc"><i>86</i>&nbsp;                    var7 = var1[this.charOff + 1];</b>
+<i>87</i>&nbsp;                    if(var7 &lt; &#39;\udc00&#39; || var7 &gt; &#39;\udfff&#39;) {
+<b class="nc"><i>88</i>&nbsp;                        this.badInputLength = 1;</b>
+<b class="nc"><i>89</i>&nbsp;                        throw new MalformedInputException();</b>
+<i>90</i>&nbsp;                    }
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;                    if(!this.subMode) {</b>
+<b class="nc"><i>93</i>&nbsp;                        this.badInputLength = 2;</b>
+<i>94</i>&nbsp;                        throw new UnknownCharacterException();
+<i>95</i>&nbsp;                    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;                    var8 = this.subBytes;
+<b class="nc"><i>98</i>&nbsp;                    var14 = this.subBytes.length;</b>
+<b class="nc"><i>99</i>&nbsp;                    var13 = 2;</b>
+<b class="nc"><i>100</i>&nbsp;                } else {</b>
+<b class="nc"><i>101</i>&nbsp;                    if(var7 &gt;= &#39;\udc00&#39; &amp;&amp; var7 &lt;= &#39;\udfff&#39;) {</b>
+<i>102</i>&nbsp;                        this.badInputLength = 1;
+<i>103</i>&nbsp;                        throw new MalformedInputException();
+<b class="nc"><i>104</i>&nbsp;                    }</b>
+<i>105</i>&nbsp;
+<b class="nc"><i>106</i>&nbsp;                    var14 = this.convSingleByte(var7, var11);</b>
+<b class="nc"><i>107</i>&nbsp;                    if(var14 == 0) {</b>
+<b class="nc"><i>108</i>&nbsp;                        var12 = this.getNative(var7);</b>
+<i>109</i>&nbsp;                        if(var12 != 0) {
+<i>110</i>&nbsp;                            if((var12 &amp; 16711680) == 0) {
+<i>111</i>&nbsp;                                var11[0] = (byte)((var12 &amp; &#39;\uff00&#39;) &gt;&gt; 8);
+<b class="nc"><i>112</i>&nbsp;                                var11[1] = (byte)(var12 &amp; 255);</b>
+<b class="nc"><i>113</i>&nbsp;                                var14 = 2;</b>
+<i>114</i>&nbsp;                            } else {
+<i>115</i>&nbsp;                                var11[0] = -113;
+<b class="nc"><i>116</i>&nbsp;                                var11[1] = (byte)((var12 &amp; &#39;\uff00&#39;) &gt;&gt; 8);</b>
+<b class="nc"><i>117</i>&nbsp;                                var11[2] = (byte)(var12 &amp; 255);</b>
+<b class="nc"><i>118</i>&nbsp;                                var14 = 3;</b>
+<b class="nc"><i>119</i>&nbsp;                            }</b>
+<i>120</i>&nbsp;                        } else {
+<b class="nc"><i>121</i>&nbsp;                            if(!this.subMode) {</b>
+<b class="nc"><i>122</i>&nbsp;                                this.badInputLength = 1;</b>
+<i>123</i>&nbsp;                                throw new UnknownCharacterException();
+<i>124</i>&nbsp;                            }
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;                            var8 = this.subBytes;</b>
+<b class="nc"><i>127</i>&nbsp;                            var14 = this.subBytes.length;</b>
+<i>128</i>&nbsp;                        }
+<i>129</i>&nbsp;                    }
+<i>130</i>&nbsp;                }
+<b class="nc"><i>131</i>&nbsp;</b>
+<b class="nc"><i>132</i>&nbsp;                if(this.byteOff + var14 &gt; var6) {</b>
+<b class="nc"><i>133</i>&nbsp;                    throw new ConversionBufferFullException();</b>
+<i>134</i>&nbsp;                }
+<b class="nc"><i>135</i>&nbsp;</b>
+<b class="nc"><i>136</i>&nbsp;                for(var12 = 0; var12 &lt; var14; ++var12) {</b>
+<b class="nc"><i>137</i>&nbsp;                    var4[this.byteOff++] = var8[var12];</b>
+<b class="nc"><i>138</i>&nbsp;                }</b>
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;                this.charOff += var13;</b>
+<b class="nc"><i>141</i>&nbsp;            }</b>
+<b class="nc"><i>142</i>&nbsp;</b>
+<i>143</i>&nbsp;            return this.byteOff - var5;
+<b class="nc"><i>144</i>&nbsp;        }</b>
+<b class="nc"><i>145</i>&nbsp;    }</b>
+<b class="nc"><i>146</i>&nbsp;</b>
+<b class="nc"><i>147</i>&nbsp;    public int getMaxBytesPerChar() {</b>
+<i>148</i>&nbsp;        return 3;
+<i>149</i>&nbsp;    }
+<b class="nc"><i>150</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

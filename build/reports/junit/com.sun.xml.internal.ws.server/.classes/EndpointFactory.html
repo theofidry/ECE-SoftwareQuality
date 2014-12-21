@@ -1,0 +1,550 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EndpointFactory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.server</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EndpointFactory (com.sun.xml.internal.ws.server)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EndpointFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 181)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EndpointFactory$EntityResolverImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 190)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.server;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.istack.internal.NotNull;
+<i>9</i>&nbsp;import com.sun.istack.internal.Nullable;
+<i>10</i>&nbsp;import com.sun.xml.internal.ws.api.BindingID;
+<i>11</i>&nbsp;import com.sun.xml.internal.ws.api.WSBinding;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.api.model.wsdl.WSDLPort;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.api.policy.PolicyResolverFactory;
+<i>14</i>&nbsp;import com.sun.xml.internal.ws.api.policy.PolicyResolver.ServerContext;
+<i>15</i>&nbsp;import com.sun.xml.internal.ws.api.server.AsyncProvider;
+<i>16</i>&nbsp;import com.sun.xml.internal.ws.api.server.Container;
+<i>17</i>&nbsp;import com.sun.xml.internal.ws.api.server.ContainerResolver;
+<i>18</i>&nbsp;import com.sun.xml.internal.ws.api.server.InstanceResolver;
+<i>19</i>&nbsp;import com.sun.xml.internal.ws.api.server.Invoker;
+<i>20</i>&nbsp;import com.sun.xml.internal.ws.api.server.SDDocumentSource;
+<i>21</i>&nbsp;import com.sun.xml.internal.ws.api.server.WSEndpoint;
+<i>22</i>&nbsp;import com.sun.xml.internal.ws.api.server.SDDocument.WSDL;
+<i>23</i>&nbsp;import com.sun.xml.internal.ws.api.wsdl.parser.WSDLParserExtension;
+<i>24</i>&nbsp;import com.sun.xml.internal.ws.api.wsdl.parser.XMLEntityResolver;
+<i>25</i>&nbsp;import com.sun.xml.internal.ws.api.wsdl.parser.XMLEntityResolver.Parser;
+<i>26</i>&nbsp;import com.sun.xml.internal.ws.api.wsdl.writer.WSDLGeneratorExtension;
+<i>27</i>&nbsp;import com.sun.xml.internal.ws.binding.BindingImpl;
+<i>28</i>&nbsp;import com.sun.xml.internal.ws.binding.SOAPBindingImpl;
+<i>29</i>&nbsp;import com.sun.xml.internal.ws.binding.WebServiceFeatureList;
+<i>30</i>&nbsp;import com.sun.xml.internal.ws.model.AbstractSEIModelImpl;
+<i>31</i>&nbsp;import com.sun.xml.internal.ws.model.RuntimeModeler;
+<i>32</i>&nbsp;import com.sun.xml.internal.ws.model.SOAPSEIModel;
+<i>33</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLModelImpl;
+<i>34</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLPortImpl;
+<i>35</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLServiceImpl;
+<i>36</i>&nbsp;import com.sun.xml.internal.ws.policy.PolicyMap;
+<i>37</i>&nbsp;import com.sun.xml.internal.ws.policy.PolicyMapMutator;
+<i>38</i>&nbsp;import com.sun.xml.internal.ws.policy.jaxws.PolicyUtil;
+<i>39</i>&nbsp;import com.sun.xml.internal.ws.resources.ServerMessages;
+<i>40</i>&nbsp;import com.sun.xml.internal.ws.server.InvokerTube;
+<i>41</i>&nbsp;import com.sun.xml.internal.ws.server.SDDocumentImpl;
+<i>42</i>&nbsp;import com.sun.xml.internal.ws.server.ServerRtException;
+<i>43</i>&nbsp;import com.sun.xml.internal.ws.server.ServiceDefinitionImpl;
+<i>44</i>&nbsp;import com.sun.xml.internal.ws.server.WSDLGenResolver;
+<i>45</i>&nbsp;import com.sun.xml.internal.ws.server.WSEndpointImpl;
+<i>46</i>&nbsp;import com.sun.xml.internal.ws.server.provider.ProviderInvokerTube;
+<i>47</i>&nbsp;import com.sun.xml.internal.ws.server.sei.SEIInvokerTube;
+<i>48</i>&nbsp;import com.sun.xml.internal.ws.util.HandlerAnnotationInfo;
+<i>49</i>&nbsp;import com.sun.xml.internal.ws.util.HandlerAnnotationProcessor;
+<i>50</i>&nbsp;import com.sun.xml.internal.ws.util.ServiceConfigurationError;
+<i>51</i>&nbsp;import com.sun.xml.internal.ws.util.ServiceFinder;
+<i>52</i>&nbsp;import com.sun.xml.internal.ws.wsdl.parser.RuntimeWSDLParser;
+<i>53</i>&nbsp;import com.sun.xml.internal.ws.wsdl.writer.WSDLGenerator;
+<i>54</i>&nbsp;import java.io.IOException;
+<i>55</i>&nbsp;import java.net.URL;
+<i>56</i>&nbsp;import java.util.ArrayList;
+<i>57</i>&nbsp;import java.util.Collection;
+<i>58</i>&nbsp;import java.util.HashMap;
+<i>59</i>&nbsp;import java.util.Iterator;
+<i>60</i>&nbsp;import java.util.List;
+<i>61</i>&nbsp;import java.util.Map;
+<i>62</i>&nbsp;import java.util.logging.Logger;
+<i>63</i>&nbsp;import javax.jws.WebService;
+<i>64</i>&nbsp;import javax.xml.namespace.QName;
+<i>65</i>&nbsp;import javax.xml.stream.XMLStreamException;
+<i>66</i>&nbsp;import javax.xml.ws.Provider;
+<i>67</i>&nbsp;import javax.xml.ws.WebServiceException;
+<i>68</i>&nbsp;import javax.xml.ws.WebServiceProvider;
+<i>69</i>&nbsp;import javax.xml.ws.soap.SOAPBinding;
+<i>70</i>&nbsp;import org.xml.sax.EntityResolver;
+<i>71</i>&nbsp;import org.xml.sax.SAXException;
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;public class EndpointFactory {
+<i>74</i>&nbsp;    private static final Logger logger = Logger.getLogger(&quot;com.sun.xml.internal.ws.server.endpoint&quot;);
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public EndpointFactory() {
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public static &lt;T&gt; WSEndpoint&lt;T&gt; createEndpoint(Class&lt;T&gt; implType, boolean processHandlerAnnotation, @Nullable Invoker invoker, @Nullable QName serviceName, @Nullable QName portName, @Nullable Container container, @Nullable WSBinding binding, @Nullable SDDocumentSource primaryWsdl, @Nullable Collection&lt;? extends SDDocumentSource&gt; metadata, EntityResolver resolver, boolean isTransportSynchronous) {
+<i>80</i>&nbsp;        if(implType == null) {
+<i>81</i>&nbsp;            throw new IllegalArgumentException();
+<i>82</i>&nbsp;        } else {
+<i>83</i>&nbsp;            verifyImplementorClass(implType);
+<i>84</i>&nbsp;            if(invoker == null) {
+<i>85</i>&nbsp;                invoker = InstanceResolver.createDefault(implType).createInvoker();
+<i>86</i>&nbsp;            }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;            ArrayList md = new ArrayList();</b>
+<i>89</i>&nbsp;            if(metadata != null) {
+<i>90</i>&nbsp;                md.addAll(metadata);
+<i>91</i>&nbsp;            }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;            if(primaryWsdl != null &amp;&amp; !md.contains(primaryWsdl)) {
+<i>94</i>&nbsp;                md.add(primaryWsdl);
+<i>95</i>&nbsp;            }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;            if(container == null) {
+<i>98</i>&nbsp;                container = ContainerResolver.getInstance().getContainer();
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;            if(serviceName == null) {
+<i>102</i>&nbsp;                serviceName = getDefaultServiceName(implType);
+<i>103</i>&nbsp;            }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;            if(portName == null) {
+<i>106</i>&nbsp;                portName = getDefaultPortName(serviceName, implType);
+<b class="nc"><i>107</i>&nbsp;            }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<i>109</i>&nbsp;            String portTypeName = serviceName.getNamespaceURI();
+<b class="nc"><i>110</i>&nbsp;            String docList = portName.getNamespaceURI();</b>
+<i>111</i>&nbsp;            if(!portTypeName.equals(docList)) {
+<b class="nc"><i>112</i>&nbsp;                throw new ServerRtException(&quot;wrong.tns.for.port&quot;, new Object[]{docList, portTypeName});</b>
+<b class="nc"><i>113</i>&nbsp;            } else {</b>
+<i>114</i>&nbsp;                if(binding == null) {
+<i>115</i>&nbsp;                    binding = BindingImpl.create(BindingID.parse(implType));
+<b class="nc"><i>116</i>&nbsp;                }</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<b class="nc"><i>118</i>&nbsp;                if(primaryWsdl != null) {</b>
+<i>119</i>&nbsp;                    verifyPrimaryWSDL(primaryWsdl, serviceName);
+<b class="nc"><i>120</i>&nbsp;                }</b>
+<b class="nc"><i>121</i>&nbsp;</b>
+<i>122</i>&nbsp;                QName portTypeName1 = null;
+<b class="nc"><i>123</i>&nbsp;                if(implType.getAnnotation(WebServiceProvider.class) == null) {</b>
+<b class="nc"><i>124</i>&nbsp;                    portTypeName1 = RuntimeModeler.getPortTypeName(implType);</b>
+<i>125</i>&nbsp;                }
+<b class="nc"><i>126</i>&nbsp;</b>
+<b class="nc"><i>127</i>&nbsp;                List docList1 = categoriseMetadata(md, serviceName, portTypeName1);</b>
+<i>128</i>&nbsp;                SDDocumentImpl primaryDoc = findPrimary(docList1);
+<b class="nc"><i>129</i>&nbsp;                WSDLPortImpl wsdlPort = null;</b>
+<b class="nc"><i>130</i>&nbsp;                AbstractSEIModelImpl seiModel = null;</b>
+<i>131</i>&nbsp;                if(primaryDoc != null) {
+<i>132</i>&nbsp;                    wsdlPort = getWSDLPort(primaryDoc, docList1, serviceName, portName, container);
+<b class="nc"><i>133</i>&nbsp;                }</b>
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;                WebServiceFeatureList features = ((BindingImpl)binding).getFeatures();</b>
+<b class="nc"><i>136</i>&nbsp;                features.parseAnnotations(implType);</b>
+<i>137</i>&nbsp;                PolicyMap policyMap = null;
+<i>138</i>&nbsp;                Object terminal;
+<i>139</i>&nbsp;                if(implType.getAnnotation(WebServiceProvider.class) != null) {
+<i>140</i>&nbsp;                    Object serviceDefiniton;
+<b class="nc"><i>141</i>&nbsp;                    if(wsdlPort != null) {</b>
+<b class="nc"><i>142</i>&nbsp;                        policyMap = wsdlPort.getOwner().getParent().getPolicyMap();</b>
+<i>143</i>&nbsp;                        serviceDefiniton = wsdlPort.getFeatures();
+<b class="nc"><i>144</i>&nbsp;                    } else {</b>
+<b class="nc"><i>145</i>&nbsp;                        policyMap = PolicyResolverFactory.create().resolve(new ServerContext((PolicyMap)null, container, implType, false, new PolicyMapMutator[0]));</b>
+<i>146</i>&nbsp;                        serviceDefiniton = PolicyUtil.getPortScopedFeatures(policyMap, serviceName, portName);
+<i>147</i>&nbsp;                    }
+<b class="nc"><i>148</i>&nbsp;</b>
+<b class="nc"><i>149</i>&nbsp;                    features.mergeFeatures((Iterable)serviceDefiniton, true);</b>
+<b class="nc"><i>150</i>&nbsp;                    terminal = ProviderInvokerTube.create(implType, (WSBinding)binding, invoker);</b>
+<i>151</i>&nbsp;                } else {
+<i>152</i>&nbsp;                    seiModel = createSEIModel(wsdlPort, implType, serviceName, portName, (WSBinding)binding);
+<i>153</i>&nbsp;                    if(binding instanceof SOAPBindingImpl) {
+<b class="nc"><i>154</i>&nbsp;                        ((SOAPBindingImpl)binding).setPortKnownHeaders(((SOAPSEIModel)seiModel).getKnownHeaders());</b>
+<i>155</i>&nbsp;                    }
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;                    if(primaryDoc == null) {</b>
+<i>158</i>&nbsp;                        primaryDoc = generateWSDL((WSBinding)binding, seiModel, docList1, container, implType);
+<i>159</i>&nbsp;                        wsdlPort = getWSDLPort(primaryDoc, docList1, serviceName, portName, container);
+<b class="nc"><i>160</i>&nbsp;                        seiModel.freeze(wsdlPort);</b>
+<b class="nc"><i>161</i>&nbsp;                    }</b>
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;                    policyMap = wsdlPort.getOwner().getParent().getPolicyMap();</b>
+<b class="nc"><i>164</i>&nbsp;                    features.mergeFeatures(wsdlPort.getFeatures(), true);</b>
+<i>165</i>&nbsp;                    terminal = new SEIInvokerTube(seiModel, invoker, (WSBinding)binding);
+<i>166</i>&nbsp;                }
+<b class="nc"><i>167</i>&nbsp;</b>
+<b class="nc"><i>168</i>&nbsp;                if(processHandlerAnnotation) {</b>
+<i>169</i>&nbsp;                    processHandlerAnnotation((WSBinding)binding, implType, serviceName, portName);
+<i>170</i>&nbsp;                }
+<b class="nc"><i>171</i>&nbsp;</b>
+<i>172</i>&nbsp;                if(primaryDoc != null) {
+<b class="nc"><i>173</i>&nbsp;                    docList1 = findMetadataClosure(primaryDoc, docList1);</b>
+<b class="nc"><i>174</i>&nbsp;                }</b>
+<b class="nc"><i>175</i>&nbsp;</b>
+<i>176</i>&nbsp;                ServiceDefinitionImpl serviceDefiniton1 = primaryDoc != null?new ServiceDefinitionImpl(docList1, primaryDoc):null;
+<i>177</i>&nbsp;                return new WSEndpointImpl(serviceName, portName, (WSBinding)binding, container, seiModel, wsdlPort, implType, serviceDefiniton1, (InvokerTube)terminal, isTransportSynchronous, policyMap);
+<b class="nc"><i>178</i>&nbsp;            }</b>
+<b class="nc"><i>179</i>&nbsp;        }</b>
+<i>180</i>&nbsp;    }
+<b class="nc"><i>181</i>&nbsp;</b>
+<i>182</i>&nbsp;    private static List&lt;SDDocumentImpl&gt; findMetadataClosure(SDDocumentImpl primaryDoc, List&lt;SDDocumentImpl&gt; docList) {
+<i>183</i>&nbsp;        HashMap oldMap = new HashMap();
+<i>184</i>&nbsp;        Iterator newMap = docList.iterator();
+<b class="nc"><i>185</i>&nbsp;</b>
+<b class="nc"><i>186</i>&nbsp;        while(newMap.hasNext()) {</b>
+<i>187</i>&nbsp;            SDDocumentImpl remaining = (SDDocumentImpl)newMap.next();
+<b class="nc"><i>188</i>&nbsp;            oldMap.put(remaining.getSystemId().toString(), remaining);</b>
+<b class="nc"><i>189</i>&nbsp;        }</b>
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;        HashMap newMap1 = new HashMap();
+<i>192</i>&nbsp;        newMap1.put(primaryDoc.getSystemId().toString(), primaryDoc);
+<b class="nc"><i>193</i>&nbsp;        ArrayList remaining1 = new ArrayList();</b>
+<b class="nc"><i>194</i>&nbsp;        remaining1.addAll(primaryDoc.getImports());</b>
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;        while(!remaining1.isEmpty()) {
+<i>197</i>&nbsp;            String newMetadata = (String)remaining1.remove(0);
+<b class="nc"><i>198</i>&nbsp;            SDDocumentImpl doc = (SDDocumentImpl)oldMap.get(newMetadata);</b>
+<b class="nc"><i>199</i>&nbsp;            if(doc != null &amp;&amp; !newMap1.containsKey(newMetadata)) {</b>
+<i>200</i>&nbsp;                newMap1.put(newMetadata, doc);
+<i>201</i>&nbsp;                remaining1.addAll(doc.getImports());
+<b class="nc"><i>202</i>&nbsp;            }</b>
+<b class="nc"><i>203</i>&nbsp;        }</b>
+<i>204</i>&nbsp;
+<b class="nc"><i>205</i>&nbsp;        ArrayList newMetadata1 = new ArrayList();</b>
+<i>206</i>&nbsp;        newMetadata1.addAll(newMap1.values());
+<b class="nc"><i>207</i>&nbsp;        return newMetadata1;</b>
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    private static &lt;T&gt; void processHandlerAnnotation(WSBinding binding, Class&lt;T&gt; implType, QName serviceName, QName portName) {
+<i>211</i>&nbsp;        HandlerAnnotationInfo chainInfo = HandlerAnnotationProcessor.buildHandlerInfo(implType, serviceName, portName, binding);
+<i>212</i>&nbsp;        if(chainInfo != null) {
+<i>213</i>&nbsp;            binding.setHandlerChain(chainInfo.getHandlers());
+<i>214</i>&nbsp;            if(binding instanceof SOAPBinding) {
+<i>215</i>&nbsp;                ((SOAPBinding)binding).setRoles(chainInfo.getRoles());
+<i>216</i>&nbsp;            }
+<i>217</i>&nbsp;        }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;    public static boolean verifyImplementorClass(Class&lt;?&gt; clz) {</b>
+<b class="nc"><i>222</i>&nbsp;        WebServiceProvider wsProvider = (WebServiceProvider)clz.getAnnotation(WebServiceProvider.class);</b>
+<b class="nc"><i>223</i>&nbsp;        WebService ws = (WebService)clz.getAnnotation(WebService.class);</b>
+<i>224</i>&nbsp;        if(wsProvider == null &amp;&amp; ws == null) {
+<i>225</i>&nbsp;            throw new IllegalArgumentException(clz + &quot; has neither @WebService nor @WebServiceProvider annotation&quot;);
+<b class="nc"><i>226</i>&nbsp;        } else if(wsProvider != null &amp;&amp; ws != null) {</b>
+<b class="nc"><i>227</i>&nbsp;            throw new IllegalArgumentException(clz + &quot; has both @WebService and @WebServiceProvider annotations&quot;);</b>
+<i>228</i>&nbsp;        } else if(wsProvider != null) {
+<b class="nc"><i>229</i>&nbsp;            if(!Provider.class.isAssignableFrom(clz) &amp;&amp; !AsyncProvider.class.isAssignableFrom(clz)) {</b>
+<b class="nc"><i>230</i>&nbsp;                throw new IllegalArgumentException(clz + &quot; doesn\&#39;t implement Provider or AsyncProvider interface&quot;);</b>
+<b class="nc"><i>231</i>&nbsp;            } else {</b>
+<b class="nc"><i>232</i>&nbsp;                return true;</b>
+<b class="nc"><i>233</i>&nbsp;            }</b>
+<b class="nc"><i>234</i>&nbsp;        } else {</b>
+<i>235</i>&nbsp;            return false;
+<b class="nc"><i>236</i>&nbsp;        }</b>
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<b class="nc"><i>239</i>&nbsp;    private static AbstractSEIModelImpl createSEIModel(WSDLPort wsdlPort, Class&lt;?&gt; implType, @NotNull QName serviceName, @NotNull QName portName, WSBinding binding) {</b>
+<b class="nc"><i>240</i>&nbsp;        RuntimeModeler rap;</b>
+<b class="nc"><i>241</i>&nbsp;        if(wsdlPort == null) {</b>
+<i>242</i>&nbsp;            rap = new RuntimeModeler(implType, serviceName, binding.getBindingId(), binding.getFeatures().toArray());
+<b class="nc"><i>243</i>&nbsp;        } else {</b>
+<b class="nc"><i>244</i>&nbsp;            rap = new RuntimeModeler(implType, serviceName, (WSDLPortImpl)wsdlPort, binding.getFeatures().toArray());</b>
+<b class="nc"><i>245</i>&nbsp;        }</b>
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;        rap.setClassLoader(implType.getClassLoader());
+<i>248</i>&nbsp;        rap.setPortName(portName);
+<i>249</i>&nbsp;        return rap.buildRuntimeModel();
+<b class="nc"><i>250</i>&nbsp;    }</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    @NotNull
+<b class="nc"><i>253</i>&nbsp;    public static QName getDefaultServiceName(Class&lt;?&gt; implType) {</b>
+<b class="nc"><i>254</i>&nbsp;        WebServiceProvider wsProvider = (WebServiceProvider)implType.getAnnotation(WebServiceProvider.class);</b>
+<b class="nc"><i>255</i>&nbsp;        QName serviceName;</b>
+<b class="nc"><i>256</i>&nbsp;        if(wsProvider != null) {</b>
+<i>257</i>&nbsp;            String tns = wsProvider.targetNamespace();
+<i>258</i>&nbsp;            String local = wsProvider.serviceName();
+<i>259</i>&nbsp;            serviceName = new QName(tns, local);
+<i>260</i>&nbsp;        } else {
+<i>261</i>&nbsp;            serviceName = RuntimeModeler.getServiceName(implType);
+<i>262</i>&nbsp;        }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;        assert serviceName != null;
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;        return serviceName;
+<i>267</i>&nbsp;    }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    @NotNull
+<i>270</i>&nbsp;    public static QName getDefaultPortName(QName serviceName, Class&lt;?&gt; implType) {
+<i>271</i>&nbsp;        WebServiceProvider wsProvider = (WebServiceProvider)implType.getAnnotation(WebServiceProvider.class);
+<i>272</i>&nbsp;        QName portName;
+<i>273</i>&nbsp;        if(wsProvider != null) {
+<b class="nc"><i>274</i>&nbsp;            String tns = wsProvider.targetNamespace();</b>
+<b class="nc"><i>275</i>&nbsp;            String local = wsProvider.portName();</b>
+<b class="nc"><i>276</i>&nbsp;            portName = new QName(tns, local);</b>
+<b class="nc"><i>277</i>&nbsp;        } else {</b>
+<i>278</i>&nbsp;            portName = RuntimeModeler.getPortName(implType, serviceName.getNamespaceURI());
+<b class="nc"><i>279</i>&nbsp;        }</b>
+<b class="nc"><i>280</i>&nbsp;</b>
+<i>281</i>&nbsp;        assert portName != null;
+<b class="nc"><i>282</i>&nbsp;</b>
+<b class="nc"><i>283</i>&nbsp;        return portName;</b>
+<b class="nc"><i>284</i>&nbsp;    }</b>
+<i>285</i>&nbsp;
+<b class="nc"><i>286</i>&nbsp;    @Nullable</b>
+<i>287</i>&nbsp;    public static String getWsdlLocation(Class&lt;?&gt; implType) {
+<b class="nc"><i>288</i>&nbsp;        WebService ws = (WebService)implType.getAnnotation(WebService.class);</b>
+<i>289</i>&nbsp;        String wsdl;
+<i>290</i>&nbsp;        if(ws != null) {
+<i>291</i>&nbsp;            wsdl = ws.wsdlLocation();
+<i>292</i>&nbsp;        } else {
+<i>293</i>&nbsp;            WebServiceProvider wsProvider = (WebServiceProvider)implType.getAnnotation(WebServiceProvider.class);
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;            assert wsProvider != null;
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;            wsdl = wsProvider.wsdlLocation();
+<i>298</i>&nbsp;        }
+<i>299</i>&nbsp;
+<b class="nc"><i>300</i>&nbsp;        if(wsdl.length() &lt; 1) {</b>
+<b class="nc"><i>301</i>&nbsp;            wsdl = null;</b>
+<i>302</i>&nbsp;        }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;        return wsdl;
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    private static SDDocumentImpl generateWSDL(WSBinding binding, AbstractSEIModelImpl seiModel, List&lt;SDDocumentImpl&gt; docs, Container container, Class implType) {
+<i>308</i>&nbsp;        BindingID bindingId = binding.getBindingId();
+<b class="nc"><i>309</i>&nbsp;        if(!bindingId.canGenerateWSDL()) {</b>
+<i>310</i>&nbsp;            throw new ServerRtException(&quot;can.not.generate.wsdl&quot;, new Object[]{bindingId});
+<b class="nc"><i>311</i>&nbsp;        } else {</b>
+<b class="nc"><i>312</i>&nbsp;            if(bindingId.toString().equals(&quot;http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/&quot;)) {</b>
+<i>313</i>&nbsp;                String wsdlResolver = ServerMessages.GENERATE_NON_STANDARD_WSDL();
+<i>314</i>&nbsp;                logger.warning(wsdlResolver);
+<i>315</i>&nbsp;            }
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;            WSDLGenResolver wsdlResolver1 = new WSDLGenResolver(docs, seiModel.getServiceQName(), seiModel.getPortTypeName());
+<i>318</i>&nbsp;            WSDLGenerator wsdlGen = new WSDLGenerator(seiModel, wsdlResolver1, binding, container, implType, false, (WSDLGeneratorExtension[])ServiceFinder.find(WSDLGeneratorExtension.class).toArray());
+<i>319</i>&nbsp;            wsdlGen.doGeneration();
+<i>320</i>&nbsp;            return wsdlResolver1.updateDocs();
+<i>321</i>&nbsp;        }
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    private static List&lt;SDDocumentImpl&gt; categoriseMetadata(List&lt;SDDocumentSource&gt; src, QName serviceName, QName portTypeName) {
+<i>325</i>&nbsp;        ArrayList r = new ArrayList(src.size());
+<i>326</i>&nbsp;        Iterator i$ = src.iterator();
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;        while(i$.hasNext()) {
+<i>329</i>&nbsp;            SDDocumentSource doc = (SDDocumentSource)i$.next();
+<i>330</i>&nbsp;            r.add(SDDocumentImpl.create(doc, serviceName, portTypeName));
+<i>331</i>&nbsp;        }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;        return r;
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    private static void verifyPrimaryWSDL(@NotNull SDDocumentSource primaryWsdl, @NotNull QName serviceName) {
+<i>337</i>&nbsp;        SDDocumentImpl primaryDoc = SDDocumentImpl.create(primaryWsdl, serviceName, (QName)null);
+<i>338</i>&nbsp;        if(!(primaryDoc instanceof WSDL)) {
+<i>339</i>&nbsp;            throw new WebServiceException(primaryWsdl.getSystemId() + &quot; is not a WSDL. But it is passed as a primary WSDL&quot;);
+<b class="nc"><i>340</i>&nbsp;        } else {</b>
+<b class="nc"><i>341</i>&nbsp;            WSDL wsdlDoc = (WSDL)primaryDoc;</b>
+<b class="nc"><i>342</i>&nbsp;            if(!wsdlDoc.hasService()) {</b>
+<b class="nc"><i>343</i>&nbsp;                if(wsdlDoc.getAllServices().isEmpty()) {</b>
+<b class="nc"><i>344</i>&nbsp;                    throw new WebServiceException(&quot;Not a primary WSDL=&quot; + primaryWsdl.getSystemId() + &quot; since it doesn\&#39;t have Service &quot; + serviceName);</b>
+<b class="nc"><i>345</i>&nbsp;                } else {</b>
+<b class="nc"><i>346</i>&nbsp;                    throw new WebServiceException(&quot;WSDL &quot; + primaryDoc.getSystemId() + &quot; has the following services &quot; + wsdlDoc.getAllServices() + &quot; but not &quot; + serviceName + &quot;. Maybe you forgot to specify a serviceName and/or targetNamespace in @WebService/@WebServiceProvider?&quot;);</b>
+<i>347</i>&nbsp;                }
+<b class="nc"><i>348</i>&nbsp;            }</b>
+<b class="nc"><i>349</i>&nbsp;        }</b>
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    @Nullable
+<i>353</i>&nbsp;    private static SDDocumentImpl findPrimary(@NotNull List&lt;SDDocumentImpl&gt; docList) {
+<i>354</i>&nbsp;        SDDocumentImpl primaryDoc = null;
+<i>355</i>&nbsp;        boolean foundConcrete = false;
+<i>356</i>&nbsp;        boolean foundAbstract = false;
+<i>357</i>&nbsp;        Iterator i$ = docList.iterator();
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;        while(i$.hasNext()) {
+<b class="nc"><i>360</i>&nbsp;            SDDocumentImpl doc = (SDDocumentImpl)i$.next();</b>
+<b class="nc"><i>361</i>&nbsp;            if(doc instanceof WSDL) {</b>
+<b class="nc"><i>362</i>&nbsp;                WSDL wsdlDoc = (WSDL)doc;</b>
+<b class="nc"><i>363</i>&nbsp;                if(wsdlDoc.hasService()) {</b>
+<b class="nc"><i>364</i>&nbsp;                    primaryDoc = doc;</b>
+<b class="nc"><i>365</i>&nbsp;                    if(foundConcrete) {</b>
+<b class="nc"><i>366</i>&nbsp;                        throw new ServerRtException(&quot;duplicate.primary.wsdl&quot;, new Object[]{doc.getSystemId()});</b>
+<i>367</i>&nbsp;                    }
+<b class="nc"><i>368</i>&nbsp;</b>
+<b class="nc"><i>369</i>&nbsp;                    foundConcrete = true;</b>
+<i>370</i>&nbsp;                }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;                if(wsdlDoc.hasPortType()) {
+<i>373</i>&nbsp;                    if(foundAbstract) {
+<i>374</i>&nbsp;                        throw new ServerRtException(&quot;duplicate.abstract.wsdl&quot;, new Object[]{doc.getSystemId()});
+<i>375</i>&nbsp;                    }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;                    foundAbstract = true;
+<i>378</i>&nbsp;                }
+<i>379</i>&nbsp;            }
+<i>380</i>&nbsp;        }
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;        return primaryDoc;
+<b class="nc"><i>383</i>&nbsp;    }</b>
+<b class="nc"><i>384</i>&nbsp;</b>
+<b class="nc"><i>385</i>&nbsp;    @NotNull</b>
+<i>386</i>&nbsp;    private static WSDLPortImpl getWSDLPort(SDDocumentSource primaryWsdl, List&lt;? extends SDDocumentSource&gt; metadata, @NotNull QName serviceName, @NotNull QName portName, Container container) {
+<b class="nc"><i>387</i>&nbsp;        URL wsdlUrl = primaryWsdl.getSystemId();</b>
+<b class="nc"><i>388</i>&nbsp;</b>
+<b class="nc"><i>389</i>&nbsp;        try {</b>
+<i>390</i>&nbsp;            WSDLModelImpl e = RuntimeWSDLParser.parse(new Parser(primaryWsdl), new EndpointFactory.EntityResolverImpl(metadata), false, container, (WSDLParserExtension[])ServiceFinder.find(WSDLParserExtension.class).toArray());
+<b class="nc"><i>391</i>&nbsp;            if(e.getServices().size() == 0) {</b>
+<b class="nc"><i>392</i>&nbsp;                throw new ServerRtException(ServerMessages.localizableRUNTIME_PARSER_WSDL_NOSERVICE_IN_WSDLMODEL(wsdlUrl));</b>
+<i>393</i>&nbsp;            } else {
+<b class="nc"><i>394</i>&nbsp;                WSDLServiceImpl wsdlService = e.getService(serviceName);</b>
+<i>395</i>&nbsp;                if(wsdlService == null) {
+<i>396</i>&nbsp;                    throw new ServerRtException(ServerMessages.localizableRUNTIME_PARSER_WSDL_INCORRECTSERVICE(serviceName, wsdlUrl));
+<i>397</i>&nbsp;                } else {
+<i>398</i>&nbsp;                    WSDLPortImpl wsdlPort = wsdlService.get(portName);
+<i>399</i>&nbsp;                    if(wsdlPort == null) {
+<i>400</i>&nbsp;                        throw new ServerRtException(ServerMessages.localizableRUNTIME_PARSER_WSDL_INCORRECTSERVICEPORT(serviceName, portName, wsdlUrl));
+<i>401</i>&nbsp;                    } else {
+<i>402</i>&nbsp;                        return wsdlPort;
+<b class="nc"><i>403</i>&nbsp;                    }</b>
+<b class="nc"><i>404</i>&nbsp;                }</b>
+<b class="nc"><i>405</i>&nbsp;            }</b>
+<i>406</i>&nbsp;        } catch (IOException var9) {
+<i>407</i>&nbsp;            throw new ServerRtException(&quot;runtime.parser.wsdl&quot;, new Object[]{wsdlUrl, var9});
+<b class="nc"><i>408</i>&nbsp;        } catch (XMLStreamException var10) {</b>
+<b class="nc"><i>409</i>&nbsp;            throw new ServerRtException(&quot;runtime.saxparser.exception&quot;, new Object[]{var10.getMessage(), var10.getLocation(), var10});</b>
+<b class="nc"><i>410</i>&nbsp;        } catch (SAXException var11) {</b>
+<i>411</i>&nbsp;            throw new ServerRtException(&quot;runtime.parser.wsdl&quot;, new Object[]{wsdlUrl, var11});
+<i>412</i>&nbsp;        } catch (ServiceConfigurationError var12) {
+<i>413</i>&nbsp;            throw new ServerRtException(&quot;runtime.parser.wsdl&quot;, new Object[]{wsdlUrl, var12});
+<b class="nc"><i>414</i>&nbsp;        }</b>
+<b class="nc"><i>415</i>&nbsp;    }</b>
+<i>416</i>&nbsp;
+<b class="nc"><i>417</i>&nbsp;    private static final class EntityResolverImpl implements XMLEntityResolver {</b>
+<b class="nc"><i>418</i>&nbsp;        private Map&lt;String, SDDocumentSource&gt; metadata = new HashMap();</b>
+<i>419</i>&nbsp;
+<i>420</i>&nbsp;        public EntityResolverImpl(List&lt;? extends SDDocumentSource&gt; metadata) {
+<i>421</i>&nbsp;            Iterator i$ = metadata.iterator();
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;            while(i$.hasNext()) {
+<i>424</i>&nbsp;                SDDocumentSource doc = (SDDocumentSource)i$.next();
+<i>425</i>&nbsp;                this.metadata.put(doc.getSystemId().toExternalForm(), doc);
+<i>426</i>&nbsp;            }
+<b class="nc"><i>427</i>&nbsp;</b>
+<b class="nc"><i>428</i>&nbsp;        }</b>
+<b class="nc"><i>429</i>&nbsp;</b>
+<i>430</i>&nbsp;        public Parser resolveEntity(String publicId, String systemId) throws IOException, XMLStreamException {
+<b class="nc"><i>431</i>&nbsp;            if(systemId != null) {</b>
+<i>432</i>&nbsp;                SDDocumentSource doc = (SDDocumentSource)this.metadata.get(systemId);
+<i>433</i>&nbsp;                if(doc != null) {
+<i>434</i>&nbsp;                    return new Parser(doc);
+<i>435</i>&nbsp;                }
+<i>436</i>&nbsp;            }
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;            return null;
+<b class="nc"><i>439</i>&nbsp;        }</b>
+<b class="nc"><i>440</i>&nbsp;    }</b>
+<b class="nc"><i>441</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

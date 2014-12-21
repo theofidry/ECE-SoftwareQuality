@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DelegationPermission</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.security.auth.kerberos</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DelegationPermission (javax.security.auth.kerberos)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DelegationPermission</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.security.auth.kerberos;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectInputStream;
+<i>10</i>&nbsp;import java.io.ObjectOutputStream;
+<i>11</i>&nbsp;import java.io.Serializable;
+<i>12</i>&nbsp;import java.security.BasicPermission;
+<i>13</i>&nbsp;import java.security.Permission;
+<i>14</i>&nbsp;import java.security.PermissionCollection;
+<i>15</i>&nbsp;import java.util.StringTokenizer;
+<i>16</i>&nbsp;import javax.security.auth.kerberos.KrbDelegationPermissionCollection;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;public final class DelegationPermission extends BasicPermission implements Serializable {
+<i>19</i>&nbsp;    private static final long serialVersionUID = 883133252142523922L;
+<i>20</i>&nbsp;    private transient String subordinate;
+<i>21</i>&nbsp;    private transient String service;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public DelegationPermission(String var1) {
+<i>24</i>&nbsp;        super(var1);
+<i>25</i>&nbsp;        this.init(var1);
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public DelegationPermission(String var1, String var2) {
+<i>29</i>&nbsp;        super(var1, var2);
+<i>30</i>&nbsp;        this.init(var1);
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private void init(String var1) {
+<i>34</i>&nbsp;        StringTokenizer var2 = null;
+<i>35</i>&nbsp;        if(!var1.startsWith(&quot;\&quot;&quot;)) {
+<i>36</i>&nbsp;            throw new IllegalArgumentException(&quot;service principal [&quot; + var1 + &quot;] syntax invalid: &quot; + &quot;improperly quoted&quot;);
+<i>37</i>&nbsp;        } else {
+<i>38</i>&nbsp;            var2 = new StringTokenizer(var1, &quot;\&quot;&quot;, false);
+<i>39</i>&nbsp;            this.subordinate = var2.nextToken();
+<i>40</i>&nbsp;            if(var2.countTokens() == 2) {
+<i>41</i>&nbsp;                var2.nextToken();
+<i>42</i>&nbsp;                this.service = var2.nextToken();
+<i>43</i>&nbsp;            } else if(var2.countTokens() &gt; 0) {
+<i>44</i>&nbsp;                throw new IllegalArgumentException(&quot;service principal [&quot; + var2.nextToken() + &quot;] syntax invalid: &quot; + &quot;improperly quoted&quot;);
+<i>45</i>&nbsp;            }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public boolean implies(Permission var1) {
+<i>51</i>&nbsp;        if(!(var1 instanceof DelegationPermission)) {
+<i>52</i>&nbsp;            return false;
+<i>53</i>&nbsp;        } else {
+<i>54</i>&nbsp;            DelegationPermission var2 = (DelegationPermission)var1;
+<i>55</i>&nbsp;            return this.subordinate.equals(var2.subordinate) &amp;&amp; this.service.equals(var2.service);
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public boolean equals(Object var1) {
+<i>60</i>&nbsp;        if(var1 == this) {
+<i>61</i>&nbsp;            return true;
+<i>62</i>&nbsp;        } else if(!(var1 instanceof DelegationPermission)) {
+<i>63</i>&nbsp;            return false;
+<i>64</i>&nbsp;        } else {
+<i>65</i>&nbsp;            DelegationPermission var2 = (DelegationPermission)var1;
+<i>66</i>&nbsp;            return this.implies(var2);
+<b class="nc"><i>67</i>&nbsp;        }</b>
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public int hashCode() {
+<i>71</i>&nbsp;        return this.getName().hashCode();
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public PermissionCollection newPermissionCollection() {
+<i>75</i>&nbsp;        return new KrbDelegationPermissionCollection();
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    private synchronized void writeObject(ObjectOutputStream var1) throws IOException {
+<i>79</i>&nbsp;        var1.defaultWriteObject();
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private synchronized void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<i>83</i>&nbsp;        var1.defaultReadObject();
+<b class="nc"><i>84</i>&nbsp;        this.init(this.getName());</b>
+<b class="nc"><i>85</i>&nbsp;    }</b>
+<i>86</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

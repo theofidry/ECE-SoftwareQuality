@@ -1,0 +1,874 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LoaderHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.rmi.server</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LoaderHandler (sun.rmi.server)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LoaderHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 286)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LoaderHandler$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">LoaderHandler$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">LoaderHandler$Loader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">LoaderHandler$LoaderEntry</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">LoaderHandler$LoaderKey</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 21)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 336)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.rmi.server;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.File;
+<i>9</i>&nbsp;import java.io.FilePermission;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.lang.ref.ReferenceQueue;
+<i>12</i>&nbsp;import java.lang.ref.SoftReference;
+<i>13</i>&nbsp;import java.lang.ref.WeakReference;
+<i>14</i>&nbsp;import java.lang.reflect.Modifier;
+<i>15</i>&nbsp;import java.lang.reflect.Proxy;
+<i>16</i>&nbsp;import java.net.JarURLConnection;
+<i>17</i>&nbsp;import java.net.MalformedURLException;
+<i>18</i>&nbsp;import java.net.SocketPermission;
+<i>19</i>&nbsp;import java.net.URL;
+<i>20</i>&nbsp;import java.net.URLClassLoader;
+<i>21</i>&nbsp;import java.net.URLConnection;
+<i>22</i>&nbsp;import java.rmi.server.LogStream;
+<i>23</i>&nbsp;import java.security.AccessControlContext;
+<i>24</i>&nbsp;import java.security.AccessController;
+<i>25</i>&nbsp;import java.security.CodeSource;
+<i>26</i>&nbsp;import java.security.Permission;
+<i>27</i>&nbsp;import java.security.PermissionCollection;
+<i>28</i>&nbsp;import java.security.Permissions;
+<i>29</i>&nbsp;import java.security.Policy;
+<i>30</i>&nbsp;import java.security.PrivilegedAction;
+<i>31</i>&nbsp;import java.security.ProtectionDomain;
+<i>32</i>&nbsp;import java.security.cert.Certificate;
+<i>33</i>&nbsp;import java.util.Arrays;
+<i>34</i>&nbsp;import java.util.Collections;
+<i>35</i>&nbsp;import java.util.Enumeration;
+<i>36</i>&nbsp;import java.util.HashMap;
+<i>37</i>&nbsp;import java.util.IdentityHashMap;
+<i>38</i>&nbsp;import java.util.Map;
+<i>39</i>&nbsp;import java.util.PropertyPermission;
+<i>40</i>&nbsp;import java.util.StringTokenizer;
+<i>41</i>&nbsp;import java.util.WeakHashMap;
+<i>42</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>43</i>&nbsp;import sun.rmi.runtime.Log;
+<i>44</i>&nbsp;import sun.security.action.GetPropertyAction;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;public final class LoaderHandler {
+<i>47</i>&nbsp;    static final int logLevel = LogStream.parseLevel((String)AccessController.doPrivileged(new GetPropertyAction(&quot;sun.rmi.loader.logLevel&quot;)));
+<i>48</i>&nbsp;    static final Log loaderLog;
+<i>49</i>&nbsp;    private static String codebaseProperty;
+<i>50</i>&nbsp;    private static URL[] codebaseURLs;
+<b class="nc"><i>51</i>&nbsp;    private static final Map&lt;ClassLoader, Void&gt; codebaseLoaders;</b>
+<i>52</i>&nbsp;    private static final HashMap&lt;LoaderHandler.LoaderKey, LoaderHandler.LoaderEntry&gt; loaderTable;
+<i>53</i>&nbsp;    private static final ReferenceQueue&lt;LoaderHandler.Loader&gt; refQueue;
+<b class="nc"><i>54</i>&nbsp;    private static final Map&lt;String, Object[]&gt; pathToURLsCache;</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    private LoaderHandler() {
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<b class="nc"><i>59</i>&nbsp;    private static synchronized URL[] getDefaultCodebaseURLs() throws MalformedURLException {</b>
+<i>60</i>&nbsp;        if(codebaseURLs == null) {
+<i>61</i>&nbsp;            if(codebaseProperty != null) {
+<i>62</i>&nbsp;                codebaseURLs = pathToURLs(codebaseProperty);
+<i>63</i>&nbsp;            } else {
+<i>64</i>&nbsp;                codebaseURLs = new URL[0];
+<i>65</i>&nbsp;            }
+<b class="nc"><i>66</i>&nbsp;        }</b>
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;        return codebaseURLs;</b>
+<i>69</i>&nbsp;    }
+<b class="nc"><i>70</i>&nbsp;</b>
+<b class="nc"><i>71</i>&nbsp;    public static Class&lt;?&gt; loadClass(String var0, String var1, ClassLoader var2) throws MalformedURLException, ClassNotFoundException {</b>
+<i>72</i>&nbsp;        if(loaderLog.isLoggable(Log.BRIEF)) {
+<i>73</i>&nbsp;            loaderLog.log(Log.BRIEF, &quot;name = \&quot;&quot; + var1 + &quot;\&quot;, &quot; + &quot;codebase = \&quot;&quot; + (var0 != null?var0:&quot;&quot;) + &quot;\&quot;&quot; + (var2 != null?&quot;, defaultLoader = &quot; + var2:&quot;&quot;));
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;
+<b class="nc"><i>76</i>&nbsp;        URL[] var3;</b>
+<i>77</i>&nbsp;        if(var0 != null) {
+<i>78</i>&nbsp;            var3 = pathToURLs(var0);
+<b class="nc"><i>79</i>&nbsp;        } else {</b>
+<i>80</i>&nbsp;            var3 = getDefaultCodebaseURLs();
+<i>81</i>&nbsp;        }
+<b class="nc"><i>82</i>&nbsp;</b>
+<b class="nc"><i>83</i>&nbsp;        if(var2 != null) {</b>
+<b class="nc"><i>84</i>&nbsp;            try {</b>
+<i>85</i>&nbsp;                Class var4 = loadClassForName(var1, false, var2);
+<b class="nc"><i>86</i>&nbsp;                if(loaderLog.isLoggable(Log.VERBOSE)) {</b>
+<i>87</i>&nbsp;                    loaderLog.log(Log.VERBOSE, &quot;class \&quot;&quot; + var1 + &quot;\&quot; found via defaultLoader, &quot; + &quot;defined by &quot; + var4.getClassLoader());
+<i>88</i>&nbsp;                }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;                return var4;
+<i>91</i>&nbsp;            } catch (ClassNotFoundException var5) {
+<i>92</i>&nbsp;                ;
+<i>93</i>&nbsp;            }
+<i>94</i>&nbsp;        }
+<i>95</i>&nbsp;
+<b class="nc"><i>96</i>&nbsp;        return loadClass(var3, var1);</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;    public static String getClassAnnotation(Class&lt;?&gt; var0) {</b>
+<i>100</i>&nbsp;        String var1 = var0.getName();
+<i>101</i>&nbsp;        int var2 = var1.length();
+<i>102</i>&nbsp;        if(var2 &gt; 0 &amp;&amp; var1.charAt(0) == 91) {
+<i>103</i>&nbsp;            int var3;
+<b class="nc"><i>104</i>&nbsp;            for(var3 = 1; var2 &gt; var3 &amp;&amp; var1.charAt(var3) == 91; ++var3) {</b>
+<i>105</i>&nbsp;                ;
+<i>106</i>&nbsp;            }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;            if(var2 &gt; var3 &amp;&amp; var1.charAt(var3) != 76) {
+<i>109</i>&nbsp;                return null;
+<i>110</i>&nbsp;            }
+<i>111</i>&nbsp;        }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;        ClassLoader var11 = var0.getClassLoader();
+<i>114</i>&nbsp;        if(var11 != null &amp;&amp; !codebaseLoaders.containsKey(var11)) {
+<i>115</i>&nbsp;            String var4 = null;
+<i>116</i>&nbsp;            if(var11 instanceof LoaderHandler.Loader) {
+<b class="nc"><i>117</i>&nbsp;                var4 = ((LoaderHandler.Loader)var11).getClassAnnotation();</b>
+<b class="nc"><i>118</i>&nbsp;            } else if(var11 instanceof URLClassLoader) {</b>
+<b class="nc"><i>119</i>&nbsp;                try {</b>
+<i>120</i>&nbsp;                    URL[] var5 = ((URLClassLoader)var11).getURLs();
+<b class="nc"><i>121</i>&nbsp;                    if(var5 != null) {</b>
+<i>122</i>&nbsp;                        SecurityManager var6 = System.getSecurityManager();
+<i>123</i>&nbsp;                        if(var6 != null) {
+<b class="nc"><i>124</i>&nbsp;                            Permissions var7 = new Permissions();</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;                            for(int var8 = 0; var8 &lt; var5.length; ++var8) {
+<i>127</i>&nbsp;                                Permission var9 = var5[var8].openConnection().getPermission();
+<i>128</i>&nbsp;                                if(var9 != null &amp;&amp; !var7.implies(var9)) {
+<i>129</i>&nbsp;                                    var6.checkPermission(var9);
+<i>130</i>&nbsp;                                    var7.add(var9);
+<i>131</i>&nbsp;                                }
+<i>132</i>&nbsp;                            }
+<i>133</i>&nbsp;                        }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;                        var4 = urlsToPath(var5);
+<b class="nc"><i>136</i>&nbsp;                    }</b>
+<b class="nc"><i>137</i>&nbsp;                } catch (IOException | SecurityException var10) {</b>
+<i>138</i>&nbsp;                    ;
+<i>139</i>&nbsp;                }
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;            return var4 != null?var4:codebaseProperty;
+<i>143</i>&nbsp;        } else {
+<i>144</i>&nbsp;            return codebaseProperty;
+<b class="nc"><i>145</i>&nbsp;        }</b>
+<b class="nc"><i>146</i>&nbsp;    }</b>
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;    public static ClassLoader getClassLoader(String var0) throws MalformedURLException {</b>
+<i>149</i>&nbsp;        ClassLoader var1 = getRMIContextClassLoader();
+<i>150</i>&nbsp;        URL[] var2;
+<b class="nc"><i>151</i>&nbsp;        if(var0 != null) {</b>
+<i>152</i>&nbsp;            var2 = pathToURLs(var0);
+<b class="nc"><i>153</i>&nbsp;        } else {</b>
+<b class="nc"><i>154</i>&nbsp;            var2 = getDefaultCodebaseURLs();</b>
+<b class="nc"><i>155</i>&nbsp;        }</b>
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;        SecurityManager var3 = System.getSecurityManager();
+<i>158</i>&nbsp;        if(var3 != null) {
+<b class="nc"><i>159</i>&nbsp;            var3.checkPermission(new RuntimePermission(&quot;getClassLoader&quot;));</b>
+<b class="nc"><i>160</i>&nbsp;            LoaderHandler.Loader var4 = lookupLoader(var2, var1);</b>
+<i>161</i>&nbsp;            if(var4 != null) {
+<i>162</i>&nbsp;                var4.checkPermissions();
+<i>163</i>&nbsp;            }
+<b class="nc"><i>164</i>&nbsp;</b>
+<i>165</i>&nbsp;            return var4;
+<i>166</i>&nbsp;        } else {
+<i>167</i>&nbsp;            return var1;
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    public static Object getSecurityContext(ClassLoader var0) {
+<i>172</i>&nbsp;        if(var0 instanceof LoaderHandler.Loader) {
+<b class="nc"><i>173</i>&nbsp;            URL[] var1 = ((LoaderHandler.Loader)var0).getURLs();</b>
+<i>174</i>&nbsp;            if(var1.length &gt; 0) {
+<i>175</i>&nbsp;                return var1[0];
+<i>176</i>&nbsp;            }
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;        return null;
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<b class="nc"><i>182</i>&nbsp;    public static void registerCodebaseLoader(ClassLoader var0) {</b>
+<b class="nc"><i>183</i>&nbsp;        codebaseLoaders.put(var0, (Object)null);</b>
+<i>184</i>&nbsp;    }
+<b class="nc"><i>185</i>&nbsp;</b>
+<b class="nc"><i>186</i>&nbsp;    private static Class&lt;?&gt; loadClass(URL[] var0, String var1) throws ClassNotFoundException {</b>
+<b class="nc"><i>187</i>&nbsp;        ClassLoader var2 = getRMIContextClassLoader();</b>
+<i>188</i>&nbsp;        if(loaderLog.isLoggable(Log.VERBOSE)) {
+<b class="nc"><i>189</i>&nbsp;            loaderLog.log(Log.VERBOSE, &quot;(thread context class loader: &quot; + var2 + &quot;)&quot;);</b>
+<b class="nc"><i>190</i>&nbsp;        }</b>
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;        SecurityManager var3 = System.getSecurityManager();
+<i>193</i>&nbsp;        if(var3 == null) {
+<i>194</i>&nbsp;            try {
+<i>195</i>&nbsp;                Class var11 = loadClassForName(var1, false, var2);
+<i>196</i>&nbsp;                if(loaderLog.isLoggable(Log.VERBOSE)) {
+<i>197</i>&nbsp;                    loaderLog.log(Log.VERBOSE, &quot;class \&quot;&quot; + var1 + &quot;\&quot; found via &quot; + &quot;thread context class loader &quot; + &quot;(no security manager: codebase disabled), &quot; + &quot;defined by &quot; + var11.getClassLoader());
+<i>198</i>&nbsp;                }
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;                return var11;</b>
+<b class="nc"><i>201</i>&nbsp;            } catch (ClassNotFoundException var9) {</b>
+<b class="nc"><i>202</i>&nbsp;                if(loaderLog.isLoggable(Log.BRIEF)) {</b>
+<i>203</i>&nbsp;                    loaderLog.log(Log.BRIEF, &quot;class \&quot;&quot; + var1 + &quot;\&quot; not found via &quot; + &quot;thread context class loader &quot; + &quot;(no security manager: codebase disabled)&quot;, var9);
+<i>204</i>&nbsp;                }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;                throw new ClassNotFoundException(var9.getMessage() + &quot; (no security manager: RMI class loader disabled)&quot;, var9.getException());
+<i>207</i>&nbsp;            }
+<i>208</i>&nbsp;        } else {
+<b class="nc"><i>209</i>&nbsp;            LoaderHandler.Loader var4 = lookupLoader(var0, var2);</b>
+<b class="nc"><i>210</i>&nbsp;</b>
+<i>211</i>&nbsp;            try {
+<i>212</i>&nbsp;                if(var4 != null) {
+<i>213</i>&nbsp;                    var4.checkPermissions();
+<i>214</i>&nbsp;                }
+<i>215</i>&nbsp;            } catch (SecurityException var10) {
+<b class="nc"><i>216</i>&nbsp;                try {</b>
+<i>217</i>&nbsp;                    Class var6 = loadClassForName(var1, false, var2);
+<b class="nc"><i>218</i>&nbsp;                    if(loaderLog.isLoggable(Log.VERBOSE)) {</b>
+<i>219</i>&nbsp;                        loaderLog.log(Log.VERBOSE, &quot;class \&quot;&quot; + var1 + &quot;\&quot; found via &quot; + &quot;thread context class loader &quot; + &quot;(access to codebase denied), &quot; + &quot;defined by &quot; + var6.getClassLoader());
+<b class="nc"><i>220</i>&nbsp;                    }</b>
+<b class="nc"><i>221</i>&nbsp;</b>
+<i>222</i>&nbsp;                    return var6;
+<i>223</i>&nbsp;                } catch (ClassNotFoundException var7) {
+<i>224</i>&nbsp;                    if(loaderLog.isLoggable(Log.BRIEF)) {
+<i>225</i>&nbsp;                        loaderLog.log(Log.BRIEF, &quot;class \&quot;&quot; + var1 + &quot;\&quot; not found via &quot; + &quot;thread context class loader &quot; + &quot;(access to codebase denied)&quot;, var10);
+<i>226</i>&nbsp;                    }
+<b class="nc"><i>227</i>&nbsp;</b>
+<b class="nc"><i>228</i>&nbsp;                    throw new ClassNotFoundException(&quot;access to class loader denied&quot;, var10);</b>
+<b class="nc"><i>229</i>&nbsp;                }</b>
+<b class="nc"><i>230</i>&nbsp;            }</b>
+<b class="nc"><i>231</i>&nbsp;</b>
+<i>232</i>&nbsp;            try {
+<b class="nc"><i>233</i>&nbsp;                Class var5 = loadClassForName(var1, false, var4);</b>
+<b class="nc"><i>234</i>&nbsp;                if(loaderLog.isLoggable(Log.VERBOSE)) {</b>
+<b class="nc"><i>235</i>&nbsp;                    loaderLog.log(Log.VERBOSE, &quot;class \&quot;&quot; + var1 + &quot;\&quot; &quot; + &quot;found via codebase, &quot; + &quot;defined by &quot; + var5.getClassLoader());</b>
+<b class="nc"><i>236</i>&nbsp;                }</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;                return var5;
+<i>239</i>&nbsp;            } catch (ClassNotFoundException var8) {
+<i>240</i>&nbsp;                if(loaderLog.isLoggable(Log.BRIEF)) {
+<i>241</i>&nbsp;                    loaderLog.log(Log.BRIEF, &quot;class \&quot;&quot; + var1 + &quot;\&quot; not found via codebase&quot;, var8);
+<b class="nc"><i>242</i>&nbsp;                }</b>
+<i>243</i>&nbsp;
+<b class="nc"><i>244</i>&nbsp;                throw var8;</b>
+<i>245</i>&nbsp;            }
+<i>246</i>&nbsp;        }
+<i>247</i>&nbsp;    }
+<i>248</i>&nbsp;
+<b class="nc"><i>249</i>&nbsp;    public static Class&lt;?&gt; loadProxyClass(String var0, String[] var1, ClassLoader var2) throws MalformedURLException, ClassNotFoundException {</b>
+<i>250</i>&nbsp;        if(loaderLog.isLoggable(Log.BRIEF)) {
+<i>251</i>&nbsp;            loaderLog.log(Log.BRIEF, &quot;interfaces = &quot; + Arrays.asList(var1) + &quot;, &quot; + &quot;codebase = \&quot;&quot; + (var0 != null?var0:&quot;&quot;) + &quot;\&quot;&quot; + (var2 != null?&quot;, defaultLoader = &quot; + var2:&quot;&quot;));
+<i>252</i>&nbsp;        }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;        ClassLoader var3 = getRMIContextClassLoader();
+<i>255</i>&nbsp;        if(loaderLog.isLoggable(Log.VERBOSE)) {
+<b class="nc"><i>256</i>&nbsp;            loaderLog.log(Log.VERBOSE, &quot;(thread context class loader: &quot; + var3 + &quot;)&quot;);</b>
+<i>257</i>&nbsp;        }
+<i>258</i>&nbsp;
+<b class="nc"><i>259</i>&nbsp;        URL[] var4;</b>
+<b class="nc"><i>260</i>&nbsp;        if(var0 != null) {</b>
+<i>261</i>&nbsp;            var4 = pathToURLs(var0);
+<b class="nc"><i>262</i>&nbsp;        } else {</b>
+<i>263</i>&nbsp;            var4 = getDefaultCodebaseURLs();
+<i>264</i>&nbsp;        }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;        SecurityManager var5 = System.getSecurityManager();
+<i>267</i>&nbsp;        if(var5 == null) {
+<i>268</i>&nbsp;            try {
+<i>269</i>&nbsp;                Class var13 = loadProxyClass(var1, var2, var3, false);
+<i>270</i>&nbsp;                if(loaderLog.isLoggable(Log.VERBOSE)) {
+<i>271</i>&nbsp;                    loaderLog.log(Log.VERBOSE, &quot;(no security manager: codebase disabled) proxy class defined by &quot; + var13.getClassLoader());
+<i>272</i>&nbsp;                }
+<i>273</i>&nbsp;
+<b class="nc"><i>274</i>&nbsp;                return var13;</b>
+<i>275</i>&nbsp;            } catch (ClassNotFoundException var10) {
+<i>276</i>&nbsp;                if(loaderLog.isLoggable(Log.BRIEF)) {
+<b class="nc"><i>277</i>&nbsp;                    loaderLog.log(Log.BRIEF, &quot;(no security manager: codebase disabled) proxy class resolution failed&quot;, var10);</b>
+<b class="nc"><i>278</i>&nbsp;                }</b>
+<i>279</i>&nbsp;
+<b class="nc"><i>280</i>&nbsp;                throw new ClassNotFoundException(var10.getMessage() + &quot; (no security manager: RMI class loader disabled)&quot;, var10.getException());</b>
+<i>281</i>&nbsp;            }
+<i>282</i>&nbsp;        } else {
+<i>283</i>&nbsp;            LoaderHandler.Loader var6 = lookupLoader(var4, var3);
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;            try {
+<i>286</i>&nbsp;                if(var6 != null) {
+<b class="nc"><i>287</i>&nbsp;                    var6.checkPermissions();</b>
+<b class="nc"><i>288</i>&nbsp;                }</b>
+<b class="nc"><i>289</i>&nbsp;            } catch (SecurityException var12) {</b>
+<i>290</i>&nbsp;                try {
+<i>291</i>&nbsp;                    Class var8 = loadProxyClass(var1, var2, var3, false);
+<i>292</i>&nbsp;                    if(loaderLog.isLoggable(Log.VERBOSE)) {
+<i>293</i>&nbsp;                        loaderLog.log(Log.VERBOSE, &quot;(access to codebase denied) proxy class defined by &quot; + var8.getClassLoader());
+<i>294</i>&nbsp;                    }
+<b class="nc"><i>295</i>&nbsp;</b>
+<i>296</i>&nbsp;                    return var8;
+<i>297</i>&nbsp;                } catch (ClassNotFoundException var11) {
+<b class="nc"><i>298</i>&nbsp;                    if(loaderLog.isLoggable(Log.BRIEF)) {</b>
+<i>299</i>&nbsp;                        loaderLog.log(Log.BRIEF, &quot;(access to codebase denied) proxy class resolution failed&quot;, var12);
+<i>300</i>&nbsp;                    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;                    throw new ClassNotFoundException(&quot;access to class loader denied&quot;, var12);
+<b class="nc"><i>303</i>&nbsp;                }</b>
+<b class="nc"><i>304</i>&nbsp;            }</b>
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;            try {
+<b class="nc"><i>307</i>&nbsp;                Class var7 = loadProxyClass(var1, var2, var6, true);</b>
+<i>308</i>&nbsp;                if(loaderLog.isLoggable(Log.VERBOSE)) {
+<i>309</i>&nbsp;                    loaderLog.log(Log.VERBOSE, &quot;proxy class defined by &quot; + var7.getClassLoader());
+<i>310</i>&nbsp;                }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;                return var7;
+<i>313</i>&nbsp;            } catch (ClassNotFoundException var9) {
+<i>314</i>&nbsp;                if(loaderLog.isLoggable(Log.BRIEF)) {
+<i>315</i>&nbsp;                    loaderLog.log(Log.BRIEF, &quot;proxy class resolution failed&quot;, var9);
+<i>316</i>&nbsp;                }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;                throw var9;
+<i>319</i>&nbsp;            }
+<b class="nc"><i>320</i>&nbsp;        }</b>
+<b class="nc"><i>321</i>&nbsp;    }</b>
+<b class="nc"><i>322</i>&nbsp;</b>
+<b class="nc"><i>323</i>&nbsp;    private static Class&lt;?&gt; loadProxyClass(String[] var0, ClassLoader var1, ClassLoader var2, boolean var3) throws ClassNotFoundException {</b>
+<i>324</i>&nbsp;        ClassLoader var4 = null;
+<i>325</i>&nbsp;        Class[] var5 = new Class[var0.length];
+<b class="nc"><i>326</i>&nbsp;        boolean[] var6 = new boolean[]{false};</b>
+<i>327</i>&nbsp;        ClassLoader[] var7;
+<i>328</i>&nbsp;        int var8;
+<i>329</i>&nbsp;        if(var1 != null) {
+<i>330</i>&nbsp;            label62: {
+<i>331</i>&nbsp;                try {
+<i>332</i>&nbsp;                    var4 = loadProxyInterfaces(var0, var1, var5, var6);
+<i>333</i>&nbsp;                    if(loaderLog.isLoggable(Log.VERBOSE)) {
+<b class="nc"><i>334</i>&nbsp;                        var7 = new ClassLoader[var5.length];</b>
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;                        for(var8 = 0; var8 &lt; var7.length; ++var8) {
+<i>337</i>&nbsp;                            var7[var8] = var5[var8].getClassLoader();
+<i>338</i>&nbsp;                        }
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;                        loaderLog.log(Log.VERBOSE, &quot;proxy interfaces found via defaultLoader, defined by &quot; + Arrays.asList(var7));
+<i>341</i>&nbsp;                    }
+<i>342</i>&nbsp;                } catch (ClassNotFoundException var10) {
+<i>343</i>&nbsp;                    break label62;
+<b class="nc"><i>344</i>&nbsp;                }</b>
+<b class="nc"><i>345</i>&nbsp;</b>
+<b class="nc"><i>346</i>&nbsp;                if(!var6[0]) {</b>
+<i>347</i>&nbsp;                    if(var3) {
+<i>348</i>&nbsp;                        try {
+<i>349</i>&nbsp;                            return Proxy.getProxyClass(var2, var5);
+<i>350</i>&nbsp;                        } catch (IllegalArgumentException var9) {
+<i>351</i>&nbsp;                            ;
+<i>352</i>&nbsp;                        }
+<i>353</i>&nbsp;                    }
+<i>354</i>&nbsp;
+<b class="nc"><i>355</i>&nbsp;                    var4 = var1;</b>
+<b class="nc"><i>356</i>&nbsp;                }</b>
+<i>357</i>&nbsp;
+<b class="nc"><i>358</i>&nbsp;                return loadProxyClass(var4, var5);</b>
+<b class="nc"><i>359</i>&nbsp;            }</b>
+<b class="nc"><i>360</i>&nbsp;        }</b>
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;        var6[0] = false;
+<i>363</i>&nbsp;        var4 = loadProxyInterfaces(var0, var2, var5, var6);
+<i>364</i>&nbsp;        if(loaderLog.isLoggable(Log.VERBOSE)) {
+<i>365</i>&nbsp;            var7 = new ClassLoader[var5.length];
+<b class="nc"><i>366</i>&nbsp;</b>
+<b class="nc"><i>367</i>&nbsp;            for(var8 = 0; var8 &lt; var7.length; ++var8) {</b>
+<b class="nc"><i>368</i>&nbsp;                var7[var8] = var5[var8].getClassLoader();</b>
+<b class="nc"><i>369</i>&nbsp;            }</b>
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;            loaderLog.log(Log.VERBOSE, &quot;proxy interfaces found via codebase, defined by &quot; + Arrays.asList(var7));
+<i>372</i>&nbsp;        }
+<i>373</i>&nbsp;
+<b class="nc"><i>374</i>&nbsp;        if(!var6[0]) {</b>
+<i>375</i>&nbsp;            var4 = var2;
+<i>376</i>&nbsp;        }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;        return loadProxyClass(var4, var5);
+<i>379</i>&nbsp;    }
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    private static Class&lt;?&gt; loadProxyClass(ClassLoader var0, Class[] var1) throws ClassNotFoundException {
+<i>382</i>&nbsp;        try {
+<i>383</i>&nbsp;            return Proxy.getProxyClass(var0, var1);
+<b class="nc"><i>384</i>&nbsp;        } catch (IllegalArgumentException var3) {</b>
+<i>385</i>&nbsp;            throw new ClassNotFoundException(&quot;error creating dynamic proxy class&quot;, var3);
+<i>386</i>&nbsp;        }
+<b class="nc"><i>387</i>&nbsp;    }</b>
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;    private static ClassLoader loadProxyInterfaces(String[] var0, ClassLoader var1, Class[] var2, boolean[] var3) throws ClassNotFoundException {
+<i>390</i>&nbsp;        ClassLoader var4 = null;
+<b class="nc"><i>391</i>&nbsp;</b>
+<i>392</i>&nbsp;        for(int var5 = 0; var5 &lt; var0.length; ++var5) {
+<b class="nc"><i>393</i>&nbsp;            Class var6 = var2[var5] = loadClassForName(var0[var5], false, var1);</b>
+<i>394</i>&nbsp;            if(!Modifier.isPublic(var6.getModifiers())) {
+<i>395</i>&nbsp;                ClassLoader var7 = var6.getClassLoader();
+<i>396</i>&nbsp;                if(loaderLog.isLoggable(Log.VERBOSE)) {
+<i>397</i>&nbsp;                    loaderLog.log(Log.VERBOSE, &quot;non-public interface \&quot;&quot; + var0[var5] + &quot;\&quot; defined by &quot; + var7);
+<i>398</i>&nbsp;                }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;                if(!var3[0]) {
+<i>401</i>&nbsp;                    var4 = var7;
+<i>402</i>&nbsp;                    var3[0] = true;
+<i>403</i>&nbsp;                } else if(var7 != var4) {
+<i>404</i>&nbsp;                    throw new IllegalAccessError(&quot;non-public interfaces defined in different class loaders&quot;);
+<i>405</i>&nbsp;                }
+<i>406</i>&nbsp;            }
+<b class="nc"><i>407</i>&nbsp;        }</b>
+<b class="nc"><i>408</i>&nbsp;</b>
+<b class="nc"><i>409</i>&nbsp;        return var4;</b>
+<i>410</i>&nbsp;    }
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    private static URL[] pathToURLs(String var0) throws MalformedURLException {
+<i>413</i>&nbsp;        Map var1 = pathToURLsCache;
+<i>414</i>&nbsp;        synchronized(pathToURLsCache) {
+<b class="nc"><i>415</i>&nbsp;            Object[] var2 = (Object[])pathToURLsCache.get(var0);</b>
+<b class="nc"><i>416</i>&nbsp;            if(var2 != null) {</b>
+<i>417</i>&nbsp;                return (URL[])((URL[])var2[0]);
+<i>418</i>&nbsp;            }
+<i>419</i>&nbsp;        }
+<i>420</i>&nbsp;
+<b class="nc"><i>421</i>&nbsp;        StringTokenizer var7 = new StringTokenizer(var0);</b>
+<b class="nc"><i>422</i>&nbsp;        URL[] var8 = new URL[var7.countTokens()];</b>
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;        for(int var3 = 0; var7.hasMoreTokens(); ++var3) {
+<i>425</i>&nbsp;            var8[var3] = new URL(var7.nextToken());
+<i>426</i>&nbsp;        }
+<b class="nc"><i>427</i>&nbsp;</b>
+<i>428</i>&nbsp;        Map var9 = pathToURLsCache;
+<i>429</i>&nbsp;        synchronized(pathToURLsCache) {
+<b class="nc"><i>430</i>&nbsp;            pathToURLsCache.put(var0, new Object[]{var8, new SoftReference(var0)});</b>
+<i>431</i>&nbsp;            return var8;
+<i>432</i>&nbsp;        }
+<b class="nc"><i>433</i>&nbsp;    }</b>
+<b class="nc"><i>434</i>&nbsp;</b>
+<b class="nc"><i>435</i>&nbsp;    private static String urlsToPath(URL[] var0) {</b>
+<i>436</i>&nbsp;        if(var0.length == 0) {
+<i>437</i>&nbsp;            return null;
+<i>438</i>&nbsp;        } else if(var0.length == 1) {
+<b class="nc"><i>439</i>&nbsp;            return var0[0].toExternalForm();</b>
+<b class="nc"><i>440</i>&nbsp;        } else {</b>
+<b class="nc"><i>441</i>&nbsp;            StringBuffer var1 = new StringBuffer(var0[0].toExternalForm());</b>
+<b class="nc"><i>442</i>&nbsp;</b>
+<i>443</i>&nbsp;            for(int var2 = 1; var2 &lt; var0.length; ++var2) {
+<i>444</i>&nbsp;                var1.append(&#39; &#39;);
+<b class="nc"><i>445</i>&nbsp;                var1.append(var0[var2].toExternalForm());</b>
+<i>446</i>&nbsp;            }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;            return var1.toString();
+<i>449</i>&nbsp;        }
+<i>450</i>&nbsp;    }
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;    private static ClassLoader getRMIContextClassLoader() {
+<i>453</i>&nbsp;        return Thread.currentThread().getContextClassLoader();
+<i>454</i>&nbsp;    }
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;    private static LoaderHandler.Loader lookupLoader(final URL[] var0, final ClassLoader var1) {
+<i>457</i>&nbsp;        Class var4 = LoaderHandler.class;
+<i>458</i>&nbsp;        synchronized(LoaderHandler.class) {
+<b class="nc"><i>459</i>&nbsp;            LoaderHandler.LoaderEntry var2;</b>
+<b class="nc"><i>460</i>&nbsp;            while((var2 = (LoaderHandler.LoaderEntry)refQueue.poll()) != null) {</b>
+<i>461</i>&nbsp;                if(!var2.removed) {
+<i>462</i>&nbsp;                    loaderTable.remove(var2.key);
+<i>463</i>&nbsp;                }
+<i>464</i>&nbsp;            }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;            LoaderHandler.LoaderKey var5 = new LoaderHandler.LoaderKey(var0, var1);
+<i>467</i>&nbsp;            var2 = (LoaderHandler.LoaderEntry)loaderTable.get(var5);
+<i>468</i>&nbsp;            LoaderHandler.Loader var3;
+<i>469</i>&nbsp;            if(var2 == null || (var3 = (LoaderHandler.Loader)var2.get()) == null) {
+<i>470</i>&nbsp;                if(var2 != null) {
+<i>471</i>&nbsp;                    loaderTable.remove(var5);
+<i>472</i>&nbsp;                    var2.removed = true;
+<i>473</i>&nbsp;                }
+<i>474</i>&nbsp;
+<i>475</i>&nbsp;                AccessControlContext var6 = getLoaderAccessControlContext(var0);
+<i>476</i>&nbsp;                var3 = (LoaderHandler.Loader)AccessController.doPrivileged(new PrivilegedAction() {
+<i>477</i>&nbsp;                    public LoaderHandler.Loader run() {
+<i>478</i>&nbsp;                        return new LoaderHandler.Loader(var0, var1, null);
+<i>479</i>&nbsp;                    }
+<i>480</i>&nbsp;                }, var6);
+<i>481</i>&nbsp;                var2 = new LoaderHandler.LoaderEntry(var5, var3);
+<i>482</i>&nbsp;                loaderTable.put(var5, var2);
+<i>483</i>&nbsp;            }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;            return var3;
+<i>486</i>&nbsp;        }
+<i>487</i>&nbsp;    }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    private static AccessControlContext getLoaderAccessControlContext(URL[] var0) {
+<i>490</i>&nbsp;        PermissionCollection var1 = (PermissionCollection)AccessController.doPrivileged(new PrivilegedAction() {
+<i>491</i>&nbsp;            public PermissionCollection run() {
+<i>492</i>&nbsp;                CodeSource var1 = new CodeSource((URL)null, (Certificate[])null);
+<i>493</i>&nbsp;                Policy var2 = Policy.getPolicy();
+<i>494</i>&nbsp;                return (PermissionCollection)(var2 != null?var2.getPermissions(var1):new Permissions());
+<i>495</i>&nbsp;            }
+<i>496</i>&nbsp;        });
+<i>497</i>&nbsp;        var1.add(new RuntimePermission(&quot;createClassLoader&quot;));
+<i>498</i>&nbsp;        var1.add(new PropertyPermission(&quot;java.*&quot;, &quot;read&quot;));
+<i>499</i>&nbsp;        addPermissionsForURLs(var0, var1, true);
+<b class="nc"><i>500</i>&nbsp;        ProtectionDomain var2 = new ProtectionDomain(new CodeSource(var0.length &gt; 0?var0[0]:null, (Certificate[])null), var1);</b>
+<b class="nc"><i>501</i>&nbsp;        return new AccessControlContext(new ProtectionDomain[]{var2});</b>
+<b class="nc"><i>502</i>&nbsp;    }</b>
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;    public static void addPermissionsForURLs(URL[] var0, PermissionCollection var1, boolean var2) {
+<i>505</i>&nbsp;        for(int var3 = 0; var3 &lt; var0.length; ++var3) {
+<i>506</i>&nbsp;            URL var4 = var0[var3];
+<b class="nc"><i>507</i>&nbsp;</b>
+<b class="nc"><i>508</i>&nbsp;            try {</b>
+<i>509</i>&nbsp;                URLConnection var5 = var4.openConnection();
+<b class="nc"><i>510</i>&nbsp;                Permission var6 = var5.getPermission();</b>
+<i>511</i>&nbsp;                if(var6 != null) {
+<i>512</i>&nbsp;                    if(var6 instanceof FilePermission) {
+<i>513</i>&nbsp;                        String var7 = var6.getName();
+<i>514</i>&nbsp;                        int var8 = var7.lastIndexOf(File.separatorChar);
+<i>515</i>&nbsp;                        if(var8 != -1) {
+<i>516</i>&nbsp;                            var7 = var7.substring(0, var8 + 1);
+<b class="nc"><i>517</i>&nbsp;                            if(var7.endsWith(File.separator)) {</b>
+<b class="nc"><i>518</i>&nbsp;                                var7 = var7 + &quot;-&quot;;</b>
+<i>519</i>&nbsp;                            }
+<b class="nc"><i>520</i>&nbsp;</b>
+<i>521</i>&nbsp;                            FilePermission var9 = new FilePermission(var7, &quot;read&quot;);
+<b class="nc"><i>522</i>&nbsp;                            if(!var1.implies(var9)) {</b>
+<b class="nc"><i>523</i>&nbsp;                                var1.add(var9);</b>
+<i>524</i>&nbsp;                            }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;                            var1.add(new FilePermission(var7, &quot;read&quot;));
+<b class="nc"><i>527</i>&nbsp;                        } else if(!var1.implies(var6)) {</b>
+<b class="nc"><i>528</i>&nbsp;                            var1.add(var6);</b>
+<b class="nc"><i>529</i>&nbsp;                        }</b>
+<b class="nc"><i>530</i>&nbsp;                    } else {</b>
+<i>531</i>&nbsp;                        if(!var1.implies(var6)) {
+<i>532</i>&nbsp;                            var1.add(var6);
+<i>533</i>&nbsp;                        }
+<b class="nc"><i>534</i>&nbsp;</b>
+<i>535</i>&nbsp;                        if(var2) {
+<i>536</i>&nbsp;                            URL var12 = var4;
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;                            for(URLConnection var11 = var5; var11 instanceof JarURLConnection; var11 = var12.openConnection()) {
+<i>539</i>&nbsp;                                var12 = ((JarURLConnection)var11).getJarFileURL();
+<i>540</i>&nbsp;                            }
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;                            String var14 = var12.getHost();
+<i>543</i>&nbsp;                            if(var14 != null &amp;&amp; var6.implies(new SocketPermission(var14, &quot;resolve&quot;))) {
+<b class="nc"><i>544</i>&nbsp;                                SocketPermission var13 = new SocketPermission(var14, &quot;connect,accept&quot;);</b>
+<i>545</i>&nbsp;                                if(!var1.implies(var13)) {
+<i>546</i>&nbsp;                                    var1.add(var13);
+<b class="nc"><i>547</i>&nbsp;                                }</b>
+<i>548</i>&nbsp;                            }
+<i>549</i>&nbsp;                        }
+<i>550</i>&nbsp;                    }
+<b class="nc"><i>551</i>&nbsp;                }</b>
+<i>552</i>&nbsp;            } catch (IOException var10) {
+<b class="nc"><i>553</i>&nbsp;                ;</b>
+<i>554</i>&nbsp;            }
+<i>555</i>&nbsp;        }
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;    }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;    private static Class&lt;?&gt; loadClassForName(String var0, boolean var1, ClassLoader var2) throws ClassNotFoundException {
+<i>560</i>&nbsp;        if(var2 == null) {
+<i>561</i>&nbsp;            ReflectUtil.checkPackageAccess(var0);
+<i>562</i>&nbsp;        }
+<i>563</i>&nbsp;
+<i>564</i>&nbsp;        return Class.forName(var0, var1, var2);
+<i>565</i>&nbsp;    }
+<i>566</i>&nbsp;
+<b class="nc"><i>567</i>&nbsp;    static {</b>
+<i>568</i>&nbsp;        loaderLog = Log.getLog(&quot;sun.rmi.loader&quot;, &quot;loader&quot;, logLevel);
+<b class="nc"><i>569</i>&nbsp;        codebaseProperty = null;</b>
+<b class="nc"><i>570</i>&nbsp;        String var0 = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;java.rmi.server.codebase&quot;));</b>
+<i>571</i>&nbsp;        if(var0 != null &amp;&amp; var0.trim().length() &gt; 0) {
+<i>572</i>&nbsp;            codebaseProperty = var0;
+<i>573</i>&nbsp;        }
+<b class="nc"><i>574</i>&nbsp;</b>
+<b class="nc"><i>575</i>&nbsp;        codebaseURLs = null;</b>
+<i>576</i>&nbsp;        codebaseLoaders = Collections.synchronizedMap(new IdentityHashMap(5));
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;        for(ClassLoader var1 = ClassLoader.getSystemClassLoader(); var1 != null; var1 = var1.getParent()) {
+<i>579</i>&nbsp;            codebaseLoaders.put(var1, (Object)null);
+<b class="nc"><i>580</i>&nbsp;        }</b>
+<b class="nc"><i>581</i>&nbsp;</b>
+<i>582</i>&nbsp;        loaderTable = new HashMap(5);
+<i>583</i>&nbsp;        refQueue = new ReferenceQueue();
+<i>584</i>&nbsp;        pathToURLsCache = new WeakHashMap(5);
+<b class="nc"><i>585</i>&nbsp;    }</b>
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;    private static class Loader extends URLClassLoader {
+<b class="nc"><i>588</i>&nbsp;        private ClassLoader parent;</b>
+<i>589</i>&nbsp;        private String annotation;
+<i>590</i>&nbsp;        private Permissions permissions;
+<b class="nc"><i>591</i>&nbsp;</b>
+<b class="nc"><i>592</i>&nbsp;        private Loader(URL[] var1, ClassLoader var2) {</b>
+<b class="nc"><i>593</i>&nbsp;            super(var1, var2);</b>
+<i>594</i>&nbsp;            this.parent = var2;
+<i>595</i>&nbsp;            this.permissions = new Permissions();
+<b class="nc"><i>596</i>&nbsp;            LoaderHandler.addPermissionsForURLs(var1, this.permissions, false);</b>
+<b class="nc"><i>597</i>&nbsp;            this.annotation = LoaderHandler.urlsToPath(var1);</b>
+<b class="nc"><i>598</i>&nbsp;        }</b>
+<b class="nc"><i>599</i>&nbsp;</b>
+<i>600</i>&nbsp;        public String getClassAnnotation() {
+<i>601</i>&nbsp;            return this.annotation;
+<b class="nc"><i>602</i>&nbsp;        }</b>
+<i>603</i>&nbsp;
+<i>604</i>&nbsp;        private void checkPermissions() {
+<i>605</i>&nbsp;            SecurityManager var1 = System.getSecurityManager();
+<i>606</i>&nbsp;            if(var1 != null) {
+<i>607</i>&nbsp;                Enumeration var2 = this.permissions.elements();
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;                while(var2.hasMoreElements()) {
+<i>610</i>&nbsp;                    var1.checkPermission((Permission)var2.nextElement());
+<i>611</i>&nbsp;                }
+<i>612</i>&nbsp;            }
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;        }
+<i>615</i>&nbsp;
+<i>616</i>&nbsp;        protected PermissionCollection getPermissions(CodeSource var1) {
+<i>617</i>&nbsp;            PermissionCollection var2 = super.getPermissions(var1);
+<b class="nc"><i>618</i>&nbsp;            return var2;</b>
+<b class="nc"><i>619</i>&nbsp;        }</b>
+<b class="nc"><i>620</i>&nbsp;</b>
+<i>621</i>&nbsp;        public String toString() {
+<i>622</i>&nbsp;            return super.toString() + &quot;[\&quot;&quot; + this.annotation + &quot;\&quot;]&quot;;
+<b class="nc"><i>623</i>&nbsp;        }</b>
+<i>624</i>&nbsp;
+<b class="nc"><i>625</i>&nbsp;        protected Class&lt;?&gt; loadClass(String var1, boolean var2) throws ClassNotFoundException {</b>
+<i>626</i>&nbsp;            if(this.parent == null) {
+<i>627</i>&nbsp;                ReflectUtil.checkPackageAccess(var1);
+<b class="nc"><i>628</i>&nbsp;            }</b>
+<b class="nc"><i>629</i>&nbsp;</b>
+<i>630</i>&nbsp;            return super.loadClass(var1, var2);
+<b class="nc"><i>631</i>&nbsp;        }</b>
+<b class="nc"><i>632</i>&nbsp;    }</b>
+<i>633</i>&nbsp;
+<b class="nc"><i>634</i>&nbsp;    private static class LoaderEntry extends WeakReference&lt;LoaderHandler.Loader&gt; {</b>
+<i>635</i>&nbsp;        public LoaderHandler.LoaderKey key;
+<i>636</i>&nbsp;        public boolean removed = false;
+<i>637</i>&nbsp;
+<b class="nc"><i>638</i>&nbsp;        public LoaderEntry(LoaderHandler.LoaderKey var1, LoaderHandler.Loader var2) {</b>
+<b class="nc"><i>639</i>&nbsp;            super(var2, LoaderHandler.refQueue);</b>
+<b class="nc"><i>640</i>&nbsp;            this.key = var1;</b>
+<b class="nc"><i>641</i>&nbsp;        }</b>
+<b class="nc"><i>642</i>&nbsp;    }</b>
+<i>643</i>&nbsp;
+<b class="nc"><i>644</i>&nbsp;    private static class LoaderKey {</b>
+<b class="nc"><i>645</i>&nbsp;        private URL[] urls;</b>
+<i>646</i>&nbsp;        private ClassLoader parent;
+<i>647</i>&nbsp;        private int hashValue;
+<b class="nc"><i>648</i>&nbsp;</b>
+<i>649</i>&nbsp;        public LoaderKey(URL[] var1, ClassLoader var2) {
+<b class="nc"><i>650</i>&nbsp;            this.urls = var1;</b>
+<i>651</i>&nbsp;            this.parent = var2;
+<i>652</i>&nbsp;            if(var2 != null) {
+<b class="nc"><i>653</i>&nbsp;                this.hashValue = var2.hashCode();</b>
+<b class="nc"><i>654</i>&nbsp;            }</b>
+<i>655</i>&nbsp;
+<b class="nc"><i>656</i>&nbsp;            for(int var3 = 0; var3 &lt; var1.length; ++var3) {</b>
+<b class="nc"><i>657</i>&nbsp;                this.hashValue ^= var1[var3].hashCode();</b>
+<b class="nc"><i>658</i>&nbsp;            }</b>
+<b class="nc"><i>659</i>&nbsp;</b>
+<i>660</i>&nbsp;        }
+<b class="nc"><i>661</i>&nbsp;</b>
+<i>662</i>&nbsp;        public int hashCode() {
+<i>663</i>&nbsp;            return this.hashValue;
+<i>664</i>&nbsp;        }
+<b class="nc"><i>665</i>&nbsp;</b>
+<b class="nc"><i>666</i>&nbsp;        public boolean equals(Object var1) {</b>
+<i>667</i>&nbsp;            if(var1 instanceof LoaderHandler.LoaderKey) {
+<b class="nc"><i>668</i>&nbsp;                LoaderHandler.LoaderKey var2 = (LoaderHandler.LoaderKey)var1;</b>
+<i>669</i>&nbsp;                if(this.parent != var2.parent) {
+<i>670</i>&nbsp;                    return false;
+<i>671</i>&nbsp;                } else if(this.urls == var2.urls) {
+<i>672</i>&nbsp;                    return true;
+<i>673</i>&nbsp;                } else if(this.urls.length != var2.urls.length) {
+<i>674</i>&nbsp;                    return false;
+<i>675</i>&nbsp;                } else {
+<i>676</i>&nbsp;                    for(int var3 = 0; var3 &lt; this.urls.length; ++var3) {
+<i>677</i>&nbsp;                        if(!this.urls[var3].equals(var2.urls[var3])) {
+<i>678</i>&nbsp;                            return false;
+<b class="nc"><i>679</i>&nbsp;                        }</b>
+<b class="nc"><i>680</i>&nbsp;                    }</b>
+<b class="nc"><i>681</i>&nbsp;</b>
+<i>682</i>&nbsp;                    return true;
+<i>683</i>&nbsp;                }
+<i>684</i>&nbsp;            } else {
+<i>685</i>&nbsp;                return false;
+<i>686</i>&nbsp;            }
+<i>687</i>&nbsp;        }
+<i>688</i>&nbsp;    }
+<i>689</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

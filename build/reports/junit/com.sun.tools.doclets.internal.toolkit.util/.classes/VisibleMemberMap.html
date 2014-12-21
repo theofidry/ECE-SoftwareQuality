@@ -1,0 +1,689 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VisibleMemberMap</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.doclets.internal.toolkit.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VisibleMemberMap (com.sun.tools.doclets.internal.toolkit.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VisibleMemberMap</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 66)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">VisibleMemberMap$ClassMember</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">VisibleMemberMap$ClassMembers</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 87)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 164)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.doclets.internal.toolkit.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.javadoc.AnnotationTypeDoc;
+<i>9</i>&nbsp;import com.sun.javadoc.AnnotationTypeElementDoc;
+<i>10</i>&nbsp;import com.sun.javadoc.ClassDoc;
+<i>11</i>&nbsp;import com.sun.javadoc.ExecutableMemberDoc;
+<i>12</i>&nbsp;import com.sun.javadoc.FieldDoc;
+<i>13</i>&nbsp;import com.sun.javadoc.MethodDoc;
+<i>14</i>&nbsp;import com.sun.javadoc.ProgramElementDoc;
+<i>15</i>&nbsp;import com.sun.javadoc.Tag;
+<i>16</i>&nbsp;import com.sun.tools.doclets.internal.toolkit.Configuration;
+<i>17</i>&nbsp;import com.sun.tools.doclets.internal.toolkit.util.Util;
+<i>18</i>&nbsp;import java.util.ArrayList;
+<i>19</i>&nbsp;import java.util.Arrays;
+<i>20</i>&nbsp;import java.util.HashMap;
+<i>21</i>&nbsp;import java.util.HashSet;
+<i>22</i>&nbsp;import java.util.Iterator;
+<i>23</i>&nbsp;import java.util.List;
+<i>24</i>&nbsp;import java.util.Map;
+<i>25</i>&nbsp;import java.util.Set;
+<i>26</i>&nbsp;import java.util.regex.Pattern;
+<i>27</i>&nbsp;
+<b class="nc"><i>28</i>&nbsp;public class VisibleMemberMap {</b>
+<i>29</i>&nbsp;    private boolean noVisibleMembers = true;
+<b class="nc"><i>30</i>&nbsp;    public static final int INNERCLASSES = 0;</b>
+<i>31</i>&nbsp;    public static final int ENUM_CONSTANTS = 1;
+<i>32</i>&nbsp;    public static final int FIELDS = 2;
+<i>33</i>&nbsp;    public static final int CONSTRUCTORS = 3;
+<i>34</i>&nbsp;    public static final int METHODS = 4;
+<i>35</i>&nbsp;    public static final int ANNOTATION_TYPE_MEMBER_OPTIONAL = 5;
+<i>36</i>&nbsp;    public static final int ANNOTATION_TYPE_MEMBER_REQUIRED = 6;
+<i>37</i>&nbsp;    public static final int PROPERTIES = 7;
+<i>38</i>&nbsp;    public static final int NUM_MEMBER_TYPES = 8;
+<i>39</i>&nbsp;    public static final String STARTLEVEL = &quot;start&quot;;
+<i>40</i>&nbsp;    private final List&lt;ClassDoc&gt; visibleClasses = new ArrayList();
+<i>41</i>&nbsp;    private final Map&lt;Object, Map&lt;ProgramElementDoc, String&gt;&gt; memberNameMap = new HashMap();
+<i>42</i>&nbsp;    private final Map&lt;ClassDoc, VisibleMemberMap.ClassMembers&gt; classMap = new HashMap();
+<i>43</i>&nbsp;    private final ClassDoc classdoc;
+<i>44</i>&nbsp;    private final int kind;
+<i>45</i>&nbsp;    private final boolean nodepr;
+<i>46</i>&nbsp;    private static final Map&lt;ClassDoc, ProgramElementDoc[]&gt; propertiesCache = new HashMap();
+<i>47</i>&nbsp;    private static final Map&lt;ProgramElementDoc, ProgramElementDoc&gt; classPropertiesMap = new HashMap();
+<i>48</i>&nbsp;    private static final Map&lt;ProgramElementDoc, VisibleMemberMap.GetterSetter&gt; getterSetterMap = new HashMap();
+<i>49</i>&nbsp;
+<b class="nc"><i>50</i>&nbsp;    public VisibleMemberMap(ClassDoc var1, int var2, boolean var3) {</b>
+<i>51</i>&nbsp;        this.classdoc = var1;
+<i>52</i>&nbsp;        this.nodepr = var3;
+<i>53</i>&nbsp;        this.kind = var2;
+<i>54</i>&nbsp;        (new VisibleMemberMap.ClassMembers(var1, &quot;start&quot;)).build();
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<b class="nc"><i>57</i>&nbsp;    public List&lt;ClassDoc&gt; getVisibleClassesList() {</b>
+<i>58</i>&nbsp;        this.sort(this.visibleClasses);
+<i>59</i>&nbsp;        return this.visibleClasses;
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;    public ProgramElementDoc getPropertyMemberDoc(ProgramElementDoc var1) {</b>
+<i>63</i>&nbsp;        return (ProgramElementDoc)classPropertiesMap.get(var1);
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public ProgramElementDoc getGetterForProperty(ProgramElementDoc var1) {
+<i>67</i>&nbsp;        return ((VisibleMemberMap.GetterSetter)getterSetterMap.get(var1)).getGetter();
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public ProgramElementDoc getSetterForProperty(ProgramElementDoc var1) {
+<i>71</i>&nbsp;        return ((VisibleMemberMap.GetterSetter)getterSetterMap.get(var1)).getSetter();
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    private List&lt;ProgramElementDoc&gt; getInheritedPackagePrivateMethods(Configuration var1) {
+<i>75</i>&nbsp;        ArrayList var2 = new ArrayList();
+<i>76</i>&nbsp;        Iterator var3 = this.visibleClasses.iterator();
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        while(var3.hasNext()) {
+<i>79</i>&nbsp;            ClassDoc var4 = (ClassDoc)var3.next();
+<i>80</i>&nbsp;            if(var4 != this.classdoc &amp;&amp; var4.isPackagePrivate() &amp;&amp; !Util.isLinkable(var4, var1)) {
+<i>81</i>&nbsp;                var2.addAll(this.getMembersFor(var4));
+<i>82</i>&nbsp;            }
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;        return var2;
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public List&lt;ProgramElementDoc&gt; getLeafClassMembers(Configuration var1) {
+<b class="nc"><i>89</i>&nbsp;        List var2 = this.getMembersFor(this.classdoc);</b>
+<b class="nc"><i>90</i>&nbsp;        var2.addAll(this.getInheritedPackagePrivateMethods(var1));</b>
+<b class="nc"><i>91</i>&nbsp;        return var2;</b>
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;    public List&lt;ProgramElementDoc&gt; getMembersFor(ClassDoc var1) {
+<i>95</i>&nbsp;        VisibleMemberMap.ClassMembers var2 = (VisibleMemberMap.ClassMembers)this.classMap.get(var1);
+<i>96</i>&nbsp;        return (List)(var2 == null?new ArrayList():var2.getMembers());
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    private void sort(List&lt;ClassDoc&gt; var1) {
+<i>100</i>&nbsp;        ArrayList var2 = new ArrayList();
+<i>101</i>&nbsp;        ArrayList var3 = new ArrayList();
+<b class="nc"><i>102</i>&nbsp;</b>
+<b class="nc"><i>103</i>&nbsp;        for(int var4 = 0; var4 &lt; var1.size(); ++var4) {</b>
+<i>104</i>&nbsp;            ClassDoc var5 = (ClassDoc)var1.get(var4);
+<i>105</i>&nbsp;            if(var5.isClass()) {
+<i>106</i>&nbsp;                var2.add(var5);
+<i>107</i>&nbsp;            } else {
+<i>108</i>&nbsp;                var3.add(var5);
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;        }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;        var1.clear();
+<i>113</i>&nbsp;        var1.addAll(var2);
+<b class="nc"><i>114</i>&nbsp;        var1.addAll(var3);</b>
+<b class="nc"><i>115</i>&nbsp;    }</b>
+<b class="nc"><i>116</i>&nbsp;</b>
+<b class="nc"><i>117</i>&nbsp;    private void fillMemberLevelMap(List&lt;ProgramElementDoc&gt; var1, String var2) {</b>
+<i>118</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.size(); ++var3) {
+<i>119</i>&nbsp;            Object var4 = this.getMemberKey((ProgramElementDoc)var1.get(var3));
+<i>120</i>&nbsp;            Object var5 = (Map)this.memberNameMap.get(var4);
+<i>121</i>&nbsp;            if(var5 == null) {
+<b class="nc"><i>122</i>&nbsp;                var5 = new HashMap();</b>
+<i>123</i>&nbsp;                this.memberNameMap.put(var4, var5);
+<b class="nc"><i>124</i>&nbsp;            }</b>
+<b class="nc"><i>125</i>&nbsp;</b>
+<i>126</i>&nbsp;            ((Map)var5).put(var1.get(var3), var2);
+<i>127</i>&nbsp;        }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    private void purgeMemberLevelMap(List&lt;ProgramElementDoc&gt; var1, String var2) {
+<i>132</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.size(); ++var3) {
+<i>133</i>&nbsp;            Object var4 = this.getMemberKey((ProgramElementDoc)var1.get(var3));
+<i>134</i>&nbsp;            Map var5 = (Map)this.memberNameMap.get(var4);
+<i>135</i>&nbsp;            if(var2.equals(var5.get(var1.get(var3)))) {
+<b class="nc"><i>136</i>&nbsp;                var5.remove(var1.get(var3));</b>
+<b class="nc"><i>137</i>&nbsp;            }</b>
+<b class="nc"><i>138</i>&nbsp;        }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    public boolean noVisibleMembers() {
+<i>143</i>&nbsp;        return Configuration.getJavafxJavadoc()?false:this.noVisibleMembers;
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    private VisibleMemberMap.ClassMember getClassMember(MethodDoc var1) {
+<i>147</i>&nbsp;        Iterator var2 = this.memberNameMap.keySet().iterator();
+<i>148</i>&nbsp;
+<b class="nc"><i>149</i>&nbsp;        Object var3;</b>
+<b class="nc"><i>150</i>&nbsp;        do {</b>
+<b class="nc"><i>151</i>&nbsp;            if(!var2.hasNext()) {</b>
+<i>152</i>&nbsp;                return new VisibleMemberMap.ClassMember(var1);
+<b class="nc"><i>153</i>&nbsp;            }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;            var3 = var2.next();
+<i>156</i>&nbsp;        } while(var3 instanceof String || !((VisibleMemberMap.ClassMember)var3).isEqual(var1));
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;        return (VisibleMemberMap.ClassMember)var3;
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;    private Object getMemberKey(ProgramElementDoc var1) {</b>
+<b class="nc"><i>162</i>&nbsp;        if(var1.isConstructor()) {</b>
+<b class="nc"><i>163</i>&nbsp;            return var1.name() + ((ExecutableMemberDoc)var1).signature();</b>
+<b class="nc"><i>164</i>&nbsp;        } else if(var1.isMethod()) {</b>
+<b class="nc"><i>165</i>&nbsp;            return this.getClassMember((MethodDoc)var1);</b>
+<b class="nc"><i>166</i>&nbsp;        } else if(!var1.isField() &amp;&amp; !var1.isEnumConstant() &amp;&amp; !var1.isAnnotationTypeElement()) {</b>
+<i>167</i>&nbsp;            String var2 = var1.name();
+<b class="nc"><i>168</i>&nbsp;            var2 = var2.indexOf(46) != 0?var2.substring(var2.lastIndexOf(46), var2.length()):var2;</b>
+<i>169</i>&nbsp;            return &quot;clint&quot; + var2;
+<i>170</i>&nbsp;        } else {
+<b class="nc"><i>171</i>&nbsp;            return var1.name();</b>
+<b class="nc"><i>172</i>&nbsp;        }</b>
+<b class="nc"><i>173</i>&nbsp;    }</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    private class GetterSetter {
+<i>176</i>&nbsp;        private final ProgramElementDoc getter;
+<b class="nc"><i>177</i>&nbsp;        private final ProgramElementDoc setter;</b>
+<b class="nc"><i>178</i>&nbsp;</b>
+<b class="nc"><i>179</i>&nbsp;        public GetterSetter(ProgramElementDoc var2, ProgramElementDoc var3) {</b>
+<b class="nc"><i>180</i>&nbsp;            this.getter = var2;</b>
+<b class="nc"><i>181</i>&nbsp;            this.setter = var3;</b>
+<b class="nc"><i>182</i>&nbsp;        }</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;        public ProgramElementDoc getGetter() {</b>
+<i>185</i>&nbsp;            return this.getter;
+<i>186</i>&nbsp;        }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;        public ProgramElementDoc getSetter() {
+<b class="nc"><i>189</i>&nbsp;            return this.setter;</b>
+<b class="nc"><i>190</i>&nbsp;        }</b>
+<b class="nc"><i>191</i>&nbsp;    }</b>
+<b class="nc"><i>192</i>&nbsp;</b>
+<b class="nc"><i>193</i>&nbsp;    private class ClassMembers {</b>
+<i>194</i>&nbsp;        private ClassDoc mappingClass;
+<i>195</i>&nbsp;        private List&lt;ProgramElementDoc&gt; members;
+<i>196</i>&nbsp;        private String level;
+<i>197</i>&nbsp;        private final Pattern pattern;
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;        public List&lt;ProgramElementDoc&gt; getMembers() {
+<i>200</i>&nbsp;            return this.members;
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;        private ClassMembers(ClassDoc var2, String var3) {
+<i>204</i>&nbsp;            this.members = new ArrayList();
+<b class="nc"><i>205</i>&nbsp;            this.pattern = Pattern.compile(&quot;[sg]et\\p{Upper}.*&quot;);</b>
+<b class="nc"><i>206</i>&nbsp;            this.mappingClass = var2;</b>
+<b class="nc"><i>207</i>&nbsp;            this.level = var3;</b>
+<i>208</i>&nbsp;            if(VisibleMemberMap.this.classMap.containsKey(var2) &amp;&amp; var3.startsWith(((VisibleMemberMap.ClassMembers)VisibleMemberMap.this.classMap.get(var2)).level)) {
+<i>209</i>&nbsp;                VisibleMemberMap.this.purgeMemberLevelMap(this.getClassMembers(var2, false), ((VisibleMemberMap.ClassMembers)VisibleMemberMap.this.classMap.get(var2)).level);
+<i>210</i>&nbsp;                VisibleMemberMap.this.classMap.remove(var2);
+<b class="nc"><i>211</i>&nbsp;                VisibleMemberMap.this.visibleClasses.remove(var2);</b>
+<i>212</i>&nbsp;            }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;            if(!VisibleMemberMap.this.classMap.containsKey(var2)) {
+<b class="nc"><i>215</i>&nbsp;                VisibleMemberMap.this.classMap.put(var2, this);</b>
+<b class="nc"><i>216</i>&nbsp;                VisibleMemberMap.this.visibleClasses.add(var2);</b>
+<b class="nc"><i>217</i>&nbsp;            }</b>
+<b class="nc"><i>218</i>&nbsp;</b>
+<b class="nc"><i>219</i>&nbsp;        }</b>
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;        private void build() {</b>
+<b class="nc"><i>222</i>&nbsp;            if(VisibleMemberMap.this.kind == 3) {</b>
+<i>223</i>&nbsp;                this.addMembers(this.mappingClass);
+<i>224</i>&nbsp;            } else {
+<i>225</i>&nbsp;                this.mapClass();
+<i>226</i>&nbsp;            }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;        }
+<i>229</i>&nbsp;
+<b class="nc"><i>230</i>&nbsp;        private void mapClass() {</b>
+<i>231</i>&nbsp;            this.addMembers(this.mappingClass);
+<i>232</i>&nbsp;            ClassDoc[] var1 = this.mappingClass.interfaces();
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;            for(int var2 = 0; var2 &lt; var1.length; ++var2) {
+<i>235</i>&nbsp;                String var3 = this.level + 1;
+<i>236</i>&nbsp;                VisibleMemberMap.ClassMembers var4 = VisibleMemberMap.this.new ClassMembers(var1[var2], var3);
+<i>237</i>&nbsp;                var4.mapClass();
+<i>238</i>&nbsp;            }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;            if(this.mappingClass.isClass()) {
+<b class="nc"><i>241</i>&nbsp;                ClassDoc var5 = this.mappingClass.superclass();</b>
+<i>242</i>&nbsp;                if(var5 != null &amp;&amp; !this.mappingClass.equals(var5)) {
+<i>243</i>&nbsp;                    VisibleMemberMap.ClassMembers var6 = VisibleMemberMap.this.new ClassMembers(var5, this.level + &quot;c&quot;);
+<i>244</i>&nbsp;                    var6.mapClass();
+<i>245</i>&nbsp;                }
+<i>246</i>&nbsp;            }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;        }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;        private void addMembers(ClassDoc var1) {
+<i>251</i>&nbsp;            List var2 = this.getClassMembers(var1, true);
+<i>252</i>&nbsp;            ArrayList var3 = new ArrayList();
+<i>253</i>&nbsp;
+<b class="nc"><i>254</i>&nbsp;            for(int var4 = 0; var4 &lt; var2.size(); ++var4) {</b>
+<i>255</i>&nbsp;                ProgramElementDoc var5 = (ProgramElementDoc)var2.get(var4);
+<i>256</i>&nbsp;                if(!this.found(this.members, var5) &amp;&amp; this.memberIsVisible(var5) &amp;&amp; !this.isOverridden(var5, this.level) &amp;&amp; !this.isTreatedAsPrivate(var5)) {
+<b class="nc"><i>257</i>&nbsp;                    var3.add(var5);</b>
+<b class="nc"><i>258</i>&nbsp;                }</b>
+<b class="nc"><i>259</i>&nbsp;            }</b>
+<b class="nc"><i>260</i>&nbsp;</b>
+<i>261</i>&nbsp;            if(var3.size() &gt; 0) {
+<i>262</i>&nbsp;                VisibleMemberMap.this.noVisibleMembers = false;
+<i>263</i>&nbsp;            }
+<b class="nc"><i>264</i>&nbsp;</b>
+<i>265</i>&nbsp;            this.members.addAll(var3);
+<b class="nc"><i>266</i>&nbsp;            VisibleMemberMap.this.fillMemberLevelMap(this.getClassMembers(var1, false), this.level);</b>
+<b class="nc"><i>267</i>&nbsp;        }</b>
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;        private boolean isTreatedAsPrivate(ProgramElementDoc var1) {</b>
+<b class="nc"><i>270</i>&nbsp;            if(!Configuration.getJavafxJavadoc()) {</b>
+<b class="nc"><i>271</i>&nbsp;                return false;</b>
+<i>272</i>&nbsp;            } else if(!var1.isPrivate() &amp;&amp; !var1.isPackagePrivate()) {
+<i>273</i>&nbsp;                Tag[] var2 = var1.tags(&quot;@treatAsPrivate&quot;);
+<i>274</i>&nbsp;                boolean var3 = var2 != null &amp;&amp; var2.length &gt; 0;
+<i>275</i>&nbsp;                return var3;
+<i>276</i>&nbsp;            } else {
+<b class="nc"><i>277</i>&nbsp;                return true;</b>
+<b class="nc"><i>278</i>&nbsp;            }</b>
+<i>279</i>&nbsp;        }
+<b class="nc"><i>280</i>&nbsp;</b>
+<i>281</i>&nbsp;        private boolean memberIsVisible(ProgramElementDoc var1) {
+<i>282</i>&nbsp;            return var1.containingClass().equals(VisibleMemberMap.this.classdoc)?true:(var1.isPrivate()?false:(var1.isPackagePrivate()?var1.containingClass().containingPackage().equals(VisibleMemberMap.this.classdoc.containingPackage()):true));
+<i>283</i>&nbsp;        }
+<i>284</i>&nbsp;
+<b class="nc"><i>285</i>&nbsp;        private List&lt;ProgramElementDoc&gt; getClassMembers(ClassDoc var1, boolean var2) {</b>
+<b class="nc"><i>286</i>&nbsp;            if(var1.isEnum() &amp;&amp; VisibleMemberMap.this.kind == 3) {</b>
+<b class="nc"><i>287</i>&nbsp;                return Arrays.asList(new ProgramElementDoc[0]);</b>
+<b class="nc"><i>288</i>&nbsp;            } else {</b>
+<b class="nc"><i>289</i>&nbsp;                Object var3 = null;</b>
+<b class="nc"><i>290</i>&nbsp;                switch(VisibleMemberMap.this.kind) {</b>
+<i>291</i>&nbsp;                case 0:
+<b class="nc"><i>292</i>&nbsp;                    var3 = var1.innerClasses(var2);</b>
+<b class="nc"><i>293</i>&nbsp;                    break;</b>
+<b class="nc"><i>294</i>&nbsp;                case 1:</b>
+<b class="nc"><i>295</i>&nbsp;                    var3 = var1.enumConstants();</b>
+<i>296</i>&nbsp;                    break;
+<b class="nc"><i>297</i>&nbsp;                case 2:</b>
+<i>298</i>&nbsp;                    var3 = var1.fields(var2);
+<i>299</i>&nbsp;                    break;
+<i>300</i>&nbsp;                case 3:
+<i>301</i>&nbsp;                    var3 = var1.constructors();
+<i>302</i>&nbsp;                    break;
+<i>303</i>&nbsp;                case 4:
+<i>304</i>&nbsp;                    var3 = var1.methods(var2);
+<i>305</i>&nbsp;                    this.checkOnPropertiesTags((MethodDoc[])((MethodDoc[])var3));
+<i>306</i>&nbsp;                    break;
+<i>307</i>&nbsp;                case 5:
+<i>308</i>&nbsp;                    var3 = var1.isAnnotationType()?this.filter((AnnotationTypeDoc)var1, false):new AnnotationTypeElementDoc[0];
+<i>309</i>&nbsp;                    break;
+<i>310</i>&nbsp;                case 6:
+<b class="nc"><i>311</i>&nbsp;                    var3 = var1.isAnnotationType()?this.filter((AnnotationTypeDoc)var1, true):new AnnotationTypeElementDoc[0];</b>
+<b class="nc"><i>312</i>&nbsp;                    break;</b>
+<b class="nc"><i>313</i>&nbsp;                case 7:</b>
+<b class="nc"><i>314</i>&nbsp;                    var3 = this.properties(var1, var2);</b>
+<i>315</i>&nbsp;                    break;
+<b class="nc"><i>316</i>&nbsp;                default:</b>
+<i>317</i>&nbsp;                    var3 = new ProgramElementDoc[0];
+<i>318</i>&nbsp;                }
+<b class="nc"><i>319</i>&nbsp;</b>
+<i>320</i>&nbsp;                return VisibleMemberMap.this.nodepr?Util.excludeDeprecatedMembersAsList((ProgramElementDoc[])var3):Arrays.asList((Object[])var3);
+<i>321</i>&nbsp;            }
+<b class="nc"><i>322</i>&nbsp;        }</b>
+<b class="nc"><i>323</i>&nbsp;</b>
+<i>324</i>&nbsp;        private AnnotationTypeElementDoc[] filter(AnnotationTypeDoc var1, boolean var2) {
+<b class="nc"><i>325</i>&nbsp;            AnnotationTypeElementDoc[] var3 = var1.elements();</b>
+<b class="nc"><i>326</i>&nbsp;            ArrayList var4 = new ArrayList();</b>
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;            for(int var5 = 0; var5 &lt; var3.length; ++var5) {
+<i>329</i>&nbsp;                if(var2 &amp;&amp; var3[var5].defaultValue() == null || !var2 &amp;&amp; var3[var5].defaultValue() != null) {
+<i>330</i>&nbsp;                    var4.add(var3[var5]);
+<i>331</i>&nbsp;                }
+<i>332</i>&nbsp;            }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;            return (AnnotationTypeElementDoc[])var4.toArray(new AnnotationTypeElementDoc[0]);
+<i>335</i>&nbsp;        }
+<b class="nc"><i>336</i>&nbsp;</b>
+<i>337</i>&nbsp;        private boolean found(List&lt;ProgramElementDoc&gt; var1, ProgramElementDoc var2) {
+<i>338</i>&nbsp;            for(int var3 = 0; var3 &lt; var1.size(); ++var3) {
+<b class="nc"><i>339</i>&nbsp;                ProgramElementDoc var4 = (ProgramElementDoc)var1.get(var3);</b>
+<b class="nc"><i>340</i>&nbsp;                if(Util.matches(var4, var2)) {</b>
+<i>341</i>&nbsp;                    return true;
+<i>342</i>&nbsp;                }
+<b class="nc"><i>343</i>&nbsp;            }</b>
+<b class="nc"><i>344</i>&nbsp;</b>
+<i>345</i>&nbsp;            return false;
+<i>346</i>&nbsp;        }
+<b class="nc"><i>347</i>&nbsp;</b>
+<i>348</i>&nbsp;        private boolean isOverridden(ProgramElementDoc var1, String var2) {
+<i>349</i>&nbsp;            Map var3 = (Map)VisibleMemberMap.this.memberNameMap.get(VisibleMemberMap.this.getMemberKey(var1));
+<i>350</i>&nbsp;            if(var3 == null) {
+<b class="nc"><i>351</i>&nbsp;                return false;</b>
+<i>352</i>&nbsp;            } else {
+<i>353</i>&nbsp;                String var4 = null;
+<i>354</i>&nbsp;                Iterator var5 = var3.values().iterator();
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;                do {
+<i>357</i>&nbsp;                    if(!var5.hasNext()) {
+<i>358</i>&nbsp;                        return false;
+<b class="nc"><i>359</i>&nbsp;                    }</b>
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;                    var4 = (String)var5.next();
+<b class="nc"><i>362</i>&nbsp;                } while(!var4.equals(&quot;start&quot;) &amp;&amp; (!var2.startsWith(var4) || var2.equals(var4)));</b>
+<i>363</i>&nbsp;
+<b class="nc"><i>364</i>&nbsp;                return true;</b>
+<b class="nc"><i>365</i>&nbsp;            }</b>
+<i>366</i>&nbsp;        }
+<b class="nc"><i>367</i>&nbsp;</b>
+<i>368</i>&nbsp;        private ProgramElementDoc[] properties(ClassDoc var1, boolean var2) {
+<i>369</i>&nbsp;            MethodDoc[] var3 = var1.methods(var2);
+<b class="nc"><i>370</i>&nbsp;            FieldDoc[] var4 = var1.fields();</b>
+<i>371</i>&nbsp;            if(VisibleMemberMap.propertiesCache.containsKey(var1)) {
+<b class="nc"><i>372</i>&nbsp;                return (ProgramElementDoc[])VisibleMemberMap.propertiesCache.get(var1);</b>
+<i>373</i>&nbsp;            } else {
+<i>374</i>&nbsp;                ArrayList var5 = new ArrayList();
+<b class="nc"><i>375</i>&nbsp;                MethodDoc[] var6 = var3;</b>
+<i>376</i>&nbsp;                int var7 = var3.length;
+<b class="nc"><i>377</i>&nbsp;</b>
+<b class="nc"><i>378</i>&nbsp;                for(int var8 = 0; var8 &lt; var7; ++var8) {</b>
+<i>379</i>&nbsp;                    MethodDoc var9 = var6[var8];
+<b class="nc"><i>380</i>&nbsp;                    if(this.isPropertyMethod(var9)) {</b>
+<b class="nc"><i>381</i>&nbsp;                        MethodDoc var10 = this.getterForField(var3, var9);</b>
+<i>382</i>&nbsp;                        MethodDoc var11 = this.setterForField(var3, var9);
+<b class="nc"><i>383</i>&nbsp;                        FieldDoc var12 = this.fieldForProperty(var4, var9);</b>
+<b class="nc"><i>384</i>&nbsp;                        this.addToPropertiesMap(var11, var10, var9, var12);</b>
+<i>385</i>&nbsp;                        VisibleMemberMap.getterSetterMap.put(var9, VisibleMemberMap.this.new GetterSetter(var10, var11));
+<b class="nc"><i>386</i>&nbsp;                        var5.add(var9);</b>
+<b class="nc"><i>387</i>&nbsp;                    }</b>
+<i>388</i>&nbsp;                }
+<b class="nc"><i>389</i>&nbsp;</b>
+<b class="nc"><i>390</i>&nbsp;                ProgramElementDoc[] var13 = (ProgramElementDoc[])var5.toArray(new ProgramElementDoc[var5.size()]);</b>
+<i>391</i>&nbsp;                VisibleMemberMap.propertiesCache.put(var1, var13);
+<b class="nc"><i>392</i>&nbsp;                return var13;</b>
+<i>393</i>&nbsp;            }
+<b class="nc"><i>394</i>&nbsp;        }</b>
+<b class="nc"><i>395</i>&nbsp;</b>
+<i>396</i>&nbsp;        private void addToPropertiesMap(MethodDoc var1, MethodDoc var2, MethodDoc var3, FieldDoc var4) {
+<b class="nc"><i>397</i>&nbsp;            if(var4 != null &amp;&amp; var4.getRawCommentText() != null &amp;&amp; var4.getRawCommentText().length() != 0) {</b>
+<i>398</i>&nbsp;                this.addToPropertiesMap(var2, var4);
+<i>399</i>&nbsp;                this.addToPropertiesMap(var1, var4);
+<i>400</i>&nbsp;                this.addToPropertiesMap(var3, var4);
+<i>401</i>&nbsp;            } else {
+<i>402</i>&nbsp;                this.addToPropertiesMap(var1, var3);
+<i>403</i>&nbsp;                this.addToPropertiesMap(var2, var3);
+<i>404</i>&nbsp;            }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;        }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;        private void addToPropertiesMap(ProgramElementDoc var1, ProgramElementDoc var2) {
+<i>409</i>&nbsp;            if(null != var1 &amp;&amp; null != var2) {
+<i>410</i>&nbsp;                String var3 = var1.getRawCommentText();
+<i>411</i>&nbsp;                if(null == var3 || 0 == var3.length()) {
+<i>412</i>&nbsp;                    VisibleMemberMap.classPropertiesMap.put(var1, var2);
+<b class="nc"><i>413</i>&nbsp;                }</b>
+<b class="nc"><i>414</i>&nbsp;</b>
+<b class="nc"><i>415</i>&nbsp;            }</b>
+<b class="nc"><i>416</i>&nbsp;        }</b>
+<i>417</i>&nbsp;
+<b class="nc"><i>418</i>&nbsp;        private MethodDoc getterForField(MethodDoc[] var1, MethodDoc var2) {</b>
+<i>419</i>&nbsp;            String var3 = var2.name();
+<i>420</i>&nbsp;            String var4 = var3.substring(0, var3.lastIndexOf(&quot;Property&quot;));
+<b class="nc"><i>421</i>&nbsp;            String var5 = &quot;&quot; + Character.toUpperCase(var4.charAt(0)) + var4.substring(1);</b>
+<i>422</i>&nbsp;            String var7 = var2.returnType().toString();
+<i>423</i>&nbsp;            String var6;
+<i>424</i>&nbsp;            if(!&quot;boolean&quot;.equals(var7) &amp;&amp; !var7.endsWith(&quot;BooleanProperty&quot;)) {
+<i>425</i>&nbsp;                var6 = &quot;get&quot; + var5;
+<b class="nc"><i>426</i>&nbsp;            } else {</b>
+<b class="nc"><i>427</i>&nbsp;                var6 = &quot;is&quot; + var5;</b>
+<b class="nc"><i>428</i>&nbsp;            }</b>
+<b class="nc"><i>429</i>&nbsp;</b>
+<i>430</i>&nbsp;            MethodDoc[] var8 = var1;
+<i>431</i>&nbsp;            int var9 = var1.length;
+<b class="nc"><i>432</i>&nbsp;</b>
+<i>433</i>&nbsp;            for(int var10 = 0; var10 &lt; var9; ++var10) {
+<i>434</i>&nbsp;                MethodDoc var11 = var8[var10];
+<i>435</i>&nbsp;                if(var6.equals(var11.name()) &amp;&amp; 0 == var11.parameters().length &amp;&amp; (var11.isPublic() || var11.isProtected())) {
+<i>436</i>&nbsp;                    return var11;
+<i>437</i>&nbsp;                }
+<i>438</i>&nbsp;            }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;            return null;
+<i>441</i>&nbsp;        }
+<b class="nc"><i>442</i>&nbsp;</b>
+<b class="nc"><i>443</i>&nbsp;        private MethodDoc setterForField(MethodDoc[] var1, MethodDoc var2) {</b>
+<b class="nc"><i>444</i>&nbsp;            String var3 = var2.name();</b>
+<b class="nc"><i>445</i>&nbsp;            String var4 = var3.substring(0, var3.lastIndexOf(&quot;Property&quot;));</b>
+<b class="nc"><i>446</i>&nbsp;            String var5 = &quot;&quot; + Character.toUpperCase(var4.charAt(0)) + var4.substring(1);</b>
+<b class="nc"><i>447</i>&nbsp;            String var6 = &quot;set&quot; + var5;</b>
+<b class="nc"><i>448</i>&nbsp;            MethodDoc[] var7 = var1;</b>
+<b class="nc"><i>449</i>&nbsp;            int var8 = var1.length;</b>
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;            for(int var9 = 0; var9 &lt; var8; ++var9) {
+<b class="nc"><i>452</i>&nbsp;                MethodDoc var10 = var7[var9];</b>
+<i>453</i>&nbsp;                if(var6.equals(var10.name()) &amp;&amp; 1 == var10.parameters().length &amp;&amp; &quot;void&quot;.equals(var10.returnType().simpleTypeName()) &amp;&amp; (var10.isPublic() || var10.isProtected())) {
+<i>454</i>&nbsp;                    return var10;
+<b class="nc"><i>455</i>&nbsp;                }</b>
+<i>456</i>&nbsp;            }
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;            return null;
+<i>459</i>&nbsp;        }
+<i>460</i>&nbsp;
+<i>461</i>&nbsp;        private FieldDoc fieldForProperty(FieldDoc[] var1, MethodDoc var2) {
+<i>462</i>&nbsp;            FieldDoc[] var3 = var1;
+<i>463</i>&nbsp;            int var4 = var1.length;
+<i>464</i>&nbsp;
+<b class="nc"><i>465</i>&nbsp;            for(int var5 = 0; var5 &lt; var4; ++var5) {</b>
+<i>466</i>&nbsp;                FieldDoc var6 = var3[var5];
+<i>467</i>&nbsp;                String var7 = var6.name();
+<i>468</i>&nbsp;                String var8 = var7 + &quot;Property&quot;;
+<b class="nc"><i>469</i>&nbsp;                if(var8.equals(var2.name())) {</b>
+<b class="nc"><i>470</i>&nbsp;                    return var6;</b>
+<b class="nc"><i>471</i>&nbsp;                }</b>
+<b class="nc"><i>472</i>&nbsp;            }</b>
+<b class="nc"><i>473</i>&nbsp;</b>
+<b class="nc"><i>474</i>&nbsp;            return null;</b>
+<i>475</i>&nbsp;        }
+<b class="nc"><i>476</i>&nbsp;</b>
+<b class="nc"><i>477</i>&nbsp;        private boolean isPropertyMethod(MethodDoc var1) {</b>
+<i>478</i>&nbsp;            return !var1.name().endsWith(&quot;Property&quot;)?false:(!this.memberIsVisible(var1)?false:(this.pattern.matcher(var1.name()).matches()?false:0 == var1.parameters().length &amp;&amp; !&quot;void&quot;.equals(var1.returnType().simpleTypeName())));
+<i>479</i>&nbsp;        }
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;        private void checkOnPropertiesTags(MethodDoc[] var1) {
+<i>482</i>&nbsp;            MethodDoc[] var2 = var1;
+<i>483</i>&nbsp;            int var3 = var1.length;
+<b class="nc"><i>484</i>&nbsp;            int var4 = 0;</b>
+<b class="nc"><i>485</i>&nbsp;</b>
+<b class="nc"><i>486</i>&nbsp;            while(var4 &lt; var3) {</b>
+<b class="nc"><i>487</i>&nbsp;                MethodDoc var5 = var2[var4];</b>
+<b class="nc"><i>488</i>&nbsp;                Tag[] var6 = var5.tags();</b>
+<b class="nc"><i>489</i>&nbsp;                int var7 = var6.length;</b>
+<i>490</i>&nbsp;                int var8 = 0;
+<b class="nc"><i>491</i>&nbsp;</b>
+<i>492</i>&nbsp;                while(true) {
+<b class="nc"><i>493</i>&nbsp;                    if(var8 &lt; var7) {</b>
+<b class="nc"><i>494</i>&nbsp;                        Tag var9 = var6[var8];</b>
+<i>495</i>&nbsp;                        String var10 = var9.name();
+<i>496</i>&nbsp;                        if(!var10.equals(&quot;@propertySetter&quot;) &amp;&amp; !var10.equals(&quot;@propertyGetter&quot;) &amp;&amp; !var10.equals(&quot;@propertyDescription&quot;)) {
+<i>497</i>&nbsp;                            ++var8;
+<i>498</i>&nbsp;                            continue;
+<i>499</i>&nbsp;                        }
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;                        if(!this.isPropertyGetterOrSetter(var1, var5)) {
+<i>502</i>&nbsp;                            System.out.println(var5.containingClass().qualifiedName() + &quot;: &quot; + Util.RESOURCE_BUNDLE.getString(&quot;doclet.javafx_tag_misuse&quot;));
+<i>503</i>&nbsp;                        }
+<i>504</i>&nbsp;                    }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;                    ++var4;
+<i>507</i>&nbsp;                    break;
+<i>508</i>&nbsp;                }
+<i>509</i>&nbsp;            }
+<i>510</i>&nbsp;
+<i>511</i>&nbsp;        }
+<i>512</i>&nbsp;
+<i>513</i>&nbsp;        private boolean isPropertyGetterOrSetter(MethodDoc[] var1, MethodDoc var2) {
+<i>514</i>&nbsp;            boolean var3 = false;
+<i>515</i>&nbsp;            String var4 = Util.propertyNameFromMethodName(var2.name());
+<i>516</i>&nbsp;            if(!var4.isEmpty()) {
+<i>517</i>&nbsp;                String var5 = var4 + &quot;Property&quot;;
+<i>518</i>&nbsp;                MethodDoc[] var6 = var1;
+<i>519</i>&nbsp;                int var7 = var1.length;
+<i>520</i>&nbsp;
+<i>521</i>&nbsp;                for(int var8 = 0; var8 &lt; var7; ++var8) {
+<i>522</i>&nbsp;                    MethodDoc var9 = var6[var8];
+<i>523</i>&nbsp;                    if(var9.name().equals(var5)) {
+<i>524</i>&nbsp;                        var3 = true;
+<i>525</i>&nbsp;                        break;
+<i>526</i>&nbsp;                    }
+<i>527</i>&nbsp;                }
+<i>528</i>&nbsp;            }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;            return var3;
+<i>531</i>&nbsp;        }
+<i>532</i>&nbsp;    }
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;    private class ClassMember {
+<i>535</i>&nbsp;        private Set&lt;ProgramElementDoc&gt; members = new HashSet();
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;        public ClassMember(ProgramElementDoc var2) {
+<i>538</i>&nbsp;            this.members.add(var2);
+<i>539</i>&nbsp;        }
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;        public void addMember(ProgramElementDoc var1) {
+<i>542</i>&nbsp;            this.members.add(var1);
+<i>543</i>&nbsp;        }
+<i>544</i>&nbsp;
+<i>545</i>&nbsp;        public boolean isEqual(MethodDoc var1) {
+<i>546</i>&nbsp;            Iterator var2 = this.members.iterator();
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;            MethodDoc var3;
+<i>549</i>&nbsp;            do {
+<i>550</i>&nbsp;                if(!var2.hasNext()) {
+<i>551</i>&nbsp;                    return false;
+<i>552</i>&nbsp;                }
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;                var3 = (MethodDoc)var2.next();
+<i>555</i>&nbsp;            } while(!Util.executableMembersEqual(var1, var3));
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;            this.members.add(var1);
+<i>558</i>&nbsp;            return true;
+<i>559</i>&nbsp;        }
+<i>560</i>&nbsp;    }
+<i>561</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

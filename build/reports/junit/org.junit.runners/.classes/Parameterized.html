@@ -1,0 +1,246 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Parameterized</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.junit.runners</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Parameterized (org.junit.runners)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Parameterized</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (10/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.3%
+  </span>
+  <span class="absValue">
+    (33/ 45)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Parameterized$Parameter</td>
+  </tr>
+  <tr>
+    <td class="name">Parameterized$Parameters</td>
+  </tr>
+  <tr>
+    <td class="name">Parameterized$UseParametersRunnerFactory</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (10/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.3%
+  </span>
+  <span class="absValue">
+    (33/ 45)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package org.junit.runners;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.lang.annotation.ElementType;
+<i>9</i>&nbsp;import java.lang.annotation.Inherited;
+<i>10</i>&nbsp;import java.lang.annotation.Retention;
+<i>11</i>&nbsp;import java.lang.annotation.RetentionPolicy;
+<i>12</i>&nbsp;import java.lang.annotation.Target;
+<i>13</i>&nbsp;import java.text.MessageFormat;
+<i>14</i>&nbsp;import java.util.ArrayList;
+<i>15</i>&nbsp;import java.util.Arrays;
+<i>16</i>&nbsp;import java.util.Collections;
+<i>17</i>&nbsp;import java.util.Iterator;
+<i>18</i>&nbsp;import java.util.List;
+<i>19</i>&nbsp;import org.junit.runner.Runner;
+<i>20</i>&nbsp;import org.junit.runners.Suite;
+<i>21</i>&nbsp;import org.junit.runners.model.FrameworkMethod;
+<i>22</i>&nbsp;import org.junit.runners.model.InitializationError;
+<i>23</i>&nbsp;import org.junit.runners.model.TestClass;
+<i>24</i>&nbsp;import org.junit.runners.parameterized.BlockJUnit4ClassRunnerWithParametersFactory;
+<i>25</i>&nbsp;import org.junit.runners.parameterized.ParametersRunnerFactory;
+<i>26</i>&nbsp;import org.junit.runners.parameterized.TestWithParameters;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;public class Parameterized extends Suite {
+<i>29</i>&nbsp;    private static final ParametersRunnerFactory DEFAULT_FACTORY = new BlockJUnit4ClassRunnerWithParametersFactory();
+<i>30</i>&nbsp;    private static final List&lt;Runner&gt; NO_RUNNERS = Collections.emptyList();
+<i>31</i>&nbsp;    private final List&lt;Runner&gt; runners;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public Parameterized(Class&lt;?&gt; klass) throws Throwable {
+<i>34</i>&nbsp;        super(klass, NO_RUNNERS);
+<i>35</i>&nbsp;        ParametersRunnerFactory runnerFactory = this.getParametersRunnerFactory(klass);
+<i>36</i>&nbsp;        Parameterized.Parameters parameters = (Parameterized.Parameters)this.getParametersMethod().getAnnotation(Parameterized.Parameters.class);
+<i>37</i>&nbsp;        this.runners = Collections.unmodifiableList(this.createRunnersForParameters(this.allParameters(), parameters.name(), runnerFactory));
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private ParametersRunnerFactory getParametersRunnerFactory(Class&lt;?&gt; klass) throws InstantiationException, IllegalAccessException {
+<i>41</i>&nbsp;        Parameterized.UseParametersRunnerFactory annotation = (Parameterized.UseParametersRunnerFactory)klass.getAnnotation(Parameterized.UseParametersRunnerFactory.class);
+<i>42</i>&nbsp;        if(annotation == null) {
+<i>43</i>&nbsp;            return DEFAULT_FACTORY;
+<i>44</i>&nbsp;        } else {
+<i>45</i>&nbsp;            Class factoryClass = annotation.value();
+<i>46</i>&nbsp;            return (ParametersRunnerFactory)factoryClass.newInstance();
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    protected List&lt;Runner&gt; getChildren() {
+<i>51</i>&nbsp;        return this.runners;
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    private TestWithParameters createTestWithNotNormalizedParameters(String pattern, int index, Object parametersOrSingleParameter) {
+<i>55</i>&nbsp;        Object[] parameters = parametersOrSingleParameter instanceof Object[]?(Object[])((Object[])parametersOrSingleParameter):new Object[]{parametersOrSingleParameter};
+<i>56</i>&nbsp;        return createTestWithParameters(this.getTestClass(), pattern, index, parameters);
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private Iterable&lt;Object&gt; allParameters() throws Throwable {
+<i>60</i>&nbsp;        Object parameters = this.getParametersMethod().invokeExplosively((Object)null, new Object[0]);
+<i>61</i>&nbsp;        if(parameters instanceof Iterable) {
+<i>62</i>&nbsp;            return (Iterable)parameters;
+<i>63</i>&nbsp;        } else if(parameters instanceof Object[]) {
+<i>64</i>&nbsp;            return Arrays.asList((Object[])((Object[])parameters));
+<i>65</i>&nbsp;        } else {
+<i>66</i>&nbsp;            throw this.parametersMethodReturnedWrongType();
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    private FrameworkMethod getParametersMethod() throws Exception {
+<i>71</i>&nbsp;        List methods = this.getTestClass().getAnnotatedMethods(Parameterized.Parameters.class);
+<i>72</i>&nbsp;        Iterator i$ = methods.iterator();
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;        FrameworkMethod each;
+<i>75</i>&nbsp;        do {
+<i>76</i>&nbsp;            if(!i$.hasNext()) {
+<i>77</i>&nbsp;                throw new Exception(&quot;No public static parameters method on class &quot; + this.getTestClass().getName());
+<i>78</i>&nbsp;            }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;            each = (FrameworkMethod)i$.next();
+<i>81</i>&nbsp;        } while(!each.isStatic() || !each.isPublic());
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;        return each;
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    private List&lt;Runner&gt; createRunnersForParameters(Iterable&lt;Object&gt; allParameters, String namePattern, ParametersRunnerFactory runnerFactory) throws InitializationError, Exception {
+<i>87</i>&nbsp;        try {
+<i>88</i>&nbsp;            List e = this.createTestsForParameters(allParameters, namePattern);
+<i>89</i>&nbsp;            ArrayList runners = new ArrayList();
+<i>90</i>&nbsp;            Iterator i$ = e.iterator();
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;            while(i$.hasNext()) {
+<i>93</i>&nbsp;                TestWithParameters test = (TestWithParameters)i$.next();
+<i>94</i>&nbsp;                runners.add(runnerFactory.createRunnerForTestWithParameters(test));
+<i>95</i>&nbsp;            }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;            return runners;
+<i>98</i>&nbsp;        } catch (ClassCastException var8) {
+<i>99</i>&nbsp;            throw this.parametersMethodReturnedWrongType();
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    private List&lt;TestWithParameters&gt; createTestsForParameters(Iterable&lt;Object&gt; allParameters, String namePattern) throws Exception {
+<i>104</i>&nbsp;        int i = 0;
+<i>105</i>&nbsp;        ArrayList children = new ArrayList();
+<i>106</i>&nbsp;        Iterator i$ = allParameters.iterator();
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;        while(i$.hasNext()) {
+<i>109</i>&nbsp;            Object parametersOfSingleTest = i$.next();
+<i>110</i>&nbsp;            children.add(this.createTestWithNotNormalizedParameters(namePattern, i++, parametersOfSingleTest));
+<i>111</i>&nbsp;        }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;        return children;
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    private Exception parametersMethodReturnedWrongType() throws Exception {
+<i>117</i>&nbsp;        String className = this.getTestClass().getName();
+<i>118</i>&nbsp;        String methodName = this.getParametersMethod().getName();
+<i>119</i>&nbsp;        String message = MessageFormat.format(&quot;{0}.{1}() must return an Iterable of arrays.&quot;, new Object[]{className, methodName});
+<i>120</i>&nbsp;        return new Exception(message);
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    private static TestWithParameters createTestWithParameters(TestClass testClass, String pattern, int index, Object[] parameters) {
+<i>124</i>&nbsp;        String finalPattern = pattern.replaceAll(&quot;\\{index\\}&quot;, Integer.toString(index));
+<i>125</i>&nbsp;        String name = MessageFormat.format(finalPattern, parameters);
+<i>126</i>&nbsp;        return new TestWithParameters(&quot;[&quot; + name + &quot;]&quot;, testClass, Arrays.asList(parameters));
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    @Retention(RetentionPolicy.RUNTIME)
+<i>130</i>&nbsp;    @Inherited
+<i>131</i>&nbsp;    @Target({ElementType.TYPE})
+<i>132</i>&nbsp;    public @interface UseParametersRunnerFactory {
+<i>133</i>&nbsp;        Class&lt;? extends ParametersRunnerFactory&gt; value() default BlockJUnit4ClassRunnerWithParametersFactory.class;
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    @Retention(RetentionPolicy.RUNTIME)
+<i>137</i>&nbsp;    @Target({ElementType.FIELD})
+<i>138</i>&nbsp;    public @interface Parameter {
+<i>139</i>&nbsp;        int value() default 0;
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    @Retention(RetentionPolicy.RUNTIME)
+<i>143</i>&nbsp;    @Target({ElementType.METHOD})
+<i>144</i>&nbsp;    public @interface Parameters {
+<i>145</i>&nbsp;        String name() default &quot;{index}&quot;;
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

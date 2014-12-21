@@ -1,0 +1,3510 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Parser</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.org.mozilla.javascript.internal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Parser (sun.org.mozilla.javascript.internal)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Parser</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 54)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 944)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Parser$ParserException</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 55)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 945)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.org.mozilla.javascript.internal;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.BufferedReader;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.Reader;
+<i>11</i>&nbsp;import java.util.ArrayList;
+<i>12</i>&nbsp;import java.util.HashMap;
+<i>13</i>&nbsp;import java.util.HashSet;
+<i>14</i>&nbsp;import java.util.Iterator;
+<i>15</i>&nbsp;import java.util.List;
+<i>16</i>&nbsp;import java.util.Map;
+<i>17</i>&nbsp;import java.util.Map.Entry;
+<i>18</i>&nbsp;import sun.org.mozilla.javascript.internal.CompilerEnvirons;
+<i>19</i>&nbsp;import sun.org.mozilla.javascript.internal.Context;
+<i>20</i>&nbsp;import sun.org.mozilla.javascript.internal.ErrorReporter;
+<i>21</i>&nbsp;import sun.org.mozilla.javascript.internal.Kit;
+<i>22</i>&nbsp;import sun.org.mozilla.javascript.internal.Node;
+<i>23</i>&nbsp;import sun.org.mozilla.javascript.internal.ScriptRuntime;
+<i>24</i>&nbsp;import sun.org.mozilla.javascript.internal.TokenStream;
+<i>25</i>&nbsp;import sun.org.mozilla.javascript.internal.Token.CommentType;
+<i>26</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ArrayComprehension;
+<i>27</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ArrayComprehensionLoop;
+<i>28</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ArrayLiteral;
+<i>29</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Assignment;
+<i>30</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.AstNode;
+<i>31</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.AstRoot;
+<i>32</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Block;
+<i>33</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.BreakStatement;
+<i>34</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.CatchClause;
+<i>35</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Comment;
+<i>36</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ConditionalExpression;
+<i>37</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ContinueStatement;
+<i>38</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.DestructuringForm;
+<i>39</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.DoLoop;
+<i>40</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ElementGet;
+<i>41</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.EmptyExpression;
+<i>42</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ErrorNode;
+<i>43</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ExpressionStatement;
+<i>44</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ForInLoop;
+<i>45</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ForLoop;
+<i>46</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.FunctionCall;
+<i>47</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.FunctionNode;
+<i>48</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.IdeErrorReporter;
+<i>49</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.IfStatement;
+<i>50</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.InfixExpression;
+<i>51</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Jump;
+<i>52</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.KeywordLiteral;
+<i>53</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Label;
+<i>54</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.LabeledStatement;
+<i>55</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.LetNode;
+<i>56</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Loop;
+<i>57</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Name;
+<i>58</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.NewExpression;
+<i>59</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.NumberLiteral;
+<i>60</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ObjectLiteral;
+<i>61</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ObjectProperty;
+<i>62</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ParenthesizedExpression;
+<i>63</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.PropertyGet;
+<i>64</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.RegExpLiteral;
+<i>65</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ReturnStatement;
+<i>66</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Scope;
+<i>67</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ScriptNode;
+<i>68</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.StringLiteral;
+<i>69</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.SwitchCase;
+<i>70</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.SwitchStatement;
+<i>71</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Symbol;
+<i>72</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.ThrowStatement;
+<i>73</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.TryStatement;
+<i>74</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.UnaryExpression;
+<i>75</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.VariableDeclaration;
+<i>76</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.VariableInitializer;
+<i>77</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.WhileLoop;
+<i>78</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.WithStatement;
+<i>79</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlDotQuery;
+<i>80</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlElemRef;
+<i>81</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlExpression;
+<i>82</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlLiteral;
+<i>83</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlMemberGet;
+<b class="nc"><i>84</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlPropRef;</b>
+<i>85</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlRef;
+<i>86</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.XmlString;
+<i>87</i>&nbsp;import sun.org.mozilla.javascript.internal.ast.Yield;
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;public class Parser {
+<b class="nc"><i>90</i>&nbsp;    public static final int ARGC_LIMIT = 65536;</b>
+<b class="nc"><i>91</i>&nbsp;    static final int CLEAR_TI_MASK = 65535;</b>
+<b class="nc"><i>92</i>&nbsp;    static final int TI_AFTER_EOL = 65536;</b>
+<i>93</i>&nbsp;    static final int TI_CHECK_LABEL = 131072;
+<i>94</i>&nbsp;    CompilerEnvirons compilerEnv;
+<i>95</i>&nbsp;    private ErrorReporter errorReporter;
+<i>96</i>&nbsp;    private IdeErrorReporter errorCollector;
+<b class="nc"><i>97</i>&nbsp;    private String sourceURI;</b>
+<i>98</i>&nbsp;    private char[] sourceChars;
+<i>99</i>&nbsp;    boolean calledByCompileFunction;
+<i>100</i>&nbsp;    private boolean parseFinished;
+<i>101</i>&nbsp;    private TokenStream ts;
+<b class="nc"><i>102</i>&nbsp;    private int currentFlaggedToken;</b>
+<b class="nc"><i>103</i>&nbsp;    private int currentToken;</b>
+<i>104</i>&nbsp;    private int syntaxErrorCount;
+<i>105</i>&nbsp;    private List&lt;Comment&gt; scannedComments;
+<i>106</i>&nbsp;    private String currentJsDocComment;
+<i>107</i>&nbsp;    protected int nestingOfFunction;
+<i>108</i>&nbsp;    private LabeledStatement currentLabel;
+<b class="nc"><i>109</i>&nbsp;    private boolean inDestructuringAssignment;</b>
+<b class="nc"><i>110</i>&nbsp;    protected boolean inUseStrictDirective;</b>
+<b class="nc"><i>111</i>&nbsp;    ScriptNode currentScriptOrFn;</b>
+<i>112</i>&nbsp;    Scope currentScope;
+<i>113</i>&nbsp;    int nestingOfWith;
+<i>114</i>&nbsp;    private int endFlags;
+<i>115</i>&nbsp;    private boolean inForInit;
+<i>116</i>&nbsp;    private Map&lt;String, LabeledStatement&gt; labelSet;
+<b class="nc"><i>117</i>&nbsp;    private List&lt;Loop&gt; loopSet;</b>
+<i>118</i>&nbsp;    private List&lt;Jump&gt; loopAndSwitchSet;
+<i>119</i>&nbsp;    private int prevNameTokenStart;
+<i>120</i>&nbsp;    private String prevNameTokenString;
+<b class="nc"><i>121</i>&nbsp;    private int prevNameTokenLineno;</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public Parser() {
+<i>124</i>&nbsp;        this(new CompilerEnvirons());
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;    public Parser(CompilerEnvirons var1) {</b>
+<b class="nc"><i>128</i>&nbsp;        this(var1, var1.getErrorReporter());</b>
+<b class="nc"><i>129</i>&nbsp;    }</b>
+<b class="nc"><i>130</i>&nbsp;</b>
+<i>131</i>&nbsp;    public Parser(CompilerEnvirons var1, ErrorReporter var2) {
+<b class="nc"><i>132</i>&nbsp;        this.currentFlaggedToken = 0;</b>
+<b class="nc"><i>133</i>&nbsp;        this.prevNameTokenString = &quot;&quot;;</b>
+<b class="nc"><i>134</i>&nbsp;        this.compilerEnv = var1;</b>
+<i>135</i>&nbsp;        this.errorReporter = var2;
+<b class="nc"><i>136</i>&nbsp;        if(var2 instanceof IdeErrorReporter) {</b>
+<i>137</i>&nbsp;            this.errorCollector = (IdeErrorReporter)var2;
+<b class="nc"><i>138</i>&nbsp;        }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    void addStrictWarning(String var1, String var2) {
+<i>143</i>&nbsp;        int var3 = -1;
+<b class="nc"><i>144</i>&nbsp;        int var4 = -1;</b>
+<b class="nc"><i>145</i>&nbsp;        if(this.ts != null) {</b>
+<i>146</i>&nbsp;            var3 = this.ts.tokenBeg;
+<i>147</i>&nbsp;            var4 = this.ts.tokenEnd - this.ts.tokenBeg;
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;
+<b class="nc"><i>150</i>&nbsp;        this.addStrictWarning(var1, var2, var3, var4);</b>
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    void addStrictWarning(String var1, String var2, int var3, int var4) {
+<i>154</i>&nbsp;        if(this.compilerEnv.isStrictMode()) {
+<i>155</i>&nbsp;            this.addWarning(var1, var2, var3, var4);
+<b class="nc"><i>156</i>&nbsp;        }</b>
+<b class="nc"><i>157</i>&nbsp;</b>
+<b class="nc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    void addWarning(String var1, String var2) {
+<i>161</i>&nbsp;        int var3 = -1;
+<i>162</i>&nbsp;        int var4 = -1;
+<i>163</i>&nbsp;        if(this.ts != null) {
+<b class="nc"><i>164</i>&nbsp;            var3 = this.ts.tokenBeg;</b>
+<b class="nc"><i>165</i>&nbsp;            var4 = this.ts.tokenEnd - this.ts.tokenBeg;</b>
+<b class="nc"><i>166</i>&nbsp;        }</b>
+<b class="nc"><i>167</i>&nbsp;</b>
+<i>168</i>&nbsp;        this.addWarning(var1, var2, var3, var4);
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    void addWarning(String var1, int var2, int var3) {
+<i>172</i>&nbsp;        this.addWarning(var1, (String)null, var2, var3);
+<b class="nc"><i>173</i>&nbsp;    }</b>
+<b class="nc"><i>174</i>&nbsp;</b>
+<b class="nc"><i>175</i>&nbsp;    void addWarning(String var1, String var2, int var3, int var4) {</b>
+<i>176</i>&nbsp;        String var5 = this.lookupMessage(var1, var2);
+<b class="nc"><i>177</i>&nbsp;        if(this.compilerEnv.reportWarningAsError()) {</b>
+<b class="nc"><i>178</i>&nbsp;            this.addError(var1, var2, var3, var4);</b>
+<i>179</i>&nbsp;        } else if(this.errorCollector != null) {
+<i>180</i>&nbsp;            this.errorCollector.warning(var5, this.sourceURI, var3, var4);
+<i>181</i>&nbsp;        } else {
+<i>182</i>&nbsp;            this.errorReporter.warning(var5, this.sourceURI, this.ts.getLineno(), this.ts.getLine(), this.ts.getOffset());
+<i>183</i>&nbsp;        }
+<b class="nc"><i>184</i>&nbsp;</b>
+<i>185</i>&nbsp;    }
+<b class="nc"><i>186</i>&nbsp;</b>
+<b class="nc"><i>187</i>&nbsp;    void addError(String var1) {</b>
+<i>188</i>&nbsp;        this.addError(var1, this.ts.tokenBeg, this.ts.tokenEnd - this.ts.tokenBeg);
+<b class="nc"><i>189</i>&nbsp;    }</b>
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    void addError(String var1, int var2, int var3) {
+<i>192</i>&nbsp;        this.addError(var1, (String)null, var2, var3);
+<i>193</i>&nbsp;    }
+<b class="nc"><i>194</i>&nbsp;</b>
+<b class="nc"><i>195</i>&nbsp;    void addError(String var1, String var2) {</b>
+<b class="nc"><i>196</i>&nbsp;        this.addError(var1, var2, this.ts.tokenBeg, this.ts.tokenEnd - this.ts.tokenBeg);</b>
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    void addError(String var1, String var2, int var3, int var4) {
+<i>200</i>&nbsp;        ++this.syntaxErrorCount;
+<i>201</i>&nbsp;        String var5 = this.lookupMessage(var1, var2);
+<b class="nc"><i>202</i>&nbsp;        if(this.errorCollector != null) {</b>
+<b class="nc"><i>203</i>&nbsp;            this.errorCollector.error(var5, this.sourceURI, var3, var4);</b>
+<i>204</i>&nbsp;        } else {
+<i>205</i>&nbsp;            int var6 = 1;
+<i>206</i>&nbsp;            int var7 = 1;
+<i>207</i>&nbsp;            String var8 = &quot;&quot;;
+<i>208</i>&nbsp;            if(this.ts != null) {
+<b class="nc"><i>209</i>&nbsp;                var6 = this.ts.getLineno();</b>
+<b class="nc"><i>210</i>&nbsp;                var8 = this.ts.getLine();</b>
+<i>211</i>&nbsp;                var7 = this.ts.getOffset();
+<i>212</i>&nbsp;            }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;            this.errorReporter.error(var5, this.sourceURI, var6, var8, var7);
+<i>215</i>&nbsp;        }
+<b class="nc"><i>216</i>&nbsp;</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    String lookupMessage(String var1) {
+<i>220</i>&nbsp;        return this.lookupMessage(var1, (String)null);
+<b class="nc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    String lookupMessage(String var1, String var2) {
+<i>224</i>&nbsp;        return var2 == null?ScriptRuntime.getMessage0(var1):ScriptRuntime.getMessage1(var1, var2);
+<i>225</i>&nbsp;    }
+<b class="nc"><i>226</i>&nbsp;</b>
+<i>227</i>&nbsp;    void reportError(String var1) {
+<i>228</i>&nbsp;        this.reportError(var1, (String)null);
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;    void reportError(String var1, String var2) {</b>
+<b class="nc"><i>232</i>&nbsp;        if(this.ts == null) {</b>
+<b class="nc"><i>233</i>&nbsp;            this.reportError(var1, var2, 1, 1);</b>
+<b class="nc"><i>234</i>&nbsp;        } else {</b>
+<b class="nc"><i>235</i>&nbsp;            this.reportError(var1, var2, this.ts.tokenBeg, this.ts.tokenEnd - this.ts.tokenBeg);</b>
+<i>236</i>&nbsp;        }
+<i>237</i>&nbsp;
+<b class="nc"><i>238</i>&nbsp;    }</b>
+<b class="nc"><i>239</i>&nbsp;</b>
+<b class="nc"><i>240</i>&nbsp;    void reportError(String var1, int var2, int var3) {</b>
+<i>241</i>&nbsp;        this.reportError(var1, (String)null, var2, var3);
+<i>242</i>&nbsp;    }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    void reportError(String var1, String var2, int var3, int var4) {
+<b class="nc"><i>245</i>&nbsp;        this.addError(var1, var3, var4);</b>
+<b class="nc"><i>246</i>&nbsp;        if(!this.compilerEnv.recoverFromErrors()) {</b>
+<i>247</i>&nbsp;            throw new Parser.ParserException();
+<i>248</i>&nbsp;        }
+<i>249</i>&nbsp;    }
+<i>250</i>&nbsp;
+<b class="nc"><i>251</i>&nbsp;    private int getNodeEnd(AstNode var1) {</b>
+<b class="nc"><i>252</i>&nbsp;        return var1.getPosition() + var1.getLength();</b>
+<b class="nc"><i>253</i>&nbsp;    }</b>
+<i>254</i>&nbsp;
+<b class="nc"><i>255</i>&nbsp;    private void recordComment(int var1) {</b>
+<b class="nc"><i>256</i>&nbsp;        if(this.scannedComments == null) {</b>
+<i>257</i>&nbsp;            this.scannedComments = new ArrayList();
+<i>258</i>&nbsp;        }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;        String var2 = this.ts.getAndResetCurrentComment();
+<b class="nc"><i>261</i>&nbsp;        if(this.ts.commentType == CommentType.JSDOC &amp;&amp; this.compilerEnv.isRecordingLocalJsDocComments()) {</b>
+<i>262</i>&nbsp;            this.currentJsDocComment = var2;
+<i>263</i>&nbsp;        }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;        Comment var3 = new Comment(this.ts.tokenBeg, this.ts.getTokenLength(), this.ts.commentType, var2);
+<i>266</i>&nbsp;        var3.setLineno(var1);
+<i>267</i>&nbsp;        this.scannedComments.add(var3);
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    private String getAndResetJsDoc() {
+<i>271</i>&nbsp;        String var1 = this.currentJsDocComment;
+<i>272</i>&nbsp;        this.currentJsDocComment = null;
+<i>273</i>&nbsp;        return var1;
+<i>274</i>&nbsp;    }
+<b class="nc"><i>275</i>&nbsp;</b>
+<b class="nc"><i>276</i>&nbsp;    private int peekToken() throws IOException {</b>
+<i>277</i>&nbsp;        if(this.currentFlaggedToken != 0) {
+<b class="nc"><i>278</i>&nbsp;            return this.currentToken;</b>
+<b class="nc"><i>279</i>&nbsp;        } else {</b>
+<i>280</i>&nbsp;            int var1 = this.ts.getLineno();
+<b class="nc"><i>281</i>&nbsp;            int var2 = this.ts.getToken();</b>
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;            boolean var3;
+<i>284</i>&nbsp;            for(var3 = false; var2 == 1 || var2 == 161; var2 = this.ts.getToken()) {
+<i>285</i>&nbsp;                if(var2 == 1) {
+<i>286</i>&nbsp;                    ++var1;
+<i>287</i>&nbsp;                    var3 = true;
+<i>288</i>&nbsp;                } else {
+<i>289</i>&nbsp;                    var3 = false;
+<i>290</i>&nbsp;                    if(this.compilerEnv.isRecordingComments()) {
+<i>291</i>&nbsp;                        this.recordComment(var1);
+<i>292</i>&nbsp;                    }
+<i>293</i>&nbsp;                }
+<i>294</i>&nbsp;            }
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;            this.currentToken = var2;
+<b class="nc"><i>297</i>&nbsp;            this.currentFlaggedToken = var2 | (var3?65536:0);</b>
+<b class="nc"><i>298</i>&nbsp;            return this.currentToken;</b>
+<b class="nc"><i>299</i>&nbsp;        }</b>
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    private int peekFlaggedToken() throws IOException {
+<i>303</i>&nbsp;        this.peekToken();
+<i>304</i>&nbsp;        return this.currentFlaggedToken;
+<b class="nc"><i>305</i>&nbsp;    }</b>
+<b class="nc"><i>306</i>&nbsp;</b>
+<b class="nc"><i>307</i>&nbsp;    private void consumeToken() {</b>
+<b class="nc"><i>308</i>&nbsp;        this.currentFlaggedToken = 0;</b>
+<b class="nc"><i>309</i>&nbsp;    }</b>
+<b class="nc"><i>310</i>&nbsp;</b>
+<i>311</i>&nbsp;    private int nextToken() throws IOException {
+<b class="nc"><i>312</i>&nbsp;        int var1 = this.peekToken();</b>
+<b class="nc"><i>313</i>&nbsp;        this.consumeToken();</b>
+<i>314</i>&nbsp;        return var1;
+<b class="nc"><i>315</i>&nbsp;    }</b>
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;    private int nextFlaggedToken() throws IOException {
+<i>318</i>&nbsp;        this.peekToken();
+<b class="nc"><i>319</i>&nbsp;        int var1 = this.currentFlaggedToken;</b>
+<i>320</i>&nbsp;        this.consumeToken();
+<i>321</i>&nbsp;        return var1;
+<i>322</i>&nbsp;    }
+<b class="nc"><i>323</i>&nbsp;</b>
+<i>324</i>&nbsp;    private boolean matchToken(int var1) throws IOException {
+<b class="nc"><i>325</i>&nbsp;        if(this.peekToken() != var1) {</b>
+<b class="nc"><i>326</i>&nbsp;            return false;</b>
+<i>327</i>&nbsp;        } else {
+<i>328</i>&nbsp;            this.consumeToken();
+<i>329</i>&nbsp;            return true;
+<b class="nc"><i>330</i>&nbsp;        }</b>
+<b class="nc"><i>331</i>&nbsp;    }</b>
+<i>332</i>&nbsp;
+<b class="nc"><i>333</i>&nbsp;    private int peekTokenOrEOL() throws IOException {</b>
+<i>334</i>&nbsp;        int var1 = this.peekToken();
+<i>335</i>&nbsp;        if((this.currentFlaggedToken &amp; 65536) != 0) {
+<b class="nc"><i>336</i>&nbsp;            var1 = 1;</b>
+<b class="nc"><i>337</i>&nbsp;        }</b>
+<b class="nc"><i>338</i>&nbsp;</b>
+<i>339</i>&nbsp;        return var1;
+<b class="nc"><i>340</i>&nbsp;    }</b>
+<i>341</i>&nbsp;
+<b class="nc"><i>342</i>&nbsp;    private boolean mustMatchToken(int var1, String var2) throws IOException {</b>
+<b class="nc"><i>343</i>&nbsp;        return this.mustMatchToken(var1, var2, this.ts.tokenBeg, this.ts.tokenEnd - this.ts.tokenBeg);</b>
+<b class="nc"><i>344</i>&nbsp;    }</b>
+<b class="nc"><i>345</i>&nbsp;</b>
+<i>346</i>&nbsp;    private boolean mustMatchToken(int var1, String var2, int var3, int var4) throws IOException {
+<b class="nc"><i>347</i>&nbsp;        if(this.matchToken(var1)) {</b>
+<i>348</i>&nbsp;            return true;
+<b class="nc"><i>349</i>&nbsp;        } else {</b>
+<i>350</i>&nbsp;            this.reportError(var2, var3, var4);
+<b class="nc"><i>351</i>&nbsp;            return false;</b>
+<b class="nc"><i>352</i>&nbsp;        }</b>
+<b class="nc"><i>353</i>&nbsp;    }</b>
+<b class="nc"><i>354</i>&nbsp;</b>
+<i>355</i>&nbsp;    private void mustHaveXML() {
+<i>356</i>&nbsp;        if(!this.compilerEnv.isXmlAvailable()) {
+<i>357</i>&nbsp;            this.reportError(&quot;msg.XML.not.available&quot;);
+<b class="nc"><i>358</i>&nbsp;        }</b>
+<b class="nc"><i>359</i>&nbsp;</b>
+<b class="nc"><i>360</i>&nbsp;    }</b>
+<i>361</i>&nbsp;
+<b class="nc"><i>362</i>&nbsp;    public boolean eof() {</b>
+<b class="nc"><i>363</i>&nbsp;        return this.ts.eof();</b>
+<i>364</i>&nbsp;    }
+<i>365</i>&nbsp;
+<b class="nc"><i>366</i>&nbsp;    boolean insideFunction() {</b>
+<i>367</i>&nbsp;        return this.nestingOfFunction != 0;
+<b class="nc"><i>368</i>&nbsp;    }</b>
+<b class="nc"><i>369</i>&nbsp;</b>
+<i>370</i>&nbsp;    void pushScope(Scope var1) {
+<b class="nc"><i>371</i>&nbsp;        Scope var2 = var1.getParentScope();</b>
+<i>372</i>&nbsp;        if(var2 != null) {
+<b class="nc"><i>373</i>&nbsp;            if(var2 != this.currentScope) {</b>
+<i>374</i>&nbsp;                this.codeBug();
+<i>375</i>&nbsp;            }
+<i>376</i>&nbsp;        } else {
+<i>377</i>&nbsp;            this.currentScope.addChildScope(var1);
+<i>378</i>&nbsp;        }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;        this.currentScope = var1;
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    void popScope() {
+<i>384</i>&nbsp;        this.currentScope = this.currentScope.getParentScope();
+<b class="nc"><i>385</i>&nbsp;    }</b>
+<b class="nc"><i>386</i>&nbsp;</b>
+<i>387</i>&nbsp;    private void enterLoop(Loop var1) {
+<i>388</i>&nbsp;        if(this.loopSet == null) {
+<i>389</i>&nbsp;            this.loopSet = new ArrayList();
+<b class="nc"><i>390</i>&nbsp;        }</b>
+<b class="nc"><i>391</i>&nbsp;</b>
+<i>392</i>&nbsp;        this.loopSet.add(var1);
+<i>393</i>&nbsp;        if(this.loopAndSwitchSet == null) {
+<i>394</i>&nbsp;            this.loopAndSwitchSet = new ArrayList();
+<b class="nc"><i>395</i>&nbsp;        }</b>
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;        this.loopAndSwitchSet.add(var1);
+<b class="nc"><i>398</i>&nbsp;        this.pushScope(var1);</b>
+<b class="nc"><i>399</i>&nbsp;        if(this.currentLabel != null) {</b>
+<b class="nc"><i>400</i>&nbsp;            this.currentLabel.setStatement(var1);</b>
+<i>401</i>&nbsp;            this.currentLabel.getFirstLabel().setLoop(var1);
+<b class="nc"><i>402</i>&nbsp;            var1.setRelative(-this.currentLabel.getPosition());</b>
+<i>403</i>&nbsp;        }
+<i>404</i>&nbsp;
+<b class="nc"><i>405</i>&nbsp;    }</b>
+<b class="nc"><i>406</i>&nbsp;</b>
+<b class="nc"><i>407</i>&nbsp;    private void exitLoop() {</b>
+<i>408</i>&nbsp;        Loop var1 = (Loop)this.loopSet.remove(this.loopSet.size() - 1);
+<i>409</i>&nbsp;        this.loopAndSwitchSet.remove(this.loopAndSwitchSet.size() - 1);
+<b class="nc"><i>410</i>&nbsp;        if(var1.getParent() != null) {</b>
+<b class="nc"><i>411</i>&nbsp;            var1.setRelative(var1.getParent().getPosition());</b>
+<i>412</i>&nbsp;        }
+<b class="nc"><i>413</i>&nbsp;</b>
+<i>414</i>&nbsp;        this.popScope();
+<i>415</i>&nbsp;    }
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    private void enterSwitch(SwitchStatement var1) {
+<i>418</i>&nbsp;        if(this.loopAndSwitchSet == null) {
+<b class="nc"><i>419</i>&nbsp;            this.loopAndSwitchSet = new ArrayList();</b>
+<b class="nc"><i>420</i>&nbsp;        }</b>
+<i>421</i>&nbsp;
+<b class="nc"><i>422</i>&nbsp;        this.loopAndSwitchSet.add(var1);</b>
+<i>423</i>&nbsp;    }
+<b class="nc"><i>424</i>&nbsp;</b>
+<b class="nc"><i>425</i>&nbsp;    private void exitSwitch() {</b>
+<b class="nc"><i>426</i>&nbsp;        this.loopAndSwitchSet.remove(this.loopAndSwitchSet.size() - 1);</b>
+<b class="nc"><i>427</i>&nbsp;    }</b>
+<b class="nc"><i>428</i>&nbsp;</b>
+<b class="nc"><i>429</i>&nbsp;    public AstRoot parse(String var1, String var2, int var3) {</b>
+<i>430</i>&nbsp;        if(this.parseFinished) {
+<i>431</i>&nbsp;            throw new IllegalStateException(&quot;parser reused&quot;);
+<b class="nc"><i>432</i>&nbsp;        } else {</b>
+<b class="nc"><i>433</i>&nbsp;            this.sourceURI = var2;</b>
+<b class="nc"><i>434</i>&nbsp;            if(this.compilerEnv.isIdeMode()) {</b>
+<i>435</i>&nbsp;                this.sourceChars = var1.toCharArray();
+<b class="nc"><i>436</i>&nbsp;            }</b>
+<i>437</i>&nbsp;
+<b class="nc"><i>438</i>&nbsp;            this.ts = new TokenStream(this, (Reader)null, var1, var3);</b>
+<i>439</i>&nbsp;
+<b class="nc"><i>440</i>&nbsp;            AstRoot var4;</b>
+<i>441</i>&nbsp;            try {
+<b class="nc"><i>442</i>&nbsp;                var4 = this.parse();</b>
+<b class="nc"><i>443</i>&nbsp;            } catch (IOException var8) {</b>
+<i>444</i>&nbsp;                throw new IllegalStateException();
+<i>445</i>&nbsp;            } finally {
+<i>446</i>&nbsp;                this.parseFinished = true;
+<b class="nc"><i>447</i>&nbsp;            }</b>
+<i>448</i>&nbsp;
+<b class="nc"><i>449</i>&nbsp;            return var4;</b>
+<i>450</i>&nbsp;        }
+<i>451</i>&nbsp;    }
+<b class="nc"><i>452</i>&nbsp;</b>
+<b class="nc"><i>453</i>&nbsp;    public AstRoot parse(Reader var1, String var2, int var3) throws IOException {</b>
+<i>454</i>&nbsp;        if(this.parseFinished) {
+<i>455</i>&nbsp;            throw new IllegalStateException(&quot;parser reused&quot;);
+<b class="nc"><i>456</i>&nbsp;        } else if(this.compilerEnv.isIdeMode()) {</b>
+<i>457</i>&nbsp;            return this.parse((String)this.readFully(var1), var2, var3);
+<b class="nc"><i>458</i>&nbsp;        } else {</b>
+<b class="nc"><i>459</i>&nbsp;            AstRoot var4;</b>
+<i>460</i>&nbsp;            try {
+<i>461</i>&nbsp;                this.sourceURI = var2;
+<i>462</i>&nbsp;                this.ts = new TokenStream(this, var1, (String)null, var3);
+<i>463</i>&nbsp;                var4 = this.parse();
+<i>464</i>&nbsp;            } finally {
+<b class="nc"><i>465</i>&nbsp;                this.parseFinished = true;</b>
+<i>466</i>&nbsp;            }
+<i>467</i>&nbsp;
+<b class="nc"><i>468</i>&nbsp;            return var4;</b>
+<i>469</i>&nbsp;        }
+<i>470</i>&nbsp;    }
+<i>471</i>&nbsp;
+<b class="nc"><i>472</i>&nbsp;    private AstRoot parse() throws IOException {</b>
+<b class="nc"><i>473</i>&nbsp;        byte var1 = 0;</b>
+<b class="nc"><i>474</i>&nbsp;        AstRoot var2 = new AstRoot(var1);</b>
+<b class="nc"><i>475</i>&nbsp;        this.currentScope = this.currentScriptOrFn = var2;</b>
+<b class="nc"><i>476</i>&nbsp;        int var3 = this.ts.lineno;</b>
+<b class="nc"><i>477</i>&nbsp;        int var4 = var1;</b>
+<b class="nc"><i>478</i>&nbsp;        boolean var5 = true;</b>
+<b class="nc"><i>479</i>&nbsp;        boolean var6 = this.inUseStrictDirective;</b>
+<b class="nc"><i>480</i>&nbsp;        this.inUseStrictDirective = false;</b>
+<b class="nc"><i>481</i>&nbsp;</b>
+<i>482</i>&nbsp;        int var7;
+<i>483</i>&nbsp;        try {
+<i>484</i>&nbsp;            while(true) {
+<i>485</i>&nbsp;                var7 = this.peekToken();
+<b class="nc"><i>486</i>&nbsp;                if(var7 &lt;= 0) {</b>
+<b class="nc"><i>487</i>&nbsp;                    break;</b>
+<b class="nc"><i>488</i>&nbsp;                }</b>
+<i>489</i>&nbsp;
+<b class="nc"><i>490</i>&nbsp;                Object var18;</b>
+<b class="nc"><i>491</i>&nbsp;                if(var7 == 109) {</b>
+<b class="nc"><i>492</i>&nbsp;                    this.consumeToken();</b>
+<b class="nc"><i>493</i>&nbsp;</b>
+<b class="nc"><i>494</i>&nbsp;                    try {</b>
+<b class="nc"><i>495</i>&nbsp;                        var18 = this.function(this.calledByCompileFunction?2:1);</b>
+<b class="nc"><i>496</i>&nbsp;                    } catch (Parser.ParserException var14) {</b>
+<i>497</i>&nbsp;                        break;
+<b class="nc"><i>498</i>&nbsp;                    }</b>
+<b class="nc"><i>499</i>&nbsp;                } else {</b>
+<b class="nc"><i>500</i>&nbsp;                    var18 = this.statement();</b>
+<i>501</i>&nbsp;                    if(var5) {
+<b class="nc"><i>502</i>&nbsp;                        String var9 = this.getDirective((AstNode)var18);</b>
+<i>503</i>&nbsp;                        if(var9 == null) {
+<b class="nc"><i>504</i>&nbsp;                            var5 = false;</b>
+<i>505</i>&nbsp;                        } else if(var9.equals(&quot;use strict&quot;)) {
+<b class="nc"><i>506</i>&nbsp;                            this.inUseStrictDirective = true;</b>
+<b class="nc"><i>507</i>&nbsp;                            var2.setInStrictMode(true);</b>
+<b class="nc"><i>508</i>&nbsp;                        }</b>
+<b class="nc"><i>509</i>&nbsp;                    }</b>
+<i>510</i>&nbsp;                }
+<b class="nc"><i>511</i>&nbsp;</b>
+<b class="nc"><i>512</i>&nbsp;                var4 = this.getNodeEnd((AstNode)var18);</b>
+<b class="nc"><i>513</i>&nbsp;                var2.addChildToBack((Node)var18);</b>
+<b class="nc"><i>514</i>&nbsp;                ((AstNode)var18).setParent(var2);</b>
+<i>515</i>&nbsp;            }
+<i>516</i>&nbsp;        } catch (StackOverflowError var15) {
+<i>517</i>&nbsp;            String var8 = this.lookupMessage(&quot;msg.too.deep.parser.recursion&quot;);
+<i>518</i>&nbsp;            if(!this.compilerEnv.isIdeMode()) {
+<i>519</i>&nbsp;                throw Context.reportRuntimeError(var8, this.sourceURI, this.ts.lineno, (String)null, 0);
+<b class="nc"><i>520</i>&nbsp;            }</b>
+<b class="nc"><i>521</i>&nbsp;        } finally {</b>
+<b class="nc"><i>522</i>&nbsp;            this.inUseStrictDirective = var6;</b>
+<i>523</i>&nbsp;        }
+<i>524</i>&nbsp;
+<i>525</i>&nbsp;        if(this.syntaxErrorCount != 0) {
+<i>526</i>&nbsp;            String var17 = String.valueOf(this.syntaxErrorCount);
+<b class="nc"><i>527</i>&nbsp;            var17 = this.lookupMessage(&quot;msg.got.syntax.errors&quot;, var17);</b>
+<i>528</i>&nbsp;            if(!this.compilerEnv.isIdeMode()) {
+<i>529</i>&nbsp;                throw this.errorReporter.runtimeError(var17, this.sourceURI, var3, (String)null, 0);
+<i>530</i>&nbsp;            }
+<b class="nc"><i>531</i>&nbsp;        }</b>
+<b class="nc"><i>532</i>&nbsp;</b>
+<b class="nc"><i>533</i>&nbsp;        if(this.scannedComments != null) {</b>
+<b class="nc"><i>534</i>&nbsp;            var7 = this.scannedComments.size() - 1;</b>
+<b class="nc"><i>535</i>&nbsp;            var4 = Math.max(var4, this.getNodeEnd((AstNode)this.scannedComments.get(var7)));</b>
+<b class="nc"><i>536</i>&nbsp;            Iterator var19 = this.scannedComments.iterator();</b>
+<i>537</i>&nbsp;
+<b class="nc"><i>538</i>&nbsp;            while(var19.hasNext()) {</b>
+<b class="nc"><i>539</i>&nbsp;                Comment var20 = (Comment)var19.next();</b>
+<b class="nc"><i>540</i>&nbsp;                var2.addComment(var20);</b>
+<b class="nc"><i>541</i>&nbsp;            }</b>
+<i>542</i>&nbsp;        }
+<b class="nc"><i>543</i>&nbsp;</b>
+<b class="nc"><i>544</i>&nbsp;        var2.setLength(var4 - var1);</b>
+<b class="nc"><i>545</i>&nbsp;        var2.setSourceName(this.sourceURI);</b>
+<b class="nc"><i>546</i>&nbsp;        var2.setBaseLineno(var3);</b>
+<i>547</i>&nbsp;        var2.setEndLineno(this.ts.lineno);
+<b class="nc"><i>548</i>&nbsp;        return var2;</b>
+<i>549</i>&nbsp;    }
+<i>550</i>&nbsp;
+<b class="nc"><i>551</i>&nbsp;    private AstNode parseFunctionBody() throws IOException {</b>
+<i>552</i>&nbsp;        if(!this.matchToken(85)) {
+<i>553</i>&nbsp;            if(this.compilerEnv.getLanguageVersion() &lt; 180) {
+<i>554</i>&nbsp;                this.reportError(&quot;msg.no.brace.body&quot;);
+<i>555</i>&nbsp;            }
+<i>556</i>&nbsp;
+<b class="nc"><i>557</i>&nbsp;            return this.parseFunctionBodyExpr();</b>
+<i>558</i>&nbsp;        } else {
+<i>559</i>&nbsp;            ++this.nestingOfFunction;
+<b class="nc"><i>560</i>&nbsp;            int var1 = this.ts.tokenBeg;</b>
+<b class="nc"><i>561</i>&nbsp;            Block var2 = new Block(var1);</b>
+<i>562</i>&nbsp;            boolean var3 = true;
+<i>563</i>&nbsp;            boolean var4 = this.inUseStrictDirective;
+<b class="nc"><i>564</i>&nbsp;            var2.setLineno(this.ts.lineno);</b>
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;            try {
+<i>567</i>&nbsp;                label90:
+<i>568</i>&nbsp;                while(true) {
+<i>569</i>&nbsp;                    int var6 = this.peekToken();
+<i>570</i>&nbsp;                    Object var5;
+<b class="nc"><i>571</i>&nbsp;                    switch(var6) {</b>
+<b class="nc"><i>572</i>&nbsp;                    case -1:</b>
+<b class="nc"><i>573</i>&nbsp;                    case 0:</b>
+<b class="nc"><i>574</i>&nbsp;                    case 86:</b>
+<b class="nc"><i>575</i>&nbsp;                        break label90;</b>
+<i>576</i>&nbsp;                    case 109:
+<i>577</i>&nbsp;                        this.consumeToken();
+<i>578</i>&nbsp;                        var5 = this.function(1);
+<b class="nc"><i>579</i>&nbsp;                        break;</b>
+<i>580</i>&nbsp;                    default:
+<i>581</i>&nbsp;                        var5 = this.statement();
+<i>582</i>&nbsp;                        if(var3) {
+<i>583</i>&nbsp;                            String var7 = this.getDirective((AstNode)var5);
+<i>584</i>&nbsp;                            if(var7 == null) {
+<i>585</i>&nbsp;                                var3 = false;
+<b class="nc"><i>586</i>&nbsp;                            } else if(var7.equals(&quot;use strict&quot;)) {</b>
+<i>587</i>&nbsp;                                this.inUseStrictDirective = true;
+<b class="nc"><i>588</i>&nbsp;                            }</b>
+<b class="nc"><i>589</i>&nbsp;                        }</b>
+<b class="nc"><i>590</i>&nbsp;                    }</b>
+<b class="nc"><i>591</i>&nbsp;</b>
+<b class="nc"><i>592</i>&nbsp;                    var2.addStatement((AstNode)var5);</b>
+<b class="nc"><i>593</i>&nbsp;                }</b>
+<b class="nc"><i>594</i>&nbsp;            } catch (Parser.ParserException var11) {</b>
+<i>595</i>&nbsp;                ;
+<b class="nc"><i>596</i>&nbsp;            } finally {</b>
+<b class="nc"><i>597</i>&nbsp;                --this.nestingOfFunction;</b>
+<i>598</i>&nbsp;                this.inUseStrictDirective = var4;
+<i>599</i>&nbsp;            }
+<i>600</i>&nbsp;
+<b class="nc"><i>601</i>&nbsp;            int var13 = this.ts.tokenEnd;</b>
+<i>602</i>&nbsp;            this.getAndResetJsDoc();
+<i>603</i>&nbsp;            if(this.mustMatchToken(86, &quot;msg.no.brace.after.body&quot;)) {
+<i>604</i>&nbsp;                var13 = this.ts.tokenEnd;
+<i>605</i>&nbsp;            }
+<i>606</i>&nbsp;
+<i>607</i>&nbsp;            var2.setLength(var13 - var1);
+<b class="nc"><i>608</i>&nbsp;            return var2;</b>
+<b class="nc"><i>609</i>&nbsp;        }</b>
+<b class="nc"><i>610</i>&nbsp;    }</b>
+<i>611</i>&nbsp;
+<b class="nc"><i>612</i>&nbsp;    private String getDirective(AstNode var1) {</b>
+<i>613</i>&nbsp;        if(var1 instanceof ExpressionStatement) {
+<i>614</i>&nbsp;            AstNode var2 = ((ExpressionStatement)var1).getExpression();
+<b class="nc"><i>615</i>&nbsp;            if(var2 instanceof StringLiteral) {</b>
+<i>616</i>&nbsp;                return ((StringLiteral)var2).getValue();
+<b class="nc"><i>617</i>&nbsp;            }</b>
+<b class="nc"><i>618</i>&nbsp;        }</b>
+<b class="nc"><i>619</i>&nbsp;</b>
+<i>620</i>&nbsp;        return null;
+<i>621</i>&nbsp;    }
+<i>622</i>&nbsp;
+<i>623</i>&nbsp;    private void parseFunctionParams(FunctionNode var1) throws IOException {
+<b class="nc"><i>624</i>&nbsp;        if(this.matchToken(88)) {</b>
+<i>625</i>&nbsp;            var1.setRp(this.ts.tokenBeg - var1.getPosition());
+<b class="nc"><i>626</i>&nbsp;        } else {</b>
+<b class="nc"><i>627</i>&nbsp;            HashMap var2 = null;</b>
+<i>628</i>&nbsp;            HashSet var3 = new HashSet();
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;            do {
+<i>631</i>&nbsp;                int var4 = this.peekToken();
+<i>632</i>&nbsp;                if(var4 != 83 &amp;&amp; var4 != 85) {
+<i>633</i>&nbsp;                    if(this.mustMatchToken(39, &quot;msg.no.parm&quot;)) {
+<i>634</i>&nbsp;                        var1.addParam(this.createNameNode());
+<i>635</i>&nbsp;                        String var9 = this.ts.getString();
+<i>636</i>&nbsp;                        this.defineSymbol(87, var9);
+<i>637</i>&nbsp;                        if(this.inUseStrictDirective) {
+<b class="nc"><i>638</i>&nbsp;                            if(&quot;eval&quot;.equals(var9) || &quot;arguments&quot;.equals(var9)) {</b>
+<i>639</i>&nbsp;                                this.reportError(&quot;msg.bad.id.strict&quot;, var9);
+<i>640</i>&nbsp;                            }
+<i>641</i>&nbsp;
+<b class="nc"><i>642</i>&nbsp;                            if(var3.contains(var9)) {</b>
+<i>643</i>&nbsp;                                this.addError(&quot;msg.dup.param.strict&quot;, var9);
+<b class="nc"><i>644</i>&nbsp;                            }</b>
+<i>645</i>&nbsp;
+<b class="nc"><i>646</i>&nbsp;                            var3.add(var9);</b>
+<i>647</i>&nbsp;                        }
+<b class="nc"><i>648</i>&nbsp;                    } else {</b>
+<b class="nc"><i>649</i>&nbsp;                        var1.addParam(this.makeErrorNode());</b>
+<b class="nc"><i>650</i>&nbsp;                    }</b>
+<b class="nc"><i>651</i>&nbsp;                } else {</b>
+<b class="nc"><i>652</i>&nbsp;                    AstNode var5 = this.destructuringPrimaryExpr();</b>
+<b class="nc"><i>653</i>&nbsp;                    this.markDestructuring(var5);</b>
+<b class="nc"><i>654</i>&nbsp;                    var1.addParam(var5);</b>
+<b class="nc"><i>655</i>&nbsp;                    if(var2 == null) {</b>
+<b class="nc"><i>656</i>&nbsp;                        var2 = new HashMap();</b>
+<b class="nc"><i>657</i>&nbsp;                    }</b>
+<b class="nc"><i>658</i>&nbsp;</b>
+<i>659</i>&nbsp;                    String var6 = this.currentScriptOrFn.getNextTempName();
+<b class="nc"><i>660</i>&nbsp;                    this.defineSymbol(87, var6, false);</b>
+<b class="nc"><i>661</i>&nbsp;                    var2.put(var6, var5);</b>
+<b class="nc"><i>662</i>&nbsp;                }</b>
+<i>663</i>&nbsp;            } while(this.matchToken(89));
+<i>664</i>&nbsp;
+<i>665</i>&nbsp;            if(var2 != null) {
+<b class="nc"><i>666</i>&nbsp;                Node var8 = new Node(89);</b>
+<i>667</i>&nbsp;                Iterator var10 = var2.entrySet().iterator();
+<b class="nc"><i>668</i>&nbsp;</b>
+<b class="nc"><i>669</i>&nbsp;                while(var10.hasNext()) {</b>
+<b class="nc"><i>670</i>&nbsp;                    Entry var11 = (Entry)var10.next();</b>
+<b class="nc"><i>671</i>&nbsp;                    Node var7 = this.createDestructuringAssignment(122, (Node)var11.getValue(), this.createName((String)var11.getKey()));</b>
+<b class="nc"><i>672</i>&nbsp;                    var8.addChildToBack(var7);</b>
+<i>673</i>&nbsp;                }
+<b class="nc"><i>674</i>&nbsp;</b>
+<b class="nc"><i>675</i>&nbsp;                var1.putProp(23, var8);</b>
+<b class="nc"><i>676</i>&nbsp;            }</b>
+<b class="nc"><i>677</i>&nbsp;</b>
+<i>678</i>&nbsp;            if(this.mustMatchToken(88, &quot;msg.no.paren.after.parms&quot;)) {
+<b class="nc"><i>679</i>&nbsp;                var1.setRp(this.ts.tokenBeg - var1.getPosition());</b>
+<i>680</i>&nbsp;            }
+<b class="nc"><i>681</i>&nbsp;</b>
+<i>682</i>&nbsp;        }
+<b class="nc"><i>683</i>&nbsp;    }</b>
+<i>684</i>&nbsp;
+<b class="nc"><i>685</i>&nbsp;    private AstNode parseFunctionBodyExpr() throws IOException {</b>
+<i>686</i>&nbsp;        ++this.nestingOfFunction;
+<i>687</i>&nbsp;        int var1 = this.ts.getLineno();
+<b class="nc"><i>688</i>&nbsp;        ReturnStatement var2 = new ReturnStatement(var1);</b>
+<b class="nc"><i>689</i>&nbsp;        var2.putProp(25, Boolean.TRUE);</b>
+<b class="nc"><i>690</i>&nbsp;</b>
+<b class="nc"><i>691</i>&nbsp;        try {</b>
+<b class="nc"><i>692</i>&nbsp;            var2.setReturnValue(this.assignExpr());</b>
+<i>693</i>&nbsp;        } finally {
+<i>694</i>&nbsp;            --this.nestingOfFunction;
+<b class="nc"><i>695</i>&nbsp;        }</b>
+<b class="nc"><i>696</i>&nbsp;</b>
+<i>697</i>&nbsp;        return var2;
+<b class="nc"><i>698</i>&nbsp;    }</b>
+<b class="nc"><i>699</i>&nbsp;</b>
+<b class="nc"><i>700</i>&nbsp;    private FunctionNode function(int var1) throws IOException {</b>
+<b class="nc"><i>701</i>&nbsp;        int var2 = var1;</b>
+<b class="nc"><i>702</i>&nbsp;        int var3 = this.ts.lineno;</b>
+<b class="nc"><i>703</i>&nbsp;        int var4 = this.ts.tokenBeg;</b>
+<i>704</i>&nbsp;        Name var5 = null;
+<i>705</i>&nbsp;        AstNode var6 = null;
+<b class="nc"><i>706</i>&nbsp;        if(this.matchToken(39)) {</b>
+<b class="nc"><i>707</i>&nbsp;            var5 = this.createNameNode(true, 39);</b>
+<i>708</i>&nbsp;            if(this.inUseStrictDirective) {
+<i>709</i>&nbsp;                String var7 = var5.getIdentifier();
+<b class="nc"><i>710</i>&nbsp;                if(&quot;eval&quot;.equals(var7) || &quot;arguments&quot;.equals(var7)) {</b>
+<i>711</i>&nbsp;                    this.reportError(&quot;msg.bad.id.strict&quot;, var7);
+<i>712</i>&nbsp;                }
+<i>713</i>&nbsp;            }
+<b class="nc"><i>714</i>&nbsp;</b>
+<i>715</i>&nbsp;            if(!this.matchToken(87)) {
+<b class="nc"><i>716</i>&nbsp;                if(this.compilerEnv.isAllowMemberExprAsFunctionName()) {</b>
+<i>717</i>&nbsp;                    Name var14 = var5;
+<i>718</i>&nbsp;                    var5 = null;
+<i>719</i>&nbsp;                    var6 = this.memberExprTail(false, var14);
+<b class="nc"><i>720</i>&nbsp;                }</b>
+<b class="nc"><i>721</i>&nbsp;</b>
+<b class="nc"><i>722</i>&nbsp;                this.mustMatchToken(87, &quot;msg.no.paren.parms&quot;);</b>
+<b class="nc"><i>723</i>&nbsp;            }</b>
+<i>724</i>&nbsp;        } else if(!this.matchToken(87)) {
+<b class="nc"><i>725</i>&nbsp;            if(this.compilerEnv.isAllowMemberExprAsFunctionName()) {</b>
+<b class="nc"><i>726</i>&nbsp;                var6 = this.memberExpr(false);</b>
+<b class="nc"><i>727</i>&nbsp;            }</b>
+<i>728</i>&nbsp;
+<i>729</i>&nbsp;            this.mustMatchToken(87, &quot;msg.no.paren.parms&quot;);
+<i>730</i>&nbsp;        }
+<b class="nc"><i>731</i>&nbsp;</b>
+<b class="nc"><i>732</i>&nbsp;        int var15 = this.currentToken == 87?this.ts.tokenBeg:-1;</b>
+<i>733</i>&nbsp;        if(var6 != null) {
+<b class="nc"><i>734</i>&nbsp;            var2 = 2;</b>
+<i>735</i>&nbsp;        }
+<b class="nc"><i>736</i>&nbsp;</b>
+<b class="nc"><i>737</i>&nbsp;        if(var2 != 2 &amp;&amp; var5 != null &amp;&amp; var5.length() &gt; 0) {</b>
+<b class="nc"><i>738</i>&nbsp;            this.defineSymbol(109, var5.getIdentifier());</b>
+<b class="nc"><i>739</i>&nbsp;        }</b>
+<b class="nc"><i>740</i>&nbsp;</b>
+<i>741</i>&nbsp;        FunctionNode var8 = new FunctionNode(var4, var5);
+<b class="nc"><i>742</i>&nbsp;        var8.setFunctionType(var1);</b>
+<b class="nc"><i>743</i>&nbsp;        if(var15 != -1) {</b>
+<b class="nc"><i>744</i>&nbsp;            var8.setLp(var15 - var4);</b>
+<i>745</i>&nbsp;        }
+<i>746</i>&nbsp;
+<i>747</i>&nbsp;        if(this.insideFunction() || this.nestingOfWith &gt; 0) {
+<b class="nc"><i>748</i>&nbsp;            var8.setIgnoreDynamicScope();</b>
+<b class="nc"><i>749</i>&nbsp;        }</b>
+<b class="nc"><i>750</i>&nbsp;</b>
+<i>751</i>&nbsp;        var8.setJsDoc(this.getAndResetJsDoc());
+<b class="nc"><i>752</i>&nbsp;        Parser.PerFunctionVariables var9 = new Parser.PerFunctionVariables(var8);</b>
+<i>753</i>&nbsp;
+<b class="nc"><i>754</i>&nbsp;        try {</b>
+<b class="nc"><i>755</i>&nbsp;            this.parseFunctionParams(var8);</b>
+<b class="nc"><i>756</i>&nbsp;            var8.setBody(this.parseFunctionBody());</b>
+<b class="nc"><i>757</i>&nbsp;            var8.setEncodedSourceBounds(var4, this.ts.tokenEnd);</b>
+<b class="nc"><i>758</i>&nbsp;            var8.setLength(this.ts.tokenEnd - var4);</b>
+<b class="nc"><i>759</i>&nbsp;            if(this.compilerEnv.isStrictMode() &amp;&amp; !var8.getBody().hasConsistentReturnUsage()) {</b>
+<i>760</i>&nbsp;                String var10 = var5 != null &amp;&amp; var5.length() &gt; 0?&quot;msg.no.return.value&quot;:&quot;msg.anon.no.return.value&quot;;
+<b class="nc"><i>761</i>&nbsp;                this.addStrictWarning(var10, var5 == null?&quot;&quot;:var5.getIdentifier());</b>
+<b class="nc"><i>762</i>&nbsp;            }</b>
+<i>763</i>&nbsp;        } finally {
+<i>764</i>&nbsp;            var9.restore();
+<i>765</i>&nbsp;        }
+<b class="nc"><i>766</i>&nbsp;</b>
+<b class="nc"><i>767</i>&nbsp;        if(var6 != null) {</b>
+<b class="nc"><i>768</i>&nbsp;            Kit.codeBug();</b>
+<i>769</i>&nbsp;            var8.setMemberExprNode(var6);
+<i>770</i>&nbsp;        }
+<i>771</i>&nbsp;
+<b class="nc"><i>772</i>&nbsp;        var8.setSourceName(this.sourceURI);</b>
+<b class="nc"><i>773</i>&nbsp;        var8.setBaseLineno(var3);</b>
+<b class="nc"><i>774</i>&nbsp;        var8.setEndLineno(this.ts.lineno);</b>
+<i>775</i>&nbsp;        if(this.compilerEnv.isIdeMode()) {
+<b class="nc"><i>776</i>&nbsp;            var8.setParentScope(this.currentScope);</b>
+<i>777</i>&nbsp;        }
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;        return var8;
+<i>780</i>&nbsp;    }
+<b class="nc"><i>781</i>&nbsp;</b>
+<i>782</i>&nbsp;    private AstNode statements(AstNode var1) throws IOException {
+<i>783</i>&nbsp;        if(this.currentToken != 85 &amp;&amp; !this.compilerEnv.isIdeMode()) {
+<i>784</i>&nbsp;            this.codeBug();
+<b class="nc"><i>785</i>&nbsp;        }</b>
+<b class="nc"><i>786</i>&nbsp;</b>
+<b class="nc"><i>787</i>&nbsp;        int var2 = this.ts.tokenBeg;</b>
+<b class="nc"><i>788</i>&nbsp;        Object var3 = var1 != null?var1:new Block(var2);</b>
+<i>789</i>&nbsp;        ((AstNode)var3).setLineno(this.ts.lineno);
+<b class="nc"><i>790</i>&nbsp;</b>
+<i>791</i>&nbsp;        int var4;
+<i>792</i>&nbsp;        while((var4 = this.peekToken()) &gt; 0 &amp;&amp; var4 != 86) {
+<i>793</i>&nbsp;            ((AstNode)var3).addChild(this.statement());
+<b class="nc"><i>794</i>&nbsp;        }</b>
+<b class="nc"><i>795</i>&nbsp;</b>
+<b class="nc"><i>796</i>&nbsp;        ((AstNode)var3).setLength(this.ts.tokenBeg - var2);</b>
+<b class="nc"><i>797</i>&nbsp;        return (AstNode)var3;</b>
+<b class="nc"><i>798</i>&nbsp;    }</b>
+<i>799</i>&nbsp;
+<b class="nc"><i>800</i>&nbsp;    private AstNode statements() throws IOException {</b>
+<i>801</i>&nbsp;        return this.statements((AstNode)null);
+<b class="nc"><i>802</i>&nbsp;    }</b>
+<b class="nc"><i>803</i>&nbsp;</b>
+<i>804</i>&nbsp;    private Parser.ConditionData condition() throws IOException {
+<i>805</i>&nbsp;        Parser.ConditionData var1 = new Parser.ConditionData();
+<b class="nc"><i>806</i>&nbsp;        if(this.mustMatchToken(87, &quot;msg.no.paren.cond&quot;)) {</b>
+<i>807</i>&nbsp;            var1.lp = this.ts.tokenBeg;
+<i>808</i>&nbsp;        }
+<i>809</i>&nbsp;
+<b class="nc"><i>810</i>&nbsp;        var1.condition = this.expr();</b>
+<b class="nc"><i>811</i>&nbsp;        if(this.mustMatchToken(88, &quot;msg.no.paren.after.cond&quot;)) {</b>
+<i>812</i>&nbsp;            var1.rp = this.ts.tokenBeg;
+<b class="nc"><i>813</i>&nbsp;        }</b>
+<i>814</i>&nbsp;
+<b class="nc"><i>815</i>&nbsp;        if(var1.condition instanceof Assignment) {</b>
+<b class="nc"><i>816</i>&nbsp;            this.addStrictWarning(&quot;msg.equal.as.assign&quot;, &quot;&quot;, var1.condition.getPosition(), var1.condition.getLength());</b>
+<b class="nc"><i>817</i>&nbsp;        }</b>
+<i>818</i>&nbsp;
+<b class="nc"><i>819</i>&nbsp;        return var1;</b>
+<i>820</i>&nbsp;    }
+<b class="nc"><i>821</i>&nbsp;</b>
+<i>822</i>&nbsp;    private AstNode statement() throws IOException {
+<i>823</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<b class="nc"><i>824</i>&nbsp;</b>
+<b class="nc"><i>825</i>&nbsp;        try {</b>
+<b class="nc"><i>826</i>&nbsp;            AstNode var2 = this.statementHelper();</b>
+<b class="nc"><i>827</i>&nbsp;            if(var2 != null) {</b>
+<i>828</i>&nbsp;                if(this.compilerEnv.isStrictMode() &amp;&amp; !var2.hasSideEffects()) {
+<b class="nc"><i>829</i>&nbsp;                    int var3 = var2.getPosition();</b>
+<i>830</i>&nbsp;                    var3 = Math.max(var3, this.lineBeginningFor(var3));
+<i>831</i>&nbsp;                    this.addStrictWarning(var2 instanceof EmptyExpression?&quot;msg.extra.trailing.semi&quot;:&quot;msg.no.side.effects&quot;, &quot;&quot;, var3, this.nodeEnd(var2) - var3);
+<i>832</i>&nbsp;                }
+<b class="nc"><i>833</i>&nbsp;</b>
+<b class="nc"><i>834</i>&nbsp;                return var2;</b>
+<b class="nc"><i>835</i>&nbsp;            }</b>
+<b class="nc"><i>836</i>&nbsp;        } catch (Parser.ParserException var4) {</b>
+<b class="nc"><i>837</i>&nbsp;            ;</b>
+<i>838</i>&nbsp;        }
+<b class="nc"><i>839</i>&nbsp;</b>
+<i>840</i>&nbsp;        while(true) {
+<i>841</i>&nbsp;            int var5 = this.peekTokenOrEOL();
+<b class="nc"><i>842</i>&nbsp;            this.consumeToken();</b>
+<i>843</i>&nbsp;            switch(var5) {
+<b class="nc"><i>844</i>&nbsp;            case -1:</b>
+<i>845</i>&nbsp;            case 0:
+<i>846</i>&nbsp;            case 1:
+<b class="nc"><i>847</i>&nbsp;            case 82:</b>
+<b class="nc"><i>848</i>&nbsp;                return new EmptyExpression(var1, this.ts.tokenBeg - var1);</b>
+<b class="nc"><i>849</i>&nbsp;            }</b>
+<i>850</i>&nbsp;        }
+<i>851</i>&nbsp;    }
+<i>852</i>&nbsp;
+<b class="nc"><i>853</i>&nbsp;    private AstNode statementHelper() throws IOException {</b>
+<b class="nc"><i>854</i>&nbsp;        if(this.currentLabel != null &amp;&amp; this.currentLabel.getStatement() != null) {</b>
+<i>855</i>&nbsp;            this.currentLabel = null;
+<i>856</i>&nbsp;        }
+<b class="nc"><i>857</i>&nbsp;</b>
+<b class="nc"><i>858</i>&nbsp;        Object var1 = null;</b>
+<i>859</i>&nbsp;        int var2 = this.peekToken();
+<b class="nc"><i>860</i>&nbsp;        int var3 = this.ts.tokenBeg;</b>
+<b class="nc"><i>861</i>&nbsp;        int var4;</b>
+<b class="nc"><i>862</i>&nbsp;        switch(var2) {</b>
+<b class="nc"><i>863</i>&nbsp;        case -1:</b>
+<i>864</i>&nbsp;            this.consumeToken();
+<b class="nc"><i>865</i>&nbsp;            return this.makeErrorNode();</b>
+<i>866</i>&nbsp;        case 4:
+<b class="nc"><i>867</i>&nbsp;        case 72:</b>
+<b class="nc"><i>868</i>&nbsp;            var1 = this.returnOrYield(var2, false);</b>
+<b class="nc"><i>869</i>&nbsp;            break;</b>
+<b class="nc"><i>870</i>&nbsp;        case 39:</b>
+<b class="nc"><i>871</i>&nbsp;            var1 = this.nameOrLabel();</b>
+<b class="nc"><i>872</i>&nbsp;            if(!(var1 instanceof ExpressionStatement)) {</b>
+<i>873</i>&nbsp;                return (AstNode)var1;
+<b class="nc"><i>874</i>&nbsp;            }</b>
+<b class="nc"><i>875</i>&nbsp;            break;</b>
+<b class="nc"><i>876</i>&nbsp;        case 50:</b>
+<i>877</i>&nbsp;            var1 = this.throwStatement();
+<b class="nc"><i>878</i>&nbsp;            break;</b>
+<b class="nc"><i>879</i>&nbsp;        case 81:</b>
+<b class="nc"><i>880</i>&nbsp;            return this.tryStatement();</b>
+<i>881</i>&nbsp;        case 82:
+<b class="nc"><i>882</i>&nbsp;            this.consumeToken();</b>
+<b class="nc"><i>883</i>&nbsp;            var3 = this.ts.tokenBeg;</b>
+<b class="nc"><i>884</i>&nbsp;            EmptyExpression var5 = new EmptyExpression(var3, this.ts.tokenEnd - var3);</b>
+<b class="nc"><i>885</i>&nbsp;            var5.setLineno(this.ts.lineno);</b>
+<i>886</i>&nbsp;            return var5;
+<b class="nc"><i>887</i>&nbsp;        case 85:</b>
+<i>888</i>&nbsp;            return this.block();
+<i>889</i>&nbsp;        case 109:
+<b class="nc"><i>890</i>&nbsp;            this.consumeToken();</b>
+<b class="nc"><i>891</i>&nbsp;            return this.function(3);</b>
+<b class="nc"><i>892</i>&nbsp;        case 112:</b>
+<b class="nc"><i>893</i>&nbsp;            return this.ifStatement();</b>
+<i>894</i>&nbsp;        case 114:
+<b class="nc"><i>895</i>&nbsp;            return this.switchStatement();</b>
+<i>896</i>&nbsp;        case 116:
+<i>897</i>&nbsp;            var1 = this.defaultXmlNamespace();
+<i>898</i>&nbsp;            break;
+<i>899</i>&nbsp;        case 117:
+<b class="nc"><i>900</i>&nbsp;            return this.whileLoop();</b>
+<b class="nc"><i>901</i>&nbsp;        case 118:</b>
+<b class="nc"><i>902</i>&nbsp;            return this.doLoop();</b>
+<b class="nc"><i>903</i>&nbsp;        case 119:</b>
+<b class="nc"><i>904</i>&nbsp;            return this.forLoop();</b>
+<i>905</i>&nbsp;        case 120:
+<i>906</i>&nbsp;            var1 = this.breakStatement();
+<b class="nc"><i>907</i>&nbsp;            break;</b>
+<b class="nc"><i>908</i>&nbsp;        case 121:</b>
+<b class="nc"><i>909</i>&nbsp;            var1 = this.continueStatement();</b>
+<b class="nc"><i>910</i>&nbsp;            break;</b>
+<b class="nc"><i>911</i>&nbsp;        case 122:</b>
+<i>912</i>&nbsp;        case 154:
+<i>913</i>&nbsp;            this.consumeToken();
+<b class="nc"><i>914</i>&nbsp;            var4 = this.ts.lineno;</b>
+<i>915</i>&nbsp;            var1 = this.variables(this.currentToken, this.ts.tokenBeg);
+<i>916</i>&nbsp;            ((AstNode)var1).setLineno(var4);
+<b class="nc"><i>917</i>&nbsp;            break;</b>
+<i>918</i>&nbsp;        case 123:
+<i>919</i>&nbsp;            if(this.inUseStrictDirective) {
+<i>920</i>&nbsp;                this.reportError(&quot;msg.no.with.strict&quot;);
+<b class="nc"><i>921</i>&nbsp;            }</b>
+<b class="nc"><i>922</i>&nbsp;</b>
+<i>923</i>&nbsp;            return this.withStatement();
+<i>924</i>&nbsp;        case 153:
+<b class="nc"><i>925</i>&nbsp;            var1 = this.letStatement();</b>
+<i>926</i>&nbsp;            if(!(var1 instanceof VariableDeclaration) || this.peekToken() != 82) {
+<i>927</i>&nbsp;                return (AstNode)var1;
+<b class="nc"><i>928</i>&nbsp;            }</b>
+<b class="nc"><i>929</i>&nbsp;            break;</b>
+<b class="nc"><i>930</i>&nbsp;        case 160:</b>
+<b class="nc"><i>931</i>&nbsp;            this.consumeToken();</b>
+<i>932</i>&nbsp;            var1 = new KeywordLiteral(this.ts.tokenBeg, this.ts.tokenEnd - this.ts.tokenBeg, var2);
+<i>933</i>&nbsp;            ((AstNode)var1).setLineno(this.ts.lineno);
+<i>934</i>&nbsp;            break;
+<b class="nc"><i>935</i>&nbsp;        default:</b>
+<b class="nc"><i>936</i>&nbsp;            var4 = this.ts.lineno;</b>
+<i>937</i>&nbsp;            var1 = new ExpressionStatement(this.expr(), !this.insideFunction());
+<b class="nc"><i>938</i>&nbsp;            ((AstNode)var1).setLineno(var4);</b>
+<i>939</i>&nbsp;        }
+<i>940</i>&nbsp;
+<b class="nc"><i>941</i>&nbsp;        this.autoInsertSemicolon((AstNode)var1);</b>
+<b class="nc"><i>942</i>&nbsp;        return (AstNode)var1;</b>
+<b class="nc"><i>943</i>&nbsp;    }</b>
+<b class="nc"><i>944</i>&nbsp;</b>
+<b class="nc"><i>945</i>&nbsp;    private void autoInsertSemicolon(AstNode var1) throws IOException {</b>
+<i>946</i>&nbsp;        int var2 = this.peekFlaggedToken();
+<b class="nc"><i>947</i>&nbsp;        int var3 = var1.getPosition();</b>
+<i>948</i>&nbsp;        switch(var2 &amp; 65535) {
+<b class="nc"><i>949</i>&nbsp;        case -1:</b>
+<b class="nc"><i>950</i>&nbsp;        case 0:</b>
+<i>951</i>&nbsp;        case 86:
+<i>952</i>&nbsp;            this.warnMissingSemi(var3, this.nodeEnd(var1));
+<i>953</i>&nbsp;            break;
+<b class="nc"><i>954</i>&nbsp;        case 82:</b>
+<b class="nc"><i>955</i>&nbsp;            this.consumeToken();</b>
+<i>956</i>&nbsp;            var1.setLength(this.ts.tokenEnd - var3);
+<b class="nc"><i>957</i>&nbsp;            break;</b>
+<i>958</i>&nbsp;        default:
+<i>959</i>&nbsp;            if((var2 &amp; 65536) == 0) {
+<i>960</i>&nbsp;                this.reportError(&quot;msg.no.semi.stmt&quot;);
+<b class="nc"><i>961</i>&nbsp;            } else {</b>
+<b class="nc"><i>962</i>&nbsp;                this.warnMissingSemi(var3, this.nodeEnd(var1));</b>
+<b class="nc"><i>963</i>&nbsp;            }</b>
+<b class="nc"><i>964</i>&nbsp;        }</b>
+<b class="nc"><i>965</i>&nbsp;</b>
+<i>966</i>&nbsp;    }
+<b class="nc"><i>967</i>&nbsp;</b>
+<i>968</i>&nbsp;    private IfStatement ifStatement() throws IOException {
+<b class="nc"><i>969</i>&nbsp;        if(this.currentToken != 112) {</b>
+<b class="nc"><i>970</i>&nbsp;            this.codeBug();</b>
+<b class="nc"><i>971</i>&nbsp;        }</b>
+<b class="nc"><i>972</i>&nbsp;</b>
+<i>973</i>&nbsp;        this.consumeToken();
+<i>974</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<b class="nc"><i>975</i>&nbsp;        int var2 = this.ts.lineno;</b>
+<b class="nc"><i>976</i>&nbsp;        int var3 = -1;</b>
+<i>977</i>&nbsp;        Parser.ConditionData var4 = this.condition();
+<i>978</i>&nbsp;        AstNode var5 = this.statement();
+<i>979</i>&nbsp;        AstNode var6 = null;
+<b class="nc"><i>980</i>&nbsp;        if(this.matchToken(113)) {</b>
+<i>981</i>&nbsp;            var3 = this.ts.tokenBeg - var1;
+<b class="nc"><i>982</i>&nbsp;            var6 = this.statement();</b>
+<b class="nc"><i>983</i>&nbsp;        }</b>
+<b class="nc"><i>984</i>&nbsp;</b>
+<b class="nc"><i>985</i>&nbsp;        int var7 = this.getNodeEnd(var6 != null?var6:var5);</b>
+<b class="nc"><i>986</i>&nbsp;        IfStatement var8 = new IfStatement(var1, var7 - var1);</b>
+<b class="nc"><i>987</i>&nbsp;        var8.setCondition(var4.condition);</b>
+<b class="nc"><i>988</i>&nbsp;        var8.setParens(var4.lp - var1, var4.rp - var1);</b>
+<b class="nc"><i>989</i>&nbsp;        var8.setThenPart(var5);</b>
+<i>990</i>&nbsp;        var8.setElsePart(var6);
+<b class="nc"><i>991</i>&nbsp;        var8.setElsePosition(var3);</b>
+<i>992</i>&nbsp;        var8.setLineno(var2);
+<i>993</i>&nbsp;        return var8;
+<b class="nc"><i>994</i>&nbsp;    }</b>
+<i>995</i>&nbsp;
+<b class="nc"><i>996</i>&nbsp;    private SwitchStatement switchStatement() throws IOException {</b>
+<b class="nc"><i>997</i>&nbsp;        if(this.currentToken != 114) {</b>
+<i>998</i>&nbsp;            this.codeBug();
+<b class="nc"><i>999</i>&nbsp;        }</b>
+<i>1000</i>&nbsp;
+<b class="nc"><i>1001</i>&nbsp;        this.consumeToken();</b>
+<b class="nc"><i>1002</i>&nbsp;        int var1 = this.ts.tokenBeg;</b>
+<i>1003</i>&nbsp;        SwitchStatement var2 = new SwitchStatement(var1);
+<i>1004</i>&nbsp;        if(this.mustMatchToken(87, &quot;msg.no.paren.switch&quot;)) {
+<i>1005</i>&nbsp;            var2.setLp(this.ts.tokenBeg - var1);
+<b class="nc"><i>1006</i>&nbsp;        }</b>
+<b class="nc"><i>1007</i>&nbsp;</b>
+<b class="nc"><i>1008</i>&nbsp;        var2.setLineno(this.ts.lineno);</b>
+<i>1009</i>&nbsp;        AstNode var3 = this.expr();
+<i>1010</i>&nbsp;        var2.setExpression(var3);
+<i>1011</i>&nbsp;        this.enterSwitch(var2);
+<b class="nc"><i>1012</i>&nbsp;</b>
+<b class="nc"><i>1013</i>&nbsp;        try {</b>
+<i>1014</i>&nbsp;            if(this.mustMatchToken(88, &quot;msg.no.paren.after.switch&quot;)) {
+<b class="nc"><i>1015</i>&nbsp;                var2.setRp(this.ts.tokenBeg - var1);</b>
+<b class="nc"><i>1016</i>&nbsp;            }</b>
+<b class="nc"><i>1017</i>&nbsp;</b>
+<i>1018</i>&nbsp;            this.mustMatchToken(85, &quot;msg.no.brace.switch&quot;);
+<i>1019</i>&nbsp;            boolean var4 = false;
+<i>1020</i>&nbsp;
+<b class="nc"><i>1021</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>1022</i>&nbsp;                int var5 = this.nextToken();</b>
+<i>1023</i>&nbsp;                int var6 = this.ts.tokenBeg;
+<i>1024</i>&nbsp;                int var7 = this.ts.lineno;
+<i>1025</i>&nbsp;                AstNode var8 = null;
+<i>1026</i>&nbsp;                switch(var5) {
+<i>1027</i>&nbsp;                case 86:
+<b class="nc"><i>1028</i>&nbsp;                    var2.setLength(this.ts.tokenEnd - var1);</b>
+<b class="nc"><i>1029</i>&nbsp;                    return var2;</b>
+<i>1030</i>&nbsp;                case 115:
+<b class="nc"><i>1031</i>&nbsp;                    var8 = this.expr();</b>
+<i>1032</i>&nbsp;                    this.mustMatchToken(103, &quot;msg.no.colon.case&quot;);
+<b class="nc"><i>1033</i>&nbsp;                    break;</b>
+<b class="nc"><i>1034</i>&nbsp;                case 116:</b>
+<i>1035</i>&nbsp;                    if(var4) {
+<i>1036</i>&nbsp;                        this.reportError(&quot;msg.double.switch.default&quot;);
+<i>1037</i>&nbsp;                    }
+<b class="nc"><i>1038</i>&nbsp;</b>
+<b class="nc"><i>1039</i>&nbsp;                    var4 = true;</b>
+<b class="nc"><i>1040</i>&nbsp;                    var8 = null;</b>
+<i>1041</i>&nbsp;                    this.mustMatchToken(103, &quot;msg.no.colon.case&quot;);
+<b class="nc"><i>1042</i>&nbsp;                    break;</b>
+<b class="nc"><i>1043</i>&nbsp;                default:</b>
+<b class="nc"><i>1044</i>&nbsp;                    this.reportError(&quot;msg.bad.switch&quot;);</b>
+<b class="nc"><i>1045</i>&nbsp;                    return var2;</b>
+<i>1046</i>&nbsp;                }
+<b class="nc"><i>1047</i>&nbsp;</b>
+<i>1048</i>&nbsp;                SwitchCase var9 = new SwitchCase(var6);
+<i>1049</i>&nbsp;                var9.setExpression(var8);
+<i>1050</i>&nbsp;                var9.setLength(this.ts.tokenEnd - var1);
+<i>1051</i>&nbsp;                var9.setLineno(var7);
+<b class="nc"><i>1052</i>&nbsp;</b>
+<b class="nc"><i>1053</i>&nbsp;                while((var5 = this.peekToken()) != 86 &amp;&amp; var5 != 115 &amp;&amp; var5 != 116 &amp;&amp; var5 != 0) {</b>
+<b class="nc"><i>1054</i>&nbsp;                    var9.addStatement(this.statement());</b>
+<i>1055</i>&nbsp;                }
+<i>1056</i>&nbsp;
+<b class="nc"><i>1057</i>&nbsp;                var2.addCase(var9);</b>
+<b class="nc"><i>1058</i>&nbsp;            }</b>
+<b class="nc"><i>1059</i>&nbsp;        } finally {</b>
+<i>1060</i>&nbsp;            this.exitSwitch();
+<i>1061</i>&nbsp;        }
+<i>1062</i>&nbsp;    }
+<b class="nc"><i>1063</i>&nbsp;</b>
+<b class="nc"><i>1064</i>&nbsp;    private WhileLoop whileLoop() throws IOException {</b>
+<i>1065</i>&nbsp;        if(this.currentToken != 117) {
+<b class="nc"><i>1066</i>&nbsp;            this.codeBug();</b>
+<b class="nc"><i>1067</i>&nbsp;        }</b>
+<i>1068</i>&nbsp;
+<b class="nc"><i>1069</i>&nbsp;        this.consumeToken();</b>
+<i>1070</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<i>1071</i>&nbsp;        WhileLoop var2 = new WhileLoop(var1);
+<b class="nc"><i>1072</i>&nbsp;        var2.setLineno(this.ts.lineno);</b>
+<i>1073</i>&nbsp;        this.enterLoop(var2);
+<b class="nc"><i>1074</i>&nbsp;</b>
+<i>1075</i>&nbsp;        try {
+<b class="nc"><i>1076</i>&nbsp;            Parser.ConditionData var3 = this.condition();</b>
+<i>1077</i>&nbsp;            var2.setCondition(var3.condition);
+<i>1078</i>&nbsp;            var2.setParens(var3.lp - var1, var3.rp - var1);
+<b class="nc"><i>1079</i>&nbsp;            AstNode var4 = this.statement();</b>
+<i>1080</i>&nbsp;            var2.setLength(this.getNodeEnd(var4) - var1);
+<b class="nc"><i>1081</i>&nbsp;            var2.setBody(var4);</b>
+<i>1082</i>&nbsp;        } finally {
+<b class="nc"><i>1083</i>&nbsp;            this.exitLoop();</b>
+<b class="nc"><i>1084</i>&nbsp;        }</b>
+<i>1085</i>&nbsp;
+<b class="nc"><i>1086</i>&nbsp;        return var2;</b>
+<i>1087</i>&nbsp;    }
+<b class="nc"><i>1088</i>&nbsp;</b>
+<b class="nc"><i>1089</i>&nbsp;    private DoLoop doLoop() throws IOException {</b>
+<b class="nc"><i>1090</i>&nbsp;        if(this.currentToken != 118) {</b>
+<i>1091</i>&nbsp;            this.codeBug();
+<i>1092</i>&nbsp;        }
+<b class="nc"><i>1093</i>&nbsp;</b>
+<b class="nc"><i>1094</i>&nbsp;        this.consumeToken();</b>
+<b class="nc"><i>1095</i>&nbsp;        int var1 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1096</i>&nbsp;        DoLoop var3 = new DoLoop(var1);</b>
+<b class="nc"><i>1097</i>&nbsp;        var3.setLineno(this.ts.lineno);</b>
+<b class="nc"><i>1098</i>&nbsp;        this.enterLoop(var3);</b>
+<i>1099</i>&nbsp;
+<i>1100</i>&nbsp;        int var2;
+<i>1101</i>&nbsp;        try {
+<b class="nc"><i>1102</i>&nbsp;            AstNode var4 = this.statement();</b>
+<b class="nc"><i>1103</i>&nbsp;            this.mustMatchToken(117, &quot;msg.no.while.do&quot;);</b>
+<i>1104</i>&nbsp;            var3.setWhilePosition(this.ts.tokenBeg - var1);
+<i>1105</i>&nbsp;            Parser.ConditionData var5 = this.condition();
+<b class="nc"><i>1106</i>&nbsp;            var3.setCondition(var5.condition);</b>
+<b class="nc"><i>1107</i>&nbsp;            var3.setParens(var5.lp - var1, var5.rp - var1);</b>
+<i>1108</i>&nbsp;            var2 = this.getNodeEnd(var4);
+<b class="nc"><i>1109</i>&nbsp;            var3.setBody(var4);</b>
+<b class="nc"><i>1110</i>&nbsp;        } finally {</b>
+<b class="nc"><i>1111</i>&nbsp;            this.exitLoop();</b>
+<b class="nc"><i>1112</i>&nbsp;        }</b>
+<i>1113</i>&nbsp;
+<i>1114</i>&nbsp;        if(this.matchToken(82)) {
+<i>1115</i>&nbsp;            var2 = this.ts.tokenEnd;
+<b class="nc"><i>1116</i>&nbsp;        }</b>
+<b class="nc"><i>1117</i>&nbsp;</b>
+<b class="nc"><i>1118</i>&nbsp;        var3.setLength(var2 - var1);</b>
+<i>1119</i>&nbsp;        return var3;
+<i>1120</i>&nbsp;    }
+<i>1121</i>&nbsp;
+<b class="nc"><i>1122</i>&nbsp;    private Loop forLoop() throws IOException {</b>
+<i>1123</i>&nbsp;        if(this.currentToken != 119) {
+<b class="nc"><i>1124</i>&nbsp;            this.codeBug();</b>
+<i>1125</i>&nbsp;        }
+<b class="nc"><i>1126</i>&nbsp;</b>
+<i>1127</i>&nbsp;        this.consumeToken();
+<b class="nc"><i>1128</i>&nbsp;        int var1 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1129</i>&nbsp;        int var2 = this.ts.lineno;</b>
+<b class="nc"><i>1130</i>&nbsp;        boolean var3 = false;</b>
+<b class="nc"><i>1131</i>&nbsp;        boolean var4 = false;</b>
+<i>1132</i>&nbsp;        int var5 = -1;
+<b class="nc"><i>1133</i>&nbsp;        int var6 = -1;</b>
+<i>1134</i>&nbsp;        int var7 = -1;
+<i>1135</i>&nbsp;        int var8 = -1;
+<i>1136</i>&nbsp;        AstNode var9 = null;
+<i>1137</i>&nbsp;        Object var10 = null;
+<i>1138</i>&nbsp;        Object var11 = null;
+<b class="nc"><i>1139</i>&nbsp;        Object var12 = null;</b>
+<b class="nc"><i>1140</i>&nbsp;        Scope var13 = new Scope();</b>
+<b class="nc"><i>1141</i>&nbsp;        this.pushScope(var13);</b>
+<b class="nc"><i>1142</i>&nbsp;</b>
+<i>1143</i>&nbsp;        try {
+<i>1144</i>&nbsp;            if(this.matchToken(39)) {
+<i>1145</i>&nbsp;                if(&quot;each&quot;.equals(this.ts.getString())) {
+<b class="nc"><i>1146</i>&nbsp;                    var3 = true;</b>
+<b class="nc"><i>1147</i>&nbsp;                    var5 = this.ts.tokenBeg - var1;</b>
+<i>1148</i>&nbsp;                } else {
+<i>1149</i>&nbsp;                    this.reportError(&quot;msg.no.paren.for&quot;);
+<b class="nc"><i>1150</i>&nbsp;                }</b>
+<b class="nc"><i>1151</i>&nbsp;            }</b>
+<i>1152</i>&nbsp;
+<i>1153</i>&nbsp;            if(this.mustMatchToken(87, &quot;msg.no.paren.for&quot;)) {
+<i>1154</i>&nbsp;                var7 = this.ts.tokenBeg - var1;
+<i>1155</i>&nbsp;            }
+<b class="nc"><i>1156</i>&nbsp;</b>
+<i>1157</i>&nbsp;            int var14 = this.peekToken();
+<b class="nc"><i>1158</i>&nbsp;            var9 = this.forLoopInit(var14);</b>
+<i>1159</i>&nbsp;            if(this.matchToken(52)) {
+<b class="nc"><i>1160</i>&nbsp;                var4 = true;</b>
+<i>1161</i>&nbsp;                var6 = this.ts.tokenBeg - var1;
+<i>1162</i>&nbsp;                var10 = this.expr();
+<i>1163</i>&nbsp;            } else {
+<b class="nc"><i>1164</i>&nbsp;                this.mustMatchToken(82, &quot;msg.no.semi.for&quot;);</b>
+<i>1165</i>&nbsp;                if(this.peekToken() == 82) {
+<b class="nc"><i>1166</i>&nbsp;                    var10 = new EmptyExpression(this.ts.tokenBeg, 1);</b>
+<i>1167</i>&nbsp;                    ((AstNode)var10).setLineno(this.ts.lineno);
+<i>1168</i>&nbsp;                } else {
+<i>1169</i>&nbsp;                    var10 = this.expr();
+<i>1170</i>&nbsp;                }
+<i>1171</i>&nbsp;
+<b class="nc"><i>1172</i>&nbsp;                this.mustMatchToken(82, &quot;msg.no.semi.for.cond&quot;);</b>
+<b class="nc"><i>1173</i>&nbsp;                int var15 = this.ts.tokenEnd;</b>
+<i>1174</i>&nbsp;                if(this.peekToken() == 88) {
+<b class="nc"><i>1175</i>&nbsp;                    var11 = new EmptyExpression(var15, 1);</b>
+<i>1176</i>&nbsp;                    ((AstNode)var11).setLineno(this.ts.lineno);
+<i>1177</i>&nbsp;                } else {
+<i>1178</i>&nbsp;                    var11 = this.expr();
+<i>1179</i>&nbsp;                }
+<b class="nc"><i>1180</i>&nbsp;            }</b>
+<b class="nc"><i>1181</i>&nbsp;</b>
+<i>1182</i>&nbsp;            if(this.mustMatchToken(88, &quot;msg.no.paren.for.ctrl&quot;)) {
+<b class="nc"><i>1183</i>&nbsp;                var8 = this.ts.tokenBeg - var1;</b>
+<b class="nc"><i>1184</i>&nbsp;            }</b>
+<b class="nc"><i>1185</i>&nbsp;</b>
+<i>1186</i>&nbsp;            if(var4) {
+<b class="nc"><i>1187</i>&nbsp;                ForInLoop var24 = new ForInLoop(var1);</b>
+<b class="nc"><i>1188</i>&nbsp;                if(var9 instanceof VariableDeclaration &amp;&amp; ((VariableDeclaration)var9).getVariables().size() &gt; 1) {</b>
+<b class="nc"><i>1189</i>&nbsp;                    this.reportError(&quot;msg.mult.index&quot;);</b>
+<i>1190</i>&nbsp;                }
+<i>1191</i>&nbsp;
+<i>1192</i>&nbsp;                var24.setIterator(var9);
+<b class="nc"><i>1193</i>&nbsp;                var24.setIteratedObject((AstNode)var10);</b>
+<b class="nc"><i>1194</i>&nbsp;                var24.setInPosition(var6);</b>
+<i>1195</i>&nbsp;                var24.setIsForEach(var3);
+<b class="nc"><i>1196</i>&nbsp;                var24.setEachPosition(var5);</b>
+<b class="nc"><i>1197</i>&nbsp;                var12 = var24;</b>
+<i>1198</i>&nbsp;            } else {
+<b class="nc"><i>1199</i>&nbsp;                ForLoop var26 = new ForLoop(var1);</b>
+<b class="nc"><i>1200</i>&nbsp;                var26.setInitializer(var9);</b>
+<b class="nc"><i>1201</i>&nbsp;                var26.setCondition((AstNode)var10);</b>
+<b class="nc"><i>1202</i>&nbsp;                var26.setIncrement((AstNode)var11);</b>
+<b class="nc"><i>1203</i>&nbsp;                var12 = var26;</b>
+<i>1204</i>&nbsp;            }
+<i>1205</i>&nbsp;
+<i>1206</i>&nbsp;            this.currentScope.replaceWith((Scope)var12);
+<i>1207</i>&nbsp;            this.popScope();
+<i>1208</i>&nbsp;            this.enterLoop((Loop)var12);
+<b class="nc"><i>1209</i>&nbsp;</b>
+<b class="nc"><i>1210</i>&nbsp;            try {</b>
+<b class="nc"><i>1211</i>&nbsp;                AstNode var25 = this.statement();</b>
+<b class="nc"><i>1212</i>&nbsp;                ((Loop)var12).setLength(this.getNodeEnd(var25) - var1);</b>
+<i>1213</i>&nbsp;                ((Loop)var12).setBody(var25);
+<b class="nc"><i>1214</i>&nbsp;            } finally {</b>
+<i>1215</i>&nbsp;                this.exitLoop();
+<i>1216</i>&nbsp;            }
+<i>1217</i>&nbsp;        } finally {
+<i>1218</i>&nbsp;            if(this.currentScope == var13) {
+<i>1219</i>&nbsp;                this.popScope();
+<b class="nc"><i>1220</i>&nbsp;            }</b>
+<i>1221</i>&nbsp;
+<b class="nc"><i>1222</i>&nbsp;        }</b>
+<b class="nc"><i>1223</i>&nbsp;</b>
+<b class="nc"><i>1224</i>&nbsp;        ((Loop)var12).setParens(var7, var8);</b>
+<b class="nc"><i>1225</i>&nbsp;        ((Loop)var12).setLineno(var2);</b>
+<b class="nc"><i>1226</i>&nbsp;        return (Loop)var12;</b>
+<i>1227</i>&nbsp;    }
+<i>1228</i>&nbsp;
+<b class="nc"><i>1229</i>&nbsp;    private AstNode forLoopInit(int var1) throws IOException {</b>
+<i>1230</i>&nbsp;        Object var3;
+<i>1231</i>&nbsp;        try {
+<i>1232</i>&nbsp;            this.inForInit = true;
+<i>1233</i>&nbsp;            Object var2 = null;
+<i>1234</i>&nbsp;            if(var1 == 82) {
+<i>1235</i>&nbsp;                var2 = new EmptyExpression(this.ts.tokenBeg, 1);
+<i>1236</i>&nbsp;                ((AstNode)var2).setLineno(this.ts.lineno);
+<i>1237</i>&nbsp;            } else if(var1 != 122 &amp;&amp; var1 != 153) {
+<b class="nc"><i>1238</i>&nbsp;                var2 = this.expr();</b>
+<i>1239</i>&nbsp;                this.markDestructuring((AstNode)var2);
+<b class="nc"><i>1240</i>&nbsp;            } else {</b>
+<b class="nc"><i>1241</i>&nbsp;                this.consumeToken();</b>
+<b class="nc"><i>1242</i>&nbsp;                var2 = this.variables(var1, this.ts.tokenBeg);</b>
+<b class="nc"><i>1243</i>&nbsp;            }</b>
+<b class="nc"><i>1244</i>&nbsp;</b>
+<b class="nc"><i>1245</i>&nbsp;            var3 = var2;</b>
+<b class="nc"><i>1246</i>&nbsp;        } finally {</b>
+<i>1247</i>&nbsp;            this.inForInit = false;
+<i>1248</i>&nbsp;        }
+<b class="nc"><i>1249</i>&nbsp;</b>
+<i>1250</i>&nbsp;        return (AstNode)var3;
+<i>1251</i>&nbsp;    }
+<i>1252</i>&nbsp;
+<i>1253</i>&nbsp;    private TryStatement tryStatement() throws IOException {
+<i>1254</i>&nbsp;        if(this.currentToken != 81) {
+<b class="nc"><i>1255</i>&nbsp;            this.codeBug();</b>
+<b class="nc"><i>1256</i>&nbsp;        }</b>
+<b class="nc"><i>1257</i>&nbsp;</b>
+<b class="nc"><i>1258</i>&nbsp;        this.consumeToken();</b>
+<i>1259</i>&nbsp;        String var1 = this.getAndResetJsDoc();
+<i>1260</i>&nbsp;        int var2 = this.ts.tokenBeg;
+<b class="nc"><i>1261</i>&nbsp;        int var3 = this.ts.lineno;</b>
+<i>1262</i>&nbsp;        int var4 = -1;
+<i>1263</i>&nbsp;        if(this.peekToken() != 85) {
+<i>1264</i>&nbsp;            this.reportError(&quot;msg.no.brace.try&quot;);
+<i>1265</i>&nbsp;        }
+<i>1266</i>&nbsp;
+<b class="nc"><i>1267</i>&nbsp;        AstNode var5 = this.statement();</b>
+<b class="nc"><i>1268</i>&nbsp;        int var6 = this.getNodeEnd(var5);</b>
+<b class="nc"><i>1269</i>&nbsp;        ArrayList var7 = null;</b>
+<b class="nc"><i>1270</i>&nbsp;        boolean var8 = false;</b>
+<i>1271</i>&nbsp;        int var9 = this.peekToken();
+<i>1272</i>&nbsp;        CatchClause var19;
+<b class="nc"><i>1273</i>&nbsp;        if(var9 == 124) {</b>
+<i>1274</i>&nbsp;            for(; this.matchToken(124); var7.add(var19)) {
+<i>1275</i>&nbsp;                int var10 = this.ts.lineno;
+<i>1276</i>&nbsp;                if(var8) {
+<i>1277</i>&nbsp;                    this.reportError(&quot;msg.catch.unreachable&quot;);
+<i>1278</i>&nbsp;                }
+<b class="nc"><i>1279</i>&nbsp;</b>
+<b class="nc"><i>1280</i>&nbsp;                int var11 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1281</i>&nbsp;                int var12 = -1;</b>
+<b class="nc"><i>1282</i>&nbsp;                int var13 = -1;</b>
+<i>1283</i>&nbsp;                int var14 = -1;
+<b class="nc"><i>1284</i>&nbsp;                if(this.mustMatchToken(87, &quot;msg.no.paren.catch&quot;)) {</b>
+<i>1285</i>&nbsp;                    var12 = this.ts.tokenBeg;
+<i>1286</i>&nbsp;                }
+<i>1287</i>&nbsp;
+<i>1288</i>&nbsp;                this.mustMatchToken(39, &quot;msg.bad.catchcond&quot;);
+<i>1289</i>&nbsp;                Name var15 = this.createNameNode();
+<b class="nc"><i>1290</i>&nbsp;                String var16 = var15.getIdentifier();</b>
+<b class="nc"><i>1291</i>&nbsp;                if(this.inUseStrictDirective &amp;&amp; (&quot;eval&quot;.equals(var16) || &quot;arguments&quot;.equals(var16))) {</b>
+<b class="nc"><i>1292</i>&nbsp;                    this.reportError(&quot;msg.bad.id.strict&quot;, var16);</b>
+<b class="nc"><i>1293</i>&nbsp;                }</b>
+<i>1294</i>&nbsp;
+<b class="nc"><i>1295</i>&nbsp;                AstNode var17 = null;</b>
+<i>1296</i>&nbsp;                if(this.matchToken(112)) {
+<i>1297</i>&nbsp;                    var14 = this.ts.tokenBeg;
+<i>1298</i>&nbsp;                    var17 = this.expr();
+<i>1299</i>&nbsp;                } else {
+<i>1300</i>&nbsp;                    var8 = true;
+<b class="nc"><i>1301</i>&nbsp;                }</b>
+<b class="nc"><i>1302</i>&nbsp;</b>
+<b class="nc"><i>1303</i>&nbsp;                if(this.mustMatchToken(88, &quot;msg.bad.catchcond&quot;)) {</b>
+<b class="nc"><i>1304</i>&nbsp;                    var13 = this.ts.tokenBeg;</b>
+<i>1305</i>&nbsp;                }
+<b class="nc"><i>1306</i>&nbsp;</b>
+<i>1307</i>&nbsp;                this.mustMatchToken(85, &quot;msg.no.brace.catchblock&quot;);
+<i>1308</i>&nbsp;                Block var18 = (Block)this.statements();
+<i>1309</i>&nbsp;                var6 = this.getNodeEnd(var18);
+<i>1310</i>&nbsp;                var19 = new CatchClause(var11);
+<i>1311</i>&nbsp;                var19.setVarName(var15);
+<b class="nc"><i>1312</i>&nbsp;                var19.setCatchCondition(var17);</b>
+<i>1313</i>&nbsp;                var19.setBody(var18);
+<b class="nc"><i>1314</i>&nbsp;                if(var14 != -1) {</b>
+<b class="nc"><i>1315</i>&nbsp;                    var19.setIfPosition(var14 - var11);</b>
+<i>1316</i>&nbsp;                }
+<i>1317</i>&nbsp;
+<i>1318</i>&nbsp;                var19.setParens(var12, var13);
+<i>1319</i>&nbsp;                var19.setLineno(var10);
+<b class="nc"><i>1320</i>&nbsp;                if(this.mustMatchToken(86, &quot;msg.no.brace.after.body&quot;)) {</b>
+<b class="nc"><i>1321</i>&nbsp;                    var6 = this.ts.tokenEnd;</b>
+<b class="nc"><i>1322</i>&nbsp;                }</b>
+<b class="nc"><i>1323</i>&nbsp;</b>
+<i>1324</i>&nbsp;                var19.setLength(var6 - var11);
+<i>1325</i>&nbsp;                if(var7 == null) {
+<i>1326</i>&nbsp;                    var7 = new ArrayList();
+<i>1327</i>&nbsp;                }
+<i>1328</i>&nbsp;            }
+<b class="nc"><i>1329</i>&nbsp;        } else if(var9 != 125) {</b>
+<i>1330</i>&nbsp;            this.mustMatchToken(125, &quot;msg.try.no.catchfinally&quot;);
+<b class="nc"><i>1331</i>&nbsp;        }</b>
+<b class="nc"><i>1332</i>&nbsp;</b>
+<i>1333</i>&nbsp;        AstNode var21 = null;
+<b class="nc"><i>1334</i>&nbsp;        if(this.matchToken(125)) {</b>
+<b class="nc"><i>1335</i>&nbsp;            var4 = this.ts.tokenBeg;</b>
+<i>1336</i>&nbsp;            var21 = this.statement();
+<b class="nc"><i>1337</i>&nbsp;            var6 = this.getNodeEnd(var21);</b>
+<b class="nc"><i>1338</i>&nbsp;        }</b>
+<i>1339</i>&nbsp;
+<b class="nc"><i>1340</i>&nbsp;        TryStatement var20 = new TryStatement(var2, var6 - var2);</b>
+<i>1341</i>&nbsp;        var20.setTryBlock(var5);
+<i>1342</i>&nbsp;        var20.setCatchClauses(var7);
+<i>1343</i>&nbsp;        var20.setFinallyBlock(var21);
+<b class="nc"><i>1344</i>&nbsp;        if(var4 != -1) {</b>
+<b class="nc"><i>1345</i>&nbsp;            var20.setFinallyPosition(var4 - var2);</b>
+<b class="nc"><i>1346</i>&nbsp;        }</b>
+<i>1347</i>&nbsp;
+<b class="nc"><i>1348</i>&nbsp;        var20.setLineno(var3);</b>
+<i>1349</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>1350</i>&nbsp;            var20.setJsDoc(var1);</b>
+<i>1351</i>&nbsp;        }
+<i>1352</i>&nbsp;
+<i>1353</i>&nbsp;        return var20;
+<i>1354</i>&nbsp;    }
+<i>1355</i>&nbsp;
+<b class="nc"><i>1356</i>&nbsp;    private ThrowStatement throwStatement() throws IOException {</b>
+<i>1357</i>&nbsp;        if(this.currentToken != 50) {
+<b class="nc"><i>1358</i>&nbsp;            this.codeBug();</b>
+<b class="nc"><i>1359</i>&nbsp;        }</b>
+<i>1360</i>&nbsp;
+<b class="nc"><i>1361</i>&nbsp;        this.consumeToken();</b>
+<b class="nc"><i>1362</i>&nbsp;        int var1 = this.ts.tokenBeg;</b>
+<i>1363</i>&nbsp;        int var2 = this.ts.lineno;
+<i>1364</i>&nbsp;        if(this.peekTokenOrEOL() == 1) {
+<i>1365</i>&nbsp;            this.reportError(&quot;msg.bad.throw.eol&quot;);
+<i>1366</i>&nbsp;        }
+<i>1367</i>&nbsp;
+<i>1368</i>&nbsp;        AstNode var3 = this.expr();
+<b class="nc"><i>1369</i>&nbsp;        ThrowStatement var4 = new ThrowStatement(var1, this.getNodeEnd(var3), var3);</b>
+<b class="nc"><i>1370</i>&nbsp;        var4.setLineno(var2);</b>
+<b class="nc"><i>1371</i>&nbsp;        return var4;</b>
+<b class="nc"><i>1372</i>&nbsp;    }</b>
+<i>1373</i>&nbsp;
+<b class="nc"><i>1374</i>&nbsp;    private LabeledStatement matchJumpLabelName() throws IOException {</b>
+<i>1375</i>&nbsp;        LabeledStatement var1 = null;
+<b class="nc"><i>1376</i>&nbsp;        if(this.peekTokenOrEOL() == 39) {</b>
+<i>1377</i>&nbsp;            this.consumeToken();
+<i>1378</i>&nbsp;            if(this.labelSet != null) {
+<i>1379</i>&nbsp;                var1 = (LabeledStatement)this.labelSet.get(this.ts.getString());
+<i>1380</i>&nbsp;            }
+<i>1381</i>&nbsp;
+<b class="nc"><i>1382</i>&nbsp;            if(var1 == null) {</b>
+<i>1383</i>&nbsp;                this.reportError(&quot;msg.undef.label&quot;);
+<b class="nc"><i>1384</i>&nbsp;            }</b>
+<b class="nc"><i>1385</i>&nbsp;        }</b>
+<i>1386</i>&nbsp;
+<i>1387</i>&nbsp;        return var1;
+<i>1388</i>&nbsp;    }
+<b class="nc"><i>1389</i>&nbsp;</b>
+<b class="nc"><i>1390</i>&nbsp;    private BreakStatement breakStatement() throws IOException {</b>
+<b class="nc"><i>1391</i>&nbsp;        if(this.currentToken != 120) {</b>
+<b class="nc"><i>1392</i>&nbsp;            this.codeBug();</b>
+<i>1393</i>&nbsp;        }
+<b class="nc"><i>1394</i>&nbsp;</b>
+<i>1395</i>&nbsp;        this.consumeToken();
+<b class="nc"><i>1396</i>&nbsp;        int var1 = this.ts.lineno;</b>
+<i>1397</i>&nbsp;        int var2 = this.ts.tokenBeg;
+<i>1398</i>&nbsp;        int var3 = this.ts.tokenEnd;
+<i>1399</i>&nbsp;        Name var4 = null;
+<i>1400</i>&nbsp;        if(this.peekTokenOrEOL() == 39) {
+<i>1401</i>&nbsp;            var4 = this.createNameNode();
+<b class="nc"><i>1402</i>&nbsp;            var3 = this.getNodeEnd(var4);</b>
+<i>1403</i>&nbsp;        }
+<b class="nc"><i>1404</i>&nbsp;</b>
+<b class="nc"><i>1405</i>&nbsp;        LabeledStatement var5 = this.matchJumpLabelName();</b>
+<b class="nc"><i>1406</i>&nbsp;        Object var6 = var5 == null?null:var5.getFirstLabel();</b>
+<b class="nc"><i>1407</i>&nbsp;        if(var6 == null &amp;&amp; var4 == null) {</b>
+<i>1408</i>&nbsp;            if(this.loopAndSwitchSet != null &amp;&amp; this.loopAndSwitchSet.size() != 0) {
+<b class="nc"><i>1409</i>&nbsp;                var6 = (Jump)this.loopAndSwitchSet.get(this.loopAndSwitchSet.size() - 1);</b>
+<b class="nc"><i>1410</i>&nbsp;            } else if(var4 == null) {</b>
+<i>1411</i>&nbsp;                this.reportError(&quot;msg.bad.break&quot;, var2, var3 - var2);
+<i>1412</i>&nbsp;            }
+<i>1413</i>&nbsp;        }
+<i>1414</i>&nbsp;
+<b class="nc"><i>1415</i>&nbsp;        BreakStatement var7 = new BreakStatement(var2, var3 - var2);</b>
+<i>1416</i>&nbsp;        var7.setBreakLabel(var4);
+<i>1417</i>&nbsp;        if(var6 != null) {
+<i>1418</i>&nbsp;            var7.setBreakTarget((Jump)var6);
+<i>1419</i>&nbsp;        }
+<i>1420</i>&nbsp;
+<b class="nc"><i>1421</i>&nbsp;        var7.setLineno(var1);</b>
+<i>1422</i>&nbsp;        return var7;
+<b class="nc"><i>1423</i>&nbsp;    }</b>
+<b class="nc"><i>1424</i>&nbsp;</b>
+<i>1425</i>&nbsp;    private ContinueStatement continueStatement() throws IOException {
+<i>1426</i>&nbsp;        if(this.currentToken != 121) {
+<i>1427</i>&nbsp;            this.codeBug();
+<b class="nc"><i>1428</i>&nbsp;        }</b>
+<b class="nc"><i>1429</i>&nbsp;</b>
+<b class="nc"><i>1430</i>&nbsp;        this.consumeToken();</b>
+<b class="nc"><i>1431</i>&nbsp;        int var1 = this.ts.lineno;</b>
+<i>1432</i>&nbsp;        int var2 = this.ts.tokenBeg;
+<b class="nc"><i>1433</i>&nbsp;        int var3 = this.ts.tokenEnd;</b>
+<i>1434</i>&nbsp;        Name var4 = null;
+<i>1435</i>&nbsp;        if(this.peekTokenOrEOL() == 39) {
+<b class="nc"><i>1436</i>&nbsp;            var4 = this.createNameNode();</b>
+<i>1437</i>&nbsp;            var3 = this.getNodeEnd(var4);
+<i>1438</i>&nbsp;        }
+<i>1439</i>&nbsp;
+<i>1440</i>&nbsp;        LabeledStatement var5 = this.matchJumpLabelName();
+<i>1441</i>&nbsp;        Loop var6 = null;
+<i>1442</i>&nbsp;        if(var5 == null &amp;&amp; var4 == null) {
+<i>1443</i>&nbsp;            if(this.loopSet != null &amp;&amp; this.loopSet.size() != 0) {
+<b class="nc"><i>1444</i>&nbsp;                var6 = (Loop)this.loopSet.get(this.loopSet.size() - 1);</b>
+<i>1445</i>&nbsp;            } else {
+<b class="nc"><i>1446</i>&nbsp;                this.reportError(&quot;msg.continue.outside&quot;);</b>
+<i>1447</i>&nbsp;            }
+<i>1448</i>&nbsp;        } else {
+<i>1449</i>&nbsp;            if(var5 == null || !(var5.getStatement() instanceof Loop)) {
+<i>1450</i>&nbsp;                this.reportError(&quot;msg.continue.nonloop&quot;, var2, var3 - var2);
+<b class="nc"><i>1451</i>&nbsp;            }</b>
+<b class="nc"><i>1452</i>&nbsp;</b>
+<b class="nc"><i>1453</i>&nbsp;            var6 = var5 == null?null:(Loop)var5.getStatement();</b>
+<i>1454</i>&nbsp;        }
+<i>1455</i>&nbsp;
+<b class="nc"><i>1456</i>&nbsp;        ContinueStatement var7 = new ContinueStatement(var2, var3 - var2);</b>
+<i>1457</i>&nbsp;        if(var6 != null) {
+<b class="nc"><i>1458</i>&nbsp;            var7.setTarget(var6);</b>
+<b class="nc"><i>1459</i>&nbsp;        }</b>
+<i>1460</i>&nbsp;
+<i>1461</i>&nbsp;        var7.setLabel(var4);
+<b class="nc"><i>1462</i>&nbsp;        var7.setLineno(var1);</b>
+<i>1463</i>&nbsp;        return var7;
+<b class="nc"><i>1464</i>&nbsp;    }</b>
+<b class="nc"><i>1465</i>&nbsp;</b>
+<i>1466</i>&nbsp;    private WithStatement withStatement() throws IOException {
+<i>1467</i>&nbsp;        if(this.currentToken != 123) {
+<i>1468</i>&nbsp;            this.codeBug();
+<b class="nc"><i>1469</i>&nbsp;        }</b>
+<b class="nc"><i>1470</i>&nbsp;</b>
+<b class="nc"><i>1471</i>&nbsp;        this.consumeToken();</b>
+<i>1472</i>&nbsp;        int var1 = this.ts.lineno;
+<i>1473</i>&nbsp;        int var2 = this.ts.tokenBeg;
+<b class="nc"><i>1474</i>&nbsp;        int var3 = -1;</b>
+<b class="nc"><i>1475</i>&nbsp;        int var4 = -1;</b>
+<b class="nc"><i>1476</i>&nbsp;        if(this.mustMatchToken(87, &quot;msg.no.paren.with&quot;)) {</b>
+<i>1477</i>&nbsp;            var3 = this.ts.tokenBeg;
+<i>1478</i>&nbsp;        }
+<b class="nc"><i>1479</i>&nbsp;</b>
+<b class="nc"><i>1480</i>&nbsp;        AstNode var5 = this.expr();</b>
+<i>1481</i>&nbsp;        if(this.mustMatchToken(88, &quot;msg.no.paren.after.with&quot;)) {
+<i>1482</i>&nbsp;            var4 = this.ts.tokenBeg;
+<i>1483</i>&nbsp;        }
+<b class="nc"><i>1484</i>&nbsp;</b>
+<b class="nc"><i>1485</i>&nbsp;        ++this.nestingOfWith;</b>
+<b class="nc"><i>1486</i>&nbsp;</b>
+<b class="nc"><i>1487</i>&nbsp;        AstNode var6;</b>
+<i>1488</i>&nbsp;        try {
+<i>1489</i>&nbsp;            var6 = this.statement();
+<i>1490</i>&nbsp;        } finally {
+<i>1491</i>&nbsp;            --this.nestingOfWith;
+<b class="nc"><i>1492</i>&nbsp;        }</b>
+<i>1493</i>&nbsp;
+<i>1494</i>&nbsp;        WithStatement var7 = new WithStatement(var2, this.getNodeEnd(var6) - var2);
+<b class="nc"><i>1495</i>&nbsp;        var7.setJsDoc(this.getAndResetJsDoc());</b>
+<b class="nc"><i>1496</i>&nbsp;        var7.setExpression(var5);</b>
+<b class="nc"><i>1497</i>&nbsp;        var7.setStatement(var6);</b>
+<b class="nc"><i>1498</i>&nbsp;        var7.setParens(var3, var4);</b>
+<b class="nc"><i>1499</i>&nbsp;        var7.setLineno(var1);</b>
+<i>1500</i>&nbsp;        return var7;
+<b class="nc"><i>1501</i>&nbsp;    }</b>
+<i>1502</i>&nbsp;
+<b class="nc"><i>1503</i>&nbsp;    private AstNode letStatement() throws IOException {</b>
+<i>1504</i>&nbsp;        if(this.currentToken != 153) {
+<i>1505</i>&nbsp;            this.codeBug();
+<i>1506</i>&nbsp;        }
+<i>1507</i>&nbsp;
+<i>1508</i>&nbsp;        this.consumeToken();
+<b class="nc"><i>1509</i>&nbsp;        int var1 = this.ts.lineno;</b>
+<b class="nc"><i>1510</i>&nbsp;        int var2 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1511</i>&nbsp;        Object var3;</b>
+<b class="nc"><i>1512</i>&nbsp;        if(this.peekToken() == 87) {</b>
+<i>1513</i>&nbsp;            var3 = this.let(true, var2);
+<i>1514</i>&nbsp;        } else {
+<i>1515</i>&nbsp;            var3 = this.variables(153, var2);
+<b class="nc"><i>1516</i>&nbsp;        }</b>
+<b class="nc"><i>1517</i>&nbsp;</b>
+<b class="nc"><i>1518</i>&nbsp;        ((AstNode)var3).setLineno(var1);</b>
+<i>1519</i>&nbsp;        return (AstNode)var3;
+<b class="nc"><i>1520</i>&nbsp;    }</b>
+<b class="nc"><i>1521</i>&nbsp;</b>
+<i>1522</i>&nbsp;    private static final boolean nowAllSet(int var0, int var1, int var2) {
+<b class="nc"><i>1523</i>&nbsp;        return (var0 &amp; var2) != var2 &amp;&amp; (var1 &amp; var2) == var2;</b>
+<b class="nc"><i>1524</i>&nbsp;    }</b>
+<b class="nc"><i>1525</i>&nbsp;</b>
+<i>1526</i>&nbsp;    private AstNode returnOrYield(int var1, boolean var2) throws IOException {
+<b class="nc"><i>1527</i>&nbsp;        if(!this.insideFunction()) {</b>
+<i>1528</i>&nbsp;            this.reportError(var1 == 4?&quot;msg.bad.return&quot;:&quot;msg.bad.yield&quot;);
+<b class="nc"><i>1529</i>&nbsp;        }</b>
+<b class="nc"><i>1530</i>&nbsp;</b>
+<i>1531</i>&nbsp;        this.consumeToken();
+<b class="nc"><i>1532</i>&nbsp;        int var3 = this.ts.lineno;</b>
+<b class="nc"><i>1533</i>&nbsp;        int var4 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1534</i>&nbsp;        int var5 = this.ts.tokenEnd;</b>
+<b class="nc"><i>1535</i>&nbsp;        AstNode var6 = null;</b>
+<b class="nc"><i>1536</i>&nbsp;        switch(this.peekTokenOrEOL()) {</b>
+<i>1537</i>&nbsp;        default:
+<i>1538</i>&nbsp;            var6 = this.expr();
+<b class="nc"><i>1539</i>&nbsp;            var5 = this.getNodeEnd(var6);</b>
+<b class="nc"><i>1540</i>&nbsp;        case -1:</b>
+<b class="nc"><i>1541</i>&nbsp;        case 0:</b>
+<b class="nc"><i>1542</i>&nbsp;        case 1:</b>
+<i>1543</i>&nbsp;        case 72:
+<b class="nc"><i>1544</i>&nbsp;        case 82:</b>
+<i>1545</i>&nbsp;        case 84:
+<i>1546</i>&nbsp;        case 86:
+<b class="nc"><i>1547</i>&nbsp;        case 88:</b>
+<b class="nc"><i>1548</i>&nbsp;            int var7 = this.endFlags;</b>
+<i>1549</i>&nbsp;            Object var8;
+<b class="nc"><i>1550</i>&nbsp;            if(var1 == 4) {</b>
+<i>1551</i>&nbsp;                this.endFlags |= var6 == null?2:4;
+<b class="nc"><i>1552</i>&nbsp;                var8 = new ReturnStatement(var4, var5 - var4, var6);</b>
+<b class="nc"><i>1553</i>&nbsp;                if(nowAllSet(var7, this.endFlags, 6)) {</b>
+<b class="nc"><i>1554</i>&nbsp;                    this.addStrictWarning(&quot;msg.return.inconsistent&quot;, &quot;&quot;, var4, var5 - var4);</b>
+<i>1555</i>&nbsp;                }
+<b class="nc"><i>1556</i>&nbsp;            } else {</b>
+<b class="nc"><i>1557</i>&nbsp;                if(!this.insideFunction()) {</b>
+<b class="nc"><i>1558</i>&nbsp;                    this.reportError(&quot;msg.bad.yield&quot;);</b>
+<b class="nc"><i>1559</i>&nbsp;                }</b>
+<i>1560</i>&nbsp;
+<b class="nc"><i>1561</i>&nbsp;                this.endFlags |= 8;</b>
+<i>1562</i>&nbsp;                var8 = new Yield(var4, var5 - var4, var6);
+<i>1563</i>&nbsp;                this.setRequiresActivation();
+<b class="nc"><i>1564</i>&nbsp;                this.setIsGenerator();</b>
+<b class="nc"><i>1565</i>&nbsp;                if(!var2) {</b>
+<i>1566</i>&nbsp;                    var8 = new ExpressionStatement((AstNode)var8);
+<b class="nc"><i>1567</i>&nbsp;                }</b>
+<b class="nc"><i>1568</i>&nbsp;            }</b>
+<i>1569</i>&nbsp;
+<i>1570</i>&nbsp;            if(this.insideFunction() &amp;&amp; nowAllSet(var7, this.endFlags, 12)) {
+<i>1571</i>&nbsp;                Name var9 = ((FunctionNode)this.currentScriptOrFn).getFunctionName();
+<i>1572</i>&nbsp;                if(var9 != null &amp;&amp; var9.length() != 0) {
+<i>1573</i>&nbsp;                    this.addError(&quot;msg.generator.returns&quot;, var9.getIdentifier());
+<i>1574</i>&nbsp;                } else {
+<i>1575</i>&nbsp;                    this.addError(&quot;msg.anon.generator.returns&quot;, &quot;&quot;);
+<i>1576</i>&nbsp;                }
+<b class="nc"><i>1577</i>&nbsp;            }</b>
+<b class="nc"><i>1578</i>&nbsp;</b>
+<b class="nc"><i>1579</i>&nbsp;            ((AstNode)var8).setLineno(var3);</b>
+<i>1580</i>&nbsp;            return (AstNode)var8;
+<b class="nc"><i>1581</i>&nbsp;        }</b>
+<b class="nc"><i>1582</i>&nbsp;    }</b>
+<b class="nc"><i>1583</i>&nbsp;</b>
+<b class="nc"><i>1584</i>&nbsp;    private AstNode block() throws IOException {</b>
+<b class="nc"><i>1585</i>&nbsp;        if(this.currentToken != 85) {</b>
+<i>1586</i>&nbsp;            this.codeBug();
+<b class="nc"><i>1587</i>&nbsp;        }</b>
+<i>1588</i>&nbsp;
+<b class="nc"><i>1589</i>&nbsp;        this.consumeToken();</b>
+<i>1590</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<i>1591</i>&nbsp;        Scope var2 = new Scope(var1);
+<i>1592</i>&nbsp;        var2.setLineno(this.ts.lineno);
+<i>1593</i>&nbsp;        this.pushScope(var2);
+<i>1594</i>&nbsp;
+<i>1595</i>&nbsp;        Scope var3;
+<i>1596</i>&nbsp;        try {
+<i>1597</i>&nbsp;            this.statements(var2);
+<i>1598</i>&nbsp;            this.mustMatchToken(86, &quot;msg.no.brace.block&quot;);
+<i>1599</i>&nbsp;            var2.setLength(this.ts.tokenEnd - var1);
+<b class="nc"><i>1600</i>&nbsp;            var3 = var2;</b>
+<b class="nc"><i>1601</i>&nbsp;        } finally {</b>
+<i>1602</i>&nbsp;            this.popScope();
+<b class="nc"><i>1603</i>&nbsp;        }</b>
+<b class="nc"><i>1604</i>&nbsp;</b>
+<i>1605</i>&nbsp;        return var3;
+<i>1606</i>&nbsp;    }
+<b class="nc"><i>1607</i>&nbsp;</b>
+<i>1608</i>&nbsp;    private AstNode defaultXmlNamespace() throws IOException {
+<b class="nc"><i>1609</i>&nbsp;        if(this.currentToken != 116) {</b>
+<b class="nc"><i>1610</i>&nbsp;            this.codeBug();</b>
+<i>1611</i>&nbsp;        }
+<b class="nc"><i>1612</i>&nbsp;</b>
+<i>1613</i>&nbsp;        this.consumeToken();
+<i>1614</i>&nbsp;        this.mustHaveXML();
+<i>1615</i>&nbsp;        this.setRequiresActivation();
+<i>1616</i>&nbsp;        int var1 = this.ts.lineno;
+<i>1617</i>&nbsp;        int var2 = this.ts.tokenBeg;
+<i>1618</i>&nbsp;        if(!this.matchToken(39) || !&quot;xml&quot;.equals(this.ts.getString())) {
+<i>1619</i>&nbsp;            this.reportError(&quot;msg.bad.namespace&quot;);
+<i>1620</i>&nbsp;        }
+<i>1621</i>&nbsp;
+<i>1622</i>&nbsp;        if(!this.matchToken(39) || !&quot;namespace&quot;.equals(this.ts.getString())) {
+<i>1623</i>&nbsp;            this.reportError(&quot;msg.bad.namespace&quot;);
+<b class="nc"><i>1624</i>&nbsp;        }</b>
+<b class="nc"><i>1625</i>&nbsp;</b>
+<b class="nc"><i>1626</i>&nbsp;        if(!this.matchToken(90)) {</b>
+<i>1627</i>&nbsp;            this.reportError(&quot;msg.bad.namespace&quot;);
+<i>1628</i>&nbsp;        }
+<b class="nc"><i>1629</i>&nbsp;</b>
+<i>1630</i>&nbsp;        AstNode var3 = this.expr();
+<i>1631</i>&nbsp;        UnaryExpression var4 = new UnaryExpression(var2, this.getNodeEnd(var3) - var2);
+<b class="nc"><i>1632</i>&nbsp;        var4.setOperator(74);</b>
+<i>1633</i>&nbsp;        var4.setOperand(var3);
+<i>1634</i>&nbsp;        var4.setLineno(var1);
+<i>1635</i>&nbsp;        ExpressionStatement var5 = new ExpressionStatement(var4, true);
+<i>1636</i>&nbsp;        return var5;
+<i>1637</i>&nbsp;    }
+<i>1638</i>&nbsp;
+<i>1639</i>&nbsp;    private void recordLabel(Label var1, LabeledStatement var2) throws IOException {
+<b class="nc"><i>1640</i>&nbsp;        if(this.peekToken() != 103) {</b>
+<b class="nc"><i>1641</i>&nbsp;            this.codeBug();</b>
+<i>1642</i>&nbsp;        }
+<i>1643</i>&nbsp;
+<i>1644</i>&nbsp;        this.consumeToken();
+<i>1645</i>&nbsp;        String var3 = var1.getName();
+<i>1646</i>&nbsp;        if(this.labelSet == null) {
+<i>1647</i>&nbsp;            this.labelSet = new HashMap();
+<i>1648</i>&nbsp;        } else {
+<b class="nc"><i>1649</i>&nbsp;            LabeledStatement var4 = (LabeledStatement)this.labelSet.get(var3);</b>
+<b class="nc"><i>1650</i>&nbsp;            if(var4 != null) {</b>
+<b class="nc"><i>1651</i>&nbsp;                if(this.compilerEnv.isIdeMode()) {</b>
+<b class="nc"><i>1652</i>&nbsp;                    Label var5 = var4.getLabelByName(var3);</b>
+<b class="nc"><i>1653</i>&nbsp;                    this.reportError(&quot;msg.dup.label&quot;, var5.getAbsolutePosition(), var5.getLength());</b>
+<b class="nc"><i>1654</i>&nbsp;                }</b>
+<i>1655</i>&nbsp;
+<b class="nc"><i>1656</i>&nbsp;                this.reportError(&quot;msg.dup.label&quot;, var1.getPosition(), var1.getLength());</b>
+<b class="nc"><i>1657</i>&nbsp;            }</b>
+<b class="nc"><i>1658</i>&nbsp;        }</b>
+<b class="nc"><i>1659</i>&nbsp;</b>
+<b class="nc"><i>1660</i>&nbsp;        var2.addLabel(var1);</b>
+<b class="nc"><i>1661</i>&nbsp;        this.labelSet.put(var3, var2);</b>
+<i>1662</i>&nbsp;    }
+<i>1663</i>&nbsp;
+<b class="nc"><i>1664</i>&nbsp;    private AstNode nameOrLabel() throws IOException {</b>
+<b class="nc"><i>1665</i>&nbsp;        if(this.currentToken != 39) {</b>
+<i>1666</i>&nbsp;            throw this.codeBug();
+<i>1667</i>&nbsp;        } else {
+<b class="nc"><i>1668</i>&nbsp;            int var1 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1669</i>&nbsp;            this.currentFlaggedToken |= 131072;</b>
+<b class="nc"><i>1670</i>&nbsp;            AstNode var2 = this.expr();</b>
+<b class="nc"><i>1671</i>&nbsp;            if(var2.getType() != 130) {</b>
+<i>1672</i>&nbsp;                ExpressionStatement var13 = new ExpressionStatement(var2, !this.insideFunction());
+<i>1673</i>&nbsp;                var13.lineno = var2.lineno;
+<i>1674</i>&nbsp;                return var13;
+<b class="nc"><i>1675</i>&nbsp;            } else {</b>
+<b class="nc"><i>1676</i>&nbsp;                LabeledStatement var3 = new LabeledStatement(var1);</b>
+<b class="nc"><i>1677</i>&nbsp;                this.recordLabel((Label)var2, var3);</b>
+<i>1678</i>&nbsp;                var3.setLineno(this.ts.lineno);
+<i>1679</i>&nbsp;                Object var4 = null;
+<i>1680</i>&nbsp;
+<i>1681</i>&nbsp;                while(this.peekToken() == 39) {
+<b class="nc"><i>1682</i>&nbsp;                    this.currentFlaggedToken |= 131072;</b>
+<b class="nc"><i>1683</i>&nbsp;                    var2 = this.expr();</b>
+<b class="nc"><i>1684</i>&nbsp;                    if(var2.getType() != 130) {</b>
+<i>1685</i>&nbsp;                        var4 = new ExpressionStatement(var2, !this.insideFunction());
+<i>1686</i>&nbsp;                        this.autoInsertSemicolon((AstNode)var4);
+<b class="nc"><i>1687</i>&nbsp;                        break;</b>
+<i>1688</i>&nbsp;                    }
+<i>1689</i>&nbsp;
+<b class="nc"><i>1690</i>&nbsp;                    this.recordLabel((Label)var2, var3);</b>
+<i>1691</i>&nbsp;                }
+<i>1692</i>&nbsp;
+<b class="nc"><i>1693</i>&nbsp;                boolean var11 = false;</b>
+<b class="nc"><i>1694</i>&nbsp;</b>
+<b class="nc"><i>1695</i>&nbsp;                try {</b>
+<b class="nc"><i>1696</i>&nbsp;                    var11 = true;</b>
+<b class="nc"><i>1697</i>&nbsp;                    this.currentLabel = var3;</b>
+<b class="nc"><i>1698</i>&nbsp;                    if(var4 == null) {</b>
+<b class="nc"><i>1699</i>&nbsp;                        var4 = this.statementHelper();</b>
+<i>1700</i>&nbsp;                        var11 = false;
+<i>1701</i>&nbsp;                    } else {
+<b class="nc"><i>1702</i>&nbsp;                        var11 = false;</b>
+<b class="nc"><i>1703</i>&nbsp;                    }</b>
+<b class="nc"><i>1704</i>&nbsp;                } finally {</b>
+<b class="nc"><i>1705</i>&nbsp;                    if(var11) {</b>
+<b class="nc"><i>1706</i>&nbsp;                        this.currentLabel = null;</b>
+<b class="nc"><i>1707</i>&nbsp;                        Iterator var8 = var3.getLabels().iterator();</b>
+<i>1708</i>&nbsp;
+<i>1709</i>&nbsp;                        while(var8.hasNext()) {
+<b class="nc"><i>1710</i>&nbsp;                            Label var9 = (Label)var8.next();</b>
+<b class="nc"><i>1711</i>&nbsp;                            this.labelSet.remove(var9.getName());</b>
+<i>1712</i>&nbsp;                        }
+<b class="nc"><i>1713</i>&nbsp;</b>
+<b class="nc"><i>1714</i>&nbsp;                    }</b>
+<b class="nc"><i>1715</i>&nbsp;                }</b>
+<i>1716</i>&nbsp;
+<b class="nc"><i>1717</i>&nbsp;                this.currentLabel = null;</b>
+<b class="nc"><i>1718</i>&nbsp;                Iterator var5 = var3.getLabels().iterator();</b>
+<i>1719</i>&nbsp;
+<i>1720</i>&nbsp;                while(var5.hasNext()) {
+<b class="nc"><i>1721</i>&nbsp;                    Label var6 = (Label)var5.next();</b>
+<i>1722</i>&nbsp;                    this.labelSet.remove(var6.getName());
+<b class="nc"><i>1723</i>&nbsp;                }</b>
+<b class="nc"><i>1724</i>&nbsp;</b>
+<i>1725</i>&nbsp;                var3.setLength(this.getNodeEnd((AstNode)var4) - var1);
+<i>1726</i>&nbsp;                var3.setStatement((AstNode)var4);
+<i>1727</i>&nbsp;                return var3;
+<i>1728</i>&nbsp;            }
+<i>1729</i>&nbsp;        }
+<i>1730</i>&nbsp;    }
+<i>1731</i>&nbsp;
+<i>1732</i>&nbsp;    private VariableDeclaration variables(int var1, int var2) throws IOException {
+<i>1733</i>&nbsp;        VariableDeclaration var4 = new VariableDeclaration(var2);
+<b class="nc"><i>1734</i>&nbsp;        var4.setType(var1);</b>
+<b class="nc"><i>1735</i>&nbsp;        var4.setLineno(this.ts.lineno);</b>
+<i>1736</i>&nbsp;        String var5 = this.getAndResetJsDoc();
+<b class="nc"><i>1737</i>&nbsp;        if(var5 != null) {</b>
+<i>1738</i>&nbsp;            var4.setJsDoc(var5);
+<i>1739</i>&nbsp;        }
+<i>1740</i>&nbsp;
+<b class="nc"><i>1741</i>&nbsp;        int var3;</b>
+<b class="nc"><i>1742</i>&nbsp;        do {</b>
+<b class="nc"><i>1743</i>&nbsp;            AstNode var6 = null;</b>
+<i>1744</i>&nbsp;            Name var7 = null;
+<b class="nc"><i>1745</i>&nbsp;            int var8 = this.peekToken();</b>
+<i>1746</i>&nbsp;            int var9 = this.ts.tokenBeg;
+<i>1747</i>&nbsp;            var3 = this.ts.tokenEnd;
+<i>1748</i>&nbsp;            if(var8 != 83 &amp;&amp; var8 != 85) {
+<b class="nc"><i>1749</i>&nbsp;                this.mustMatchToken(39, &quot;msg.bad.var&quot;);</b>
+<b class="nc"><i>1750</i>&nbsp;                var7 = this.createNameNode();</b>
+<b class="nc"><i>1751</i>&nbsp;                var7.setLineno(this.ts.getLineno());</b>
+<i>1752</i>&nbsp;                if(this.inUseStrictDirective) {
+<i>1753</i>&nbsp;                    String var10 = this.ts.getString();
+<i>1754</i>&nbsp;                    if(&quot;eval&quot;.equals(var10) || &quot;arguments&quot;.equals(this.ts.getString())) {
+<b class="nc"><i>1755</i>&nbsp;                        this.reportError(&quot;msg.bad.id.strict&quot;, var10);</b>
+<b class="nc"><i>1756</i>&nbsp;                    }</b>
+<b class="nc"><i>1757</i>&nbsp;                }</b>
+<b class="nc"><i>1758</i>&nbsp;</b>
+<b class="nc"><i>1759</i>&nbsp;                this.defineSymbol(var1, this.ts.getString(), this.inForInit);</b>
+<i>1760</i>&nbsp;            } else {
+<i>1761</i>&nbsp;                var6 = this.destructuringPrimaryExpr();
+<b class="nc"><i>1762</i>&nbsp;                var3 = this.getNodeEnd(var6);</b>
+<b class="nc"><i>1763</i>&nbsp;                if(!(var6 instanceof DestructuringForm)) {</b>
+<i>1764</i>&nbsp;                    this.reportError(&quot;msg.bad.assign.left&quot;, var9, var3 - var9);
+<i>1765</i>&nbsp;                }
+<i>1766</i>&nbsp;
+<b class="nc"><i>1767</i>&nbsp;                this.markDestructuring(var6);</b>
+<i>1768</i>&nbsp;            }
+<i>1769</i>&nbsp;
+<i>1770</i>&nbsp;            int var14 = this.ts.lineno;
+<i>1771</i>&nbsp;            String var11 = this.getAndResetJsDoc();
+<i>1772</i>&nbsp;            AstNode var12 = null;
+<i>1773</i>&nbsp;            if(this.matchToken(90)) {
+<i>1774</i>&nbsp;                var12 = this.assignExpr();
+<i>1775</i>&nbsp;                var3 = this.getNodeEnd(var12);
+<b class="nc"><i>1776</i>&nbsp;            }</b>
+<b class="nc"><i>1777</i>&nbsp;</b>
+<b class="nc"><i>1778</i>&nbsp;            VariableInitializer var13 = new VariableInitializer(var9, var3 - var9);</b>
+<b class="nc"><i>1779</i>&nbsp;            if(var6 != null) {</b>
+<i>1780</i>&nbsp;                if(var12 == null &amp;&amp; !this.inForInit) {
+<b class="nc"><i>1781</i>&nbsp;                    this.reportError(&quot;msg.destruct.assign.no.init&quot;);</b>
+<b class="nc"><i>1782</i>&nbsp;                }</b>
+<i>1783</i>&nbsp;
+<i>1784</i>&nbsp;                var13.setTarget(var6);
+<b class="nc"><i>1785</i>&nbsp;            } else {</b>
+<b class="nc"><i>1786</i>&nbsp;                var13.setTarget(var7);</b>
+<b class="nc"><i>1787</i>&nbsp;            }</b>
+<i>1788</i>&nbsp;
+<i>1789</i>&nbsp;            var13.setInitializer(var12);
+<i>1790</i>&nbsp;            var13.setType(var1);
+<b class="nc"><i>1791</i>&nbsp;            var13.setJsDoc(var11);</b>
+<b class="nc"><i>1792</i>&nbsp;            var13.setLineno(var14);</b>
+<b class="nc"><i>1793</i>&nbsp;            var4.addVariable(var13);</b>
+<i>1794</i>&nbsp;        } while(this.matchToken(89));
+<i>1795</i>&nbsp;
+<i>1796</i>&nbsp;        var4.setLength(var3 - var2);
+<b class="nc"><i>1797</i>&nbsp;        return var4;</b>
+<b class="nc"><i>1798</i>&nbsp;    }</b>
+<i>1799</i>&nbsp;
+<b class="nc"><i>1800</i>&nbsp;    private AstNode let(boolean var1, int var2) throws IOException {</b>
+<b class="nc"><i>1801</i>&nbsp;        LetNode var3 = new LetNode(var2);</b>
+<b class="nc"><i>1802</i>&nbsp;        var3.setLineno(this.ts.lineno);</b>
+<i>1803</i>&nbsp;        if(this.mustMatchToken(87, &quot;msg.no.paren.after.let&quot;)) {
+<i>1804</i>&nbsp;            var3.setLp(this.ts.tokenBeg - var2);
+<b class="nc"><i>1805</i>&nbsp;        }</b>
+<b class="nc"><i>1806</i>&nbsp;</b>
+<i>1807</i>&nbsp;        this.pushScope(var3);
+<i>1808</i>&nbsp;
+<i>1809</i>&nbsp;        try {
+<b class="nc"><i>1810</i>&nbsp;            VariableDeclaration var4 = this.variables(153, this.ts.tokenBeg);</b>
+<b class="nc"><i>1811</i>&nbsp;            var3.setVariables(var4);</b>
+<i>1812</i>&nbsp;            if(this.mustMatchToken(88, &quot;msg.no.paren.let&quot;)) {
+<i>1813</i>&nbsp;                var3.setRp(this.ts.tokenBeg - var2);
+<i>1814</i>&nbsp;            }
+<i>1815</i>&nbsp;
+<i>1816</i>&nbsp;            if(var1 &amp;&amp; this.peekToken() == 85) {
+<i>1817</i>&nbsp;                this.consumeToken();
+<i>1818</i>&nbsp;                int var11 = this.ts.tokenBeg;
+<b class="nc"><i>1819</i>&nbsp;                AstNode var12 = this.statements();</b>
+<b class="nc"><i>1820</i>&nbsp;                this.mustMatchToken(86, &quot;msg.no.curly.let&quot;);</b>
+<i>1821</i>&nbsp;                var12.setLength(this.ts.tokenEnd - var11);
+<b class="nc"><i>1822</i>&nbsp;                var3.setLength(this.ts.tokenEnd - var2);</b>
+<i>1823</i>&nbsp;                var3.setBody(var12);
+<i>1824</i>&nbsp;                var3.setType(153);
+<b class="nc"><i>1825</i>&nbsp;            } else {</b>
+<i>1826</i>&nbsp;                AstNode var5 = this.expr();
+<i>1827</i>&nbsp;                var3.setLength(this.getNodeEnd(var5) - var2);
+<b class="nc"><i>1828</i>&nbsp;                var3.setBody(var5);</b>
+<b class="nc"><i>1829</i>&nbsp;                if(var1) {</b>
+<b class="nc"><i>1830</i>&nbsp;                    ExpressionStatement var6 = new ExpressionStatement(var3, !this.insideFunction());</b>
+<b class="nc"><i>1831</i>&nbsp;                    var6.setLineno(var3.getLineno());</b>
+<i>1832</i>&nbsp;                    ExpressionStatement var7 = var6;
+<b class="nc"><i>1833</i>&nbsp;                    return var7;</b>
+<i>1834</i>&nbsp;                }
+<b class="nc"><i>1835</i>&nbsp;            }</b>
+<b class="nc"><i>1836</i>&nbsp;        } finally {</b>
+<b class="nc"><i>1837</i>&nbsp;            this.popScope();</b>
+<b class="nc"><i>1838</i>&nbsp;        }</b>
+<b class="nc"><i>1839</i>&nbsp;</b>
+<i>1840</i>&nbsp;        return var3;
+<b class="nc"><i>1841</i>&nbsp;    }</b>
+<b class="nc"><i>1842</i>&nbsp;</b>
+<i>1843</i>&nbsp;    void defineSymbol(int var1, String var2) {
+<b class="nc"><i>1844</i>&nbsp;        this.defineSymbol(var1, var2, false);</b>
+<b class="nc"><i>1845</i>&nbsp;    }</b>
+<b class="nc"><i>1846</i>&nbsp;</b>
+<b class="nc"><i>1847</i>&nbsp;    void defineSymbol(int var1, String var2, boolean var3) {</b>
+<i>1848</i>&nbsp;        if(var2 == null) {
+<b class="nc"><i>1849</i>&nbsp;            if(this.compilerEnv.isIdeMode()) {</b>
+<b class="nc"><i>1850</i>&nbsp;                return;</b>
+<i>1851</i>&nbsp;            }
+<b class="nc"><i>1852</i>&nbsp;</b>
+<b class="nc"><i>1853</i>&nbsp;            this.codeBug();</b>
+<i>1854</i>&nbsp;        }
+<i>1855</i>&nbsp;
+<b class="nc"><i>1856</i>&nbsp;        Scope var4 = this.currentScope.getDefiningScope(var2);</b>
+<i>1857</i>&nbsp;        Symbol var5 = var4 != null?var4.getSymbol(var2):null;
+<i>1858</i>&nbsp;        int var6 = var5 != null?var5.getDeclType():-1;
+<i>1859</i>&nbsp;        if(var5 != null &amp;&amp; (var6 == 154 || var1 == 154 || var4 == this.currentScope &amp;&amp; var6 == 153)) {
+<b class="nc"><i>1860</i>&nbsp;            this.addError(var6 == 154?&quot;msg.const.redecl&quot;:(var6 == 153?&quot;msg.let.redecl&quot;:(var6 == 122?&quot;msg.var.redecl&quot;:(var6 == 109?&quot;msg.fn.redecl&quot;:&quot;msg.parm.redecl&quot;))), var2);</b>
+<b class="nc"><i>1861</i>&nbsp;        } else {</b>
+<b class="nc"><i>1862</i>&nbsp;            switch(var1) {</b>
+<i>1863</i>&nbsp;            case 87:
+<b class="nc"><i>1864</i>&nbsp;                if(var5 != null) {</b>
+<i>1865</i>&nbsp;                    this.addWarning(&quot;msg.dup.parms&quot;, var2);
+<i>1866</i>&nbsp;                }
+<i>1867</i>&nbsp;
+<i>1868</i>&nbsp;                this.currentScriptOrFn.putSymbol(new Symbol(var1, var2));
+<b class="nc"><i>1869</i>&nbsp;                return;</b>
+<b class="nc"><i>1870</i>&nbsp;            case 109:</b>
+<i>1871</i>&nbsp;            case 122:
+<b class="nc"><i>1872</i>&nbsp;            case 154:</b>
+<i>1873</i>&nbsp;                if(var5 != null) {
+<b class="nc"><i>1874</i>&nbsp;                    if(var6 == 122) {</b>
+<b class="nc"><i>1875</i>&nbsp;                        this.addStrictWarning(&quot;msg.var.redecl&quot;, var2);</b>
+<i>1876</i>&nbsp;                    } else if(var6 == 87) {
+<i>1877</i>&nbsp;                        this.addStrictWarning(&quot;msg.var.hides.arg&quot;, var2);
+<b class="nc"><i>1878</i>&nbsp;                    }</b>
+<i>1879</i>&nbsp;                } else {
+<i>1880</i>&nbsp;                    this.currentScriptOrFn.putSymbol(new Symbol(var1, var2));
+<b class="nc"><i>1881</i>&nbsp;                }</b>
+<b class="nc"><i>1882</i>&nbsp;</b>
+<b class="nc"><i>1883</i>&nbsp;                return;</b>
+<i>1884</i>&nbsp;            case 153:
+<b class="nc"><i>1885</i>&nbsp;                if(!var3 &amp;&amp; (this.currentScope.getType() == 112 || this.currentScope instanceof Loop)) {</b>
+<i>1886</i>&nbsp;                    this.addError(&quot;msg.let.decl.not.in.block&quot;);
+<b class="nc"><i>1887</i>&nbsp;                    return;</b>
+<b class="nc"><i>1888</i>&nbsp;                } else {</b>
+<i>1889</i>&nbsp;                    this.currentScope.putSymbol(new Symbol(var1, var2));
+<i>1890</i>&nbsp;                    return;
+<b class="nc"><i>1891</i>&nbsp;                }</b>
+<b class="nc"><i>1892</i>&nbsp;            default:</b>
+<b class="nc"><i>1893</i>&nbsp;                throw this.codeBug();</b>
+<b class="nc"><i>1894</i>&nbsp;            }</b>
+<b class="nc"><i>1895</i>&nbsp;        }</b>
+<i>1896</i>&nbsp;    }
+<i>1897</i>&nbsp;
+<i>1898</i>&nbsp;    private AstNode expr() throws IOException {
+<b class="nc"><i>1899</i>&nbsp;        Object var1 = this.assignExpr();</b>
+<i>1900</i>&nbsp;        int var2 = ((AstNode)var1).getPosition();
+<b class="nc"><i>1901</i>&nbsp;</b>
+<b class="nc"><i>1902</i>&nbsp;        while(this.matchToken(89)) {</b>
+<i>1903</i>&nbsp;            int var3 = this.ts.lineno;
+<b class="nc"><i>1904</i>&nbsp;            int var4 = this.ts.tokenBeg;</b>
+<i>1905</i>&nbsp;            if(this.compilerEnv.isStrictMode() &amp;&amp; !((AstNode)var1).hasSideEffects()) {
+<i>1906</i>&nbsp;                this.addStrictWarning(&quot;msg.no.side.effects&quot;, &quot;&quot;, var2, this.nodeEnd((AstNode)var1) - var2);
+<i>1907</i>&nbsp;            }
+<b class="nc"><i>1908</i>&nbsp;</b>
+<b class="nc"><i>1909</i>&nbsp;            if(this.peekToken() == 72) {</b>
+<b class="nc"><i>1910</i>&nbsp;                this.reportError(&quot;msg.yield.parenthesized&quot;);</b>
+<b class="nc"><i>1911</i>&nbsp;            }</b>
+<i>1912</i>&nbsp;
+<b class="nc"><i>1913</i>&nbsp;            var1 = new InfixExpression(89, (AstNode)var1, this.assignExpr(), var4);</b>
+<i>1914</i>&nbsp;            ((AstNode)var1).setLineno(var3);
+<b class="nc"><i>1915</i>&nbsp;        }</b>
+<b class="nc"><i>1916</i>&nbsp;</b>
+<i>1917</i>&nbsp;        return (AstNode)var1;
+<i>1918</i>&nbsp;    }
+<i>1919</i>&nbsp;
+<i>1920</i>&nbsp;    private AstNode assignExpr() throws IOException {
+<i>1921</i>&nbsp;        int var1 = this.peekToken();
+<i>1922</i>&nbsp;        if(var1 == 72) {
+<i>1923</i>&nbsp;            return this.returnOrYield(var1, true);
+<i>1924</i>&nbsp;        } else {
+<i>1925</i>&nbsp;            Object var2 = this.condExpr();
+<b class="nc"><i>1926</i>&nbsp;            var1 = this.peekToken();</b>
+<b class="nc"><i>1927</i>&nbsp;            if(90 &lt;= var1 &amp;&amp; var1 &lt;= 101) {</b>
+<b class="nc"><i>1928</i>&nbsp;                this.consumeToken();</b>
+<b class="nc"><i>1929</i>&nbsp;                String var3 = this.getAndResetJsDoc();</b>
+<b class="nc"><i>1930</i>&nbsp;                this.markDestructuring((AstNode)var2);</b>
+<i>1931</i>&nbsp;                int var4 = this.ts.tokenBeg;
+<i>1932</i>&nbsp;                int var5 = this.ts.getLineno();
+<b class="nc"><i>1933</i>&nbsp;                var2 = new Assignment(var1, (AstNode)var2, this.assignExpr(), var4);</b>
+<b class="nc"><i>1934</i>&nbsp;                ((AstNode)var2).setLineno(var5);</b>
+<b class="nc"><i>1935</i>&nbsp;                if(var3 != null) {</b>
+<b class="nc"><i>1936</i>&nbsp;                    ((AstNode)var2).setJsDoc(var3);</b>
+<i>1937</i>&nbsp;                }
+<i>1938</i>&nbsp;            } else if(var1 == 82 &amp;&amp; ((AstNode)var2).getType() == 33 &amp;&amp; this.currentJsDocComment != null) {
+<b class="nc"><i>1939</i>&nbsp;                ((AstNode)var2).setJsDoc(this.getAndResetJsDoc());</b>
+<b class="nc"><i>1940</i>&nbsp;            }</b>
+<b class="nc"><i>1941</i>&nbsp;</b>
+<i>1942</i>&nbsp;            return (AstNode)var2;
+<i>1943</i>&nbsp;        }
+<i>1944</i>&nbsp;    }
+<b class="nc"><i>1945</i>&nbsp;</b>
+<i>1946</i>&nbsp;    private AstNode condExpr() throws IOException {
+<i>1947</i>&nbsp;        Object var1 = this.orExpr();
+<i>1948</i>&nbsp;        if(this.matchToken(102)) {
+<b class="nc"><i>1949</i>&nbsp;            int var2 = this.ts.lineno;</b>
+<b class="nc"><i>1950</i>&nbsp;            int var3 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1951</i>&nbsp;            int var4 = -1;</b>
+<i>1952</i>&nbsp;            AstNode var5 = this.assignExpr();
+<b class="nc"><i>1953</i>&nbsp;            if(this.mustMatchToken(103, &quot;msg.no.colon.cond&quot;)) {</b>
+<i>1954</i>&nbsp;                var4 = this.ts.tokenBeg;
+<b class="nc"><i>1955</i>&nbsp;            }</b>
+<i>1956</i>&nbsp;
+<i>1957</i>&nbsp;            AstNode var6 = this.assignExpr();
+<i>1958</i>&nbsp;            int var7 = ((AstNode)var1).getPosition();
+<b class="nc"><i>1959</i>&nbsp;            int var8 = this.getNodeEnd(var6) - var7;</b>
+<b class="nc"><i>1960</i>&nbsp;            ConditionalExpression var9 = new ConditionalExpression(var7, var8);</b>
+<b class="nc"><i>1961</i>&nbsp;            var9.setLineno(var2);</b>
+<i>1962</i>&nbsp;            var9.setTestExpression((AstNode)var1);
+<i>1963</i>&nbsp;            var9.setTrueExpression(var5);
+<i>1964</i>&nbsp;            var9.setFalseExpression(var6);
+<b class="nc"><i>1965</i>&nbsp;            var9.setQuestionMarkPosition(var3 - var7);</b>
+<b class="nc"><i>1966</i>&nbsp;            var9.setColonPosition(var4 - var7);</b>
+<b class="nc"><i>1967</i>&nbsp;            var1 = var9;</b>
+<i>1968</i>&nbsp;        }
+<i>1969</i>&nbsp;
+<i>1970</i>&nbsp;        return (AstNode)var1;
+<i>1971</i>&nbsp;    }
+<i>1972</i>&nbsp;
+<b class="nc"><i>1973</i>&nbsp;    private AstNode orExpr() throws IOException {</b>
+<b class="nc"><i>1974</i>&nbsp;        Object var1 = this.andExpr();</b>
+<b class="nc"><i>1975</i>&nbsp;        if(this.matchToken(104)) {</b>
+<b class="nc"><i>1976</i>&nbsp;            int var2 = this.ts.tokenBeg;</b>
+<b class="nc"><i>1977</i>&nbsp;            int var3 = this.ts.lineno;</b>
+<b class="nc"><i>1978</i>&nbsp;            var1 = new InfixExpression(104, (AstNode)var1, this.orExpr(), var2);</b>
+<b class="nc"><i>1979</i>&nbsp;            ((AstNode)var1).setLineno(var3);</b>
+<i>1980</i>&nbsp;        }
+<i>1981</i>&nbsp;
+<i>1982</i>&nbsp;        return (AstNode)var1;
+<i>1983</i>&nbsp;    }
+<i>1984</i>&nbsp;
+<i>1985</i>&nbsp;    private AstNode andExpr() throws IOException {
+<b class="nc"><i>1986</i>&nbsp;        Object var1 = this.bitOrExpr();</b>
+<b class="nc"><i>1987</i>&nbsp;        if(this.matchToken(105)) {</b>
+<i>1988</i>&nbsp;            int var2 = this.ts.tokenBeg;
+<i>1989</i>&nbsp;            int var3 = this.ts.lineno;
+<b class="nc"><i>1990</i>&nbsp;            var1 = new InfixExpression(105, (AstNode)var1, this.andExpr(), var2);</b>
+<b class="nc"><i>1991</i>&nbsp;            ((AstNode)var1).setLineno(var3);</b>
+<i>1992</i>&nbsp;        }
+<i>1993</i>&nbsp;
+<i>1994</i>&nbsp;        return (AstNode)var1;
+<b class="nc"><i>1995</i>&nbsp;    }</b>
+<i>1996</i>&nbsp;
+<i>1997</i>&nbsp;    private AstNode bitOrExpr() throws IOException {
+<b class="nc"><i>1998</i>&nbsp;        Object var1 = this.bitXorExpr();</b>
+<b class="nc"><i>1999</i>&nbsp;</b>
+<i>2000</i>&nbsp;        while(this.matchToken(9)) {
+<i>2001</i>&nbsp;            int var2 = this.ts.tokenBeg;
+<b class="nc"><i>2002</i>&nbsp;            int var3 = this.ts.lineno;</b>
+<i>2003</i>&nbsp;            var1 = new InfixExpression(9, (AstNode)var1, this.bitXorExpr(), var2);
+<i>2004</i>&nbsp;            ((AstNode)var1).setLineno(var3);
+<b class="nc"><i>2005</i>&nbsp;        }</b>
+<i>2006</i>&nbsp;
+<i>2007</i>&nbsp;        return (AstNode)var1;
+<i>2008</i>&nbsp;    }
+<i>2009</i>&nbsp;
+<i>2010</i>&nbsp;    private AstNode bitXorExpr() throws IOException {
+<i>2011</i>&nbsp;        Object var1 = this.bitAndExpr();
+<i>2012</i>&nbsp;
+<i>2013</i>&nbsp;        while(this.matchToken(10)) {
+<i>2014</i>&nbsp;            int var2 = this.ts.tokenBeg;
+<i>2015</i>&nbsp;            int var3 = this.ts.lineno;
+<i>2016</i>&nbsp;            var1 = new InfixExpression(10, (AstNode)var1, this.bitAndExpr(), var2);
+<i>2017</i>&nbsp;            ((AstNode)var1).setLineno(var3);
+<i>2018</i>&nbsp;        }
+<i>2019</i>&nbsp;
+<i>2020</i>&nbsp;        return (AstNode)var1;
+<i>2021</i>&nbsp;    }
+<i>2022</i>&nbsp;
+<i>2023</i>&nbsp;    private AstNode bitAndExpr() throws IOException {
+<i>2024</i>&nbsp;        Object var1 = this.eqExpr();
+<i>2025</i>&nbsp;
+<i>2026</i>&nbsp;        while(this.matchToken(11)) {
+<i>2027</i>&nbsp;            int var2 = this.ts.tokenBeg;
+<i>2028</i>&nbsp;            int var3 = this.ts.lineno;
+<i>2029</i>&nbsp;            var1 = new InfixExpression(11, (AstNode)var1, this.eqExpr(), var2);
+<i>2030</i>&nbsp;            ((AstNode)var1).setLineno(var3);
+<i>2031</i>&nbsp;        }
+<i>2032</i>&nbsp;
+<i>2033</i>&nbsp;        return (AstNode)var1;
+<i>2034</i>&nbsp;    }
+<i>2035</i>&nbsp;
+<i>2036</i>&nbsp;    private AstNode eqExpr() throws IOException {
+<i>2037</i>&nbsp;        Object var1 = this.relExpr();
+<i>2038</i>&nbsp;
+<i>2039</i>&nbsp;        while(true) {
+<i>2040</i>&nbsp;            int var2 = this.peekToken();
+<i>2041</i>&nbsp;            int var3 = this.ts.tokenBeg;
+<i>2042</i>&nbsp;            int var4 = this.ts.lineno;
+<i>2043</i>&nbsp;            switch(var2) {
+<i>2044</i>&nbsp;            case 12:
+<i>2045</i>&nbsp;            case 13:
+<i>2046</i>&nbsp;            case 46:
+<i>2047</i>&nbsp;            case 47:
+<i>2048</i>&nbsp;                this.consumeToken();
+<i>2049</i>&nbsp;                int var5 = var2;
+<i>2050</i>&nbsp;                if(this.compilerEnv.getLanguageVersion() == 120) {
+<i>2051</i>&nbsp;                    if(var2 == 12) {
+<i>2052</i>&nbsp;                        var5 = 46;
+<i>2053</i>&nbsp;                    } else if(var2 == 13) {
+<i>2054</i>&nbsp;                        var5 = 47;
+<i>2055</i>&nbsp;                    }
+<i>2056</i>&nbsp;                }
+<i>2057</i>&nbsp;
+<i>2058</i>&nbsp;                var1 = new InfixExpression(var5, (AstNode)var1, this.relExpr(), var3);
+<i>2059</i>&nbsp;                ((AstNode)var1).setLineno(var4);
+<i>2060</i>&nbsp;                break;
+<i>2061</i>&nbsp;            default:
+<i>2062</i>&nbsp;                return (AstNode)var1;
+<i>2063</i>&nbsp;            }
+<i>2064</i>&nbsp;        }
+<i>2065</i>&nbsp;    }
+<i>2066</i>&nbsp;
+<i>2067</i>&nbsp;    private AstNode relExpr() throws IOException {
+<i>2068</i>&nbsp;        Object var1 = this.shiftExpr();
+<i>2069</i>&nbsp;
+<i>2070</i>&nbsp;        while(true) {
+<i>2071</i>&nbsp;            int var2 = this.peekToken();
+<i>2072</i>&nbsp;            int var3 = this.ts.tokenBeg;
+<i>2073</i>&nbsp;            int var4 = this.ts.lineno;
+<i>2074</i>&nbsp;            switch(var2) {
+<i>2075</i>&nbsp;            case 52:
+<i>2076</i>&nbsp;                if(this.inForInit) {
+<i>2077</i>&nbsp;                    return (AstNode)var1;
+<i>2078</i>&nbsp;                }
+<i>2079</i>&nbsp;            case 14:
+<i>2080</i>&nbsp;            case 15:
+<i>2081</i>&nbsp;            case 16:
+<i>2082</i>&nbsp;            case 17:
+<i>2083</i>&nbsp;            case 53:
+<i>2084</i>&nbsp;                this.consumeToken();
+<i>2085</i>&nbsp;                var1 = new InfixExpression(var2, (AstNode)var1, this.shiftExpr(), var3);
+<i>2086</i>&nbsp;                ((AstNode)var1).setLineno(var4);
+<i>2087</i>&nbsp;                break;
+<i>2088</i>&nbsp;            default:
+<i>2089</i>&nbsp;                return (AstNode)var1;
+<i>2090</i>&nbsp;            }
+<i>2091</i>&nbsp;        }
+<i>2092</i>&nbsp;    }
+<i>2093</i>&nbsp;
+<i>2094</i>&nbsp;    private AstNode shiftExpr() throws IOException {
+<i>2095</i>&nbsp;        Object var1 = this.addExpr();
+<i>2096</i>&nbsp;
+<i>2097</i>&nbsp;        while(true) {
+<i>2098</i>&nbsp;            int var2 = this.peekToken();
+<i>2099</i>&nbsp;            int var3 = this.ts.tokenBeg;
+<i>2100</i>&nbsp;            int var4 = this.ts.lineno;
+<i>2101</i>&nbsp;            switch(var2) {
+<i>2102</i>&nbsp;            case 18:
+<i>2103</i>&nbsp;            case 19:
+<i>2104</i>&nbsp;            case 20:
+<i>2105</i>&nbsp;                this.consumeToken();
+<i>2106</i>&nbsp;                var1 = new InfixExpression(var2, (AstNode)var1, this.addExpr(), var3);
+<i>2107</i>&nbsp;                ((AstNode)var1).setLineno(var4);
+<i>2108</i>&nbsp;                break;
+<i>2109</i>&nbsp;            default:
+<i>2110</i>&nbsp;                return (AstNode)var1;
+<i>2111</i>&nbsp;            }
+<i>2112</i>&nbsp;        }
+<i>2113</i>&nbsp;    }
+<i>2114</i>&nbsp;
+<i>2115</i>&nbsp;    private AstNode addExpr() throws IOException {
+<i>2116</i>&nbsp;        Object var1 = this.mulExpr();
+<i>2117</i>&nbsp;
+<i>2118</i>&nbsp;        while(true) {
+<i>2119</i>&nbsp;            int var2 = this.peekToken();
+<i>2120</i>&nbsp;            int var3 = this.ts.tokenBeg;
+<i>2121</i>&nbsp;            if(var2 != 21 &amp;&amp; var2 != 22) {
+<i>2122</i>&nbsp;                return (AstNode)var1;
+<i>2123</i>&nbsp;            }
+<i>2124</i>&nbsp;
+<i>2125</i>&nbsp;            this.consumeToken();
+<i>2126</i>&nbsp;            int var4 = this.ts.lineno;
+<i>2127</i>&nbsp;            var1 = new InfixExpression(var2, (AstNode)var1, this.mulExpr(), var3);
+<i>2128</i>&nbsp;            ((AstNode)var1).setLineno(var4);
+<i>2129</i>&nbsp;        }
+<i>2130</i>&nbsp;    }
+<i>2131</i>&nbsp;
+<i>2132</i>&nbsp;    private AstNode mulExpr() throws IOException {
+<i>2133</i>&nbsp;        Object var1 = this.unaryExpr();
+<i>2134</i>&nbsp;
+<i>2135</i>&nbsp;        while(true) {
+<i>2136</i>&nbsp;            int var2 = this.peekToken();
+<i>2137</i>&nbsp;            int var3 = this.ts.tokenBeg;
+<i>2138</i>&nbsp;            switch(var2) {
+<i>2139</i>&nbsp;            case 23:
+<i>2140</i>&nbsp;            case 24:
+<i>2141</i>&nbsp;            case 25:
+<i>2142</i>&nbsp;                this.consumeToken();
+<i>2143</i>&nbsp;                int var4 = this.ts.lineno;
+<i>2144</i>&nbsp;                var1 = new InfixExpression(var2, (AstNode)var1, this.unaryExpr(), var3);
+<i>2145</i>&nbsp;                ((AstNode)var1).setLineno(var4);
+<i>2146</i>&nbsp;                break;
+<i>2147</i>&nbsp;            default:
+<i>2148</i>&nbsp;                return (AstNode)var1;
+<i>2149</i>&nbsp;            }
+<i>2150</i>&nbsp;        }
+<i>2151</i>&nbsp;    }
+<i>2152</i>&nbsp;
+<i>2153</i>&nbsp;    private AstNode unaryExpr() throws IOException {
+<i>2154</i>&nbsp;        int var2 = this.peekToken();
+<i>2155</i>&nbsp;        int var3 = this.ts.lineno;
+<i>2156</i>&nbsp;        UnaryExpression var1;
+<i>2157</i>&nbsp;        switch(var2) {
+<i>2158</i>&nbsp;        case -1:
+<i>2159</i>&nbsp;            this.consumeToken();
+<i>2160</i>&nbsp;            return this.makeErrorNode();
+<i>2161</i>&nbsp;        case 14:
+<i>2162</i>&nbsp;            if(this.compilerEnv.isXmlAvailable()) {
+<i>2163</i>&nbsp;                this.consumeToken();
+<i>2164</i>&nbsp;                return this.memberExprTail(true, this.xmlInitializer());
+<i>2165</i>&nbsp;            }
+<i>2166</i>&nbsp;        default:
+<i>2167</i>&nbsp;            AstNode var5 = this.memberExpr(true);
+<i>2168</i>&nbsp;            var2 = this.peekTokenOrEOL();
+<i>2169</i>&nbsp;            if(var2 != 106 &amp;&amp; var2 != 107) {
+<i>2170</i>&nbsp;                return var5;
+<i>2171</i>&nbsp;            }
+<i>2172</i>&nbsp;
+<i>2173</i>&nbsp;            this.consumeToken();
+<i>2174</i>&nbsp;            UnaryExpression var6 = new UnaryExpression(var2, this.ts.tokenBeg, var5, true);
+<i>2175</i>&nbsp;            var6.setLineno(var3);
+<i>2176</i>&nbsp;            this.checkBadIncDec(var6);
+<i>2177</i>&nbsp;            return var6;
+<i>2178</i>&nbsp;        case 21:
+<i>2179</i>&nbsp;            this.consumeToken();
+<i>2180</i>&nbsp;            var1 = new UnaryExpression(28, this.ts.tokenBeg, this.unaryExpr());
+<i>2181</i>&nbsp;            var1.setLineno(var3);
+<i>2182</i>&nbsp;            return var1;
+<i>2183</i>&nbsp;        case 22:
+<i>2184</i>&nbsp;            this.consumeToken();
+<i>2185</i>&nbsp;            var1 = new UnaryExpression(29, this.ts.tokenBeg, this.unaryExpr());
+<i>2186</i>&nbsp;            var1.setLineno(var3);
+<i>2187</i>&nbsp;            return var1;
+<i>2188</i>&nbsp;        case 26:
+<i>2189</i>&nbsp;        case 27:
+<i>2190</i>&nbsp;        case 32:
+<i>2191</i>&nbsp;        case 126:
+<i>2192</i>&nbsp;            this.consumeToken();
+<i>2193</i>&nbsp;            var1 = new UnaryExpression(var2, this.ts.tokenBeg, this.unaryExpr());
+<i>2194</i>&nbsp;            var1.setLineno(var3);
+<i>2195</i>&nbsp;            return var1;
+<i>2196</i>&nbsp;        case 31:
+<i>2197</i>&nbsp;            this.consumeToken();
+<i>2198</i>&nbsp;            var1 = new UnaryExpression(var2, this.ts.tokenBeg, this.unaryExpr());
+<i>2199</i>&nbsp;            var1.setLineno(var3);
+<i>2200</i>&nbsp;            return var1;
+<i>2201</i>&nbsp;        case 106:
+<i>2202</i>&nbsp;        case 107:
+<i>2203</i>&nbsp;            this.consumeToken();
+<i>2204</i>&nbsp;            UnaryExpression var4 = new UnaryExpression(var2, this.ts.tokenBeg, this.memberExpr(true));
+<i>2205</i>&nbsp;            var4.setLineno(var3);
+<i>2206</i>&nbsp;            this.checkBadIncDec(var4);
+<i>2207</i>&nbsp;            return var4;
+<i>2208</i>&nbsp;        }
+<i>2209</i>&nbsp;    }
+<i>2210</i>&nbsp;
+<i>2211</i>&nbsp;    private AstNode xmlInitializer() throws IOException {
+<i>2212</i>&nbsp;        if(this.currentToken != 14) {
+<i>2213</i>&nbsp;            this.codeBug();
+<i>2214</i>&nbsp;        }
+<i>2215</i>&nbsp;
+<i>2216</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<i>2217</i>&nbsp;        int var2 = this.ts.getFirstXMLToken();
+<i>2218</i>&nbsp;        if(var2 != 145 &amp;&amp; var2 != 148) {
+<i>2219</i>&nbsp;            this.reportError(&quot;msg.syntax&quot;);
+<i>2220</i>&nbsp;            return this.makeErrorNode();
+<i>2221</i>&nbsp;        } else {
+<i>2222</i>&nbsp;            XmlLiteral var3 = new XmlLiteral(var1);
+<i>2223</i>&nbsp;            var3.setLineno(this.ts.lineno);
+<i>2224</i>&nbsp;
+<i>2225</i>&nbsp;            while(true) {
+<i>2226</i>&nbsp;                switch(var2) {
+<i>2227</i>&nbsp;                case 145:
+<i>2228</i>&nbsp;                    var3.addFragment(new XmlString(this.ts.tokenBeg, this.ts.getString()));
+<i>2229</i>&nbsp;                    this.mustMatchToken(85, &quot;msg.syntax&quot;);
+<i>2230</i>&nbsp;                    int var4 = this.ts.tokenBeg;
+<i>2231</i>&nbsp;                    Object var5 = this.peekToken() == 86?new EmptyExpression(var4, this.ts.tokenEnd - var4):this.expr();
+<i>2232</i>&nbsp;                    this.mustMatchToken(86, &quot;msg.syntax&quot;);
+<i>2233</i>&nbsp;                    XmlExpression var6 = new XmlExpression(var4, (AstNode)var5);
+<i>2234</i>&nbsp;                    var6.setIsXmlAttribute(this.ts.isXMLAttribute());
+<i>2235</i>&nbsp;                    var6.setLength(this.ts.tokenEnd - var4);
+<i>2236</i>&nbsp;                    var3.addFragment(var6);
+<i>2237</i>&nbsp;                    var2 = this.ts.getNextXMLToken();
+<i>2238</i>&nbsp;                    break;
+<i>2239</i>&nbsp;                case 148:
+<i>2240</i>&nbsp;                    var3.addFragment(new XmlString(this.ts.tokenBeg, this.ts.getString()));
+<i>2241</i>&nbsp;                    return var3;
+<i>2242</i>&nbsp;                default:
+<i>2243</i>&nbsp;                    this.reportError(&quot;msg.syntax&quot;);
+<i>2244</i>&nbsp;                    return this.makeErrorNode();
+<i>2245</i>&nbsp;                }
+<i>2246</i>&nbsp;            }
+<i>2247</i>&nbsp;        }
+<i>2248</i>&nbsp;    }
+<i>2249</i>&nbsp;
+<i>2250</i>&nbsp;    private List&lt;AstNode&gt; argumentList() throws IOException {
+<i>2251</i>&nbsp;        if(this.matchToken(88)) {
+<i>2252</i>&nbsp;            return null;
+<i>2253</i>&nbsp;        } else {
+<i>2254</i>&nbsp;            ArrayList var1 = new ArrayList();
+<i>2255</i>&nbsp;            boolean var2 = this.inForInit;
+<i>2256</i>&nbsp;            this.inForInit = false;
+<i>2257</i>&nbsp;
+<i>2258</i>&nbsp;            try {
+<i>2259</i>&nbsp;                do {
+<i>2260</i>&nbsp;                    if(this.peekToken() == 72) {
+<i>2261</i>&nbsp;                        this.reportError(&quot;msg.yield.parenthesized&quot;);
+<i>2262</i>&nbsp;                    }
+<i>2263</i>&nbsp;
+<i>2264</i>&nbsp;                    var1.add(this.assignExpr());
+<i>2265</i>&nbsp;                } while(this.matchToken(89));
+<i>2266</i>&nbsp;            } finally {
+<i>2267</i>&nbsp;                this.inForInit = var2;
+<i>2268</i>&nbsp;            }
+<i>2269</i>&nbsp;
+<i>2270</i>&nbsp;            this.mustMatchToken(88, &quot;msg.no.paren.arg&quot;);
+<i>2271</i>&nbsp;            return var1;
+<i>2272</i>&nbsp;        }
+<i>2273</i>&nbsp;    }
+<i>2274</i>&nbsp;
+<i>2275</i>&nbsp;    private AstNode memberExpr(boolean var1) throws IOException {
+<i>2276</i>&nbsp;        int var2 = this.peekToken();
+<i>2277</i>&nbsp;        int var3 = this.ts.lineno;
+<i>2278</i>&nbsp;        Object var4;
+<i>2279</i>&nbsp;        if(var2 != 30) {
+<i>2280</i>&nbsp;            var4 = this.primaryExpr();
+<i>2281</i>&nbsp;        } else {
+<i>2282</i>&nbsp;            this.consumeToken();
+<i>2283</i>&nbsp;            int var5 = this.ts.tokenBeg;
+<i>2284</i>&nbsp;            NewExpression var6 = new NewExpression(var5);
+<i>2285</i>&nbsp;            AstNode var7 = this.memberExpr(false);
+<i>2286</i>&nbsp;            int var8 = this.getNodeEnd(var7);
+<i>2287</i>&nbsp;            var6.setTarget(var7);
+<i>2288</i>&nbsp;            boolean var9 = true;
+<i>2289</i>&nbsp;            if(this.matchToken(87)) {
+<i>2290</i>&nbsp;                int var14 = this.ts.tokenBeg;
+<i>2291</i>&nbsp;                List var10 = this.argumentList();
+<i>2292</i>&nbsp;                if(var10 != null &amp;&amp; var10.size() &gt; 65536) {
+<i>2293</i>&nbsp;                    this.reportError(&quot;msg.too.many.constructor.args&quot;);
+<i>2294</i>&nbsp;                }
+<i>2295</i>&nbsp;
+<i>2296</i>&nbsp;                int var11 = this.ts.tokenBeg;
+<i>2297</i>&nbsp;                var8 = this.ts.tokenEnd;
+<i>2298</i>&nbsp;                if(var10 != null) {
+<i>2299</i>&nbsp;                    var6.setArguments(var10);
+<i>2300</i>&nbsp;                }
+<i>2301</i>&nbsp;
+<i>2302</i>&nbsp;                var6.setParens(var14 - var5, var11 - var5);
+<i>2303</i>&nbsp;            }
+<i>2304</i>&nbsp;
+<i>2305</i>&nbsp;            if(this.matchToken(85)) {
+<i>2306</i>&nbsp;                ObjectLiteral var12 = this.objectLiteral();
+<i>2307</i>&nbsp;                var8 = this.getNodeEnd(var12);
+<i>2308</i>&nbsp;                var6.setInitializer(var12);
+<i>2309</i>&nbsp;            }
+<i>2310</i>&nbsp;
+<i>2311</i>&nbsp;            var6.setLength(var8 - var5);
+<i>2312</i>&nbsp;            var4 = var6;
+<i>2313</i>&nbsp;        }
+<i>2314</i>&nbsp;
+<i>2315</i>&nbsp;        ((AstNode)var4).setLineno(var3);
+<i>2316</i>&nbsp;        AstNode var13 = this.memberExprTail(var1, (AstNode)var4);
+<i>2317</i>&nbsp;        return var13;
+<i>2318</i>&nbsp;    }
+<i>2319</i>&nbsp;
+<i>2320</i>&nbsp;    private AstNode memberExprTail(boolean var1, AstNode var2) throws IOException {
+<i>2321</i>&nbsp;        if(var2 == null) {
+<i>2322</i>&nbsp;            this.codeBug();
+<i>2323</i>&nbsp;        }
+<i>2324</i>&nbsp;
+<i>2325</i>&nbsp;        int var3 = ((AstNode)var2).getPosition();
+<i>2326</i>&nbsp;
+<i>2327</i>&nbsp;        while(true) {
+<i>2328</i>&nbsp;            int var5 = this.peekToken();
+<i>2329</i>&nbsp;            int var4;
+<i>2330</i>&nbsp;            int var9;
+<i>2331</i>&nbsp;            switch(var5) {
+<i>2332</i>&nbsp;            case 83:
+<i>2333</i>&nbsp;                this.consumeToken();
+<i>2334</i>&nbsp;                int var11 = this.ts.tokenBeg;
+<i>2335</i>&nbsp;                int var12 = -1;
+<i>2336</i>&nbsp;                var4 = this.ts.lineno;
+<i>2337</i>&nbsp;                AstNode var13 = this.expr();
+<i>2338</i>&nbsp;                var9 = this.getNodeEnd(var13);
+<i>2339</i>&nbsp;                if(this.mustMatchToken(84, &quot;msg.no.bracket.index&quot;)) {
+<i>2340</i>&nbsp;                    var12 = this.ts.tokenBeg;
+<i>2341</i>&nbsp;                    var9 = this.ts.tokenEnd;
+<i>2342</i>&nbsp;                }
+<i>2343</i>&nbsp;
+<i>2344</i>&nbsp;                ElementGet var14 = new ElementGet(var3, var9 - var3);
+<i>2345</i>&nbsp;                var14.setTarget((AstNode)var2);
+<i>2346</i>&nbsp;                var14.setElement(var13);
+<i>2347</i>&nbsp;                var14.setParens(var11, var12);
+<i>2348</i>&nbsp;                var14.setLineno(var4);
+<i>2349</i>&nbsp;                var2 = var14;
+<i>2350</i>&nbsp;                break;
+<i>2351</i>&nbsp;            case 87:
+<i>2352</i>&nbsp;                if(!var1) {
+<i>2353</i>&nbsp;                    return (AstNode)var2;
+<i>2354</i>&nbsp;                }
+<i>2355</i>&nbsp;
+<i>2356</i>&nbsp;                var4 = this.ts.lineno;
+<i>2357</i>&nbsp;                this.consumeToken();
+<i>2358</i>&nbsp;                this.checkCallRequiresActivation((AstNode)var2);
+<i>2359</i>&nbsp;                FunctionCall var15 = new FunctionCall(var3);
+<i>2360</i>&nbsp;                var15.setTarget((AstNode)var2);
+<i>2361</i>&nbsp;                var15.setLineno(var4);
+<i>2362</i>&nbsp;                var15.setLp(this.ts.tokenBeg - var3);
+<i>2363</i>&nbsp;                List var16 = this.argumentList();
+<i>2364</i>&nbsp;                if(var16 != null &amp;&amp; var16.size() &gt; 65536) {
+<i>2365</i>&nbsp;                    this.reportError(&quot;msg.too.many.function.args&quot;);
+<i>2366</i>&nbsp;                }
+<i>2367</i>&nbsp;
+<i>2368</i>&nbsp;                var15.setArguments(var16);
+<i>2369</i>&nbsp;                var15.setRp(this.ts.tokenBeg - var3);
+<i>2370</i>&nbsp;                var15.setLength(this.ts.tokenEnd - var3);
+<i>2371</i>&nbsp;                var2 = var15;
+<i>2372</i>&nbsp;                break;
+<i>2373</i>&nbsp;            case 108:
+<i>2374</i>&nbsp;            case 143:
+<i>2375</i>&nbsp;                var4 = this.ts.lineno;
+<i>2376</i>&nbsp;                var2 = this.propertyAccess(var5, (AstNode)var2);
+<i>2377</i>&nbsp;                ((AstNode)var2).setLineno(var4);
+<i>2378</i>&nbsp;                break;
+<i>2379</i>&nbsp;            case 146:
+<i>2380</i>&nbsp;                this.consumeToken();
+<i>2381</i>&nbsp;                int var6 = this.ts.tokenBeg;
+<i>2382</i>&nbsp;                int var7 = -1;
+<i>2383</i>&nbsp;                var4 = this.ts.lineno;
+<i>2384</i>&nbsp;                this.mustHaveXML();
+<i>2385</i>&nbsp;                this.setRequiresActivation();
+<i>2386</i>&nbsp;                AstNode var8 = this.expr();
+<i>2387</i>&nbsp;                var9 = this.getNodeEnd(var8);
+<i>2388</i>&nbsp;                if(this.mustMatchToken(88, &quot;msg.no.paren&quot;)) {
+<i>2389</i>&nbsp;                    var7 = this.ts.tokenBeg;
+<i>2390</i>&nbsp;                    var9 = this.ts.tokenEnd;
+<i>2391</i>&nbsp;                }
+<i>2392</i>&nbsp;
+<i>2393</i>&nbsp;                XmlDotQuery var10 = new XmlDotQuery(var3, var9 - var3);
+<i>2394</i>&nbsp;                var10.setLeft((AstNode)var2);
+<i>2395</i>&nbsp;                var10.setRight(var8);
+<i>2396</i>&nbsp;                var10.setOperatorPosition(var6);
+<i>2397</i>&nbsp;                var10.setRp(var7 - var3);
+<i>2398</i>&nbsp;                var10.setLineno(var4);
+<i>2399</i>&nbsp;                var2 = var10;
+<i>2400</i>&nbsp;                break;
+<i>2401</i>&nbsp;            default:
+<i>2402</i>&nbsp;                return (AstNode)var2;
+<i>2403</i>&nbsp;            }
+<i>2404</i>&nbsp;        }
+<i>2405</i>&nbsp;    }
+<i>2406</i>&nbsp;
+<i>2407</i>&nbsp;    private AstNode propertyAccess(int var1, AstNode var2) throws IOException {
+<i>2408</i>&nbsp;        if(var2 == null) {
+<i>2409</i>&nbsp;            this.codeBug();
+<i>2410</i>&nbsp;        }
+<i>2411</i>&nbsp;
+<i>2412</i>&nbsp;        byte var3 = 0;
+<i>2413</i>&nbsp;        int var4 = this.ts.lineno;
+<i>2414</i>&nbsp;        int var5 = this.ts.tokenBeg;
+<i>2415</i>&nbsp;        this.consumeToken();
+<i>2416</i>&nbsp;        if(var1 == 143) {
+<i>2417</i>&nbsp;            this.mustHaveXML();
+<i>2418</i>&nbsp;            var3 = 4;
+<i>2419</i>&nbsp;        }
+<i>2420</i>&nbsp;
+<i>2421</i>&nbsp;        if(!this.compilerEnv.isXmlAvailable()) {
+<i>2422</i>&nbsp;            this.mustMatchToken(39, &quot;msg.no.name.after.dot&quot;);
+<i>2423</i>&nbsp;            Name var11 = this.createNameNode(true, 33);
+<i>2424</i>&nbsp;            PropertyGet var10 = new PropertyGet(var2, var11, var5);
+<i>2425</i>&nbsp;            var10.setLineno(var4);
+<i>2426</i>&nbsp;            return var10;
+<i>2427</i>&nbsp;        } else {
+<i>2428</i>&nbsp;            AstNode var6 = null;
+<i>2429</i>&nbsp;            switch(this.nextToken()) {
+<i>2430</i>&nbsp;            case 23:
+<i>2431</i>&nbsp;                this.saveNameTokenData(this.ts.tokenBeg, &quot;*&quot;, this.ts.lineno);
+<i>2432</i>&nbsp;                var6 = this.propertyName(-1, &quot;*&quot;, var3);
+<i>2433</i>&nbsp;                break;
+<i>2434</i>&nbsp;            case 39:
+<i>2435</i>&nbsp;                var6 = this.propertyName(-1, this.ts.getString(), var3);
+<i>2436</i>&nbsp;                break;
+<i>2437</i>&nbsp;            case 50:
+<i>2438</i>&nbsp;                this.saveNameTokenData(this.ts.tokenBeg, &quot;throw&quot;, this.ts.lineno);
+<i>2439</i>&nbsp;                var6 = this.propertyName(-1, &quot;throw&quot;, var3);
+<i>2440</i>&nbsp;                break;
+<i>2441</i>&nbsp;            case 147:
+<i>2442</i>&nbsp;                var6 = this.attributeAccess();
+<i>2443</i>&nbsp;                break;
+<i>2444</i>&nbsp;            default:
+<i>2445</i>&nbsp;                this.reportError(&quot;msg.no.name.after.dot&quot;);
+<i>2446</i>&nbsp;                return this.makeErrorNode();
+<i>2447</i>&nbsp;            }
+<i>2448</i>&nbsp;
+<i>2449</i>&nbsp;            boolean var7 = var6 instanceof XmlRef;
+<i>2450</i>&nbsp;            Object var8 = var7?new XmlMemberGet():new PropertyGet();
+<i>2451</i>&nbsp;            if(var7 &amp;&amp; var1 == 108) {
+<i>2452</i>&nbsp;                ((InfixExpression)var8).setType(108);
+<i>2453</i>&nbsp;            }
+<i>2454</i>&nbsp;
+<i>2455</i>&nbsp;            int var9 = var2.getPosition();
+<i>2456</i>&nbsp;            ((InfixExpression)var8).setPosition(var9);
+<i>2457</i>&nbsp;            ((InfixExpression)var8).setLength(this.getNodeEnd(var6) - var9);
+<i>2458</i>&nbsp;            ((InfixExpression)var8).setOperatorPosition(var5 - var9);
+<i>2459</i>&nbsp;            ((InfixExpression)var8).setLineno(var4);
+<i>2460</i>&nbsp;            ((InfixExpression)var8).setLeft(var2);
+<i>2461</i>&nbsp;            ((InfixExpression)var8).setRight(var6);
+<i>2462</i>&nbsp;            return (AstNode)var8;
+<i>2463</i>&nbsp;        }
+<i>2464</i>&nbsp;    }
+<i>2465</i>&nbsp;
+<i>2466</i>&nbsp;    private AstNode attributeAccess() throws IOException {
+<i>2467</i>&nbsp;        int var1 = this.nextToken();
+<i>2468</i>&nbsp;        int var2 = this.ts.tokenBeg;
+<i>2469</i>&nbsp;        switch(var1) {
+<i>2470</i>&nbsp;        case 23:
+<i>2471</i>&nbsp;            this.saveNameTokenData(this.ts.tokenBeg, &quot;*&quot;, this.ts.lineno);
+<i>2472</i>&nbsp;            return this.propertyName(var2, &quot;*&quot;, 0);
+<i>2473</i>&nbsp;        case 39:
+<i>2474</i>&nbsp;            return this.propertyName(var2, this.ts.getString(), 0);
+<i>2475</i>&nbsp;        case 83:
+<i>2476</i>&nbsp;            return this.xmlElemRef(var2, (Name)null, -1);
+<i>2477</i>&nbsp;        default:
+<i>2478</i>&nbsp;            this.reportError(&quot;msg.no.name.after.xmlAttr&quot;);
+<i>2479</i>&nbsp;            return this.makeErrorNode();
+<i>2480</i>&nbsp;        }
+<i>2481</i>&nbsp;    }
+<i>2482</i>&nbsp;
+<i>2483</i>&nbsp;    private AstNode propertyName(int var1, String var2, int var3) throws IOException {
+<i>2484</i>&nbsp;        int var4 = var1 != -1?var1:this.ts.tokenBeg;
+<i>2485</i>&nbsp;        int var5 = this.ts.lineno;
+<i>2486</i>&nbsp;        int var6 = -1;
+<i>2487</i>&nbsp;        Name var7 = this.createNameNode(true, this.currentToken);
+<i>2488</i>&nbsp;        Name var8 = null;
+<i>2489</i>&nbsp;        if(this.matchToken(144)) {
+<i>2490</i>&nbsp;            var8 = var7;
+<i>2491</i>&nbsp;            var6 = this.ts.tokenBeg;
+<i>2492</i>&nbsp;            switch(this.nextToken()) {
+<i>2493</i>&nbsp;            case 23:
+<i>2494</i>&nbsp;                this.saveNameTokenData(this.ts.tokenBeg, &quot;*&quot;, this.ts.lineno);
+<i>2495</i>&nbsp;                var7 = this.createNameNode(false, -1);
+<i>2496</i>&nbsp;                break;
+<i>2497</i>&nbsp;            case 39:
+<i>2498</i>&nbsp;                var7 = this.createNameNode();
+<i>2499</i>&nbsp;                break;
+<i>2500</i>&nbsp;            case 83:
+<i>2501</i>&nbsp;                return this.xmlElemRef(var1, var7, var6);
+<i>2502</i>&nbsp;            default:
+<i>2503</i>&nbsp;                this.reportError(&quot;msg.no.name.after.coloncolon&quot;);
+<i>2504</i>&nbsp;                return this.makeErrorNode();
+<i>2505</i>&nbsp;            }
+<i>2506</i>&nbsp;        }
+<i>2507</i>&nbsp;
+<i>2508</i>&nbsp;        if(var8 == null &amp;&amp; var3 == 0 &amp;&amp; var1 == -1) {
+<i>2509</i>&nbsp;            return var7;
+<i>2510</i>&nbsp;        } else {
+<i>2511</i>&nbsp;            XmlPropRef var9 = new XmlPropRef(var4, this.getNodeEnd(var7) - var4);
+<i>2512</i>&nbsp;            var9.setAtPos(var1);
+<i>2513</i>&nbsp;            var9.setNamespace(var8);
+<i>2514</i>&nbsp;            var9.setColonPos(var6);
+<i>2515</i>&nbsp;            var9.setPropName(var7);
+<i>2516</i>&nbsp;            var9.setLineno(var5);
+<i>2517</i>&nbsp;            return var9;
+<i>2518</i>&nbsp;        }
+<i>2519</i>&nbsp;    }
+<i>2520</i>&nbsp;
+<i>2521</i>&nbsp;    private XmlElemRef xmlElemRef(int var1, Name var2, int var3) throws IOException {
+<i>2522</i>&nbsp;        int var4 = this.ts.tokenBeg;
+<i>2523</i>&nbsp;        int var5 = -1;
+<i>2524</i>&nbsp;        int var6 = var1 != -1?var1:var4;
+<i>2525</i>&nbsp;        AstNode var7 = this.expr();
+<i>2526</i>&nbsp;        int var8 = this.getNodeEnd(var7);
+<i>2527</i>&nbsp;        if(this.mustMatchToken(84, &quot;msg.no.bracket.index&quot;)) {
+<i>2528</i>&nbsp;            var5 = this.ts.tokenBeg;
+<i>2529</i>&nbsp;            var8 = this.ts.tokenEnd;
+<i>2530</i>&nbsp;        }
+<i>2531</i>&nbsp;
+<i>2532</i>&nbsp;        XmlElemRef var9 = new XmlElemRef(var6, var8 - var6);
+<i>2533</i>&nbsp;        var9.setNamespace(var2);
+<i>2534</i>&nbsp;        var9.setColonPos(var3);
+<i>2535</i>&nbsp;        var9.setAtPos(var1);
+<i>2536</i>&nbsp;        var9.setExpression(var7);
+<i>2537</i>&nbsp;        var9.setBrackets(var4, var5);
+<i>2538</i>&nbsp;        return var9;
+<i>2539</i>&nbsp;    }
+<i>2540</i>&nbsp;
+<i>2541</i>&nbsp;    private AstNode destructuringPrimaryExpr() throws IOException, Parser.ParserException {
+<i>2542</i>&nbsp;        AstNode var1;
+<i>2543</i>&nbsp;        try {
+<i>2544</i>&nbsp;            this.inDestructuringAssignment = true;
+<i>2545</i>&nbsp;            var1 = this.primaryExpr();
+<i>2546</i>&nbsp;        } finally {
+<i>2547</i>&nbsp;            this.inDestructuringAssignment = false;
+<i>2548</i>&nbsp;        }
+<i>2549</i>&nbsp;
+<i>2550</i>&nbsp;        return var1;
+<i>2551</i>&nbsp;    }
+<i>2552</i>&nbsp;
+<i>2553</i>&nbsp;    private AstNode primaryExpr() throws IOException {
+<i>2554</i>&nbsp;        int var1 = this.nextFlaggedToken();
+<i>2555</i>&nbsp;        int var2 = var1 &amp; &#39;\uffff&#39;;
+<i>2556</i>&nbsp;        int var3;
+<i>2557</i>&nbsp;        int var4;
+<i>2558</i>&nbsp;        switch(var2) {
+<i>2559</i>&nbsp;        case -1:
+<i>2560</i>&nbsp;            break;
+<i>2561</i>&nbsp;        case 0:
+<i>2562</i>&nbsp;            this.reportError(&quot;msg.unexpected.eof&quot;);
+<i>2563</i>&nbsp;            break;
+<i>2564</i>&nbsp;        case 24:
+<i>2565</i>&nbsp;        case 100:
+<i>2566</i>&nbsp;            this.ts.readRegExp(var2);
+<i>2567</i>&nbsp;            var3 = this.ts.tokenBeg;
+<i>2568</i>&nbsp;            var4 = this.ts.tokenEnd;
+<i>2569</i>&nbsp;            RegExpLiteral var5 = new RegExpLiteral(var3, var4 - var3);
+<i>2570</i>&nbsp;            var5.setValue(this.ts.getString());
+<i>2571</i>&nbsp;            var5.setFlags(this.ts.readAndClearRegExpFlags());
+<i>2572</i>&nbsp;            return var5;
+<i>2573</i>&nbsp;        case 39:
+<i>2574</i>&nbsp;            return this.name(var1, var2);
+<i>2575</i>&nbsp;        case 40:
+<i>2576</i>&nbsp;            String var6 = this.ts.getString();
+<i>2577</i>&nbsp;            if(this.inUseStrictDirective &amp;&amp; this.ts.isNumberOctal()) {
+<i>2578</i>&nbsp;                this.reportError(&quot;msg.no.octal.strict&quot;);
+<i>2579</i>&nbsp;            }
+<i>2580</i>&nbsp;
+<i>2581</i>&nbsp;            return new NumberLiteral(this.ts.tokenBeg, var6, this.ts.getNumber());
+<i>2582</i>&nbsp;        case 41:
+<i>2583</i>&nbsp;            return this.createStringLiteral();
+<i>2584</i>&nbsp;        case 42:
+<i>2585</i>&nbsp;        case 43:
+<i>2586</i>&nbsp;        case 44:
+<i>2587</i>&nbsp;        case 45:
+<i>2588</i>&nbsp;            var3 = this.ts.tokenBeg;
+<i>2589</i>&nbsp;            var4 = this.ts.tokenEnd;
+<i>2590</i>&nbsp;            return new KeywordLiteral(var3, var4 - var3, var2);
+<i>2591</i>&nbsp;        case 83:
+<i>2592</i>&nbsp;            return this.arrayLiteral();
+<i>2593</i>&nbsp;        case 85:
+<i>2594</i>&nbsp;            return this.objectLiteral();
+<i>2595</i>&nbsp;        case 87:
+<i>2596</i>&nbsp;            return this.parenExpr();
+<i>2597</i>&nbsp;        case 109:
+<i>2598</i>&nbsp;            return this.function(2);
+<i>2599</i>&nbsp;        case 127:
+<i>2600</i>&nbsp;            this.reportError(&quot;msg.reserved.id&quot;);
+<i>2601</i>&nbsp;            break;
+<i>2602</i>&nbsp;        case 147:
+<i>2603</i>&nbsp;            this.mustHaveXML();
+<i>2604</i>&nbsp;            return this.attributeAccess();
+<i>2605</i>&nbsp;        case 153:
+<i>2606</i>&nbsp;            return this.let(false, this.ts.tokenBeg);
+<i>2607</i>&nbsp;        default:
+<i>2608</i>&nbsp;            this.reportError(&quot;msg.syntax&quot;);
+<i>2609</i>&nbsp;        }
+<i>2610</i>&nbsp;
+<i>2611</i>&nbsp;        return this.makeErrorNode();
+<i>2612</i>&nbsp;    }
+<i>2613</i>&nbsp;
+<i>2614</i>&nbsp;    private AstNode parenExpr() throws IOException {
+<i>2615</i>&nbsp;        boolean var1 = this.inForInit;
+<i>2616</i>&nbsp;        this.inForInit = false;
+<i>2617</i>&nbsp;
+<i>2618</i>&nbsp;        ParenthesizedExpression var6;
+<i>2619</i>&nbsp;        try {
+<i>2620</i>&nbsp;            String var2 = this.getAndResetJsDoc();
+<i>2621</i>&nbsp;            int var3 = this.ts.lineno;
+<i>2622</i>&nbsp;            AstNode var4 = this.expr();
+<i>2623</i>&nbsp;            ParenthesizedExpression var5 = new ParenthesizedExpression(var4);
+<i>2624</i>&nbsp;            if(var2 == null) {
+<i>2625</i>&nbsp;                var2 = this.getAndResetJsDoc();
+<i>2626</i>&nbsp;            }
+<i>2627</i>&nbsp;
+<i>2628</i>&nbsp;            if(var2 != null) {
+<i>2629</i>&nbsp;                var5.setJsDoc(var2);
+<i>2630</i>&nbsp;            }
+<i>2631</i>&nbsp;
+<i>2632</i>&nbsp;            this.mustMatchToken(88, &quot;msg.no.paren&quot;);
+<i>2633</i>&nbsp;            var5.setLength(this.ts.tokenEnd - var5.getPosition());
+<i>2634</i>&nbsp;            var5.setLineno(var3);
+<i>2635</i>&nbsp;            var6 = var5;
+<i>2636</i>&nbsp;        } finally {
+<i>2637</i>&nbsp;            this.inForInit = var1;
+<i>2638</i>&nbsp;        }
+<i>2639</i>&nbsp;
+<i>2640</i>&nbsp;        return var6;
+<i>2641</i>&nbsp;    }
+<i>2642</i>&nbsp;
+<i>2643</i>&nbsp;    private AstNode name(int var1, int var2) throws IOException {
+<i>2644</i>&nbsp;        String var3 = this.ts.getString();
+<i>2645</i>&nbsp;        int var4 = this.ts.tokenBeg;
+<i>2646</i>&nbsp;        int var5 = this.ts.lineno;
+<i>2647</i>&nbsp;        if(0 != (var1 &amp; 131072) &amp;&amp; this.peekToken() == 103) {
+<i>2648</i>&nbsp;            Label var6 = new Label(var4, this.ts.tokenEnd - var4);
+<i>2649</i>&nbsp;            var6.setName(var3);
+<i>2650</i>&nbsp;            var6.setLineno(this.ts.lineno);
+<i>2651</i>&nbsp;            return var6;
+<i>2652</i>&nbsp;        } else {
+<i>2653</i>&nbsp;            this.saveNameTokenData(var4, var3, var5);
+<i>2654</i>&nbsp;            return (AstNode)(this.compilerEnv.isXmlAvailable()?this.propertyName(-1, var3, 0):this.createNameNode(true, 39));
+<i>2655</i>&nbsp;        }
+<i>2656</i>&nbsp;    }
+<i>2657</i>&nbsp;
+<i>2658</i>&nbsp;    private AstNode arrayLiteral() throws IOException {
+<i>2659</i>&nbsp;        if(this.currentToken != 83) {
+<i>2660</i>&nbsp;            this.codeBug();
+<i>2661</i>&nbsp;        }
+<i>2662</i>&nbsp;
+<i>2663</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<i>2664</i>&nbsp;        int var2 = this.ts.tokenEnd;
+<i>2665</i>&nbsp;        ArrayList var3 = new ArrayList();
+<i>2666</i>&nbsp;        ArrayLiteral var4 = new ArrayLiteral(var1);
+<i>2667</i>&nbsp;        boolean var5 = true;
+<i>2668</i>&nbsp;        int var6 = -1;
+<i>2669</i>&nbsp;        int var7 = 0;
+<i>2670</i>&nbsp;
+<i>2671</i>&nbsp;        while(true) {
+<i>2672</i>&nbsp;            while(true) {
+<i>2673</i>&nbsp;                int var8 = this.peekToken();
+<i>2674</i>&nbsp;                if(var8 == 89) {
+<i>2675</i>&nbsp;                    this.consumeToken();
+<i>2676</i>&nbsp;                    var6 = this.ts.tokenEnd;
+<i>2677</i>&nbsp;                    if(!var5) {
+<i>2678</i>&nbsp;                        var5 = true;
+<i>2679</i>&nbsp;                    } else {
+<i>2680</i>&nbsp;                        var3.add(new EmptyExpression(this.ts.tokenBeg, 1));
+<i>2681</i>&nbsp;                        ++var7;
+<i>2682</i>&nbsp;                    }
+<i>2683</i>&nbsp;                } else {
+<i>2684</i>&nbsp;                    if(var8 == 84) {
+<i>2685</i>&nbsp;                        this.consumeToken();
+<i>2686</i>&nbsp;                        var2 = this.ts.tokenEnd;
+<i>2687</i>&nbsp;                        var4.setDestructuringLength(var3.size() + (var5?1:0));
+<i>2688</i>&nbsp;                        var4.setSkipCount(var7);
+<i>2689</i>&nbsp;                        if(var6 != -1) {
+<i>2690</i>&nbsp;                            this.warnTrailingComma(&quot;msg.array.trailing.comma&quot;, var1, var3, var6);
+<i>2691</i>&nbsp;                        }
+<i>2692</i>&nbsp;
+<i>2693</i>&nbsp;                        Iterator var10 = var3.iterator();
+<i>2694</i>&nbsp;
+<i>2695</i>&nbsp;                        while(var10.hasNext()) {
+<i>2696</i>&nbsp;                            AstNode var9 = (AstNode)var10.next();
+<i>2697</i>&nbsp;                            var4.addElement(var9);
+<i>2698</i>&nbsp;                        }
+<i>2699</i>&nbsp;
+<i>2700</i>&nbsp;                        var4.setLength(var2 - var1);
+<i>2701</i>&nbsp;                        return var4;
+<i>2702</i>&nbsp;                    }
+<i>2703</i>&nbsp;
+<i>2704</i>&nbsp;                    if(var8 == 119 &amp;&amp; !var5 &amp;&amp; var3.size() == 1) {
+<i>2705</i>&nbsp;                        return this.arrayComprehension((AstNode)var3.get(0), var1);
+<i>2706</i>&nbsp;                    }
+<i>2707</i>&nbsp;
+<i>2708</i>&nbsp;                    if(var8 == 0) {
+<i>2709</i>&nbsp;                        this.reportError(&quot;msg.no.bracket.arg&quot;);
+<i>2710</i>&nbsp;                    } else {
+<i>2711</i>&nbsp;                        if(!var5) {
+<i>2712</i>&nbsp;                            this.reportError(&quot;msg.no.bracket.arg&quot;);
+<i>2713</i>&nbsp;                        }
+<i>2714</i>&nbsp;
+<i>2715</i>&nbsp;                        var3.add(this.assignExpr());
+<i>2716</i>&nbsp;                        var5 = false;
+<i>2717</i>&nbsp;                        var6 = -1;
+<i>2718</i>&nbsp;                    }
+<i>2719</i>&nbsp;                }
+<i>2720</i>&nbsp;            }
+<i>2721</i>&nbsp;        }
+<i>2722</i>&nbsp;    }
+<i>2723</i>&nbsp;
+<i>2724</i>&nbsp;    private AstNode arrayComprehension(AstNode var1, int var2) throws IOException {
+<i>2725</i>&nbsp;        ArrayList var3 = new ArrayList();
+<i>2726</i>&nbsp;
+<i>2727</i>&nbsp;        while(this.peekToken() == 119) {
+<i>2728</i>&nbsp;            var3.add(this.arrayComprehensionLoop());
+<i>2729</i>&nbsp;        }
+<i>2730</i>&nbsp;
+<i>2731</i>&nbsp;        int var4 = -1;
+<i>2732</i>&nbsp;        Parser.ConditionData var5 = null;
+<i>2733</i>&nbsp;        if(this.peekToken() == 112) {
+<i>2734</i>&nbsp;            this.consumeToken();
+<i>2735</i>&nbsp;            var4 = this.ts.tokenBeg - var2;
+<i>2736</i>&nbsp;            var5 = this.condition();
+<i>2737</i>&nbsp;        }
+<i>2738</i>&nbsp;
+<i>2739</i>&nbsp;        this.mustMatchToken(84, &quot;msg.no.bracket.arg&quot;);
+<i>2740</i>&nbsp;        ArrayComprehension var6 = new ArrayComprehension(var2, this.ts.tokenEnd - var2);
+<i>2741</i>&nbsp;        var6.setResult(var1);
+<i>2742</i>&nbsp;        var6.setLoops(var3);
+<i>2743</i>&nbsp;        if(var5 != null) {
+<i>2744</i>&nbsp;            var6.setIfPosition(var4);
+<i>2745</i>&nbsp;            var6.setFilter(var5.condition);
+<i>2746</i>&nbsp;            var6.setFilterLp(var5.lp - var2);
+<i>2747</i>&nbsp;            var6.setFilterRp(var5.rp - var2);
+<i>2748</i>&nbsp;        }
+<i>2749</i>&nbsp;
+<i>2750</i>&nbsp;        return var6;
+<i>2751</i>&nbsp;    }
+<i>2752</i>&nbsp;
+<i>2753</i>&nbsp;    private ArrayComprehensionLoop arrayComprehensionLoop() throws IOException {
+<i>2754</i>&nbsp;        if(this.nextToken() != 119) {
+<i>2755</i>&nbsp;            this.codeBug();
+<i>2756</i>&nbsp;        }
+<i>2757</i>&nbsp;
+<i>2758</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<i>2759</i>&nbsp;        int var2 = -1;
+<i>2760</i>&nbsp;        int var3 = -1;
+<i>2761</i>&nbsp;        int var4 = -1;
+<i>2762</i>&nbsp;        int var5 = -1;
+<i>2763</i>&nbsp;        ArrayComprehensionLoop var6 = new ArrayComprehensionLoop(var1);
+<i>2764</i>&nbsp;        this.pushScope(var6);
+<i>2765</i>&nbsp;
+<i>2766</i>&nbsp;        ArrayComprehensionLoop var9;
+<i>2767</i>&nbsp;        try {
+<i>2768</i>&nbsp;            if(this.matchToken(39)) {
+<i>2769</i>&nbsp;                if(this.ts.getString().equals(&quot;each&quot;)) {
+<i>2770</i>&nbsp;                    var2 = this.ts.tokenBeg - var1;
+<i>2771</i>&nbsp;                } else {
+<i>2772</i>&nbsp;                    this.reportError(&quot;msg.no.paren.for&quot;);
+<i>2773</i>&nbsp;                }
+<i>2774</i>&nbsp;            }
+<i>2775</i>&nbsp;
+<i>2776</i>&nbsp;            if(this.mustMatchToken(87, &quot;msg.no.paren.for&quot;)) {
+<i>2777</i>&nbsp;                var3 = this.ts.tokenBeg - var1;
+<i>2778</i>&nbsp;            }
+<i>2779</i>&nbsp;
+<i>2780</i>&nbsp;            Object var7 = null;
+<i>2781</i>&nbsp;            switch(this.peekToken()) {
+<i>2782</i>&nbsp;            case 39:
+<i>2783</i>&nbsp;                this.consumeToken();
+<i>2784</i>&nbsp;                var7 = this.createNameNode();
+<i>2785</i>&nbsp;                break;
+<i>2786</i>&nbsp;            case 83:
+<i>2787</i>&nbsp;            case 85:
+<i>2788</i>&nbsp;                var7 = this.destructuringPrimaryExpr();
+<i>2789</i>&nbsp;                this.markDestructuring((AstNode)var7);
+<i>2790</i>&nbsp;                break;
+<i>2791</i>&nbsp;            default:
+<i>2792</i>&nbsp;                this.reportError(&quot;msg.bad.var&quot;);
+<i>2793</i>&nbsp;            }
+<i>2794</i>&nbsp;
+<i>2795</i>&nbsp;            if(((AstNode)var7).getType() == 39) {
+<i>2796</i>&nbsp;                this.defineSymbol(153, this.ts.getString(), true);
+<i>2797</i>&nbsp;            }
+<i>2798</i>&nbsp;
+<i>2799</i>&nbsp;            if(this.mustMatchToken(52, &quot;msg.in.after.for.name&quot;)) {
+<i>2800</i>&nbsp;                var5 = this.ts.tokenBeg - var1;
+<i>2801</i>&nbsp;            }
+<i>2802</i>&nbsp;
+<i>2803</i>&nbsp;            AstNode var8 = this.expr();
+<i>2804</i>&nbsp;            if(this.mustMatchToken(88, &quot;msg.no.paren.for.ctrl&quot;)) {
+<i>2805</i>&nbsp;                var4 = this.ts.tokenBeg - var1;
+<i>2806</i>&nbsp;            }
+<i>2807</i>&nbsp;
+<i>2808</i>&nbsp;            var6.setLength(this.ts.tokenEnd - var1);
+<i>2809</i>&nbsp;            var6.setIterator((AstNode)var7);
+<i>2810</i>&nbsp;            var6.setIteratedObject(var8);
+<i>2811</i>&nbsp;            var6.setInPosition(var5);
+<i>2812</i>&nbsp;            var6.setEachPosition(var2);
+<i>2813</i>&nbsp;            var6.setIsForEach(var2 != -1);
+<i>2814</i>&nbsp;            var6.setParens(var3, var4);
+<i>2815</i>&nbsp;            var9 = var6;
+<i>2816</i>&nbsp;        } finally {
+<i>2817</i>&nbsp;            this.popScope();
+<i>2818</i>&nbsp;        }
+<i>2819</i>&nbsp;
+<i>2820</i>&nbsp;        return var9;
+<i>2821</i>&nbsp;    }
+<i>2822</i>&nbsp;
+<i>2823</i>&nbsp;    private ObjectLiteral objectLiteral() throws IOException {
+<i>2824</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<i>2825</i>&nbsp;        int var2 = this.ts.lineno;
+<i>2826</i>&nbsp;        int var3 = -1;
+<i>2827</i>&nbsp;        ArrayList var4 = new ArrayList();
+<i>2828</i>&nbsp;        HashSet var5 = new HashSet();
+<i>2829</i>&nbsp;
+<i>2830</i>&nbsp;        label52:
+<i>2831</i>&nbsp;        while(true) {
+<i>2832</i>&nbsp;            String var6 = null;
+<i>2833</i>&nbsp;            int var7 = this.peekToken();
+<i>2834</i>&nbsp;            String var8 = this.getAndResetJsDoc();
+<i>2835</i>&nbsp;            boolean var13;
+<i>2836</i>&nbsp;            switch(var7) {
+<i>2837</i>&nbsp;            case 39:
+<i>2838</i>&nbsp;            case 41:
+<i>2839</i>&nbsp;                var13 = true;
+<i>2840</i>&nbsp;                this.saveNameTokenData(this.ts.tokenBeg, this.ts.getString(), this.ts.lineno);
+<i>2841</i>&nbsp;                this.consumeToken();
+<i>2842</i>&nbsp;                StringLiteral var9 = null;
+<i>2843</i>&nbsp;                if(var7 == 41) {
+<i>2844</i>&nbsp;                    var9 = this.createStringLiteral();
+<i>2845</i>&nbsp;                }
+<i>2846</i>&nbsp;
+<i>2847</i>&nbsp;                Name var10 = this.createNameNode();
+<i>2848</i>&nbsp;                var6 = this.ts.getString();
+<i>2849</i>&nbsp;                int var11 = this.ts.tokenBeg;
+<i>2850</i>&nbsp;                if(var7 == 39 &amp;&amp; this.peekToken() == 39 &amp;&amp; (&quot;get&quot;.equals(var6) || &quot;set&quot;.equals(var6))) {
+<i>2851</i>&nbsp;                    this.consumeToken();
+<i>2852</i>&nbsp;                    var10 = this.createNameNode();
+<i>2853</i>&nbsp;                    var10.setJsDoc(var8);
+<i>2854</i>&nbsp;                    ObjectProperty var16 = this.getterSetterProperty(var11, var10, &quot;get&quot;.equals(var6));
+<i>2855</i>&nbsp;                    var4.add(var16);
+<i>2856</i>&nbsp;                    var6 = var16.getLeft().getString();
+<i>2857</i>&nbsp;                } else {
+<i>2858</i>&nbsp;                    Object var15 = var9 != null?var9:var10;
+<i>2859</i>&nbsp;                    ((AstNode)var15).setJsDoc(var8);
+<i>2860</i>&nbsp;                    var4.add(this.plainProperty((AstNode)var15, var7));
+<i>2861</i>&nbsp;                }
+<i>2862</i>&nbsp;                break;
+<i>2863</i>&nbsp;            case 40:
+<i>2864</i>&nbsp;                this.consumeToken();
+<i>2865</i>&nbsp;                var13 = true;
+<i>2866</i>&nbsp;                NumberLiteral var12 = new NumberLiteral(this.ts.tokenBeg, this.ts.getString(), this.ts.getNumber());
+<i>2867</i>&nbsp;                var12.setJsDoc(var8);
+<i>2868</i>&nbsp;                var6 = this.ts.getString();
+<i>2869</i>&nbsp;                var4.add(this.plainProperty(var12, var7));
+<i>2870</i>&nbsp;                break;
+<i>2871</i>&nbsp;            case 86:
+<i>2872</i>&nbsp;                if(var3 != -1 &amp;&amp; this.compilerEnv.getWarnTrailingComma()) {
+<i>2873</i>&nbsp;                    this.warnTrailingComma(&quot;msg.extra.trailing.comma&quot;, var1, var4, var3);
+<i>2874</i>&nbsp;                }
+<i>2875</i>&nbsp;                break label52;
+<i>2876</i>&nbsp;            default:
+<i>2877</i>&nbsp;                this.reportError(&quot;msg.bad.prop&quot;);
+<i>2878</i>&nbsp;            }
+<i>2879</i>&nbsp;
+<i>2880</i>&nbsp;            if(this.inUseStrictDirective) {
+<i>2881</i>&nbsp;                if(var5.contains(var6)) {
+<i>2882</i>&nbsp;                    this.addError(&quot;msg.dup.obj.lit.prop.strict&quot;, var6);
+<i>2883</i>&nbsp;                }
+<i>2884</i>&nbsp;
+<i>2885</i>&nbsp;                var5.add(var6);
+<i>2886</i>&nbsp;            }
+<i>2887</i>&nbsp;
+<i>2888</i>&nbsp;            this.getAndResetJsDoc();
+<i>2889</i>&nbsp;            var8 = null;
+<i>2890</i>&nbsp;            if(!this.matchToken(89)) {
+<i>2891</i>&nbsp;                break;
+<i>2892</i>&nbsp;            }
+<i>2893</i>&nbsp;
+<i>2894</i>&nbsp;            var3 = this.ts.tokenEnd;
+<i>2895</i>&nbsp;        }
+<i>2896</i>&nbsp;
+<i>2897</i>&nbsp;        this.mustMatchToken(86, &quot;msg.no.brace.prop&quot;);
+<i>2898</i>&nbsp;        ObjectLiteral var14 = new ObjectLiteral(var1, this.ts.tokenEnd - var1);
+<i>2899</i>&nbsp;        var14.setElements(var4);
+<i>2900</i>&nbsp;        var14.setLineno(var2);
+<i>2901</i>&nbsp;        return var14;
+<i>2902</i>&nbsp;    }
+<i>2903</i>&nbsp;
+<i>2904</i>&nbsp;    private ObjectProperty plainProperty(AstNode var1, int var2) throws IOException {
+<i>2905</i>&nbsp;        int var3 = this.peekToken();
+<i>2906</i>&nbsp;        if((var3 == 89 || var3 == 86) &amp;&amp; var2 == 39 &amp;&amp; this.compilerEnv.getLanguageVersion() &gt;= 180) {
+<i>2907</i>&nbsp;            if(!this.inDestructuringAssignment) {
+<i>2908</i>&nbsp;                this.reportError(&quot;msg.bad.object.init&quot;);
+<i>2909</i>&nbsp;            }
+<i>2910</i>&nbsp;
+<i>2911</i>&nbsp;            Name var6 = new Name(var1.getPosition(), var1.getString());
+<i>2912</i>&nbsp;            ObjectProperty var5 = new ObjectProperty();
+<i>2913</i>&nbsp;            var5.putProp(26, Boolean.TRUE);
+<i>2914</i>&nbsp;            var5.setLeftAndRight(var1, var6);
+<i>2915</i>&nbsp;            return var5;
+<i>2916</i>&nbsp;        } else {
+<i>2917</i>&nbsp;            this.mustMatchToken(103, &quot;msg.no.colon.prop&quot;);
+<i>2918</i>&nbsp;            ObjectProperty var4 = new ObjectProperty();
+<i>2919</i>&nbsp;            var4.setOperatorPosition(this.ts.tokenBeg);
+<i>2920</i>&nbsp;            var4.setLeftAndRight(var1, this.assignExpr());
+<i>2921</i>&nbsp;            return var4;
+<i>2922</i>&nbsp;        }
+<i>2923</i>&nbsp;    }
+<i>2924</i>&nbsp;
+<i>2925</i>&nbsp;    private ObjectProperty getterSetterProperty(int var1, AstNode var2, boolean var3) throws IOException {
+<i>2926</i>&nbsp;        FunctionNode var4 = this.function(2);
+<i>2927</i>&nbsp;        Name var5 = var4.getFunctionName();
+<i>2928</i>&nbsp;        if(var5 != null &amp;&amp; var5.length() != 0) {
+<i>2929</i>&nbsp;            this.reportError(&quot;msg.bad.prop&quot;);
+<i>2930</i>&nbsp;        }
+<i>2931</i>&nbsp;
+<i>2932</i>&nbsp;        ObjectProperty var6 = new ObjectProperty(var1);
+<i>2933</i>&nbsp;        if(var3) {
+<i>2934</i>&nbsp;            var6.setIsGetter();
+<i>2935</i>&nbsp;        } else {
+<i>2936</i>&nbsp;            var6.setIsSetter();
+<i>2937</i>&nbsp;        }
+<i>2938</i>&nbsp;
+<i>2939</i>&nbsp;        int var7 = this.getNodeEnd(var4);
+<i>2940</i>&nbsp;        var6.setLeft(var2);
+<i>2941</i>&nbsp;        var6.setRight(var4);
+<i>2942</i>&nbsp;        var6.setLength(var7 - var1);
+<i>2943</i>&nbsp;        return var6;
+<i>2944</i>&nbsp;    }
+<i>2945</i>&nbsp;
+<i>2946</i>&nbsp;    private Name createNameNode() {
+<i>2947</i>&nbsp;        return this.createNameNode(false, 39);
+<i>2948</i>&nbsp;    }
+<i>2949</i>&nbsp;
+<i>2950</i>&nbsp;    private Name createNameNode(boolean var1, int var2) {
+<i>2951</i>&nbsp;        int var3 = this.ts.tokenBeg;
+<i>2952</i>&nbsp;        String var4 = this.ts.getString();
+<i>2953</i>&nbsp;        int var5 = this.ts.lineno;
+<i>2954</i>&nbsp;        if(!&quot;&quot;.equals(this.prevNameTokenString)) {
+<i>2955</i>&nbsp;            var3 = this.prevNameTokenStart;
+<i>2956</i>&nbsp;            var4 = this.prevNameTokenString;
+<i>2957</i>&nbsp;            var5 = this.prevNameTokenLineno;
+<i>2958</i>&nbsp;            this.prevNameTokenStart = 0;
+<i>2959</i>&nbsp;            this.prevNameTokenString = &quot;&quot;;
+<i>2960</i>&nbsp;            this.prevNameTokenLineno = 0;
+<i>2961</i>&nbsp;        }
+<i>2962</i>&nbsp;
+<i>2963</i>&nbsp;        if(var4 == null) {
+<i>2964</i>&nbsp;            if(this.compilerEnv.isIdeMode()) {
+<i>2965</i>&nbsp;                var4 = &quot;&quot;;
+<i>2966</i>&nbsp;            } else {
+<i>2967</i>&nbsp;                this.codeBug();
+<i>2968</i>&nbsp;            }
+<i>2969</i>&nbsp;        }
+<i>2970</i>&nbsp;
+<i>2971</i>&nbsp;        Name var6 = new Name(var3, var4);
+<i>2972</i>&nbsp;        var6.setLineno(var5);
+<i>2973</i>&nbsp;        if(var1) {
+<i>2974</i>&nbsp;            this.checkActivationName(var4, var2);
+<i>2975</i>&nbsp;        }
+<i>2976</i>&nbsp;
+<i>2977</i>&nbsp;        return var6;
+<i>2978</i>&nbsp;    }
+<i>2979</i>&nbsp;
+<i>2980</i>&nbsp;    private StringLiteral createStringLiteral() {
+<i>2981</i>&nbsp;        int var1 = this.ts.tokenBeg;
+<i>2982</i>&nbsp;        int var2 = this.ts.tokenEnd;
+<i>2983</i>&nbsp;        StringLiteral var3 = new StringLiteral(var1, var2 - var1);
+<i>2984</i>&nbsp;        var3.setLineno(this.ts.lineno);
+<i>2985</i>&nbsp;        var3.setValue(this.ts.getString());
+<i>2986</i>&nbsp;        var3.setQuoteCharacter(this.ts.getQuoteChar());
+<i>2987</i>&nbsp;        return var3;
+<i>2988</i>&nbsp;    }
+<i>2989</i>&nbsp;
+<i>2990</i>&nbsp;    protected void checkActivationName(String var1, int var2) {
+<i>2991</i>&nbsp;        if(this.insideFunction()) {
+<i>2992</i>&nbsp;            boolean var3 = false;
+<i>2993</i>&nbsp;            if(!&quot;arguments&quot;.equals(var1) &amp;&amp; (this.compilerEnv.getActivationNames() == null || !this.compilerEnv.getActivationNames().contains(var1))) {
+<i>2994</i>&nbsp;                if(&quot;length&quot;.equals(var1) &amp;&amp; var2 == 33 &amp;&amp; this.compilerEnv.getLanguageVersion() == 120) {
+<i>2995</i>&nbsp;                    var3 = true;
+<i>2996</i>&nbsp;                }
+<i>2997</i>&nbsp;            } else {
+<i>2998</i>&nbsp;                var3 = true;
+<i>2999</i>&nbsp;            }
+<i>3000</i>&nbsp;
+<i>3001</i>&nbsp;            if(var3) {
+<i>3002</i>&nbsp;                this.setRequiresActivation();
+<i>3003</i>&nbsp;            }
+<i>3004</i>&nbsp;
+<i>3005</i>&nbsp;        }
+<i>3006</i>&nbsp;    }
+<i>3007</i>&nbsp;
+<i>3008</i>&nbsp;    protected void setRequiresActivation() {
+<i>3009</i>&nbsp;        if(this.insideFunction()) {
+<i>3010</i>&nbsp;            ((FunctionNode)this.currentScriptOrFn).setRequiresActivation();
+<i>3011</i>&nbsp;        }
+<i>3012</i>&nbsp;
+<i>3013</i>&nbsp;    }
+<i>3014</i>&nbsp;
+<i>3015</i>&nbsp;    private void checkCallRequiresActivation(AstNode var1) {
+<i>3016</i>&nbsp;        if(var1.getType() == 39 &amp;&amp; &quot;eval&quot;.equals(((Name)var1).getIdentifier()) || var1.getType() == 33 &amp;&amp; &quot;eval&quot;.equals(((PropertyGet)var1).getProperty().getIdentifier())) {
+<i>3017</i>&nbsp;            this.setRequiresActivation();
+<i>3018</i>&nbsp;        }
+<i>3019</i>&nbsp;
+<i>3020</i>&nbsp;    }
+<i>3021</i>&nbsp;
+<i>3022</i>&nbsp;    protected void setIsGenerator() {
+<i>3023</i>&nbsp;        if(this.insideFunction()) {
+<i>3024</i>&nbsp;            ((FunctionNode)this.currentScriptOrFn).setIsGenerator();
+<i>3025</i>&nbsp;        }
+<i>3026</i>&nbsp;
+<i>3027</i>&nbsp;    }
+<i>3028</i>&nbsp;
+<i>3029</i>&nbsp;    private void checkBadIncDec(UnaryExpression var1) {
+<i>3030</i>&nbsp;        AstNode var2 = this.removeParens(var1.getOperand());
+<i>3031</i>&nbsp;        int var3 = var2.getType();
+<i>3032</i>&nbsp;        if(var3 != 39 &amp;&amp; var3 != 33 &amp;&amp; var3 != 36 &amp;&amp; var3 != 67 &amp;&amp; var3 != 38) {
+<i>3033</i>&nbsp;            this.reportError(var1.getType() == 106?&quot;msg.bad.incr&quot;:&quot;msg.bad.decr&quot;);
+<i>3034</i>&nbsp;        }
+<i>3035</i>&nbsp;
+<i>3036</i>&nbsp;    }
+<i>3037</i>&nbsp;
+<i>3038</i>&nbsp;    private ErrorNode makeErrorNode() {
+<i>3039</i>&nbsp;        ErrorNode var1 = new ErrorNode(this.ts.tokenBeg, this.ts.tokenEnd - this.ts.tokenBeg);
+<i>3040</i>&nbsp;        var1.setLineno(this.ts.lineno);
+<i>3041</i>&nbsp;        return var1;
+<i>3042</i>&nbsp;    }
+<i>3043</i>&nbsp;
+<i>3044</i>&nbsp;    private int nodeEnd(AstNode var1) {
+<i>3045</i>&nbsp;        return var1.getPosition() + var1.getLength();
+<i>3046</i>&nbsp;    }
+<i>3047</i>&nbsp;
+<i>3048</i>&nbsp;    private void saveNameTokenData(int var1, String var2, int var3) {
+<i>3049</i>&nbsp;        this.prevNameTokenStart = var1;
+<i>3050</i>&nbsp;        this.prevNameTokenString = var2;
+<i>3051</i>&nbsp;        this.prevNameTokenLineno = var3;
+<i>3052</i>&nbsp;    }
+<i>3053</i>&nbsp;
+<i>3054</i>&nbsp;    private int lineBeginningFor(int var1) {
+<i>3055</i>&nbsp;        if(this.sourceChars == null) {
+<i>3056</i>&nbsp;            return -1;
+<i>3057</i>&nbsp;        } else if(var1 &lt;= 0) {
+<i>3058</i>&nbsp;            return 0;
+<i>3059</i>&nbsp;        } else {
+<i>3060</i>&nbsp;            char[] var2 = this.sourceChars;
+<i>3061</i>&nbsp;            if(var1 &gt;= var2.length) {
+<i>3062</i>&nbsp;                var1 = var2.length - 1;
+<i>3063</i>&nbsp;            }
+<i>3064</i>&nbsp;
+<i>3065</i>&nbsp;            char var3;
+<i>3066</i>&nbsp;            do {
+<i>3067</i>&nbsp;                --var1;
+<i>3068</i>&nbsp;                if(var1 &lt; 0) {
+<i>3069</i>&nbsp;                    return 0;
+<i>3070</i>&nbsp;                }
+<i>3071</i>&nbsp;
+<i>3072</i>&nbsp;                var3 = var2[var1];
+<i>3073</i>&nbsp;            } while(var3 != 10 &amp;&amp; var3 != 13);
+<i>3074</i>&nbsp;
+<i>3075</i>&nbsp;            return var1 + 1;
+<i>3076</i>&nbsp;        }
+<i>3077</i>&nbsp;    }
+<i>3078</i>&nbsp;
+<i>3079</i>&nbsp;    private void warnMissingSemi(int var1, int var2) {
+<i>3080</i>&nbsp;        if(this.compilerEnv.isStrictMode()) {
+<i>3081</i>&nbsp;            int var3 = Math.max(var1, this.lineBeginningFor(var2));
+<i>3082</i>&nbsp;            if(var2 == -1) {
+<i>3083</i>&nbsp;                var2 = this.ts.cursor;
+<i>3084</i>&nbsp;            }
+<i>3085</i>&nbsp;
+<i>3086</i>&nbsp;            this.addStrictWarning(&quot;msg.missing.semi&quot;, &quot;&quot;, var3, var2 - var3);
+<i>3087</i>&nbsp;        }
+<i>3088</i>&nbsp;
+<i>3089</i>&nbsp;    }
+<i>3090</i>&nbsp;
+<i>3091</i>&nbsp;    private void warnTrailingComma(String var1, int var2, List&lt;?&gt; var3, int var4) {
+<i>3092</i>&nbsp;        if(this.compilerEnv.getWarnTrailingComma()) {
+<i>3093</i>&nbsp;            if(!var3.isEmpty()) {
+<i>3094</i>&nbsp;                var2 = ((AstNode)var3.get(0)).getPosition();
+<i>3095</i>&nbsp;            }
+<i>3096</i>&nbsp;
+<i>3097</i>&nbsp;            var2 = Math.max(var2, this.lineBeginningFor(var4));
+<i>3098</i>&nbsp;            this.addWarning(&quot;msg.extra.trailing.comma&quot;, var2, var4 - var2);
+<i>3099</i>&nbsp;        }
+<i>3100</i>&nbsp;
+<i>3101</i>&nbsp;    }
+<i>3102</i>&nbsp;
+<i>3103</i>&nbsp;    private String readFully(Reader var1) throws IOException {
+<i>3104</i>&nbsp;        BufferedReader var2 = new BufferedReader(var1);
+<i>3105</i>&nbsp;
+<i>3106</i>&nbsp;        try {
+<i>3107</i>&nbsp;            char[] var3 = new char[1024];
+<i>3108</i>&nbsp;            StringBuilder var4 = new StringBuilder(1024);
+<i>3109</i>&nbsp;
+<i>3110</i>&nbsp;            int var5;
+<i>3111</i>&nbsp;            while((var5 = var2.read(var3, 0, 1024)) != -1) {
+<i>3112</i>&nbsp;                var4.append(var3, 0, var5);
+<i>3113</i>&nbsp;            }
+<i>3114</i>&nbsp;
+<i>3115</i>&nbsp;            String var6 = var4.toString();
+<i>3116</i>&nbsp;            return var6;
+<i>3117</i>&nbsp;        } finally {
+<i>3118</i>&nbsp;            var2.close();
+<i>3119</i>&nbsp;        }
+<i>3120</i>&nbsp;    }
+<i>3121</i>&nbsp;
+<i>3122</i>&nbsp;    Node createDestructuringAssignment(int var1, Node var2, Node var3) {
+<i>3123</i>&nbsp;        String var4 = this.currentScriptOrFn.getNextTempName();
+<i>3124</i>&nbsp;        Node var5 = this.destructuringAssignmentHelper(var1, var2, var3, var4);
+<i>3125</i>&nbsp;        Node var6 = var5.getLastChild();
+<i>3126</i>&nbsp;        var6.addChildToBack(this.createName(var4));
+<i>3127</i>&nbsp;        return var5;
+<i>3128</i>&nbsp;    }
+<i>3129</i>&nbsp;
+<i>3130</i>&nbsp;    Node destructuringAssignmentHelper(int var1, Node var2, Node var3, String var4) {
+<i>3131</i>&nbsp;        Scope var5 = this.createScopeNode(158, var2.getLineno());
+<i>3132</i>&nbsp;        var5.addChildToFront(new Node(153, this.createName(39, var4, var3)));
+<i>3133</i>&nbsp;
+<i>3134</i>&nbsp;        try {
+<i>3135</i>&nbsp;            this.pushScope(var5);
+<i>3136</i>&nbsp;            this.defineSymbol(153, var4, true);
+<i>3137</i>&nbsp;        } finally {
+<i>3138</i>&nbsp;            this.popScope();
+<i>3139</i>&nbsp;        }
+<i>3140</i>&nbsp;
+<i>3141</i>&nbsp;        Node var6 = new Node(89);
+<i>3142</i>&nbsp;        var5.addChildToBack(var6);
+<i>3143</i>&nbsp;        ArrayList var7 = new ArrayList();
+<i>3144</i>&nbsp;        boolean var8 = true;
+<i>3145</i>&nbsp;        switch(var2.getType()) {
+<i>3146</i>&nbsp;        case 33:
+<i>3147</i>&nbsp;        case 36:
+<i>3148</i>&nbsp;            var6.addChildToBack(this.simpleAssignment(var2, this.createName(var4)));
+<i>3149</i>&nbsp;            break;
+<i>3150</i>&nbsp;        case 65:
+<i>3151</i>&nbsp;            var8 = this.destructuringArray((ArrayLiteral)var2, var1, var4, var6, var7);
+<i>3152</i>&nbsp;            break;
+<i>3153</i>&nbsp;        case 66:
+<i>3154</i>&nbsp;            var8 = this.destructuringObject((ObjectLiteral)var2, var1, var4, var6, var7);
+<i>3155</i>&nbsp;            break;
+<i>3156</i>&nbsp;        default:
+<i>3157</i>&nbsp;            this.reportError(&quot;msg.bad.assign.left&quot;);
+<i>3158</i>&nbsp;        }
+<i>3159</i>&nbsp;
+<i>3160</i>&nbsp;        if(var8) {
+<i>3161</i>&nbsp;            var6.addChildToBack(this.createNumber(0.0D));
+<i>3162</i>&nbsp;        }
+<i>3163</i>&nbsp;
+<i>3164</i>&nbsp;        var5.putProp(22, var7);
+<i>3165</i>&nbsp;        return var5;
+<i>3166</i>&nbsp;    }
+<i>3167</i>&nbsp;
+<i>3168</i>&nbsp;    boolean destructuringArray(ArrayLiteral var1, int var2, String var3, Node var4, List&lt;String&gt; var5) {
+<i>3169</i>&nbsp;        boolean var6 = true;
+<i>3170</i>&nbsp;        int var7 = var2 == 154?155:8;
+<i>3171</i>&nbsp;        int var8 = 0;
+<i>3172</i>&nbsp;        Iterator var9 = var1.getElements().iterator();
+<i>3173</i>&nbsp;
+<i>3174</i>&nbsp;        while(var9.hasNext()) {
+<i>3175</i>&nbsp;            AstNode var10 = (AstNode)var9.next();
+<i>3176</i>&nbsp;            if(var10.getType() == 128) {
+<i>3177</i>&nbsp;                ++var8;
+<i>3178</i>&nbsp;            } else {
+<i>3179</i>&nbsp;                Node var11 = new Node(36, this.createName(var3), this.createNumber((double)var8));
+<i>3180</i>&nbsp;                if(var10.getType() == 39) {
+<i>3181</i>&nbsp;                    String var12 = var10.getString();
+<i>3182</i>&nbsp;                    var4.addChildToBack(new Node(var7, this.createName(49, var12, (Node)null), var11));
+<i>3183</i>&nbsp;                    if(var2 != -1) {
+<i>3184</i>&nbsp;                        this.defineSymbol(var2, var12, true);
+<i>3185</i>&nbsp;                        var5.add(var12);
+<i>3186</i>&nbsp;                    }
+<i>3187</i>&nbsp;                } else {
+<i>3188</i>&nbsp;                    var4.addChildToBack(this.destructuringAssignmentHelper(var2, var10, var11, this.currentScriptOrFn.getNextTempName()));
+<i>3189</i>&nbsp;                }
+<i>3190</i>&nbsp;
+<i>3191</i>&nbsp;                ++var8;
+<i>3192</i>&nbsp;                var6 = false;
+<i>3193</i>&nbsp;            }
+<i>3194</i>&nbsp;        }
+<i>3195</i>&nbsp;
+<i>3196</i>&nbsp;        return var6;
+<i>3197</i>&nbsp;    }
+<i>3198</i>&nbsp;
+<i>3199</i>&nbsp;    boolean destructuringObject(ObjectLiteral var1, int var2, String var3, Node var4, List&lt;String&gt; var5) {
+<i>3200</i>&nbsp;        boolean var6 = true;
+<i>3201</i>&nbsp;        int var7 = var2 == 154?155:8;
+<i>3202</i>&nbsp;
+<i>3203</i>&nbsp;        for(Iterator var8 = var1.getElements().iterator(); var8.hasNext(); var6 = false) {
+<i>3204</i>&nbsp;            ObjectProperty var9 = (ObjectProperty)var8.next();
+<i>3205</i>&nbsp;            int var10 = 0;
+<i>3206</i>&nbsp;            if(this.ts != null) {
+<i>3207</i>&nbsp;                var10 = this.ts.lineno;
+<i>3208</i>&nbsp;            }
+<i>3209</i>&nbsp;
+<i>3210</i>&nbsp;            AstNode var11 = var9.getLeft();
+<i>3211</i>&nbsp;            Node var12 = null;
+<i>3212</i>&nbsp;            Node var13;
+<i>3213</i>&nbsp;            if(var11 instanceof Name) {
+<i>3214</i>&nbsp;                var13 = Node.newString(((Name)var11).getIdentifier());
+<i>3215</i>&nbsp;                var12 = new Node(33, this.createName(var3), var13);
+<i>3216</i>&nbsp;            } else if(var11 instanceof StringLiteral) {
+<i>3217</i>&nbsp;                var13 = Node.newString(((StringLiteral)var11).getValue());
+<i>3218</i>&nbsp;                var12 = new Node(33, this.createName(var3), var13);
+<i>3219</i>&nbsp;            } else {
+<i>3220</i>&nbsp;                if(!(var11 instanceof NumberLiteral)) {
+<i>3221</i>&nbsp;                    throw this.codeBug();
+<i>3222</i>&nbsp;                }
+<i>3223</i>&nbsp;
+<i>3224</i>&nbsp;                var13 = this.createNumber((double)((int)((NumberLiteral)var11).getNumber()));
+<i>3225</i>&nbsp;                var12 = new Node(36, this.createName(var3), var13);
+<i>3226</i>&nbsp;            }
+<i>3227</i>&nbsp;
+<i>3228</i>&nbsp;            var12.setLineno(var10);
+<i>3229</i>&nbsp;            AstNode var15 = var9.getRight();
+<i>3230</i>&nbsp;            if(var15.getType() == 39) {
+<i>3231</i>&nbsp;                String var14 = ((Name)var15).getIdentifier();
+<i>3232</i>&nbsp;                var4.addChildToBack(new Node(var7, this.createName(49, var14, (Node)null), var12));
+<i>3233</i>&nbsp;                if(var2 != -1) {
+<i>3234</i>&nbsp;                    this.defineSymbol(var2, var14, true);
+<i>3235</i>&nbsp;                    var5.add(var14);
+<i>3236</i>&nbsp;                }
+<i>3237</i>&nbsp;            } else {
+<i>3238</i>&nbsp;                var4.addChildToBack(this.destructuringAssignmentHelper(var2, var15, var12, this.currentScriptOrFn.getNextTempName()));
+<i>3239</i>&nbsp;            }
+<i>3240</i>&nbsp;        }
+<i>3241</i>&nbsp;
+<i>3242</i>&nbsp;        return var6;
+<i>3243</i>&nbsp;    }
+<i>3244</i>&nbsp;
+<i>3245</i>&nbsp;    protected Node createName(String var1) {
+<i>3246</i>&nbsp;        this.checkActivationName(var1, 39);
+<i>3247</i>&nbsp;        return Node.newString(39, var1);
+<i>3248</i>&nbsp;    }
+<i>3249</i>&nbsp;
+<i>3250</i>&nbsp;    protected Node createName(int var1, String var2, Node var3) {
+<i>3251</i>&nbsp;        Node var4 = this.createName(var2);
+<i>3252</i>&nbsp;        var4.setType(var1);
+<i>3253</i>&nbsp;        if(var3 != null) {
+<i>3254</i>&nbsp;            var4.addChildToBack(var3);
+<i>3255</i>&nbsp;        }
+<i>3256</i>&nbsp;
+<i>3257</i>&nbsp;        return var4;
+<i>3258</i>&nbsp;    }
+<i>3259</i>&nbsp;
+<i>3260</i>&nbsp;    protected Node createNumber(double var1) {
+<i>3261</i>&nbsp;        return Node.newNumber(var1);
+<i>3262</i>&nbsp;    }
+<i>3263</i>&nbsp;
+<i>3264</i>&nbsp;    protected Scope createScopeNode(int var1, int var2) {
+<i>3265</i>&nbsp;        Scope var3 = new Scope();
+<i>3266</i>&nbsp;        var3.setType(var1);
+<i>3267</i>&nbsp;        var3.setLineno(var2);
+<i>3268</i>&nbsp;        return var3;
+<i>3269</i>&nbsp;    }
+<i>3270</i>&nbsp;
+<i>3271</i>&nbsp;    protected Node simpleAssignment(Node var1, Node var2) {
+<i>3272</i>&nbsp;        int var3 = var1.getType();
+<i>3273</i>&nbsp;        switch(var3) {
+<i>3274</i>&nbsp;        case 33:
+<i>3275</i>&nbsp;        case 36:
+<i>3276</i>&nbsp;            Object var5;
+<i>3277</i>&nbsp;            Object var7;
+<i>3278</i>&nbsp;            if(var1 instanceof PropertyGet) {
+<i>3279</i>&nbsp;                var7 = ((PropertyGet)var1).getTarget();
+<i>3280</i>&nbsp;                var5 = ((PropertyGet)var1).getProperty();
+<i>3281</i>&nbsp;            } else if(var1 instanceof ElementGet) {
+<i>3282</i>&nbsp;                var7 = ((ElementGet)var1).getTarget();
+<i>3283</i>&nbsp;                var5 = ((ElementGet)var1).getElement();
+<i>3284</i>&nbsp;            } else {
+<i>3285</i>&nbsp;                var7 = var1.getFirstChild();
+<i>3286</i>&nbsp;                var5 = var1.getLastChild();
+<i>3287</i>&nbsp;            }
+<i>3288</i>&nbsp;
+<i>3289</i>&nbsp;            byte var6;
+<i>3290</i>&nbsp;            if(var3 == 33) {
+<i>3291</i>&nbsp;                var6 = 35;
+<i>3292</i>&nbsp;                ((Node)var5).setType(41);
+<i>3293</i>&nbsp;            } else {
+<i>3294</i>&nbsp;                var6 = 37;
+<i>3295</i>&nbsp;            }
+<i>3296</i>&nbsp;
+<i>3297</i>&nbsp;            return new Node(var6, (Node)var7, (Node)var5, var2);
+<i>3298</i>&nbsp;        case 39:
+<i>3299</i>&nbsp;            if(this.inUseStrictDirective &amp;&amp; &quot;eval&quot;.equals(((Name)var1).getIdentifier())) {
+<i>3300</i>&nbsp;                this.reportError(&quot;msg.bad.id.strict&quot;, ((Name)var1).getIdentifier());
+<i>3301</i>&nbsp;            }
+<i>3302</i>&nbsp;
+<i>3303</i>&nbsp;            var1.setType(49);
+<i>3304</i>&nbsp;            return new Node(8, var1, var2);
+<i>3305</i>&nbsp;        case 67:
+<i>3306</i>&nbsp;            Node var4 = var1.getFirstChild();
+<i>3307</i>&nbsp;            this.checkMutableReference(var4);
+<i>3308</i>&nbsp;            return new Node(68, var4, var2);
+<i>3309</i>&nbsp;        default:
+<i>3310</i>&nbsp;            throw this.codeBug();
+<i>3311</i>&nbsp;        }
+<i>3312</i>&nbsp;    }
+<i>3313</i>&nbsp;
+<i>3314</i>&nbsp;    protected void checkMutableReference(Node var1) {
+<i>3315</i>&nbsp;        int var2 = var1.getIntProp(16, 0);
+<i>3316</i>&nbsp;        if((var2 &amp; 4) != 0) {
+<i>3317</i>&nbsp;            this.reportError(&quot;msg.bad.assign.left&quot;);
+<i>3318</i>&nbsp;        }
+<i>3319</i>&nbsp;
+<i>3320</i>&nbsp;    }
+<i>3321</i>&nbsp;
+<i>3322</i>&nbsp;    protected AstNode removeParens(AstNode var1) {
+<i>3323</i>&nbsp;        while(var1 instanceof ParenthesizedExpression) {
+<i>3324</i>&nbsp;            var1 = ((ParenthesizedExpression)var1).getExpression();
+<i>3325</i>&nbsp;        }
+<i>3326</i>&nbsp;
+<i>3327</i>&nbsp;        return var1;
+<i>3328</i>&nbsp;    }
+<i>3329</i>&nbsp;
+<i>3330</i>&nbsp;    void markDestructuring(AstNode var1) {
+<i>3331</i>&nbsp;        if(var1 instanceof DestructuringForm) {
+<i>3332</i>&nbsp;            ((DestructuringForm)var1).setIsDestructuring(true);
+<i>3333</i>&nbsp;        } else if(var1 instanceof ParenthesizedExpression) {
+<i>3334</i>&nbsp;            this.markDestructuring(((ParenthesizedExpression)var1).getExpression());
+<i>3335</i>&nbsp;        }
+<i>3336</i>&nbsp;
+<i>3337</i>&nbsp;    }
+<i>3338</i>&nbsp;
+<i>3339</i>&nbsp;    private RuntimeException codeBug() throws RuntimeException {
+<i>3340</i>&nbsp;        throw Kit.codeBug(&quot;ts.cursor=&quot; + this.ts.cursor + &quot;, ts.tokenBeg=&quot; + this.ts.tokenBeg + &quot;, currentToken=&quot; + this.currentToken);
+<i>3341</i>&nbsp;    }
+<i>3342</i>&nbsp;
+<i>3343</i>&nbsp;    protected class PerFunctionVariables {
+<i>3344</i>&nbsp;        private ScriptNode savedCurrentScriptOrFn;
+<i>3345</i>&nbsp;        private Scope savedCurrentScope;
+<i>3346</i>&nbsp;        private int savedNestingOfWith;
+<i>3347</i>&nbsp;        private int savedEndFlags;
+<i>3348</i>&nbsp;        private boolean savedInForInit;
+<i>3349</i>&nbsp;        private Map&lt;String, LabeledStatement&gt; savedLabelSet;
+<i>3350</i>&nbsp;        private List&lt;Loop&gt; savedLoopSet;
+<i>3351</i>&nbsp;        private List&lt;Jump&gt; savedLoopAndSwitchSet;
+<i>3352</i>&nbsp;
+<i>3353</i>&nbsp;        PerFunctionVariables(FunctionNode var2) {
+<i>3354</i>&nbsp;            this.savedCurrentScriptOrFn = Parser.this.currentScriptOrFn;
+<i>3355</i>&nbsp;            Parser.this.currentScriptOrFn = var2;
+<i>3356</i>&nbsp;            this.savedCurrentScope = Parser.this.currentScope;
+<i>3357</i>&nbsp;            Parser.this.currentScope = var2;
+<i>3358</i>&nbsp;            this.savedNestingOfWith = Parser.this.nestingOfWith;
+<i>3359</i>&nbsp;            Parser.this.nestingOfWith = 0;
+<i>3360</i>&nbsp;            this.savedLabelSet = Parser.this.labelSet;
+<i>3361</i>&nbsp;            Parser.this.labelSet = null;
+<i>3362</i>&nbsp;            this.savedLoopSet = Parser.this.loopSet;
+<i>3363</i>&nbsp;            Parser.this.loopSet = null;
+<i>3364</i>&nbsp;            this.savedLoopAndSwitchSet = Parser.this.loopAndSwitchSet;
+<i>3365</i>&nbsp;            Parser.this.loopAndSwitchSet = null;
+<i>3366</i>&nbsp;            this.savedEndFlags = Parser.this.endFlags;
+<i>3367</i>&nbsp;            Parser.this.endFlags = 0;
+<i>3368</i>&nbsp;            this.savedInForInit = Parser.this.inForInit;
+<i>3369</i>&nbsp;            Parser.this.inForInit = false;
+<i>3370</i>&nbsp;        }
+<i>3371</i>&nbsp;
+<i>3372</i>&nbsp;        void restore() {
+<i>3373</i>&nbsp;            Parser.this.currentScriptOrFn = this.savedCurrentScriptOrFn;
+<i>3374</i>&nbsp;            Parser.this.currentScope = this.savedCurrentScope;
+<i>3375</i>&nbsp;            Parser.this.nestingOfWith = this.savedNestingOfWith;
+<i>3376</i>&nbsp;            Parser.this.labelSet = this.savedLabelSet;
+<i>3377</i>&nbsp;            Parser.this.loopSet = this.savedLoopSet;
+<i>3378</i>&nbsp;            Parser.this.loopAndSwitchSet = this.savedLoopAndSwitchSet;
+<i>3379</i>&nbsp;            Parser.this.endFlags = this.savedEndFlags;
+<i>3380</i>&nbsp;            Parser.this.inForInit = this.savedInForInit;
+<i>3381</i>&nbsp;        }
+<i>3382</i>&nbsp;    }
+<i>3383</i>&nbsp;
+<i>3384</i>&nbsp;    private static class ConditionData {
+<i>3385</i>&nbsp;        AstNode condition;
+<i>3386</i>&nbsp;        int lp;
+<i>3387</i>&nbsp;        int rp;
+<i>3388</i>&nbsp;
+<i>3389</i>&nbsp;        private ConditionData() {
+<i>3390</i>&nbsp;            this.lp = -1;
+<i>3391</i>&nbsp;            this.rp = -1;
+<i>3392</i>&nbsp;        }
+<i>3393</i>&nbsp;    }
+<i>3394</i>&nbsp;
+<i>3395</i>&nbsp;    private static class ParserException extends RuntimeException {
+<i>3396</i>&nbsp;        static final long serialVersionUID = 5882582646773765630L;
+<i>3397</i>&nbsp;
+<i>3398</i>&nbsp;        private ParserException() {
+<i>3399</i>&nbsp;        }
+<i>3400</i>&nbsp;    }
+<i>3401</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

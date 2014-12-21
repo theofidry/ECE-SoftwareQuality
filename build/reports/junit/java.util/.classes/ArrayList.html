@@ -1,0 +1,868 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ArrayList</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ArrayList (java.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ArrayList</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 133)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectInputStream;
+<i>10</i>&nbsp;import java.io.ObjectOutputStream;
+<i>11</i>&nbsp;import java.io.Serializable;
+<i>12</i>&nbsp;import java.util.AbstractList;
+<i>13</i>&nbsp;import java.util.Arrays;
+<i>14</i>&nbsp;import java.util.Collection;
+<i>15</i>&nbsp;import java.util.ConcurrentModificationException;
+<i>16</i>&nbsp;import java.util.Iterator;
+<i>17</i>&nbsp;import java.util.List;
+<i>18</i>&nbsp;import java.util.ListIterator;
+<i>19</i>&nbsp;import java.util.NoSuchElementException;
+<i>20</i>&nbsp;import java.util.RandomAccess;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt; implements List&lt;E&gt;, RandomAccess, Cloneable, Serializable {
+<i>23</i>&nbsp;    private static final long serialVersionUID = 8683452581122892189L;
+<i>24</i>&nbsp;    private static final int DEFAULT_CAPACITY = 10;
+<i>25</i>&nbsp;    private static final Object[] EMPTY_ELEMENTDATA = new Object[0];
+<i>26</i>&nbsp;    private transient Object[] elementData;
+<i>27</i>&nbsp;    private int size;
+<i>28</i>&nbsp;    private static final int MAX_ARRAY_SIZE = 2147483639;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public ArrayList(int var1) {
+<i>31</i>&nbsp;        if(var1 &lt; 0) {
+<i>32</i>&nbsp;            throw new IllegalArgumentException(&quot;Illegal Capacity: &quot; + var1);
+<i>33</i>&nbsp;        } else {
+<i>34</i>&nbsp;            this.elementData = new Object[var1];
+<i>35</i>&nbsp;        }
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    public ArrayList() {
+<i>39</i>&nbsp;        this.elementData = EMPTY_ELEMENTDATA;
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public ArrayList(Collection&lt;? extends E&gt; var1) {
+<i>43</i>&nbsp;        this.elementData = var1.toArray();
+<i>44</i>&nbsp;        this.size = this.elementData.length;
+<i>45</i>&nbsp;        if(this.elementData.getClass() != Object[].class) {
+<i>46</i>&nbsp;            this.elementData = Arrays.copyOf(this.elementData, this.size, Object[].class);
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public void trimToSize() {
+<i>52</i>&nbsp;        ++this.modCount;
+<i>53</i>&nbsp;        if(this.size &lt; this.elementData.length) {
+<i>54</i>&nbsp;            this.elementData = Arrays.copyOf(this.elementData, this.size);
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public void ensureCapacity(int var1) {
+<i>60</i>&nbsp;        int var2 = this.elementData != EMPTY_ELEMENTDATA?0:10;
+<i>61</i>&nbsp;        if(var1 &gt; var2) {
+<i>62</i>&nbsp;            this.ensureExplicitCapacity(var1);
+<i>63</i>&nbsp;        }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    private void ensureCapacityInternal(int var1) {
+<i>68</i>&nbsp;        if(this.elementData == EMPTY_ELEMENTDATA) {
+<i>69</i>&nbsp;            var1 = Math.max(10, var1);
+<i>70</i>&nbsp;        }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;        this.ensureExplicitCapacity(var1);
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    private void ensureExplicitCapacity(int var1) {
+<i>76</i>&nbsp;        ++this.modCount;
+<i>77</i>&nbsp;        if(var1 - this.elementData.length &gt; 0) {
+<i>78</i>&nbsp;            this.grow(var1);
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    private void grow(int var1) {
+<i>84</i>&nbsp;        int var2 = this.elementData.length;
+<i>85</i>&nbsp;        int var3 = var2 + (var2 &gt;&gt; 1);
+<i>86</i>&nbsp;        if(var3 - var1 &lt; 0) {
+<i>87</i>&nbsp;            var3 = var1;
+<i>88</i>&nbsp;        }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;        if(var3 - 2147483639 &gt; 0) {
+<i>91</i>&nbsp;            var3 = hugeCapacity(var1);
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;        this.elementData = Arrays.copyOf(this.elementData, var3);
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    private static int hugeCapacity(int var0) {
+<i>98</i>&nbsp;        if(var0 &lt; 0) {
+<i>99</i>&nbsp;            throw new OutOfMemoryError();
+<i>100</i>&nbsp;        } else {
+<i>101</i>&nbsp;            return var0 &gt; 2147483639?2147483647:2147483639;
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public int size() {
+<i>106</i>&nbsp;        return this.size;
+<i>107</i>&nbsp;    }
+<b class="nc"><i>108</i>&nbsp;</b>
+<b class="nc"><i>109</i>&nbsp;    public boolean isEmpty() {</b>
+<b class="nc"><i>110</i>&nbsp;        return this.size == 0;</b>
+<i>111</i>&nbsp;    }
+<b class="nc"><i>112</i>&nbsp;</b>
+<i>113</i>&nbsp;    public boolean contains(Object var1) {
+<i>114</i>&nbsp;        return this.indexOf(var1) &gt;= 0;
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public int indexOf(Object var1) {
+<i>118</i>&nbsp;        int var2;
+<b class="nc"><i>119</i>&nbsp;        if(var1 == null) {</b>
+<i>120</i>&nbsp;            for(var2 = 0; var2 &lt; this.size; ++var2) {
+<i>121</i>&nbsp;                if(this.elementData[var2] == null) {
+<i>122</i>&nbsp;                    return var2;
+<i>123</i>&nbsp;                }
+<i>124</i>&nbsp;            }
+<i>125</i>&nbsp;        } else {
+<i>126</i>&nbsp;            for(var2 = 0; var2 &lt; this.size; ++var2) {
+<i>127</i>&nbsp;                if(var1.equals(this.elementData[var2])) {
+<i>128</i>&nbsp;                    return var2;
+<i>129</i>&nbsp;                }
+<b class="nc"><i>130</i>&nbsp;            }</b>
+<b class="nc"><i>131</i>&nbsp;        }</b>
+<b class="nc"><i>132</i>&nbsp;</b>
+<i>133</i>&nbsp;        return -1;
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<i>136</i>&nbsp;    public int lastIndexOf(Object var1) {
+<i>137</i>&nbsp;        int var2;
+<i>138</i>&nbsp;        if(var1 == null) {
+<i>139</i>&nbsp;            for(var2 = this.size - 1; var2 &gt;= 0; --var2) {
+<i>140</i>&nbsp;                if(this.elementData[var2] == null) {
+<i>141</i>&nbsp;                    return var2;
+<i>142</i>&nbsp;                }
+<i>143</i>&nbsp;            }
+<b class="nc"><i>144</i>&nbsp;        } else {</b>
+<b class="nc"><i>145</i>&nbsp;            for(var2 = this.size - 1; var2 &gt;= 0; --var2) {</b>
+<b class="nc"><i>146</i>&nbsp;                if(var1.equals(this.elementData[var2])) {</b>
+<b class="nc"><i>147</i>&nbsp;                    return var2;</b>
+<i>148</i>&nbsp;                }
+<i>149</i>&nbsp;            }
+<i>150</i>&nbsp;        }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;        return -1;
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    public Object clone() {
+<i>156</i>&nbsp;        try {
+<i>157</i>&nbsp;            ArrayList var1 = (ArrayList)super.clone();
+<i>158</i>&nbsp;            var1.elementData = Arrays.copyOf(this.elementData, this.size);
+<b class="nc"><i>159</i>&nbsp;            var1.modCount = 0;</b>
+<b class="nc"><i>160</i>&nbsp;            return var1;</b>
+<b class="nc"><i>161</i>&nbsp;        } catch (CloneNotSupportedException var2) {</b>
+<b class="nc"><i>162</i>&nbsp;            throw new InternalError();</b>
+<b class="nc"><i>163</i>&nbsp;        }</b>
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<b class="nc"><i>165</i>&nbsp;</b>
+<i>166</i>&nbsp;    public Object[] toArray() {
+<b class="nc"><i>167</i>&nbsp;        return Arrays.copyOf(this.elementData, this.size);</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    public &lt;T&gt; T[] toArray(T[] var1) {
+<i>171</i>&nbsp;        if(var1.length &lt; this.size) {
+<i>172</i>&nbsp;            return (Object[])Arrays.copyOf(this.elementData, this.size, var1.getClass());
+<i>173</i>&nbsp;        } else {
+<i>174</i>&nbsp;            System.arraycopy(this.elementData, 0, var1, 0, this.size);
+<i>175</i>&nbsp;            if(var1.length &gt; this.size) {
+<i>176</i>&nbsp;                var1[this.size] = null;
+<b class="nc"><i>177</i>&nbsp;            }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;            return var1;
+<i>180</i>&nbsp;        }
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    E elementData(int var1) {
+<i>184</i>&nbsp;        return this.elementData[var1];
+<i>185</i>&nbsp;    }
+<b class="nc"><i>186</i>&nbsp;</b>
+<i>187</i>&nbsp;    public E get(int var1) {
+<i>188</i>&nbsp;        this.rangeCheck(var1);
+<i>189</i>&nbsp;        return this.elementData(var1);
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public E set(int var1, E var2) {
+<i>193</i>&nbsp;        this.rangeCheck(var1);
+<i>194</i>&nbsp;        Object var3 = this.elementData(var1);
+<i>195</i>&nbsp;        this.elementData[var1] = var2;
+<i>196</i>&nbsp;        return var3;
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;    public boolean add(E var1) {</b>
+<i>200</i>&nbsp;        this.ensureCapacityInternal(this.size + 1);
+<i>201</i>&nbsp;        this.elementData[this.size++] = var1;
+<i>202</i>&nbsp;        return true;
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    public void add(int var1, E var2) {
+<i>206</i>&nbsp;        this.rangeCheckForAdd(var1);
+<i>207</i>&nbsp;        this.ensureCapacityInternal(this.size + 1);
+<i>208</i>&nbsp;        System.arraycopy(this.elementData, var1, this.elementData, var1 + 1, this.size - var1);
+<i>209</i>&nbsp;        this.elementData[var1] = var2;
+<b class="nc"><i>210</i>&nbsp;        ++this.size;</b>
+<b class="nc"><i>211</i>&nbsp;    }</b>
+<b class="nc"><i>212</i>&nbsp;</b>
+<b class="nc"><i>213</i>&nbsp;    public E remove(int var1) {</b>
+<i>214</i>&nbsp;        this.rangeCheck(var1);
+<b class="nc"><i>215</i>&nbsp;        ++this.modCount;</b>
+<b class="nc"><i>216</i>&nbsp;        Object var2 = this.elementData(var1);</b>
+<b class="nc"><i>217</i>&nbsp;        int var3 = this.size - var1 - 1;</b>
+<i>218</i>&nbsp;        if(var3 &gt; 0) {
+<b class="nc"><i>219</i>&nbsp;            System.arraycopy(this.elementData, var1 + 1, this.elementData, var1, var3);</b>
+<i>220</i>&nbsp;        }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;        this.elementData[--this.size] = null;
+<i>223</i>&nbsp;        return var2;
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    public boolean remove(Object var1) {
+<i>227</i>&nbsp;        int var2;
+<i>228</i>&nbsp;        if(var1 == null) {
+<i>229</i>&nbsp;            for(var2 = 0; var2 &lt; this.size; ++var2) {
+<b class="nc"><i>230</i>&nbsp;                if(this.elementData[var2] == null) {</b>
+<b class="nc"><i>231</i>&nbsp;                    this.fastRemove(var2);</b>
+<b class="nc"><i>232</i>&nbsp;                    return true;</b>
+<b class="nc"><i>233</i>&nbsp;                }</b>
+<i>234</i>&nbsp;            }
+<b class="nc"><i>235</i>&nbsp;        } else {</b>
+<b class="nc"><i>236</i>&nbsp;            for(var2 = 0; var2 &lt; this.size; ++var2) {</b>
+<b class="nc"><i>237</i>&nbsp;                if(var1.equals(this.elementData[var2])) {</b>
+<i>238</i>&nbsp;                    this.fastRemove(var2);
+<b class="nc"><i>239</i>&nbsp;                    return true;</b>
+<i>240</i>&nbsp;                }
+<i>241</i>&nbsp;            }
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        return false;
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    private void fastRemove(int var1) {
+<i>248</i>&nbsp;        ++this.modCount;
+<i>249</i>&nbsp;        int var2 = this.size - var1 - 1;
+<b class="nc"><i>250</i>&nbsp;        if(var2 &gt; 0) {</b>
+<b class="nc"><i>251</i>&nbsp;            System.arraycopy(this.elementData, var1 + 1, this.elementData, var1, var2);</b>
+<b class="nc"><i>252</i>&nbsp;        }</b>
+<b class="nc"><i>253</i>&nbsp;</b>
+<b class="nc"><i>254</i>&nbsp;        this.elementData[--this.size] = null;</b>
+<i>255</i>&nbsp;    }
+<b class="nc"><i>256</i>&nbsp;</b>
+<i>257</i>&nbsp;    public void clear() {
+<i>258</i>&nbsp;        ++this.modCount;
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;        for(int var1 = 0; var1 &lt; this.size; ++var1) {
+<i>261</i>&nbsp;            this.elementData[var1] = null;
+<i>262</i>&nbsp;        }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;        this.size = 0;
+<i>265</i>&nbsp;    }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;    public boolean addAll(Collection&lt;? extends E&gt; var1) {
+<i>268</i>&nbsp;        Object[] var2 = var1.toArray();
+<i>269</i>&nbsp;        int var3 = var2.length;
+<i>270</i>&nbsp;        this.ensureCapacityInternal(this.size + var3);
+<i>271</i>&nbsp;        System.arraycopy(var2, 0, this.elementData, this.size, var3);
+<i>272</i>&nbsp;        this.size += var3;
+<i>273</i>&nbsp;        return var3 != 0;
+<i>274</i>&nbsp;    }
+<b class="nc"><i>275</i>&nbsp;</b>
+<i>276</i>&nbsp;    public boolean addAll(int var1, Collection&lt;? extends E&gt; var2) {
+<i>277</i>&nbsp;        this.rangeCheckForAdd(var1);
+<i>278</i>&nbsp;        Object[] var3 = var2.toArray();
+<i>279</i>&nbsp;        int var4 = var3.length;
+<i>280</i>&nbsp;        this.ensureCapacityInternal(this.size + var4);
+<i>281</i>&nbsp;        int var5 = this.size - var1;
+<i>282</i>&nbsp;        if(var5 &gt; 0) {
+<i>283</i>&nbsp;            System.arraycopy(this.elementData, var1, this.elementData, var1 + var4, var5);
+<i>284</i>&nbsp;        }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;        System.arraycopy(var3, 0, this.elementData, var1, var4);
+<i>287</i>&nbsp;        this.size += var4;
+<i>288</i>&nbsp;        return var4 != 0;
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    protected void removeRange(int var1, int var2) {
+<i>292</i>&nbsp;        ++this.modCount;
+<i>293</i>&nbsp;        int var3 = this.size - var2;
+<i>294</i>&nbsp;        System.arraycopy(this.elementData, var2, this.elementData, var1, var3);
+<i>295</i>&nbsp;        int var4 = this.size - (var2 - var1);
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;        for(int var5 = var4; var5 &lt; this.size; ++var5) {
+<i>298</i>&nbsp;            this.elementData[var5] = null;
+<i>299</i>&nbsp;        }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;        this.size = var4;
+<i>302</i>&nbsp;    }
+<b class="nc"><i>303</i>&nbsp;</b>
+<i>304</i>&nbsp;    private void rangeCheck(int var1) {
+<b class="nc"><i>305</i>&nbsp;        if(var1 &gt;= this.size) {</b>
+<b class="nc"><i>306</i>&nbsp;            throw new IndexOutOfBoundsException(this.outOfBoundsMsg(var1));</b>
+<b class="nc"><i>307</i>&nbsp;        }</b>
+<b class="nc"><i>308</i>&nbsp;    }</b>
+<b class="nc"><i>309</i>&nbsp;</b>
+<i>310</i>&nbsp;    private void rangeCheckForAdd(int var1) {
+<i>311</i>&nbsp;        if(var1 &gt; this.size || var1 &lt; 0) {
+<i>312</i>&nbsp;            throw new IndexOutOfBoundsException(this.outOfBoundsMsg(var1));
+<i>313</i>&nbsp;        }
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    private String outOfBoundsMsg(int var1) {
+<i>317</i>&nbsp;        return &quot;Index: &quot; + var1 + &quot;, Size: &quot; + this.size;
+<i>318</i>&nbsp;    }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;    public boolean removeAll(Collection&lt;?&gt; var1) {
+<i>321</i>&nbsp;        return this.batchRemove(var1, false);
+<b class="nc"><i>322</i>&nbsp;    }</b>
+<i>323</i>&nbsp;
+<b class="nc"><i>324</i>&nbsp;    public boolean retainAll(Collection&lt;?&gt; var1) {</b>
+<i>325</i>&nbsp;        return this.batchRemove(var1, true);
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    private boolean batchRemove(Collection&lt;?&gt; var1, boolean var2) {
+<i>329</i>&nbsp;        Object[] var3 = this.elementData;
+<i>330</i>&nbsp;        int var4 = 0;
+<i>331</i>&nbsp;        int var5 = 0;
+<i>332</i>&nbsp;        boolean var6 = false;
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;        while(true) {
+<i>335</i>&nbsp;            boolean var11 = false;
+<i>336</i>&nbsp;
+<b class="nc"><i>337</i>&nbsp;            try {</b>
+<i>338</i>&nbsp;                var11 = true;
+<b class="nc"><i>339</i>&nbsp;                if(var4 &gt;= this.size) {</b>
+<b class="nc"><i>340</i>&nbsp;                    var11 = false;</b>
+<b class="nc"><i>341</i>&nbsp;                    break;</b>
+<i>342</i>&nbsp;                }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;                if(var1.contains(var3[var4]) == var2) {
+<i>345</i>&nbsp;                    var3[var5++] = var3[var4];
+<i>346</i>&nbsp;                }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;                ++var4;
+<i>349</i>&nbsp;            } finally {
+<i>350</i>&nbsp;                if(var11) {
+<b class="nc"><i>351</i>&nbsp;                    if(var4 != this.size) {</b>
+<b class="nc"><i>352</i>&nbsp;                        System.arraycopy(var3, var4, var3, var5, this.size - var4);</b>
+<b class="nc"><i>353</i>&nbsp;                        var5 += this.size - var4;</b>
+<i>354</i>&nbsp;                    }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;                    if(var5 != this.size) {
+<i>357</i>&nbsp;                        for(int var9 = var5; var9 &lt; this.size; ++var9) {
+<i>358</i>&nbsp;                            var3[var9] = null;
+<i>359</i>&nbsp;                        }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;                        this.modCount += this.size - var5;
+<i>362</i>&nbsp;                        this.size = var5;
+<i>363</i>&nbsp;                        var6 = true;
+<i>364</i>&nbsp;                    }
+<i>365</i>&nbsp;
+<b class="nc"><i>366</i>&nbsp;                }</b>
+<b class="nc"><i>367</i>&nbsp;            }</b>
+<i>368</i>&nbsp;        }
+<i>369</i>&nbsp;
+<b class="nc"><i>370</i>&nbsp;        if(var4 != this.size) {</b>
+<b class="nc"><i>371</i>&nbsp;            System.arraycopy(var3, var4, var3, var5, this.size - var4);</b>
+<i>372</i>&nbsp;            var5 += this.size - var4;
+<b class="nc"><i>373</i>&nbsp;        }</b>
+<b class="nc"><i>374</i>&nbsp;</b>
+<i>375</i>&nbsp;        if(var5 != this.size) {
+<i>376</i>&nbsp;            for(int var7 = var5; var7 &lt; this.size; ++var7) {
+<i>377</i>&nbsp;                var3[var7] = null;
+<i>378</i>&nbsp;            }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;            this.modCount += this.size - var5;
+<i>381</i>&nbsp;            this.size = var5;
+<i>382</i>&nbsp;            var6 = true;
+<i>383</i>&nbsp;        }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;        return var6;
+<i>386</i>&nbsp;    }
+<b class="nc"><i>387</i>&nbsp;</b>
+<i>388</i>&nbsp;    private void writeObject(ObjectOutputStream var1) throws IOException {
+<b class="nc"><i>389</i>&nbsp;        int var2 = this.modCount;</b>
+<b class="nc"><i>390</i>&nbsp;        var1.defaultWriteObject();</b>
+<i>391</i>&nbsp;        var1.writeInt(this.size);
+<b class="nc"><i>392</i>&nbsp;</b>
+<b class="nc"><i>393</i>&nbsp;        for(int var3 = 0; var3 &lt; this.size; ++var3) {</b>
+<b class="nc"><i>394</i>&nbsp;            var1.writeObject(this.elementData[var3]);</b>
+<i>395</i>&nbsp;        }
+<b class="nc"><i>396</i>&nbsp;</b>
+<i>397</i>&nbsp;        if(this.modCount != var2) {
+<b class="nc"><i>398</i>&nbsp;            throw new ConcurrentModificationException();</b>
+<i>399</i>&nbsp;        }
+<i>400</i>&nbsp;    }
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<i>403</i>&nbsp;        this.elementData = EMPTY_ELEMENTDATA;
+<i>404</i>&nbsp;        var1.defaultReadObject();
+<i>405</i>&nbsp;        var1.readInt();
+<i>406</i>&nbsp;        if(this.size &gt; 0) {
+<i>407</i>&nbsp;            this.ensureCapacityInternal(this.size);
+<i>408</i>&nbsp;            Object[] var2 = this.elementData;
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;            for(int var3 = 0; var3 &lt; this.size; ++var3) {
+<i>411</i>&nbsp;                var2[var3] = var1.readObject();
+<i>412</i>&nbsp;            }
+<i>413</i>&nbsp;        }
+<i>414</i>&nbsp;
+<b class="nc"><i>415</i>&nbsp;    }</b>
+<b class="nc"><i>416</i>&nbsp;</b>
+<b class="nc"><i>417</i>&nbsp;    public ListIterator&lt;E&gt; listIterator(int var1) {</b>
+<b class="nc"><i>418</i>&nbsp;        if(var1 &gt;= 0 &amp;&amp; var1 &lt;= this.size) {</b>
+<b class="nc"><i>419</i>&nbsp;            return new ArrayList.ListItr(var1);</b>
+<i>420</i>&nbsp;        } else {
+<i>421</i>&nbsp;            throw new IndexOutOfBoundsException(&quot;Index: &quot; + var1);
+<b class="nc"><i>422</i>&nbsp;        }</b>
+<b class="nc"><i>423</i>&nbsp;    }</b>
+<b class="nc"><i>424</i>&nbsp;</b>
+<b class="nc"><i>425</i>&nbsp;    public ListIterator&lt;E&gt; listIterator() {</b>
+<i>426</i>&nbsp;        return new ArrayList.ListItr(0);
+<i>427</i>&nbsp;    }
+<b class="nc"><i>428</i>&nbsp;</b>
+<i>429</i>&nbsp;    public Iterator&lt;E&gt; iterator() {
+<i>430</i>&nbsp;        return new ArrayList.Itr();
+<i>431</i>&nbsp;    }
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    public List&lt;E&gt; subList(int var1, int var2) {
+<i>434</i>&nbsp;        subListRangeCheck(var1, var2, this.size);
+<i>435</i>&nbsp;        return new ArrayList.SubList(this, 0, var1, var2);
+<b class="nc"><i>436</i>&nbsp;    }</b>
+<b class="nc"><i>437</i>&nbsp;</b>
+<b class="nc"><i>438</i>&nbsp;    static void subListRangeCheck(int var0, int var1, int var2) {</b>
+<b class="nc"><i>439</i>&nbsp;        if(var0 &lt; 0) {</b>
+<i>440</i>&nbsp;            throw new IndexOutOfBoundsException(&quot;fromIndex = &quot; + var0);
+<b class="nc"><i>441</i>&nbsp;        } else if(var1 &gt; var2) {</b>
+<i>442</i>&nbsp;            throw new IndexOutOfBoundsException(&quot;toIndex = &quot; + var1);
+<i>443</i>&nbsp;        } else if(var0 &gt; var1) {
+<i>444</i>&nbsp;            throw new IllegalArgumentException(&quot;fromIndex(&quot; + var0 + &quot;) &gt; toIndex(&quot; + var1 + &quot;)&quot;);
+<i>445</i>&nbsp;        }
+<i>446</i>&nbsp;    }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    private class SubList extends AbstractList&lt;E&gt; implements RandomAccess {
+<b class="nc"><i>449</i>&nbsp;        private final AbstractList&lt;E&gt; parent;</b>
+<i>450</i>&nbsp;        private final int parentOffset;
+<i>451</i>&nbsp;        private final int offset;
+<b class="nc"><i>452</i>&nbsp;        int size;</b>
+<b class="nc"><i>453</i>&nbsp;</b>
+<i>454</i>&nbsp;        SubList(AbstractList var2, int var3, int var4, int var5) {
+<b class="nc"><i>455</i>&nbsp;            this.parent = var2;</b>
+<i>456</i>&nbsp;            this.parentOffset = var4;
+<i>457</i>&nbsp;            this.offset = var3 + var4;
+<i>458</i>&nbsp;            this.size = var5 - var4;
+<i>459</i>&nbsp;            this.modCount = ArrayList.this.modCount;
+<i>460</i>&nbsp;        }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;        public E set(int var1, E var2) {
+<i>463</i>&nbsp;            this.rangeCheck(var1);
+<i>464</i>&nbsp;            this.checkForComodification();
+<i>465</i>&nbsp;            Object var3 = ArrayList.this.elementData(this.offset + var1);
+<i>466</i>&nbsp;            ArrayList.this.elementData[this.offset + var1] = var2;
+<i>467</i>&nbsp;            return var3;
+<i>468</i>&nbsp;        }
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;        public E get(int var1) {
+<i>471</i>&nbsp;            this.rangeCheck(var1);
+<b class="nc"><i>472</i>&nbsp;            this.checkForComodification();</b>
+<b class="nc"><i>473</i>&nbsp;            return ArrayList.this.elementData(this.offset + var1);</b>
+<b class="nc"><i>474</i>&nbsp;        }</b>
+<b class="nc"><i>475</i>&nbsp;</b>
+<b class="nc"><i>476</i>&nbsp;        public int size() {</b>
+<b class="nc"><i>477</i>&nbsp;            this.checkForComodification();</b>
+<i>478</i>&nbsp;            return this.size;
+<i>479</i>&nbsp;        }
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;        public void add(int var1, E var2) {
+<i>482</i>&nbsp;            this.rangeCheckForAdd(var1);
+<i>483</i>&nbsp;            this.checkForComodification();
+<i>484</i>&nbsp;            this.parent.add(this.parentOffset + var1, var2);
+<i>485</i>&nbsp;            this.modCount = this.parent.modCount;
+<i>486</i>&nbsp;            ++this.size;
+<i>487</i>&nbsp;        }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;        public E remove(int var1) {
+<i>490</i>&nbsp;            this.rangeCheck(var1);
+<i>491</i>&nbsp;            this.checkForComodification();
+<i>492</i>&nbsp;            Object var2 = this.parent.remove(this.parentOffset + var1);
+<i>493</i>&nbsp;            this.modCount = this.parent.modCount;
+<i>494</i>&nbsp;            --this.size;
+<i>495</i>&nbsp;            return var2;
+<b class="nc"><i>496</i>&nbsp;        }</b>
+<b class="nc"><i>497</i>&nbsp;</b>
+<i>498</i>&nbsp;        protected void removeRange(int var1, int var2) {
+<i>499</i>&nbsp;            this.checkForComodification();
+<b class="nc"><i>500</i>&nbsp;            this.parent.removeRange(this.parentOffset + var1, this.parentOffset + var2);</b>
+<b class="nc"><i>501</i>&nbsp;            this.modCount = this.parent.modCount;</b>
+<b class="nc"><i>502</i>&nbsp;            this.size -= var2 - var1;</b>
+<i>503</i>&nbsp;        }
+<b class="nc"><i>504</i>&nbsp;</b>
+<b class="nc"><i>505</i>&nbsp;        public boolean addAll(Collection&lt;? extends E&gt; var1) {</b>
+<b class="nc"><i>506</i>&nbsp;            return this.addAll(this.size, var1);</b>
+<i>507</i>&nbsp;        }
+<i>508</i>&nbsp;
+<b class="nc"><i>509</i>&nbsp;        public boolean addAll(int var1, Collection&lt;? extends E&gt; var2) {</b>
+<b class="nc"><i>510</i>&nbsp;            this.rangeCheckForAdd(var1);</b>
+<b class="nc"><i>511</i>&nbsp;            int var3 = var2.size();</b>
+<i>512</i>&nbsp;            if(var3 == 0) {
+<i>513</i>&nbsp;                return false;
+<i>514</i>&nbsp;            } else {
+<i>515</i>&nbsp;                this.checkForComodification();
+<i>516</i>&nbsp;                this.parent.addAll(this.parentOffset + var1, var2);
+<i>517</i>&nbsp;                this.modCount = this.parent.modCount;
+<i>518</i>&nbsp;                this.size += var3;
+<i>519</i>&nbsp;                return true;
+<i>520</i>&nbsp;            }
+<i>521</i>&nbsp;        }
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;        public Iterator&lt;E&gt; iterator() {
+<i>524</i>&nbsp;            return this.listIterator();
+<i>525</i>&nbsp;        }
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;        public ListIterator&lt;E&gt; listIterator(final int var1) {
+<b class="nc"><i>528</i>&nbsp;            this.checkForComodification();</b>
+<b class="nc"><i>529</i>&nbsp;            this.rangeCheckForAdd(var1);</b>
+<b class="nc"><i>530</i>&nbsp;            final int var2 = this.offset;</b>
+<i>531</i>&nbsp;            return new ListIterator() {
+<i>532</i>&nbsp;                int cursor = var1;
+<i>533</i>&nbsp;                int lastRet = -1;
+<b class="nc"><i>534</i>&nbsp;                int expectedModCount;</b>
+<b class="nc"><i>535</i>&nbsp;</b>
+<b class="nc"><i>536</i>&nbsp;                {</b>
+<i>537</i>&nbsp;                    this.expectedModCount = ArrayList.this.modCount;
+<i>538</i>&nbsp;                }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;                public boolean hasNext() {
+<i>541</i>&nbsp;                    return this.cursor != SubList.this.size;
+<i>542</i>&nbsp;                }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;                public E next() {
+<i>545</i>&nbsp;                    this.checkForComodification();
+<b class="nc"><i>546</i>&nbsp;                    int var1x = this.cursor;</b>
+<b class="nc"><i>547</i>&nbsp;                    if(var1x &gt;= SubList.this.size) {</b>
+<i>548</i>&nbsp;                        throw new NoSuchElementException();
+<i>549</i>&nbsp;                    } else {
+<i>550</i>&nbsp;                        Object[] var2x = ArrayList.this.elementData;
+<i>551</i>&nbsp;                        if(var2 + var1x &gt;= var2x.length) {
+<i>552</i>&nbsp;                            throw new ConcurrentModificationException();
+<i>553</i>&nbsp;                        } else {
+<i>554</i>&nbsp;                            this.cursor = var1x + 1;
+<i>555</i>&nbsp;                            return var2x[var2 + (this.lastRet = var1x)];
+<i>556</i>&nbsp;                        }
+<i>557</i>&nbsp;                    }
+<i>558</i>&nbsp;                }
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;                public boolean hasPrevious() {
+<i>561</i>&nbsp;                    return this.cursor != 0;
+<b class="nc"><i>562</i>&nbsp;                }</b>
+<b class="nc"><i>563</i>&nbsp;</b>
+<i>564</i>&nbsp;                public E previous() {
+<i>565</i>&nbsp;                    this.checkForComodification();
+<b class="nc"><i>566</i>&nbsp;                    int var1x = this.cursor - 1;</b>
+<i>567</i>&nbsp;                    if(var1x &lt; 0) {
+<i>568</i>&nbsp;                        throw new NoSuchElementException();
+<b class="nc"><i>569</i>&nbsp;                    } else {</b>
+<b class="nc"><i>570</i>&nbsp;                        Object[] var2x = ArrayList.this.elementData;</b>
+<i>571</i>&nbsp;                        if(var2 + var1x &gt;= var2x.length) {
+<b class="nc"><i>572</i>&nbsp;                            throw new ConcurrentModificationException();</b>
+<b class="nc"><i>573</i>&nbsp;                        } else {</b>
+<i>574</i>&nbsp;                            this.cursor = var1x;
+<i>575</i>&nbsp;                            return var2x[var2 + (this.lastRet = var1x)];
+<i>576</i>&nbsp;                        }
+<i>577</i>&nbsp;                    }
+<i>578</i>&nbsp;                }
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;                public int nextIndex() {
+<i>581</i>&nbsp;                    return this.cursor;
+<i>582</i>&nbsp;                }
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;                public int previousIndex() {
+<b class="nc"><i>585</i>&nbsp;                    return this.cursor - 1;</b>
+<i>586</i>&nbsp;                }
+<i>587</i>&nbsp;
+<b class="nc"><i>588</i>&nbsp;                public void remove() {</b>
+<b class="nc"><i>589</i>&nbsp;                    if(this.lastRet &lt; 0) {</b>
+<i>590</i>&nbsp;                        throw new IllegalStateException();
+<i>591</i>&nbsp;                    } else {
+<b class="nc"><i>592</i>&nbsp;                        this.checkForComodification();</b>
+<b class="nc"><i>593</i>&nbsp;</b>
+<i>594</i>&nbsp;                        try {
+<i>595</i>&nbsp;                            SubList.this.remove(this.lastRet);
+<i>596</i>&nbsp;                            this.cursor = this.lastRet;
+<i>597</i>&nbsp;                            this.lastRet = -1;
+<i>598</i>&nbsp;                            this.expectedModCount = ArrayList.this.modCount;
+<i>599</i>&nbsp;                        } catch (IndexOutOfBoundsException var2x) {
+<i>600</i>&nbsp;                            throw new ConcurrentModificationException();
+<i>601</i>&nbsp;                        }
+<i>602</i>&nbsp;                    }
+<i>603</i>&nbsp;                }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;                public void set(E var1x) {
+<i>606</i>&nbsp;                    if(this.lastRet &lt; 0) {
+<i>607</i>&nbsp;                        throw new IllegalStateException();
+<i>608</i>&nbsp;                    } else {
+<i>609</i>&nbsp;                        this.checkForComodification();
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;                        try {
+<i>612</i>&nbsp;                            ArrayList.this.set(var2 + this.lastRet, var1x);
+<i>613</i>&nbsp;                        } catch (IndexOutOfBoundsException var3) {
+<i>614</i>&nbsp;                            throw new ConcurrentModificationException();
+<i>615</i>&nbsp;                        }
+<i>616</i>&nbsp;                    }
+<i>617</i>&nbsp;                }
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;                public void add(E var1x) {
+<i>620</i>&nbsp;                    this.checkForComodification();
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;                    try {
+<i>623</i>&nbsp;                        int var2x = this.cursor;
+<i>624</i>&nbsp;                        SubList.this.add(var2x, var1x);
+<i>625</i>&nbsp;                        this.cursor = var2x + 1;
+<i>626</i>&nbsp;                        this.lastRet = -1;
+<i>627</i>&nbsp;                        this.expectedModCount = ArrayList.this.modCount;
+<i>628</i>&nbsp;                    } catch (IndexOutOfBoundsException var3) {
+<i>629</i>&nbsp;                        throw new ConcurrentModificationException();
+<i>630</i>&nbsp;                    }
+<i>631</i>&nbsp;                }
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;                final void checkForComodification() {
+<i>634</i>&nbsp;                    if(this.expectedModCount != ArrayList.this.modCount) {
+<i>635</i>&nbsp;                        throw new ConcurrentModificationException();
+<i>636</i>&nbsp;                    }
+<i>637</i>&nbsp;                }
+<i>638</i>&nbsp;            };
+<i>639</i>&nbsp;        }
+<i>640</i>&nbsp;
+<i>641</i>&nbsp;        public List&lt;E&gt; subList(int var1, int var2) {
+<i>642</i>&nbsp;            ArrayList.subListRangeCheck(var1, var2, this.size);
+<i>643</i>&nbsp;            return ArrayList.this.new SubList(this, this.offset, var1, var2);
+<i>644</i>&nbsp;        }
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;        private void rangeCheck(int var1) {
+<i>647</i>&nbsp;            if(var1 &lt; 0 || var1 &gt;= this.size) {
+<i>648</i>&nbsp;                throw new IndexOutOfBoundsException(this.outOfBoundsMsg(var1));
+<i>649</i>&nbsp;            }
+<i>650</i>&nbsp;        }
+<i>651</i>&nbsp;
+<i>652</i>&nbsp;        private void rangeCheckForAdd(int var1) {
+<i>653</i>&nbsp;            if(var1 &lt; 0 || var1 &gt; this.size) {
+<i>654</i>&nbsp;                throw new IndexOutOfBoundsException(this.outOfBoundsMsg(var1));
+<i>655</i>&nbsp;            }
+<i>656</i>&nbsp;        }
+<i>657</i>&nbsp;
+<i>658</i>&nbsp;        private String outOfBoundsMsg(int var1) {
+<i>659</i>&nbsp;            return &quot;Index: &quot; + var1 + &quot;, Size: &quot; + this.size;
+<i>660</i>&nbsp;        }
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;        private void checkForComodification() {
+<i>663</i>&nbsp;            if(ArrayList.this.modCount != this.modCount) {
+<i>664</i>&nbsp;                throw new ConcurrentModificationException();
+<i>665</i>&nbsp;            }
+<i>666</i>&nbsp;        }
+<i>667</i>&nbsp;    }
+<i>668</i>&nbsp;
+<i>669</i>&nbsp;    private class ListItr extends ArrayList.Itr implements ListIterator&lt;E&gt; {
+<i>670</i>&nbsp;        ListItr(int var2) {
+<i>671</i>&nbsp;            super((ArrayList.SyntheticClass_1)null);
+<i>672</i>&nbsp;            this.cursor = var2;
+<i>673</i>&nbsp;        }
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;        public boolean hasPrevious() {
+<i>676</i>&nbsp;            return this.cursor != 0;
+<i>677</i>&nbsp;        }
+<i>678</i>&nbsp;
+<i>679</i>&nbsp;        public int nextIndex() {
+<i>680</i>&nbsp;            return this.cursor;
+<i>681</i>&nbsp;        }
+<i>682</i>&nbsp;
+<i>683</i>&nbsp;        public int previousIndex() {
+<i>684</i>&nbsp;            return this.cursor - 1;
+<i>685</i>&nbsp;        }
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;        public E previous() {
+<i>688</i>&nbsp;            this.checkForComodification();
+<i>689</i>&nbsp;            int var1 = this.cursor - 1;
+<i>690</i>&nbsp;            if(var1 &lt; 0) {
+<i>691</i>&nbsp;                throw new NoSuchElementException();
+<i>692</i>&nbsp;            } else {
+<i>693</i>&nbsp;                Object[] var2 = ArrayList.this.elementData;
+<i>694</i>&nbsp;                if(var1 &gt;= var2.length) {
+<i>695</i>&nbsp;                    throw new ConcurrentModificationException();
+<i>696</i>&nbsp;                } else {
+<i>697</i>&nbsp;                    this.cursor = var1;
+<i>698</i>&nbsp;                    return var2[this.lastRet = var1];
+<i>699</i>&nbsp;                }
+<i>700</i>&nbsp;            }
+<i>701</i>&nbsp;        }
+<i>702</i>&nbsp;
+<i>703</i>&nbsp;        public void set(E var1) {
+<i>704</i>&nbsp;            if(this.lastRet &lt; 0) {
+<i>705</i>&nbsp;                throw new IllegalStateException();
+<i>706</i>&nbsp;            } else {
+<i>707</i>&nbsp;                this.checkForComodification();
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;                try {
+<i>710</i>&nbsp;                    ArrayList.this.set(this.lastRet, var1);
+<i>711</i>&nbsp;                } catch (IndexOutOfBoundsException var3) {
+<i>712</i>&nbsp;                    throw new ConcurrentModificationException();
+<i>713</i>&nbsp;                }
+<i>714</i>&nbsp;            }
+<i>715</i>&nbsp;        }
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;        public void add(E var1) {
+<i>718</i>&nbsp;            this.checkForComodification();
+<i>719</i>&nbsp;
+<i>720</i>&nbsp;            try {
+<i>721</i>&nbsp;                int var2 = this.cursor;
+<i>722</i>&nbsp;                ArrayList.this.add(var2, var1);
+<i>723</i>&nbsp;                this.cursor = var2 + 1;
+<i>724</i>&nbsp;                this.lastRet = -1;
+<i>725</i>&nbsp;                this.expectedModCount = ArrayList.this.modCount;
+<i>726</i>&nbsp;            } catch (IndexOutOfBoundsException var3) {
+<i>727</i>&nbsp;                throw new ConcurrentModificationException();
+<i>728</i>&nbsp;            }
+<i>729</i>&nbsp;        }
+<i>730</i>&nbsp;    }
+<i>731</i>&nbsp;
+<i>732</i>&nbsp;    private class Itr implements Iterator&lt;E&gt; {
+<i>733</i>&nbsp;        int cursor;
+<i>734</i>&nbsp;        int lastRet;
+<i>735</i>&nbsp;        int expectedModCount;
+<i>736</i>&nbsp;
+<i>737</i>&nbsp;        private Itr() {
+<i>738</i>&nbsp;            this.lastRet = -1;
+<i>739</i>&nbsp;            this.expectedModCount = ArrayList.this.modCount;
+<i>740</i>&nbsp;        }
+<i>741</i>&nbsp;
+<i>742</i>&nbsp;        public boolean hasNext() {
+<i>743</i>&nbsp;            return this.cursor != ArrayList.this.size;
+<i>744</i>&nbsp;        }
+<i>745</i>&nbsp;
+<i>746</i>&nbsp;        public E next() {
+<i>747</i>&nbsp;            this.checkForComodification();
+<i>748</i>&nbsp;            int var1 = this.cursor;
+<i>749</i>&nbsp;            if(var1 &gt;= ArrayList.this.size) {
+<i>750</i>&nbsp;                throw new NoSuchElementException();
+<i>751</i>&nbsp;            } else {
+<i>752</i>&nbsp;                Object[] var2 = ArrayList.this.elementData;
+<i>753</i>&nbsp;                if(var1 &gt;= var2.length) {
+<i>754</i>&nbsp;                    throw new ConcurrentModificationException();
+<i>755</i>&nbsp;                } else {
+<i>756</i>&nbsp;                    this.cursor = var1 + 1;
+<i>757</i>&nbsp;                    return var2[this.lastRet = var1];
+<i>758</i>&nbsp;                }
+<i>759</i>&nbsp;            }
+<i>760</i>&nbsp;        }
+<i>761</i>&nbsp;
+<i>762</i>&nbsp;        public void remove() {
+<i>763</i>&nbsp;            if(this.lastRet &lt; 0) {
+<i>764</i>&nbsp;                throw new IllegalStateException();
+<i>765</i>&nbsp;            } else {
+<i>766</i>&nbsp;                this.checkForComodification();
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;                try {
+<i>769</i>&nbsp;                    ArrayList.this.remove(this.lastRet);
+<i>770</i>&nbsp;                    this.cursor = this.lastRet;
+<i>771</i>&nbsp;                    this.lastRet = -1;
+<i>772</i>&nbsp;                    this.expectedModCount = ArrayList.this.modCount;
+<i>773</i>&nbsp;                } catch (IndexOutOfBoundsException var2) {
+<i>774</i>&nbsp;                    throw new ConcurrentModificationException();
+<i>775</i>&nbsp;                }
+<i>776</i>&nbsp;            }
+<i>777</i>&nbsp;        }
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;        final void checkForComodification() {
+<i>780</i>&nbsp;            if(ArrayList.this.modCount != this.expectedModCount) {
+<i>781</i>&nbsp;                throw new ConcurrentModificationException();
+<i>782</i>&nbsp;            }
+<i>783</i>&nbsp;        }
+<i>784</i>&nbsp;    }
+<i>785</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

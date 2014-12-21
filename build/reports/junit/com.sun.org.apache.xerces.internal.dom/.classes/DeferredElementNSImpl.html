@@ -1,0 +1,154 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DeferredElementNSImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.dom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DeferredElementNSImpl (com.sun.org.apache.xerces.internal.dom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DeferredElementNSImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.dom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.AttrImpl;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.DeferredDocumentImpl;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.DeferredNode;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.NamespaceContext;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.xs.XSTypeDefinition;
+<i>14</i>&nbsp;import org.w3c.dom.NamedNodeMap;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;public class DeferredElementNSImpl extends ElementNSImpl implements DeferredNode {
+<i>17</i>&nbsp;    static final long serialVersionUID = -5001885145370927385L;
+<i>18</i>&nbsp;    protected transient int fNodeIndex;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    DeferredElementNSImpl(DeferredDocumentImpl ownerDoc, int nodeIndex) {
+<i>21</i>&nbsp;        super(ownerDoc, (String)null);
+<i>22</i>&nbsp;        this.fNodeIndex = nodeIndex;
+<i>23</i>&nbsp;        this.needsSyncChildren(true);
+<i>24</i>&nbsp;    }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public final int getNodeIndex() {
+<i>27</i>&nbsp;        return this.fNodeIndex;
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    protected final void synchronizeData() {
+<i>31</i>&nbsp;        this.needsSyncData(false);
+<i>32</i>&nbsp;        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
+<i>33</i>&nbsp;        boolean orig = ownerDocument.mutationEvents;
+<i>34</i>&nbsp;        ownerDocument.mutationEvents = false;
+<i>35</i>&nbsp;        this.name = ownerDocument.getNodeName(this.fNodeIndex);
+<i>36</i>&nbsp;        int index = this.name.indexOf(58);
+<i>37</i>&nbsp;        if(index &lt; 0) {
+<i>38</i>&nbsp;            this.localName = this.name;
+<i>39</i>&nbsp;        } else {
+<i>40</i>&nbsp;            this.localName = this.name.substring(index + 1);
+<i>41</i>&nbsp;        }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;        this.namespaceURI = ownerDocument.getNodeURI(this.fNodeIndex);
+<i>44</i>&nbsp;        this.type = (XSTypeDefinition)ownerDocument.getTypeInfo(this.fNodeIndex);
+<i>45</i>&nbsp;        this.setupDefaultAttributes();
+<i>46</i>&nbsp;        int attrIndex = ownerDocument.getNodeExtra(this.fNodeIndex);
+<i>47</i>&nbsp;        if(attrIndex != -1) {
+<i>48</i>&nbsp;            NamedNodeMap attrs = this.getAttributes();
+<i>49</i>&nbsp;            boolean seenSchemaDefault = false;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;            do {
+<i>52</i>&nbsp;                AttrImpl attr = (AttrImpl)ownerDocument.getNodeObject(attrIndex);
+<i>53</i>&nbsp;                if(!attr.getSpecified() &amp;&amp; (seenSchemaDefault || attr.getNamespaceURI() != null &amp;&amp; attr.getNamespaceURI() != NamespaceContext.XMLNS_URI &amp;&amp; attr.getName().indexOf(58) &lt; 0)) {
+<i>54</i>&nbsp;                    seenSchemaDefault = true;
+<i>55</i>&nbsp;                    attrs.setNamedItemNS(attr);
+<i>56</i>&nbsp;                } else {
+<i>57</i>&nbsp;                    attrs.setNamedItem(attr);
+<i>58</i>&nbsp;                }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;                attrIndex = ownerDocument.getPrevSibling(attrIndex);
+<i>61</i>&nbsp;            } while(attrIndex != -1);
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;        ownerDocument.mutationEvents = orig;
+<i>65</i>&nbsp;    }
+<b class="nc"><i>66</i>&nbsp;</b>
+<i>67</i>&nbsp;    protected final void synchronizeChildren() {
+<b class="nc"><i>68</i>&nbsp;        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument();</b>
+<b class="nc"><i>69</i>&nbsp;        ownerDocument.synchronizeChildren(this, this.fNodeIndex);</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

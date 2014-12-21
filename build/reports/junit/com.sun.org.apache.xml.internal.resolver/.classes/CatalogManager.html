@@ -1,0 +1,610 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CatalogManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xml.internal.resolver</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CatalogManager (com.sun.org.apache.xml.internal.resolver)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CatalogManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 226)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xml.internal.resolver;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.utils.SecuritySupport;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.Catalog;
+<i>10</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.helpers.BootstrapResolver;
+<i>11</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.helpers.Debug;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.io.InputStream;
+<i>14</i>&nbsp;import java.net.MalformedURLException;
+<i>15</i>&nbsp;import java.net.URL;
+<i>16</i>&nbsp;import java.util.MissingResourceException;
+<i>17</i>&nbsp;import java.util.PropertyResourceBundle;
+<i>18</i>&nbsp;import java.util.ResourceBundle;
+<i>19</i>&nbsp;import java.util.StringTokenizer;
+<i>20</i>&nbsp;import java.util.Vector;
+<i>21</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public class CatalogManager {
+<i>24</i>&nbsp;    private static String pFiles = &quot;xml.catalog.files&quot;;
+<i>25</i>&nbsp;    private static String pVerbosity = &quot;xml.catalog.verbosity&quot;;
+<i>26</i>&nbsp;    private static String pPrefer = &quot;xml.catalog.prefer&quot;;
+<i>27</i>&nbsp;    private static String pStatic = &quot;xml.catalog.staticCatalog&quot;;
+<i>28</i>&nbsp;    private static String pAllowPI = &quot;xml.catalog.allowPI&quot;;
+<i>29</i>&nbsp;    private static String pClassname = &quot;xml.catalog.className&quot;;
+<i>30</i>&nbsp;    private static String pIgnoreMissing = &quot;xml.catalog.ignoreMissing&quot;;
+<i>31</i>&nbsp;    private static CatalogManager staticManager = new CatalogManager();
+<i>32</i>&nbsp;    private BootstrapResolver bResolver = new BootstrapResolver();
+<i>33</i>&nbsp;    private boolean ignoreMissingProperties;
+<i>34</i>&nbsp;    private ResourceBundle resources;
+<i>35</i>&nbsp;    private String propertyFile;
+<i>36</i>&nbsp;    private URL propertyFileURI;
+<i>37</i>&nbsp;    private String defaultCatalogFiles;
+<i>38</i>&nbsp;    private String catalogFiles;
+<i>39</i>&nbsp;    private boolean fromPropertiesFile;
+<i>40</i>&nbsp;    private int defaultVerbosity;
+<i>41</i>&nbsp;    private Integer verbosity;
+<i>42</i>&nbsp;    private boolean defaultPreferPublic;
+<i>43</i>&nbsp;    private Boolean preferPublic;
+<i>44</i>&nbsp;    private boolean defaultUseStaticCatalog;
+<i>45</i>&nbsp;    private Boolean useStaticCatalog;
+<i>46</i>&nbsp;    private static Catalog staticCatalog = null;
+<i>47</i>&nbsp;    private boolean defaultOasisXMLCatalogPI;
+<i>48</i>&nbsp;    private Boolean oasisXMLCatalogPI;
+<i>49</i>&nbsp;    private boolean defaultRelativeCatalogs;
+<i>50</i>&nbsp;    private Boolean relativeCatalogs;
+<i>51</i>&nbsp;    private String catalogClassName;
+<i>52</i>&nbsp;    private boolean useServicesMechanism;
+<i>53</i>&nbsp;    public Debug debug;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public CatalogManager() {
+<i>56</i>&nbsp;        this.ignoreMissingProperties = SecuritySupport.getSystemProperty(pIgnoreMissing) != null || SecuritySupport.getSystemProperty(pFiles) != null;
+<i>57</i>&nbsp;        this.propertyFile = &quot;CatalogManager.properties&quot;;
+<i>58</i>&nbsp;        this.propertyFileURI = null;
+<i>59</i>&nbsp;        this.defaultCatalogFiles = &quot;./xcatalog&quot;;
+<i>60</i>&nbsp;        this.catalogFiles = null;
+<i>61</i>&nbsp;        this.fromPropertiesFile = false;
+<i>62</i>&nbsp;        this.defaultVerbosity = 1;
+<i>63</i>&nbsp;        this.verbosity = null;
+<i>64</i>&nbsp;        this.defaultPreferPublic = true;
+<i>65</i>&nbsp;        this.preferPublic = null;
+<i>66</i>&nbsp;        this.defaultUseStaticCatalog = true;
+<i>67</i>&nbsp;        this.useStaticCatalog = null;
+<i>68</i>&nbsp;        this.defaultOasisXMLCatalogPI = true;
+<i>69</i>&nbsp;        this.oasisXMLCatalogPI = null;
+<i>70</i>&nbsp;        this.defaultRelativeCatalogs = true;
+<i>71</i>&nbsp;        this.relativeCatalogs = null;
+<i>72</i>&nbsp;        this.catalogClassName = null;
+<i>73</i>&nbsp;        this.debug = null;
+<i>74</i>&nbsp;        this.init();
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public CatalogManager(String propertyFile) {
+<i>78</i>&nbsp;        this.ignoreMissingProperties = SecuritySupport.getSystemProperty(pIgnoreMissing) != null || SecuritySupport.getSystemProperty(pFiles) != null;
+<i>79</i>&nbsp;        this.propertyFile = &quot;CatalogManager.properties&quot;;
+<i>80</i>&nbsp;        this.propertyFileURI = null;
+<i>81</i>&nbsp;        this.defaultCatalogFiles = &quot;./xcatalog&quot;;
+<i>82</i>&nbsp;        this.catalogFiles = null;
+<i>83</i>&nbsp;        this.fromPropertiesFile = false;
+<i>84</i>&nbsp;        this.defaultVerbosity = 1;
+<i>85</i>&nbsp;        this.verbosity = null;
+<i>86</i>&nbsp;        this.defaultPreferPublic = true;
+<i>87</i>&nbsp;        this.preferPublic = null;
+<i>88</i>&nbsp;        this.defaultUseStaticCatalog = true;
+<i>89</i>&nbsp;        this.useStaticCatalog = null;
+<i>90</i>&nbsp;        this.defaultOasisXMLCatalogPI = true;
+<i>91</i>&nbsp;        this.oasisXMLCatalogPI = null;
+<i>92</i>&nbsp;        this.defaultRelativeCatalogs = true;
+<i>93</i>&nbsp;        this.relativeCatalogs = null;
+<i>94</i>&nbsp;        this.catalogClassName = null;
+<i>95</i>&nbsp;        this.debug = null;
+<i>96</i>&nbsp;        this.propertyFile = propertyFile;
+<i>97</i>&nbsp;        this.init();
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    private void init() {
+<i>101</i>&nbsp;        this.debug = new Debug();
+<i>102</i>&nbsp;        if(System.getSecurityManager() == null) {
+<i>103</i>&nbsp;            this.useServicesMechanism = true;
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public void setBootstrapResolver(BootstrapResolver resolver) {
+<i>109</i>&nbsp;        this.bResolver = resolver;
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public BootstrapResolver getBootstrapResolver() {
+<i>113</i>&nbsp;        return this.bResolver;
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    private synchronized void readProperties() {
+<i>117</i>&nbsp;        try {
+<i>118</i>&nbsp;            this.propertyFileURI = CatalogManager.class.getResource(&quot;/&quot; + this.propertyFile);
+<i>119</i>&nbsp;            InputStream e = CatalogManager.class.getResourceAsStream(&quot;/&quot; + this.propertyFile);
+<i>120</i>&nbsp;            if(e == null) {
+<i>121</i>&nbsp;                if(!this.ignoreMissingProperties) {
+<i>122</i>&nbsp;                    System.err.println(&quot;Cannot find &quot; + this.propertyFile);
+<i>123</i>&nbsp;                    this.ignoreMissingProperties = true;
+<i>124</i>&nbsp;                }
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;                return;</b>
+<b class="nc"><i>127</i>&nbsp;            }</b>
+<b class="nc"><i>128</i>&nbsp;</b>
+<b class="nc"><i>129</i>&nbsp;            this.resources = new PropertyResourceBundle(e);</b>
+<b class="nc"><i>130</i>&nbsp;        } catch (MissingResourceException var4) {</b>
+<b class="nc"><i>131</i>&nbsp;            if(!this.ignoreMissingProperties) {</b>
+<b class="nc"><i>132</i>&nbsp;                System.err.println(&quot;Cannot read &quot; + this.propertyFile);</b>
+<i>133</i>&nbsp;            }
+<i>134</i>&nbsp;        } catch (IOException var5) {
+<b class="nc"><i>135</i>&nbsp;            if(!this.ignoreMissingProperties) {</b>
+<i>136</i>&nbsp;                System.err.println(&quot;Failure trying to read &quot; + this.propertyFile);
+<i>137</i>&nbsp;            }
+<b class="nc"><i>138</i>&nbsp;        }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;        if(this.verbosity == null) {
+<b class="nc"><i>141</i>&nbsp;            try {</b>
+<i>142</i>&nbsp;                String e1 = this.resources.getString(&quot;verbosity&quot;);
+<i>143</i>&nbsp;                int verb = Integer.parseInt(e1.trim());
+<i>144</i>&nbsp;                this.debug.setDebug(verb);
+<i>145</i>&nbsp;                this.verbosity = new Integer(verb);
+<i>146</i>&nbsp;            } catch (Exception var3) {
+<i>147</i>&nbsp;                ;
+<i>148</i>&nbsp;            }
+<b class="nc"><i>149</i>&nbsp;        }</b>
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    }
+<b class="nc"><i>152</i>&nbsp;</b>
+<i>153</i>&nbsp;    public static CatalogManager getStaticManager() {
+<i>154</i>&nbsp;        return staticManager;
+<b class="nc"><i>155</i>&nbsp;    }</b>
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    public boolean getIgnoreMissingProperties() {
+<b class="nc"><i>158</i>&nbsp;        return this.ignoreMissingProperties;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;    public void setIgnoreMissingProperties(boolean ignore) {</b>
+<i>162</i>&nbsp;        this.ignoreMissingProperties = ignore;
+<i>163</i>&nbsp;    }
+<b class="nc"><i>164</i>&nbsp;</b>
+<i>165</i>&nbsp;    /** @deprecated */
+<i>166</i>&nbsp;    public void ignoreMissingProperties(boolean ignore) {
+<b class="nc"><i>167</i>&nbsp;        this.setIgnoreMissingProperties(ignore);</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<b class="nc"><i>170</i>&nbsp;    private int queryVerbosity() {</b>
+<i>171</i>&nbsp;        String defaultVerbStr = Integer.toString(this.defaultVerbosity);
+<i>172</i>&nbsp;        String verbStr = SecuritySupport.getSystemProperty(pVerbosity);
+<b class="nc"><i>173</i>&nbsp;        if(verbStr == null) {</b>
+<i>174</i>&nbsp;            if(this.resources == null) {
+<i>175</i>&nbsp;                this.readProperties();
+<b class="nc"><i>176</i>&nbsp;            }</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;            if(this.resources != null) {
+<b class="nc"><i>179</i>&nbsp;                try {</b>
+<i>180</i>&nbsp;                    verbStr = this.resources.getString(&quot;verbosity&quot;);
+<i>181</i>&nbsp;                } catch (MissingResourceException var6) {
+<b class="nc"><i>182</i>&nbsp;                    verbStr = defaultVerbStr;</b>
+<i>183</i>&nbsp;                }
+<i>184</i>&nbsp;            } else {
+<b class="nc"><i>185</i>&nbsp;                verbStr = defaultVerbStr;</b>
+<i>186</i>&nbsp;            }
+<i>187</i>&nbsp;        }
+<b class="nc"><i>188</i>&nbsp;</b>
+<i>189</i>&nbsp;        int verb = this.defaultVerbosity;
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;        try {</b>
+<i>192</i>&nbsp;            verb = Integer.parseInt(verbStr.trim());
+<i>193</i>&nbsp;        } catch (Exception var5) {
+<b class="nc"><i>194</i>&nbsp;            System.err.println(&quot;Cannot parse verbosity: \&quot;&quot; + verbStr + &quot;\&quot;&quot;);</b>
+<i>195</i>&nbsp;        }
+<i>196</i>&nbsp;
+<b class="nc"><i>197</i>&nbsp;        if(this.verbosity == null) {</b>
+<i>198</i>&nbsp;            this.debug.setDebug(verb);
+<i>199</i>&nbsp;            this.verbosity = new Integer(verb);
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;        return verb;
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    public int getVerbosity() {
+<i>206</i>&nbsp;        if(this.verbosity == null) {
+<i>207</i>&nbsp;            this.verbosity = new Integer(this.queryVerbosity());
+<i>208</i>&nbsp;        }
+<i>209</i>&nbsp;
+<b class="nc"><i>210</i>&nbsp;        return this.verbosity.intValue();</b>
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<b class="nc"><i>213</i>&nbsp;    public void setVerbosity(int verbosity) {</b>
+<b class="nc"><i>214</i>&nbsp;        this.verbosity = new Integer(verbosity);</b>
+<i>215</i>&nbsp;        this.debug.setDebug(verbosity);
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<b class="nc"><i>218</i>&nbsp;    /** @deprecated */</b>
+<b class="nc"><i>219</i>&nbsp;    public int verbosity() {</b>
+<b class="nc"><i>220</i>&nbsp;        return this.getVerbosity();</b>
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    private boolean queryRelativeCatalogs() {
+<b class="nc"><i>224</i>&nbsp;        if(this.resources == null) {</b>
+<i>225</i>&nbsp;            this.readProperties();
+<i>226</i>&nbsp;        }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;        if(this.resources == null) {
+<i>229</i>&nbsp;            return this.defaultRelativeCatalogs;
+<b class="nc"><i>230</i>&nbsp;        } else {</b>
+<b class="nc"><i>231</i>&nbsp;            try {</b>
+<i>232</i>&nbsp;                String e = this.resources.getString(&quot;relative-catalogs&quot;);
+<i>233</i>&nbsp;                return e.equalsIgnoreCase(&quot;true&quot;) || e.equalsIgnoreCase(&quot;yes&quot;) || e.equalsIgnoreCase(&quot;1&quot;);
+<i>234</i>&nbsp;            } catch (MissingResourceException var2) {
+<i>235</i>&nbsp;                return this.defaultRelativeCatalogs;
+<b class="nc"><i>236</i>&nbsp;            }</b>
+<i>237</i>&nbsp;        }
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    public boolean getRelativeCatalogs() {
+<b class="nc"><i>241</i>&nbsp;        if(this.relativeCatalogs == null) {</b>
+<i>242</i>&nbsp;            this.relativeCatalogs = new Boolean(this.queryRelativeCatalogs());
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;        return this.relativeCatalogs.booleanValue();
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    public void setRelativeCatalogs(boolean relative) {
+<i>249</i>&nbsp;        this.relativeCatalogs = new Boolean(relative);
+<b class="nc"><i>250</i>&nbsp;    }</b>
+<b class="nc"><i>251</i>&nbsp;</b>
+<i>252</i>&nbsp;    /** @deprecated */
+<b class="nc"><i>253</i>&nbsp;    public boolean relativeCatalogs() {</b>
+<b class="nc"><i>254</i>&nbsp;        return this.getRelativeCatalogs();</b>
+<b class="nc"><i>255</i>&nbsp;    }</b>
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;    private String queryCatalogFiles() {</b>
+<i>258</i>&nbsp;        String catalogList = SecuritySupport.getSystemProperty(pFiles);
+<i>259</i>&nbsp;        this.fromPropertiesFile = false;
+<i>260</i>&nbsp;        if(catalogList == null) {
+<b class="nc"><i>261</i>&nbsp;            if(this.resources == null) {</b>
+<b class="nc"><i>262</i>&nbsp;                this.readProperties();</b>
+<b class="nc"><i>263</i>&nbsp;            }</b>
+<b class="nc"><i>264</i>&nbsp;</b>
+<i>265</i>&nbsp;            if(this.resources != null) {
+<b class="nc"><i>266</i>&nbsp;                try {</b>
+<b class="nc"><i>267</i>&nbsp;                    catalogList = this.resources.getString(&quot;catalogs&quot;);</b>
+<b class="nc"><i>268</i>&nbsp;                    this.fromPropertiesFile = true;</b>
+<i>269</i>&nbsp;                } catch (MissingResourceException var3) {
+<b class="nc"><i>270</i>&nbsp;                    System.err.println(this.propertyFile + &quot;: catalogs not found.&quot;);</b>
+<i>271</i>&nbsp;                    catalogList = null;
+<i>272</i>&nbsp;                }
+<i>273</i>&nbsp;            }
+<i>274</i>&nbsp;        }
+<b class="nc"><i>275</i>&nbsp;</b>
+<i>276</i>&nbsp;        if(catalogList == null) {
+<b class="nc"><i>277</i>&nbsp;            catalogList = this.defaultCatalogFiles;</b>
+<b class="nc"><i>278</i>&nbsp;        }</b>
+<b class="nc"><i>279</i>&nbsp;</b>
+<b class="nc"><i>280</i>&nbsp;        return catalogList;</b>
+<b class="nc"><i>281</i>&nbsp;    }</b>
+<i>282</i>&nbsp;
+<b class="nc"><i>283</i>&nbsp;    public Vector getCatalogFiles() {</b>
+<i>284</i>&nbsp;        if(this.catalogFiles == null) {
+<i>285</i>&nbsp;            this.catalogFiles = this.queryCatalogFiles();
+<i>286</i>&nbsp;        }
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;        StringTokenizer files = new StringTokenizer(this.catalogFiles, &quot;;&quot;);
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;        Vector catalogs;
+<b class="nc"><i>291</i>&nbsp;        String catalogFile;</b>
+<i>292</i>&nbsp;        for(catalogs = new Vector(); files.hasMoreTokens(); catalogs.add(catalogFile)) {
+<i>293</i>&nbsp;            catalogFile = files.nextToken();
+<i>294</i>&nbsp;            URL absURI = null;
+<i>295</i>&nbsp;            if(this.fromPropertiesFile &amp;&amp; !this.relativeCatalogs()) {
+<i>296</i>&nbsp;                try {
+<i>297</i>&nbsp;                    absURI = new URL(this.propertyFileURI, catalogFile);
+<i>298</i>&nbsp;                    catalogFile = absURI.toString();
+<i>299</i>&nbsp;                } catch (MalformedURLException var6) {
+<i>300</i>&nbsp;                    absURI = null;
+<i>301</i>&nbsp;                }
+<b class="nc"><i>302</i>&nbsp;            }</b>
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;        return catalogs;
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    public void setCatalogFiles(String fileList) {
+<i>309</i>&nbsp;        this.catalogFiles = fileList;
+<i>310</i>&nbsp;        this.fromPropertiesFile = false;
+<i>311</i>&nbsp;    }
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;    /** @deprecated */</b>
+<i>314</i>&nbsp;    public Vector catalogFiles() {
+<i>315</i>&nbsp;        return this.getCatalogFiles();
+<i>316</i>&nbsp;    }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    private boolean queryPreferPublic() {
+<i>319</i>&nbsp;        String prefer = SecuritySupport.getSystemProperty(pPrefer);
+<i>320</i>&nbsp;        if(prefer == null) {
+<i>321</i>&nbsp;            if(this.resources == null) {
+<i>322</i>&nbsp;                this.readProperties();
+<i>323</i>&nbsp;            }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;            if(this.resources == null) {
+<b class="nc"><i>326</i>&nbsp;                return this.defaultPreferPublic;</b>
+<i>327</i>&nbsp;            }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;            try {
+<i>330</i>&nbsp;                prefer = this.resources.getString(&quot;prefer&quot;);
+<i>331</i>&nbsp;            } catch (MissingResourceException var3) {
+<i>332</i>&nbsp;                return this.defaultPreferPublic;
+<i>333</i>&nbsp;            }
+<i>334</i>&nbsp;        }
+<i>335</i>&nbsp;
+<b class="nc"><i>336</i>&nbsp;        return prefer == null?this.defaultPreferPublic:prefer.equalsIgnoreCase(&quot;public&quot;);</b>
+<i>337</i>&nbsp;    }
+<b class="nc"><i>338</i>&nbsp;</b>
+<i>339</i>&nbsp;    public boolean getPreferPublic() {
+<b class="nc"><i>340</i>&nbsp;        if(this.preferPublic == null) {</b>
+<b class="nc"><i>341</i>&nbsp;            this.preferPublic = new Boolean(this.queryPreferPublic());</b>
+<b class="nc"><i>342</i>&nbsp;        }</b>
+<i>343</i>&nbsp;
+<b class="nc"><i>344</i>&nbsp;        return this.preferPublic.booleanValue();</b>
+<b class="nc"><i>345</i>&nbsp;    }</b>
+<b class="nc"><i>346</i>&nbsp;</b>
+<b class="nc"><i>347</i>&nbsp;    public void setPreferPublic(boolean preferPublic) {</b>
+<i>348</i>&nbsp;        this.preferPublic = new Boolean(preferPublic);
+<b class="nc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    /** @deprecated */
+<i>352</i>&nbsp;    public boolean preferPublic() {
+<b class="nc"><i>353</i>&nbsp;        return this.getPreferPublic();</b>
+<i>354</i>&nbsp;    }
+<i>355</i>&nbsp;
+<b class="nc"><i>356</i>&nbsp;    private boolean queryUseStaticCatalog() {</b>
+<b class="nc"><i>357</i>&nbsp;        String staticCatalog = SecuritySupport.getSystemProperty(pStatic);</b>
+<b class="nc"><i>358</i>&nbsp;        if(staticCatalog == null) {</b>
+<b class="nc"><i>359</i>&nbsp;            if(this.resources == null) {</b>
+<i>360</i>&nbsp;                this.readProperties();
+<i>361</i>&nbsp;            }
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;            if(this.resources == null) {
+<b class="nc"><i>364</i>&nbsp;                return this.defaultUseStaticCatalog;</b>
+<b class="nc"><i>365</i>&nbsp;            }</b>
+<b class="nc"><i>366</i>&nbsp;</b>
+<i>367</i>&nbsp;            try {
+<i>368</i>&nbsp;                staticCatalog = this.resources.getString(&quot;static-catalog&quot;);
+<b class="nc"><i>369</i>&nbsp;            } catch (MissingResourceException var3) {</b>
+<i>370</i>&nbsp;                return this.defaultUseStaticCatalog;
+<i>371</i>&nbsp;            }
+<i>372</i>&nbsp;        }
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;        return staticCatalog == null?this.defaultUseStaticCatalog:staticCatalog.equalsIgnoreCase(&quot;true&quot;) || staticCatalog.equalsIgnoreCase(&quot;yes&quot;) || staticCatalog.equalsIgnoreCase(&quot;1&quot;);
+<i>375</i>&nbsp;    }
+<b class="nc"><i>376</i>&nbsp;</b>
+<b class="nc"><i>377</i>&nbsp;    public boolean getUseStaticCatalog() {</b>
+<i>378</i>&nbsp;        if(this.useStaticCatalog == null) {
+<i>379</i>&nbsp;            this.useStaticCatalog = new Boolean(this.queryUseStaticCatalog());
+<b class="nc"><i>380</i>&nbsp;        }</b>
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;        return this.useStaticCatalog.booleanValue();
+<i>383</i>&nbsp;    }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;    public void setUseStaticCatalog(boolean useStatic) {
+<i>386</i>&nbsp;        this.useStaticCatalog = new Boolean(useStatic);
+<b class="nc"><i>387</i>&nbsp;    }</b>
+<b class="nc"><i>388</i>&nbsp;</b>
+<i>389</i>&nbsp;    /** @deprecated */
+<i>390</i>&nbsp;    public boolean staticCatalog() {
+<i>391</i>&nbsp;        return this.getUseStaticCatalog();
+<i>392</i>&nbsp;    }
+<i>393</i>&nbsp;
+<i>394</i>&nbsp;    public Catalog getPrivateCatalog() {
+<i>395</i>&nbsp;        Catalog catalog = staticCatalog;
+<i>396</i>&nbsp;        if(this.useStaticCatalog == null) {
+<b class="nc"><i>397</i>&nbsp;            this.useStaticCatalog = new Boolean(this.getUseStaticCatalog());</b>
+<i>398</i>&nbsp;        }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;        if(catalog == null || !this.useStaticCatalog.booleanValue()) {
+<i>401</i>&nbsp;            try {
+<i>402</i>&nbsp;                String ex = this.getCatalogClassName();
+<i>403</i>&nbsp;                if(ex == null) {
+<i>404</i>&nbsp;                    catalog = new Catalog();
+<i>405</i>&nbsp;                } else {
+<i>406</i>&nbsp;                    try {
+<b class="nc"><i>407</i>&nbsp;                        catalog = (Catalog)ReflectUtil.forName(ex).newInstance();</b>
+<i>408</i>&nbsp;                    } catch (ClassNotFoundException var4) {
+<b class="nc"><i>409</i>&nbsp;                        this.debug.message(1, &quot;Catalog class named \&#39;&quot; + ex + &quot;\&#39; could not be found. Using default.&quot;);</b>
+<i>410</i>&nbsp;                        catalog = new Catalog();
+<i>411</i>&nbsp;                    } catch (ClassCastException var5) {
+<b class="nc"><i>412</i>&nbsp;                        this.debug.message(1, &quot;Class named \&#39;&quot; + ex + &quot;\&#39; is not a Catalog. Using default.&quot;);</b>
+<b class="nc"><i>413</i>&nbsp;                        catalog = new Catalog();</b>
+<i>414</i>&nbsp;                    }
+<i>415</i>&nbsp;                }
+<b class="nc"><i>416</i>&nbsp;</b>
+<b class="nc"><i>417</i>&nbsp;                catalog.setCatalogManager(this);</b>
+<i>418</i>&nbsp;                catalog.setupReaders();
+<i>419</i>&nbsp;                catalog.loadSystemCatalogs();
+<i>420</i>&nbsp;            } catch (Exception var6) {
+<i>421</i>&nbsp;                var6.printStackTrace();
+<i>422</i>&nbsp;            }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;            if(this.useStaticCatalog.booleanValue()) {
+<i>425</i>&nbsp;                staticCatalog = catalog;
+<i>426</i>&nbsp;            }
+<i>427</i>&nbsp;        }
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;        return catalog;
+<i>430</i>&nbsp;    }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    public Catalog getCatalog() {
+<i>433</i>&nbsp;        Catalog catalog = staticCatalog;
+<i>434</i>&nbsp;        if(this.useStaticCatalog == null) {
+<i>435</i>&nbsp;            this.useStaticCatalog = new Boolean(this.getUseStaticCatalog());
+<i>436</i>&nbsp;        }
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;        if(catalog == null || !this.useStaticCatalog.booleanValue()) {
+<i>439</i>&nbsp;            catalog = this.getPrivateCatalog();
+<i>440</i>&nbsp;            if(this.useStaticCatalog.booleanValue()) {
+<i>441</i>&nbsp;                staticCatalog = catalog;
+<b class="nc"><i>442</i>&nbsp;            }</b>
+<b class="nc"><i>443</i>&nbsp;        }</b>
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;        return catalog;
+<b class="nc"><i>446</i>&nbsp;    }</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    public boolean queryAllowOasisXMLCatalogPI() {
+<i>449</i>&nbsp;        String allow = SecuritySupport.getSystemProperty(pAllowPI);
+<i>450</i>&nbsp;        if(allow == null) {
+<i>451</i>&nbsp;            if(this.resources == null) {
+<i>452</i>&nbsp;                this.readProperties();
+<i>453</i>&nbsp;            }
+<i>454</i>&nbsp;
+<b class="nc"><i>455</i>&nbsp;            if(this.resources == null) {</b>
+<i>456</i>&nbsp;                return this.defaultOasisXMLCatalogPI;
+<i>457</i>&nbsp;            }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;            try {
+<i>460</i>&nbsp;                allow = this.resources.getString(&quot;allow-oasis-xml-catalog-pi&quot;);
+<i>461</i>&nbsp;            } catch (MissingResourceException var3) {
+<i>462</i>&nbsp;                return this.defaultOasisXMLCatalogPI;
+<i>463</i>&nbsp;            }
+<b class="nc"><i>464</i>&nbsp;        }</b>
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;        return allow == null?this.defaultOasisXMLCatalogPI:allow.equalsIgnoreCase(&quot;true&quot;) || allow.equalsIgnoreCase(&quot;yes&quot;) || allow.equalsIgnoreCase(&quot;1&quot;);
+<i>467</i>&nbsp;    }
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;    public boolean getAllowOasisXMLCatalogPI() {
+<i>470</i>&nbsp;        if(this.oasisXMLCatalogPI == null) {
+<i>471</i>&nbsp;            this.oasisXMLCatalogPI = new Boolean(this.queryAllowOasisXMLCatalogPI());
+<i>472</i>&nbsp;        }
+<b class="nc"><i>473</i>&nbsp;</b>
+<b class="nc"><i>474</i>&nbsp;        return this.oasisXMLCatalogPI.booleanValue();</b>
+<i>475</i>&nbsp;    }
+<b class="nc"><i>476</i>&nbsp;</b>
+<b class="nc"><i>477</i>&nbsp;    public boolean useServicesMechanism() {</b>
+<b class="nc"><i>478</i>&nbsp;        return this.useServicesMechanism;</b>
+<i>479</i>&nbsp;    }
+<b class="nc"><i>480</i>&nbsp;</b>
+<b class="nc"><i>481</i>&nbsp;    public void setAllowOasisXMLCatalogPI(boolean allowPI) {</b>
+<b class="nc"><i>482</i>&nbsp;        this.oasisXMLCatalogPI = new Boolean(allowPI);</b>
+<b class="nc"><i>483</i>&nbsp;    }</b>
+<b class="nc"><i>484</i>&nbsp;</b>
+<b class="nc"><i>485</i>&nbsp;    /** @deprecated */</b>
+<i>486</i>&nbsp;    public boolean allowOasisXMLCatalogPI() {
+<i>487</i>&nbsp;        return this.getAllowOasisXMLCatalogPI();
+<i>488</i>&nbsp;    }
+<b class="nc"><i>489</i>&nbsp;</b>
+<b class="nc"><i>490</i>&nbsp;    public String queryCatalogClassName() {</b>
+<i>491</i>&nbsp;        String className = SecuritySupport.getSystemProperty(pClassname);
+<i>492</i>&nbsp;        if(className == null) {
+<b class="nc"><i>493</i>&nbsp;            if(this.resources == null) {</b>
+<i>494</i>&nbsp;                this.readProperties();
+<i>495</i>&nbsp;            }
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;            if(this.resources == null) {
+<i>498</i>&nbsp;                return null;
+<i>499</i>&nbsp;            } else {
+<i>500</i>&nbsp;                try {
+<i>501</i>&nbsp;                    return this.resources.getString(&quot;catalog-class-name&quot;);
+<i>502</i>&nbsp;                } catch (MissingResourceException var3) {
+<b class="nc"><i>503</i>&nbsp;                    return null;</b>
+<b class="nc"><i>504</i>&nbsp;                }</b>
+<i>505</i>&nbsp;            }
+<i>506</i>&nbsp;        } else {
+<b class="nc"><i>507</i>&nbsp;            return className;</b>
+<b class="nc"><i>508</i>&nbsp;        }</b>
+<b class="nc"><i>509</i>&nbsp;    }</b>
+<b class="nc"><i>510</i>&nbsp;</b>
+<b class="nc"><i>511</i>&nbsp;    public String getCatalogClassName() {</b>
+<i>512</i>&nbsp;        if(this.catalogClassName == null) {
+<b class="nc"><i>513</i>&nbsp;            this.catalogClassName = this.queryCatalogClassName();</b>
+<i>514</i>&nbsp;        }
+<b class="nc"><i>515</i>&nbsp;</b>
+<b class="nc"><i>516</i>&nbsp;        return this.catalogClassName;</b>
+<b class="nc"><i>517</i>&nbsp;    }</b>
+<b class="nc"><i>518</i>&nbsp;</b>
+<b class="nc"><i>519</i>&nbsp;    public void setCatalogClassName(String className) {</b>
+<i>520</i>&nbsp;        this.catalogClassName = className;
+<i>521</i>&nbsp;    }
+<b class="nc"><i>522</i>&nbsp;</b>
+<b class="nc"><i>523</i>&nbsp;    /** @deprecated */</b>
+<i>524</i>&nbsp;    public String catalogClassName() {
+<b class="nc"><i>525</i>&nbsp;        return this.getCatalogClassName();</b>
+<i>526</i>&nbsp;    }
+<i>527</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

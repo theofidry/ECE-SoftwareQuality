@@ -1,0 +1,782 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PriorityBlockingQueue</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.util.concurrent</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PriorityBlockingQueue (java.util.concurrent)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PriorityBlockingQueue</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 118)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PriorityBlockingQueue$Itr</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 136)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.util.concurrent;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectInputStream;
+<i>10</i>&nbsp;import java.io.ObjectOutputStream;
+<i>11</i>&nbsp;import java.io.Serializable;
+<i>12</i>&nbsp;import java.util.AbstractQueue;
+<i>13</i>&nbsp;import java.util.Arrays;
+<i>14</i>&nbsp;import java.util.Collection;
+<i>15</i>&nbsp;import java.util.Comparator;
+<i>16</i>&nbsp;import java.util.Iterator;
+<i>17</i>&nbsp;import java.util.NoSuchElementException;
+<i>18</i>&nbsp;import java.util.PriorityQueue;
+<i>19</i>&nbsp;import java.util.SortedSet;
+<i>20</i>&nbsp;import java.util.concurrent.BlockingQueue;
+<i>21</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>22</i>&nbsp;import java.util.concurrent.locks.Condition;
+<i>23</i>&nbsp;import java.util.concurrent.locks.ReentrantLock;
+<i>24</i>&nbsp;import sun.misc.Unsafe;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;public class PriorityBlockingQueue&lt;E&gt; extends AbstractQueue&lt;E&gt; implements BlockingQueue&lt;E&gt;, Serializable {
+<i>27</i>&nbsp;    private static final long serialVersionUID = 5595510919245408276L;
+<i>28</i>&nbsp;    private static final int DEFAULT_INITIAL_CAPACITY = 11;
+<i>29</i>&nbsp;    private static final int MAX_ARRAY_SIZE = 2147483639;
+<i>30</i>&nbsp;    private transient Object[] queue;
+<i>31</i>&nbsp;    private transient int size;
+<i>32</i>&nbsp;    private transient Comparator&lt;? super E&gt; comparator;
+<i>33</i>&nbsp;    private final ReentrantLock lock;
+<i>34</i>&nbsp;    private final Condition notEmpty;
+<i>35</i>&nbsp;    private transient volatile int allocationSpinLock;
+<i>36</i>&nbsp;    private PriorityQueue q;
+<i>37</i>&nbsp;    private static final Unsafe UNSAFE;
+<i>38</i>&nbsp;    private static final long allocationSpinLockOffset;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public PriorityBlockingQueue() {
+<i>41</i>&nbsp;        this(11, (Comparator)null);
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public PriorityBlockingQueue(int var1) {
+<i>45</i>&nbsp;        this(var1, (Comparator)null);
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public PriorityBlockingQueue(int var1, Comparator&lt;? super E&gt; var2) {
+<i>49</i>&nbsp;        if(var1 &lt; 1) {
+<i>50</i>&nbsp;            throw new IllegalArgumentException();
+<i>51</i>&nbsp;        } else {
+<i>52</i>&nbsp;            this.lock = new ReentrantLock();
+<i>53</i>&nbsp;            this.notEmpty = this.lock.newCondition();
+<i>54</i>&nbsp;            this.comparator = var2;
+<i>55</i>&nbsp;            this.queue = new Object[var1];
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public PriorityBlockingQueue(Collection&lt;? extends E&gt; var1) {
+<i>60</i>&nbsp;        this.lock = new ReentrantLock();
+<i>61</i>&nbsp;        this.notEmpty = this.lock.newCondition();
+<i>62</i>&nbsp;        boolean var2 = true;
+<i>63</i>&nbsp;        boolean var3 = true;
+<i>64</i>&nbsp;        if(var1 instanceof SortedSet) {
+<i>65</i>&nbsp;            SortedSet var4 = (SortedSet)var1;
+<i>66</i>&nbsp;            this.comparator = var4.comparator();
+<i>67</i>&nbsp;            var2 = false;
+<i>68</i>&nbsp;        } else if(var1 instanceof PriorityBlockingQueue) {
+<b class="nc"><i>69</i>&nbsp;            PriorityBlockingQueue var7 = (PriorityBlockingQueue)var1;</b>
+<i>70</i>&nbsp;            this.comparator = var7.comparator();
+<i>71</i>&nbsp;            var3 = false;
+<i>72</i>&nbsp;            if(var7.getClass() == PriorityBlockingQueue.class) {
+<i>73</i>&nbsp;                var2 = false;
+<b class="nc"><i>74</i>&nbsp;            }</b>
+<b class="nc"><i>75</i>&nbsp;        }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;        Object[] var8 = var1.toArray();
+<i>78</i>&nbsp;        int var5 = var8.length;
+<i>79</i>&nbsp;        if(var8.getClass() != Object[].class) {
+<i>80</i>&nbsp;            var8 = Arrays.copyOf(var8, var5, Object[].class);
+<i>81</i>&nbsp;        }
+<b class="nc"><i>82</i>&nbsp;</b>
+<b class="nc"><i>83</i>&nbsp;        if(var3 &amp;&amp; (var5 == 1 || this.comparator != null)) {</b>
+<i>84</i>&nbsp;            for(int var6 = 0; var6 &lt; var5; ++var6) {
+<i>85</i>&nbsp;                if(var8[var6] == null) {
+<i>86</i>&nbsp;                    throw new NullPointerException();
+<i>87</i>&nbsp;                }
+<i>88</i>&nbsp;            }
+<i>89</i>&nbsp;        }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        this.queue = var8;
+<i>92</i>&nbsp;        this.size = var5;
+<i>93</i>&nbsp;        if(var2) {
+<i>94</i>&nbsp;            this.heapify();
+<b class="nc"><i>95</i>&nbsp;        }</b>
+<b class="nc"><i>96</i>&nbsp;</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    private void tryGrow(Object[] var1, int var2) {
+<i>100</i>&nbsp;        this.lock.unlock();
+<i>101</i>&nbsp;        Object[] var3 = null;
+<i>102</i>&nbsp;        if(this.allocationSpinLock == 0 &amp;&amp; UNSAFE.compareAndSwapInt(this, allocationSpinLockOffset, 0, 1)) {
+<i>103</i>&nbsp;            try {
+<i>104</i>&nbsp;                int var4 = var2 + (var2 &lt; 64?var2 + 2:var2 &gt;&gt; 1);
+<i>105</i>&nbsp;                if(var4 - 2147483639 &gt; 0) {
+<i>106</i>&nbsp;                    int var5 = var2 + 1;
+<i>107</i>&nbsp;                    if(var5 &lt; 0 || var5 &gt; 2147483639) {
+<i>108</i>&nbsp;                        throw new OutOfMemoryError();
+<i>109</i>&nbsp;                    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;                    var4 = 2147483639;
+<b class="nc"><i>112</i>&nbsp;                }</b>
+<b class="nc"><i>113</i>&nbsp;</b>
+<i>114</i>&nbsp;                if(var4 &gt; var2 &amp;&amp; this.queue == var1) {
+<i>115</i>&nbsp;                    var3 = new Object[var4];
+<i>116</i>&nbsp;                }
+<i>117</i>&nbsp;            } finally {
+<i>118</i>&nbsp;                this.allocationSpinLock = 0;
+<i>119</i>&nbsp;            }
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;        if(var3 == null) {
+<i>123</i>&nbsp;            Thread.yield();
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        this.lock.lock();
+<i>127</i>&nbsp;        if(var3 != null &amp;&amp; this.queue == var1) {
+<i>128</i>&nbsp;            this.queue = var3;
+<i>129</i>&nbsp;            System.arraycopy(var1, 0, var3, 0, var2);
+<i>130</i>&nbsp;        }
+<i>131</i>&nbsp;
+<b class="nc"><i>132</i>&nbsp;    }</b>
+<b class="nc"><i>133</i>&nbsp;</b>
+<i>134</i>&nbsp;    private E dequeue() {
+<i>135</i>&nbsp;        int var1 = this.size - 1;
+<i>136</i>&nbsp;        if(var1 &lt; 0) {
+<i>137</i>&nbsp;            return null;
+<i>138</i>&nbsp;        } else {
+<i>139</i>&nbsp;            Object[] var2 = this.queue;
+<i>140</i>&nbsp;            Object var3 = var2[0];
+<i>141</i>&nbsp;            Object var4 = var2[var1];
+<i>142</i>&nbsp;            var2[var1] = null;
+<i>143</i>&nbsp;            Comparator var5 = this.comparator;
+<i>144</i>&nbsp;            if(var5 == null) {
+<i>145</i>&nbsp;                siftDownComparable(0, var4, var2, var1);
+<i>146</i>&nbsp;            } else {
+<b class="nc"><i>147</i>&nbsp;                siftDownUsingComparator(0, var4, var2, var1, var5);</b>
+<i>148</i>&nbsp;            }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;            this.size = var1;
+<i>151</i>&nbsp;            return var3;
+<i>152</i>&nbsp;        }
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    private static &lt;T&gt; void siftUpComparable(int var0, T var1, Object[] var2) {
+<i>156</i>&nbsp;        Comparable var3;
+<i>157</i>&nbsp;        int var4;
+<i>158</i>&nbsp;        for(var3 = (Comparable)var1; var0 &gt; 0; var0 = var4) {
+<i>159</i>&nbsp;            var4 = var0 - 1 &gt;&gt;&gt; 1;
+<i>160</i>&nbsp;            Object var5 = var2[var4];
+<b class="nc"><i>161</i>&nbsp;            if(var3.compareTo(var5) &gt;= 0) {</b>
+<b class="nc"><i>162</i>&nbsp;                break;</b>
+<i>163</i>&nbsp;            }
+<b class="nc"><i>164</i>&nbsp;</b>
+<b class="nc"><i>165</i>&nbsp;            var2[var0] = var5;</b>
+<b class="nc"><i>166</i>&nbsp;        }</b>
+<b class="nc"><i>167</i>&nbsp;</b>
+<i>168</i>&nbsp;        var2[var0] = var3;
+<b class="nc"><i>169</i>&nbsp;    }</b>
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    private static &lt;T&gt; void siftUpUsingComparator(int var0, T var1, Object[] var2, Comparator&lt;? super T&gt; var3) {
+<i>172</i>&nbsp;        while(true) {
+<i>173</i>&nbsp;            if(var0 &gt; 0) {
+<i>174</i>&nbsp;                int var4 = var0 - 1 &gt;&gt;&gt; 1;
+<i>175</i>&nbsp;                Object var5 = var2[var4];
+<i>176</i>&nbsp;                if(var3.compare(var1, var5) &lt; 0) {
+<i>177</i>&nbsp;                    var2[var0] = var5;
+<i>178</i>&nbsp;                    var0 = var4;
+<i>179</i>&nbsp;                    continue;
+<i>180</i>&nbsp;                }
+<i>181</i>&nbsp;            }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;            var2[var0] = var1;
+<b class="nc"><i>184</i>&nbsp;            return;</b>
+<i>185</i>&nbsp;        }
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    private static &lt;T&gt; void siftDownComparable(int var0, T var1, Object[] var2, int var3) {
+<i>189</i>&nbsp;        if(var3 &gt; 0) {
+<i>190</i>&nbsp;            Comparable var4 = (Comparable)var1;
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;            int var6;
+<i>193</i>&nbsp;            for(int var5 = var3 &gt;&gt;&gt; 1; var0 &lt; var5; var0 = var6) {
+<i>194</i>&nbsp;                var6 = (var0 &lt;&lt; 1) + 1;
+<i>195</i>&nbsp;                Object var7 = var2[var6];
+<i>196</i>&nbsp;                int var8 = var6 + 1;
+<i>197</i>&nbsp;                if(var8 &lt; var3 &amp;&amp; ((Comparable)var7).compareTo(var2[var8]) &gt; 0) {
+<i>198</i>&nbsp;                    var6 = var8;
+<i>199</i>&nbsp;                    var7 = var2[var8];
+<i>200</i>&nbsp;                }
+<b class="nc"><i>201</i>&nbsp;</b>
+<i>202</i>&nbsp;                if(var4.compareTo(var7) &lt;= 0) {
+<i>203</i>&nbsp;                    break;
+<i>204</i>&nbsp;                }
+<b class="nc"><i>205</i>&nbsp;</b>
+<b class="nc"><i>206</i>&nbsp;                var2[var0] = var7;</b>
+<i>207</i>&nbsp;            }
+<b class="nc"><i>208</i>&nbsp;</b>
+<i>209</i>&nbsp;            var2[var0] = var4;
+<b class="nc"><i>210</i>&nbsp;        }</b>
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    private static &lt;T&gt; void siftDownUsingComparator(int var0, T var1, Object[] var2, int var3, Comparator&lt;? super T&gt; var4) {
+<b class="nc"><i>215</i>&nbsp;        if(var3 &gt; 0) {</b>
+<b class="nc"><i>216</i>&nbsp;            int var6;</b>
+<i>217</i>&nbsp;            for(int var5 = var3 &gt;&gt;&gt; 1; var0 &lt; var5; var0 = var6) {
+<i>218</i>&nbsp;                var6 = (var0 &lt;&lt; 1) + 1;
+<b class="nc"><i>219</i>&nbsp;                Object var7 = var2[var6];</b>
+<b class="nc"><i>220</i>&nbsp;                int var8 = var6 + 1;</b>
+<b class="nc"><i>221</i>&nbsp;                if(var8 &lt; var3 &amp;&amp; var4.compare(var7, var2[var8]) &gt; 0) {</b>
+<b class="nc"><i>222</i>&nbsp;                    var6 = var8;</b>
+<b class="nc"><i>223</i>&nbsp;                    var7 = var2[var8];</b>
+<b class="nc"><i>224</i>&nbsp;                }</b>
+<b class="nc"><i>225</i>&nbsp;</b>
+<b class="nc"><i>226</i>&nbsp;                if(var4.compare(var1, var7) &lt;= 0) {</b>
+<b class="nc"><i>227</i>&nbsp;                    break;</b>
+<i>228</i>&nbsp;                }
+<b class="nc"><i>229</i>&nbsp;</b>
+<i>230</i>&nbsp;                var2[var0] = var7;
+<i>231</i>&nbsp;            }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;            var2[var0] = var1;
+<b class="nc"><i>234</i>&nbsp;        }</b>
+<b class="nc"><i>235</i>&nbsp;</b>
+<b class="nc"><i>236</i>&nbsp;    }</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    private void heapify() {
+<b class="nc"><i>239</i>&nbsp;        Object[] var1 = this.queue;</b>
+<b class="nc"><i>240</i>&nbsp;        int var2 = this.size;</b>
+<b class="nc"><i>241</i>&nbsp;        int var3 = (var2 &gt;&gt;&gt; 1) - 1;</b>
+<b class="nc"><i>242</i>&nbsp;        Comparator var4 = this.comparator;</b>
+<b class="nc"><i>243</i>&nbsp;        int var5;</b>
+<i>244</i>&nbsp;        if(var4 == null) {
+<b class="nc"><i>245</i>&nbsp;            for(var5 = var3; var5 &gt;= 0; --var5) {</b>
+<b class="nc"><i>246</i>&nbsp;                siftDownComparable(var5, var1[var5], var1, var2);</b>
+<b class="nc"><i>247</i>&nbsp;            }</b>
+<b class="nc"><i>248</i>&nbsp;        } else {</b>
+<b class="nc"><i>249</i>&nbsp;            for(var5 = var3; var5 &gt;= 0; --var5) {</b>
+<b class="nc"><i>250</i>&nbsp;                siftDownUsingComparator(var5, var1[var5], var1, var2, var4);</b>
+<i>251</i>&nbsp;            }
+<b class="nc"><i>252</i>&nbsp;        }</b>
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    public boolean add(E var1) {
+<b class="nc"><i>257</i>&nbsp;        return this.offer(var1);</b>
+<b class="nc"><i>258</i>&nbsp;    }</b>
+<i>259</i>&nbsp;
+<b class="nc"><i>260</i>&nbsp;    public boolean offer(E var1) {</b>
+<i>261</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>262</i>&nbsp;            throw new NullPointerException();</b>
+<i>263</i>&nbsp;        } else {
+<i>264</i>&nbsp;            ReentrantLock var2 = this.lock;
+<i>265</i>&nbsp;            var2.lock();
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;            while(true) {
+<i>268</i>&nbsp;                int var3 = this.size;
+<i>269</i>&nbsp;                Object[] var5 = this.queue;
+<i>270</i>&nbsp;                int var4;
+<i>271</i>&nbsp;                if(this.size &lt; (var4 = this.queue.length)) {
+<i>272</i>&nbsp;                    try {
+<i>273</i>&nbsp;                        Comparator var6 = this.comparator;
+<i>274</i>&nbsp;                        if(var6 == null) {
+<i>275</i>&nbsp;                            siftUpComparable(var3, var1, var5);
+<b class="nc"><i>276</i>&nbsp;                        } else {</b>
+<i>277</i>&nbsp;                            siftUpUsingComparator(var3, var1, var5, var6);
+<i>278</i>&nbsp;                        }
+<i>279</i>&nbsp;
+<b class="nc"><i>280</i>&nbsp;                        this.size = var3 + 1;</b>
+<b class="nc"><i>281</i>&nbsp;                        this.notEmpty.signal();</b>
+<i>282</i>&nbsp;                    } finally {
+<b class="nc"><i>283</i>&nbsp;                        var2.unlock();</b>
+<i>284</i>&nbsp;                    }
+<b class="nc"><i>285</i>&nbsp;</b>
+<i>286</i>&nbsp;                    return true;
+<i>287</i>&nbsp;                }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;                this.tryGrow(var5, var4);
+<i>290</i>&nbsp;            }
+<i>291</i>&nbsp;        }
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    public void put(E var1) {
+<b class="nc"><i>295</i>&nbsp;        this.offer(var1);</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    public boolean offer(E var1, long var2, TimeUnit var4) {
+<i>299</i>&nbsp;        return this.offer(var1);
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    public E poll() {
+<i>303</i>&nbsp;        ReentrantLock var1 = this.lock;
+<i>304</i>&nbsp;        var1.lock();
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;        Object var2;
+<i>307</i>&nbsp;        try {
+<i>308</i>&nbsp;            var2 = this.dequeue();
+<i>309</i>&nbsp;        } finally {
+<b class="nc"><i>310</i>&nbsp;            var1.unlock();</b>
+<b class="nc"><i>311</i>&nbsp;        }</b>
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;        return var2;</b>
+<i>314</i>&nbsp;    }
+<b class="nc"><i>315</i>&nbsp;</b>
+<i>316</i>&nbsp;    public E take() throws InterruptedException {
+<i>317</i>&nbsp;        ReentrantLock var1 = this.lock;
+<i>318</i>&nbsp;        var1.lockInterruptibly();
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;        Object var2;
+<i>321</i>&nbsp;        try {
+<i>322</i>&nbsp;            while((var2 = this.dequeue()) == null) {
+<i>323</i>&nbsp;                this.notEmpty.await();
+<i>324</i>&nbsp;            }
+<i>325</i>&nbsp;        } finally {
+<i>326</i>&nbsp;            var1.unlock();
+<i>327</i>&nbsp;        }
+<b class="nc"><i>328</i>&nbsp;</b>
+<b class="nc"><i>329</i>&nbsp;        return var2;</b>
+<i>330</i>&nbsp;    }
+<b class="nc"><i>331</i>&nbsp;</b>
+<i>332</i>&nbsp;    public E poll(long var1, TimeUnit var3) throws InterruptedException {
+<b class="nc"><i>333</i>&nbsp;        long var4 = var3.toNanos(var1);</b>
+<i>334</i>&nbsp;        ReentrantLock var6 = this.lock;
+<i>335</i>&nbsp;        var6.lockInterruptibly();
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;        Object var7;
+<i>338</i>&nbsp;        try {
+<i>339</i>&nbsp;            while((var7 = this.dequeue()) == null &amp;&amp; var4 &gt; 0L) {
+<i>340</i>&nbsp;                var4 = this.notEmpty.awaitNanos(var4);
+<i>341</i>&nbsp;            }
+<i>342</i>&nbsp;        } finally {
+<i>343</i>&nbsp;            var6.unlock();
+<i>344</i>&nbsp;        }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;        return var7;
+<i>347</i>&nbsp;    }
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    public E peek() {
+<i>350</i>&nbsp;        ReentrantLock var1 = this.lock;
+<b class="nc"><i>351</i>&nbsp;        var1.lock();</b>
+<b class="nc"><i>352</i>&nbsp;</b>
+<i>353</i>&nbsp;        Object var2;
+<b class="nc"><i>354</i>&nbsp;        try {</b>
+<i>355</i>&nbsp;            var2 = this.size == 0?null:this.queue[0];
+<b class="nc"><i>356</i>&nbsp;        } finally {</b>
+<i>357</i>&nbsp;            var1.unlock();
+<i>358</i>&nbsp;        }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;        return var2;
+<i>361</i>&nbsp;    }
+<b class="nc"><i>362</i>&nbsp;</b>
+<b class="nc"><i>363</i>&nbsp;    public Comparator&lt;? super E&gt; comparator() {</b>
+<i>364</i>&nbsp;        return this.comparator;
+<b class="nc"><i>365</i>&nbsp;    }</b>
+<i>366</i>&nbsp;
+<b class="nc"><i>367</i>&nbsp;    public int size() {</b>
+<i>368</i>&nbsp;        ReentrantLock var1 = this.lock;
+<i>369</i>&nbsp;        var1.lock();
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;        int var2;
+<i>372</i>&nbsp;        try {
+<i>373</i>&nbsp;            var2 = this.size;
+<i>374</i>&nbsp;        } finally {
+<i>375</i>&nbsp;            var1.unlock();
+<i>376</i>&nbsp;        }
+<i>377</i>&nbsp;
+<b class="nc"><i>378</i>&nbsp;        return var2;</b>
+<b class="nc"><i>379</i>&nbsp;    }</b>
+<b class="nc"><i>380</i>&nbsp;</b>
+<b class="nc"><i>381</i>&nbsp;    public int remainingCapacity() {</b>
+<b class="nc"><i>382</i>&nbsp;        return 2147483647;</b>
+<b class="nc"><i>383</i>&nbsp;    }</b>
+<i>384</i>&nbsp;
+<b class="nc"><i>385</i>&nbsp;    private int indexOf(Object var1) {</b>
+<i>386</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>387</i>&nbsp;            Object[] var2 = this.queue;</b>
+<b class="nc"><i>388</i>&nbsp;            int var3 = this.size;</b>
+<b class="nc"><i>389</i>&nbsp;</b>
+<i>390</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<b class="nc"><i>391</i>&nbsp;                if(var1.equals(var2[var4])) {</b>
+<i>392</i>&nbsp;                    return var4;
+<b class="nc"><i>393</i>&nbsp;                }</b>
+<i>394</i>&nbsp;            }
+<i>395</i>&nbsp;        }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;        return -1;
+<i>398</i>&nbsp;    }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;    private void removeAt(int var1) {
+<i>401</i>&nbsp;        Object[] var2 = this.queue;
+<i>402</i>&nbsp;        int var3 = this.size - 1;
+<i>403</i>&nbsp;        if(var3 == var1) {
+<b class="nc"><i>404</i>&nbsp;            var2[var1] = null;</b>
+<b class="nc"><i>405</i>&nbsp;        } else {</b>
+<b class="nc"><i>406</i>&nbsp;            Object var4 = var2[var3];</b>
+<b class="nc"><i>407</i>&nbsp;            var2[var3] = null;</b>
+<b class="nc"><i>408</i>&nbsp;            Comparator var5 = this.comparator;</b>
+<b class="nc"><i>409</i>&nbsp;            if(var5 == null) {</b>
+<b class="nc"><i>410</i>&nbsp;                siftDownComparable(var1, var4, var2, var3);</b>
+<b class="nc"><i>411</i>&nbsp;            } else {</b>
+<i>412</i>&nbsp;                siftDownUsingComparator(var1, var4, var2, var3, var5);
+<b class="nc"><i>413</i>&nbsp;            }</b>
+<i>414</i>&nbsp;
+<b class="nc"><i>415</i>&nbsp;            if(var2[var1] == var4) {</b>
+<b class="nc"><i>416</i>&nbsp;                if(var5 == null) {</b>
+<b class="nc"><i>417</i>&nbsp;                    siftUpComparable(var1, var4, var2);</b>
+<i>418</i>&nbsp;                } else {
+<b class="nc"><i>419</i>&nbsp;                    siftUpUsingComparator(var1, var4, var2, var5);</b>
+<i>420</i>&nbsp;                }
+<b class="nc"><i>421</i>&nbsp;            }</b>
+<i>422</i>&nbsp;        }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;        this.size = var3;
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    public boolean remove(Object var1) {
+<i>428</i>&nbsp;        ReentrantLock var2 = this.lock;
+<i>429</i>&nbsp;        var2.lock();
+<b class="nc"><i>430</i>&nbsp;</b>
+<b class="nc"><i>431</i>&nbsp;        boolean var4;</b>
+<i>432</i>&nbsp;        try {
+<b class="nc"><i>433</i>&nbsp;            int var3 = this.indexOf(var1);</b>
+<i>434</i>&nbsp;            if(var3 == -1) {
+<b class="nc"><i>435</i>&nbsp;                var4 = false;</b>
+<b class="nc"><i>436</i>&nbsp;                return var4;</b>
+<i>437</i>&nbsp;            }
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;            this.removeAt(var3);
+<i>440</i>&nbsp;            var4 = true;
+<i>441</i>&nbsp;        } finally {
+<i>442</i>&nbsp;            var2.unlock();
+<i>443</i>&nbsp;        }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;        return var4;
+<i>446</i>&nbsp;    }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    void removeEQ(Object var1) {
+<i>449</i>&nbsp;        ReentrantLock var2 = this.lock;
+<i>450</i>&nbsp;        var2.lock();
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;        try {
+<i>453</i>&nbsp;            Object[] var3 = this.queue;
+<i>454</i>&nbsp;            int var4 = 0;
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;            for(int var5 = this.size; var4 &lt; var5; ++var4) {
+<i>457</i>&nbsp;                if(var1 == var3[var4]) {
+<i>458</i>&nbsp;                    this.removeAt(var4);
+<i>459</i>&nbsp;                    break;
+<i>460</i>&nbsp;                }
+<i>461</i>&nbsp;            }
+<i>462</i>&nbsp;        } finally {
+<i>463</i>&nbsp;            var2.unlock();
+<i>464</i>&nbsp;        }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;    }
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    public boolean contains(Object var1) {
+<i>469</i>&nbsp;        ReentrantLock var2 = this.lock;
+<i>470</i>&nbsp;        var2.lock();
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;        boolean var3;
+<i>473</i>&nbsp;        try {
+<i>474</i>&nbsp;            var3 = this.indexOf(var1) != -1;
+<i>475</i>&nbsp;        } finally {
+<i>476</i>&nbsp;            var2.unlock();
+<b class="nc"><i>477</i>&nbsp;        }</b>
+<b class="nc"><i>478</i>&nbsp;</b>
+<i>479</i>&nbsp;        return var3;
+<b class="nc"><i>480</i>&nbsp;    }</b>
+<i>481</i>&nbsp;
+<b class="nc"><i>482</i>&nbsp;    public Object[] toArray() {</b>
+<i>483</i>&nbsp;        ReentrantLock var1 = this.lock;
+<i>484</i>&nbsp;        var1.lock();
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;        Object[] var2;
+<i>487</i>&nbsp;        try {
+<i>488</i>&nbsp;            var2 = Arrays.copyOf(this.queue, this.size);
+<i>489</i>&nbsp;        } finally {
+<i>490</i>&nbsp;            var1.unlock();
+<i>491</i>&nbsp;        }
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;        return var2;
+<i>494</i>&nbsp;    }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    public String toString() {
+<i>497</i>&nbsp;        ReentrantLock var1 = this.lock;
+<i>498</i>&nbsp;        var1.lock();
+<b class="nc"><i>499</i>&nbsp;</b>
+<i>500</i>&nbsp;        String var3;
+<i>501</i>&nbsp;        try {
+<i>502</i>&nbsp;            int var2 = this.size;
+<i>503</i>&nbsp;            if(var2 != 0) {
+<i>504</i>&nbsp;                StringBuilder var9 = new StringBuilder();
+<i>505</i>&nbsp;                var9.append(&#39;[&#39;);
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;                for(int var4 = 0; var4 &lt; var2; ++var4) {
+<i>508</i>&nbsp;                    Object var5 = this.queue[var4];
+<i>509</i>&nbsp;                    var9.append(var5 == this?&quot;(this Collection)&quot;:var5);
+<b class="nc"><i>510</i>&nbsp;                    if(var4 != var2 - 1) {</b>
+<b class="nc"><i>511</i>&nbsp;                        var9.append(&#39;,&#39;).append(&#39; &#39;);</b>
+<b class="nc"><i>512</i>&nbsp;                    }</b>
+<i>513</i>&nbsp;                }
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;                String var10 = var9.append(&#39;]&#39;).toString();
+<b class="nc"><i>516</i>&nbsp;                return var10;</b>
+<i>517</i>&nbsp;            }
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;            var3 = &quot;[]&quot;;
+<b class="nc"><i>520</i>&nbsp;        } finally {</b>
+<b class="nc"><i>521</i>&nbsp;            var1.unlock();</b>
+<b class="nc"><i>522</i>&nbsp;        }</b>
+<b class="nc"><i>523</i>&nbsp;</b>
+<i>524</i>&nbsp;        return var3;
+<i>525</i>&nbsp;    }
+<i>526</i>&nbsp;
+<b class="nc"><i>527</i>&nbsp;    public int drainTo(Collection&lt;? super E&gt; var1) {</b>
+<b class="nc"><i>528</i>&nbsp;        return this.drainTo(var1, 2147483647);</b>
+<b class="nc"><i>529</i>&nbsp;    }</b>
+<b class="nc"><i>530</i>&nbsp;</b>
+<i>531</i>&nbsp;    public int drainTo(Collection&lt;? super E&gt; var1, int var2) {
+<i>532</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>533</i>&nbsp;            throw new NullPointerException();</b>
+<i>534</i>&nbsp;        } else if(var1 == this) {
+<b class="nc"><i>535</i>&nbsp;            throw new IllegalArgumentException();</b>
+<b class="nc"><i>536</i>&nbsp;        } else if(var2 &lt;= 0) {</b>
+<b class="nc"><i>537</i>&nbsp;            return 0;</b>
+<i>538</i>&nbsp;        } else {
+<i>539</i>&nbsp;            ReentrantLock var3 = this.lock;
+<i>540</i>&nbsp;            var3.lock();
+<i>541</i>&nbsp;
+<b class="nc"><i>542</i>&nbsp;            try {</b>
+<b class="nc"><i>543</i>&nbsp;                int var4 = Math.min(this.size, var2);</b>
+<i>544</i>&nbsp;
+<i>545</i>&nbsp;                int var5;
+<i>546</i>&nbsp;                for(var5 = 0; var5 &lt; var4; ++var5) {
+<i>547</i>&nbsp;                    var1.add(this.queue[0]);
+<i>548</i>&nbsp;                    this.dequeue();
+<i>549</i>&nbsp;                }
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;                var5 = var4;
+<i>552</i>&nbsp;                return var5;
+<i>553</i>&nbsp;            } finally {
+<i>554</i>&nbsp;                var3.unlock();
+<i>555</i>&nbsp;            }
+<b class="nc"><i>556</i>&nbsp;        }</b>
+<i>557</i>&nbsp;    }
+<b class="nc"><i>558</i>&nbsp;</b>
+<i>559</i>&nbsp;    public void clear() {
+<b class="nc"><i>560</i>&nbsp;        ReentrantLock var1 = this.lock;</b>
+<b class="nc"><i>561</i>&nbsp;        var1.lock();</b>
+<i>562</i>&nbsp;
+<i>563</i>&nbsp;        try {
+<i>564</i>&nbsp;            Object[] var2 = this.queue;
+<i>565</i>&nbsp;            int var3 = this.size;
+<i>566</i>&nbsp;            this.size = 0;
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>569</i>&nbsp;                var2[var4] = null;
+<i>570</i>&nbsp;            }
+<i>571</i>&nbsp;        } finally {
+<i>572</i>&nbsp;            var1.unlock();
+<i>573</i>&nbsp;        }
+<i>574</i>&nbsp;
+<i>575</i>&nbsp;    }
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;    public &lt;T&gt; T[] toArray(T[] var1) {
+<i>578</i>&nbsp;        ReentrantLock var2 = this.lock;
+<i>579</i>&nbsp;        var2.lock();
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;        Object[] var4;
+<i>582</i>&nbsp;        try {
+<i>583</i>&nbsp;            int var3 = this.size;
+<i>584</i>&nbsp;            if(var1.length &lt; var3) {
+<i>585</i>&nbsp;                var4 = (Object[])Arrays.copyOf(this.queue, this.size, var1.getClass());
+<i>586</i>&nbsp;                return var4;
+<i>587</i>&nbsp;            }
+<i>588</i>&nbsp;
+<i>589</i>&nbsp;            System.arraycopy(this.queue, 0, var1, 0, var3);
+<i>590</i>&nbsp;            if(var1.length &gt; var3) {
+<i>591</i>&nbsp;                var1[var3] = null;
+<i>592</i>&nbsp;            }
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;            var4 = var1;
+<i>595</i>&nbsp;        } finally {
+<i>596</i>&nbsp;            var2.unlock();
+<i>597</i>&nbsp;        }
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;        return var4;
+<i>600</i>&nbsp;    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    public Iterator&lt;E&gt; iterator() {
+<i>603</i>&nbsp;        return new PriorityBlockingQueue.Itr(this.toArray());
+<i>604</i>&nbsp;    }
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;    private void writeObject(ObjectOutputStream var1) throws IOException {
+<i>607</i>&nbsp;        this.lock.lock();
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;        try {
+<i>610</i>&nbsp;            this.q = new PriorityQueue(Math.max(this.size, 1), this.comparator);
+<i>611</i>&nbsp;            this.q.addAll(this);
+<i>612</i>&nbsp;            var1.defaultWriteObject();
+<i>613</i>&nbsp;        } finally {
+<i>614</i>&nbsp;            this.q = null;
+<i>615</i>&nbsp;            this.lock.unlock();
+<i>616</i>&nbsp;        }
+<i>617</i>&nbsp;
+<i>618</i>&nbsp;    }
+<i>619</i>&nbsp;
+<i>620</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<i>621</i>&nbsp;        try {
+<i>622</i>&nbsp;            var1.defaultReadObject();
+<i>623</i>&nbsp;            this.queue = new Object[this.q.size()];
+<i>624</i>&nbsp;            this.comparator = this.q.comparator();
+<i>625</i>&nbsp;            this.addAll(this.q);
+<i>626</i>&nbsp;        } finally {
+<i>627</i>&nbsp;            this.q = null;
+<i>628</i>&nbsp;        }
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    static {
+<i>633</i>&nbsp;        try {
+<i>634</i>&nbsp;            UNSAFE = Unsafe.getUnsafe();
+<i>635</i>&nbsp;            Class var0 = PriorityBlockingQueue.class;
+<i>636</i>&nbsp;            allocationSpinLockOffset = UNSAFE.objectFieldOffset(var0.getDeclaredField(&quot;allocationSpinLock&quot;));
+<i>637</i>&nbsp;        } catch (Exception var1) {
+<i>638</i>&nbsp;            throw new Error(var1);
+<i>639</i>&nbsp;        }
+<i>640</i>&nbsp;    }
+<i>641</i>&nbsp;
+<i>642</i>&nbsp;    final class Itr implements Iterator&lt;E&gt; {
+<i>643</i>&nbsp;        final Object[] array;
+<i>644</i>&nbsp;        int cursor;
+<i>645</i>&nbsp;        int lastRet = -1;
+<i>646</i>&nbsp;
+<i>647</i>&nbsp;        Itr(Object[] var2) {
+<i>648</i>&nbsp;            this.array = var2;
+<i>649</i>&nbsp;        }
+<i>650</i>&nbsp;
+<i>651</i>&nbsp;        public boolean hasNext() {
+<i>652</i>&nbsp;            return this.cursor &lt; this.array.length;
+<i>653</i>&nbsp;        }
+<i>654</i>&nbsp;
+<i>655</i>&nbsp;        public E next() {
+<i>656</i>&nbsp;            if(this.cursor &gt;= this.array.length) {
+<i>657</i>&nbsp;                throw new NoSuchElementException();
+<i>658</i>&nbsp;            } else {
+<i>659</i>&nbsp;                this.lastRet = this.cursor;
+<i>660</i>&nbsp;                return this.array[this.cursor++];
+<i>661</i>&nbsp;            }
+<i>662</i>&nbsp;        }
+<i>663</i>&nbsp;
+<i>664</i>&nbsp;        public void remove() {
+<i>665</i>&nbsp;            if(this.lastRet &lt; 0) {
+<i>666</i>&nbsp;                throw new IllegalStateException();
+<i>667</i>&nbsp;            } else {
+<i>668</i>&nbsp;                PriorityBlockingQueue.this.removeEQ(this.array[this.lastRet]);
+<i>669</i>&nbsp;                this.lastRet = -1;
+<i>670</i>&nbsp;            }
+<i>671</i>&nbsp;        }
+<i>672</i>&nbsp;    }
+<i>673</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1115 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Krb5Context</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.jgss.krb5</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Krb5Context (sun.security.jgss.krb5)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Krb5Context</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 70)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 423)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Krb5Context$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Krb5Context$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Krb5Context$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 76)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 430)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.jgss.krb5;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.security.jgss.AuthorizationDataEntry;
+<i>9</i>&nbsp;import com.sun.security.jgss.InquireType;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.io.InputStream;
+<i>12</i>&nbsp;import java.io.OutputStream;
+<i>13</i>&nbsp;import java.security.AccessControlContext;
+<i>14</i>&nbsp;import java.security.AccessController;
+<i>15</i>&nbsp;import java.security.Key;
+<i>16</i>&nbsp;import java.security.PrivilegedAction;
+<i>17</i>&nbsp;import java.security.PrivilegedActionException;
+<i>18</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>19</i>&nbsp;import java.security.Provider;
+<i>20</i>&nbsp;import javax.crypto.Cipher;
+<i>21</i>&nbsp;import javax.security.auth.Subject;
+<i>22</i>&nbsp;import javax.security.auth.kerberos.KerberosTicket;
+<i>23</i>&nbsp;import javax.security.auth.kerberos.ServicePermission;
+<i>24</i>&nbsp;import org.ietf.jgss.ChannelBinding;
+<i>25</i>&nbsp;import org.ietf.jgss.GSSException;
+<i>26</i>&nbsp;import org.ietf.jgss.MessageProp;
+<i>27</i>&nbsp;import org.ietf.jgss.Oid;
+<i>28</i>&nbsp;import sun.misc.HexDumpEncoder;
+<i>29</i>&nbsp;import sun.security.jgss.GSSCaller;
+<i>30</i>&nbsp;import sun.security.jgss.GSSUtil;
+<i>31</i>&nbsp;import sun.security.jgss.TokenTracker;
+<i>32</i>&nbsp;import sun.security.jgss.krb5.AcceptSecContextToken;
+<i>33</i>&nbsp;import sun.security.jgss.krb5.CipherHelper;
+<i>34</i>&nbsp;import sun.security.jgss.krb5.InitSecContextToken;
+<i>35</i>&nbsp;import sun.security.jgss.krb5.Krb5AcceptCredential;
+<i>36</i>&nbsp;import sun.security.jgss.krb5.Krb5CredElement;
+<i>37</i>&nbsp;import sun.security.jgss.krb5.Krb5InitCredential;
+<i>38</i>&nbsp;import sun.security.jgss.krb5.Krb5MechFactory;
+<b class="nc"><i>39</i>&nbsp;import sun.security.jgss.krb5.Krb5NameElement;</b>
+<i>40</i>&nbsp;import sun.security.jgss.krb5.Krb5Util;
+<i>41</i>&nbsp;import sun.security.jgss.krb5.MessageToken;
+<i>42</i>&nbsp;import sun.security.jgss.krb5.MessageToken_v2;
+<i>43</i>&nbsp;import sun.security.jgss.krb5.MicToken;
+<i>44</i>&nbsp;import sun.security.jgss.krb5.MicToken_v2;
+<i>45</i>&nbsp;import sun.security.jgss.krb5.WrapToken;
+<i>46</i>&nbsp;import sun.security.jgss.krb5.WrapToken_v2;
+<i>47</i>&nbsp;import sun.security.jgss.spi.GSSContextSpi;
+<i>48</i>&nbsp;import sun.security.jgss.spi.GSSCredentialSpi;
+<i>49</i>&nbsp;import sun.security.jgss.spi.GSSNameSpi;
+<b class="nc"><i>50</i>&nbsp;import sun.security.krb5.Credentials;</b>
+<i>51</i>&nbsp;import sun.security.krb5.EncryptionKey;
+<i>52</i>&nbsp;import sun.security.krb5.KrbApReq;
+<i>53</i>&nbsp;import sun.security.krb5.KrbException;
+<i>54</i>&nbsp;import sun.security.krb5.PrincipalName;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;class Krb5Context implements GSSContextSpi {
+<b class="nc"><i>57</i>&nbsp;    private static final int STATE_NEW = 1;</b>
+<b class="nc"><i>58</i>&nbsp;    private static final int STATE_IN_PROCESS = 2;</b>
+<b class="nc"><i>59</i>&nbsp;    private static final int STATE_DONE = 3;</b>
+<b class="nc"><i>60</i>&nbsp;    private static final int STATE_DELETED = 4;</b>
+<b class="nc"><i>61</i>&nbsp;    private int state = 1;</b>
+<b class="nc"><i>62</i>&nbsp;    public static final int SESSION_KEY = 0;</b>
+<i>63</i>&nbsp;    public static final int INITIATOR_SUBKEY = 1;
+<i>64</i>&nbsp;    public static final int ACCEPTOR_SUBKEY = 2;
+<i>65</i>&nbsp;    private boolean credDelegState = false;
+<i>66</i>&nbsp;    private boolean mutualAuthState = true;
+<i>67</i>&nbsp;    private boolean replayDetState = true;
+<b class="nc"><i>68</i>&nbsp;    private boolean sequenceDetState = true;</b>
+<i>69</i>&nbsp;    private boolean confState = true;
+<i>70</i>&nbsp;    private boolean integState = true;
+<i>71</i>&nbsp;    private boolean delegPolicyState = false;
+<i>72</i>&nbsp;    private int mySeqNumber;
+<i>73</i>&nbsp;    private int peerSeqNumber;
+<i>74</i>&nbsp;    private int keySrc;
+<i>75</i>&nbsp;    private TokenTracker peerTokenTracker;
+<i>76</i>&nbsp;    private CipherHelper cipherHelper = null;
+<i>77</i>&nbsp;    private Object mySeqNumberLock = new Object();
+<i>78</i>&nbsp;    private Object peerSeqNumberLock = new Object();
+<b class="nc"><i>79</i>&nbsp;    private EncryptionKey key;</b>
+<b class="nc"><i>80</i>&nbsp;    private Krb5NameElement myName;</b>
+<i>81</i>&nbsp;    private Krb5NameElement peerName;
+<i>82</i>&nbsp;    private int lifetime;
+<i>83</i>&nbsp;    private boolean initiator;
+<i>84</i>&nbsp;    private ChannelBinding channelBinding;
+<i>85</i>&nbsp;    private Krb5CredElement myCred;
+<i>86</i>&nbsp;    private Krb5CredElement delegatedCred;
+<i>87</i>&nbsp;    private Cipher desCipher = null;
+<i>88</i>&nbsp;    private Credentials serviceCreds;
+<i>89</i>&nbsp;    private KrbApReq apReq;
+<i>90</i>&nbsp;    private final GSSCaller caller;
+<i>91</i>&nbsp;    private static final boolean DEBUG;
+<i>92</i>&nbsp;    private boolean[] tktFlags;
+<b class="nc"><i>93</i>&nbsp;    private String authTime;</b>
+<i>94</i>&nbsp;    private AuthorizationDataEntry[] authzData;
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    Krb5Context(GSSCaller var1, Krb5NameElement var2, Krb5CredElement var3, int var4) throws GSSException {
+<i>97</i>&nbsp;        if(var2 == null) {
+<i>98</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot have null peer name&quot;);
+<i>99</i>&nbsp;        } else {
+<b class="nc"><i>100</i>&nbsp;            this.caller = var1;</b>
+<i>101</i>&nbsp;            this.peerName = var2;
+<i>102</i>&nbsp;            this.myCred = var3;
+<i>103</i>&nbsp;            this.lifetime = var4;
+<i>104</i>&nbsp;            this.initiator = true;
+<i>105</i>&nbsp;        }
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<b class="nc"><i>108</i>&nbsp;    Krb5Context(GSSCaller var1, Krb5CredElement var2) throws GSSException {</b>
+<i>109</i>&nbsp;        this.caller = var1;
+<b class="nc"><i>110</i>&nbsp;        this.myCred = var2;</b>
+<b class="nc"><i>111</i>&nbsp;        this.initiator = false;</b>
+<i>112</i>&nbsp;    }
+<b class="nc"><i>113</i>&nbsp;</b>
+<b class="nc"><i>114</i>&nbsp;    public Krb5Context(GSSCaller var1, byte[] var2) throws GSSException {</b>
+<b class="nc"><i>115</i>&nbsp;        throw new GSSException(16, -1, &quot;GSS Import Context not available&quot;);</b>
+<b class="nc"><i>116</i>&nbsp;    }</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<i>118</i>&nbsp;    public final boolean isTransferable() throws GSSException {
+<i>119</i>&nbsp;        return false;
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public final int getLifetime() {
+<i>123</i>&nbsp;        return 2147483647;
+<i>124</i>&nbsp;    }
+<b class="nc"><i>125</i>&nbsp;</b>
+<b class="nc"><i>126</i>&nbsp;    public void requestLifetime(int var1) throws GSSException {</b>
+<b class="nc"><i>127</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {</b>
+<b class="nc"><i>128</i>&nbsp;            this.lifetime = var1;</b>
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    public final void requestConf(boolean var1) throws GSSException {
+<i>134</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<b class="nc"><i>135</i>&nbsp;            this.confState = var1;</b>
+<b class="nc"><i>136</i>&nbsp;        }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public final boolean getConfState() {
+<i>141</i>&nbsp;        return this.confState;
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public final void requestInteg(boolean var1) throws GSSException {
+<b class="nc"><i>145</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {</b>
+<i>146</i>&nbsp;            this.integState = var1;
+<i>147</i>&nbsp;        }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public final boolean getIntegState() {
+<i>152</i>&nbsp;        return this.integState;
+<b class="nc"><i>153</i>&nbsp;    }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    public final void requestCredDeleg(boolean var1) throws GSSException {
+<i>156</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<i>157</i>&nbsp;            this.credDelegState = var1;
+<i>158</i>&nbsp;        }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    public final boolean getCredDelegState() {
+<i>163</i>&nbsp;        return this.credDelegState;
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public final void requestMutualAuth(boolean var1) throws GSSException {
+<i>167</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<i>168</i>&nbsp;            this.mutualAuthState = var1;
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    public final boolean getMutualAuthState() {
+<i>174</i>&nbsp;        return this.mutualAuthState;
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    public final void requestReplayDet(boolean var1) throws GSSException {
+<i>178</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<i>179</i>&nbsp;            this.replayDetState = var1;
+<b class="nc"><i>180</i>&nbsp;        }</b>
+<b class="nc"><i>181</i>&nbsp;</b>
+<i>182</i>&nbsp;    }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    public final boolean getReplayDetState() {
+<i>185</i>&nbsp;        return this.replayDetState || this.sequenceDetState;
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<b class="nc"><i>188</i>&nbsp;    public final void requestSequenceDet(boolean var1) throws GSSException {</b>
+<b class="nc"><i>189</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {</b>
+<i>190</i>&nbsp;            this.sequenceDetState = var1;
+<i>191</i>&nbsp;        }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public final boolean getSequenceDetState() {
+<b class="nc"><i>196</i>&nbsp;        return this.sequenceDetState || this.replayDetState;</b>
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    public final void requestDelegPolicy(boolean var1) {
+<i>200</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<i>201</i>&nbsp;            this.delegPolicyState = var1;
+<i>202</i>&nbsp;        }
+<b class="nc"><i>203</i>&nbsp;</b>
+<b class="nc"><i>204</i>&nbsp;    }</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public final boolean getDelegPolicyState() {
+<i>207</i>&nbsp;        return this.delegPolicyState;
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public final void requestAnonymity(boolean var1) throws GSSException {
+<b class="nc"><i>211</i>&nbsp;    }</b>
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    public final boolean getAnonymityState() {
+<i>214</i>&nbsp;        return false;
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    final CipherHelper getCipherHelper(EncryptionKey var1) throws GSSException {
+<i>218</i>&nbsp;        EncryptionKey var2 = null;
+<b class="nc"><i>219</i>&nbsp;        if(this.cipherHelper == null) {</b>
+<b class="nc"><i>220</i>&nbsp;            var2 = this.getKey() == null?var1:this.getKey();</b>
+<i>221</i>&nbsp;            this.cipherHelper = new CipherHelper(var2);
+<i>222</i>&nbsp;        }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;        return this.cipherHelper;
+<i>225</i>&nbsp;    }
+<i>226</i>&nbsp;
+<b class="nc"><i>227</i>&nbsp;    final int incrementMySequenceNumber() {</b>
+<i>228</i>&nbsp;        Object var2 = this.mySeqNumberLock;
+<i>229</i>&nbsp;        synchronized(this.mySeqNumberLock) {
+<i>230</i>&nbsp;            int var1 = this.mySeqNumber;
+<i>231</i>&nbsp;            this.mySeqNumber = var1 + 1;
+<i>232</i>&nbsp;            return var1;
+<i>233</i>&nbsp;        }
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<b class="nc"><i>236</i>&nbsp;    final void resetMySequenceNumber(int var1) {</b>
+<b class="nc"><i>237</i>&nbsp;        if(DEBUG) {</b>
+<i>238</i>&nbsp;            System.out.println(&quot;Krb5Context setting mySeqNumber to: &quot; + var1);
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;        Object var2 = this.mySeqNumberLock;
+<i>242</i>&nbsp;        synchronized(this.mySeqNumberLock) {
+<i>243</i>&nbsp;            this.mySeqNumber = var1;
+<i>244</i>&nbsp;        }
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<b class="nc"><i>247</i>&nbsp;    final void resetPeerSequenceNumber(int var1) {</b>
+<i>248</i>&nbsp;        if(DEBUG) {
+<i>249</i>&nbsp;            System.out.println(&quot;Krb5Context setting peerSeqNumber to: &quot; + var1);
+<i>250</i>&nbsp;        }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;        Object var2 = this.peerSeqNumberLock;
+<i>253</i>&nbsp;        synchronized(this.peerSeqNumberLock) {
+<i>254</i>&nbsp;            this.peerSeqNumber = var1;
+<b class="nc"><i>255</i>&nbsp;            this.peerTokenTracker = new TokenTracker(this.peerSeqNumber);</b>
+<b class="nc"><i>256</i>&nbsp;        }</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    final void setKey(int var1, EncryptionKey var2) throws GSSException {
+<i>260</i>&nbsp;        this.key = var2;
+<i>261</i>&nbsp;        this.keySrc = var1;
+<i>262</i>&nbsp;        this.cipherHelper = new CipherHelper(var2);
+<i>263</i>&nbsp;    }
+<b class="nc"><i>264</i>&nbsp;</b>
+<i>265</i>&nbsp;    public final int getKeySrc() {
+<i>266</i>&nbsp;        return this.keySrc;
+<i>267</i>&nbsp;    }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    private final EncryptionKey getKey() {
+<i>270</i>&nbsp;        return this.key;
+<i>271</i>&nbsp;    }
+<b class="nc"><i>272</i>&nbsp;</b>
+<b class="nc"><i>273</i>&nbsp;    final void setDelegCred(Krb5CredElement var1) {</b>
+<i>274</i>&nbsp;        this.delegatedCred = var1;
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    final void setCredDelegState(boolean var1) {
+<i>278</i>&nbsp;        this.credDelegState = var1;
+<i>279</i>&nbsp;    }
+<i>280</i>&nbsp;
+<b class="nc"><i>281</i>&nbsp;    final void setMutualAuthState(boolean var1) {</b>
+<i>282</i>&nbsp;        this.mutualAuthState = var1;
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    final void setReplayDetState(boolean var1) {
+<i>286</i>&nbsp;        this.replayDetState = var1;
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    final void setSequenceDetState(boolean var1) {
+<i>290</i>&nbsp;        this.sequenceDetState = var1;
+<i>291</i>&nbsp;    }
+<i>292</i>&nbsp;
+<i>293</i>&nbsp;    final void setConfState(boolean var1) {
+<i>294</i>&nbsp;        this.confState = var1;
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;    final void setIntegState(boolean var1) {
+<i>298</i>&nbsp;        this.integState = var1;
+<i>299</i>&nbsp;    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    final void setDelegPolicyState(boolean var1) {
+<i>302</i>&nbsp;        this.delegPolicyState = var1;
+<b class="nc"><i>303</i>&nbsp;    }</b>
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;    public final void setChannelBinding(ChannelBinding var1) throws GSSException {
+<i>306</i>&nbsp;        this.channelBinding = var1;
+<i>307</i>&nbsp;    }
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    final ChannelBinding getChannelBinding() {
+<i>310</i>&nbsp;        return this.channelBinding;
+<i>311</i>&nbsp;    }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;    public final Oid getMech() {
+<i>314</i>&nbsp;        return Krb5MechFactory.GSS_KRB5_MECH_OID;
+<b class="nc"><i>315</i>&nbsp;    }</b>
+<b class="nc"><i>316</i>&nbsp;</b>
+<b class="nc"><i>317</i>&nbsp;    public final GSSNameSpi getSrcName() throws GSSException {</b>
+<b class="nc"><i>318</i>&nbsp;        return this.isInitiator()?this.myName:this.peerName;</b>
+<i>319</i>&nbsp;    }
+<b class="nc"><i>320</i>&nbsp;</b>
+<i>321</i>&nbsp;    public final GSSNameSpi getTargName() throws GSSException {
+<i>322</i>&nbsp;        return !this.isInitiator()?this.myName:this.peerName;
+<i>323</i>&nbsp;    }
+<i>324</i>&nbsp;
+<b class="nc"><i>325</i>&nbsp;    public final GSSCredentialSpi getDelegCred() throws GSSException {</b>
+<b class="nc"><i>326</i>&nbsp;        if(this.state != 2 &amp;&amp; this.state != 3) {</b>
+<b class="nc"><i>327</i>&nbsp;            throw new GSSException(12);</b>
+<b class="nc"><i>328</i>&nbsp;        } else if(this.delegatedCred == null) {</b>
+<b class="nc"><i>329</i>&nbsp;            throw new GSSException(13);</b>
+<i>330</i>&nbsp;        } else {
+<i>331</i>&nbsp;            return this.delegatedCred;
+<i>332</i>&nbsp;        }
+<b class="nc"><i>333</i>&nbsp;    }</b>
+<b class="nc"><i>334</i>&nbsp;</b>
+<i>335</i>&nbsp;    public final boolean isInitiator() {
+<i>336</i>&nbsp;        return this.initiator;
+<b class="nc"><i>337</i>&nbsp;    }</b>
+<b class="nc"><i>338</i>&nbsp;</b>
+<b class="nc"><i>339</i>&nbsp;    public final boolean isProtReady() {</b>
+<i>340</i>&nbsp;        return this.state == 3;
+<i>341</i>&nbsp;    }
+<i>342</i>&nbsp;
+<b class="nc"><i>343</i>&nbsp;    public final byte[] initSecContext(InputStream var1, int var2) throws GSSException {</b>
+<b class="nc"><i>344</i>&nbsp;        byte[] var3 = null;</b>
+<i>345</i>&nbsp;        InitSecContextToken var4 = null;
+<i>346</i>&nbsp;        byte var5 = 11;
+<b class="nc"><i>347</i>&nbsp;        if(DEBUG) {</b>
+<b class="nc"><i>348</i>&nbsp;            System.out.println(&quot;Entered Krb5Context.initSecContext with state=&quot; + printState(this.state));</b>
+<b class="nc"><i>349</i>&nbsp;        }</b>
+<b class="nc"><i>350</i>&nbsp;</b>
+<i>351</i>&nbsp;        if(!this.isInitiator()) {
+<i>352</i>&nbsp;            throw new GSSException(11, -1, &quot;initSecContext on an acceptor GSSContext&quot;);
+<i>353</i>&nbsp;        } else {
+<b class="nc"><i>354</i>&nbsp;            GSSException var7;</b>
+<i>355</i>&nbsp;            try {
+<b class="nc"><i>356</i>&nbsp;                if(this.state == 1) {</b>
+<i>357</i>&nbsp;                    this.state = 2;
+<i>358</i>&nbsp;                    var5 = 13;
+<i>359</i>&nbsp;                    if(this.myCred == null) {
+<b class="nc"><i>360</i>&nbsp;                        this.myCred = Krb5InitCredential.getInstance(this.caller, this.myName, 0);</b>
+<i>361</i>&nbsp;                    } else if(!this.myCred.isInitiatorCredential()) {
+<i>362</i>&nbsp;                        throw new GSSException(var5, -1, &quot;No TGT available&quot;);
+<i>363</i>&nbsp;                    }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;                    this.myName = (Krb5NameElement)this.myCred.getName();
+<i>366</i>&nbsp;                    Credentials var6 = ((Krb5InitCredential)this.myCred).getKrb5Credentials();
+<i>367</i>&nbsp;                    this.checkPermission(this.peerName.getKrb5PrincipalName().getName(), &quot;initiate&quot;);
+<b class="nc"><i>368</i>&nbsp;                    final AccessControlContext var14 = AccessController.getContext();</b>
+<i>369</i>&nbsp;                    if(GSSUtil.useSubjectCredsOnly(this.caller)) {
+<i>370</i>&nbsp;                        KerberosTicket var8 = null;
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;                        try {
+<i>373</i>&nbsp;                            var8 = (KerberosTicket)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+<i>374</i>&nbsp;                                public KerberosTicket run() throws Exception {
+<i>375</i>&nbsp;                                    return Krb5Util.getTicket(GSSCaller.CALLER_UNKNOWN, Krb5Context.this.myName.getKrb5PrincipalName().getName(), Krb5Context.this.peerName.getKrb5PrincipalName().getName(), var14);
+<i>376</i>&nbsp;                                }
+<i>377</i>&nbsp;                            });
+<i>378</i>&nbsp;                        } catch (PrivilegedActionException var10) {
+<i>379</i>&nbsp;                            if(DEBUG) {
+<i>380</i>&nbsp;                                System.out.println(&quot;Attempt to obtain service ticket from the subject failed!&quot;);
+<i>381</i>&nbsp;                            }
+<i>382</i>&nbsp;                        }
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;                        if(var8 != null) {</b>
+<i>385</i>&nbsp;                            if(DEBUG) {
+<i>386</i>&nbsp;                                System.out.println(&quot;Found service ticket in the subject&quot; + var8);
+<i>387</i>&nbsp;                            }
+<b class="nc"><i>388</i>&nbsp;</b>
+<i>389</i>&nbsp;                            this.serviceCreds = Krb5Util.ticketToCreds(var8);
+<i>390</i>&nbsp;                        }
+<i>391</i>&nbsp;                    }
+<b class="nc"><i>392</i>&nbsp;</b>
+<i>393</i>&nbsp;                    if(this.serviceCreds == null) {
+<i>394</i>&nbsp;                        if(DEBUG) {
+<i>395</i>&nbsp;                            System.out.println(&quot;Service ticket not found in the subject&quot;);
+<b class="nc"><i>396</i>&nbsp;                        }</b>
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;                        this.serviceCreds = Credentials.acquireServiceCreds(this.peerName.getKrb5PrincipalName().getName(), var6);
+<i>399</i>&nbsp;                        if(GSSUtil.useSubjectCredsOnly(this.caller)) {
+<b class="nc"><i>400</i>&nbsp;                            final Subject var15 = (Subject)AccessController.doPrivileged(new PrivilegedAction() {</b>
+<i>401</i>&nbsp;                                public Subject run() {
+<i>402</i>&nbsp;                                    return Subject.getSubject(var14);
+<i>403</i>&nbsp;                                }
+<b class="nc"><i>404</i>&nbsp;                            });</b>
+<i>405</i>&nbsp;                            if(var15 != null &amp;&amp; !var15.isReadOnly()) {
+<i>406</i>&nbsp;                                final KerberosTicket var9 = Krb5Util.credsToTicket(this.serviceCreds);
+<i>407</i>&nbsp;                                AccessController.doPrivileged(new PrivilegedAction() {
+<i>408</i>&nbsp;                                    public Void run() {
+<i>409</i>&nbsp;                                        var15.getPrivateCredentials().add(var9);
+<i>410</i>&nbsp;                                        return null;
+<i>411</i>&nbsp;                                    }
+<i>412</i>&nbsp;                                });
+<b class="nc"><i>413</i>&nbsp;                            } else if(DEBUG) {</b>
+<i>414</i>&nbsp;                                System.out.println(&quot;Subject is readOnly;Kerberos Service ticket not stored&quot;);
+<i>415</i>&nbsp;                            }
+<i>416</i>&nbsp;                        }
+<b class="nc"><i>417</i>&nbsp;                    }</b>
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;                    boolean var13 = true;
+<i>420</i>&nbsp;                    var4 = new InitSecContextToken(this, var6, this.serviceCreds);
+<i>421</i>&nbsp;                    this.apReq = ((InitSecContextToken)var4).getKrbApReq();
+<i>422</i>&nbsp;                    var3 = var4.encode();
+<i>423</i>&nbsp;                    this.myCred = null;
+<i>424</i>&nbsp;                    if(!this.getMutualAuthState()) {
+<i>425</i>&nbsp;                        this.state = 3;
+<b class="nc"><i>426</i>&nbsp;                    }</b>
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;                    if(DEBUG) {
+<i>429</i>&nbsp;                        System.out.println(&quot;Created InitSecContextToken:\n&quot; + (new HexDumpEncoder()).encodeBuffer(var3));
+<i>430</i>&nbsp;                    }
+<i>431</i>&nbsp;                } else if(this.state == 2) {
+<i>432</i>&nbsp;                    new AcceptSecContextToken(this, this.serviceCreds, this.apReq, var1);
+<i>433</i>&nbsp;                    this.serviceCreds = null;
+<i>434</i>&nbsp;                    this.apReq = null;
+<i>435</i>&nbsp;                    this.state = 3;
+<b class="nc"><i>436</i>&nbsp;                } else if(DEBUG) {</b>
+<i>437</i>&nbsp;                    System.out.println(this.state);
+<i>438</i>&nbsp;                }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;                return var3;
+<i>441</i>&nbsp;            } catch (KrbException var11) {
+<i>442</i>&nbsp;                if(DEBUG) {
+<i>443</i>&nbsp;                    var11.printStackTrace();
+<i>444</i>&nbsp;                }
+<i>445</i>&nbsp;
+<b class="nc"><i>446</i>&nbsp;                var7 = new GSSException(var5, -1, var11.getMessage());</b>
+<i>447</i>&nbsp;                var7.initCause(var11);
+<i>448</i>&nbsp;                throw var7;
+<i>449</i>&nbsp;            } catch (IOException var12) {
+<i>450</i>&nbsp;                var7 = new GSSException(var5, -1, var12.getMessage());
+<i>451</i>&nbsp;                var7.initCause(var12);
+<i>452</i>&nbsp;                throw var7;
+<i>453</i>&nbsp;            }
+<i>454</i>&nbsp;        }
+<i>455</i>&nbsp;    }
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;    public final boolean isEstablished() {
+<i>458</i>&nbsp;        return this.state == 3;
+<i>459</i>&nbsp;    }
+<b class="nc"><i>460</i>&nbsp;</b>
+<b class="nc"><i>461</i>&nbsp;    public final byte[] acceptSecContext(InputStream var1, int var2) throws GSSException {</b>
+<b class="nc"><i>462</i>&nbsp;        byte[] var3 = null;</b>
+<b class="nc"><i>463</i>&nbsp;        if(DEBUG) {</b>
+<b class="nc"><i>464</i>&nbsp;            System.out.println(&quot;Entered Krb5Context.acceptSecContext with state=&quot; + printState(this.state));</b>
+<i>465</i>&nbsp;        }
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;        if(this.isInitiator()) {
+<i>468</i>&nbsp;            throw new GSSException(11, -1, &quot;acceptSecContext on an initiator GSSContext&quot;);
+<i>469</i>&nbsp;        } else {
+<i>470</i>&nbsp;            GSSException var5;
+<i>471</i>&nbsp;            try {
+<i>472</i>&nbsp;                if(this.state == 1) {
+<i>473</i>&nbsp;                    this.state = 2;
+<b class="nc"><i>474</i>&nbsp;                    if(this.myCred == null) {</b>
+<i>475</i>&nbsp;                        this.myCred = Krb5AcceptCredential.getInstance(this.caller, this.myName);
+<i>476</i>&nbsp;                    } else if(!this.myCred.isAcceptorCredential()) {
+<i>477</i>&nbsp;                        throw new GSSException(13, -1, &quot;No Secret Key available&quot;);
+<i>478</i>&nbsp;                    }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;                    this.myName = (Krb5NameElement)this.myCred.getName();
+<i>481</i>&nbsp;                    this.checkPermission(this.myName.getKrb5PrincipalName().getName(), &quot;accept&quot;);
+<i>482</i>&nbsp;                    EncryptionKey[] var4 = ((Krb5AcceptCredential)this.myCred).getKrb5EncryptionKeys();
+<i>483</i>&nbsp;                    InitSecContextToken var9 = new InitSecContextToken(this, var4, var1);
+<i>484</i>&nbsp;                    PrincipalName var6 = var9.getKrbApReq().getClient();
+<i>485</i>&nbsp;                    this.peerName = Krb5NameElement.getInstance(var6);
+<b class="nc"><i>486</i>&nbsp;                    if(this.getMutualAuthState()) {</b>
+<i>487</i>&nbsp;                        var3 = (new AcceptSecContextToken(this, var9.getKrbApReq())).encode();
+<i>488</i>&nbsp;                    }
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;                    this.myCred = null;
+<i>491</i>&nbsp;                    this.state = 3;
+<i>492</i>&nbsp;                } else if(DEBUG) {
+<i>493</i>&nbsp;                    System.out.println(this.state);
+<i>494</i>&nbsp;                }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;                return var3;
+<i>497</i>&nbsp;            } catch (KrbException var7) {
+<i>498</i>&nbsp;                var5 = new GSSException(11, -1, var7.getMessage());
+<i>499</i>&nbsp;                var5.initCause(var7);
+<i>500</i>&nbsp;                throw var5;
+<i>501</i>&nbsp;            } catch (IOException var8) {
+<i>502</i>&nbsp;                if(DEBUG) {
+<i>503</i>&nbsp;                    var8.printStackTrace();
+<i>504</i>&nbsp;                }
+<b class="nc"><i>505</i>&nbsp;</b>
+<b class="nc"><i>506</i>&nbsp;                var5 = new GSSException(11, -1, var8.getMessage());</b>
+<b class="nc"><i>507</i>&nbsp;                var5.initCause(var8);</b>
+<b class="nc"><i>508</i>&nbsp;                throw var5;</b>
+<b class="nc"><i>509</i>&nbsp;            }</b>
+<i>510</i>&nbsp;        }
+<i>511</i>&nbsp;    }
+<b class="nc"><i>512</i>&nbsp;</b>
+<b class="nc"><i>513</i>&nbsp;    public final int getWrapSizeLimit(int var1, boolean var2, int var3) throws GSSException {</b>
+<i>514</i>&nbsp;        int var4 = 0;
+<i>515</i>&nbsp;        if(this.cipherHelper.getProto() == 0) {
+<i>516</i>&nbsp;            var4 = WrapToken.getSizeLimit(var1, var2, var3, this.getCipherHelper((EncryptionKey)null));
+<i>517</i>&nbsp;        } else if(this.cipherHelper.getProto() == 1) {
+<i>518</i>&nbsp;            var4 = WrapToken_v2.getSizeLimit(var1, var2, var3, this.getCipherHelper((EncryptionKey)null));
+<b class="nc"><i>519</i>&nbsp;        }</b>
+<b class="nc"><i>520</i>&nbsp;</b>
+<i>521</i>&nbsp;        return var4;
+<b class="nc"><i>522</i>&nbsp;    }</b>
+<i>523</i>&nbsp;
+<b class="nc"><i>524</i>&nbsp;    public final byte[] wrap(byte[] var1, int var2, int var3, MessageProp var4) throws GSSException {</b>
+<b class="nc"><i>525</i>&nbsp;        if(DEBUG) {</b>
+<i>526</i>&nbsp;            System.out.println(&quot;Krb5Context.wrap: data=[&quot; + getHexBytes(var1, var2, var3) + &quot;]&quot;);
+<b class="nc"><i>527</i>&nbsp;        }</b>
+<b class="nc"><i>528</i>&nbsp;</b>
+<i>529</i>&nbsp;        if(this.state != 3) {
+<i>530</i>&nbsp;            throw new GSSException(12, -1, &quot;Wrap called in invalid state!&quot;);
+<b class="nc"><i>531</i>&nbsp;        } else {</b>
+<b class="nc"><i>532</i>&nbsp;            byte[] var5 = null;</b>
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;            try {
+<b class="nc"><i>535</i>&nbsp;                if(this.cipherHelper.getProto() == 0) {</b>
+<i>536</i>&nbsp;                    WrapToken var6 = new WrapToken(this, var4, var1, var2, var3);
+<i>537</i>&nbsp;                    var5 = var6.encode();
+<i>538</i>&nbsp;                } else if(this.cipherHelper.getProto() == 1) {
+<i>539</i>&nbsp;                    WrapToken_v2 var10 = new WrapToken_v2(this, var4, var1, var2, var3);
+<i>540</i>&nbsp;                    var5 = var10.encode();
+<i>541</i>&nbsp;                }
+<i>542</i>&nbsp;
+<b class="nc"><i>543</i>&nbsp;                if(DEBUG) {</b>
+<i>544</i>&nbsp;                    System.out.println(&quot;Krb5Context.wrap: token=[&quot; + getHexBytes(var5, 0, var5.length) + &quot;]&quot;);
+<i>545</i>&nbsp;                }
+<b class="nc"><i>546</i>&nbsp;</b>
+<b class="nc"><i>547</i>&nbsp;                return var5;</b>
+<i>548</i>&nbsp;            } catch (IOException var8) {
+<i>549</i>&nbsp;                Object var9 = null;
+<b class="nc"><i>550</i>&nbsp;                GSSException var7 = new GSSException(11, -1, var8.getMessage());</b>
+<i>551</i>&nbsp;                var7.initCause(var8);
+<b class="nc"><i>552</i>&nbsp;                throw var7;</b>
+<i>553</i>&nbsp;            }
+<i>554</i>&nbsp;        }
+<i>555</i>&nbsp;    }
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;    public final int wrap(byte[] var1, int var2, int var3, byte[] var4, int var5, MessageProp var6) throws GSSException {
+<i>558</i>&nbsp;        if(this.state != 3) {
+<b class="nc"><i>559</i>&nbsp;            throw new GSSException(12, -1, &quot;Wrap called in invalid state!&quot;);</b>
+<i>560</i>&nbsp;        } else {
+<i>561</i>&nbsp;            int var7 = 0;
+<i>562</i>&nbsp;
+<i>563</i>&nbsp;            try {
+<i>564</i>&nbsp;                if(this.cipherHelper.getProto() == 0) {
+<i>565</i>&nbsp;                    WrapToken var8 = new WrapToken(this, var6, var1, var2, var3);
+<i>566</i>&nbsp;                    var7 = var8.encode(var4, var5);
+<b class="nc"><i>567</i>&nbsp;                } else if(this.cipherHelper.getProto() == 1) {</b>
+<b class="nc"><i>568</i>&nbsp;                    WrapToken_v2 var12 = new WrapToken_v2(this, var6, var1, var2, var3);</b>
+<b class="nc"><i>569</i>&nbsp;                    var7 = var12.encode(var4, var5);</b>
+<i>570</i>&nbsp;                }
+<i>571</i>&nbsp;
+<b class="nc"><i>572</i>&nbsp;                if(DEBUG) {</b>
+<b class="nc"><i>573</i>&nbsp;                    System.out.println(&quot;Krb5Context.wrap: token=[&quot; + getHexBytes(var4, var5, var7) + &quot;]&quot;);</b>
+<b class="nc"><i>574</i>&nbsp;                }</b>
+<b class="nc"><i>575</i>&nbsp;</b>
+<i>576</i>&nbsp;                return var7;
+<i>577</i>&nbsp;            } catch (IOException var10) {
+<i>578</i>&nbsp;                boolean var11 = false;
+<i>579</i>&nbsp;                GSSException var9 = new GSSException(11, -1, var10.getMessage());
+<i>580</i>&nbsp;                var9.initCause(var10);
+<i>581</i>&nbsp;                throw var9;
+<i>582</i>&nbsp;            }
+<b class="nc"><i>583</i>&nbsp;        }</b>
+<i>584</i>&nbsp;    }
+<i>585</i>&nbsp;
+<b class="nc"><i>586</i>&nbsp;    public final void wrap(byte[] var1, int var2, int var3, OutputStream var4, MessageProp var5) throws GSSException {</b>
+<i>587</i>&nbsp;        if(this.state != 3) {
+<i>588</i>&nbsp;            throw new GSSException(12, -1, &quot;Wrap called in invalid state!&quot;);
+<b class="nc"><i>589</i>&nbsp;        } else {</b>
+<b class="nc"><i>590</i>&nbsp;            byte[] var6 = null;</b>
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;            try {
+<i>593</i>&nbsp;                if(this.cipherHelper.getProto() == 0) {
+<b class="nc"><i>594</i>&nbsp;                    WrapToken var7 = new WrapToken(this, var5, var1, var2, var3);</b>
+<i>595</i>&nbsp;                    var7.encode(var4);
+<i>596</i>&nbsp;                    if(DEBUG) {
+<b class="nc"><i>597</i>&nbsp;                        var6 = var7.encode();</b>
+<b class="nc"><i>598</i>&nbsp;                    }</b>
+<i>599</i>&nbsp;                } else if(this.cipherHelper.getProto() == 1) {
+<b class="nc"><i>600</i>&nbsp;                    WrapToken_v2 var10 = new WrapToken_v2(this, var5, var1, var2, var3);</b>
+<i>601</i>&nbsp;                    var10.encode(var4);
+<b class="nc"><i>602</i>&nbsp;                    if(DEBUG) {</b>
+<i>603</i>&nbsp;                        var6 = var10.encode();
+<i>604</i>&nbsp;                    }
+<b class="nc"><i>605</i>&nbsp;                }</b>
+<i>606</i>&nbsp;            } catch (IOException var9) {
+<i>607</i>&nbsp;                GSSException var8 = new GSSException(11, -1, var9.getMessage());
+<i>608</i>&nbsp;                var8.initCause(var9);
+<i>609</i>&nbsp;                throw var8;
+<i>610</i>&nbsp;            }
+<i>611</i>&nbsp;
+<i>612</i>&nbsp;            if(DEBUG) {
+<i>613</i>&nbsp;                System.out.println(&quot;Krb5Context.wrap: token=[&quot; + getHexBytes(var6, 0, var6.length) + &quot;]&quot;);
+<b class="nc"><i>614</i>&nbsp;            }</b>
+<i>615</i>&nbsp;
+<b class="nc"><i>616</i>&nbsp;        }</b>
+<b class="nc"><i>617</i>&nbsp;    }</b>
+<i>618</i>&nbsp;
+<b class="nc"><i>619</i>&nbsp;    public final void wrap(InputStream var1, OutputStream var2, MessageProp var3) throws GSSException {</b>
+<b class="nc"><i>620</i>&nbsp;        byte[] var4;</b>
+<i>621</i>&nbsp;        try {
+<i>622</i>&nbsp;            var4 = new byte[var1.available()];
+<b class="nc"><i>623</i>&nbsp;            var1.read(var4);</b>
+<i>624</i>&nbsp;        } catch (IOException var7) {
+<b class="nc"><i>625</i>&nbsp;            GSSException var6 = new GSSException(11, -1, var7.getMessage());</b>
+<b class="nc"><i>626</i>&nbsp;            var6.initCause(var7);</b>
+<i>627</i>&nbsp;            throw var6;
+<i>628</i>&nbsp;        }
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;        this.wrap(var4, 0, var4.length, var2, var3);
+<i>631</i>&nbsp;    }
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;    public final byte[] unwrap(byte[] var1, int var2, int var3, MessageProp var4) throws GSSException {
+<b class="nc"><i>634</i>&nbsp;        if(DEBUG) {</b>
+<b class="nc"><i>635</i>&nbsp;            System.out.println(&quot;Krb5Context.unwrap: token=[&quot; + getHexBytes(var1, var2, var3) + &quot;]&quot;);</b>
+<b class="nc"><i>636</i>&nbsp;        }</b>
+<b class="nc"><i>637</i>&nbsp;</b>
+<b class="nc"><i>638</i>&nbsp;        if(this.state != 3) {</b>
+<b class="nc"><i>639</i>&nbsp;            throw new GSSException(12, -1, &quot; Unwrap called in invalid state!&quot;);</b>
+<b class="nc"><i>640</i>&nbsp;        } else {</b>
+<i>641</i>&nbsp;            byte[] var5 = null;
+<b class="nc"><i>642</i>&nbsp;            if(this.cipherHelper.getProto() == 0) {</b>
+<b class="nc"><i>643</i>&nbsp;                WrapToken var6 = new WrapToken(this, var1, var2, var3, var4);</b>
+<i>644</i>&nbsp;                var5 = var6.getData();
+<i>645</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken)var6, var4);
+<b class="nc"><i>646</i>&nbsp;            } else if(this.cipherHelper.getProto() == 1) {</b>
+<i>647</i>&nbsp;                WrapToken_v2 var7 = new WrapToken_v2(this, var1, var2, var3, var4);
+<i>648</i>&nbsp;                var5 = var7.getData();
+<b class="nc"><i>649</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken_v2)var7, var4);</b>
+<b class="nc"><i>650</i>&nbsp;            }</b>
+<b class="nc"><i>651</i>&nbsp;</b>
+<b class="nc"><i>652</i>&nbsp;            if(DEBUG) {</b>
+<i>653</i>&nbsp;                System.out.println(&quot;Krb5Context.unwrap: data=[&quot; + getHexBytes(var5, 0, var5.length) + &quot;]&quot;);
+<i>654</i>&nbsp;            }
+<b class="nc"><i>655</i>&nbsp;</b>
+<b class="nc"><i>656</i>&nbsp;            return var5;</b>
+<i>657</i>&nbsp;        }
+<i>658</i>&nbsp;    }
+<b class="nc"><i>659</i>&nbsp;</b>
+<b class="nc"><i>660</i>&nbsp;    public final int unwrap(byte[] var1, int var2, int var3, byte[] var4, int var5, MessageProp var6) throws GSSException {</b>
+<b class="nc"><i>661</i>&nbsp;        if(this.state != 3) {</b>
+<i>662</i>&nbsp;            throw new GSSException(12, -1, &quot;Unwrap called in invalid state!&quot;);
+<b class="nc"><i>663</i>&nbsp;        } else {</b>
+<i>664</i>&nbsp;            if(this.cipherHelper.getProto() == 0) {
+<b class="nc"><i>665</i>&nbsp;                WrapToken var7 = new WrapToken(this, var1, var2, var3, var6);</b>
+<b class="nc"><i>666</i>&nbsp;                var3 = var7.getData(var4, var5);</b>
+<b class="nc"><i>667</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken)var7, var6);</b>
+<b class="nc"><i>668</i>&nbsp;            } else if(this.cipherHelper.getProto() == 1) {</b>
+<i>669</i>&nbsp;                WrapToken_v2 var8 = new WrapToken_v2(this, var1, var2, var3, var6);
+<b class="nc"><i>670</i>&nbsp;                var3 = var8.getData(var4, var5);</b>
+<b class="nc"><i>671</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken_v2)var8, var6);</b>
+<b class="nc"><i>672</i>&nbsp;            }</b>
+<b class="nc"><i>673</i>&nbsp;</b>
+<i>674</i>&nbsp;            return var3;
+<i>675</i>&nbsp;        }
+<i>676</i>&nbsp;    }
+<b class="nc"><i>677</i>&nbsp;</b>
+<i>678</i>&nbsp;    public final int unwrap(InputStream var1, byte[] var2, int var3, MessageProp var4) throws GSSException {
+<i>679</i>&nbsp;        if(this.state != 3) {
+<i>680</i>&nbsp;            throw new GSSException(12, -1, &quot;Unwrap called in invalid state!&quot;);
+<i>681</i>&nbsp;        } else {
+<i>682</i>&nbsp;            int var5 = 0;
+<i>683</i>&nbsp;            if(this.cipherHelper.getProto() == 0) {
+<i>684</i>&nbsp;                WrapToken var6 = new WrapToken(this, var1, var4);
+<i>685</i>&nbsp;                var5 = var6.getData(var2, var3);
+<i>686</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken)var6, var4);
+<i>687</i>&nbsp;            } else if(this.cipherHelper.getProto() == 1) {
+<i>688</i>&nbsp;                WrapToken_v2 var7 = new WrapToken_v2(this, var1, var4);
+<i>689</i>&nbsp;                var5 = var7.getData(var2, var3);
+<i>690</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken_v2)var7, var4);
+<i>691</i>&nbsp;            }
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;            return var5;
+<i>694</i>&nbsp;        }
+<b class="nc"><i>695</i>&nbsp;    }</b>
+<i>696</i>&nbsp;
+<b class="nc"><i>697</i>&nbsp;    public final void unwrap(InputStream var1, OutputStream var2, MessageProp var3) throws GSSException {</b>
+<b class="nc"><i>698</i>&nbsp;        if(this.state != 3) {</b>
+<i>699</i>&nbsp;            throw new GSSException(12, -1, &quot;Unwrap called in invalid state!&quot;);
+<i>700</i>&nbsp;        } else {
+<i>701</i>&nbsp;            byte[] var4 = null;
+<b class="nc"><i>702</i>&nbsp;            if(this.cipherHelper.getProto() == 0) {</b>
+<b class="nc"><i>703</i>&nbsp;                WrapToken var5 = new WrapToken(this, var1, var3);</b>
+<i>704</i>&nbsp;                var4 = var5.getData();
+<i>705</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken)var5, var3);
+<i>706</i>&nbsp;            } else if(this.cipherHelper.getProto() == 1) {
+<i>707</i>&nbsp;                WrapToken_v2 var8 = new WrapToken_v2(this, var1, var3);
+<b class="nc"><i>708</i>&nbsp;                var4 = var8.getData();</b>
+<b class="nc"><i>709</i>&nbsp;                this.setSequencingAndReplayProps((MessageToken_v2)var8, var3);</b>
+<b class="nc"><i>710</i>&nbsp;            }</b>
+<b class="nc"><i>711</i>&nbsp;</b>
+<b class="nc"><i>712</i>&nbsp;            try {</b>
+<b class="nc"><i>713</i>&nbsp;                var2.write(var4);</b>
+<i>714</i>&nbsp;            } catch (IOException var7) {
+<i>715</i>&nbsp;                GSSException var6 = new GSSException(11, -1, var7.getMessage());
+<b class="nc"><i>716</i>&nbsp;                var6.initCause(var7);</b>
+<i>717</i>&nbsp;                throw var6;
+<b class="nc"><i>718</i>&nbsp;            }</b>
+<i>719</i>&nbsp;        }
+<i>720</i>&nbsp;    }
+<b class="nc"><i>721</i>&nbsp;</b>
+<i>722</i>&nbsp;    public final byte[] getMIC(byte[] var1, int var2, int var3, MessageProp var4) throws GSSException {
+<i>723</i>&nbsp;        byte[] var5 = null;
+<b class="nc"><i>724</i>&nbsp;</b>
+<i>725</i>&nbsp;        try {
+<b class="nc"><i>726</i>&nbsp;            if(this.cipherHelper.getProto() == 0) {</b>
+<b class="nc"><i>727</i>&nbsp;                MicToken var6 = new MicToken(this, var4, var1, var2, var3);</b>
+<b class="nc"><i>728</i>&nbsp;                var5 = var6.encode();</b>
+<b class="nc"><i>729</i>&nbsp;            } else if(this.cipherHelper.getProto() == 1) {</b>
+<i>730</i>&nbsp;                MicToken_v2 var10 = new MicToken_v2(this, var4, var1, var2, var3);
+<i>731</i>&nbsp;                var5 = var10.encode();
+<b class="nc"><i>732</i>&nbsp;            }</b>
+<b class="nc"><i>733</i>&nbsp;</b>
+<b class="nc"><i>734</i>&nbsp;            return var5;</b>
+<i>735</i>&nbsp;        } catch (IOException var8) {
+<b class="nc"><i>736</i>&nbsp;            Object var9 = null;</b>
+<b class="nc"><i>737</i>&nbsp;            GSSException var7 = new GSSException(11, -1, var8.getMessage());</b>
+<i>738</i>&nbsp;            var7.initCause(var8);
+<i>739</i>&nbsp;            throw var7;
+<b class="nc"><i>740</i>&nbsp;        }</b>
+<b class="nc"><i>741</i>&nbsp;    }</b>
+<i>742</i>&nbsp;
+<b class="nc"><i>743</i>&nbsp;    private int getMIC(byte[] var1, int var2, int var3, byte[] var4, int var5, MessageProp var6) throws GSSException {</b>
+<b class="nc"><i>744</i>&nbsp;        int var7 = 0;</b>
+<b class="nc"><i>745</i>&nbsp;</b>
+<b class="nc"><i>746</i>&nbsp;        try {</b>
+<b class="nc"><i>747</i>&nbsp;            if(this.cipherHelper.getProto() == 0) {</b>
+<i>748</i>&nbsp;                MicToken var8 = new MicToken(this, var6, var1, var2, var3);
+<b class="nc"><i>749</i>&nbsp;                var7 = var8.encode(var4, var5);</b>
+<i>750</i>&nbsp;            } else if(this.cipherHelper.getProto() == 1) {
+<b class="nc"><i>751</i>&nbsp;                MicToken_v2 var12 = new MicToken_v2(this, var6, var1, var2, var3);</b>
+<b class="nc"><i>752</i>&nbsp;                var7 = var12.encode(var4, var5);</b>
+<b class="nc"><i>753</i>&nbsp;            }</b>
+<i>754</i>&nbsp;
+<b class="nc"><i>755</i>&nbsp;            return var7;</b>
+<i>756</i>&nbsp;        } catch (IOException var10) {
+<i>757</i>&nbsp;            boolean var11 = false;
+<i>758</i>&nbsp;            GSSException var9 = new GSSException(11, -1, var10.getMessage());
+<i>759</i>&nbsp;            var9.initCause(var10);
+<i>760</i>&nbsp;            throw var9;
+<i>761</i>&nbsp;        }
+<i>762</i>&nbsp;    }
+<i>763</i>&nbsp;
+<i>764</i>&nbsp;    private void getMIC(byte[] var1, int var2, int var3, OutputStream var4, MessageProp var5) throws GSSException {
+<i>765</i>&nbsp;        try {
+<i>766</i>&nbsp;            if(this.cipherHelper.getProto() == 0) {
+<i>767</i>&nbsp;                MicToken var6 = new MicToken(this, var5, var1, var2, var3);
+<i>768</i>&nbsp;                var6.encode(var4);
+<i>769</i>&nbsp;            } else if(this.cipherHelper.getProto() == 1) {
+<i>770</i>&nbsp;                MicToken_v2 var9 = new MicToken_v2(this, var5, var1, var2, var3);
+<i>771</i>&nbsp;                var9.encode(var4);
+<i>772</i>&nbsp;            }
+<i>773</i>&nbsp;
+<i>774</i>&nbsp;        } catch (IOException var8) {
+<i>775</i>&nbsp;            GSSException var7 = new GSSException(11, -1, var8.getMessage());
+<i>776</i>&nbsp;            var7.initCause(var8);
+<b class="nc"><i>777</i>&nbsp;            throw var7;</b>
+<b class="nc"><i>778</i>&nbsp;        }</b>
+<b class="nc"><i>779</i>&nbsp;    }</b>
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;    public final void getMIC(InputStream var1, OutputStream var2, MessageProp var3) throws GSSException {</b>
+<b class="nc"><i>782</i>&nbsp;        byte[] var4;</b>
+<i>783</i>&nbsp;        try {
+<i>784</i>&nbsp;            var4 = new byte[var1.available()];
+<b class="nc"><i>785</i>&nbsp;            var1.read(var4);</b>
+<i>786</i>&nbsp;        } catch (IOException var7) {
+<i>787</i>&nbsp;            GSSException var6 = new GSSException(11, -1, var7.getMessage());
+<i>788</i>&nbsp;            var6.initCause(var7);
+<i>789</i>&nbsp;            throw var6;
+<i>790</i>&nbsp;        }
+<i>791</i>&nbsp;
+<i>792</i>&nbsp;        this.getMIC(var4, 0, var4.length, var2, var3);
+<i>793</i>&nbsp;    }
+<i>794</i>&nbsp;
+<i>795</i>&nbsp;    public final void verifyMIC(byte[] var1, int var2, int var3, byte[] var4, int var5, int var6, MessageProp var7) throws GSSException {
+<i>796</i>&nbsp;        if(this.cipherHelper.getProto() == 0) {
+<b class="nc"><i>797</i>&nbsp;            MicToken var8 = new MicToken(this, var1, var2, var3, var7);</b>
+<b class="nc"><i>798</i>&nbsp;            var8.verify(var4, var5, var6);</b>
+<i>799</i>&nbsp;            this.setSequencingAndReplayProps((MessageToken)var8, var7);
+<i>800</i>&nbsp;        } else if(this.cipherHelper.getProto() == 1) {
+<i>801</i>&nbsp;            MicToken_v2 var9 = new MicToken_v2(this, var1, var2, var3, var7);
+<i>802</i>&nbsp;            var9.verify(var4, var5, var6);
+<b class="nc"><i>803</i>&nbsp;            this.setSequencingAndReplayProps((MessageToken_v2)var9, var7);</b>
+<b class="nc"><i>804</i>&nbsp;        }</b>
+<i>805</i>&nbsp;
+<i>806</i>&nbsp;    }
+<b class="nc"><i>807</i>&nbsp;</b>
+<i>808</i>&nbsp;    private void verifyMIC(InputStream var1, byte[] var2, int var3, int var4, MessageProp var5) throws GSSException {
+<b class="nc"><i>809</i>&nbsp;        if(this.cipherHelper.getProto() == 0) {</b>
+<b class="nc"><i>810</i>&nbsp;            MicToken var6 = new MicToken(this, var1, var5);</b>
+<i>811</i>&nbsp;            var6.verify(var2, var3, var4);
+<b class="nc"><i>812</i>&nbsp;            this.setSequencingAndReplayProps((MessageToken)var6, var5);</b>
+<b class="nc"><i>813</i>&nbsp;        } else if(this.cipherHelper.getProto() == 1) {</b>
+<b class="nc"><i>814</i>&nbsp;            MicToken_v2 var7 = new MicToken_v2(this, var1, var5);</b>
+<i>815</i>&nbsp;            var7.verify(var2, var3, var4);
+<b class="nc"><i>816</i>&nbsp;            this.setSequencingAndReplayProps((MessageToken_v2)var7, var5);</b>
+<i>817</i>&nbsp;        }
+<b class="nc"><i>818</i>&nbsp;</b>
+<b class="nc"><i>819</i>&nbsp;    }</b>
+<i>820</i>&nbsp;
+<i>821</i>&nbsp;    public final void verifyMIC(InputStream var1, InputStream var2, MessageProp var3) throws GSSException {
+<i>822</i>&nbsp;        byte[] var4;
+<b class="nc"><i>823</i>&nbsp;        try {</b>
+<b class="nc"><i>824</i>&nbsp;            var4 = new byte[var2.available()];</b>
+<b class="nc"><i>825</i>&nbsp;            var2.read(var4);</b>
+<b class="nc"><i>826</i>&nbsp;        } catch (IOException var7) {</b>
+<i>827</i>&nbsp;            GSSException var6 = new GSSException(11, -1, var7.getMessage());
+<b class="nc"><i>828</i>&nbsp;            var6.initCause(var7);</b>
+<b class="nc"><i>829</i>&nbsp;            throw var6;</b>
+<i>830</i>&nbsp;        }
+<i>831</i>&nbsp;
+<i>832</i>&nbsp;        this.verifyMIC(var1, var4, 0, var4.length, var3);
+<i>833</i>&nbsp;    }
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;    public final byte[] export() throws GSSException {
+<i>836</i>&nbsp;        throw new GSSException(16, -1, &quot;GSS Export Context not available&quot;);
+<b class="nc"><i>837</i>&nbsp;    }</b>
+<b class="nc"><i>838</i>&nbsp;</b>
+<i>839</i>&nbsp;    public final void dispose() throws GSSException {
+<i>840</i>&nbsp;        this.state = 4;
+<b class="nc"><i>841</i>&nbsp;        this.delegatedCred = null;</b>
+<i>842</i>&nbsp;    }
+<b class="nc"><i>843</i>&nbsp;</b>
+<b class="nc"><i>844</i>&nbsp;    public final Provider getProvider() {</b>
+<i>845</i>&nbsp;        return Krb5MechFactory.PROVIDER;
+<b class="nc"><i>846</i>&nbsp;    }</b>
+<b class="nc"><i>847</i>&nbsp;</b>
+<b class="nc"><i>848</i>&nbsp;    private void setSequencingAndReplayProps(MessageToken var1, MessageProp var2) {</b>
+<i>849</i>&nbsp;        if(this.replayDetState || this.sequenceDetState) {
+<b class="nc"><i>850</i>&nbsp;            int var3 = var1.getSequenceNumber();</b>
+<i>851</i>&nbsp;            this.peerTokenTracker.getProps(var3, var2);
+<b class="nc"><i>852</i>&nbsp;        }</b>
+<b class="nc"><i>853</i>&nbsp;</b>
+<i>854</i>&nbsp;    }
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;    private void setSequencingAndReplayProps(MessageToken_v2 var1, MessageProp var2) {
+<b class="nc"><i>857</i>&nbsp;        if(this.replayDetState || this.sequenceDetState) {</b>
+<b class="nc"><i>858</i>&nbsp;            int var3 = var1.getSequenceNumber();</b>
+<b class="nc"><i>859</i>&nbsp;            this.peerTokenTracker.getProps(var3, var2);</b>
+<b class="nc"><i>860</i>&nbsp;        }</b>
+<i>861</i>&nbsp;
+<b class="nc"><i>862</i>&nbsp;    }</b>
+<b class="nc"><i>863</i>&nbsp;</b>
+<i>864</i>&nbsp;    private void checkPermission(String var1, String var2) {
+<i>865</i>&nbsp;        SecurityManager var3 = System.getSecurityManager();
+<i>866</i>&nbsp;        if(var3 != null) {
+<i>867</i>&nbsp;            ServicePermission var4 = new ServicePermission(var1, var2);
+<i>868</i>&nbsp;            var3.checkPermission(var4);
+<i>869</i>&nbsp;        }
+<i>870</i>&nbsp;
+<b class="nc"><i>871</i>&nbsp;    }</b>
+<b class="nc"><i>872</i>&nbsp;</b>
+<i>873</i>&nbsp;    private static String getHexBytes(byte[] var0, int var1, int var2) {
+<i>874</i>&nbsp;        StringBuffer var3 = new StringBuffer();
+<b class="nc"><i>875</i>&nbsp;</b>
+<i>876</i>&nbsp;        for(int var4 = 0; var4 &lt; var2; ++var4) {
+<b class="nc"><i>877</i>&nbsp;            int var5 = var0[var4] &gt;&gt; 4 &amp; 15;</b>
+<b class="nc"><i>878</i>&nbsp;            int var6 = var0[var4] &amp; 15;</b>
+<i>879</i>&nbsp;            var3.append(Integer.toHexString(var5));
+<b class="nc"><i>880</i>&nbsp;            var3.append(Integer.toHexString(var6));</b>
+<b class="nc"><i>881</i>&nbsp;            var3.append(&#39; &#39;);</b>
+<b class="nc"><i>882</i>&nbsp;        }</b>
+<i>883</i>&nbsp;
+<b class="nc"><i>884</i>&nbsp;        return var3.toString();</b>
+<b class="nc"><i>885</i>&nbsp;    }</b>
+<i>886</i>&nbsp;
+<b class="nc"><i>887</i>&nbsp;    private static String printState(int var0) {</b>
+<b class="nc"><i>888</i>&nbsp;        switch(var0) {</b>
+<b class="nc"><i>889</i>&nbsp;        case 1:</b>
+<i>890</i>&nbsp;            return &quot;STATE_NEW&quot;;
+<i>891</i>&nbsp;        case 2:
+<b class="nc"><i>892</i>&nbsp;            return &quot;STATE_IN_PROCESS&quot;;</b>
+<b class="nc"><i>893</i>&nbsp;        case 3:</b>
+<i>894</i>&nbsp;            return &quot;STATE_DONE&quot;;
+<b class="nc"><i>895</i>&nbsp;        case 4:</b>
+<b class="nc"><i>896</i>&nbsp;            return &quot;STATE_DELETED&quot;;</b>
+<b class="nc"><i>897</i>&nbsp;        default:</b>
+<i>898</i>&nbsp;            return &quot;Unknown state &quot; + var0;
+<b class="nc"><i>899</i>&nbsp;        }</b>
+<b class="nc"><i>900</i>&nbsp;    }</b>
+<i>901</i>&nbsp;
+<i>902</i>&nbsp;    GSSCaller getCaller() {
+<i>903</i>&nbsp;        return this.caller;
+<i>904</i>&nbsp;    }
+<i>905</i>&nbsp;
+<i>906</i>&nbsp;    public Object inquireSecContext(InquireType var1) throws GSSException {
+<i>907</i>&nbsp;        if(!this.isEstablished()) {
+<i>908</i>&nbsp;            throw new GSSException(12, -1, &quot;Security context not established.&quot;);
+<i>909</i>&nbsp;        } else {
+<i>910</i>&nbsp;            switch(Krb5Context.SyntheticClass_1.$SwitchMap$com$sun$security$jgss$InquireType[var1.ordinal()]) {
+<b class="nc"><i>911</i>&nbsp;            case 1:</b>
+<b class="nc"><i>912</i>&nbsp;                return new Krb5Context.KerberosSessionKey(this.key);</b>
+<b class="nc"><i>913</i>&nbsp;            case 2:</b>
+<b class="nc"><i>914</i>&nbsp;                return this.tktFlags.clone();</b>
+<i>915</i>&nbsp;            case 3:
+<b class="nc"><i>916</i>&nbsp;                if(this.isInitiator()) {</b>
+<b class="nc"><i>917</i>&nbsp;                    throw new GSSException(16, -1, &quot;AuthzData not available on initiator side.&quot;);</b>
+<b class="nc"><i>918</i>&nbsp;                }</b>
+<b class="nc"><i>919</i>&nbsp;</b>
+<i>920</i>&nbsp;                return this.authzData == null?null:(AuthorizationDataEntry[])this.authzData.clone();
+<i>921</i>&nbsp;            case 4:
+<i>922</i>&nbsp;                return this.authTime;
+<i>923</i>&nbsp;            default:
+<i>924</i>&nbsp;                throw new GSSException(16, -1, &quot;Inquire type not supported.&quot;);
+<i>925</i>&nbsp;            }
+<b class="nc"><i>926</i>&nbsp;        }</b>
+<b class="nc"><i>927</i>&nbsp;    }</b>
+<i>928</i>&nbsp;
+<i>929</i>&nbsp;    public void setTktFlags(boolean[] var1) {
+<i>930</i>&nbsp;        this.tktFlags = var1;
+<i>931</i>&nbsp;    }
+<b class="nc"><i>932</i>&nbsp;</b>
+<b class="nc"><i>933</i>&nbsp;    public void setAuthTime(String var1) {</b>
+<i>934</i>&nbsp;        this.authTime = var1;
+<i>935</i>&nbsp;    }
+<i>936</i>&nbsp;
+<b class="nc"><i>937</i>&nbsp;    public void setAuthzData(AuthorizationDataEntry[] var1) {</b>
+<b class="nc"><i>938</i>&nbsp;        this.authzData = var1;</b>
+<b class="nc"><i>939</i>&nbsp;    }</b>
+<i>940</i>&nbsp;
+<b class="nc"><i>941</i>&nbsp;    static {</b>
+<b class="nc"><i>942</i>&nbsp;        DEBUG = Krb5Util.DEBUG;</b>
+<b class="nc"><i>943</i>&nbsp;    }</b>
+<b class="nc"><i>944</i>&nbsp;</b>
+<i>945</i>&nbsp;    static class KerberosSessionKey implements Key {
+<b class="nc"><i>946</i>&nbsp;        private final EncryptionKey key;</b>
+<b class="nc"><i>947</i>&nbsp;</b>
+<i>948</i>&nbsp;        KerberosSessionKey(EncryptionKey var1) {
+<i>949</i>&nbsp;            this.key = var1;
+<b class="nc"><i>950</i>&nbsp;        }</b>
+<b class="nc"><i>951</i>&nbsp;</b>
+<i>952</i>&nbsp;        public String getAlgorithm() {
+<i>953</i>&nbsp;            return Integer.toString(this.key.getEType());
+<i>954</i>&nbsp;        }
+<i>955</i>&nbsp;
+<b class="nc"><i>956</i>&nbsp;        public String getFormat() {</b>
+<i>957</i>&nbsp;            return &quot;RAW&quot;;
+<i>958</i>&nbsp;        }
+<i>959</i>&nbsp;
+<i>960</i>&nbsp;        public byte[] getEncoded() {
+<i>961</i>&nbsp;            return (byte[])this.key.getBytes().clone();
+<i>962</i>&nbsp;        }
+<b class="nc"><i>963</i>&nbsp;</b>
+<b class="nc"><i>964</i>&nbsp;        public String toString() {</b>
+<i>965</i>&nbsp;            return &quot;Kerberos session key: etype: &quot; + this.key.getEType() + &quot;\n&quot; + (new HexDumpEncoder()).encodeBuffer(this.key.getBytes());
+<i>966</i>&nbsp;        }
+<b class="nc"><i>967</i>&nbsp;    }</b>
+<b class="nc"><i>968</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

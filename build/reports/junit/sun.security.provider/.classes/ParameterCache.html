@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ParameterCache</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.provider</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ParameterCache (sun.security.provider)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ParameterCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.provider;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.math.BigInteger;
+<i>9</i>&nbsp;import java.security.AlgorithmParameterGenerator;
+<i>10</i>&nbsp;import java.security.AlgorithmParameters;
+<i>11</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>12</i>&nbsp;import java.security.SecureRandom;
+<i>13</i>&nbsp;import java.security.spec.DSAParameterSpec;
+<i>14</i>&nbsp;import java.security.spec.InvalidParameterSpecException;
+<i>15</i>&nbsp;import java.util.Collections;
+<i>16</i>&nbsp;import java.util.HashMap;
+<i>17</i>&nbsp;import java.util.Map;
+<i>18</i>&nbsp;import javax.crypto.spec.DHParameterSpec;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public final class ParameterCache {
+<i>21</i>&nbsp;    private static final Map&lt;Integer, DSAParameterSpec&gt; dsaCache = Collections.synchronizedMap(new HashMap());
+<i>22</i>&nbsp;    private static final Map&lt;Integer, DHParameterSpec&gt; dhCache = Collections.synchronizedMap(new HashMap());
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    private ParameterCache() {
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public static DSAParameterSpec getCachedDSAParameterSpec(int var0) {
+<i>28</i>&nbsp;        return (DSAParameterSpec)dsaCache.get(Integer.valueOf(var0));
+<i>29</i>&nbsp;    }
+<b class="nc"><i>30</i>&nbsp;</b>
+<i>31</i>&nbsp;    public static DHParameterSpec getCachedDHParameterSpec(int var0) {
+<i>32</i>&nbsp;        return (DHParameterSpec)dhCache.get(Integer.valueOf(var0));
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public static DSAParameterSpec getDSAParameterSpec(int var0, SecureRandom var1) throws NoSuchAlgorithmException, InvalidParameterSpecException {
+<i>36</i>&nbsp;        DSAParameterSpec var2 = getCachedDSAParameterSpec(var0);
+<i>37</i>&nbsp;        if(var2 != null) {
+<i>38</i>&nbsp;            return var2;
+<i>39</i>&nbsp;        } else {
+<i>40</i>&nbsp;            var2 = getNewDSAParameterSpec(var0, var1);
+<i>41</i>&nbsp;            dsaCache.put(Integer.valueOf(var0), var2);
+<i>42</i>&nbsp;            return var2;
+<i>43</i>&nbsp;        }
+<i>44</i>&nbsp;    }
+<b class="nc"><i>45</i>&nbsp;</b>
+<i>46</i>&nbsp;    public static DHParameterSpec getDHParameterSpec(int var0, SecureRandom var1) throws NoSuchAlgorithmException, InvalidParameterSpecException {
+<i>47</i>&nbsp;        DHParameterSpec var2 = getCachedDHParameterSpec(var0);
+<i>48</i>&nbsp;        if(var2 != null) {
+<i>49</i>&nbsp;            return var2;
+<i>50</i>&nbsp;        } else {
+<i>51</i>&nbsp;            AlgorithmParameterGenerator var3 = AlgorithmParameterGenerator.getInstance(&quot;DH&quot;);
+<i>52</i>&nbsp;            var3.init(var0, var1);
+<b class="nc"><i>53</i>&nbsp;            AlgorithmParameters var4 = var3.generateParameters();</b>
+<i>54</i>&nbsp;            var2 = (DHParameterSpec)var4.getParameterSpec(DHParameterSpec.class);
+<i>55</i>&nbsp;            dhCache.put(Integer.valueOf(var0), var2);
+<i>56</i>&nbsp;            return var2;
+<i>57</i>&nbsp;        }
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public static DSAParameterSpec getNewDSAParameterSpec(int var0, SecureRandom var1) throws NoSuchAlgorithmException, InvalidParameterSpecException {
+<i>61</i>&nbsp;        AlgorithmParameterGenerator var2 = AlgorithmParameterGenerator.getInstance(&quot;DSA&quot;);
+<i>62</i>&nbsp;        var2.init(var0, var1);
+<b class="nc"><i>63</i>&nbsp;        AlgorithmParameters var3 = var2.generateParameters();</b>
+<b class="nc"><i>64</i>&nbsp;        DSAParameterSpec var4 = (DSAParameterSpec)var3.getParameterSpec(DSAParameterSpec.class);</b>
+<b class="nc"><i>65</i>&nbsp;        return var4;</b>
+<i>66</i>&nbsp;    }
+<b class="nc"><i>67</i>&nbsp;</b>
+<b class="nc"><i>68</i>&nbsp;    static {</b>
+<b class="nc"><i>69</i>&nbsp;        BigInteger var0 = new BigInteger(&quot;fca682ce8e12caba26efccf7110e526db078b05edecbcd1eb4a208f3ae1617ae01f35b91a47e6df63413c5e12ed0899bcd132acd50d99151bdc43ee737592e17&quot;, 16);</b>
+<i>70</i>&nbsp;        BigInteger var1 = new BigInteger(&quot;962eddcc369cba8ebb260ee6b6a126d9346e38c5&quot;, 16);
+<i>71</i>&nbsp;        BigInteger var2 = new BigInteger(&quot;678471b27a9cf44ee91a49c5147db1a9aaf244f05a434d6486931d2d14271b9e35030b71fd73da179069b32e2935630e1c2062354d0da20a6c416e50be794ca4&quot;, 16);
+<i>72</i>&nbsp;        BigInteger var3 = new BigInteger(&quot;e9e642599d355f37c97ffd3567120b8e25c9cd43e927b3a9670fbec5d890141922d2c3b3ad2480093799869d1e846aab49fab0ad26d2ce6a22219d470bce7d777d4a21fbe9c270b57f607002f3cef8393694cf45ee3688c11a8c56ab127a3daf&quot;, 16);
+<i>73</i>&nbsp;        BigInteger var4 = new BigInteger(&quot;9cdbd84c9f1ac2f38d0f80f42ab952e7338bf511&quot;, 16);
+<i>74</i>&nbsp;        BigInteger var5 = new BigInteger(&quot;30470ad5a005fb14ce2d9dcd87e38bc7d1b1c5facbaecbe95f190aa7a31d23c4dbbcbe06174544401a5b2c020965d8c2bd2171d3668445771f74ba084d2029d83c1c158547f3a9f1a2715be23d51ae4d3e5a1f6a7064f316933a346d3f529252&quot;, 16);
+<i>75</i>&nbsp;        BigInteger var6 = new BigInteger(&quot;fd7f53811d75122952df4a9c2eece4e7f611b7523cef4400c31e3f80b6512669455d402251fb593d8d58fabfc5f5ba30f6cb9b556cd7813b801d346ff26660b76b9950a5a49f9fe8047b1022c24fbba9d7feb7c61bf83b57e7c6a8a6150f04fb83f6d3c51ec3023554135a169132f675f3ae2b61d72aeff22203199dd14801c7&quot;, 16);
+<i>76</i>&nbsp;        BigInteger var7 = new BigInteger(&quot;9760508f15230bccb292b982a2eb840bf0581cf5&quot;, 16);
+<i>77</i>&nbsp;        BigInteger var8 = new BigInteger(&quot;f7e1a085d69b3ddecbbcab5c36b857b97994afbbfa3aea82f9574c0b3d0782675159578ebad4594fe67107108180b449167123e84c281613b7cf09328cc8a6e13c167a8b547c8d28e0a3ae1e2bb3a675916ea37f0bfa213562f1fb627a01243bcca4f1bea8519089a883dfe15ae59f06928b665e807b552564014c3bfecf492a&quot;, 16);
+<i>78</i>&nbsp;        dsaCache.put(Integer.valueOf(512), new DSAParameterSpec(var0, var1, var2));
+<b class="nc"><i>79</i>&nbsp;        dsaCache.put(Integer.valueOf(768), new DSAParameterSpec(var3, var4, var5));</b>
+<b class="nc"><i>80</i>&nbsp;        dsaCache.put(Integer.valueOf(1024), new DSAParameterSpec(var6, var7, var8));</b>
+<b class="nc"><i>81</i>&nbsp;        dhCache.put(Integer.valueOf(512), new DHParameterSpec(var0, var2));</b>
+<i>82</i>&nbsp;        dhCache.put(Integer.valueOf(768), new DHParameterSpec(var3, var5));
+<b class="nc"><i>83</i>&nbsp;        dhCache.put(Integer.valueOf(1024), new DHParameterSpec(var6, var8));</b>
+<i>84</i>&nbsp;    }
+<b class="nc"><i>85</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

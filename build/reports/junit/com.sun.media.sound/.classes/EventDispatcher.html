@@ -1,0 +1,405 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EventDispatcher</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.media.sound</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EventDispatcher (com.sun.media.sound)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventDispatcher</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 103)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EventDispatcher$ClipInfo</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">EventDispatcher$EventInfo</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 114)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.media.sound;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.media.sound.AutoClosingClip;
+<i>9</i>&nbsp;import com.sun.media.sound.JSSecurityManager;
+<i>10</i>&nbsp;import com.sun.media.sound.Printer;
+<i>11</i>&nbsp;import java.util.ArrayList;
+<i>12</i>&nbsp;import java.util.List;
+<i>13</i>&nbsp;import javax.sound.midi.ControllerEventListener;
+<i>14</i>&nbsp;import javax.sound.midi.MetaEventListener;
+<i>15</i>&nbsp;import javax.sound.midi.MetaMessage;
+<i>16</i>&nbsp;import javax.sound.midi.ShortMessage;
+<i>17</i>&nbsp;import javax.sound.sampled.LineEvent;
+<i>18</i>&nbsp;import javax.sound.sampled.LineListener;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;final class EventDispatcher implements Runnable {
+<i>21</i>&nbsp;    private static final int AUTO_CLOSE_TIME = 5000;
+<i>22</i>&nbsp;    private final ArrayList eventQueue = new ArrayList();
+<i>23</i>&nbsp;    private Thread thread = null;
+<i>24</i>&nbsp;    private final ArrayList&lt;EventDispatcher.ClipInfo&gt; autoClosingClips = new ArrayList();
+<i>25</i>&nbsp;    private final ArrayList&lt;EventDispatcher.LineMonitor&gt; lineMonitors = new ArrayList();
+<i>26</i>&nbsp;    static final int LINE_MONITOR_TIME = 400;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    EventDispatcher() {
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    synchronized void start() {
+<i>32</i>&nbsp;        if(this.thread == null) {
+<i>33</i>&nbsp;            this.thread = JSSecurityManager.createThread(this, &quot;Java Sound Event Dispatcher&quot;, true, -1, true);
+<i>34</i>&nbsp;        }
+<i>35</i>&nbsp;
+<b class="nc"><i>36</i>&nbsp;    }</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    void processEvent(EventDispatcher.EventInfo var1) {
+<i>39</i>&nbsp;        int var2 = var1.getListenerCount();
+<i>40</i>&nbsp;        int var4;
+<i>41</i>&nbsp;        if(var1.getEvent() instanceof LineEvent) {
+<i>42</i>&nbsp;            LineEvent var11 = (LineEvent)var1.getEvent();
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;            for(var4 = 0; var4 &lt; var2; ++var4) {
+<i>45</i>&nbsp;                try {
+<i>46</i>&nbsp;                    ((LineListener)var1.getListener(var4)).update(var11);
+<i>47</i>&nbsp;                } catch (Throwable var7) {
+<b class="nc"><i>48</i>&nbsp;                    ;</b>
+<i>49</i>&nbsp;                }
+<i>50</i>&nbsp;            }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;        } else if(var1.getEvent() instanceof MetaMessage) {
+<i>53</i>&nbsp;            MetaMessage var10 = (MetaMessage)var1.getEvent();
+<b class="nc"><i>54</i>&nbsp;</b>
+<i>55</i>&nbsp;            for(var4 = 0; var4 &lt; var2; ++var4) {
+<i>56</i>&nbsp;                try {
+<i>57</i>&nbsp;                    ((MetaEventListener)var1.getListener(var4)).meta(var10);
+<i>58</i>&nbsp;                } catch (Throwable var8) {
+<i>59</i>&nbsp;                    ;
+<b class="nc"><i>60</i>&nbsp;                }</b>
+<i>61</i>&nbsp;            }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;        } else if(!(var1.getEvent() instanceof ShortMessage)) {
+<i>64</i>&nbsp;            Printer.err(&quot;Unknown event type: &quot; + var1.getEvent());
+<b class="nc"><i>65</i>&nbsp;        } else {</b>
+<i>66</i>&nbsp;            ShortMessage var3 = (ShortMessage)var1.getEvent();
+<i>67</i>&nbsp;            var4 = var3.getStatus();
+<i>68</i>&nbsp;            if((var4 &amp; 240) == 176) {
+<i>69</i>&nbsp;                for(int var5 = 0; var5 &lt; var2; ++var5) {
+<i>70</i>&nbsp;                    try {
+<i>71</i>&nbsp;                        ((ControllerEventListener)var1.getListener(var5)).controlChange(var3);
+<i>72</i>&nbsp;                    } catch (Throwable var9) {
+<i>73</i>&nbsp;                        ;
+<i>74</i>&nbsp;                    }
+<i>75</i>&nbsp;                }
+<i>76</i>&nbsp;            }
+<i>77</i>&nbsp;
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    void dispatchEvents() {
+<i>82</i>&nbsp;        EventDispatcher.EventInfo var1 = null;
+<i>83</i>&nbsp;        synchronized(this) {
+<i>84</i>&nbsp;            try {
+<i>85</i>&nbsp;                if(this.eventQueue.size() == 0) {
+<i>86</i>&nbsp;                    if(this.autoClosingClips.size() &lt;= 0 &amp;&amp; this.lineMonitors.size() &lt;= 0) {
+<i>87</i>&nbsp;                        this.wait();
+<i>88</i>&nbsp;                    } else {
+<i>89</i>&nbsp;                        short var3 = 5000;
+<i>90</i>&nbsp;                        if(this.lineMonitors.size() &gt; 0) {
+<i>91</i>&nbsp;                            var3 = 400;
+<i>92</i>&nbsp;                        }
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;                        this.wait((long)var3);
+<i>95</i>&nbsp;                    }
+<b class="nc"><i>96</i>&nbsp;                }</b>
+<b class="nc"><i>97</i>&nbsp;            } catch (InterruptedException var5) {</b>
+<i>98</i>&nbsp;                ;
+<b class="nc"><i>99</i>&nbsp;            }</b>
+<i>100</i>&nbsp;
+<b class="nc"><i>101</i>&nbsp;            if(this.eventQueue.size() &gt; 0) {</b>
+<b class="nc"><i>102</i>&nbsp;                var1 = (EventDispatcher.EventInfo)this.eventQueue.remove(0);</b>
+<i>103</i>&nbsp;            }
+<b class="nc"><i>104</i>&nbsp;        }</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;        if(var1 != null) {
+<i>107</i>&nbsp;            this.processEvent(var1);
+<i>108</i>&nbsp;        } else {
+<i>109</i>&nbsp;            if(this.autoClosingClips.size() &gt; 0) {
+<b class="nc"><i>110</i>&nbsp;                this.closeAutoClosingClips();</b>
+<b class="nc"><i>111</i>&nbsp;            }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<i>113</i>&nbsp;            if(this.lineMonitors.size() &gt; 0) {
+<b class="nc"><i>114</i>&nbsp;                this.monitorLines();</b>
+<b class="nc"><i>115</i>&nbsp;            }</b>
+<i>116</i>&nbsp;        }
+<b class="nc"><i>117</i>&nbsp;</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    private synchronized void postEvent(EventDispatcher.EventInfo var1) {
+<i>121</i>&nbsp;        this.eventQueue.add(var1);
+<i>122</i>&nbsp;        this.notifyAll();
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<b class="nc"><i>124</i>&nbsp;</b>
+<b class="nc"><i>125</i>&nbsp;    public void run() {</b>
+<i>126</i>&nbsp;        while(true) {
+<i>127</i>&nbsp;            try {
+<i>128</i>&nbsp;                this.dispatchEvents();
+<b class="nc"><i>129</i>&nbsp;            } catch (Throwable var2) {</b>
+<b class="nc"><i>130</i>&nbsp;                ;</b>
+<i>131</i>&nbsp;            }
+<b class="nc"><i>132</i>&nbsp;        }</b>
+<b class="nc"><i>133</i>&nbsp;    }</b>
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;    void sendAudioEvents(Object var1, List var2) {</b>
+<i>136</i>&nbsp;        if(var2 != null &amp;&amp; var2.size() != 0) {
+<i>137</i>&nbsp;            this.start();
+<i>138</i>&nbsp;            EventDispatcher.EventInfo var3 = new EventDispatcher.EventInfo(var1, var2);
+<i>139</i>&nbsp;            this.postEvent(var3);
+<i>140</i>&nbsp;        }
+<b class="nc"><i>141</i>&nbsp;    }</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    private void closeAutoClosingClips() {
+<i>144</i>&nbsp;        ArrayList var1 = this.autoClosingClips;
+<i>145</i>&nbsp;        synchronized(this.autoClosingClips) {
+<i>146</i>&nbsp;            long var2 = System.currentTimeMillis();
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;            for(int var4 = this.autoClosingClips.size() - 1; var4 &gt;= 0; --var4) {
+<i>149</i>&nbsp;                EventDispatcher.ClipInfo var5 = (EventDispatcher.ClipInfo)this.autoClosingClips.get(var4);
+<i>150</i>&nbsp;                if(var5.isExpired(var2)) {
+<i>151</i>&nbsp;                    AutoClosingClip var6 = var5.getClip();
+<i>152</i>&nbsp;                    if(var6.isOpen() &amp;&amp; var6.isAutoClosing()) {
+<i>153</i>&nbsp;                        if(!var6.isRunning() &amp;&amp; !var6.isActive() &amp;&amp; var6.isAutoClosing()) {
+<i>154</i>&nbsp;                            var6.close();
+<b class="nc"><i>155</i>&nbsp;                        }</b>
+<i>156</i>&nbsp;                    } else {
+<b class="nc"><i>157</i>&nbsp;                        this.autoClosingClips.remove(var4);</b>
+<i>158</i>&nbsp;                    }
+<i>159</i>&nbsp;                }
+<i>160</i>&nbsp;            }
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;        }</b>
+<b class="nc"><i>163</i>&nbsp;    }</b>
+<b class="nc"><i>164</i>&nbsp;</b>
+<b class="nc"><i>165</i>&nbsp;    private int getAutoClosingClipIndex(AutoClosingClip var1) {</b>
+<b class="nc"><i>166</i>&nbsp;        ArrayList var2 = this.autoClosingClips;</b>
+<i>167</i>&nbsp;        synchronized(this.autoClosingClips) {
+<b class="nc"><i>168</i>&nbsp;            for(int var3 = this.autoClosingClips.size() - 1; var3 &gt;= 0; --var3) {</b>
+<b class="nc"><i>169</i>&nbsp;                if(var1.equals(((EventDispatcher.ClipInfo)this.autoClosingClips.get(var3)).getClip())) {</b>
+<b class="nc"><i>170</i>&nbsp;                    return var3;</b>
+<i>171</i>&nbsp;                }
+<i>172</i>&nbsp;            }
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;            return -1;</b>
+<b class="nc"><i>175</i>&nbsp;        }</b>
+<i>176</i>&nbsp;    }
+<b class="nc"><i>177</i>&nbsp;</b>
+<i>178</i>&nbsp;    void autoClosingClipOpened(AutoClosingClip var1) {
+<i>179</i>&nbsp;        boolean var2 = false;
+<b class="nc"><i>180</i>&nbsp;        ArrayList var3 = this.autoClosingClips;</b>
+<b class="nc"><i>181</i>&nbsp;        int var8;</b>
+<b class="nc"><i>182</i>&nbsp;        synchronized(this.autoClosingClips) {</b>
+<i>183</i>&nbsp;            var8 = this.getAutoClosingClipIndex(var1);
+<b class="nc"><i>184</i>&nbsp;            if(var8 == -1) {</b>
+<b class="nc"><i>185</i>&nbsp;                this.autoClosingClips.add(new EventDispatcher.ClipInfo(var1));</b>
+<i>186</i>&nbsp;            }
+<b class="nc"><i>187</i>&nbsp;        }</b>
+<b class="nc"><i>188</i>&nbsp;</b>
+<i>189</i>&nbsp;        if(var8 == -1) {
+<i>190</i>&nbsp;            synchronized(this) {
+<i>191</i>&nbsp;                this.notifyAll();
+<i>192</i>&nbsp;            }
+<i>193</i>&nbsp;        }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    void autoClosingClipClosed(AutoClosingClip var1) {
+<b class="nc"><i>198</i>&nbsp;    }</b>
+<b class="nc"><i>199</i>&nbsp;</b>
+<i>200</i>&nbsp;    private void monitorLines() {
+<i>201</i>&nbsp;        ArrayList var1 = this.lineMonitors;
+<i>202</i>&nbsp;        synchronized(this.lineMonitors) {
+<i>203</i>&nbsp;            for(int var2 = 0; var2 &lt; this.lineMonitors.size(); ++var2) {
+<i>204</i>&nbsp;                ((EventDispatcher.LineMonitor)this.lineMonitors.get(var2)).checkLine();
+<i>205</i>&nbsp;            }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;        }
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<b class="nc"><i>210</i>&nbsp;    void addLineMonitor(EventDispatcher.LineMonitor var1) {</b>
+<b class="nc"><i>211</i>&nbsp;        ArrayList var2 = this.lineMonitors;</b>
+<i>212</i>&nbsp;        synchronized(this.lineMonitors) {
+<b class="nc"><i>213</i>&nbsp;            if(this.lineMonitors.indexOf(var1) &gt;= 0) {</b>
+<i>214</i>&nbsp;                return;
+<i>215</i>&nbsp;            }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;            this.lineMonitors.add(var1);
+<i>218</i>&nbsp;        }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;        synchronized(this) {
+<i>221</i>&nbsp;            this.notifyAll();
+<b class="nc"><i>222</i>&nbsp;        }</b>
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    void removeLineMonitor(EventDispatcher.LineMonitor var1) {
+<i>226</i>&nbsp;        ArrayList var2 = this.lineMonitors;
+<i>227</i>&nbsp;        synchronized(this.lineMonitors) {
+<b class="nc"><i>228</i>&nbsp;            if(this.lineMonitors.indexOf(var1) &gt;= 0) {</b>
+<i>229</i>&nbsp;                this.lineMonitors.remove(var1);
+<b class="nc"><i>230</i>&nbsp;            }</b>
+<b class="nc"><i>231</i>&nbsp;        }</b>
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    interface LineMonitor {
+<i>235</i>&nbsp;        void checkLine();
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    private class ClipInfo {
+<i>239</i>&nbsp;        private final AutoClosingClip clip;
+<i>240</i>&nbsp;        private final long expiration;
+<i>241</i>&nbsp;
+<b class="nc"><i>242</i>&nbsp;        ClipInfo(AutoClosingClip var2) {</b>
+<i>243</i>&nbsp;            this.clip = var2;
+<b class="nc"><i>244</i>&nbsp;            this.expiration = System.currentTimeMillis() + 5000L;</b>
+<b class="nc"><i>245</i>&nbsp;        }</b>
+<b class="nc"><i>246</i>&nbsp;</b>
+<b class="nc"><i>247</i>&nbsp;        AutoClosingClip getClip() {</b>
+<b class="nc"><i>248</i>&nbsp;            return this.clip;</b>
+<i>249</i>&nbsp;        }
+<b class="nc"><i>250</i>&nbsp;</b>
+<i>251</i>&nbsp;        boolean isExpired(long var1) {
+<b class="nc"><i>252</i>&nbsp;            return var1 &gt; this.expiration;</b>
+<i>253</i>&nbsp;        }
+<b class="nc"><i>254</i>&nbsp;    }</b>
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;    private class EventInfo {</b>
+<i>257</i>&nbsp;        private final Object event;
+<i>258</i>&nbsp;        private final Object[] listeners;
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;        EventInfo(Object var2, List var3) {
+<i>261</i>&nbsp;            this.event = var2;
+<i>262</i>&nbsp;            this.listeners = var3.toArray();
+<i>263</i>&nbsp;        }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;        Object getEvent() {
+<b class="nc"><i>266</i>&nbsp;            return this.event;</b>
+<i>267</i>&nbsp;        }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;        int getListenerCount() {
+<i>270</i>&nbsp;            return this.listeners.length;
+<b class="nc"><i>271</i>&nbsp;        }</b>
+<b class="nc"><i>272</i>&nbsp;</b>
+<b class="nc"><i>273</i>&nbsp;        Object getListener(int var1) {</b>
+<b class="nc"><i>274</i>&nbsp;            return this.listeners[var1];</b>
+<i>275</i>&nbsp;        }
+<i>276</i>&nbsp;    }
+<b class="nc"><i>277</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:57</div>
+</div>
+</body>
+</html>

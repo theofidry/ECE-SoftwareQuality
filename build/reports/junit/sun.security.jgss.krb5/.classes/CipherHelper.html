@@ -1,0 +1,990 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CipherHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.jgss.krb5</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CipherHelper (sun.security.jgss.krb5)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CipherHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 446)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CipherHelper$WrapTokenInputStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 478)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.jgss.krb5;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InputStream;
+<i>10</i>&nbsp;import java.io.OutputStream;
+<i>11</i>&nbsp;import java.security.GeneralSecurityException;
+<i>12</i>&nbsp;import java.security.MessageDigest;
+<i>13</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>14</i>&nbsp;import javax.crypto.Cipher;
+<i>15</i>&nbsp;import javax.crypto.CipherInputStream;
+<i>16</i>&nbsp;import javax.crypto.CipherOutputStream;
+<i>17</i>&nbsp;import javax.crypto.spec.IvParameterSpec;
+<i>18</i>&nbsp;import javax.crypto.spec.SecretKeySpec;
+<i>19</i>&nbsp;import org.ietf.jgss.GSSException;
+<i>20</i>&nbsp;import sun.security.jgss.krb5.Krb5Token;
+<i>21</i>&nbsp;import sun.security.jgss.krb5.Krb5Util;
+<i>22</i>&nbsp;import sun.security.jgss.krb5.WrapToken;
+<i>23</i>&nbsp;import sun.security.jgss.krb5.WrapToken_v2;
+<i>24</i>&nbsp;import sun.security.krb5.EncryptionKey;
+<i>25</i>&nbsp;import sun.security.krb5.internal.crypto.Aes128;
+<i>26</i>&nbsp;import sun.security.krb5.internal.crypto.Aes256;
+<i>27</i>&nbsp;import sun.security.krb5.internal.crypto.ArcFourHmac;
+<i>28</i>&nbsp;import sun.security.krb5.internal.crypto.Des3;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;class CipherHelper {
+<i>31</i>&nbsp;    private static final int KG_USAGE_SEAL = 22;
+<i>32</i>&nbsp;    private static final int KG_USAGE_SIGN = 23;
+<i>33</i>&nbsp;    private static final int KG_USAGE_SEQ = 24;
+<i>34</i>&nbsp;    private static final int DES_CHECKSUM_SIZE = 8;
+<i>35</i>&nbsp;    private static final int DES_IV_SIZE = 8;
+<i>36</i>&nbsp;    private static final int AES_IV_SIZE = 16;
+<i>37</i>&nbsp;    private static final int HMAC_CHECKSUM_SIZE = 8;
+<i>38</i>&nbsp;    private static final int KG_USAGE_SIGN_MS = 15;
+<i>39</i>&nbsp;    private static final boolean DEBUG;
+<i>40</i>&nbsp;    private static final byte[] ZERO_IV;
+<i>41</i>&nbsp;    private static final byte[] ZERO_IV_AES;
+<i>42</i>&nbsp;    private int etype;
+<i>43</i>&nbsp;    private int sgnAlg;
+<i>44</i>&nbsp;    private int sealAlg;
+<i>45</i>&nbsp;    private byte[] keybytes;
+<i>46</i>&nbsp;    private int proto = 0;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    CipherHelper(EncryptionKey var1) throws GSSException {
+<b class="nc"><i>49</i>&nbsp;        this.etype = var1.getEType();</b>
+<i>50</i>&nbsp;        this.keybytes = var1.getBytes();
+<i>51</i>&nbsp;        switch(this.etype) {
+<i>52</i>&nbsp;        case 1:
+<i>53</i>&nbsp;        case 3:
+<i>54</i>&nbsp;            this.sgnAlg = 0;
+<b class="nc"><i>55</i>&nbsp;            this.sealAlg = 0;</b>
+<b class="nc"><i>56</i>&nbsp;            break;</b>
+<i>57</i>&nbsp;        case 16:
+<i>58</i>&nbsp;            this.sgnAlg = 1024;
+<i>59</i>&nbsp;            this.sealAlg = 512;
+<i>60</i>&nbsp;            break;
+<i>61</i>&nbsp;        case 17:
+<i>62</i>&nbsp;        case 18:
+<i>63</i>&nbsp;            this.sgnAlg = -1;
+<b class="nc"><i>64</i>&nbsp;            this.sealAlg = -1;</b>
+<i>65</i>&nbsp;            this.proto = 1;
+<b class="nc"><i>66</i>&nbsp;            break;</b>
+<b class="nc"><i>67</i>&nbsp;        case 23:</b>
+<b class="nc"><i>68</i>&nbsp;            this.sgnAlg = 4352;</b>
+<i>69</i>&nbsp;            this.sealAlg = 4096;
+<b class="nc"><i>70</i>&nbsp;            break;</b>
+<i>71</i>&nbsp;        default:
+<i>72</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported encryption type: &quot; + this.etype);
+<b class="nc"><i>73</i>&nbsp;        }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    int getSgnAlg() {
+<b class="nc"><i>78</i>&nbsp;        return this.sgnAlg;</b>
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<b class="nc"><i>80</i>&nbsp;</b>
+<i>81</i>&nbsp;    int getSealAlg() {
+<i>82</i>&nbsp;        return this.sealAlg;
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<b class="nc"><i>84</i>&nbsp;</b>
+<b class="nc"><i>85</i>&nbsp;    int getProto() {</b>
+<i>86</i>&nbsp;        return this.proto;
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<b class="nc"><i>89</i>&nbsp;    int getEType() {</b>
+<b class="nc"><i>90</i>&nbsp;        return this.etype;</b>
+<b class="nc"><i>91</i>&nbsp;    }</b>
+<b class="nc"><i>92</i>&nbsp;</b>
+<i>93</i>&nbsp;    boolean isArcFour() {
+<i>94</i>&nbsp;        boolean var1 = false;
+<b class="nc"><i>95</i>&nbsp;        if(this.etype == 23) {</b>
+<i>96</i>&nbsp;            var1 = true;
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        return var1;
+<i>100</i>&nbsp;    }
+<b class="nc"><i>101</i>&nbsp;</b>
+<i>102</i>&nbsp;    byte[] calculateChecksum(int var1, byte[] var2, byte[] var3, byte[] var4, int var5, int var6, int var7) throws GSSException {
+<i>103</i>&nbsp;        byte[] var11;
+<i>104</i>&nbsp;        switch(var1) {
+<b class="nc"><i>105</i>&nbsp;        case 0:</b>
+<i>106</i>&nbsp;            try {
+<i>107</i>&nbsp;                MessageDigest var21 = MessageDigest.getInstance(&quot;MD5&quot;);
+<i>108</i>&nbsp;                var21.update(var2);
+<b class="nc"><i>109</i>&nbsp;                var21.update(var4, var5, var6);</b>
+<i>110</i>&nbsp;                if(var3 != null) {
+<i>111</i>&nbsp;                    var21.update(var3);
+<i>112</i>&nbsp;                }
+<b class="nc"><i>113</i>&nbsp;</b>
+<i>114</i>&nbsp;                var4 = var21.digest();
+<i>115</i>&nbsp;                var5 = 0;
+<i>116</i>&nbsp;                var6 = var4.length;
+<b class="nc"><i>117</i>&nbsp;                var2 = null;</b>
+<b class="nc"><i>118</i>&nbsp;                Object var20 = null;</b>
+<b class="nc"><i>119</i>&nbsp;            } catch (NoSuchAlgorithmException var19) {</b>
+<i>120</i>&nbsp;                GSSException var22 = new GSSException(11, -1, &quot;Could not get MD5 Message Digest - &quot; + var19.getMessage());
+<b class="nc"><i>121</i>&nbsp;                var22.initCause(var19);</b>
+<i>122</i>&nbsp;                throw var22;
+<i>123</i>&nbsp;            }
+<i>124</i>&nbsp;        case 512:
+<i>125</i>&nbsp;            return this.getDesCbcChecksum(this.keybytes, var2, var4, var5, var6);
+<i>126</i>&nbsp;        case 1024:
+<b class="nc"><i>127</i>&nbsp;            byte[] var8;</b>
+<i>128</i>&nbsp;            int var9;
+<i>129</i>&nbsp;            int var10;
+<i>130</i>&nbsp;            if(var2 == null &amp;&amp; var3 == null) {
+<i>131</i>&nbsp;                var8 = var4;
+<i>132</i>&nbsp;                var10 = var6;
+<i>133</i>&nbsp;                var9 = var5;
+<b class="nc"><i>134</i>&nbsp;            } else {</b>
+<i>135</i>&nbsp;                var10 = (var2 != null?var2.length:0) + var6 + (var3 != null?var3.length:0);
+<i>136</i>&nbsp;                var8 = new byte[var10];
+<i>137</i>&nbsp;                int var23 = 0;
+<i>138</i>&nbsp;                if(var2 != null) {
+<i>139</i>&nbsp;                    System.arraycopy(var2, 0, var8, 0, var2.length);
+<b class="nc"><i>140</i>&nbsp;                    var23 = var2.length;</b>
+<i>141</i>&nbsp;                }
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;                System.arraycopy(var4, var5, var8, var23, var6);</b>
+<i>144</i>&nbsp;                var23 += var6;
+<b class="nc"><i>145</i>&nbsp;                if(var3 != null) {</b>
+<i>146</i>&nbsp;                    System.arraycopy(var3, 0, var8, var23, var3.length);
+<i>147</i>&nbsp;                }
+<i>148</i>&nbsp;
+<b class="nc"><i>149</i>&nbsp;                var9 = 0;</b>
+<i>150</i>&nbsp;            }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;            try {
+<b class="nc"><i>153</i>&nbsp;                var11 = Des3.calculateChecksum(this.keybytes, 23, var8, var9, var10);</b>
+<b class="nc"><i>154</i>&nbsp;                return var11;</b>
+<b class="nc"><i>155</i>&nbsp;            } catch (GeneralSecurityException var18) {</b>
+<i>156</i>&nbsp;                GSSException var24 = new GSSException(11, -1, &quot;Could not use HMAC-SHA1-DES3-KD signing algorithm - &quot; + var18.getMessage());
+<i>157</i>&nbsp;                var24.initCause(var18);
+<b class="nc"><i>158</i>&nbsp;                throw var24;</b>
+<b class="nc"><i>159</i>&nbsp;            }</b>
+<b class="nc"><i>160</i>&nbsp;        case 4352:</b>
+<b class="nc"><i>161</i>&nbsp;            int var12;</b>
+<i>162</i>&nbsp;            int var13;
+<b class="nc"><i>163</i>&nbsp;            if(var2 == null &amp;&amp; var3 == null) {</b>
+<b class="nc"><i>164</i>&nbsp;                var11 = var4;</b>
+<b class="nc"><i>165</i>&nbsp;                var13 = var6;</b>
+<i>166</i>&nbsp;                var12 = var5;
+<i>167</i>&nbsp;            } else {
+<i>168</i>&nbsp;                var13 = (var2 != null?var2.length:0) + var6 + (var3 != null?var3.length:0);
+<b class="nc"><i>169</i>&nbsp;                var11 = new byte[var13];</b>
+<i>170</i>&nbsp;                int var14 = 0;
+<i>171</i>&nbsp;                if(var2 != null) {
+<i>172</i>&nbsp;                    System.arraycopy(var2, 0, var11, 0, var2.length);
+<i>173</i>&nbsp;                    var14 = var2.length;
+<b class="nc"><i>174</i>&nbsp;                }</b>
+<b class="nc"><i>175</i>&nbsp;</b>
+<b class="nc"><i>176</i>&nbsp;                System.arraycopy(var4, var5, var11, var14, var6);</b>
+<b class="nc"><i>177</i>&nbsp;                var14 += var6;</b>
+<i>178</i>&nbsp;                if(var3 != null) {
+<b class="nc"><i>179</i>&nbsp;                    System.arraycopy(var3, 0, var11, var14, var3.length);</b>
+<i>180</i>&nbsp;                }
+<i>181</i>&nbsp;
+<b class="nc"><i>182</i>&nbsp;                var12 = 0;</b>
+<b class="nc"><i>183</i>&nbsp;            }</b>
+<b class="nc"><i>184</i>&nbsp;</b>
+<b class="nc"><i>185</i>&nbsp;            try {</b>
+<b class="nc"><i>186</i>&nbsp;                byte var25 = 23;</b>
+<i>187</i>&nbsp;                if(var7 == 257) {
+<b class="nc"><i>188</i>&nbsp;                    var25 = 15;</b>
+<b class="nc"><i>189</i>&nbsp;                }</b>
+<b class="nc"><i>190</i>&nbsp;</b>
+<b class="nc"><i>191</i>&nbsp;                byte[] var26 = ArcFourHmac.calculateChecksum(this.keybytes, var25, var11, var12, var13);</b>
+<i>192</i>&nbsp;                byte[] var16 = new byte[this.getChecksumLength()];
+<i>193</i>&nbsp;                System.arraycopy(var26, 0, var16, 0, var16.length);
+<b class="nc"><i>194</i>&nbsp;                return var16;</b>
+<i>195</i>&nbsp;            } catch (GeneralSecurityException var17) {
+<i>196</i>&nbsp;                GSSException var15 = new GSSException(11, -1, &quot;Could not use HMAC_MD5_ARCFOUR signing algorithm - &quot; + var17.getMessage());
+<i>197</i>&nbsp;                var15.initCause(var17);
+<i>198</i>&nbsp;                throw var15;
+<i>199</i>&nbsp;            }
+<i>200</i>&nbsp;        default:
+<i>201</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported signing algorithm: &quot; + this.sgnAlg);
+<i>202</i>&nbsp;        }
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    byte[] calculateChecksum(byte[] var1, byte[] var2, int var3, int var4, int var5) throws GSSException {
+<i>206</i>&nbsp;        int var6 = (var1 != null?var1.length:0) + var4;
+<i>207</i>&nbsp;        byte[] var7 = new byte[var6];
+<i>208</i>&nbsp;        System.arraycopy(var2, var3, var7, 0, var4);
+<i>209</i>&nbsp;        if(var1 != null) {
+<i>210</i>&nbsp;            System.arraycopy(var1, 0, var7, var4, var1.length);
+<i>211</i>&nbsp;        }
+<b class="nc"><i>212</i>&nbsp;</b>
+<i>213</i>&nbsp;        byte[] var8;
+<i>214</i>&nbsp;        GSSException var9;
+<i>215</i>&nbsp;        switch(this.etype) {
+<b class="nc"><i>216</i>&nbsp;        case 17:</b>
+<b class="nc"><i>217</i>&nbsp;            try {</b>
+<b class="nc"><i>218</i>&nbsp;                var8 = Aes128.calculateChecksum(this.keybytes, var5, var7, 0, var6);</b>
+<i>219</i>&nbsp;                return var8;
+<i>220</i>&nbsp;            } catch (GeneralSecurityException var11) {
+<b class="nc"><i>221</i>&nbsp;                var9 = new GSSException(11, -1, &quot;Could not use AES128 signing algorithm - &quot; + var11.getMessage());</b>
+<b class="nc"><i>222</i>&nbsp;                var9.initCause(var11);</b>
+<i>223</i>&nbsp;                throw var9;
+<i>224</i>&nbsp;            }
+<i>225</i>&nbsp;        case 18:
+<i>226</i>&nbsp;            try {
+<i>227</i>&nbsp;                var8 = Aes256.calculateChecksum(this.keybytes, var5, var7, 0, var6);
+<b class="nc"><i>228</i>&nbsp;                return var8;</b>
+<b class="nc"><i>229</i>&nbsp;            } catch (GeneralSecurityException var10) {</b>
+<b class="nc"><i>230</i>&nbsp;                var9 = new GSSException(11, -1, &quot;Could not use AES256 signing algorithm - &quot; + var10.getMessage());</b>
+<b class="nc"><i>231</i>&nbsp;                var9.initCause(var10);</b>
+<i>232</i>&nbsp;                throw var9;
+<b class="nc"><i>233</i>&nbsp;            }</b>
+<i>234</i>&nbsp;        default:
+<i>235</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported encryption type: &quot; + this.etype);
+<b class="nc"><i>236</i>&nbsp;        }</b>
+<b class="nc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<b class="nc"><i>239</i>&nbsp;    byte[] encryptSeq(byte[] var1, byte[] var2, int var3, int var4) throws GSSException {</b>
+<b class="nc"><i>240</i>&nbsp;        switch(this.sgnAlg) {</b>
+<b class="nc"><i>241</i>&nbsp;        case 0:</b>
+<i>242</i>&nbsp;        case 512:
+<b class="nc"><i>243</i>&nbsp;            try {</b>
+<b class="nc"><i>244</i>&nbsp;                Cipher var12 = this.getInitializedDes(true, this.keybytes, var1);</b>
+<b class="nc"><i>245</i>&nbsp;                return var12.doFinal(var2, var3, var4);</b>
+<b class="nc"><i>246</i>&nbsp;            } catch (GeneralSecurityException var11) {</b>
+<i>247</i>&nbsp;                GSSException var13 = new GSSException(11, -1, &quot;Could not encrypt sequence number using DES - &quot; + var11.getMessage());
+<i>248</i>&nbsp;                var13.initCause(var11);
+<b class="nc"><i>249</i>&nbsp;                throw var13;</b>
+<i>250</i>&nbsp;            }
+<i>251</i>&nbsp;        case 1024:
+<i>252</i>&nbsp;            byte[] var5;
+<i>253</i>&nbsp;            if(var1.length == 8) {
+<i>254</i>&nbsp;                var5 = var1;
+<i>255</i>&nbsp;            } else {
+<i>256</i>&nbsp;                var5 = new byte[8];
+<i>257</i>&nbsp;                System.arraycopy(var1, 0, var5, 0, 8);
+<i>258</i>&nbsp;            }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;            try {
+<i>261</i>&nbsp;                return Des3.encryptRaw(this.keybytes, 24, var5, var2, var3, var4);
+<i>262</i>&nbsp;            } catch (Exception var10) {
+<i>263</i>&nbsp;                GSSException var7 = new GSSException(11, -1, &quot;Could not encrypt sequence number using DES3-KD - &quot; + var10.getMessage());
+<i>264</i>&nbsp;                var7.initCause(var10);
+<i>265</i>&nbsp;                throw var7;
+<i>266</i>&nbsp;            }
+<i>267</i>&nbsp;        case 4352:
+<i>268</i>&nbsp;            byte[] var6;
+<i>269</i>&nbsp;            if(var1.length == 8) {
+<i>270</i>&nbsp;                var6 = var1;
+<b class="nc"><i>271</i>&nbsp;            } else {</b>
+<b class="nc"><i>272</i>&nbsp;                var6 = new byte[8];</b>
+<b class="nc"><i>273</i>&nbsp;                System.arraycopy(var1, 0, var6, 0, 8);</b>
+<i>274</i>&nbsp;            }
+<b class="nc"><i>275</i>&nbsp;</b>
+<i>276</i>&nbsp;            try {
+<i>277</i>&nbsp;                return ArcFourHmac.encryptSeq(this.keybytes, 24, var6, var2, var3, var4);
+<i>278</i>&nbsp;            } catch (Exception var9) {
+<i>279</i>&nbsp;                GSSException var8 = new GSSException(11, -1, &quot;Could not encrypt sequence number using RC4-HMAC - &quot; + var9.getMessage());
+<i>280</i>&nbsp;                var8.initCause(var9);
+<b class="nc"><i>281</i>&nbsp;                throw var8;</b>
+<b class="nc"><i>282</i>&nbsp;            }</b>
+<i>283</i>&nbsp;        default:
+<i>284</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported signing algorithm: &quot; + this.sgnAlg);
+<b class="nc"><i>285</i>&nbsp;        }</b>
+<b class="nc"><i>286</i>&nbsp;    }</b>
+<b class="nc"><i>287</i>&nbsp;</b>
+<i>288</i>&nbsp;    byte[] decryptSeq(byte[] var1, byte[] var2, int var3, int var4) throws GSSException {
+<i>289</i>&nbsp;        switch(this.sgnAlg) {
+<b class="nc"><i>290</i>&nbsp;        case 0:</b>
+<b class="nc"><i>291</i>&nbsp;        case 512:</b>
+<i>292</i>&nbsp;            try {
+<i>293</i>&nbsp;                Cipher var12 = this.getInitializedDes(false, this.keybytes, var1);
+<i>294</i>&nbsp;                return var12.doFinal(var2, var3, var4);
+<b class="nc"><i>295</i>&nbsp;            } catch (GeneralSecurityException var11) {</b>
+<i>296</i>&nbsp;                GSSException var13 = new GSSException(11, -1, &quot;Could not decrypt sequence number using DES - &quot; + var11.getMessage());
+<i>297</i>&nbsp;                var13.initCause(var11);
+<i>298</i>&nbsp;                throw var13;
+<i>299</i>&nbsp;            }
+<i>300</i>&nbsp;        case 1024:
+<i>301</i>&nbsp;            byte[] var5;
+<i>302</i>&nbsp;            if(var1.length == 8) {
+<i>303</i>&nbsp;                var5 = var1;
+<i>304</i>&nbsp;            } else {
+<b class="nc"><i>305</i>&nbsp;                var5 = new byte[8];</b>
+<i>306</i>&nbsp;                System.arraycopy(var1, 0, var5, 0, 8);
+<i>307</i>&nbsp;            }
+<b class="nc"><i>308</i>&nbsp;</b>
+<i>309</i>&nbsp;            try {
+<i>310</i>&nbsp;                return Des3.decryptRaw(this.keybytes, 24, var5, var2, var3, var4);
+<b class="nc"><i>311</i>&nbsp;            } catch (Exception var10) {</b>
+<i>312</i>&nbsp;                GSSException var7 = new GSSException(11, -1, &quot;Could not decrypt sequence number using DES3-KD - &quot; + var10.getMessage());
+<i>313</i>&nbsp;                var7.initCause(var10);
+<b class="nc"><i>314</i>&nbsp;                throw var7;</b>
+<b class="nc"><i>315</i>&nbsp;            }</b>
+<i>316</i>&nbsp;        case 4352:
+<i>317</i>&nbsp;            byte[] var6;
+<i>318</i>&nbsp;            if(var1.length == 8) {
+<i>319</i>&nbsp;                var6 = var1;
+<b class="nc"><i>320</i>&nbsp;            } else {</b>
+<i>321</i>&nbsp;                var6 = new byte[8];
+<i>322</i>&nbsp;                System.arraycopy(var1, 0, var6, 0, 8);
+<b class="nc"><i>323</i>&nbsp;            }</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;            try {
+<i>326</i>&nbsp;                return ArcFourHmac.decryptSeq(this.keybytes, 24, var6, var2, var3, var4);
+<b class="nc"><i>327</i>&nbsp;            } catch (Exception var9) {</b>
+<b class="nc"><i>328</i>&nbsp;                GSSException var8 = new GSSException(11, -1, &quot;Could not decrypt sequence number using RC4-HMAC - &quot; + var9.getMessage());</b>
+<b class="nc"><i>329</i>&nbsp;                var8.initCause(var9);</b>
+<i>330</i>&nbsp;                throw var8;
+<i>331</i>&nbsp;            }
+<b class="nc"><i>332</i>&nbsp;        default:</b>
+<b class="nc"><i>333</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported signing algorithm: &quot; + this.sgnAlg);</b>
+<i>334</i>&nbsp;        }
+<i>335</i>&nbsp;    }
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    int getChecksumLength() throws GSSException {
+<b class="nc"><i>338</i>&nbsp;        switch(this.etype) {</b>
+<i>339</i>&nbsp;        case 1:
+<i>340</i>&nbsp;        case 3:
+<i>341</i>&nbsp;            return 8;
+<b class="nc"><i>342</i>&nbsp;        case 16:</b>
+<b class="nc"><i>343</i>&nbsp;            return Des3.getChecksumLength();</b>
+<b class="nc"><i>344</i>&nbsp;        case 17:</b>
+<i>345</i>&nbsp;            return Aes128.getChecksumLength();
+<i>346</i>&nbsp;        case 18:
+<b class="nc"><i>347</i>&nbsp;            return Aes256.getChecksumLength();</b>
+<b class="nc"><i>348</i>&nbsp;        case 23:</b>
+<i>349</i>&nbsp;            return 8;
+<i>350</i>&nbsp;        default:
+<i>351</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported encryption type: &quot; + this.etype);
+<b class="nc"><i>352</i>&nbsp;        }</b>
+<i>353</i>&nbsp;    }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    void decryptData(WrapToken var1, byte[] var2, int var3, int var4, byte[] var5, int var6) throws GSSException {
+<i>356</i>&nbsp;        switch(this.sealAlg) {
+<i>357</i>&nbsp;        case 0:
+<i>358</i>&nbsp;            this.desCbcDecrypt(var1, getDesEncryptionKey(this.keybytes), var2, var3, var4, var5, var6);
+<i>359</i>&nbsp;            break;
+<b class="nc"><i>360</i>&nbsp;        case 512:</b>
+<i>361</i>&nbsp;            this.des3KdDecrypt(var1, var2, var3, var4, var5, var6);
+<i>362</i>&nbsp;            break;
+<i>363</i>&nbsp;        case 4096:
+<b class="nc"><i>364</i>&nbsp;            this.arcFourDecrypt(var1, var2, var3, var4, var5, var6);</b>
+<b class="nc"><i>365</i>&nbsp;            break;</b>
+<i>366</i>&nbsp;        default:
+<b class="nc"><i>367</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported seal algorithm: &quot; + this.sealAlg);</b>
+<b class="nc"><i>368</i>&nbsp;        }</b>
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    }
+<b class="nc"><i>371</i>&nbsp;</b>
+<b class="nc"><i>372</i>&nbsp;    void decryptData(WrapToken_v2 var1, byte[] var2, int var3, int var4, byte[] var5, int var6, int var7) throws GSSException {</b>
+<i>373</i>&nbsp;        switch(this.etype) {
+<i>374</i>&nbsp;        case 17:
+<i>375</i>&nbsp;            this.aes128Decrypt(var1, var2, var3, var4, var5, var6, var7);
+<i>376</i>&nbsp;            break;
+<b class="nc"><i>377</i>&nbsp;        case 18:</b>
+<b class="nc"><i>378</i>&nbsp;            this.aes256Decrypt(var1, var2, var3, var4, var5, var6, var7);</b>
+<i>379</i>&nbsp;            break;
+<b class="nc"><i>380</i>&nbsp;        default:</b>
+<b class="nc"><i>381</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported etype: &quot; + this.etype);</b>
+<i>382</i>&nbsp;        }
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;    }</b>
+<i>385</i>&nbsp;
+<b class="nc"><i>386</i>&nbsp;    void decryptData(WrapToken var1, InputStream var2, int var3, byte[] var4, int var5) throws GSSException, IOException {</b>
+<i>387</i>&nbsp;        switch(this.sealAlg) {
+<b class="nc"><i>388</i>&nbsp;        case 0:</b>
+<i>389</i>&nbsp;            this.desCbcDecrypt(var1, getDesEncryptionKey(this.keybytes), var2, var3, var4, var5);
+<i>390</i>&nbsp;            break;
+<b class="nc"><i>391</i>&nbsp;        case 512:</b>
+<b class="nc"><i>392</i>&nbsp;            byte[] var6 = new byte[var3];</b>
+<i>393</i>&nbsp;
+<i>394</i>&nbsp;            try {
+<i>395</i>&nbsp;                Krb5Token.readFully(var2, var6, 0, var3);
+<i>396</i>&nbsp;            } catch (IOException var11) {
+<i>397</i>&nbsp;                GSSException var8 = new GSSException(10, -1, &quot;Cannot read complete token&quot;);
+<b class="nc"><i>398</i>&nbsp;                var8.initCause(var11);</b>
+<b class="nc"><i>399</i>&nbsp;                throw var8;</b>
+<i>400</i>&nbsp;            }
+<b class="nc"><i>401</i>&nbsp;</b>
+<b class="nc"><i>402</i>&nbsp;            this.des3KdDecrypt(var1, var6, 0, var3, var4, var5);</b>
+<i>403</i>&nbsp;            break;
+<i>404</i>&nbsp;        case 4096:
+<i>405</i>&nbsp;            byte[] var7 = new byte[var3];
+<b class="nc"><i>406</i>&nbsp;</b>
+<i>407</i>&nbsp;            try {
+<b class="nc"><i>408</i>&nbsp;                Krb5Token.readFully(var2, var7, 0, var3);</b>
+<i>409</i>&nbsp;            } catch (IOException var10) {
+<b class="nc"><i>410</i>&nbsp;                GSSException var9 = new GSSException(10, -1, &quot;Cannot read complete token&quot;);</b>
+<i>411</i>&nbsp;                var9.initCause(var10);
+<i>412</i>&nbsp;                throw var9;
+<b class="nc"><i>413</i>&nbsp;            }</b>
+<b class="nc"><i>414</i>&nbsp;</b>
+<i>415</i>&nbsp;            this.arcFourDecrypt(var1, var7, 0, var3, var4, var5);
+<i>416</i>&nbsp;            break;
+<i>417</i>&nbsp;        default:
+<b class="nc"><i>418</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported seal algorithm: &quot; + this.sealAlg);</b>
+<i>419</i>&nbsp;        }
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;    }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    void decryptData(WrapToken_v2 var1, InputStream var2, int var3, byte[] var4, int var5, int var6) throws GSSException, IOException {
+<i>424</i>&nbsp;        byte[] var7 = new byte[var3];
+<i>425</i>&nbsp;
+<b class="nc"><i>426</i>&nbsp;        try {</b>
+<i>427</i>&nbsp;            Krb5Token.readFully(var2, var7, 0, var3);
+<i>428</i>&nbsp;        } catch (IOException var10) {
+<i>429</i>&nbsp;            GSSException var9 = new GSSException(10, -1, &quot;Cannot read complete token&quot;);
+<b class="nc"><i>430</i>&nbsp;            var9.initCause(var10);</b>
+<b class="nc"><i>431</i>&nbsp;            throw var9;</b>
+<b class="nc"><i>432</i>&nbsp;        }</b>
+<b class="nc"><i>433</i>&nbsp;</b>
+<i>434</i>&nbsp;        switch(this.etype) {
+<i>435</i>&nbsp;        case 17:
+<b class="nc"><i>436</i>&nbsp;            this.aes128Decrypt(var1, var7, 0, var3, var4, var5, var6);</b>
+<b class="nc"><i>437</i>&nbsp;            break;</b>
+<i>438</i>&nbsp;        case 18:
+<i>439</i>&nbsp;            this.aes256Decrypt(var1, var7, 0, var3, var4, var5, var6);
+<i>440</i>&nbsp;            break;
+<i>441</i>&nbsp;        default:
+<b class="nc"><i>442</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported etype: &quot; + this.etype);</b>
+<b class="nc"><i>443</i>&nbsp;        }</b>
+<i>444</i>&nbsp;
+<b class="nc"><i>445</i>&nbsp;    }</b>
+<b class="nc"><i>446</i>&nbsp;</b>
+<i>447</i>&nbsp;    void encryptData(WrapToken var1, byte[] var2, byte[] var3, int var4, int var5, byte[] var6, OutputStream var7) throws GSSException, IOException {
+<i>448</i>&nbsp;        switch(this.sealAlg) {
+<i>449</i>&nbsp;        case 0:
+<b class="nc"><i>450</i>&nbsp;            Cipher var8 = this.getInitializedDes(true, getDesEncryptionKey(this.keybytes), ZERO_IV);</b>
+<i>451</i>&nbsp;            CipherOutputStream var9 = new CipherOutputStream(var7, var8);
+<b class="nc"><i>452</i>&nbsp;            var9.write(var2);</b>
+<i>453</i>&nbsp;            var9.write(var3, var4, var5);
+<b class="nc"><i>454</i>&nbsp;            var9.write(var6);</b>
+<i>455</i>&nbsp;            break;
+<i>456</i>&nbsp;        case 512:
+<b class="nc"><i>457</i>&nbsp;            byte[] var10 = this.des3KdEncrypt(var2, var3, var4, var5, var6);</b>
+<b class="nc"><i>458</i>&nbsp;            var7.write(var10);</b>
+<i>459</i>&nbsp;            break;
+<i>460</i>&nbsp;        case 4096:
+<i>461</i>&nbsp;            byte[] var11 = this.arcFourEncrypt(var1, var2, var3, var4, var5, var6);
+<i>462</i>&nbsp;            var7.write(var11);
+<i>463</i>&nbsp;            break;
+<b class="nc"><i>464</i>&nbsp;        default:</b>
+<b class="nc"><i>465</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported seal algorithm: &quot; + this.sealAlg);</b>
+<i>466</i>&nbsp;        }
+<b class="nc"><i>467</i>&nbsp;</b>
+<b class="nc"><i>468</i>&nbsp;    }</b>
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;    byte[] encryptData(WrapToken_v2 var1, byte[] var2, byte[] var3, byte[] var4, int var5, int var6, int var7) throws GSSException {
+<i>471</i>&nbsp;        switch(this.etype) {
+<b class="nc"><i>472</i>&nbsp;        case 17:</b>
+<i>473</i>&nbsp;            return this.aes128Encrypt(var2, var3, var4, var5, var6, var7);
+<b class="nc"><i>474</i>&nbsp;        case 18:</b>
+<i>475</i>&nbsp;            return this.aes256Encrypt(var2, var3, var4, var5, var6, var7);
+<b class="nc"><i>476</i>&nbsp;        default:</b>
+<i>477</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported etype: &quot; + this.etype);
+<i>478</i>&nbsp;        }
+<b class="nc"><i>479</i>&nbsp;    }</b>
+<b class="nc"><i>480</i>&nbsp;</b>
+<i>481</i>&nbsp;    void encryptData(WrapToken var1, byte[] var2, byte[] var3, int var4, int var5, byte[] var6, byte[] var7, int var8) throws GSSException {
+<i>482</i>&nbsp;        switch(this.sealAlg) {
+<i>483</i>&nbsp;        case 0:
+<b class="nc"><i>484</i>&nbsp;            int var9 = var8;</b>
+<i>485</i>&nbsp;            Cipher var10 = this.getInitializedDes(true, getDesEncryptionKey(this.keybytes), ZERO_IV);
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;            try {
+<i>488</i>&nbsp;                var9 += var10.update(var2, 0, var2.length, var7, var9);
+<i>489</i>&nbsp;                var9 += var10.update(var3, var4, var5, var7, var9);
+<b class="nc"><i>490</i>&nbsp;                var10.update(var6, 0, var6.length, var7, var9);</b>
+<i>491</i>&nbsp;                var10.doFinal();
+<i>492</i>&nbsp;                break;
+<b class="nc"><i>493</i>&nbsp;            } catch (GeneralSecurityException var13) {</b>
+<i>494</i>&nbsp;                GSSException var14 = new GSSException(11, -1, &quot;Could not use DES Cipher - &quot; + var13.getMessage());
+<i>495</i>&nbsp;                var14.initCause(var13);
+<b class="nc"><i>496</i>&nbsp;                throw var14;</b>
+<i>497</i>&nbsp;            }
+<i>498</i>&nbsp;        case 512:
+<b class="nc"><i>499</i>&nbsp;            byte[] var11 = this.des3KdEncrypt(var2, var3, var4, var5, var6);</b>
+<i>500</i>&nbsp;            System.arraycopy(var11, 0, var7, var8, var11.length);
+<b class="nc"><i>501</i>&nbsp;            break;</b>
+<i>502</i>&nbsp;        case 4096:
+<i>503</i>&nbsp;            byte[] var12 = this.arcFourEncrypt(var1, var2, var3, var4, var5, var6);
+<i>504</i>&nbsp;            System.arraycopy(var12, 0, var7, var8, var12.length);
+<b class="nc"><i>505</i>&nbsp;            break;</b>
+<i>506</i>&nbsp;        default:
+<i>507</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported seal algorithm: &quot; + this.sealAlg);
+<b class="nc"><i>508</i>&nbsp;        }</b>
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;    }
+<i>511</i>&nbsp;
+<i>512</i>&nbsp;    int encryptData(WrapToken_v2 var1, byte[] var2, byte[] var3, byte[] var4, int var5, int var6, byte[] var7, int var8, int var9) throws GSSException {
+<i>513</i>&nbsp;        Object var10 = null;
+<i>514</i>&nbsp;        byte[] var11;
+<i>515</i>&nbsp;        switch(this.etype) {
+<i>516</i>&nbsp;        case 17:
+<i>517</i>&nbsp;            var11 = this.aes128Encrypt(var2, var3, var4, var5, var6, var9);
+<i>518</i>&nbsp;            break;
+<i>519</i>&nbsp;        case 18:
+<i>520</i>&nbsp;            var11 = this.aes256Encrypt(var2, var3, var4, var5, var6, var9);
+<b class="nc"><i>521</i>&nbsp;            break;</b>
+<i>522</i>&nbsp;        default:
+<b class="nc"><i>523</i>&nbsp;            throw new GSSException(11, -1, &quot;Unsupported etype: &quot; + this.etype);</b>
+<i>524</i>&nbsp;        }
+<b class="nc"><i>525</i>&nbsp;</b>
+<i>526</i>&nbsp;        System.arraycopy(var11, 0, var7, var8, var11.length);
+<i>527</i>&nbsp;        return var11.length;
+<b class="nc"><i>528</i>&nbsp;    }</b>
+<b class="nc"><i>529</i>&nbsp;</b>
+<i>530</i>&nbsp;    private byte[] getDesCbcChecksum(byte[] var1, byte[] var2, byte[] var3, int var4, int var5) throws GSSException {
+<i>531</i>&nbsp;        Cipher var6 = this.getInitializedDes(true, var1, ZERO_IV);
+<b class="nc"><i>532</i>&nbsp;        int var7 = var6.getBlockSize();</b>
+<b class="nc"><i>533</i>&nbsp;        byte[] var8 = new byte[var7];</b>
+<i>534</i>&nbsp;        int var9 = var5 / var7;
+<i>535</i>&nbsp;        int var10 = var5 % var7;
+<b class="nc"><i>536</i>&nbsp;        if(var10 == 0) {</b>
+<i>537</i>&nbsp;            --var9;
+<i>538</i>&nbsp;            System.arraycopy(var3, var4 + var9 * var7, var8, 0, var7);
+<i>539</i>&nbsp;        } else {
+<i>540</i>&nbsp;            System.arraycopy(var3, var4 + var9 * var7, var8, 0, var10);
+<i>541</i>&nbsp;        }
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;        try {
+<i>544</i>&nbsp;            byte[] var11 = new byte[Math.max(var7, var2 == null?var7:var2.length)];
+<i>545</i>&nbsp;            if(var2 != null) {
+<i>546</i>&nbsp;                var6.update(var2, 0, var2.length, var11, 0);
+<i>547</i>&nbsp;            }
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;            for(int var14 = 0; var14 &lt; var9; ++var14) {
+<i>550</i>&nbsp;                var6.update(var3, var4, var7, var11, 0);
+<b class="nc"><i>551</i>&nbsp;                var4 += var7;</b>
+<i>552</i>&nbsp;            }
+<b class="nc"><i>553</i>&nbsp;</b>
+<i>554</i>&nbsp;            byte[] var15 = new byte[var7];
+<b class="nc"><i>555</i>&nbsp;            var6.update(var8, 0, var7, var15, 0);</b>
+<i>556</i>&nbsp;            var6.doFinal();
+<b class="nc"><i>557</i>&nbsp;            return var15;</b>
+<i>558</i>&nbsp;        } catch (GeneralSecurityException var13) {
+<b class="nc"><i>559</i>&nbsp;            GSSException var12 = new GSSException(11, -1, &quot;Could not use DES Cipher - &quot; + var13.getMessage());</b>
+<i>560</i>&nbsp;            var12.initCause(var13);
+<b class="nc"><i>561</i>&nbsp;            throw var12;</b>
+<i>562</i>&nbsp;        }
+<i>563</i>&nbsp;    }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;    private final Cipher getInitializedDes(boolean var1, byte[] var2, byte[] var3) throws GSSException {
+<i>566</i>&nbsp;        try {
+<i>567</i>&nbsp;            IvParameterSpec var4 = new IvParameterSpec(var3);
+<i>568</i>&nbsp;            SecretKeySpec var8 = new SecretKeySpec(var2, &quot;DES&quot;);
+<i>569</i>&nbsp;            Cipher var6 = Cipher.getInstance(&quot;DES/CBC/NoPadding&quot;);
+<b class="nc"><i>570</i>&nbsp;            var6.init(var1?1:2, var8, var4);</b>
+<i>571</i>&nbsp;            return var6;
+<b class="nc"><i>572</i>&nbsp;        } catch (GeneralSecurityException var7) {</b>
+<i>573</i>&nbsp;            GSSException var5 = new GSSException(11, -1, var7.getMessage());
+<b class="nc"><i>574</i>&nbsp;            var5.initCause(var7);</b>
+<i>575</i>&nbsp;            throw var5;
+<i>576</i>&nbsp;        }
+<i>577</i>&nbsp;    }
+<i>578</i>&nbsp;
+<b class="nc"><i>579</i>&nbsp;    private void desCbcDecrypt(WrapToken var1, byte[] var2, byte[] var3, int var4, int var5, byte[] var6, int var7) throws GSSException {</b>
+<i>580</i>&nbsp;        try {
+<b class="nc"><i>581</i>&nbsp;            boolean var8 = false;</b>
+<b class="nc"><i>582</i>&nbsp;            Cipher var15 = this.getInitializedDes(false, var2, ZERO_IV);</b>
+<b class="nc"><i>583</i>&nbsp;            var15.update(var3, var4, 8, var1.confounder);</b>
+<i>584</i>&nbsp;            var4 += 8;
+<i>585</i>&nbsp;            var5 -= 8;
+<b class="nc"><i>586</i>&nbsp;            int var10 = var15.getBlockSize();</b>
+<b class="nc"><i>587</i>&nbsp;            int var11 = var5 / var10 - 1;</b>
+<b class="nc"><i>588</i>&nbsp;</b>
+<i>589</i>&nbsp;            for(int var12 = 0; var12 &lt; var11; ++var12) {
+<b class="nc"><i>590</i>&nbsp;                var15.update(var3, var4, var10, var6, var7);</b>
+<b class="nc"><i>591</i>&nbsp;                var4 += var10;</b>
+<i>592</i>&nbsp;                var7 += var10;
+<i>593</i>&nbsp;            }
+<i>594</i>&nbsp;
+<i>595</i>&nbsp;            byte[] var16 = new byte[var10];
+<b class="nc"><i>596</i>&nbsp;            var15.update(var3, var4, var10, var16);</b>
+<i>597</i>&nbsp;            var15.doFinal();
+<b class="nc"><i>598</i>&nbsp;            byte var13 = var16[var10 - 1];</b>
+<b class="nc"><i>599</i>&nbsp;            if(var13 &gt;= 1 &amp;&amp; var13 &lt;= 8) {</b>
+<b class="nc"><i>600</i>&nbsp;                var1.padding = WrapToken.pads[var13];</b>
+<i>601</i>&nbsp;                var10 -= var13;
+<i>602</i>&nbsp;                System.arraycopy(var16, 0, var6, var7, var10);
+<b class="nc"><i>603</i>&nbsp;            } else {</b>
+<b class="nc"><i>604</i>&nbsp;                throw new GSSException(10, -1, &quot;Invalid padding on Wrap Token&quot;);</b>
+<b class="nc"><i>605</i>&nbsp;            }</b>
+<i>606</i>&nbsp;        } catch (GeneralSecurityException var14) {
+<b class="nc"><i>607</i>&nbsp;            GSSException var9 = new GSSException(11, -1, &quot;Could not use DES cipher - &quot; + var14.getMessage());</b>
+<b class="nc"><i>608</i>&nbsp;            var9.initCause(var14);</b>
+<i>609</i>&nbsp;            throw var9;
+<i>610</i>&nbsp;        }
+<b class="nc"><i>611</i>&nbsp;    }</b>
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;    private void desCbcDecrypt(WrapToken var1, byte[] var2, InputStream var3, int var4, byte[] var5, int var6) throws GSSException, IOException {
+<i>614</i>&nbsp;        boolean var7 = false;
+<i>615</i>&nbsp;        Cipher var8 = this.getInitializedDes(false, var2, ZERO_IV);
+<i>616</i>&nbsp;        CipherHelper.WrapTokenInputStream var9 = new CipherHelper.WrapTokenInputStream(var3, var4);
+<i>617</i>&nbsp;        CipherInputStream var10 = new CipherInputStream(var9, var8);
+<i>618</i>&nbsp;        int var17 = var10.read(var1.confounder);
+<i>619</i>&nbsp;        var4 -= var17;
+<i>620</i>&nbsp;        int var11 = var8.getBlockSize();
+<b class="nc"><i>621</i>&nbsp;        int var12 = var4 / var11 - 1;</b>
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;        for(int var13 = 0; var13 &lt; var12; ++var13) {</b>
+<b class="nc"><i>624</i>&nbsp;            var10.read(var5, var6, var11);</b>
+<b class="nc"><i>625</i>&nbsp;            var6 += var11;</b>
+<i>626</i>&nbsp;        }
+<i>627</i>&nbsp;
+<b class="nc"><i>628</i>&nbsp;        byte[] var18 = new byte[var11];</b>
+<b class="nc"><i>629</i>&nbsp;        var10.read(var18);</b>
+<b class="nc"><i>630</i>&nbsp;</b>
+<b class="nc"><i>631</i>&nbsp;        try {</b>
+<i>632</i>&nbsp;            var8.doFinal();
+<b class="nc"><i>633</i>&nbsp;        } catch (GeneralSecurityException var16) {</b>
+<i>634</i>&nbsp;            GSSException var15 = new GSSException(11, -1, &quot;Could not use DES cipher - &quot; + var16.getMessage());
+<b class="nc"><i>635</i>&nbsp;            var15.initCause(var16);</b>
+<i>636</i>&nbsp;            throw var15;
+<b class="nc"><i>637</i>&nbsp;        }</b>
+<i>638</i>&nbsp;
+<b class="nc"><i>639</i>&nbsp;        byte var14 = var18[var11 - 1];</b>
+<i>640</i>&nbsp;        if(var14 &gt;= 1 &amp;&amp; var14 &lt;= 8) {
+<b class="nc"><i>641</i>&nbsp;            var1.padding = WrapToken.pads[var14];</b>
+<i>642</i>&nbsp;            var11 -= var14;
+<i>643</i>&nbsp;            System.arraycopy(var18, 0, var5, var6, var11);
+<i>644</i>&nbsp;        } else {
+<i>645</i>&nbsp;            throw new GSSException(10, -1, &quot;Invalid padding on Wrap Token&quot;);
+<i>646</i>&nbsp;        }
+<i>647</i>&nbsp;    }
+<i>648</i>&nbsp;
+<i>649</i>&nbsp;    private static byte[] getDesEncryptionKey(byte[] var0) throws GSSException {
+<b class="nc"><i>650</i>&nbsp;        if(var0.length &gt; 8) {</b>
+<i>651</i>&nbsp;            throw new GSSException(11, -100, &quot;Invalid DES Key!&quot;);
+<i>652</i>&nbsp;        } else {
+<b class="nc"><i>653</i>&nbsp;            byte[] var1 = new byte[var0.length];</b>
+<i>654</i>&nbsp;
+<b class="nc"><i>655</i>&nbsp;            for(int var2 = 0; var2 &lt; var0.length; ++var2) {</b>
+<i>656</i>&nbsp;                var1[var2] = (byte)(var0[var2] ^ 240);
+<b class="nc"><i>657</i>&nbsp;            }</b>
+<i>658</i>&nbsp;
+<b class="nc"><i>659</i>&nbsp;            return var1;</b>
+<i>660</i>&nbsp;        }
+<b class="nc"><i>661</i>&nbsp;    }</b>
+<b class="nc"><i>662</i>&nbsp;</b>
+<i>663</i>&nbsp;    private void des3KdDecrypt(WrapToken var1, byte[] var2, int var3, int var4, byte[] var5, int var6) throws GSSException {
+<i>664</i>&nbsp;        byte[] var7;
+<b class="nc"><i>665</i>&nbsp;        try {</b>
+<i>666</i>&nbsp;            var7 = Des3.decryptRaw(this.keybytes, 22, ZERO_IV, var2, var3, var4);
+<i>667</i>&nbsp;        } catch (GeneralSecurityException var10) {
+<i>668</i>&nbsp;            GSSException var9 = new GSSException(11, -1, &quot;Could not use DES3-KD Cipher - &quot; + var10.getMessage());
+<b class="nc"><i>669</i>&nbsp;            var9.initCause(var10);</b>
+<b class="nc"><i>670</i>&nbsp;            throw var9;</b>
+<i>671</i>&nbsp;        }
+<i>672</i>&nbsp;
+<b class="nc"><i>673</i>&nbsp;        byte var8 = var7[var7.length - 1];</b>
+<i>674</i>&nbsp;        if(var8 &gt;= 1 &amp;&amp; var8 &lt;= 8) {
+<i>675</i>&nbsp;            var1.padding = WrapToken.pads[var8];
+<i>676</i>&nbsp;            int var11 = var7.length - 8 - var8;
+<b class="nc"><i>677</i>&nbsp;            System.arraycopy(var7, 8, var5, var6, var11);</b>
+<b class="nc"><i>678</i>&nbsp;            System.arraycopy(var7, 0, var1.confounder, 0, 8);</b>
+<i>679</i>&nbsp;        } else {
+<i>680</i>&nbsp;            throw new GSSException(10, -1, &quot;Invalid padding on Wrap Token&quot;);
+<b class="nc"><i>681</i>&nbsp;        }</b>
+<i>682</i>&nbsp;    }
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;    private byte[] des3KdEncrypt(byte[] var1, byte[] var2, int var3, int var4, byte[] var5) throws GSSException {
+<i>685</i>&nbsp;        byte[] var6 = new byte[var1.length + var4 + var5.length];
+<i>686</i>&nbsp;        System.arraycopy(var1, 0, var6, 0, var1.length);
+<i>687</i>&nbsp;        System.arraycopy(var2, var3, var6, var1.length, var4);
+<i>688</i>&nbsp;        System.arraycopy(var5, 0, var6, var1.length + var4, var5.length);
+<i>689</i>&nbsp;
+<i>690</i>&nbsp;        try {
+<i>691</i>&nbsp;            byte[] var7 = Des3.encryptRaw(this.keybytes, 22, ZERO_IV, var6, 0, var6.length);
+<i>692</i>&nbsp;            return var7;
+<i>693</i>&nbsp;        } catch (Exception var9) {
+<i>694</i>&nbsp;            GSSException var8 = new GSSException(11, -1, &quot;Could not use DES3-KD Cipher - &quot; + var9.getMessage());
+<i>695</i>&nbsp;            var8.initCause(var9);
+<i>696</i>&nbsp;            throw var8;
+<i>697</i>&nbsp;        }
+<i>698</i>&nbsp;    }
+<b class="nc"><i>699</i>&nbsp;</b>
+<b class="nc"><i>700</i>&nbsp;    private void arcFourDecrypt(WrapToken var1, byte[] var2, int var3, int var4, byte[] var5, int var6) throws GSSException {</b>
+<i>701</i>&nbsp;        byte[] var7 = this.decryptSeq(var1.getChecksum(), var1.getEncSeqNumber(), 0, 8);
+<b class="nc"><i>702</i>&nbsp;</b>
+<i>703</i>&nbsp;        byte[] var8;
+<b class="nc"><i>704</i>&nbsp;        try {</b>
+<i>705</i>&nbsp;            var8 = ArcFourHmac.decryptRaw(this.keybytes, 22, ZERO_IV, var2, var3, var4, var7);
+<b class="nc"><i>706</i>&nbsp;        } catch (GeneralSecurityException var11) {</b>
+<i>707</i>&nbsp;            GSSException var10 = new GSSException(11, -1, &quot;Could not use ArcFour Cipher - &quot; + var11.getMessage());
+<b class="nc"><i>708</i>&nbsp;            var10.initCause(var11);</b>
+<i>709</i>&nbsp;            throw var10;
+<b class="nc"><i>710</i>&nbsp;        }</b>
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;        byte var9 = var8[var8.length - 1];
+<i>713</i>&nbsp;        if(var9 &lt; 1) {
+<i>714</i>&nbsp;            throw new GSSException(10, -1, &quot;Invalid padding on Wrap Token&quot;);
+<i>715</i>&nbsp;        } else {
+<i>716</i>&nbsp;            var1.padding = WrapToken.pads[var9];
+<b class="nc"><i>717</i>&nbsp;            int var12 = var8.length - 8 - var9;</b>
+<i>718</i>&nbsp;            System.arraycopy(var8, 8, var5, var6, var12);
+<i>719</i>&nbsp;            System.arraycopy(var8, 0, var1.confounder, 0, 8);
+<i>720</i>&nbsp;        }
+<i>721</i>&nbsp;    }
+<i>722</i>&nbsp;
+<i>723</i>&nbsp;    private byte[] arcFourEncrypt(WrapToken var1, byte[] var2, byte[] var3, int var4, int var5, byte[] var6) throws GSSException {
+<b class="nc"><i>724</i>&nbsp;        byte[] var7 = new byte[var2.length + var5 + var6.length];</b>
+<i>725</i>&nbsp;        System.arraycopy(var2, 0, var7, 0, var2.length);
+<b class="nc"><i>726</i>&nbsp;        System.arraycopy(var3, var4, var7, var2.length, var5);</b>
+<i>727</i>&nbsp;        System.arraycopy(var6, 0, var7, var2.length + var5, var6.length);
+<b class="nc"><i>728</i>&nbsp;        byte[] var8 = new byte[4];</b>
+<i>729</i>&nbsp;        WrapToken.writeBigEndian(var1.getSequenceNumber(), var8);
+<i>730</i>&nbsp;
+<i>731</i>&nbsp;        try {
+<b class="nc"><i>732</i>&nbsp;            byte[] var9 = ArcFourHmac.encryptRaw(this.keybytes, 22, var8, var7, 0, var7.length);</b>
+<i>733</i>&nbsp;            return var9;
+<i>734</i>&nbsp;        } catch (Exception var11) {
+<b class="nc"><i>735</i>&nbsp;            GSSException var10 = new GSSException(11, -1, &quot;Could not use ArcFour Cipher - &quot; + var11.getMessage());</b>
+<i>736</i>&nbsp;            var10.initCause(var11);
+<i>737</i>&nbsp;            throw var10;
+<b class="nc"><i>738</i>&nbsp;        }</b>
+<i>739</i>&nbsp;    }
+<b class="nc"><i>740</i>&nbsp;</b>
+<b class="nc"><i>741</i>&nbsp;    private byte[] aes128Encrypt(byte[] var1, byte[] var2, byte[] var3, int var4, int var5, int var6) throws GSSException {</b>
+<b class="nc"><i>742</i>&nbsp;        byte[] var7 = new byte[var1.length + var5 + var2.length];</b>
+<i>743</i>&nbsp;        System.arraycopy(var1, 0, var7, 0, var1.length);
+<b class="nc"><i>744</i>&nbsp;        System.arraycopy(var3, var4, var7, var1.length, var5);</b>
+<b class="nc"><i>745</i>&nbsp;        System.arraycopy(var2, 0, var7, var1.length + var5, var2.length);</b>
+<b class="nc"><i>746</i>&nbsp;</b>
+<i>747</i>&nbsp;        try {
+<i>748</i>&nbsp;            byte[] var8 = Aes128.encryptRaw(this.keybytes, var6, ZERO_IV_AES, var7, 0, var7.length);
+<i>749</i>&nbsp;            return var8;
+<b class="nc"><i>750</i>&nbsp;        } catch (Exception var10) {</b>
+<i>751</i>&nbsp;            GSSException var9 = new GSSException(11, -1, &quot;Could not use AES128 Cipher - &quot; + var10.getMessage());
+<b class="nc"><i>752</i>&nbsp;            var9.initCause(var10);</b>
+<b class="nc"><i>753</i>&nbsp;            throw var9;</b>
+<i>754</i>&nbsp;        }
+<i>755</i>&nbsp;    }
+<b class="nc"><i>756</i>&nbsp;</b>
+<i>757</i>&nbsp;    private void aes128Decrypt(WrapToken_v2 var1, byte[] var2, int var3, int var4, byte[] var5, int var6, int var7) throws GSSException {
+<b class="nc"><i>758</i>&nbsp;        Object var8 = null;</b>
+<b class="nc"><i>759</i>&nbsp;</b>
+<i>760</i>&nbsp;        byte[] var12;
+<i>761</i>&nbsp;        try {
+<b class="nc"><i>762</i>&nbsp;            var12 = Aes128.decryptRaw(this.keybytes, var7, ZERO_IV_AES, var2, var3, var4);</b>
+<i>763</i>&nbsp;        } catch (GeneralSecurityException var11) {
+<i>764</i>&nbsp;            GSSException var10 = new GSSException(11, -1, &quot;Could not use AES128 Cipher - &quot; + var11.getMessage());
+<i>765</i>&nbsp;            var10.initCause(var11);
+<i>766</i>&nbsp;            throw var10;
+<i>767</i>&nbsp;        }
+<i>768</i>&nbsp;
+<i>769</i>&nbsp;        int var9 = var12.length - 16 - 16;
+<i>770</i>&nbsp;        System.arraycopy(var12, 16, var5, var6, var9);
+<i>771</i>&nbsp;    }
+<i>772</i>&nbsp;
+<i>773</i>&nbsp;    private byte[] aes256Encrypt(byte[] var1, byte[] var2, byte[] var3, int var4, int var5, int var6) throws GSSException {
+<i>774</i>&nbsp;        byte[] var7 = new byte[var1.length + var5 + var2.length];
+<i>775</i>&nbsp;        System.arraycopy(var1, 0, var7, 0, var1.length);
+<i>776</i>&nbsp;        System.arraycopy(var3, var4, var7, var1.length, var5);
+<i>777</i>&nbsp;        System.arraycopy(var2, 0, var7, var1.length + var5, var2.length);
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;        try {
+<b class="nc"><i>780</i>&nbsp;            byte[] var8 = Aes256.encryptRaw(this.keybytes, var6, ZERO_IV_AES, var7, 0, var7.length);</b>
+<b class="nc"><i>781</i>&nbsp;            return var8;</b>
+<i>782</i>&nbsp;        } catch (Exception var10) {
+<b class="nc"><i>783</i>&nbsp;            GSSException var9 = new GSSException(11, -1, &quot;Could not use AES256 Cipher - &quot; + var10.getMessage());</b>
+<i>784</i>&nbsp;            var9.initCause(var10);
+<b class="nc"><i>785</i>&nbsp;            throw var9;</b>
+<i>786</i>&nbsp;        }
+<b class="nc"><i>787</i>&nbsp;    }</b>
+<i>788</i>&nbsp;
+<b class="nc"><i>789</i>&nbsp;    private void aes256Decrypt(WrapToken_v2 var1, byte[] var2, int var3, int var4, byte[] var5, int var6, int var7) throws GSSException {</b>
+<i>790</i>&nbsp;        byte[] var8;
+<b class="nc"><i>791</i>&nbsp;        try {</b>
+<i>792</i>&nbsp;            var8 = Aes256.decryptRaw(this.keybytes, var7, ZERO_IV_AES, var2, var3, var4);
+<i>793</i>&nbsp;        } catch (GeneralSecurityException var11) {
+<b class="nc"><i>794</i>&nbsp;            GSSException var10 = new GSSException(11, -1, &quot;Could not use AES128 Cipher - &quot; + var11.getMessage());</b>
+<b class="nc"><i>795</i>&nbsp;            var10.initCause(var11);</b>
+<i>796</i>&nbsp;            throw var10;
+<i>797</i>&nbsp;        }
+<i>798</i>&nbsp;
+<i>799</i>&nbsp;        int var9 = var8.length - 16 - 16;
+<i>800</i>&nbsp;        System.arraycopy(var8, 16, var5, var6, var9);
+<i>801</i>&nbsp;    }
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;    static {
+<i>804</i>&nbsp;        DEBUG = Krb5Util.DEBUG;
+<i>805</i>&nbsp;        ZERO_IV = new byte[8];
+<i>806</i>&nbsp;        ZERO_IV_AES = new byte[16];
+<i>807</i>&nbsp;    }
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;    class WrapTokenInputStream extends InputStream {
+<i>810</i>&nbsp;        private InputStream is;
+<i>811</i>&nbsp;        private int length;
+<i>812</i>&nbsp;        private int remaining;
+<i>813</i>&nbsp;        private int temp;
+<i>814</i>&nbsp;
+<i>815</i>&nbsp;        public WrapTokenInputStream(InputStream var2, int var3) {
+<i>816</i>&nbsp;            this.is = var2;
+<i>817</i>&nbsp;            this.length = var3;
+<i>818</i>&nbsp;            this.remaining = var3;
+<b class="nc"><i>819</i>&nbsp;        }</b>
+<i>820</i>&nbsp;
+<b class="nc"><i>821</i>&nbsp;        public final int read() throws IOException {</b>
+<i>822</i>&nbsp;            if(this.remaining == 0) {
+<i>823</i>&nbsp;                return -1;
+<i>824</i>&nbsp;            } else {
+<i>825</i>&nbsp;                this.temp = this.is.read();
+<i>826</i>&nbsp;                if(this.temp != -1) {
+<i>827</i>&nbsp;                    this.remaining -= this.temp;
+<i>828</i>&nbsp;                }
+<b class="nc"><i>829</i>&nbsp;</b>
+<i>830</i>&nbsp;                return this.temp;
+<b class="nc"><i>831</i>&nbsp;            }</b>
+<b class="nc"><i>832</i>&nbsp;        }</b>
+<b class="nc"><i>833</i>&nbsp;</b>
+<i>834</i>&nbsp;        public final int read(byte[] var1) throws IOException {
+<b class="nc"><i>835</i>&nbsp;            if(this.remaining == 0) {</b>
+<b class="nc"><i>836</i>&nbsp;                return -1;</b>
+<i>837</i>&nbsp;            } else {
+<i>838</i>&nbsp;                this.temp = Math.min(this.remaining, var1.length);
+<b class="nc"><i>839</i>&nbsp;                this.temp = this.is.read(var1, 0, this.temp);</b>
+<i>840</i>&nbsp;                if(this.temp != -1) {
+<i>841</i>&nbsp;                    this.remaining -= this.temp;
+<i>842</i>&nbsp;                }
+<i>843</i>&nbsp;
+<i>844</i>&nbsp;                return this.temp;
+<b class="nc"><i>845</i>&nbsp;            }</b>
+<i>846</i>&nbsp;        }
+<i>847</i>&nbsp;
+<b class="nc"><i>848</i>&nbsp;        public final int read(byte[] var1, int var2, int var3) throws IOException {</b>
+<i>849</i>&nbsp;            if(this.remaining == 0) {
+<b class="nc"><i>850</i>&nbsp;                return -1;</b>
+<i>851</i>&nbsp;            } else {
+<i>852</i>&nbsp;                this.temp = Math.min(this.remaining, var3);
+<i>853</i>&nbsp;                this.temp = this.is.read(var1, var2, this.temp);
+<b class="nc"><i>854</i>&nbsp;                if(this.temp != -1) {</b>
+<b class="nc"><i>855</i>&nbsp;                    this.remaining -= this.temp;</b>
+<i>856</i>&nbsp;                }
+<b class="nc"><i>857</i>&nbsp;</b>
+<i>858</i>&nbsp;                return this.temp;
+<i>859</i>&nbsp;            }
+<i>860</i>&nbsp;        }
+<b class="nc"><i>861</i>&nbsp;</b>
+<b class="nc"><i>862</i>&nbsp;        public final long skip(long var1) throws IOException {</b>
+<b class="nc"><i>863</i>&nbsp;            if(this.remaining == 0) {</b>
+<i>864</i>&nbsp;                return 0L;
+<b class="nc"><i>865</i>&nbsp;            } else {</b>
+<b class="nc"><i>866</i>&nbsp;                this.temp = (int)Math.min((long)this.remaining, var1);</b>
+<b class="nc"><i>867</i>&nbsp;                this.temp = (int)this.is.skip((long)this.temp);</b>
+<i>868</i>&nbsp;                this.remaining -= this.temp;
+<b class="nc"><i>869</i>&nbsp;                return (long)this.temp;</b>
+<b class="nc"><i>870</i>&nbsp;            }</b>
+<i>871</i>&nbsp;        }
+<i>872</i>&nbsp;
+<i>873</i>&nbsp;        public final int available() throws IOException {
+<i>874</i>&nbsp;            return Math.min(this.remaining, this.is.available());
+<i>875</i>&nbsp;        }
+<i>876</i>&nbsp;
+<i>877</i>&nbsp;        public final void close() throws IOException {
+<i>878</i>&nbsp;            this.remaining = 0;
+<i>879</i>&nbsp;        }
+<i>880</i>&nbsp;    }
+<i>881</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

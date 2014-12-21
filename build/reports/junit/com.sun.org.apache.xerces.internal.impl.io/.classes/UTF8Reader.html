@@ -1,0 +1,563 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UTF8Reader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.impl.io</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UTF8Reader (com.sun.org.apache.xerces.internal.impl.io)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UTF8Reader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 265)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.impl.io;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.io.MalformedByteSequenceException;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.msg.XMLMessageFormatter;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.util.MessageFormatter;
+<i>11</i>&nbsp;import com.sun.xml.internal.stream.util.BufferAllocator;
+<i>12</i>&nbsp;import com.sun.xml.internal.stream.util.ThreadLocalBufferAllocator;
+<i>13</i>&nbsp;import java.io.IOException;
+<i>14</i>&nbsp;import java.io.InputStream;
+<i>15</i>&nbsp;import java.io.Reader;
+<i>16</i>&nbsp;import java.util.Locale;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;public class UTF8Reader extends Reader {
+<i>19</i>&nbsp;    public static final int DEFAULT_BUFFER_SIZE = 2048;
+<i>20</i>&nbsp;    private static final boolean DEBUG_READ = false;
+<i>21</i>&nbsp;    protected InputStream fInputStream;
+<i>22</i>&nbsp;    protected byte[] fBuffer;
+<i>23</i>&nbsp;    protected int fOffset;
+<i>24</i>&nbsp;    private int fSurrogate;
+<i>25</i>&nbsp;    private MessageFormatter fFormatter;
+<i>26</i>&nbsp;    private Locale fLocale;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public UTF8Reader(InputStream inputStream) {
+<i>29</i>&nbsp;        this(inputStream, 2048, new XMLMessageFormatter(), Locale.getDefault());
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public UTF8Reader(InputStream inputStream, MessageFormatter messageFormatter, Locale locale) {
+<i>33</i>&nbsp;        this(inputStream, 2048, messageFormatter, locale);
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public UTF8Reader(InputStream inputStream, int size, MessageFormatter messageFormatter, Locale locale) {
+<i>37</i>&nbsp;        this.fSurrogate = -1;
+<i>38</i>&nbsp;        this.fFormatter = null;
+<i>39</i>&nbsp;        this.fLocale = null;
+<i>40</i>&nbsp;        this.fInputStream = inputStream;
+<i>41</i>&nbsp;        BufferAllocator ba = ThreadLocalBufferAllocator.getBufferAllocator();
+<i>42</i>&nbsp;        this.fBuffer = ba.getByteBuffer(size);
+<i>43</i>&nbsp;        if(this.fBuffer == null) {
+<i>44</i>&nbsp;            this.fBuffer = new byte[size];
+<i>45</i>&nbsp;        }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;        this.fFormatter = messageFormatter;
+<i>48</i>&nbsp;        this.fLocale = locale;
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public int read() throws IOException {
+<i>52</i>&nbsp;        int c = this.fSurrogate;
+<i>53</i>&nbsp;        if(this.fSurrogate == -1) {
+<i>54</i>&nbsp;            int index = 0;
+<i>55</i>&nbsp;            int b0 = index == this.fOffset?this.fInputStream.read():this.fBuffer[index++] &amp; 255;
+<i>56</i>&nbsp;            if(b0 == -1) {
+<i>57</i>&nbsp;                return -1;
+<i>58</i>&nbsp;            }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;            if(b0 &lt; 128) {
+<i>61</i>&nbsp;                c = (char)b0;
+<i>62</i>&nbsp;            } else {
+<i>63</i>&nbsp;                int b1;
+<i>64</i>&nbsp;                if((b0 &amp; 224) == 192 &amp;&amp; (b0 &amp; 30) != 0) {
+<i>65</i>&nbsp;                    b1 = index == this.fOffset?this.fInputStream.read():this.fBuffer[index++] &amp; 255;
+<i>66</i>&nbsp;                    if(b1 == -1) {
+<i>67</i>&nbsp;                        this.expectedByte(2, 2);
+<b class="nc"><i>68</i>&nbsp;                    }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;                    if((b1 &amp; 192) != 128) {
+<i>71</i>&nbsp;                        this.invalidByte(2, 2, b1);
+<b class="nc"><i>72</i>&nbsp;                    }</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;                    c = b0 &lt;&lt; 6 &amp; 1984 | b1 &amp; 63;
+<b class="nc"><i>75</i>&nbsp;                } else {</b>
+<i>76</i>&nbsp;                    int b2;
+<i>77</i>&nbsp;                    if((b0 &amp; 240) == 224) {
+<i>78</i>&nbsp;                        b1 = index == this.fOffset?this.fInputStream.read():this.fBuffer[index++] &amp; 255;
+<i>79</i>&nbsp;                        if(b1 == -1) {
+<i>80</i>&nbsp;                            this.expectedByte(2, 3);
+<i>81</i>&nbsp;                        }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;                        if((b1 &amp; 192) != 128 || b0 == 237 &amp;&amp; b1 &gt;= 160 || (b0 &amp; 15) == 0 &amp;&amp; (b1 &amp; 32) == 0) {
+<i>84</i>&nbsp;                            this.invalidByte(2, 3, b1);
+<i>85</i>&nbsp;                        }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;                        b2 = index == this.fOffset?this.fInputStream.read():this.fBuffer[index++] &amp; 255;
+<b class="nc"><i>88</i>&nbsp;                        if(b2 == -1) {</b>
+<i>89</i>&nbsp;                            this.expectedByte(3, 3);
+<i>90</i>&nbsp;                        }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;                        if((b2 &amp; 192) != 128) {
+<i>93</i>&nbsp;                            this.invalidByte(3, 3, b2);
+<i>94</i>&nbsp;                        }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;                        c = b0 &lt;&lt; 12 &amp; &#39;\uf000&#39; | b1 &lt;&lt; 6 &amp; 4032 | b2 &amp; 63;
+<i>97</i>&nbsp;                    } else if((b0 &amp; 248) == 240) {
+<i>98</i>&nbsp;                        b1 = index == this.fOffset?this.fInputStream.read():this.fBuffer[index++] &amp; 255;
+<i>99</i>&nbsp;                        if(b1 == -1) {
+<i>100</i>&nbsp;                            this.expectedByte(2, 4);
+<b class="nc"><i>101</i>&nbsp;                        }</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;                        if((b1 &amp; 192) != 128 || (b1 &amp; 48) == 0 &amp;&amp; (b0 &amp; 7) == 0) {
+<i>104</i>&nbsp;                            this.invalidByte(2, 3, b1);
+<i>105</i>&nbsp;                        }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;                        b2 = index == this.fOffset?this.fInputStream.read():this.fBuffer[index++] &amp; 255;
+<i>108</i>&nbsp;                        if(b2 == -1) {
+<i>109</i>&nbsp;                            this.expectedByte(3, 4);
+<i>110</i>&nbsp;                        }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;                        if((b2 &amp; 192) != 128) {
+<i>113</i>&nbsp;                            this.invalidByte(3, 3, b2);
+<b class="nc"><i>114</i>&nbsp;                        }</b>
+<b class="nc"><i>115</i>&nbsp;</b>
+<b class="nc"><i>116</i>&nbsp;                        int b3 = index == this.fOffset?this.fInputStream.read():this.fBuffer[index++] &amp; 255;</b>
+<b class="nc"><i>117</i>&nbsp;                        if(b3 == -1) {</b>
+<b class="nc"><i>118</i>&nbsp;                            this.expectedByte(4, 4);</b>
+<b class="nc"><i>119</i>&nbsp;                        }</b>
+<i>120</i>&nbsp;
+<b class="nc"><i>121</i>&nbsp;                        if((b3 &amp; 192) != 128) {</b>
+<b class="nc"><i>122</i>&nbsp;                            this.invalidByte(4, 4, b3);</b>
+<i>123</i>&nbsp;                        }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;                        int uuuuu = b0 &lt;&lt; 2 &amp; 28 | b1 &gt;&gt; 4 &amp; 3;
+<i>126</i>&nbsp;                        if(uuuuu &gt; 16) {
+<i>127</i>&nbsp;                            this.invalidSurrogate(uuuuu);
+<i>128</i>&nbsp;                        }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;                        int wwww = uuuuu - 1;
+<i>131</i>&nbsp;                        int hs = &#39;\ud800&#39; | wwww &lt;&lt; 6 &amp; 960 | b1 &lt;&lt; 2 &amp; 60 | b2 &gt;&gt; 4 &amp; 3;
+<i>132</i>&nbsp;                        int ls = &#39;\udc00&#39; | b2 &lt;&lt; 6 &amp; 960 | b3 &amp; 63;
+<i>133</i>&nbsp;                        c = hs;
+<i>134</i>&nbsp;                        this.fSurrogate = ls;
+<i>135</i>&nbsp;                    } else {
+<i>136</i>&nbsp;                        this.invalidByte(1, 1, b0);
+<i>137</i>&nbsp;                    }
+<i>138</i>&nbsp;                }
+<i>139</i>&nbsp;            }
+<i>140</i>&nbsp;        } else {
+<i>141</i>&nbsp;            this.fSurrogate = -1;
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;        return c;
+<b class="nc"><i>145</i>&nbsp;    }</b>
+<b class="nc"><i>146</i>&nbsp;</b>
+<i>147</i>&nbsp;    public int read(char[] ch, int offset, int length) throws IOException {
+<i>148</i>&nbsp;        int out = offset;
+<b class="nc"><i>149</i>&nbsp;        if(this.fSurrogate != -1) {</b>
+<i>150</i>&nbsp;            ch[offset + 1] = (char)this.fSurrogate;
+<i>151</i>&nbsp;            this.fSurrogate = -1;
+<b class="nc"><i>152</i>&nbsp;            --length;</b>
+<i>153</i>&nbsp;            out = offset + 1;
+<b class="nc"><i>154</i>&nbsp;        }</b>
+<b class="nc"><i>155</i>&nbsp;</b>
+<i>156</i>&nbsp;        boolean count = false;
+<i>157</i>&nbsp;        int var21;
+<i>158</i>&nbsp;        if(this.fOffset == 0) {
+<i>159</i>&nbsp;            if(length &gt; this.fBuffer.length) {
+<b class="nc"><i>160</i>&nbsp;                length = this.fBuffer.length;</b>
+<b class="nc"><i>161</i>&nbsp;            }</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;            var21 = this.fInputStream.read(this.fBuffer, 0, length);
+<i>164</i>&nbsp;            if(var21 == -1) {
+<i>165</i>&nbsp;                return -1;
+<b class="nc"><i>166</i>&nbsp;            }</b>
+<b class="nc"><i>167</i>&nbsp;</b>
+<i>168</i>&nbsp;            var21 += out - offset;
+<b class="nc"><i>169</i>&nbsp;        } else {</b>
+<b class="nc"><i>170</i>&nbsp;            var21 = this.fOffset;</b>
+<i>171</i>&nbsp;            this.fOffset = 0;
+<b class="nc"><i>172</i>&nbsp;        }</b>
+<b class="nc"><i>173</i>&nbsp;</b>
+<i>174</i>&nbsp;        int total = var21;
+<b class="nc"><i>175</i>&nbsp;        boolean byte0 = false;</b>
+<b class="nc"><i>176</i>&nbsp;</b>
+<i>177</i>&nbsp;        int in;
+<i>178</i>&nbsp;        byte byte1;
+<i>179</i>&nbsp;        for(in = 0; in &lt; total; ++in) {
+<b class="nc"><i>180</i>&nbsp;            byte1 = this.fBuffer[in];</b>
+<b class="nc"><i>181</i>&nbsp;            if(byte1 &lt; 0) {</b>
+<i>182</i>&nbsp;                break;
+<b class="nc"><i>183</i>&nbsp;            }</b>
+<b class="nc"><i>184</i>&nbsp;</b>
+<i>185</i>&nbsp;            ch[out++] = (char)byte1;
+<b class="nc"><i>186</i>&nbsp;        }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;        for(; in &lt; total; ++in) {
+<b class="nc"><i>189</i>&nbsp;            byte1 = this.fBuffer[in];</b>
+<i>190</i>&nbsp;            if(byte1 &gt;= 0) {
+<b class="nc"><i>191</i>&nbsp;                ch[out++] = (char)byte1;</b>
+<i>192</i>&nbsp;            } else {
+<b class="nc"><i>193</i>&nbsp;                int b0 = byte1 &amp; 255;</b>
+<b class="nc"><i>194</i>&nbsp;                boolean b1;</b>
+<i>195</i>&nbsp;                int var23;
+<b class="nc"><i>196</i>&nbsp;                int var22;</b>
+<b class="nc"><i>197</i>&nbsp;                if((b0 &amp; 224) == 192 &amp;&amp; (b0 &amp; 30) != 0) {</b>
+<i>198</i>&nbsp;                    b1 = true;
+<b class="nc"><i>199</i>&nbsp;                    ++in;</b>
+<i>200</i>&nbsp;                    if(in &lt; total) {
+<b class="nc"><i>201</i>&nbsp;                        var22 = this.fBuffer[in] &amp; 255;</b>
+<i>202</i>&nbsp;                    } else {
+<i>203</i>&nbsp;                        var22 = this.fInputStream.read();
+<i>204</i>&nbsp;                        if(var22 == -1) {
+<i>205</i>&nbsp;                            if(out &gt; offset) {
+<i>206</i>&nbsp;                                this.fBuffer[0] = (byte)b0;
+<b class="nc"><i>207</i>&nbsp;                                this.fOffset = 1;</b>
+<b class="nc"><i>208</i>&nbsp;                                return out - offset;</b>
+<i>209</i>&nbsp;                            }
+<b class="nc"><i>210</i>&nbsp;</b>
+<b class="nc"><i>211</i>&nbsp;                            this.expectedByte(2, 2);</b>
+<i>212</i>&nbsp;                        }
+<b class="nc"><i>213</i>&nbsp;</b>
+<i>214</i>&nbsp;                        ++var21;
+<b class="nc"><i>215</i>&nbsp;                    }</b>
+<i>216</i>&nbsp;
+<b class="nc"><i>217</i>&nbsp;                    if((var22 &amp; 192) != 128) {</b>
+<i>218</i>&nbsp;                        if(out &gt; offset) {
+<b class="nc"><i>219</i>&nbsp;                            this.fBuffer[0] = (byte)b0;</b>
+<b class="nc"><i>220</i>&nbsp;                            this.fBuffer[1] = (byte)var22;</b>
+<i>221</i>&nbsp;                            this.fOffset = 2;
+<b class="nc"><i>222</i>&nbsp;                            return out - offset;</b>
+<b class="nc"><i>223</i>&nbsp;                        }</b>
+<i>224</i>&nbsp;
+<b class="nc"><i>225</i>&nbsp;                        this.invalidByte(2, 2, var22);</b>
+<i>226</i>&nbsp;                    }
+<b class="nc"><i>227</i>&nbsp;</b>
+<b class="nc"><i>228</i>&nbsp;                    var23 = b0 &lt;&lt; 6 &amp; 1984 | var22 &amp; 63;</b>
+<i>229</i>&nbsp;                    ch[out++] = (char)var23;
+<b class="nc"><i>230</i>&nbsp;                    --var21;</b>
+<b class="nc"><i>231</i>&nbsp;                } else {</b>
+<i>232</i>&nbsp;                    boolean b2;
+<b class="nc"><i>233</i>&nbsp;                    int b3;</b>
+<b class="nc"><i>234</i>&nbsp;                    if((b0 &amp; 240) == 224) {</b>
+<b class="nc"><i>235</i>&nbsp;                        b1 = true;</b>
+<i>236</i>&nbsp;                        ++in;
+<b class="nc"><i>237</i>&nbsp;                        if(in &lt; total) {</b>
+<b class="nc"><i>238</i>&nbsp;                            var22 = this.fBuffer[in] &amp; 255;</b>
+<i>239</i>&nbsp;                        } else {
+<i>240</i>&nbsp;                            var22 = this.fInputStream.read();
+<b class="nc"><i>241</i>&nbsp;                            if(var22 == -1) {</b>
+<b class="nc"><i>242</i>&nbsp;                                if(out &gt; offset) {</b>
+<b class="nc"><i>243</i>&nbsp;                                    this.fBuffer[0] = (byte)b0;</b>
+<b class="nc"><i>244</i>&nbsp;                                    this.fOffset = 1;</b>
+<i>245</i>&nbsp;                                    return out - offset;
+<i>246</i>&nbsp;                                }
+<i>247</i>&nbsp;
+<b class="nc"><i>248</i>&nbsp;                                this.expectedByte(2, 3);</b>
+<i>249</i>&nbsp;                            }
+<b class="nc"><i>250</i>&nbsp;</b>
+<i>251</i>&nbsp;                            ++var21;
+<i>252</i>&nbsp;                        }
+<i>253</i>&nbsp;
+<b class="nc"><i>254</i>&nbsp;                        if((var22 &amp; 192) != 128 || b0 == 237 &amp;&amp; var22 &gt;= 160 || (b0 &amp; 15) == 0 &amp;&amp; (var22 &amp; 32) == 0) {</b>
+<i>255</i>&nbsp;                            if(out &gt; offset) {
+<i>256</i>&nbsp;                                this.fBuffer[0] = (byte)b0;
+<i>257</i>&nbsp;                                this.fBuffer[1] = (byte)var22;
+<i>258</i>&nbsp;                                this.fOffset = 2;
+<i>259</i>&nbsp;                                return out - offset;
+<i>260</i>&nbsp;                            }
+<b class="nc"><i>261</i>&nbsp;</b>
+<i>262</i>&nbsp;                            this.invalidByte(2, 3, var22);
+<i>263</i>&nbsp;                        }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;                        b2 = true;
+<i>266</i>&nbsp;                        ++in;
+<i>267</i>&nbsp;                        if(in &lt; total) {
+<i>268</i>&nbsp;                            var23 = this.fBuffer[in] &amp; 255;
+<i>269</i>&nbsp;                        } else {
+<i>270</i>&nbsp;                            var23 = this.fInputStream.read();
+<i>271</i>&nbsp;                            if(var23 == -1) {
+<i>272</i>&nbsp;                                if(out &gt; offset) {
+<i>273</i>&nbsp;                                    this.fBuffer[0] = (byte)b0;
+<i>274</i>&nbsp;                                    this.fBuffer[1] = (byte)var22;
+<i>275</i>&nbsp;                                    this.fOffset = 2;
+<i>276</i>&nbsp;                                    return out - offset;
+<i>277</i>&nbsp;                                }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;                                this.expectedByte(3, 3);
+<i>280</i>&nbsp;                            }
+<i>281</i>&nbsp;
+<b class="nc"><i>282</i>&nbsp;                            ++var21;</b>
+<b class="nc"><i>283</i>&nbsp;                        }</b>
+<b class="nc"><i>284</i>&nbsp;</b>
+<b class="nc"><i>285</i>&nbsp;                        if((var23 &amp; 192) != 128) {</b>
+<b class="nc"><i>286</i>&nbsp;                            if(out &gt; offset) {</b>
+<b class="nc"><i>287</i>&nbsp;                                this.fBuffer[0] = (byte)b0;</b>
+<i>288</i>&nbsp;                                this.fBuffer[1] = (byte)var22;
+<i>289</i>&nbsp;                                this.fBuffer[2] = (byte)var23;
+<i>290</i>&nbsp;                                this.fOffset = 3;
+<b class="nc"><i>291</i>&nbsp;                                return out - offset;</b>
+<b class="nc"><i>292</i>&nbsp;                            }</b>
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;                            this.invalidByte(3, 3, var23);</b>
+<b class="nc"><i>295</i>&nbsp;                        }</b>
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;                        b3 = b0 &lt;&lt; 12 &amp; &#39;\uf000&#39; | var22 &lt;&lt; 6 &amp; 4032 | var23 &amp; 63;
+<i>298</i>&nbsp;                        ch[out++] = (char)b3;
+<b class="nc"><i>299</i>&nbsp;                        var21 -= 2;</b>
+<b class="nc"><i>300</i>&nbsp;                    } else if((b0 &amp; 248) == 240) {</b>
+<b class="nc"><i>301</i>&nbsp;                        b1 = true;</b>
+<i>302</i>&nbsp;                        ++in;
+<b class="nc"><i>303</i>&nbsp;                        if(in &lt; total) {</b>
+<i>304</i>&nbsp;                            var22 = this.fBuffer[in] &amp; 255;
+<i>305</i>&nbsp;                        } else {
+<i>306</i>&nbsp;                            var22 = this.fInputStream.read();
+<i>307</i>&nbsp;                            if(var22 == -1) {
+<i>308</i>&nbsp;                                if(out &gt; offset) {
+<i>309</i>&nbsp;                                    this.fBuffer[0] = (byte)b0;
+<i>310</i>&nbsp;                                    this.fOffset = 1;
+<i>311</i>&nbsp;                                    return out - offset;
+<i>312</i>&nbsp;                                }
+<i>313</i>&nbsp;
+<b class="nc"><i>314</i>&nbsp;                                this.expectedByte(2, 4);</b>
+<b class="nc"><i>315</i>&nbsp;                            }</b>
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;                            ++var21;
+<i>318</i>&nbsp;                        }
+<b class="nc"><i>319</i>&nbsp;</b>
+<i>320</i>&nbsp;                        if((var22 &amp; 192) != 128 || (var22 &amp; 48) == 0 &amp;&amp; (b0 &amp; 7) == 0) {
+<i>321</i>&nbsp;                            if(out &gt; offset) {
+<i>322</i>&nbsp;                                this.fBuffer[0] = (byte)b0;
+<b class="nc"><i>323</i>&nbsp;                                this.fBuffer[1] = (byte)var22;</b>
+<b class="nc"><i>324</i>&nbsp;                                this.fOffset = 2;</b>
+<b class="nc"><i>325</i>&nbsp;                                return out - offset;</b>
+<b class="nc"><i>326</i>&nbsp;                            }</b>
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;                            this.invalidByte(2, 4, var22);
+<i>329</i>&nbsp;                        }
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;                        b2 = true;
+<b class="nc"><i>332</i>&nbsp;                        ++in;</b>
+<b class="nc"><i>333</i>&nbsp;                        if(in &lt; total) {</b>
+<i>334</i>&nbsp;                            var23 = this.fBuffer[in] &amp; 255;
+<i>335</i>&nbsp;                        } else {
+<i>336</i>&nbsp;                            var23 = this.fInputStream.read();
+<b class="nc"><i>337</i>&nbsp;                            if(var23 == -1) {</b>
+<b class="nc"><i>338</i>&nbsp;                                if(out &gt; offset) {</b>
+<b class="nc"><i>339</i>&nbsp;                                    this.fBuffer[0] = (byte)b0;</b>
+<i>340</i>&nbsp;                                    this.fBuffer[1] = (byte)var22;
+<i>341</i>&nbsp;                                    this.fOffset = 2;
+<i>342</i>&nbsp;                                    return out - offset;
+<i>343</i>&nbsp;                                }
+<b class="nc"><i>344</i>&nbsp;</b>
+<b class="nc"><i>345</i>&nbsp;                                this.expectedByte(3, 4);</b>
+<b class="nc"><i>346</i>&nbsp;                            }</b>
+<b class="nc"><i>347</i>&nbsp;</b>
+<b class="nc"><i>348</i>&nbsp;                            ++var21;</b>
+<i>349</i>&nbsp;                        }
+<i>350</i>&nbsp;
+<b class="nc"><i>351</i>&nbsp;                        if((var23 &amp; 192) != 128) {</b>
+<b class="nc"><i>352</i>&nbsp;                            if(out &gt; offset) {</b>
+<b class="nc"><i>353</i>&nbsp;                                this.fBuffer[0] = (byte)b0;</b>
+<b class="nc"><i>354</i>&nbsp;                                this.fBuffer[1] = (byte)var22;</b>
+<b class="nc"><i>355</i>&nbsp;                                this.fBuffer[2] = (byte)var23;</b>
+<b class="nc"><i>356</i>&nbsp;                                this.fOffset = 3;</b>
+<i>357</i>&nbsp;                                return out - offset;
+<b class="nc"><i>358</i>&nbsp;                            }</b>
+<i>359</i>&nbsp;
+<b class="nc"><i>360</i>&nbsp;                            this.invalidByte(3, 4, var23);</b>
+<i>361</i>&nbsp;                        }
+<b class="nc"><i>362</i>&nbsp;</b>
+<b class="nc"><i>363</i>&nbsp;                        boolean var24 = true;</b>
+<b class="nc"><i>364</i>&nbsp;                        ++in;</b>
+<b class="nc"><i>365</i>&nbsp;                        if(in &lt; total) {</b>
+<b class="nc"><i>366</i>&nbsp;                            b3 = this.fBuffer[in] &amp; 255;</b>
+<b class="nc"><i>367</i>&nbsp;                        } else {</b>
+<i>368</i>&nbsp;                            b3 = this.fInputStream.read();
+<b class="nc"><i>369</i>&nbsp;                            if(b3 == -1) {</b>
+<i>370</i>&nbsp;                                if(out &gt; offset) {
+<b class="nc"><i>371</i>&nbsp;                                    this.fBuffer[0] = (byte)b0;</b>
+<b class="nc"><i>372</i>&nbsp;                                    this.fBuffer[1] = (byte)var22;</b>
+<b class="nc"><i>373</i>&nbsp;                                    this.fBuffer[2] = (byte)var23;</b>
+<b class="nc"><i>374</i>&nbsp;                                    this.fOffset = 3;</b>
+<i>375</i>&nbsp;                                    return out - offset;
+<i>376</i>&nbsp;                                }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;                                this.expectedByte(4, 4);
+<b class="nc"><i>379</i>&nbsp;                            }</b>
+<b class="nc"><i>380</i>&nbsp;</b>
+<b class="nc"><i>381</i>&nbsp;                            ++var21;</b>
+<b class="nc"><i>382</i>&nbsp;                        }</b>
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;                        if((b3 &amp; 192) != 128) {
+<b class="nc"><i>385</i>&nbsp;                            if(out &gt; offset) {</b>
+<b class="nc"><i>386</i>&nbsp;                                this.fBuffer[0] = (byte)b0;</b>
+<b class="nc"><i>387</i>&nbsp;                                this.fBuffer[1] = (byte)var22;</b>
+<b class="nc"><i>388</i>&nbsp;                                this.fBuffer[2] = (byte)var23;</b>
+<b class="nc"><i>389</i>&nbsp;                                this.fBuffer[3] = (byte)b3;</b>
+<b class="nc"><i>390</i>&nbsp;                                this.fOffset = 4;</b>
+<i>391</i>&nbsp;                                return out - offset;
+<b class="nc"><i>392</i>&nbsp;                            }</b>
+<i>393</i>&nbsp;
+<b class="nc"><i>394</i>&nbsp;                            this.invalidByte(4, 4, var23);</b>
+<i>395</i>&nbsp;                        }
+<b class="nc"><i>396</i>&nbsp;</b>
+<i>397</i>&nbsp;                        int uuuuu = b0 &lt;&lt; 2 &amp; 28 | var22 &gt;&gt; 4 &amp; 3;
+<i>398</i>&nbsp;                        if(uuuuu &gt; 16) {
+<b class="nc"><i>399</i>&nbsp;                            this.invalidSurrogate(uuuuu);</b>
+<b class="nc"><i>400</i>&nbsp;                        }</b>
+<b class="nc"><i>401</i>&nbsp;</b>
+<b class="nc"><i>402</i>&nbsp;                        int wwww = uuuuu - 1;</b>
+<b class="nc"><i>403</i>&nbsp;                        int zzzz = var22 &amp; 15;</b>
+<i>404</i>&nbsp;                        int yyyyyy = var23 &amp; 63;
+<b class="nc"><i>405</i>&nbsp;                        int xxxxxx = b3 &amp; 63;</b>
+<i>406</i>&nbsp;                        int hs = &#39;\ud800&#39; | wwww &lt;&lt; 6 &amp; 960 | zzzz &lt;&lt; 2 | yyyyyy &gt;&gt; 4;
+<b class="nc"><i>407</i>&nbsp;                        int ls = &#39;\udc00&#39; | yyyyyy &lt;&lt; 6 &amp; 960 | xxxxxx;</b>
+<b class="nc"><i>408</i>&nbsp;                        ch[out++] = (char)hs;</b>
+<b class="nc"><i>409</i>&nbsp;                        ch[out++] = (char)ls;</b>
+<i>410</i>&nbsp;                        var21 -= 2;
+<i>411</i>&nbsp;                    } else {
+<b class="nc"><i>412</i>&nbsp;                        if(out &gt; offset) {</b>
+<b class="nc"><i>413</i>&nbsp;                            this.fBuffer[0] = (byte)b0;</b>
+<b class="nc"><i>414</i>&nbsp;                            this.fOffset = 1;</b>
+<b class="nc"><i>415</i>&nbsp;                            return out - offset;</b>
+<b class="nc"><i>416</i>&nbsp;                        }</b>
+<b class="nc"><i>417</i>&nbsp;</b>
+<b class="nc"><i>418</i>&nbsp;                        this.invalidByte(1, 1, b0);</b>
+<i>419</i>&nbsp;                    }
+<b class="nc"><i>420</i>&nbsp;                }</b>
+<i>421</i>&nbsp;            }
+<b class="nc"><i>422</i>&nbsp;        }</b>
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;        return var21;</b>
+<b class="nc"><i>425</i>&nbsp;    }</b>
+<b class="nc"><i>426</i>&nbsp;</b>
+<b class="nc"><i>427</i>&nbsp;    public long skip(long n) throws IOException {</b>
+<b class="nc"><i>428</i>&nbsp;        long remaining = n;</b>
+<b class="nc"><i>429</i>&nbsp;        char[] ch = new char[this.fBuffer.length];</b>
+<b class="nc"><i>430</i>&nbsp;</b>
+<i>431</i>&nbsp;        do {
+<b class="nc"><i>432</i>&nbsp;            int skipped = (long)ch.length &lt; remaining?ch.length:(int)remaining;</b>
+<i>433</i>&nbsp;            int count = this.read(ch, 0, skipped);
+<b class="nc"><i>434</i>&nbsp;            if(count &lt;= 0) {</b>
+<i>435</i>&nbsp;                break;
+<b class="nc"><i>436</i>&nbsp;            }</b>
+<b class="nc"><i>437</i>&nbsp;</b>
+<b class="nc"><i>438</i>&nbsp;            remaining -= (long)count;</b>
+<i>439</i>&nbsp;        } while(remaining &gt; 0L);
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;        long skipped1 = n - remaining;
+<i>442</i>&nbsp;        return skipped1;
+<i>443</i>&nbsp;    }
+<i>444</i>&nbsp;
+<b class="nc"><i>445</i>&nbsp;    public boolean ready() throws IOException {</b>
+<b class="nc"><i>446</i>&nbsp;        return false;</b>
+<b class="nc"><i>447</i>&nbsp;    }</b>
+<b class="nc"><i>448</i>&nbsp;</b>
+<i>449</i>&nbsp;    public boolean markSupported() {
+<i>450</i>&nbsp;        return false;
+<b class="nc"><i>451</i>&nbsp;    }</b>
+<b class="nc"><i>452</i>&nbsp;</b>
+<b class="nc"><i>453</i>&nbsp;    public void mark(int readAheadLimit) throws IOException {</b>
+<b class="nc"><i>454</i>&nbsp;        throw new IOException(this.fFormatter.formatMessage(this.fLocale, &quot;OperationNotSupported&quot;, new Object[]{&quot;mark()&quot;, &quot;UTF-8&quot;}));</b>
+<b class="nc"><i>455</i>&nbsp;    }</b>
+<b class="nc"><i>456</i>&nbsp;</b>
+<i>457</i>&nbsp;    public void reset() throws IOException {
+<b class="nc"><i>458</i>&nbsp;        this.fOffset = 0;</b>
+<i>459</i>&nbsp;        this.fSurrogate = -1;
+<b class="nc"><i>460</i>&nbsp;    }</b>
+<i>461</i>&nbsp;
+<b class="nc"><i>462</i>&nbsp;    public void close() throws IOException {</b>
+<i>463</i>&nbsp;        BufferAllocator ba = ThreadLocalBufferAllocator.getBufferAllocator();
+<b class="nc"><i>464</i>&nbsp;        ba.returnByteBuffer(this.fBuffer);</b>
+<b class="nc"><i>465</i>&nbsp;        this.fBuffer = null;</b>
+<b class="nc"><i>466</i>&nbsp;        this.fInputStream.close();</b>
+<b class="nc"><i>467</i>&nbsp;    }</b>
+<b class="nc"><i>468</i>&nbsp;</b>
+<i>469</i>&nbsp;    private void expectedByte(int position, int count) throws MalformedByteSequenceException {
+<b class="nc"><i>470</i>&nbsp;        throw new MalformedByteSequenceException(this.fFormatter, this.fLocale, &quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, &quot;ExpectedByte&quot;, new Object[]{Integer.toString(position), Integer.toString(count)});</b>
+<i>471</i>&nbsp;    }
+<b class="nc"><i>472</i>&nbsp;</b>
+<b class="nc"><i>473</i>&nbsp;    private void invalidByte(int position, int count, int c) throws MalformedByteSequenceException {</b>
+<b class="nc"><i>474</i>&nbsp;        throw new MalformedByteSequenceException(this.fFormatter, this.fLocale, &quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, &quot;InvalidByte&quot;, new Object[]{Integer.toString(position), Integer.toString(count)});</b>
+<i>475</i>&nbsp;    }
+<i>476</i>&nbsp;
+<b class="nc"><i>477</i>&nbsp;    private void invalidSurrogate(int uuuuu) throws MalformedByteSequenceException {</b>
+<b class="nc"><i>478</i>&nbsp;        throw new MalformedByteSequenceException(this.fFormatter, this.fLocale, &quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, &quot;InvalidHighSurrogate&quot;, new Object[]{Integer.toHexString(uuuuu)});</b>
+<b class="nc"><i>479</i>&nbsp;    }</b>
+<b class="nc"><i>480</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

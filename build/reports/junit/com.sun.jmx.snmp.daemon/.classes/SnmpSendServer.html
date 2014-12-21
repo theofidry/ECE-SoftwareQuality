@@ -1,0 +1,233 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SnmpSendServer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jmx.snmp.daemon</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SnmpSendServer (com.sun.jmx.snmp.daemon)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SnmpSendServer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 86)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jmx.snmp.daemon;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.defaults.JmxProperties;
+<i>9</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpInformRequest;
+<i>10</i>&nbsp;import com.sun.jmx.snmp.daemon.SnmpQManager;
+<i>11</i>&nbsp;import java.util.Enumeration;
+<i>12</i>&nbsp;import java.util.Vector;
+<i>13</i>&nbsp;import java.util.logging.Level;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;final class SnmpSendServer extends Thread {
+<i>16</i>&nbsp;    private int intervalRange = 5000;
+<i>17</i>&nbsp;    private Vector readyPool;
+<i>18</i>&nbsp;    SnmpQManager snmpq = null;
+<i>19</i>&nbsp;    boolean isBeingDestroyed = false;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public SnmpSendServer(ThreadGroup var1, SnmpQManager var2) {
+<i>22</i>&nbsp;        super(var1, &quot;SnmpSendServer&quot;);
+<i>23</i>&nbsp;        this.snmpq = var2;
+<i>24</i>&nbsp;        this.start();
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public synchronized void stopSendServer() {
+<i>28</i>&nbsp;        if(this.isAlive()) {
+<i>29</i>&nbsp;            this.interrupt();
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;            try {
+<i>32</i>&nbsp;                this.join();
+<b class="nc"><i>33</i>&nbsp;            } catch (InterruptedException var2) {</b>
+<i>34</i>&nbsp;                ;
+<i>35</i>&nbsp;            }
+<b class="nc"><i>36</i>&nbsp;        }</b>
+<b class="nc"><i>37</i>&nbsp;</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public void run() {
+<i>41</i>&nbsp;        Thread.currentThread().setPriority(5);
+<b class="nc"><i>42</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {</b>
+<i>43</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(), &quot;run&quot;, &quot;Thread Started&quot;);
+<i>44</i>&nbsp;        }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        while(true) {
+<i>47</i>&nbsp;            try {
+<b class="nc"><i>48</i>&nbsp;                this.prepareAndSendRequest();</b>
+<b class="nc"><i>49</i>&nbsp;                if(this.isBeingDestroyed) {</b>
+<b class="nc"><i>50</i>&nbsp;                    return;</b>
+<i>51</i>&nbsp;                }
+<i>52</i>&nbsp;            } catch (Exception var2) {
+<i>53</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>54</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(), &quot;run&quot;, &quot;Exception in send server&quot;, var2);
+<b class="nc"><i>55</i>&nbsp;                }</b>
+<b class="nc"><i>56</i>&nbsp;            } catch (ThreadDeath var3) {</b>
+<i>57</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<i>58</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(), &quot;run&quot;, &quot;Exiting... Fatal error&quot;);
+<i>59</i>&nbsp;                }
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;                throw var3;</b>
+<i>62</i>&nbsp;            } catch (OutOfMemoryError var4) {
+<b class="nc"><i>63</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {</b>
+<i>64</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(), &quot;run&quot;, &quot;Out of memory&quot;);
+<i>65</i>&nbsp;                }
+<i>66</i>&nbsp;            } catch (Error var5) {
+<i>67</i>&nbsp;                if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+<b class="nc"><i>68</i>&nbsp;                    JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(), &quot;run&quot;, &quot;Got unexpected error&quot;, var5);</b>
+<i>69</i>&nbsp;                }
+<b class="nc"><i>70</i>&nbsp;</b>
+<b class="nc"><i>71</i>&nbsp;                throw var5;</b>
+<i>72</i>&nbsp;            }
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<b class="nc"><i>76</i>&nbsp;    private void prepareAndSendRequest() {</b>
+<b class="nc"><i>77</i>&nbsp;        if(this.readyPool != null &amp;&amp; !this.readyPool.isEmpty()) {</b>
+<b class="nc"><i>78</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {</b>
+<b class="nc"><i>79</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(), &quot;prepareAndSendRequest&quot;, &quot;Inform requests from a previous block left unprocessed. Will try again&quot;);</b>
+<b class="nc"><i>80</i>&nbsp;            }</b>
+<b class="nc"><i>81</i>&nbsp;        } else {</b>
+<b class="nc"><i>82</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {</b>
+<i>83</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(), &quot;prepareAndSendRequest&quot;, &quot;Blocking for inform requests&quot;);
+<b class="nc"><i>84</i>&nbsp;            }</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;            this.readyPool = this.snmpq.getAllOutstandingRequest((long)this.intervalRange);
+<b class="nc"><i>87</i>&nbsp;            if(this.isBeingDestroyed) {</b>
+<b class="nc"><i>88</i>&nbsp;                return;</b>
+<i>89</i>&nbsp;            }
+<b class="nc"><i>90</i>&nbsp;        }</b>
+<b class="nc"><i>91</i>&nbsp;</b>
+<b class="nc"><i>92</i>&nbsp;        if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {</b>
+<b class="nc"><i>93</i>&nbsp;            JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(), &quot;prepareAndSendRequest&quot;, &quot;List of inform requests to send : &quot; + this.reqListToString(this.readyPool));</b>
+<i>94</i>&nbsp;        }
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;        synchronized(this) {</b>
+<b class="nc"><i>97</i>&nbsp;            if(this.readyPool.size() &lt; 2) {</b>
+<i>98</i>&nbsp;                this.fireRequestList(this.readyPool);
+<b class="nc"><i>99</i>&nbsp;            } else {</b>
+<b class="nc"><i>100</i>&nbsp;                for(; !this.readyPool.isEmpty(); this.readyPool.removeElementAt(this.readyPool.size() - 1)) {</b>
+<i>101</i>&nbsp;                    SnmpInformRequest var2 = (SnmpInformRequest)this.readyPool.lastElement();
+<i>102</i>&nbsp;                    if(var2 != null &amp;&amp; var2.inProgress()) {
+<i>103</i>&nbsp;                        this.fireRequest(var2);
+<i>104</i>&nbsp;                    }
+<i>105</i>&nbsp;                }
+<b class="nc"><i>106</i>&nbsp;</b>
+<i>107</i>&nbsp;                this.readyPool.removeAllElements();
+<b class="nc"><i>108</i>&nbsp;            }</b>
+<b class="nc"><i>109</i>&nbsp;        }</b>
+<i>110</i>&nbsp;    }
+<b class="nc"><i>111</i>&nbsp;</b>
+<b class="nc"><i>112</i>&nbsp;    void fireRequest(SnmpInformRequest var1) {</b>
+<i>113</i>&nbsp;        if(var1 != null &amp;&amp; var1.inProgress()) {
+<i>114</i>&nbsp;            if(JmxProperties.SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+<b class="nc"><i>115</i>&nbsp;                JmxProperties.SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(), &quot;fireRequest&quot;, &quot;Firing inform request directly. -&gt; &quot; + var1.getRequestId());</b>
+<b class="nc"><i>116</i>&nbsp;            }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;            var1.action();
+<i>119</i>&nbsp;        }
+<b class="nc"><i>120</i>&nbsp;</b>
+<b class="nc"><i>121</i>&nbsp;    }</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    void fireRequestList(Vector var1) {
+<b class="nc"><i>124</i>&nbsp;        for(; !var1.isEmpty(); var1.removeElementAt(var1.size() - 1)) {</b>
+<b class="nc"><i>125</i>&nbsp;            SnmpInformRequest var2 = (SnmpInformRequest)var1.lastElement();</b>
+<i>126</i>&nbsp;            if(var2 != null &amp;&amp; var2.inProgress()) {
+<b class="nc"><i>127</i>&nbsp;                this.fireRequest(var2);</b>
+<b class="nc"><i>128</i>&nbsp;            }</b>
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;    }</b>
+<b class="nc"><i>132</i>&nbsp;</b>
+<b class="nc"><i>133</i>&nbsp;    final String reqListToString(Vector var1) {</b>
+<b class="nc"><i>134</i>&nbsp;        StringBuffer var2 = new StringBuffer(var1.size() * 100);</b>
+<i>135</i>&nbsp;        Enumeration var3 = var1.elements();
+<b class="nc"><i>136</i>&nbsp;</b>
+<b class="nc"><i>137</i>&nbsp;        while(var3.hasMoreElements()) {</b>
+<b class="nc"><i>138</i>&nbsp;            SnmpInformRequest var4 = (SnmpInformRequest)var3.nextElement();</b>
+<b class="nc"><i>139</i>&nbsp;            var2.append(&quot;InformRequestId -&gt; &quot;);</b>
+<i>140</i>&nbsp;            var2.append(var4.getRequestId());
+<i>141</i>&nbsp;            var2.append(&quot; / Destination -&gt; &quot;);
+<i>142</i>&nbsp;            var2.append(var4.getAddress());
+<i>143</i>&nbsp;            var2.append(&quot;. &quot;);
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;
+<b class="nc"><i>146</i>&nbsp;        String var5 = var2.toString();</b>
+<b class="nc"><i>147</i>&nbsp;        var2 = null;</b>
+<b class="nc"><i>148</i>&nbsp;        return var5;</b>
+<i>149</i>&nbsp;    }
+<b class="nc"><i>150</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

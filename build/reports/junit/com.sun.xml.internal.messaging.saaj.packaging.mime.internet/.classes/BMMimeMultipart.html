@@ -1,0 +1,623 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BMMimeMultipart</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.messaging.saaj.packaging.mime.internet</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BMMimeMultipart (com.sun.xml.internal.messaging.saaj.packaging.mime.internet)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BMMimeMultipart</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 270)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.messaging.saaj.packaging.mime.internet;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
+<i>9</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ContentType;
+<i>10</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.InternetHeaders;
+<i>11</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeBodyPart;
+<i>12</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeMultipart;
+<i>13</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.SharedInputStream;
+<i>14</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.util.ASCIIUtility;
+<i>15</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.util.OutputUtil;
+<i>16</i>&nbsp;import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+<i>17</i>&nbsp;import java.io.BufferedInputStream;
+<i>18</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>19</i>&nbsp;import java.io.IOException;
+<i>20</i>&nbsp;import java.io.InputStream;
+<i>21</i>&nbsp;import java.io.OutputStream;
+<i>22</i>&nbsp;import java.util.BitSet;
+<i>23</i>&nbsp;import javax.activation.DataSource;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;public class BMMimeMultipart extends MimeMultipart {
+<i>26</i>&nbsp;    private boolean begining = true;
+<i>27</i>&nbsp;    int[] bcs = new int[256];
+<i>28</i>&nbsp;    int[] gss = null;
+<i>29</i>&nbsp;    private static final int BUFFER_SIZE = 4096;
+<i>30</i>&nbsp;    private byte[] buffer = new byte[4096];
+<i>31</i>&nbsp;    private byte[] prevBuffer = new byte[4096];
+<i>32</i>&nbsp;    private BitSet lastPartFound = new BitSet(1);
+<i>33</i>&nbsp;    private InputStream in = null;
+<i>34</i>&nbsp;    private String boundary = null;
+<i>35</i>&nbsp;    int b = 0;
+<i>36</i>&nbsp;    private boolean lazyAttachments = false;
+<i>37</i>&nbsp;    byte[] buf = new byte[1024];
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public BMMimeMultipart() {
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public BMMimeMultipart(String subtype) {
+<i>43</i>&nbsp;        super(subtype);
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public BMMimeMultipart(DataSource ds, ContentType ct) throws MessagingException {
+<i>47</i>&nbsp;        super(ds, ct);
+<i>48</i>&nbsp;        this.boundary = ct.getParameter(&quot;boundary&quot;);
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public InputStream initStream() throws MessagingException {
+<i>52</i>&nbsp;        if(this.in == null) {
+<i>53</i>&nbsp;            try {
+<i>54</i>&nbsp;                this.in = this.ds.getInputStream();
+<i>55</i>&nbsp;                if(!(this.in instanceof ByteArrayInputStream) &amp;&amp; !(this.in instanceof BufferedInputStream) &amp;&amp; !(this.in instanceof SharedInputStream)) {
+<i>56</i>&nbsp;                    this.in = new BufferedInputStream(this.in);
+<i>57</i>&nbsp;                }
+<i>58</i>&nbsp;            } catch (Exception var2) {
+<i>59</i>&nbsp;                throw new MessagingException(&quot;No inputstream from datasource&quot;);
+<i>60</i>&nbsp;            }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;            if(!this.in.markSupported()) {
+<i>63</i>&nbsp;                throw new MessagingException(&quot;InputStream does not support Marking&quot;);
+<i>64</i>&nbsp;            }
+<i>65</i>&nbsp;        }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;        return this.in;
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    protected void parse() throws MessagingException {
+<i>71</i>&nbsp;        if(!this.parsed) {
+<i>72</i>&nbsp;            this.initStream();
+<i>73</i>&nbsp;            SharedInputStream sin = null;
+<i>74</i>&nbsp;            if(this.in instanceof SharedInputStream) {
+<i>75</i>&nbsp;                sin = (SharedInputStream)this.in;
+<i>76</i>&nbsp;            }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;            String bnd = &quot;--&quot; + this.boundary;
+<b class="nc"><i>79</i>&nbsp;            byte[] bndbytes = ASCIIUtility.getBytes(bnd);</b>
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;            try {</b>
+<b class="nc"><i>82</i>&nbsp;                this.parse(this.in, bndbytes, sin);</b>
+<i>83</i>&nbsp;            } catch (IOException var5) {
+<b class="nc"><i>84</i>&nbsp;                throw new MessagingException(&quot;IO Error&quot;, var5);</b>
+<b class="nc"><i>85</i>&nbsp;            } catch (Exception var6) {</b>
+<b class="nc"><i>86</i>&nbsp;                throw new MessagingException(&quot;Error&quot;, var6);</b>
+<i>87</i>&nbsp;            }
+<i>88</i>&nbsp;
+<b class="nc"><i>89</i>&nbsp;            this.parsed = true;</b>
+<b class="nc"><i>90</i>&nbsp;        }</b>
+<i>91</i>&nbsp;    }
+<b class="nc"><i>92</i>&nbsp;</b>
+<i>93</i>&nbsp;    public boolean lastBodyPartFound() {
+<i>94</i>&nbsp;        return this.lastPartFound.get(0);
+<b class="nc"><i>95</i>&nbsp;    }</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public MimeBodyPart getNextPart(InputStream stream, byte[] pattern, SharedInputStream sin) throws Exception {
+<i>98</i>&nbsp;        if(!stream.markSupported()) {
+<i>99</i>&nbsp;            throw new Exception(&quot;InputStream does not support Marking&quot;);
+<i>100</i>&nbsp;        } else {
+<i>101</i>&nbsp;            if(this.begining) {
+<i>102</i>&nbsp;                this.compile(pattern);
+<i>103</i>&nbsp;                if(!this.skipPreamble(stream, pattern, sin)) {
+<i>104</i>&nbsp;                    throw new Exception(&quot;Missing Start Boundary, or boundary does not start on a new line&quot;);
+<i>105</i>&nbsp;                }
+<i>106</i>&nbsp;
+<b class="nc"><i>107</i>&nbsp;                this.begining = false;</b>
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;            if(this.lastBodyPartFound()) {
+<i>111</i>&nbsp;                throw new Exception(&quot;No parts found in Multipart InputStream&quot;);
+<i>112</i>&nbsp;            } else if(sin != null) {
+<i>113</i>&nbsp;                long headers1 = sin.getPosition();
+<i>114</i>&nbsp;                this.b = this.readHeaders(stream);
+<i>115</i>&nbsp;                if(this.b == -1) {
+<i>116</i>&nbsp;                    throw new Exception(&quot;End of Stream encountered while reading part headers&quot;);
+<i>117</i>&nbsp;                } else {
+<i>118</i>&nbsp;                    long[] mbp2 = new long[]{-1L};
+<i>119</i>&nbsp;                    this.b = this.readBody(stream, pattern, mbp2, (ByteOutputStream)null, sin);
+<b class="nc"><i>120</i>&nbsp;                    if(!ignoreMissingEndBoundary &amp;&amp; this.b == -1 &amp;&amp; !this.lastBodyPartFound()) {</b>
+<i>121</i>&nbsp;                        throw new MessagingException(&quot;Missing End Boundary for Mime Package : EOF while skipping headers&quot;);
+<i>122</i>&nbsp;                    } else {
+<i>123</i>&nbsp;                        long end = mbp2[0];
+<i>124</i>&nbsp;                        MimeBodyPart mbp1 = this.createMimeBodyPart(sin.newStream(headers1, end));
+<i>125</i>&nbsp;                        this.addBodyPart(mbp1);
+<i>126</i>&nbsp;                        return mbp1;
+<i>127</i>&nbsp;                    }
+<i>128</i>&nbsp;                }
+<i>129</i>&nbsp;            } else {
+<i>130</i>&nbsp;                InternetHeaders headers = this.createInternetHeaders(stream);
+<i>131</i>&nbsp;                ByteOutputStream baos = new ByteOutputStream();
+<i>132</i>&nbsp;                this.b = this.readBody(stream, pattern, (long[])null, baos, (SharedInputStream)null);
+<i>133</i>&nbsp;                if(!ignoreMissingEndBoundary &amp;&amp; this.b == -1 &amp;&amp; !this.lastBodyPartFound()) {
+<i>134</i>&nbsp;                    throw new MessagingException(&quot;Missing End Boundary for Mime Package : EOF while skipping headers&quot;);
+<i>135</i>&nbsp;                } else {
+<i>136</i>&nbsp;                    MimeBodyPart mbp = this.createMimeBodyPart(headers, baos.getBytes(), baos.getCount());
+<i>137</i>&nbsp;                    this.addBodyPart(mbp);
+<i>138</i>&nbsp;                    return mbp;
+<i>139</i>&nbsp;                }
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public boolean parse(InputStream stream, byte[] pattern, SharedInputStream sin) throws Exception {
+<i>145</i>&nbsp;        while(!this.lastPartFound.get(0) &amp;&amp; this.b != -1) {
+<i>146</i>&nbsp;            this.getNextPart(stream, pattern, sin);
+<i>147</i>&nbsp;        }
+<i>148</i>&nbsp;
+<b class="nc"><i>149</i>&nbsp;        return true;</b>
+<b class="nc"><i>150</i>&nbsp;    }</b>
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    private int readHeaders(InputStream is) throws Exception {
+<i>153</i>&nbsp;        int b = is.read();
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;        while(b != -1) {
+<i>156</i>&nbsp;            if(b == 13) {
+<i>157</i>&nbsp;                b = is.read();
+<i>158</i>&nbsp;                if(b == 10) {
+<i>159</i>&nbsp;                    b = is.read();
+<i>160</i>&nbsp;                    if(b == 13) {
+<i>161</i>&nbsp;                        b = is.read();
+<i>162</i>&nbsp;                        if(b == 10) {
+<i>163</i>&nbsp;                            return b;
+<i>164</i>&nbsp;                        }
+<i>165</i>&nbsp;                    }
+<i>166</i>&nbsp;                }
+<i>167</i>&nbsp;            } else {
+<i>168</i>&nbsp;                b = is.read();
+<i>169</i>&nbsp;            }
+<i>170</i>&nbsp;        }
+<i>171</i>&nbsp;
+<b class="nc"><i>172</i>&nbsp;        if(b == -1) {</b>
+<i>173</i>&nbsp;            throw new Exception(&quot;End of inputstream while reading Mime-Part Headers&quot;);
+<b class="nc"><i>174</i>&nbsp;        } else {</b>
+<b class="nc"><i>175</i>&nbsp;            return b;</b>
+<i>176</i>&nbsp;        }
+<i>177</i>&nbsp;    }
+<b class="nc"><i>178</i>&nbsp;</b>
+<b class="nc"><i>179</i>&nbsp;    private int readBody(InputStream is, byte[] pattern, long[] posVector, ByteOutputStream baos, SharedInputStream sin) throws Exception {</b>
+<b class="nc"><i>180</i>&nbsp;        if(!this.find(is, pattern, posVector, baos, sin)) {</b>
+<b class="nc"><i>181</i>&nbsp;            throw new Exception(&quot;Missing boundary delimitier while reading Body Part&quot;);</b>
+<i>182</i>&nbsp;        } else {
+<b class="nc"><i>183</i>&nbsp;            return this.b;</b>
+<b class="nc"><i>184</i>&nbsp;        }</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    private boolean skipPreamble(InputStream is, byte[] pattern, SharedInputStream sin) throws Exception {
+<b class="nc"><i>188</i>&nbsp;        if(!this.find(is, pattern, sin)) {</b>
+<i>189</i>&nbsp;            return false;
+<i>190</i>&nbsp;        } else if(this.lastPartFound.get(0)) {
+<i>191</i>&nbsp;            throw new Exception(&quot;Found closing boundary delimiter while trying to skip preamble&quot;);
+<i>192</i>&nbsp;        } else {
+<i>193</i>&nbsp;            return true;
+<i>194</i>&nbsp;        }
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    public int readNext(InputStream is, byte[] buff, int patternLength, BitSet eof, long[] posVector, SharedInputStream sin) throws Exception {
+<i>198</i>&nbsp;        int bufferLength = is.read(this.buffer, 0, patternLength);
+<i>199</i>&nbsp;        if(bufferLength == -1) {
+<i>200</i>&nbsp;            eof.flip(0);
+<b class="nc"><i>201</i>&nbsp;        } else if(bufferLength &lt; patternLength) {</b>
+<i>202</i>&nbsp;            boolean temp = false;
+<i>203</i>&nbsp;            long pos = 0L;
+<b class="nc"><i>204</i>&nbsp;</b>
+<i>205</i>&nbsp;            int i;
+<b class="nc"><i>206</i>&nbsp;            for(i = bufferLength; i &lt; patternLength; ++i) {</b>
+<b class="nc"><i>207</i>&nbsp;                if(sin != null) {</b>
+<b class="nc"><i>208</i>&nbsp;                    pos = sin.getPosition();</b>
+<i>209</i>&nbsp;                }
+<i>210</i>&nbsp;
+<b class="nc"><i>211</i>&nbsp;                int var12 = is.read();</b>
+<b class="nc"><i>212</i>&nbsp;                if(var12 == -1) {</b>
+<i>213</i>&nbsp;                    eof.flip(0);
+<b class="nc"><i>214</i>&nbsp;                    if(sin != null) {</b>
+<b class="nc"><i>215</i>&nbsp;                        posVector[0] = pos;</b>
+<b class="nc"><i>216</i>&nbsp;                    }</b>
+<b class="nc"><i>217</i>&nbsp;                    break;</b>
+<b class="nc"><i>218</i>&nbsp;                }</b>
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;                this.buffer[i] = (byte)var12;
+<b class="nc"><i>221</i>&nbsp;            }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;            bufferLength = i;
+<i>224</i>&nbsp;        }
+<b class="nc"><i>225</i>&nbsp;</b>
+<i>226</i>&nbsp;        return bufferLength;
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    public boolean find(InputStream is, byte[] pattern, SharedInputStream sin) throws Exception {
+<i>230</i>&nbsp;        int l = pattern.length;
+<i>231</i>&nbsp;        int lx = l - 1;
+<b class="nc"><i>232</i>&nbsp;        boolean bufferLength = false;</b>
+<b class="nc"><i>233</i>&nbsp;        BitSet eof = new BitSet(1);</b>
+<i>234</i>&nbsp;        long[] posVector = new long[1];
+<i>235</i>&nbsp;
+<b class="nc"><i>236</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>237</i>&nbsp;            is.mark(l);</b>
+<b class="nc"><i>238</i>&nbsp;            this.readNext(is, this.buffer, l, eof, posVector, sin);</b>
+<b class="nc"><i>239</i>&nbsp;            if(eof.get(0)) {</b>
+<i>240</i>&nbsp;                return false;
+<i>241</i>&nbsp;            }
+<b class="nc"><i>242</i>&nbsp;</b>
+<i>243</i>&nbsp;            int i;
+<i>244</i>&nbsp;            for(i = lx; i &gt;= 0 &amp;&amp; this.buffer[i] == pattern[i]; --i) {
+<b class="nc"><i>245</i>&nbsp;                ;</b>
+<b class="nc"><i>246</i>&nbsp;            }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;            if(i &lt; 0) {
+<b class="nc"><i>249</i>&nbsp;                if(!this.skipLWSPAndCRLF(is)) {</b>
+<b class="nc"><i>250</i>&nbsp;                    throw new Exception(&quot;Boundary does not terminate with CRLF&quot;);</b>
+<b class="nc"><i>251</i>&nbsp;                }</b>
+<b class="nc"><i>252</i>&nbsp;</b>
+<b class="nc"><i>253</i>&nbsp;                return true;</b>
+<i>254</i>&nbsp;            }
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;            int s = Math.max(i + 1 - this.bcs[this.buffer[i] &amp; 127], this.gss[i]);</b>
+<b class="nc"><i>257</i>&nbsp;            is.reset();</b>
+<b class="nc"><i>258</i>&nbsp;            is.skip((long)s);</b>
+<i>259</i>&nbsp;        }
+<i>260</i>&nbsp;    }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    public boolean find(InputStream is, byte[] pattern, long[] posVector, ByteOutputStream out, SharedInputStream sin) throws Exception {
+<i>263</i>&nbsp;        int l = pattern.length;
+<i>264</i>&nbsp;        int lx = l - 1;
+<i>265</i>&nbsp;        boolean bufferLength = false;
+<i>266</i>&nbsp;        int s = 0;
+<b class="nc"><i>267</i>&nbsp;        long endPos = -1L;</b>
+<b class="nc"><i>268</i>&nbsp;        Object tmp = null;</b>
+<b class="nc"><i>269</i>&nbsp;        boolean first = true;</b>
+<b class="nc"><i>270</i>&nbsp;        BitSet eof = new BitSet(1);</b>
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;        while(true) {
+<b class="nc"><i>273</i>&nbsp;            is.mark(l);</b>
+<b class="nc"><i>274</i>&nbsp;            if(!first) {</b>
+<b class="nc"><i>275</i>&nbsp;                byte[] var18 = this.prevBuffer;</b>
+<i>276</i>&nbsp;                this.prevBuffer = this.buffer;
+<i>277</i>&nbsp;                this.buffer = var18;
+<i>278</i>&nbsp;            }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;            if(sin != null) {
+<i>281</i>&nbsp;                endPos = sin.getPosition();
+<i>282</i>&nbsp;            }
+<i>283</i>&nbsp;
+<b class="nc"><i>284</i>&nbsp;            int var17 = this.readNext(is, this.buffer, l, eof, posVector, sin);</b>
+<i>285</i>&nbsp;            if(var17 == -1) {
+<b class="nc"><i>286</i>&nbsp;                this.b = -1;</b>
+<b class="nc"><i>287</i>&nbsp;                if(s == l &amp;&amp; sin == null) {</b>
+<i>288</i>&nbsp;                    out.write(this.prevBuffer, 0, s);
+<i>289</i>&nbsp;                }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;                return true;
+<i>292</i>&nbsp;            }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;            if(var17 &lt; l) {
+<i>295</i>&nbsp;                if(sin == null) {
+<b class="nc"><i>296</i>&nbsp;                    out.write(this.buffer, 0, var17);</b>
+<b class="nc"><i>297</i>&nbsp;                }</b>
+<i>298</i>&nbsp;
+<b class="nc"><i>299</i>&nbsp;                this.b = -1;</b>
+<i>300</i>&nbsp;                return true;
+<i>301</i>&nbsp;            }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;            int i;
+<i>304</i>&nbsp;            for(i = lx; i &gt;= 0 &amp;&amp; this.buffer[i] == pattern[i]; --i) {
+<b class="nc"><i>305</i>&nbsp;                ;</b>
+<b class="nc"><i>306</i>&nbsp;            }</b>
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;            if(i &lt; 0) {</b>
+<b class="nc"><i>309</i>&nbsp;                if(s &gt; 0) {</b>
+<b class="nc"><i>310</i>&nbsp;                    if(s &lt;= 2) {</b>
+<b class="nc"><i>311</i>&nbsp;                        if(s == 2) {</b>
+<b class="nc"><i>312</i>&nbsp;                            if(this.prevBuffer[1] != 10) {</b>
+<b class="nc"><i>313</i>&nbsp;                                throw new Exception(&quot;Boundary characters encountered in part Body without a preceeding CRLF&quot;);</b>
+<b class="nc"><i>314</i>&nbsp;                            }</b>
+<b class="nc"><i>315</i>&nbsp;</b>
+<i>316</i>&nbsp;                            if(this.prevBuffer[0] != 13 &amp;&amp; this.prevBuffer[0] != 10) {
+<i>317</i>&nbsp;                                out.write(this.prevBuffer, 0, 1);
+<i>318</i>&nbsp;                            }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;                            if(sin != null) {
+<i>321</i>&nbsp;                                posVector[0] = endPos;
+<i>322</i>&nbsp;                            }
+<i>323</i>&nbsp;                        } else if(s == 1) {
+<i>324</i>&nbsp;                            if(this.prevBuffer[0] != 10) {
+<i>325</i>&nbsp;                                throw new Exception(&quot;Boundary characters encountered in part Body without a preceeding CRLF&quot;);
+<b class="nc"><i>326</i>&nbsp;                            }</b>
+<i>327</i>&nbsp;
+<b class="nc"><i>328</i>&nbsp;                            if(sin != null) {</b>
+<b class="nc"><i>329</i>&nbsp;                                posVector[0] = endPos;</b>
+<i>330</i>&nbsp;                            }
+<i>331</i>&nbsp;                        }
+<b class="nc"><i>332</i>&nbsp;                    } else if(s &gt; 2) {</b>
+<i>333</i>&nbsp;                        if(this.prevBuffer[s - 2] == 13 &amp;&amp; this.prevBuffer[s - 1] == 10) {
+<i>334</i>&nbsp;                            if(sin != null) {
+<i>335</i>&nbsp;                                posVector[0] = endPos - 2L;
+<i>336</i>&nbsp;                            } else {
+<i>337</i>&nbsp;                                out.write(this.prevBuffer, 0, s - 2);
+<i>338</i>&nbsp;                            }
+<b class="nc"><i>339</i>&nbsp;                        } else {</b>
+<b class="nc"><i>340</i>&nbsp;                            if(this.prevBuffer[s - 1] != 10) {</b>
+<i>341</i>&nbsp;                                throw new Exception(&quot;Boundary characters encountered in part Body without a preceeding CRLF&quot;);
+<i>342</i>&nbsp;                            }
+<b class="nc"><i>343</i>&nbsp;</b>
+<i>344</i>&nbsp;                            if(sin != null) {
+<i>345</i>&nbsp;                                posVector[0] = endPos - 1L;
+<i>346</i>&nbsp;                            } else {
+<i>347</i>&nbsp;                                out.write(this.prevBuffer, 0, s - 1);
+<i>348</i>&nbsp;                            }
+<b class="nc"><i>349</i>&nbsp;                        }</b>
+<b class="nc"><i>350</i>&nbsp;                    }</b>
+<i>351</i>&nbsp;                }
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;                if(!this.skipLWSPAndCRLF(is)) {</b>
+<i>354</i>&nbsp;                    ;
+<i>355</i>&nbsp;                }
+<b class="nc"><i>356</i>&nbsp;</b>
+<i>357</i>&nbsp;                return true;
+<i>358</i>&nbsp;            }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;            if(s &gt; 0 &amp;&amp; sin == null) {
+<i>361</i>&nbsp;                if(this.prevBuffer[s - 1] == 13) {
+<i>362</i>&nbsp;                    if(this.buffer[0] == 10) {
+<i>363</i>&nbsp;                        int j = lx - 1;
+<b class="nc"><i>364</i>&nbsp;</b>
+<b class="nc"><i>365</i>&nbsp;                        for(j = lx - 1; j &gt; 0 &amp;&amp; this.buffer[j + 1] == pattern[j]; --j) {</b>
+<b class="nc"><i>366</i>&nbsp;                            ;</b>
+<b class="nc"><i>367</i>&nbsp;                        }</b>
+<i>368</i>&nbsp;
+<b class="nc"><i>369</i>&nbsp;                        if(j == 0) {</b>
+<b class="nc"><i>370</i>&nbsp;                            out.write(this.prevBuffer, 0, s - 1);</b>
+<b class="nc"><i>371</i>&nbsp;                        } else {</b>
+<b class="nc"><i>372</i>&nbsp;                            out.write(this.prevBuffer, 0, s);</b>
+<b class="nc"><i>373</i>&nbsp;                        }</b>
+<b class="nc"><i>374</i>&nbsp;                    } else {</b>
+<i>375</i>&nbsp;                        out.write(this.prevBuffer, 0, s);
+<b class="nc"><i>376</i>&nbsp;                    }</b>
+<b class="nc"><i>377</i>&nbsp;                } else {</b>
+<b class="nc"><i>378</i>&nbsp;                    out.write(this.prevBuffer, 0, s);</b>
+<b class="nc"><i>379</i>&nbsp;                }</b>
+<b class="nc"><i>380</i>&nbsp;            }</b>
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;            s = Math.max(i + 1 - this.bcs[this.buffer[i] &amp; 127], this.gss[i]);
+<i>383</i>&nbsp;            is.reset();
+<b class="nc"><i>384</i>&nbsp;            is.skip((long)s);</b>
+<i>385</i>&nbsp;            if(first) {
+<b class="nc"><i>386</i>&nbsp;                first = false;</b>
+<i>387</i>&nbsp;            }
+<b class="nc"><i>388</i>&nbsp;        }</b>
+<i>389</i>&nbsp;    }
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    private boolean skipLWSPAndCRLF(InputStream is) throws Exception {
+<i>392</i>&nbsp;        this.b = is.read();
+<i>393</i>&nbsp;        if(this.b == 10) {
+<b class="nc"><i>394</i>&nbsp;            return true;</b>
+<b class="nc"><i>395</i>&nbsp;        } else if(this.b == 13) {</b>
+<b class="nc"><i>396</i>&nbsp;            this.b = is.read();</b>
+<b class="nc"><i>397</i>&nbsp;            if(this.b == 13) {</b>
+<b class="nc"><i>398</i>&nbsp;                this.b = is.read();</b>
+<i>399</i>&nbsp;            }
+<i>400</i>&nbsp;
+<b class="nc"><i>401</i>&nbsp;            if(this.b == 10) {</b>
+<b class="nc"><i>402</i>&nbsp;                return true;</b>
+<b class="nc"><i>403</i>&nbsp;            } else {</b>
+<i>404</i>&nbsp;                throw new Exception(&quot;transport padding after a Mime Boundary  should end in a CRLF, found CR only&quot;);
+<b class="nc"><i>405</i>&nbsp;            }</b>
+<i>406</i>&nbsp;        } else {
+<i>407</i>&nbsp;            if(this.b == 45) {
+<i>408</i>&nbsp;                this.b = is.read();
+<i>409</i>&nbsp;                if(this.b != 45) {
+<i>410</i>&nbsp;                    throw new Exception(&quot;Unexpected singular \&#39;-\&#39; character after Mime Boundary&quot;);
+<i>411</i>&nbsp;                }
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;                this.lastPartFound.flip(0);
+<b class="nc"><i>414</i>&nbsp;                this.b = is.read();</b>
+<b class="nc"><i>415</i>&nbsp;            }</b>
+<b class="nc"><i>416</i>&nbsp;</b>
+<i>417</i>&nbsp;            while(this.b != -1 &amp;&amp; (this.b == 32 || this.b == 9)) {
+<i>418</i>&nbsp;                this.b = is.read();
+<i>419</i>&nbsp;                if(this.b == 10) {
+<b class="nc"><i>420</i>&nbsp;                    return true;</b>
+<i>421</i>&nbsp;                }
+<b class="nc"><i>422</i>&nbsp;</b>
+<b class="nc"><i>423</i>&nbsp;                if(this.b == 13) {</b>
+<i>424</i>&nbsp;                    this.b = is.read();
+<b class="nc"><i>425</i>&nbsp;                    if(this.b == 13) {</b>
+<i>426</i>&nbsp;                        this.b = is.read();
+<i>427</i>&nbsp;                    }
+<b class="nc"><i>428</i>&nbsp;</b>
+<b class="nc"><i>429</i>&nbsp;                    if(this.b == 10) {</b>
+<b class="nc"><i>430</i>&nbsp;                        return true;</b>
+<b class="nc"><i>431</i>&nbsp;                    }</b>
+<i>432</i>&nbsp;                }
+<i>433</i>&nbsp;            }
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;            if(this.b == -1) {
+<i>436</i>&nbsp;                if(!this.lastPartFound.get(0)) {
+<i>437</i>&nbsp;                    throw new Exception(&quot;End of Multipart Stream before encountering  closing boundary delimiter&quot;);
+<b class="nc"><i>438</i>&nbsp;                } else {</b>
+<b class="nc"><i>439</i>&nbsp;                    return true;</b>
+<b class="nc"><i>440</i>&nbsp;                }</b>
+<b class="nc"><i>441</i>&nbsp;            } else {</b>
+<b class="nc"><i>442</i>&nbsp;                return false;</b>
+<b class="nc"><i>443</i>&nbsp;            }</b>
+<i>444</i>&nbsp;        }
+<b class="nc"><i>445</i>&nbsp;    }</b>
+<b class="nc"><i>446</i>&nbsp;</b>
+<i>447</i>&nbsp;    private void compile(byte[] pattern) {
+<i>448</i>&nbsp;        int l = pattern.length;
+<b class="nc"><i>449</i>&nbsp;</b>
+<b class="nc"><i>450</i>&nbsp;        int i;</b>
+<b class="nc"><i>451</i>&nbsp;        for(i = 0; i &lt; l; ++i) {</b>
+<b class="nc"><i>452</i>&nbsp;            this.bcs[pattern[i]] = i + 1;</b>
+<b class="nc"><i>453</i>&nbsp;        }</b>
+<i>454</i>&nbsp;
+<b class="nc"><i>455</i>&nbsp;        this.gss = new int[l];</b>
+<b class="nc"><i>456</i>&nbsp;        i = l;</b>
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;        while(i &gt; 0) {
+<b class="nc"><i>459</i>&nbsp;            int j = l - 1;</b>
+<i>460</i>&nbsp;
+<b class="nc"><i>461</i>&nbsp;            while(true) {</b>
+<i>462</i>&nbsp;                if(j &gt;= i) {
+<i>463</i>&nbsp;                    if(pattern[j] == pattern[j - i]) {
+<i>464</i>&nbsp;                        this.gss[j - 1] = i;
+<i>465</i>&nbsp;                        --j;
+<i>466</i>&nbsp;                        continue;
+<i>467</i>&nbsp;                    }
+<b class="nc"><i>468</i>&nbsp;                } else {</b>
+<b class="nc"><i>469</i>&nbsp;                    while(j &gt; 0) {</b>
+<b class="nc"><i>470</i>&nbsp;                        --j;</b>
+<i>471</i>&nbsp;                        this.gss[j] = i;
+<b class="nc"><i>472</i>&nbsp;                    }</b>
+<i>473</i>&nbsp;                }
+<i>474</i>&nbsp;
+<b class="nc"><i>475</i>&nbsp;                --i;</b>
+<b class="nc"><i>476</i>&nbsp;                break;</b>
+<i>477</i>&nbsp;            }
+<i>478</i>&nbsp;        }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;        this.gss[l - 1] = 1;
+<i>481</i>&nbsp;    }
+<b class="nc"><i>482</i>&nbsp;</b>
+<i>483</i>&nbsp;    public void writeTo(OutputStream os) throws IOException, MessagingException {
+<i>484</i>&nbsp;        if(this.in != null) {
+<i>485</i>&nbsp;            this.contentType.setParameter(&quot;boundary&quot;, this.boundary);
+<i>486</i>&nbsp;        }
+<b class="nc"><i>487</i>&nbsp;</b>
+<b class="nc"><i>488</i>&nbsp;        String bnd = &quot;--&quot; + this.contentType.getParameter(&quot;boundary&quot;);</b>
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;        for(int baos = 0; baos &lt; this.parts.size(); ++baos) {
+<b class="nc"><i>491</i>&nbsp;            OutputUtil.writeln(bnd, os);</b>
+<b class="nc"><i>492</i>&nbsp;            ((MimeBodyPart)this.parts.get(baos)).writeTo(os);</b>
+<b class="nc"><i>493</i>&nbsp;            OutputUtil.writeln(os);</b>
+<i>494</i>&nbsp;        }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;        if(this.in != null) {
+<b class="nc"><i>497</i>&nbsp;            OutputUtil.writeln(bnd, os);</b>
+<b class="nc"><i>498</i>&nbsp;            if(os instanceof ByteOutputStream &amp;&amp; this.lazyAttachments) {</b>
+<i>499</i>&nbsp;                ((ByteOutputStream)os).write(this.in);
+<i>500</i>&nbsp;            } else {
+<i>501</i>&nbsp;                ByteOutputStream var4 = new ByteOutputStream(this.in.available());
+<b class="nc"><i>502</i>&nbsp;                var4.write(this.in);</b>
+<i>503</i>&nbsp;                var4.writeTo(os);
+<b class="nc"><i>504</i>&nbsp;                this.in = var4.newInputStream();</b>
+<b class="nc"><i>505</i>&nbsp;            }</b>
+<b class="nc"><i>506</i>&nbsp;        } else {</b>
+<b class="nc"><i>507</i>&nbsp;            OutputUtil.writeAsAscii(bnd, os);</b>
+<i>508</i>&nbsp;            OutputUtil.writeAsAscii(&quot;--&quot;, os);
+<b class="nc"><i>509</i>&nbsp;        }</b>
+<b class="nc"><i>510</i>&nbsp;</b>
+<i>511</i>&nbsp;    }
+<i>512</i>&nbsp;
+<i>513</i>&nbsp;    public void setInputStream(InputStream is) {
+<b class="nc"><i>514</i>&nbsp;        this.in = is;</b>
+<i>515</i>&nbsp;    }
+<i>516</i>&nbsp;
+<i>517</i>&nbsp;    public InputStream getInputStream() {
+<i>518</i>&nbsp;        return this.in;
+<b class="nc"><i>519</i>&nbsp;    }</b>
+<b class="nc"><i>520</i>&nbsp;</b>
+<b class="nc"><i>521</i>&nbsp;    public void setBoundary(String bnd) {</b>
+<i>522</i>&nbsp;        this.boundary = bnd;
+<i>523</i>&nbsp;        if(this.contentType != null) {
+<i>524</i>&nbsp;            this.contentType.setParameter(&quot;boundary&quot;, bnd);
+<b class="nc"><i>525</i>&nbsp;        }</b>
+<b class="nc"><i>526</i>&nbsp;</b>
+<i>527</i>&nbsp;    }
+<i>528</i>&nbsp;
+<i>529</i>&nbsp;    public String getBoundary() {
+<i>530</i>&nbsp;        return this.boundary;
+<b class="nc"><i>531</i>&nbsp;    }</b>
+<b class="nc"><i>532</i>&nbsp;</b>
+<b class="nc"><i>533</i>&nbsp;    public boolean isEndOfStream() {</b>
+<b class="nc"><i>534</i>&nbsp;        return this.b == -1;</b>
+<i>535</i>&nbsp;    }
+<b class="nc"><i>536</i>&nbsp;</b>
+<i>537</i>&nbsp;    public void setLazyAttachments(boolean flag) {
+<b class="nc"><i>538</i>&nbsp;        this.lazyAttachments = flag;</b>
+<i>539</i>&nbsp;    }
+<b class="nc"><i>540</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

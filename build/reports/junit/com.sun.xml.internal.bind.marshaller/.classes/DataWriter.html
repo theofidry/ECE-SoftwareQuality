@@ -1,0 +1,200 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DataWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.bind.marshaller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DataWriter (com.sun.xml.internal.bind.marshaller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DataWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.bind.marshaller;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
+<i>9</i>&nbsp;import com.sun.xml.internal.bind.marshaller.DumbEscapeHandler;
+<i>10</i>&nbsp;import com.sun.xml.internal.bind.marshaller.XMLWriter;
+<i>11</i>&nbsp;import java.io.IOException;
+<i>12</i>&nbsp;import java.io.Writer;
+<i>13</i>&nbsp;import java.util.Stack;
+<i>14</i>&nbsp;import org.xml.sax.Attributes;
+<i>15</i>&nbsp;import org.xml.sax.SAXException;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;public class DataWriter extends XMLWriter {
+<i>18</i>&nbsp;    private static final Object SEEN_NOTHING = new Object();
+<i>19</i>&nbsp;    private static final Object SEEN_ELEMENT = new Object();
+<i>20</i>&nbsp;    private static final Object SEEN_DATA = new Object();
+<i>21</i>&nbsp;    private Object state;
+<i>22</i>&nbsp;    private Stack&lt;Object&gt; stateStack;
+<i>23</i>&nbsp;    private String indentStep;
+<i>24</i>&nbsp;    private int depth;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public DataWriter(Writer writer, String encoding, CharacterEscapeHandler _escapeHandler) {
+<i>27</i>&nbsp;        super(writer, encoding, _escapeHandler);
+<i>28</i>&nbsp;        this.state = SEEN_NOTHING;
+<i>29</i>&nbsp;        this.stateStack = new Stack();
+<i>30</i>&nbsp;        this.indentStep = &quot;&quot;;
+<i>31</i>&nbsp;        this.depth = 0;
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public DataWriter(Writer writer, String encoding) {
+<i>35</i>&nbsp;        this(writer, encoding, DumbEscapeHandler.theInstance);
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    /** @deprecated */
+<i>39</i>&nbsp;    public int getIndentStep() {
+<i>40</i>&nbsp;        return this.indentStep.length();
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /** @deprecated */
+<i>44</i>&nbsp;    public void setIndentStep(int indentStep) {
+<i>45</i>&nbsp;        StringBuilder buf;
+<i>46</i>&nbsp;        for(buf = new StringBuilder(); indentStep &gt; 0; --indentStep) {
+<i>47</i>&nbsp;            buf.append(&#39; &#39;);
+<i>48</i>&nbsp;        }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;        this.setIndentStep(buf.toString());
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public void setIndentStep(String s) {
+<i>54</i>&nbsp;        this.indentStep = s;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public void reset() {
+<i>58</i>&nbsp;        this.depth = 0;
+<i>59</i>&nbsp;        this.state = SEEN_NOTHING;
+<i>60</i>&nbsp;        this.stateStack = new Stack();
+<i>61</i>&nbsp;        super.reset();
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    protected void writeXmlDecl(String decl) throws IOException {
+<i>65</i>&nbsp;        super.writeXmlDecl(decl);
+<i>66</i>&nbsp;        this.write(&#39;\n&#39;);
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+<i>70</i>&nbsp;        this.stateStack.push(SEEN_ELEMENT);
+<i>71</i>&nbsp;        this.state = SEEN_NOTHING;
+<i>72</i>&nbsp;        if(this.depth &gt; 0) {
+<i>73</i>&nbsp;            super.characters(&quot;\n&quot;);
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;        this.doIndent();
+<i>77</i>&nbsp;        super.startElement(uri, localName, qName, atts);
+<i>78</i>&nbsp;        ++this.depth;
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public void endElement(String uri, String localName, String qName) throws SAXException {
+<i>82</i>&nbsp;        --this.depth;
+<i>83</i>&nbsp;        if(this.state == SEEN_ELEMENT) {
+<i>84</i>&nbsp;            super.characters(&quot;\n&quot;);
+<i>85</i>&nbsp;            this.doIndent();
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;        super.endElement(uri, localName, qName);
+<i>89</i>&nbsp;        this.state = this.stateStack.pop();
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public void endDocument() throws SAXException {
+<i>93</i>&nbsp;        try {
+<i>94</i>&nbsp;            this.write(&#39;\n&#39;);
+<i>95</i>&nbsp;        } catch (IOException var2) {
+<i>96</i>&nbsp;            throw new SAXException(var2);
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        super.endDocument();
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public void characters(char[] ch, int start, int length) throws SAXException {
+<i>103</i>&nbsp;        this.state = SEEN_DATA;
+<i>104</i>&nbsp;        super.characters(ch, start, length);
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    private void doIndent() throws SAXException {
+<i>108</i>&nbsp;        if(this.depth &gt; 0) {
+<i>109</i>&nbsp;            char[] ch = this.indentStep.toCharArray();
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;            for(int i = 0; i &lt; this.depth; ++i) {
+<i>112</i>&nbsp;                this.characters(ch, 0, ch.length);
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

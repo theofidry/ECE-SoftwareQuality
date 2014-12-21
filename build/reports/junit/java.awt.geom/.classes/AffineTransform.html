@@ -1,0 +1,2587 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AffineTransform</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.awt.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AffineTransform (java.awt.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AffineTransform</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 76)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1251)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.awt.geom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Shape;
+<i>9</i>&nbsp;import java.awt.geom.NoninvertibleTransformException;
+<i>10</i>&nbsp;import java.awt.geom.Point2D;
+<i>11</i>&nbsp;import java.awt.geom.Point2D.Double;
+<i>12</i>&nbsp;import java.awt.geom.Point2D.Float;
+<i>13</i>&nbsp;import java.beans.ConstructorProperties;
+<i>14</i>&nbsp;import java.io.IOException;
+<i>15</i>&nbsp;import java.io.ObjectInputStream;
+<i>16</i>&nbsp;import java.io.ObjectOutputStream;
+<i>17</i>&nbsp;import java.io.Serializable;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;public class AffineTransform implements Cloneable, Serializable {
+<i>20</i>&nbsp;    private static final int TYPE_UNKNOWN = -1;
+<i>21</i>&nbsp;    public static final int TYPE_IDENTITY = 0;
+<i>22</i>&nbsp;    public static final int TYPE_TRANSLATION = 1;
+<i>23</i>&nbsp;    public static final int TYPE_UNIFORM_SCALE = 2;
+<i>24</i>&nbsp;    public static final int TYPE_GENERAL_SCALE = 4;
+<i>25</i>&nbsp;    public static final int TYPE_MASK_SCALE = 6;
+<i>26</i>&nbsp;    public static final int TYPE_FLIP = 64;
+<i>27</i>&nbsp;    public static final int TYPE_QUADRANT_ROTATION = 8;
+<i>28</i>&nbsp;    public static final int TYPE_GENERAL_ROTATION = 16;
+<i>29</i>&nbsp;    public static final int TYPE_MASK_ROTATION = 24;
+<i>30</i>&nbsp;    public static final int TYPE_GENERAL_TRANSFORM = 32;
+<i>31</i>&nbsp;    static final int APPLY_IDENTITY = 0;
+<i>32</i>&nbsp;    static final int APPLY_TRANSLATE = 1;
+<i>33</i>&nbsp;    static final int APPLY_SCALE = 2;
+<i>34</i>&nbsp;    static final int APPLY_SHEAR = 4;
+<i>35</i>&nbsp;    private static final int HI_SHIFT = 3;
+<i>36</i>&nbsp;    private static final int HI_IDENTITY = 0;
+<i>37</i>&nbsp;    private static final int HI_TRANSLATE = 8;
+<i>38</i>&nbsp;    private static final int HI_SCALE = 16;
+<i>39</i>&nbsp;    private static final int HI_SHEAR = 32;
+<i>40</i>&nbsp;    double m00;
+<i>41</i>&nbsp;    double m10;
+<i>42</i>&nbsp;    double m01;
+<i>43</i>&nbsp;    double m11;
+<i>44</i>&nbsp;    double m02;
+<i>45</i>&nbsp;    double m12;
+<i>46</i>&nbsp;    transient int state;
+<i>47</i>&nbsp;    private transient int type;
+<i>48</i>&nbsp;    private static final int[] rot90conversion = new int[]{4, 5, 4, 5, 2, 3, 6, 7};
+<i>49</i>&nbsp;    private static final long serialVersionUID = 1330973210523860834L;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private AffineTransform(double var1, double var3, double var5, double var7, double var9, double var11, int var13) {
+<i>52</i>&nbsp;        this.m00 = var1;
+<i>53</i>&nbsp;        this.m10 = var3;
+<i>54</i>&nbsp;        this.m01 = var5;
+<i>55</i>&nbsp;        this.m11 = var7;
+<i>56</i>&nbsp;        this.m02 = var9;
+<i>57</i>&nbsp;        this.m12 = var11;
+<i>58</i>&nbsp;        this.state = var13;
+<i>59</i>&nbsp;        this.type = -1;
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public AffineTransform() {
+<i>63</i>&nbsp;        this.m00 = this.m11 = 1.0D;
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public AffineTransform(AffineTransform var1) {
+<i>67</i>&nbsp;        this.m00 = var1.m00;
+<i>68</i>&nbsp;        this.m10 = var1.m10;
+<i>69</i>&nbsp;        this.m01 = var1.m01;
+<i>70</i>&nbsp;        this.m11 = var1.m11;
+<i>71</i>&nbsp;        this.m02 = var1.m02;
+<i>72</i>&nbsp;        this.m12 = var1.m12;
+<i>73</i>&nbsp;        this.state = var1.state;
+<i>74</i>&nbsp;        this.type = var1.type;
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    @ConstructorProperties({&quot;scaleX&quot;, &quot;shearY&quot;, &quot;shearX&quot;, &quot;scaleY&quot;, &quot;translateX&quot;, &quot;translateY&quot;})
+<i>78</i>&nbsp;    public AffineTransform(float var1, float var2, float var3, float var4, float var5, float var6) {
+<i>79</i>&nbsp;        this.m00 = (double)var1;
+<i>80</i>&nbsp;        this.m10 = (double)var2;
+<i>81</i>&nbsp;        this.m01 = (double)var3;
+<i>82</i>&nbsp;        this.m11 = (double)var4;
+<i>83</i>&nbsp;        this.m02 = (double)var5;
+<i>84</i>&nbsp;        this.m12 = (double)var6;
+<i>85</i>&nbsp;        this.updateState();
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public AffineTransform(float[] var1) {
+<i>89</i>&nbsp;        this.m00 = (double)var1[0];
+<i>90</i>&nbsp;        this.m10 = (double)var1[1];
+<i>91</i>&nbsp;        this.m01 = (double)var1[2];
+<i>92</i>&nbsp;        this.m11 = (double)var1[3];
+<i>93</i>&nbsp;        if(var1.length &gt; 5) {
+<i>94</i>&nbsp;            this.m02 = (double)var1[4];
+<i>95</i>&nbsp;            this.m12 = (double)var1[5];
+<i>96</i>&nbsp;        }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;        this.updateState();
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public AffineTransform(double var1, double var3, double var5, double var7, double var9, double var11) {
+<i>102</i>&nbsp;        this.m00 = var1;
+<i>103</i>&nbsp;        this.m10 = var3;
+<i>104</i>&nbsp;        this.m01 = var5;
+<i>105</i>&nbsp;        this.m11 = var7;
+<i>106</i>&nbsp;        this.m02 = var9;
+<i>107</i>&nbsp;        this.m12 = var11;
+<i>108</i>&nbsp;        this.updateState();
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public AffineTransform(double[] var1) {
+<i>112</i>&nbsp;        this.m00 = var1[0];
+<i>113</i>&nbsp;        this.m10 = var1[1];
+<i>114</i>&nbsp;        this.m01 = var1[2];
+<i>115</i>&nbsp;        this.m11 = var1[3];
+<i>116</i>&nbsp;        if(var1.length &gt; 5) {
+<i>117</i>&nbsp;            this.m02 = var1[4];
+<i>118</i>&nbsp;            this.m12 = var1[5];
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        this.updateState();
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public static AffineTransform getTranslateInstance(double var0, double var2) {
+<i>125</i>&nbsp;        AffineTransform var4 = new AffineTransform();
+<i>126</i>&nbsp;        var4.setToTranslation(var0, var2);
+<i>127</i>&nbsp;        return var4;
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public static AffineTransform getRotateInstance(double var0) {
+<i>131</i>&nbsp;        AffineTransform var2 = new AffineTransform();
+<i>132</i>&nbsp;        var2.setToRotation(var0);
+<i>133</i>&nbsp;        return var2;
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public static AffineTransform getRotateInstance(double var0, double var2, double var4) {
+<i>137</i>&nbsp;        AffineTransform var6 = new AffineTransform();
+<i>138</i>&nbsp;        var6.setToRotation(var0, var2, var4);
+<i>139</i>&nbsp;        return var6;
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    public static AffineTransform getRotateInstance(double var0, double var2) {
+<i>143</i>&nbsp;        AffineTransform var4 = new AffineTransform();
+<i>144</i>&nbsp;        var4.setToRotation(var0, var2);
+<i>145</i>&nbsp;        return var4;
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    public static AffineTransform getRotateInstance(double var0, double var2, double var4, double var6) {
+<i>149</i>&nbsp;        AffineTransform var8 = new AffineTransform();
+<i>150</i>&nbsp;        var8.setToRotation(var0, var2, var4, var6);
+<i>151</i>&nbsp;        return var8;
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public static AffineTransform getQuadrantRotateInstance(int var0) {
+<i>155</i>&nbsp;        AffineTransform var1 = new AffineTransform();
+<i>156</i>&nbsp;        var1.setToQuadrantRotation(var0);
+<i>157</i>&nbsp;        return var1;
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    public static AffineTransform getQuadrantRotateInstance(int var0, double var1, double var3) {
+<i>161</i>&nbsp;        AffineTransform var5 = new AffineTransform();
+<i>162</i>&nbsp;        var5.setToQuadrantRotation(var0, var1, var3);
+<i>163</i>&nbsp;        return var5;
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public static AffineTransform getScaleInstance(double var0, double var2) {
+<i>167</i>&nbsp;        AffineTransform var4 = new AffineTransform();
+<i>168</i>&nbsp;        var4.setToScale(var0, var2);
+<i>169</i>&nbsp;        return var4;
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    public static AffineTransform getShearInstance(double var0, double var2) {
+<i>173</i>&nbsp;        AffineTransform var4 = new AffineTransform();
+<i>174</i>&nbsp;        var4.setToShear(var0, var2);
+<i>175</i>&nbsp;        return var4;
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    public int getType() {
+<i>179</i>&nbsp;        if(this.type == -1) {
+<i>180</i>&nbsp;            this.calculateType();
+<i>181</i>&nbsp;        }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;        return this.type;
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    private void calculateType() {
+<i>187</i>&nbsp;        int var1 = 0;
+<i>188</i>&nbsp;        this.updateState();
+<i>189</i>&nbsp;        boolean var2;
+<i>190</i>&nbsp;        boolean var3;
+<i>191</i>&nbsp;        double var4;
+<i>192</i>&nbsp;        double var6;
+<i>193</i>&nbsp;        switch(this.state) {
+<i>194</i>&nbsp;        case 0:
+<i>195</i>&nbsp;            break;
+<i>196</i>&nbsp;        case 1:
+<i>197</i>&nbsp;            var1 = 1;
+<i>198</i>&nbsp;            break;
+<i>199</i>&nbsp;        case 3:
+<i>200</i>&nbsp;            var1 = 1;
+<i>201</i>&nbsp;        case 2:
+<i>202</i>&nbsp;            var4 = this.m00;
+<i>203</i>&nbsp;            var2 = this.m00 &gt;= 0.0D;
+<i>204</i>&nbsp;            var6 = this.m11;
+<i>205</i>&nbsp;            var3 = this.m11 &gt;= 0.0D;
+<i>206</i>&nbsp;            if(var2 == var3) {
+<i>207</i>&nbsp;                if(var2) {
+<i>208</i>&nbsp;                    if(var4 == var6) {
+<i>209</i>&nbsp;                        var1 |= 2;
+<i>210</i>&nbsp;                    } else {
+<i>211</i>&nbsp;                        var1 |= 4;
+<i>212</i>&nbsp;                    }
+<i>213</i>&nbsp;                } else if(var4 != var6) {
+<i>214</i>&nbsp;                    var1 |= 12;
+<i>215</i>&nbsp;                } else if(var4 != -1.0D) {
+<i>216</i>&nbsp;                    var1 |= 10;
+<i>217</i>&nbsp;                } else {
+<i>218</i>&nbsp;                    var1 |= 8;
+<i>219</i>&nbsp;                }
+<i>220</i>&nbsp;            } else if(var4 == -var6) {
+<i>221</i>&nbsp;                if(var4 != 1.0D &amp;&amp; var4 != -1.0D) {
+<i>222</i>&nbsp;                    var1 |= 66;
+<i>223</i>&nbsp;                } else {
+<i>224</i>&nbsp;                    var1 |= 64;
+<i>225</i>&nbsp;                }
+<i>226</i>&nbsp;            } else {
+<i>227</i>&nbsp;                var1 |= 68;
+<i>228</i>&nbsp;            }
+<i>229</i>&nbsp;            break;
+<i>230</i>&nbsp;        case 5:
+<i>231</i>&nbsp;            var1 = 1;
+<i>232</i>&nbsp;        case 4:
+<i>233</i>&nbsp;            var4 = this.m01;
+<i>234</i>&nbsp;            var2 = this.m01 &gt;= 0.0D;
+<i>235</i>&nbsp;            var6 = this.m10;
+<i>236</i>&nbsp;            var3 = this.m10 &gt;= 0.0D;
+<i>237</i>&nbsp;            if(var2 != var3) {
+<i>238</i>&nbsp;                if(var4 != -var6) {
+<i>239</i>&nbsp;                    var1 |= 12;
+<i>240</i>&nbsp;                } else if(var4 != 1.0D &amp;&amp; var4 != -1.0D) {
+<i>241</i>&nbsp;                    var1 |= 10;
+<i>242</i>&nbsp;                } else {
+<i>243</i>&nbsp;                    var1 |= 8;
+<i>244</i>&nbsp;                }
+<i>245</i>&nbsp;            } else if(var4 == var6) {
+<i>246</i>&nbsp;                var1 |= 74;
+<i>247</i>&nbsp;            } else {
+<i>248</i>&nbsp;                var1 |= 76;
+<i>249</i>&nbsp;            }
+<i>250</i>&nbsp;            break;
+<i>251</i>&nbsp;        default:
+<i>252</i>&nbsp;            this.stateError();
+<i>253</i>&nbsp;        case 7:
+<i>254</i>&nbsp;            var1 = 1;
+<i>255</i>&nbsp;        case 6:
+<i>256</i>&nbsp;            var4 = this.m00;
+<i>257</i>&nbsp;            double var8 = this.m01;
+<i>258</i>&nbsp;            double var10000 = this.m00 * this.m01;
+<i>259</i>&nbsp;            double var10 = this.m10;
+<i>260</i>&nbsp;            var6 = this.m11;
+<i>261</i>&nbsp;            if(var10000 + this.m10 * this.m11 != 0.0D) {
+<i>262</i>&nbsp;                this.type = 32;
+<i>263</i>&nbsp;                return;
+<i>264</i>&nbsp;            }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;            var2 = var4 &gt;= 0.0D;
+<i>267</i>&nbsp;            var3 = var6 &gt;= 0.0D;
+<i>268</i>&nbsp;            if(var2 == var3) {
+<i>269</i>&nbsp;                if(var4 == var6 &amp;&amp; var8 == -var10) {
+<i>270</i>&nbsp;                    if(var4 * var6 - var8 * var10 != 1.0D) {
+<i>271</i>&nbsp;                        var1 |= 18;
+<i>272</i>&nbsp;                    } else {
+<i>273</i>&nbsp;                        var1 |= 16;
+<i>274</i>&nbsp;                    }
+<i>275</i>&nbsp;                } else {
+<i>276</i>&nbsp;                    var1 |= 20;
+<i>277</i>&nbsp;                }
+<i>278</i>&nbsp;            } else if(var4 == -var6 &amp;&amp; var8 == var10) {
+<i>279</i>&nbsp;                if(var4 * var6 - var8 * var10 != 1.0D) {
+<i>280</i>&nbsp;                    var1 |= 82;
+<i>281</i>&nbsp;                } else {
+<i>282</i>&nbsp;                    var1 |= 80;
+<i>283</i>&nbsp;                }
+<i>284</i>&nbsp;            } else {
+<i>285</i>&nbsp;                var1 |= 84;
+<i>286</i>&nbsp;            }
+<i>287</i>&nbsp;        }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;        this.type = var1;
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public double getDeterminant() {
+<i>293</i>&nbsp;        switch(this.state) {
+<i>294</i>&nbsp;        case 0:
+<i>295</i>&nbsp;        case 1:
+<i>296</i>&nbsp;            return 1.0D;
+<i>297</i>&nbsp;        case 2:
+<i>298</i>&nbsp;        case 3:
+<i>299</i>&nbsp;            return this.m00 * this.m11;
+<i>300</i>&nbsp;        case 4:
+<i>301</i>&nbsp;        case 5:
+<i>302</i>&nbsp;            return -(this.m01 * this.m10);
+<i>303</i>&nbsp;        default:
+<i>304</i>&nbsp;            this.stateError();
+<i>305</i>&nbsp;        case 6:
+<i>306</i>&nbsp;        case 7:
+<i>307</i>&nbsp;            return this.m00 * this.m11 - this.m01 * this.m10;
+<i>308</i>&nbsp;        }
+<i>309</i>&nbsp;    }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    void updateState() {
+<i>312</i>&nbsp;        if(this.m01 == 0.0D &amp;&amp; this.m10 == 0.0D) {
+<i>313</i>&nbsp;            if(this.m00 == 1.0D &amp;&amp; this.m11 == 1.0D) {
+<i>314</i>&nbsp;                if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>315</i>&nbsp;                    this.state = 0;
+<i>316</i>&nbsp;                    this.type = 0;
+<i>317</i>&nbsp;                } else {
+<i>318</i>&nbsp;                    this.state = 1;
+<i>319</i>&nbsp;                    this.type = 1;
+<i>320</i>&nbsp;                }
+<i>321</i>&nbsp;            } else if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>322</i>&nbsp;                this.state = 2;
+<i>323</i>&nbsp;                this.type = -1;
+<i>324</i>&nbsp;            } else {
+<i>325</i>&nbsp;                this.state = 3;
+<i>326</i>&nbsp;                this.type = -1;
+<i>327</i>&nbsp;            }
+<i>328</i>&nbsp;        } else if(this.m00 == 0.0D &amp;&amp; this.m11 == 0.0D) {
+<i>329</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>330</i>&nbsp;                this.state = 4;
+<i>331</i>&nbsp;                this.type = -1;
+<i>332</i>&nbsp;            } else {
+<i>333</i>&nbsp;                this.state = 5;
+<i>334</i>&nbsp;                this.type = -1;
+<i>335</i>&nbsp;            }
+<i>336</i>&nbsp;        } else if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>337</i>&nbsp;            this.state = 6;
+<i>338</i>&nbsp;            this.type = -1;
+<i>339</i>&nbsp;        } else {
+<i>340</i>&nbsp;            this.state = 7;
+<i>341</i>&nbsp;            this.type = -1;
+<i>342</i>&nbsp;        }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;    private void stateError() {
+<i>347</i>&nbsp;        throw new InternalError(&quot;missing case in transform state switch&quot;);
+<i>348</i>&nbsp;    }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    public void getMatrix(double[] var1) {
+<i>351</i>&nbsp;        var1[0] = this.m00;
+<i>352</i>&nbsp;        var1[1] = this.m10;
+<i>353</i>&nbsp;        var1[2] = this.m01;
+<i>354</i>&nbsp;        var1[3] = this.m11;
+<i>355</i>&nbsp;        if(var1.length &gt; 5) {
+<i>356</i>&nbsp;            var1[4] = this.m02;
+<i>357</i>&nbsp;            var1[5] = this.m12;
+<i>358</i>&nbsp;        }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    }
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;    public double getScaleX() {
+<i>363</i>&nbsp;        return this.m00;
+<i>364</i>&nbsp;    }
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    public double getScaleY() {
+<i>367</i>&nbsp;        return this.m11;
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    public double getShearX() {
+<i>371</i>&nbsp;        return this.m01;
+<i>372</i>&nbsp;    }
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;    public double getShearY() {
+<i>375</i>&nbsp;        return this.m10;
+<i>376</i>&nbsp;    }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;    public double getTranslateX() {
+<i>379</i>&nbsp;        return this.m02;
+<i>380</i>&nbsp;    }
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;    public double getTranslateY() {
+<i>383</i>&nbsp;        return this.m12;
+<i>384</i>&nbsp;    }
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;    public void translate(double var1, double var3) {
+<i>387</i>&nbsp;        switch(this.state) {
+<i>388</i>&nbsp;        case 0:
+<i>389</i>&nbsp;            this.m02 = var1;
+<i>390</i>&nbsp;            this.m12 = var3;
+<i>391</i>&nbsp;            if(var1 != 0.0D || var3 != 0.0D) {
+<i>392</i>&nbsp;                this.state = 1;
+<i>393</i>&nbsp;                this.type = 1;
+<i>394</i>&nbsp;            }
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;            return;
+<i>397</i>&nbsp;        case 1:
+<i>398</i>&nbsp;            this.m02 += var1;
+<i>399</i>&nbsp;            this.m12 += var3;
+<i>400</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>401</i>&nbsp;                this.state = 0;
+<i>402</i>&nbsp;                this.type = 0;
+<i>403</i>&nbsp;            }
+<i>404</i>&nbsp;
+<i>405</i>&nbsp;            return;
+<i>406</i>&nbsp;        case 2:
+<i>407</i>&nbsp;            this.m02 = var1 * this.m00;
+<i>408</i>&nbsp;            this.m12 = var3 * this.m11;
+<i>409</i>&nbsp;            if(this.m02 != 0.0D || this.m12 != 0.0D) {
+<i>410</i>&nbsp;                this.state = 3;
+<i>411</i>&nbsp;                this.type |= 1;
+<i>412</i>&nbsp;            }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;            return;
+<i>415</i>&nbsp;        case 3:
+<i>416</i>&nbsp;            this.m02 += var1 * this.m00;
+<i>417</i>&nbsp;            this.m12 += var3 * this.m11;
+<i>418</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>419</i>&nbsp;                this.state = 2;
+<i>420</i>&nbsp;                if(this.type != -1) {
+<i>421</i>&nbsp;                    --this.type;
+<i>422</i>&nbsp;                }
+<i>423</i>&nbsp;            }
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;            return;
+<i>426</i>&nbsp;        case 4:
+<i>427</i>&nbsp;            this.m02 = var3 * this.m01;
+<i>428</i>&nbsp;            this.m12 = var1 * this.m10;
+<i>429</i>&nbsp;            if(this.m02 != 0.0D || this.m12 != 0.0D) {
+<i>430</i>&nbsp;                this.state = 5;
+<i>431</i>&nbsp;                this.type |= 1;
+<i>432</i>&nbsp;            }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;            return;
+<i>435</i>&nbsp;        case 5:
+<i>436</i>&nbsp;            this.m02 += var3 * this.m01;
+<i>437</i>&nbsp;            this.m12 += var1 * this.m10;
+<i>438</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>439</i>&nbsp;                this.state = 4;
+<i>440</i>&nbsp;                if(this.type != -1) {
+<b class="nc"><i>441</i>&nbsp;                    --this.type;</b>
+<b class="nc"><i>442</i>&nbsp;                }</b>
+<b class="nc"><i>443</i>&nbsp;            }</b>
+<b class="nc"><i>444</i>&nbsp;</b>
+<b class="nc"><i>445</i>&nbsp;            return;</b>
+<b class="nc"><i>446</i>&nbsp;        case 6:</b>
+<b class="nc"><i>447</i>&nbsp;            this.m02 = var1 * this.m00 + var3 * this.m01;</b>
+<b class="nc"><i>448</i>&nbsp;            this.m12 = var1 * this.m10 + var3 * this.m11;</b>
+<b class="nc"><i>449</i>&nbsp;            if(this.m02 != 0.0D || this.m12 != 0.0D) {</b>
+<i>450</i>&nbsp;                this.state = 7;
+<i>451</i>&nbsp;                this.type |= 1;
+<i>452</i>&nbsp;            }
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;            return;
+<i>455</i>&nbsp;        default:
+<i>456</i>&nbsp;            this.stateError();
+<b class="nc"><i>457</i>&nbsp;        case 7:</b>
+<b class="nc"><i>458</i>&nbsp;            this.m02 += var1 * this.m00 + var3 * this.m01;</b>
+<i>459</i>&nbsp;            this.m12 += var1 * this.m10 + var3 * this.m11;
+<i>460</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>461</i>&nbsp;                this.state = 6;
+<i>462</i>&nbsp;                if(this.type != -1) {
+<i>463</i>&nbsp;                    --this.type;
+<i>464</i>&nbsp;                }
+<i>465</i>&nbsp;            }
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;        }
+<i>468</i>&nbsp;    }
+<i>469</i>&nbsp;
+<b class="nc"><i>470</i>&nbsp;    private final void rotate90() {</b>
+<b class="nc"><i>471</i>&nbsp;        double var1 = this.m00;</b>
+<b class="nc"><i>472</i>&nbsp;        this.m00 = this.m01;</b>
+<b class="nc"><i>473</i>&nbsp;        this.m01 = -var1;</b>
+<b class="nc"><i>474</i>&nbsp;        var1 = this.m10;</b>
+<b class="nc"><i>475</i>&nbsp;        this.m10 = this.m11;</b>
+<b class="nc"><i>476</i>&nbsp;        this.m11 = -var1;</b>
+<b class="nc"><i>477</i>&nbsp;        int var3 = rot90conversion[this.state];</b>
+<b class="nc"><i>478</i>&nbsp;        if((var3 &amp; 6) == 2 &amp;&amp; this.m00 == 1.0D &amp;&amp; this.m11 == 1.0D) {</b>
+<i>479</i>&nbsp;            var3 -= 2;
+<i>480</i>&nbsp;        }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;        this.state = var3;
+<i>483</i>&nbsp;        this.type = -1;
+<i>484</i>&nbsp;    }
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;    private final void rotate180() {
+<i>487</i>&nbsp;        this.m00 = -this.m00;
+<i>488</i>&nbsp;        this.m11 = -this.m11;
+<i>489</i>&nbsp;        int var1 = this.state;
+<i>490</i>&nbsp;        if((var1 &amp; 4) != 0) {
+<i>491</i>&nbsp;            this.m01 = -this.m01;
+<i>492</i>&nbsp;            this.m10 = -this.m10;
+<i>493</i>&nbsp;        } else if(this.m00 == 1.0D &amp;&amp; this.m11 == 1.0D) {
+<i>494</i>&nbsp;            this.state = var1 &amp; -3;
+<i>495</i>&nbsp;        } else {
+<b class="nc"><i>496</i>&nbsp;            this.state = var1 | 2;</b>
+<b class="nc"><i>497</i>&nbsp;        }</b>
+<b class="nc"><i>498</i>&nbsp;</b>
+<b class="nc"><i>499</i>&nbsp;        this.type = -1;</b>
+<b class="nc"><i>500</i>&nbsp;    }</b>
+<b class="nc"><i>501</i>&nbsp;</b>
+<b class="nc"><i>502</i>&nbsp;    private final void rotate270() {</b>
+<b class="nc"><i>503</i>&nbsp;        double var1 = this.m00;</b>
+<i>504</i>&nbsp;        this.m00 = -this.m01;
+<i>505</i>&nbsp;        this.m01 = var1;
+<i>506</i>&nbsp;        var1 = this.m10;
+<i>507</i>&nbsp;        this.m10 = -this.m11;
+<i>508</i>&nbsp;        this.m11 = var1;
+<i>509</i>&nbsp;        int var3 = rot90conversion[this.state];
+<i>510</i>&nbsp;        if((var3 &amp; 6) == 2 &amp;&amp; this.m00 == 1.0D &amp;&amp; this.m11 == 1.0D) {
+<i>511</i>&nbsp;            var3 -= 2;
+<i>512</i>&nbsp;        }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;        this.state = var3;
+<i>515</i>&nbsp;        this.type = -1;
+<i>516</i>&nbsp;    }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;    public void rotate(double var1) {
+<b class="nc"><i>519</i>&nbsp;        double var3 = Math.sin(var1);</b>
+<b class="nc"><i>520</i>&nbsp;        if(var3 == 1.0D) {</b>
+<b class="nc"><i>521</i>&nbsp;            this.rotate90();</b>
+<b class="nc"><i>522</i>&nbsp;        } else if(var3 == -1.0D) {</b>
+<b class="nc"><i>523</i>&nbsp;            this.rotate270();</b>
+<b class="nc"><i>524</i>&nbsp;        } else {</b>
+<b class="nc"><i>525</i>&nbsp;            double var5 = Math.cos(var1);</b>
+<b class="nc"><i>526</i>&nbsp;            if(var5 == -1.0D) {</b>
+<i>527</i>&nbsp;                this.rotate180();
+<b class="nc"><i>528</i>&nbsp;            } else if(var5 != 1.0D) {</b>
+<i>529</i>&nbsp;                double var7 = this.m00;
+<i>530</i>&nbsp;                double var9 = this.m01;
+<i>531</i>&nbsp;                this.m00 = var5 * var7 + var3 * var9;
+<i>532</i>&nbsp;                this.m01 = -var3 * var7 + var5 * var9;
+<i>533</i>&nbsp;                var7 = this.m10;
+<i>534</i>&nbsp;                var9 = this.m11;
+<i>535</i>&nbsp;                this.m10 = var5 * var7 + var3 * var9;
+<i>536</i>&nbsp;                this.m11 = -var3 * var7 + var5 * var9;
+<i>537</i>&nbsp;                this.updateState();
+<i>538</i>&nbsp;            }
+<i>539</i>&nbsp;        }
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;    }
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;    public void rotate(double var1, double var3, double var5) {
+<i>544</i>&nbsp;        this.translate(var3, var5);
+<i>545</i>&nbsp;        this.rotate(var1);
+<b class="nc"><i>546</i>&nbsp;        this.translate(-var3, -var5);</b>
+<b class="nc"><i>547</i>&nbsp;    }</b>
+<b class="nc"><i>548</i>&nbsp;</b>
+<b class="nc"><i>549</i>&nbsp;    public void rotate(double var1, double var3) {</b>
+<b class="nc"><i>550</i>&nbsp;        if(var3 == 0.0D) {</b>
+<b class="nc"><i>551</i>&nbsp;            if(var1 &lt; 0.0D) {</b>
+<b class="nc"><i>552</i>&nbsp;                this.rotate180();</b>
+<b class="nc"><i>553</i>&nbsp;            }</b>
+<i>554</i>&nbsp;        } else if(var1 == 0.0D) {
+<i>555</i>&nbsp;            if(var3 &gt; 0.0D) {
+<i>556</i>&nbsp;                this.rotate90();
+<i>557</i>&nbsp;            } else {
+<i>558</i>&nbsp;                this.rotate270();
+<i>559</i>&nbsp;            }
+<i>560</i>&nbsp;        } else {
+<i>561</i>&nbsp;            double var5 = Math.sqrt(var1 * var1 + var3 * var3);
+<i>562</i>&nbsp;            double var7 = var3 / var5;
+<i>563</i>&nbsp;            double var9 = var1 / var5;
+<i>564</i>&nbsp;            double var11 = this.m00;
+<i>565</i>&nbsp;            double var13 = this.m01;
+<i>566</i>&nbsp;            this.m00 = var9 * var11 + var7 * var13;
+<i>567</i>&nbsp;            this.m01 = -var7 * var11 + var9 * var13;
+<i>568</i>&nbsp;            var11 = this.m10;
+<b class="nc"><i>569</i>&nbsp;            var13 = this.m11;</b>
+<b class="nc"><i>570</i>&nbsp;            this.m10 = var9 * var11 + var7 * var13;</b>
+<b class="nc"><i>571</i>&nbsp;            this.m11 = -var7 * var11 + var9 * var13;</b>
+<b class="nc"><i>572</i>&nbsp;            this.updateState();</b>
+<b class="nc"><i>573</i>&nbsp;        }</b>
+<b class="nc"><i>574</i>&nbsp;</b>
+<b class="nc"><i>575</i>&nbsp;    }</b>
+<b class="nc"><i>576</i>&nbsp;</b>
+<i>577</i>&nbsp;    public void rotate(double var1, double var3, double var5, double var7) {
+<b class="nc"><i>578</i>&nbsp;        this.translate(var5, var7);</b>
+<i>579</i>&nbsp;        this.rotate(var1, var3);
+<i>580</i>&nbsp;        this.translate(-var5, -var7);
+<i>581</i>&nbsp;    }
+<i>582</i>&nbsp;
+<i>583</i>&nbsp;    public void quadrantRotate(int var1) {
+<i>584</i>&nbsp;        switch(var1 &amp; 3) {
+<i>585</i>&nbsp;        case 0:
+<i>586</i>&nbsp;        default:
+<i>587</i>&nbsp;            break;
+<i>588</i>&nbsp;        case 1:
+<i>589</i>&nbsp;            this.rotate90();
+<i>590</i>&nbsp;            break;
+<i>591</i>&nbsp;        case 2:
+<i>592</i>&nbsp;            this.rotate180();
+<i>593</i>&nbsp;            break;
+<i>594</i>&nbsp;        case 3:
+<i>595</i>&nbsp;            this.rotate270();
+<i>596</i>&nbsp;        }
+<i>597</i>&nbsp;
+<b class="nc"><i>598</i>&nbsp;    }</b>
+<b class="nc"><i>599</i>&nbsp;</b>
+<b class="nc"><i>600</i>&nbsp;    public void quadrantRotate(int var1, double var2, double var4) {</b>
+<i>601</i>&nbsp;        switch(var1 &amp; 3) {
+<i>602</i>&nbsp;        case 0:
+<i>603</i>&nbsp;            return;
+<i>604</i>&nbsp;        case 1:
+<i>605</i>&nbsp;            this.m02 += var2 * (this.m00 - this.m01) + var4 * (this.m01 + this.m00);
+<i>606</i>&nbsp;            this.m12 += var2 * (this.m10 - this.m11) + var4 * (this.m11 + this.m10);
+<i>607</i>&nbsp;            this.rotate90();
+<i>608</i>&nbsp;            break;
+<i>609</i>&nbsp;        case 2:
+<i>610</i>&nbsp;            this.m02 += var2 * (this.m00 + this.m00) + var4 * (this.m01 + this.m01);
+<i>611</i>&nbsp;            this.m12 += var2 * (this.m10 + this.m10) + var4 * (this.m11 + this.m11);
+<i>612</i>&nbsp;            this.rotate180();
+<i>613</i>&nbsp;            break;
+<i>614</i>&nbsp;        case 3:
+<i>615</i>&nbsp;            this.m02 += var2 * (this.m00 + this.m01) + var4 * (this.m01 - this.m00);
+<i>616</i>&nbsp;            this.m12 += var2 * (this.m10 + this.m11) + var4 * (this.m11 - this.m10);
+<i>617</i>&nbsp;            this.rotate270();
+<i>618</i>&nbsp;        }
+<i>619</i>&nbsp;
+<i>620</i>&nbsp;        if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<i>621</i>&nbsp;            this.state &amp;= -2;
+<b class="nc"><i>622</i>&nbsp;        } else {</b>
+<b class="nc"><i>623</i>&nbsp;            this.state |= 1;</b>
+<b class="nc"><i>624</i>&nbsp;        }</b>
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;    }
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;    public void scale(double var1, double var3) {
+<i>629</i>&nbsp;        int var5 = this.state;
+<i>630</i>&nbsp;        switch(var5) {
+<i>631</i>&nbsp;        case 0:
+<i>632</i>&nbsp;        case 1:
+<i>633</i>&nbsp;            this.m00 = var1;
+<i>634</i>&nbsp;            this.m11 = var3;
+<i>635</i>&nbsp;            if(var1 != 1.0D || var3 != 1.0D) {
+<i>636</i>&nbsp;                this.state = var5 | 2;
+<i>637</i>&nbsp;                this.type = -1;
+<i>638</i>&nbsp;            }
+<i>639</i>&nbsp;
+<i>640</i>&nbsp;            return;
+<i>641</i>&nbsp;        case 2:
+<i>642</i>&nbsp;        case 3:
+<i>643</i>&nbsp;            this.m00 *= var1;
+<i>644</i>&nbsp;            this.m11 *= var3;
+<i>645</i>&nbsp;            if(this.m00 == 1.0D &amp;&amp; this.m11 == 1.0D) {
+<i>646</i>&nbsp;                this.state = var5 &amp;= 1;
+<i>647</i>&nbsp;                this.type = var5 == 0?0:1;
+<i>648</i>&nbsp;            } else {
+<i>649</i>&nbsp;                this.type = -1;
+<i>650</i>&nbsp;            }
+<i>651</i>&nbsp;
+<i>652</i>&nbsp;            return;
+<i>653</i>&nbsp;        case 4:
+<i>654</i>&nbsp;        case 5:
+<i>655</i>&nbsp;            break;
+<i>656</i>&nbsp;        default:
+<i>657</i>&nbsp;            this.stateError();
+<i>658</i>&nbsp;        case 6:
+<i>659</i>&nbsp;        case 7:
+<i>660</i>&nbsp;            this.m00 *= var1;
+<i>661</i>&nbsp;            this.m11 *= var3;
+<i>662</i>&nbsp;        }
+<i>663</i>&nbsp;
+<i>664</i>&nbsp;        this.m01 *= var3;
+<i>665</i>&nbsp;        this.m10 *= var1;
+<b class="nc"><i>666</i>&nbsp;        if(this.m01 == 0.0D &amp;&amp; this.m10 == 0.0D) {</b>
+<b class="nc"><i>667</i>&nbsp;            var5 &amp;= 1;</b>
+<b class="nc"><i>668</i>&nbsp;            if(this.m00 == 1.0D &amp;&amp; this.m11 == 1.0D) {</b>
+<i>669</i>&nbsp;                this.type = var5 == 0?0:1;
+<i>670</i>&nbsp;            } else {
+<i>671</i>&nbsp;                var5 |= 2;
+<i>672</i>&nbsp;                this.type = -1;
+<i>673</i>&nbsp;            }
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;            this.state = var5;
+<i>676</i>&nbsp;        }
+<i>677</i>&nbsp;
+<i>678</i>&nbsp;    }
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;    public void shear(double var1, double var3) {
+<i>681</i>&nbsp;        int var5 = this.state;
+<i>682</i>&nbsp;        switch(var5) {
+<i>683</i>&nbsp;        case 0:
+<i>684</i>&nbsp;        case 1:
+<i>685</i>&nbsp;            this.m01 = var1;
+<i>686</i>&nbsp;            this.m10 = var3;
+<i>687</i>&nbsp;            if(this.m01 != 0.0D || this.m10 != 0.0D) {
+<i>688</i>&nbsp;                this.state = var5 | 2 | 4;
+<i>689</i>&nbsp;                this.type = -1;
+<i>690</i>&nbsp;            }
+<i>691</i>&nbsp;
+<b class="nc"><i>692</i>&nbsp;            return;</b>
+<b class="nc"><i>693</i>&nbsp;        case 2:</b>
+<b class="nc"><i>694</i>&nbsp;        case 3:</b>
+<i>695</i>&nbsp;            this.m01 = this.m00 * var1;
+<i>696</i>&nbsp;            this.m10 = this.m11 * var3;
+<i>697</i>&nbsp;            if(this.m01 != 0.0D || this.m10 != 0.0D) {
+<i>698</i>&nbsp;                this.state = var5 | 4;
+<i>699</i>&nbsp;            }
+<i>700</i>&nbsp;
+<i>701</i>&nbsp;            this.type = -1;
+<i>702</i>&nbsp;            return;
+<i>703</i>&nbsp;        case 4:
+<i>704</i>&nbsp;        case 5:
+<i>705</i>&nbsp;            this.m00 = this.m01 * var3;
+<i>706</i>&nbsp;            this.m11 = this.m10 * var1;
+<i>707</i>&nbsp;            if(this.m00 != 0.0D || this.m11 != 0.0D) {
+<i>708</i>&nbsp;                this.state = var5 | 2;
+<i>709</i>&nbsp;            }
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;            this.type = -1;
+<i>712</i>&nbsp;            return;
+<i>713</i>&nbsp;        default:
+<i>714</i>&nbsp;            this.stateError();
+<i>715</i>&nbsp;        case 6:
+<i>716</i>&nbsp;        case 7:
+<i>717</i>&nbsp;            double var6 = this.m00;
+<i>718</i>&nbsp;            double var8 = this.m01;
+<i>719</i>&nbsp;            this.m00 = var6 + var8 * var3;
+<i>720</i>&nbsp;            this.m01 = var6 * var1 + var8;
+<i>721</i>&nbsp;            var6 = this.m10;
+<i>722</i>&nbsp;            var8 = this.m11;
+<i>723</i>&nbsp;            this.m10 = var6 + var8 * var3;
+<i>724</i>&nbsp;            this.m11 = var6 * var1 + var8;
+<i>725</i>&nbsp;            this.updateState();
+<i>726</i>&nbsp;        }
+<b class="nc"><i>727</i>&nbsp;    }</b>
+<b class="nc"><i>728</i>&nbsp;</b>
+<b class="nc"><i>729</i>&nbsp;    public void setToIdentity() {</b>
+<i>730</i>&nbsp;        this.m00 = this.m11 = 1.0D;
+<i>731</i>&nbsp;        this.m10 = this.m01 = this.m02 = this.m12 = 0.0D;
+<i>732</i>&nbsp;        this.state = 0;
+<i>733</i>&nbsp;        this.type = 0;
+<i>734</i>&nbsp;    }
+<i>735</i>&nbsp;
+<i>736</i>&nbsp;    public void setToTranslation(double var1, double var3) {
+<i>737</i>&nbsp;        this.m00 = 1.0D;
+<i>738</i>&nbsp;        this.m10 = 0.0D;
+<i>739</i>&nbsp;        this.m01 = 0.0D;
+<i>740</i>&nbsp;        this.m11 = 1.0D;
+<i>741</i>&nbsp;        this.m02 = var1;
+<i>742</i>&nbsp;        this.m12 = var3;
+<i>743</i>&nbsp;        if(var1 == 0.0D &amp;&amp; var3 == 0.0D) {
+<i>744</i>&nbsp;            this.state = 0;
+<i>745</i>&nbsp;            this.type = 0;
+<i>746</i>&nbsp;        } else {
+<b class="nc"><i>747</i>&nbsp;            this.state = 1;</b>
+<b class="nc"><i>748</i>&nbsp;            this.type = 1;</b>
+<b class="nc"><i>749</i>&nbsp;        }</b>
+<i>750</i>&nbsp;
+<i>751</i>&nbsp;    }
+<i>752</i>&nbsp;
+<i>753</i>&nbsp;    public void setToRotation(double var1) {
+<i>754</i>&nbsp;        double var3 = Math.sin(var1);
+<i>755</i>&nbsp;        double var5;
+<i>756</i>&nbsp;        if(var3 != 1.0D &amp;&amp; var3 != -1.0D) {
+<i>757</i>&nbsp;            var5 = Math.cos(var1);
+<i>758</i>&nbsp;            if(var5 == -1.0D) {
+<i>759</i>&nbsp;                var3 = 0.0D;
+<i>760</i>&nbsp;                this.state = 2;
+<i>761</i>&nbsp;                this.type = 8;
+<i>762</i>&nbsp;            } else if(var5 == 1.0D) {
+<i>763</i>&nbsp;                var3 = 0.0D;
+<i>764</i>&nbsp;                this.state = 0;
+<i>765</i>&nbsp;                this.type = 0;
+<i>766</i>&nbsp;            } else {
+<i>767</i>&nbsp;                this.state = 6;
+<i>768</i>&nbsp;                this.type = 16;
+<i>769</i>&nbsp;            }
+<i>770</i>&nbsp;        } else {
+<i>771</i>&nbsp;            var5 = 0.0D;
+<i>772</i>&nbsp;            this.state = 4;
+<i>773</i>&nbsp;            this.type = 8;
+<i>774</i>&nbsp;        }
+<b class="nc"><i>775</i>&nbsp;</b>
+<b class="nc"><i>776</i>&nbsp;        this.m00 = var5;</b>
+<b class="nc"><i>777</i>&nbsp;        this.m10 = var3;</b>
+<i>778</i>&nbsp;        this.m01 = -var3;
+<i>779</i>&nbsp;        this.m11 = var5;
+<i>780</i>&nbsp;        this.m02 = 0.0D;
+<i>781</i>&nbsp;        this.m12 = 0.0D;
+<i>782</i>&nbsp;    }
+<i>783</i>&nbsp;
+<i>784</i>&nbsp;    public void setToRotation(double var1, double var3, double var5) {
+<i>785</i>&nbsp;        this.setToRotation(var1);
+<i>786</i>&nbsp;        double var7 = this.m10;
+<i>787</i>&nbsp;        double var9 = 1.0D - this.m00;
+<i>788</i>&nbsp;        this.m02 = var3 * var9 + var5 * var7;
+<i>789</i>&nbsp;        this.m12 = var5 * var9 - var3 * var7;
+<i>790</i>&nbsp;        if(this.m02 != 0.0D || this.m12 != 0.0D) {
+<i>791</i>&nbsp;            this.state |= 1;
+<i>792</i>&nbsp;            this.type |= 1;
+<i>793</i>&nbsp;        }
+<i>794</i>&nbsp;
+<i>795</i>&nbsp;    }
+<i>796</i>&nbsp;
+<b class="nc"><i>797</i>&nbsp;    public void setToRotation(double var1, double var3) {</b>
+<b class="nc"><i>798</i>&nbsp;        double var5;</b>
+<b class="nc"><i>799</i>&nbsp;        double var7;</b>
+<i>800</i>&nbsp;        if(var3 == 0.0D) {
+<i>801</i>&nbsp;            var5 = 0.0D;
+<i>802</i>&nbsp;            if(var1 &lt; 0.0D) {
+<i>803</i>&nbsp;                var7 = -1.0D;
+<i>804</i>&nbsp;                this.state = 2;
+<i>805</i>&nbsp;                this.type = 8;
+<i>806</i>&nbsp;            } else {
+<i>807</i>&nbsp;                var7 = 1.0D;
+<i>808</i>&nbsp;                this.state = 0;
+<i>809</i>&nbsp;                this.type = 0;
+<i>810</i>&nbsp;            }
+<i>811</i>&nbsp;        } else if(var1 == 0.0D) {
+<i>812</i>&nbsp;            var7 = 0.0D;
+<i>813</i>&nbsp;            var5 = var3 &gt; 0.0D?1.0D:-1.0D;
+<i>814</i>&nbsp;            this.state = 4;
+<i>815</i>&nbsp;            this.type = 8;
+<i>816</i>&nbsp;        } else {
+<i>817</i>&nbsp;            double var9 = Math.sqrt(var1 * var1 + var3 * var3);
+<i>818</i>&nbsp;            var7 = var1 / var9;
+<b class="nc"><i>819</i>&nbsp;            var5 = var3 / var9;</b>
+<b class="nc"><i>820</i>&nbsp;            this.state = 6;</b>
+<b class="nc"><i>821</i>&nbsp;            this.type = 16;</b>
+<i>822</i>&nbsp;        }
+<i>823</i>&nbsp;
+<i>824</i>&nbsp;        this.m00 = var7;
+<i>825</i>&nbsp;        this.m10 = var5;
+<i>826</i>&nbsp;        this.m01 = -var5;
+<i>827</i>&nbsp;        this.m11 = var7;
+<i>828</i>&nbsp;        this.m02 = 0.0D;
+<i>829</i>&nbsp;        this.m12 = 0.0D;
+<i>830</i>&nbsp;    }
+<i>831</i>&nbsp;
+<i>832</i>&nbsp;    public void setToRotation(double var1, double var3, double var5, double var7) {
+<i>833</i>&nbsp;        this.setToRotation(var1, var3);
+<i>834</i>&nbsp;        double var9 = this.m10;
+<i>835</i>&nbsp;        double var11 = 1.0D - this.m00;
+<i>836</i>&nbsp;        this.m02 = var5 * var11 + var7 * var9;
+<i>837</i>&nbsp;        this.m12 = var7 * var11 - var5 * var9;
+<i>838</i>&nbsp;        if(this.m02 != 0.0D || this.m12 != 0.0D) {
+<i>839</i>&nbsp;            this.state |= 1;
+<i>840</i>&nbsp;            this.type |= 1;
+<i>841</i>&nbsp;        }
+<i>842</i>&nbsp;
+<i>843</i>&nbsp;    }
+<i>844</i>&nbsp;
+<i>845</i>&nbsp;    public void setToQuadrantRotation(int var1) {
+<i>846</i>&nbsp;        switch(var1 &amp; 3) {
+<i>847</i>&nbsp;        case 0:
+<i>848</i>&nbsp;            this.m00 = 1.0D;
+<b class="nc"><i>849</i>&nbsp;            this.m10 = 0.0D;</b>
+<b class="nc"><i>850</i>&nbsp;            this.m01 = 0.0D;</b>
+<i>851</i>&nbsp;            this.m11 = 1.0D;
+<b class="nc"><i>852</i>&nbsp;            this.m02 = 0.0D;</b>
+<i>853</i>&nbsp;            this.m12 = 0.0D;
+<i>854</i>&nbsp;            this.state = 0;
+<i>855</i>&nbsp;            this.type = 0;
+<i>856</i>&nbsp;            break;
+<i>857</i>&nbsp;        case 1:
+<i>858</i>&nbsp;            this.m00 = 0.0D;
+<i>859</i>&nbsp;            this.m10 = 1.0D;
+<i>860</i>&nbsp;            this.m01 = -1.0D;
+<b class="nc"><i>861</i>&nbsp;            this.m11 = 0.0D;</b>
+<i>862</i>&nbsp;            this.m02 = 0.0D;
+<i>863</i>&nbsp;            this.m12 = 0.0D;
+<b class="nc"><i>864</i>&nbsp;            this.state = 4;</b>
+<b class="nc"><i>865</i>&nbsp;            this.type = 8;</b>
+<i>866</i>&nbsp;            break;
+<b class="nc"><i>867</i>&nbsp;        case 2:</b>
+<i>868</i>&nbsp;            this.m00 = -1.0D;
+<i>869</i>&nbsp;            this.m10 = 0.0D;
+<b class="nc"><i>870</i>&nbsp;            this.m01 = 0.0D;</b>
+<i>871</i>&nbsp;            this.m11 = -1.0D;
+<i>872</i>&nbsp;            this.m02 = 0.0D;
+<b class="nc"><i>873</i>&nbsp;            this.m12 = 0.0D;</b>
+<i>874</i>&nbsp;            this.state = 2;
+<b class="nc"><i>875</i>&nbsp;            this.type = 8;</b>
+<i>876</i>&nbsp;            break;
+<i>877</i>&nbsp;        case 3:
+<b class="nc"><i>878</i>&nbsp;            this.m00 = 0.0D;</b>
+<b class="nc"><i>879</i>&nbsp;            this.m10 = -1.0D;</b>
+<b class="nc"><i>880</i>&nbsp;            this.m01 = 1.0D;</b>
+<i>881</i>&nbsp;            this.m11 = 0.0D;
+<i>882</i>&nbsp;            this.m02 = 0.0D;
+<b class="nc"><i>883</i>&nbsp;            this.m12 = 0.0D;</b>
+<b class="nc"><i>884</i>&nbsp;            this.state = 4;</b>
+<b class="nc"><i>885</i>&nbsp;            this.type = 8;</b>
+<b class="nc"><i>886</i>&nbsp;        }</b>
+<i>887</i>&nbsp;
+<b class="nc"><i>888</i>&nbsp;    }</b>
+<i>889</i>&nbsp;
+<i>890</i>&nbsp;    public void setToQuadrantRotation(int var1, double var2, double var4) {
+<i>891</i>&nbsp;        switch(var1 &amp; 3) {
+<i>892</i>&nbsp;        case 0:
+<b class="nc"><i>893</i>&nbsp;            this.m00 = 1.0D;</b>
+<b class="nc"><i>894</i>&nbsp;            this.m10 = 0.0D;</b>
+<i>895</i>&nbsp;            this.m01 = 0.0D;
+<i>896</i>&nbsp;            this.m11 = 1.0D;
+<b class="nc"><i>897</i>&nbsp;            this.m02 = 0.0D;</b>
+<b class="nc"><i>898</i>&nbsp;            this.m12 = 0.0D;</b>
+<i>899</i>&nbsp;            this.state = 0;
+<i>900</i>&nbsp;            this.type = 0;
+<i>901</i>&nbsp;            break;
+<b class="nc"><i>902</i>&nbsp;        case 1:</b>
+<i>903</i>&nbsp;            this.m00 = 0.0D;
+<i>904</i>&nbsp;            this.m10 = 1.0D;
+<b class="nc"><i>905</i>&nbsp;            this.m01 = -1.0D;</b>
+<i>906</i>&nbsp;            this.m11 = 0.0D;
+<b class="nc"><i>907</i>&nbsp;            this.m02 = var2 + var4;</b>
+<i>908</i>&nbsp;            this.m12 = var4 - var2;
+<i>909</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {
+<b class="nc"><i>910</i>&nbsp;                this.state = 4;</b>
+<b class="nc"><i>911</i>&nbsp;                this.type = 8;</b>
+<b class="nc"><i>912</i>&nbsp;            } else {</b>
+<i>913</i>&nbsp;                this.state = 5;
+<b class="nc"><i>914</i>&nbsp;                this.type = 9;</b>
+<b class="nc"><i>915</i>&nbsp;            }</b>
+<b class="nc"><i>916</i>&nbsp;            break;</b>
+<b class="nc"><i>917</i>&nbsp;        case 2:</b>
+<i>918</i>&nbsp;            this.m00 = -1.0D;
+<b class="nc"><i>919</i>&nbsp;            this.m10 = 0.0D;</b>
+<i>920</i>&nbsp;            this.m01 = 0.0D;
+<i>921</i>&nbsp;            this.m11 = -1.0D;
+<i>922</i>&nbsp;            this.m02 = var2 + var2;
+<b class="nc"><i>923</i>&nbsp;            this.m12 = var4 + var4;</b>
+<b class="nc"><i>924</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {</b>
+<i>925</i>&nbsp;                this.state = 2;
+<i>926</i>&nbsp;                this.type = 8;
+<i>927</i>&nbsp;            } else {
+<b class="nc"><i>928</i>&nbsp;                this.state = 3;</b>
+<i>929</i>&nbsp;                this.type = 9;
+<i>930</i>&nbsp;            }
+<i>931</i>&nbsp;            break;
+<i>932</i>&nbsp;        case 3:
+<b class="nc"><i>933</i>&nbsp;            this.m00 = 0.0D;</b>
+<i>934</i>&nbsp;            this.m10 = -1.0D;
+<b class="nc"><i>935</i>&nbsp;            this.m01 = 1.0D;</b>
+<i>936</i>&nbsp;            this.m11 = 0.0D;
+<i>937</i>&nbsp;            this.m02 = var2 - var4;
+<b class="nc"><i>938</i>&nbsp;            this.m12 = var4 + var2;</b>
+<b class="nc"><i>939</i>&nbsp;            if(this.m02 == 0.0D &amp;&amp; this.m12 == 0.0D) {</b>
+<b class="nc"><i>940</i>&nbsp;                this.state = 4;</b>
+<b class="nc"><i>941</i>&nbsp;                this.type = 8;</b>
+<i>942</i>&nbsp;            } else {
+<i>943</i>&nbsp;                this.state = 5;
+<b class="nc"><i>944</i>&nbsp;                this.type = 9;</b>
+<b class="nc"><i>945</i>&nbsp;            }</b>
+<i>946</i>&nbsp;        }
+<b class="nc"><i>947</i>&nbsp;</b>
+<i>948</i>&nbsp;    }
+<i>949</i>&nbsp;
+<i>950</i>&nbsp;    public void setToScale(double var1, double var3) {
+<b class="nc"><i>951</i>&nbsp;        this.m00 = var1;</b>
+<b class="nc"><i>952</i>&nbsp;        this.m10 = 0.0D;</b>
+<b class="nc"><i>953</i>&nbsp;        this.m01 = 0.0D;</b>
+<b class="nc"><i>954</i>&nbsp;        this.m11 = var3;</b>
+<i>955</i>&nbsp;        this.m02 = 0.0D;
+<b class="nc"><i>956</i>&nbsp;        this.m12 = 0.0D;</b>
+<i>957</i>&nbsp;        if(var1 == 1.0D &amp;&amp; var3 == 1.0D) {
+<i>958</i>&nbsp;            this.state = 0;
+<i>959</i>&nbsp;            this.type = 0;
+<i>960</i>&nbsp;        } else {
+<b class="nc"><i>961</i>&nbsp;            this.state = 2;</b>
+<b class="nc"><i>962</i>&nbsp;            this.type = -1;</b>
+<b class="nc"><i>963</i>&nbsp;        }</b>
+<i>964</i>&nbsp;
+<b class="nc"><i>965</i>&nbsp;    }</b>
+<i>966</i>&nbsp;
+<i>967</i>&nbsp;    public void setToShear(double var1, double var3) {
+<b class="nc"><i>968</i>&nbsp;        this.m00 = 1.0D;</b>
+<i>969</i>&nbsp;        this.m01 = var1;
+<i>970</i>&nbsp;        this.m10 = var3;
+<b class="nc"><i>971</i>&nbsp;        this.m11 = 1.0D;</b>
+<i>972</i>&nbsp;        this.m02 = 0.0D;
+<b class="nc"><i>973</i>&nbsp;        this.m12 = 0.0D;</b>
+<b class="nc"><i>974</i>&nbsp;        if(var1 == 0.0D &amp;&amp; var3 == 0.0D) {</b>
+<i>975</i>&nbsp;            this.state = 0;
+<i>976</i>&nbsp;            this.type = 0;
+<i>977</i>&nbsp;        } else {
+<b class="nc"><i>978</i>&nbsp;            this.state = 6;</b>
+<i>979</i>&nbsp;            this.type = -1;
+<i>980</i>&nbsp;        }
+<i>981</i>&nbsp;
+<i>982</i>&nbsp;    }
+<i>983</i>&nbsp;
+<i>984</i>&nbsp;    public void setTransform(AffineTransform var1) {
+<i>985</i>&nbsp;        this.m00 = var1.m00;
+<i>986</i>&nbsp;        this.m10 = var1.m10;
+<i>987</i>&nbsp;        this.m01 = var1.m01;
+<i>988</i>&nbsp;        this.m11 = var1.m11;
+<i>989</i>&nbsp;        this.m02 = var1.m02;
+<i>990</i>&nbsp;        this.m12 = var1.m12;
+<i>991</i>&nbsp;        this.state = var1.state;
+<i>992</i>&nbsp;        this.type = var1.type;
+<i>993</i>&nbsp;    }
+<i>994</i>&nbsp;
+<i>995</i>&nbsp;    public void setTransform(double var1, double var3, double var5, double var7, double var9, double var11) {
+<i>996</i>&nbsp;        this.m00 = var1;
+<i>997</i>&nbsp;        this.m10 = var3;
+<i>998</i>&nbsp;        this.m01 = var5;
+<i>999</i>&nbsp;        this.m11 = var7;
+<i>1000</i>&nbsp;        this.m02 = var9;
+<i>1001</i>&nbsp;        this.m12 = var11;
+<i>1002</i>&nbsp;        this.updateState();
+<i>1003</i>&nbsp;    }
+<i>1004</i>&nbsp;
+<i>1005</i>&nbsp;    public void concatenate(AffineTransform var1) {
+<i>1006</i>&nbsp;        int var18 = this.state;
+<i>1007</i>&nbsp;        int var19 = var1.state;
+<i>1008</i>&nbsp;        double var2;
+<i>1009</i>&nbsp;        double var8;
+<i>1010</i>&nbsp;        double var10;
+<i>1011</i>&nbsp;        switch(var19 &lt;&lt; 3 | var18) {
+<i>1012</i>&nbsp;        case 0:
+<i>1013</i>&nbsp;        case 1:
+<i>1014</i>&nbsp;        case 2:
+<i>1015</i>&nbsp;        case 3:
+<i>1016</i>&nbsp;        case 4:
+<i>1017</i>&nbsp;        case 5:
+<i>1018</i>&nbsp;        case 6:
+<i>1019</i>&nbsp;        case 7:
+<i>1020</i>&nbsp;            return;
+<i>1021</i>&nbsp;        case 9:
+<i>1022</i>&nbsp;        case 10:
+<b class="nc"><i>1023</i>&nbsp;        case 11:</b>
+<i>1024</i>&nbsp;        case 12:
+<b class="nc"><i>1025</i>&nbsp;        case 13:</b>
+<i>1026</i>&nbsp;        case 14:
+<i>1027</i>&nbsp;        case 15:
+<i>1028</i>&nbsp;            this.translate(var1.m02, var1.m12);
+<b class="nc"><i>1029</i>&nbsp;            return;</b>
+<i>1030</i>&nbsp;        case 17:
+<i>1031</i>&nbsp;        case 18:
+<b class="nc"><i>1032</i>&nbsp;        case 19:</b>
+<i>1033</i>&nbsp;        case 20:
+<i>1034</i>&nbsp;        case 21:
+<b class="nc"><i>1035</i>&nbsp;        case 22:</b>
+<i>1036</i>&nbsp;        case 23:
+<i>1037</i>&nbsp;            this.scale(var1.m00, var1.m11);
+<b class="nc"><i>1038</i>&nbsp;            return;</b>
+<i>1039</i>&nbsp;        case 25:
+<i>1040</i>&nbsp;        case 26:
+<i>1041</i>&nbsp;        case 27:
+<i>1042</i>&nbsp;        case 28:
+<i>1043</i>&nbsp;        case 29:
+<i>1044</i>&nbsp;        case 30:
+<i>1045</i>&nbsp;        case 31:
+<i>1046</i>&nbsp;        case 41:
+<i>1047</i>&nbsp;        case 42:
+<i>1048</i>&nbsp;        case 43:
+<i>1049</i>&nbsp;        case 44:
+<i>1050</i>&nbsp;        case 45:
+<i>1051</i>&nbsp;        case 46:
+<i>1052</i>&nbsp;        case 47:
+<i>1053</i>&nbsp;        case 49:
+<i>1054</i>&nbsp;        case 50:
+<i>1055</i>&nbsp;        case 51:
+<i>1056</i>&nbsp;        case 52:
+<i>1057</i>&nbsp;        case 53:
+<i>1058</i>&nbsp;        case 54:
+<i>1059</i>&nbsp;        case 55:
+<i>1060</i>&nbsp;        default:
+<i>1061</i>&nbsp;            double var6 = var1.m00;
+<i>1062</i>&nbsp;            var8 = var1.m01;
+<i>1063</i>&nbsp;            double var14 = var1.m02;
+<i>1064</i>&nbsp;            var10 = var1.m10;
+<b class="nc"><i>1065</i>&nbsp;            double var12 = var1.m11;</b>
+<b class="nc"><i>1066</i>&nbsp;            double var16 = var1.m12;</b>
+<b class="nc"><i>1067</i>&nbsp;            switch(var18) {</b>
+<b class="nc"><i>1068</i>&nbsp;            case 1:</b>
+<b class="nc"><i>1069</i>&nbsp;                this.m00 = var6;</b>
+<i>1070</i>&nbsp;                this.m01 = var8;
+<b class="nc"><i>1071</i>&nbsp;                this.m02 += var14;</b>
+<b class="nc"><i>1072</i>&nbsp;                this.m10 = var10;</b>
+<i>1073</i>&nbsp;                this.m11 = var12;
+<i>1074</i>&nbsp;                this.m12 += var16;
+<b class="nc"><i>1075</i>&nbsp;                this.state = var19 | 1;</b>
+<b class="nc"><i>1076</i>&nbsp;                this.type = -1;</b>
+<b class="nc"><i>1077</i>&nbsp;                return;</b>
+<i>1078</i>&nbsp;            case 2:
+<b class="nc"><i>1079</i>&nbsp;            case 3:</b>
+<b class="nc"><i>1080</i>&nbsp;                var2 = this.m00;</b>
+<i>1081</i>&nbsp;                this.m00 = var6 * var2;
+<i>1082</i>&nbsp;                this.m01 = var8 * var2;
+<i>1083</i>&nbsp;                this.m02 += var14 * var2;
+<b class="nc"><i>1084</i>&nbsp;                var2 = this.m11;</b>
+<b class="nc"><i>1085</i>&nbsp;                this.m10 = var10 * var2;</b>
+<b class="nc"><i>1086</i>&nbsp;                this.m11 = var12 * var2;</b>
+<b class="nc"><i>1087</i>&nbsp;                this.m12 += var16 * var2;</b>
+<i>1088</i>&nbsp;                break;
+<b class="nc"><i>1089</i>&nbsp;            case 4:</b>
+<b class="nc"><i>1090</i>&nbsp;            case 5:</b>
+<i>1091</i>&nbsp;                var2 = this.m01;
+<i>1092</i>&nbsp;                this.m00 = var10 * var2;
+<b class="nc"><i>1093</i>&nbsp;                this.m01 = var12 * var2;</b>
+<b class="nc"><i>1094</i>&nbsp;                this.m02 += var16 * var2;</b>
+<b class="nc"><i>1095</i>&nbsp;                var2 = this.m10;</b>
+<i>1096</i>&nbsp;                this.m10 = var6 * var2;
+<b class="nc"><i>1097</i>&nbsp;                this.m11 = var8 * var2;</b>
+<b class="nc"><i>1098</i>&nbsp;                this.m12 += var14 * var2;</b>
+<i>1099</i>&nbsp;                break;
+<i>1100</i>&nbsp;            default:
+<i>1101</i>&nbsp;                this.stateError();
+<i>1102</i>&nbsp;            case 6:
+<i>1103</i>&nbsp;                this.state = var18 | var19;
+<i>1104</i>&nbsp;            case 7:
+<i>1105</i>&nbsp;                var2 = this.m00;
+<i>1106</i>&nbsp;                double var4 = this.m01;
+<i>1107</i>&nbsp;                this.m00 = var6 * var2 + var10 * var4;
+<i>1108</i>&nbsp;                this.m01 = var8 * var2 + var12 * var4;
+<b class="nc"><i>1109</i>&nbsp;                this.m02 += var14 * var2 + var16 * var4;</b>
+<i>1110</i>&nbsp;                var2 = this.m10;
+<i>1111</i>&nbsp;                var4 = this.m11;
+<i>1112</i>&nbsp;                this.m10 = var6 * var2 + var10 * var4;
+<i>1113</i>&nbsp;                this.m11 = var8 * var2 + var12 * var4;
+<i>1114</i>&nbsp;                this.m12 += var14 * var2 + var16 * var4;
+<i>1115</i>&nbsp;                this.type = -1;
+<i>1116</i>&nbsp;                return;
+<i>1117</i>&nbsp;            }
+<i>1118</i>&nbsp;
+<i>1119</i>&nbsp;            this.updateState();
+<i>1120</i>&nbsp;            return;
+<i>1121</i>&nbsp;        case 33:
+<i>1122</i>&nbsp;            this.m00 = 0.0D;
+<i>1123</i>&nbsp;            this.m01 = var1.m01;
+<i>1124</i>&nbsp;            this.m10 = var1.m10;
+<i>1125</i>&nbsp;            this.m11 = 0.0D;
+<i>1126</i>&nbsp;            this.state = 5;
+<i>1127</i>&nbsp;            this.type = -1;
+<i>1128</i>&nbsp;            return;
+<i>1129</i>&nbsp;        case 34:
+<i>1130</i>&nbsp;        case 35:
+<i>1131</i>&nbsp;            this.m01 = this.m00 * var1.m01;
+<b class="nc"><i>1132</i>&nbsp;            this.m00 = 0.0D;</b>
+<b class="nc"><i>1133</i>&nbsp;            this.m10 = this.m11 * var1.m10;</b>
+<b class="nc"><i>1134</i>&nbsp;            this.m11 = 0.0D;</b>
+<b class="nc"><i>1135</i>&nbsp;            this.state = var18 ^ 6;</b>
+<b class="nc"><i>1136</i>&nbsp;            this.type = -1;</b>
+<b class="nc"><i>1137</i>&nbsp;            return;</b>
+<b class="nc"><i>1138</i>&nbsp;        case 36:</b>
+<i>1139</i>&nbsp;        case 37:
+<i>1140</i>&nbsp;            this.m00 = this.m01 * var1.m10;
+<i>1141</i>&nbsp;            this.m01 = 0.0D;
+<i>1142</i>&nbsp;            this.m11 = this.m10 * var1.m01;
+<i>1143</i>&nbsp;            this.m10 = 0.0D;
+<i>1144</i>&nbsp;            this.state = var18 ^ 6;
+<i>1145</i>&nbsp;            this.type = -1;
+<i>1146</i>&nbsp;            return;
+<i>1147</i>&nbsp;        case 38:
+<i>1148</i>&nbsp;        case 39:
+<i>1149</i>&nbsp;            var8 = var1.m01;
+<i>1150</i>&nbsp;            var10 = var1.m10;
+<b class="nc"><i>1151</i>&nbsp;            var2 = this.m00;</b>
+<i>1152</i>&nbsp;            this.m00 = this.m01 * var10;
+<i>1153</i>&nbsp;            this.m01 = var2 * var8;
+<i>1154</i>&nbsp;            var2 = this.m10;
+<i>1155</i>&nbsp;            this.m10 = this.m11 * var10;
+<i>1156</i>&nbsp;            this.m11 = var2 * var8;
+<i>1157</i>&nbsp;            this.type = -1;
+<i>1158</i>&nbsp;            return;
+<i>1159</i>&nbsp;        case 40:
+<i>1160</i>&nbsp;            this.m02 = var1.m02;
+<i>1161</i>&nbsp;            this.m12 = var1.m12;
+<i>1162</i>&nbsp;        case 32:
+<b class="nc"><i>1163</i>&nbsp;            this.m01 = var1.m01;</b>
+<i>1164</i>&nbsp;            this.m10 = var1.m10;
+<i>1165</i>&nbsp;            this.m00 = this.m11 = 0.0D;
+<i>1166</i>&nbsp;            this.state = var19;
+<i>1167</i>&nbsp;            this.type = var1.type;
+<i>1168</i>&nbsp;            return;
+<i>1169</i>&nbsp;        case 48:
+<i>1170</i>&nbsp;            this.m01 = var1.m01;
+<i>1171</i>&nbsp;            this.m10 = var1.m10;
+<i>1172</i>&nbsp;        case 16:
+<i>1173</i>&nbsp;            this.m00 = var1.m00;
+<i>1174</i>&nbsp;            this.m11 = var1.m11;
+<b class="nc"><i>1175</i>&nbsp;            this.state = var19;</b>
+<i>1176</i>&nbsp;            this.type = var1.type;
+<i>1177</i>&nbsp;            return;
+<i>1178</i>&nbsp;        case 56:
+<i>1179</i>&nbsp;            this.m01 = var1.m01;
+<i>1180</i>&nbsp;            this.m10 = var1.m10;
+<i>1181</i>&nbsp;        case 24:
+<i>1182</i>&nbsp;            this.m00 = var1.m00;
+<i>1183</i>&nbsp;            this.m11 = var1.m11;
+<i>1184</i>&nbsp;        case 8:
+<i>1185</i>&nbsp;            this.m02 = var1.m02;
+<i>1186</i>&nbsp;            this.m12 = var1.m12;
+<b class="nc"><i>1187</i>&nbsp;            this.state = var19;</b>
+<i>1188</i>&nbsp;            this.type = var1.type;
+<i>1189</i>&nbsp;        }
+<i>1190</i>&nbsp;    }
+<i>1191</i>&nbsp;
+<i>1192</i>&nbsp;    public void preConcatenate(AffineTransform var1) {
+<i>1193</i>&nbsp;        int var18 = this.state;
+<i>1194</i>&nbsp;        int var19 = var1.state;
+<i>1195</i>&nbsp;        double var2;
+<i>1196</i>&nbsp;        double var6;
+<i>1197</i>&nbsp;        double var8;
+<i>1198</i>&nbsp;        double var10;
+<b class="nc"><i>1199</i>&nbsp;        double var12;</b>
+<i>1200</i>&nbsp;        switch(var19 &lt;&lt; 3 | var18) {
+<i>1201</i>&nbsp;        case 0:
+<i>1202</i>&nbsp;        case 1:
+<i>1203</i>&nbsp;        case 2:
+<i>1204</i>&nbsp;        case 3:
+<i>1205</i>&nbsp;        case 4:
+<i>1206</i>&nbsp;        case 5:
+<i>1207</i>&nbsp;        case 6:
+<i>1208</i>&nbsp;        case 7:
+<i>1209</i>&nbsp;            return;
+<i>1210</i>&nbsp;        case 8:
+<b class="nc"><i>1211</i>&nbsp;        case 10:</b>
+<i>1212</i>&nbsp;        case 12:
+<i>1213</i>&nbsp;        case 14:
+<i>1214</i>&nbsp;            this.m02 = var1.m02;
+<i>1215</i>&nbsp;            this.m12 = var1.m12;
+<i>1216</i>&nbsp;            this.state = var18 | 1;
+<i>1217</i>&nbsp;            this.type |= 1;
+<i>1218</i>&nbsp;            return;
+<i>1219</i>&nbsp;        case 9:
+<i>1220</i>&nbsp;        case 11:
+<i>1221</i>&nbsp;        case 13:
+<i>1222</i>&nbsp;        case 15:
+<i>1223</i>&nbsp;            this.m02 += var1.m02;
+<i>1224</i>&nbsp;            this.m12 += var1.m12;
+<i>1225</i>&nbsp;            return;
+<i>1226</i>&nbsp;        case 16:
+<i>1227</i>&nbsp;        case 17:
+<i>1228</i>&nbsp;            this.state = var18 | 2;
+<i>1229</i>&nbsp;        case 18:
+<b class="nc"><i>1230</i>&nbsp;        case 19:</b>
+<i>1231</i>&nbsp;        case 20:
+<b class="nc"><i>1232</i>&nbsp;        case 21:</b>
+<i>1233</i>&nbsp;        case 22:
+<i>1234</i>&nbsp;        case 23:
+<b class="nc"><i>1235</i>&nbsp;            var6 = var1.m00;</b>
+<b class="nc"><i>1236</i>&nbsp;            var12 = var1.m11;</b>
+<b class="nc"><i>1237</i>&nbsp;            if((var18 &amp; 4) != 0) {</b>
+<b class="nc"><i>1238</i>&nbsp;                this.m01 *= var6;</b>
+<b class="nc"><i>1239</i>&nbsp;                this.m10 *= var12;</b>
+<b class="nc"><i>1240</i>&nbsp;                if((var18 &amp; 2) != 0) {</b>
+<i>1241</i>&nbsp;                    this.m00 *= var6;
+<i>1242</i>&nbsp;                    this.m11 *= var12;
+<i>1243</i>&nbsp;                }
+<i>1244</i>&nbsp;            } else {
+<b class="nc"><i>1245</i>&nbsp;                this.m00 *= var6;</b>
+<b class="nc"><i>1246</i>&nbsp;                this.m11 *= var12;</b>
+<b class="nc"><i>1247</i>&nbsp;            }</b>
+<b class="nc"><i>1248</i>&nbsp;</b>
+<b class="nc"><i>1249</i>&nbsp;            if((var18 &amp; 1) != 0) {</b>
+<i>1250</i>&nbsp;                this.m02 *= var6;
+<i>1251</i>&nbsp;                this.m12 *= var12;
+<i>1252</i>&nbsp;            }
+<b class="nc"><i>1253</i>&nbsp;</b>
+<b class="nc"><i>1254</i>&nbsp;            this.type = -1;</b>
+<b class="nc"><i>1255</i>&nbsp;            return;</b>
+<b class="nc"><i>1256</i>&nbsp;        case 24:</b>
+<b class="nc"><i>1257</i>&nbsp;        case 25:</b>
+<b class="nc"><i>1258</i>&nbsp;        case 26:</b>
+<i>1259</i>&nbsp;        case 27:
+<i>1260</i>&nbsp;        case 28:
+<i>1261</i>&nbsp;        case 29:
+<i>1262</i>&nbsp;        case 30:
+<b class="nc"><i>1263</i>&nbsp;        case 31:</b>
+<b class="nc"><i>1264</i>&nbsp;        default:</b>
+<b class="nc"><i>1265</i>&nbsp;            var6 = var1.m00;</b>
+<b class="nc"><i>1266</i>&nbsp;            var8 = var1.m01;</b>
+<b class="nc"><i>1267</i>&nbsp;            double var14 = var1.m02;</b>
+<i>1268</i>&nbsp;            var10 = var1.m10;
+<i>1269</i>&nbsp;            var12 = var1.m11;
+<i>1270</i>&nbsp;            double var16 = var1.m12;
+<b class="nc"><i>1271</i>&nbsp;            double var4;</b>
+<b class="nc"><i>1272</i>&nbsp;            switch(var18) {</b>
+<b class="nc"><i>1273</i>&nbsp;            case 1:</b>
+<b class="nc"><i>1274</i>&nbsp;                var2 = this.m02;</b>
+<b class="nc"><i>1275</i>&nbsp;                var4 = this.m12;</b>
+<b class="nc"><i>1276</i>&nbsp;                var14 += var2 * var6 + var4 * var8;</b>
+<i>1277</i>&nbsp;                var16 += var2 * var10 + var4 * var12;
+<i>1278</i>&nbsp;            case 0:
+<i>1279</i>&nbsp;                this.m02 = var14;
+<i>1280</i>&nbsp;                this.m12 = var16;
+<b class="nc"><i>1281</i>&nbsp;                this.m00 = var6;</b>
+<b class="nc"><i>1282</i>&nbsp;                this.m10 = var10;</b>
+<b class="nc"><i>1283</i>&nbsp;                this.m01 = var8;</b>
+<b class="nc"><i>1284</i>&nbsp;                this.m11 = var12;</b>
+<b class="nc"><i>1285</i>&nbsp;                this.state = var18 | var19;</b>
+<i>1286</i>&nbsp;                this.type = -1;
+<i>1287</i>&nbsp;                return;
+<i>1288</i>&nbsp;            case 3:
+<b class="nc"><i>1289</i>&nbsp;                var2 = this.m02;</b>
+<b class="nc"><i>1290</i>&nbsp;                var4 = this.m12;</b>
+<b class="nc"><i>1291</i>&nbsp;                var14 += var2 * var6 + var4 * var8;</b>
+<b class="nc"><i>1292</i>&nbsp;                var16 += var2 * var10 + var4 * var12;</b>
+<b class="nc"><i>1293</i>&nbsp;            case 2:</b>
+<i>1294</i>&nbsp;                this.m02 = var14;
+<i>1295</i>&nbsp;                this.m12 = var16;
+<i>1296</i>&nbsp;                var2 = this.m00;
+<b class="nc"><i>1297</i>&nbsp;                this.m00 = var2 * var6;</b>
+<b class="nc"><i>1298</i>&nbsp;                this.m10 = var2 * var10;</b>
+<b class="nc"><i>1299</i>&nbsp;                var2 = this.m11;</b>
+<b class="nc"><i>1300</i>&nbsp;                this.m01 = var2 * var8;</b>
+<b class="nc"><i>1301</i>&nbsp;                this.m11 = var2 * var12;</b>
+<i>1302</i>&nbsp;                break;
+<i>1303</i>&nbsp;            case 5:
+<i>1304</i>&nbsp;                var2 = this.m02;
+<i>1305</i>&nbsp;                var4 = this.m12;
+<i>1306</i>&nbsp;                var14 += var2 * var6 + var4 * var8;
+<i>1307</i>&nbsp;                var16 += var2 * var10 + var4 * var12;
+<i>1308</i>&nbsp;            case 4:
+<i>1309</i>&nbsp;                this.m02 = var14;
+<b class="nc"><i>1310</i>&nbsp;                this.m12 = var16;</b>
+<i>1311</i>&nbsp;                var2 = this.m10;
+<i>1312</i>&nbsp;                this.m00 = var2 * var8;
+<i>1313</i>&nbsp;                this.m10 = var2 * var12;
+<i>1314</i>&nbsp;                var2 = this.m01;
+<i>1315</i>&nbsp;                this.m01 = var2 * var6;
+<i>1316</i>&nbsp;                this.m11 = var2 * var10;
+<i>1317</i>&nbsp;                break;
+<i>1318</i>&nbsp;            default:
+<i>1319</i>&nbsp;                this.stateError();
+<i>1320</i>&nbsp;            case 7:
+<b class="nc"><i>1321</i>&nbsp;                var2 = this.m02;</b>
+<b class="nc"><i>1322</i>&nbsp;                var4 = this.m12;</b>
+<b class="nc"><i>1323</i>&nbsp;                var14 += var2 * var6 + var4 * var8;</b>
+<b class="nc"><i>1324</i>&nbsp;                var16 += var2 * var10 + var4 * var12;</b>
+<b class="nc"><i>1325</i>&nbsp;            case 6:</b>
+<b class="nc"><i>1326</i>&nbsp;                this.m02 = var14;</b>
+<b class="nc"><i>1327</i>&nbsp;                this.m12 = var16;</b>
+<b class="nc"><i>1328</i>&nbsp;                var2 = this.m00;</b>
+<i>1329</i>&nbsp;                var4 = this.m10;
+<i>1330</i>&nbsp;                this.m00 = var2 * var6 + var4 * var8;
+<b class="nc"><i>1331</i>&nbsp;                this.m10 = var2 * var10 + var4 * var12;</b>
+<i>1332</i>&nbsp;                var2 = this.m01;
+<b class="nc"><i>1333</i>&nbsp;                var4 = this.m11;</b>
+<b class="nc"><i>1334</i>&nbsp;                this.m01 = var2 * var6 + var4 * var8;</b>
+<i>1335</i>&nbsp;                this.m11 = var2 * var10 + var4 * var12;
+<i>1336</i>&nbsp;            }
+<b class="nc"><i>1337</i>&nbsp;</b>
+<b class="nc"><i>1338</i>&nbsp;            this.updateState();</b>
+<b class="nc"><i>1339</i>&nbsp;            return;</b>
+<b class="nc"><i>1340</i>&nbsp;        case 36:</b>
+<i>1341</i>&nbsp;        case 37:
+<i>1342</i>&nbsp;            var18 |= 2;
+<b class="nc"><i>1343</i>&nbsp;        case 32:</b>
+<b class="nc"><i>1344</i>&nbsp;        case 33:</b>
+<i>1345</i>&nbsp;        case 34:
+<i>1346</i>&nbsp;        case 35:
+<i>1347</i>&nbsp;            this.state = var18 ^ 4;
+<b class="nc"><i>1348</i>&nbsp;        case 38:</b>
+<b class="nc"><i>1349</i>&nbsp;        case 39:</b>
+<i>1350</i>&nbsp;            var8 = var1.m01;
+<b class="nc"><i>1351</i>&nbsp;            var10 = var1.m10;</b>
+<i>1352</i>&nbsp;            var2 = this.m00;
+<i>1353</i>&nbsp;            this.m00 = this.m10 * var8;
+<b class="nc"><i>1354</i>&nbsp;            this.m10 = var2 * var10;</b>
+<i>1355</i>&nbsp;            var2 = this.m01;
+<i>1356</i>&nbsp;            this.m01 = this.m11 * var8;
+<b class="nc"><i>1357</i>&nbsp;            this.m11 = var2 * var10;</b>
+<b class="nc"><i>1358</i>&nbsp;            var2 = this.m02;</b>
+<b class="nc"><i>1359</i>&nbsp;            this.m02 = this.m12 * var8;</b>
+<b class="nc"><i>1360</i>&nbsp;            this.m12 = var2 * var10;</b>
+<b class="nc"><i>1361</i>&nbsp;            this.type = -1;</b>
+<b class="nc"><i>1362</i>&nbsp;        }</b>
+<b class="nc"><i>1363</i>&nbsp;    }</b>
+<b class="nc"><i>1364</i>&nbsp;</b>
+<i>1365</i>&nbsp;    public AffineTransform createInverse() throws NoninvertibleTransformException {
+<i>1366</i>&nbsp;        double var1;
+<b class="nc"><i>1367</i>&nbsp;        switch(this.state) {</b>
+<i>1368</i>&nbsp;        case 0:
+<b class="nc"><i>1369</i>&nbsp;            return new AffineTransform();</b>
+<b class="nc"><i>1370</i>&nbsp;        case 1:</b>
+<i>1371</i>&nbsp;            return new AffineTransform(1.0D, 0.0D, 0.0D, 1.0D, -this.m02, -this.m12, 1);
+<i>1372</i>&nbsp;        case 2:
+<i>1373</i>&nbsp;            if(this.m00 != 0.0D &amp;&amp; this.m11 != 0.0D) {
+<i>1374</i>&nbsp;                return new AffineTransform(1.0D / this.m00, 0.0D, 0.0D, 1.0D / this.m11, 0.0D, 0.0D, 2);
+<i>1375</i>&nbsp;            }
+<i>1376</i>&nbsp;
+<i>1377</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>1378</i>&nbsp;        case 3:
+<i>1379</i>&nbsp;            if(this.m00 != 0.0D &amp;&amp; this.m11 != 0.0D) {
+<i>1380</i>&nbsp;                return new AffineTransform(1.0D / this.m00, 0.0D, 0.0D, 1.0D / this.m11, -this.m02 / this.m00, -this.m12 / this.m11, 3);
+<i>1381</i>&nbsp;            }
+<i>1382</i>&nbsp;
+<i>1383</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>1384</i>&nbsp;        case 4:
+<i>1385</i>&nbsp;            if(this.m01 != 0.0D &amp;&amp; this.m10 != 0.0D) {
+<i>1386</i>&nbsp;                return new AffineTransform(0.0D, 1.0D / this.m01, 1.0D / this.m10, 0.0D, 0.0D, 0.0D, 4);
+<i>1387</i>&nbsp;            }
+<i>1388</i>&nbsp;
+<i>1389</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>1390</i>&nbsp;        case 5:
+<b class="nc"><i>1391</i>&nbsp;            if(this.m01 != 0.0D &amp;&amp; this.m10 != 0.0D) {</b>
+<b class="nc"><i>1392</i>&nbsp;                return new AffineTransform(0.0D, 1.0D / this.m01, 1.0D / this.m10, 0.0D, -this.m12 / this.m10, -this.m02 / this.m01, 5);</b>
+<b class="nc"><i>1393</i>&nbsp;            }</b>
+<b class="nc"><i>1394</i>&nbsp;</b>
+<b class="nc"><i>1395</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>1396</i>&nbsp;        case 6:
+<b class="nc"><i>1397</i>&nbsp;            var1 = this.m00 * this.m11 - this.m01 * this.m10;</b>
+<b class="nc"><i>1398</i>&nbsp;            if(Math.abs(var1) &lt;= 4.9E-324D) {</b>
+<b class="nc"><i>1399</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot; + var1);</b>
+<b class="nc"><i>1400</i>&nbsp;            }</b>
+<i>1401</i>&nbsp;
+<b class="nc"><i>1402</i>&nbsp;            return new AffineTransform(this.m11 / var1, -this.m10 / var1, -this.m01 / var1, this.m00 / var1, 0.0D, 0.0D, 6);</b>
+<b class="nc"><i>1403</i>&nbsp;        default:</b>
+<b class="nc"><i>1404</i>&nbsp;            this.stateError();</b>
+<b class="nc"><i>1405</i>&nbsp;        case 7:</b>
+<b class="nc"><i>1406</i>&nbsp;            var1 = this.m00 * this.m11 - this.m01 * this.m10;</b>
+<b class="nc"><i>1407</i>&nbsp;            if(Math.abs(var1) &lt;= 4.9E-324D) {</b>
+<b class="nc"><i>1408</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot; + var1);</b>
+<b class="nc"><i>1409</i>&nbsp;            } else {</b>
+<b class="nc"><i>1410</i>&nbsp;                return new AffineTransform(this.m11 / var1, -this.m10 / var1, -this.m01 / var1, this.m00 / var1, (this.m01 * this.m12 - this.m11 * this.m02) / var1, (this.m10 * this.m02 - this.m00 * this.m12) / var1, 7);</b>
+<i>1411</i>&nbsp;            }
+<i>1412</i>&nbsp;        }
+<i>1413</i>&nbsp;    }
+<i>1414</i>&nbsp;
+<i>1415</i>&nbsp;    public void invert() throws NoninvertibleTransformException {
+<i>1416</i>&nbsp;        double var1;
+<i>1417</i>&nbsp;        double var3;
+<i>1418</i>&nbsp;        double var5;
+<i>1419</i>&nbsp;        double var7;
+<i>1420</i>&nbsp;        double var9;
+<i>1421</i>&nbsp;        double var11;
+<i>1422</i>&nbsp;        double var13;
+<i>1423</i>&nbsp;        switch(this.state) {
+<i>1424</i>&nbsp;        case 0:
+<i>1425</i>&nbsp;            break;
+<i>1426</i>&nbsp;        case 1:
+<i>1427</i>&nbsp;            this.m02 = -this.m02;
+<i>1428</i>&nbsp;            this.m12 = -this.m12;
+<i>1429</i>&nbsp;            break;
+<i>1430</i>&nbsp;        case 2:
+<i>1431</i>&nbsp;            var1 = this.m00;
+<i>1432</i>&nbsp;            var9 = this.m11;
+<i>1433</i>&nbsp;            if(var1 == 0.0D || var9 == 0.0D) {
+<i>1434</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>1435</i>&nbsp;            }
+<i>1436</i>&nbsp;
+<i>1437</i>&nbsp;            this.m00 = 1.0D / var1;
+<i>1438</i>&nbsp;            this.m11 = 1.0D / var9;
+<i>1439</i>&nbsp;            break;
+<i>1440</i>&nbsp;        case 3:
+<i>1441</i>&nbsp;            var1 = this.m00;
+<i>1442</i>&nbsp;            var5 = this.m02;
+<b class="nc"><i>1443</i>&nbsp;            var9 = this.m11;</b>
+<b class="nc"><i>1444</i>&nbsp;            var11 = this.m12;</b>
+<b class="nc"><i>1445</i>&nbsp;            if(var1 == 0.0D || var9 == 0.0D) {</b>
+<i>1446</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>1447</i>&nbsp;            }
+<i>1448</i>&nbsp;
+<i>1449</i>&nbsp;            this.m00 = 1.0D / var1;
+<i>1450</i>&nbsp;            this.m11 = 1.0D / var9;
+<i>1451</i>&nbsp;            this.m02 = -var5 / var1;
+<i>1452</i>&nbsp;            this.m12 = -var11 / var9;
+<i>1453</i>&nbsp;            break;
+<i>1454</i>&nbsp;        case 4:
+<i>1455</i>&nbsp;            var3 = this.m01;
+<i>1456</i>&nbsp;            var7 = this.m10;
+<i>1457</i>&nbsp;            if(var3 == 0.0D || var7 == 0.0D) {
+<i>1458</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>1459</i>&nbsp;            }
+<i>1460</i>&nbsp;
+<i>1461</i>&nbsp;            this.m10 = 1.0D / var3;
+<i>1462</i>&nbsp;            this.m01 = 1.0D / var7;
+<i>1463</i>&nbsp;            break;
+<i>1464</i>&nbsp;        case 5:
+<i>1465</i>&nbsp;            var3 = this.m01;
+<i>1466</i>&nbsp;            var5 = this.m02;
+<b class="nc"><i>1467</i>&nbsp;            var7 = this.m10;</b>
+<b class="nc"><i>1468</i>&nbsp;            var11 = this.m12;</b>
+<b class="nc"><i>1469</i>&nbsp;            if(var3 == 0.0D || var7 == 0.0D) {</b>
+<i>1470</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>1471</i>&nbsp;            }
+<i>1472</i>&nbsp;
+<b class="nc"><i>1473</i>&nbsp;            this.m10 = 1.0D / var3;</b>
+<b class="nc"><i>1474</i>&nbsp;            this.m01 = 1.0D / var7;</b>
+<b class="nc"><i>1475</i>&nbsp;            this.m02 = -var11 / var7;</b>
+<i>1476</i>&nbsp;            this.m12 = -var5 / var3;
+<b class="nc"><i>1477</i>&nbsp;            break;</b>
+<i>1478</i>&nbsp;        case 6:
+<i>1479</i>&nbsp;            var1 = this.m00;
+<b class="nc"><i>1480</i>&nbsp;            var3 = this.m01;</b>
+<b class="nc"><i>1481</i>&nbsp;            var7 = this.m10;</b>
+<b class="nc"><i>1482</i>&nbsp;            var9 = this.m11;</b>
+<i>1483</i>&nbsp;            var13 = var1 * var9 - var3 * var7;
+<b class="nc"><i>1484</i>&nbsp;            if(Math.abs(var13) &lt;= 4.9E-324D) {</b>
+<b class="nc"><i>1485</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot; + var13);</b>
+<b class="nc"><i>1486</i>&nbsp;            }</b>
+<b class="nc"><i>1487</i>&nbsp;</b>
+<b class="nc"><i>1488</i>&nbsp;            this.m00 = var9 / var13;</b>
+<b class="nc"><i>1489</i>&nbsp;            this.m10 = -var7 / var13;</b>
+<b class="nc"><i>1490</i>&nbsp;            this.m01 = -var3 / var13;</b>
+<b class="nc"><i>1491</i>&nbsp;            this.m11 = var1 / var13;</b>
+<b class="nc"><i>1492</i>&nbsp;            break;</b>
+<i>1493</i>&nbsp;        default:
+<i>1494</i>&nbsp;            this.stateError();
+<i>1495</i>&nbsp;        case 7:
+<i>1496</i>&nbsp;            var1 = this.m00;
+<i>1497</i>&nbsp;            var3 = this.m01;
+<i>1498</i>&nbsp;            var5 = this.m02;
+<i>1499</i>&nbsp;            var7 = this.m10;
+<i>1500</i>&nbsp;            var9 = this.m11;
+<i>1501</i>&nbsp;            var11 = this.m12;
+<i>1502</i>&nbsp;            var13 = var1 * var9 - var3 * var7;
+<i>1503</i>&nbsp;            if(Math.abs(var13) &lt;= 4.9E-324D) {
+<i>1504</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot; + var13);
+<i>1505</i>&nbsp;            }
+<i>1506</i>&nbsp;
+<i>1507</i>&nbsp;            this.m00 = var9 / var13;
+<i>1508</i>&nbsp;            this.m10 = -var7 / var13;
+<i>1509</i>&nbsp;            this.m01 = -var3 / var13;
+<i>1510</i>&nbsp;            this.m11 = var1 / var13;
+<i>1511</i>&nbsp;            this.m02 = (var3 * var11 - var9 * var5) / var13;
+<i>1512</i>&nbsp;            this.m12 = (var7 * var5 - var1 * var11) / var13;
+<i>1513</i>&nbsp;        }
+<i>1514</i>&nbsp;
+<i>1515</i>&nbsp;    }
+<i>1516</i>&nbsp;
+<i>1517</i>&nbsp;    public Point2D transform(Point2D var1, Point2D var2) {
+<i>1518</i>&nbsp;        if(var2 == null) {
+<i>1519</i>&nbsp;            if(var1 instanceof Double) {
+<i>1520</i>&nbsp;                var2 = new Double();
+<i>1521</i>&nbsp;            } else {
+<b class="nc"><i>1522</i>&nbsp;                var2 = new Float();</b>
+<b class="nc"><i>1523</i>&nbsp;            }</b>
+<b class="nc"><i>1524</i>&nbsp;        }</b>
+<i>1525</i>&nbsp;
+<i>1526</i>&nbsp;        double var3 = var1.getX();
+<i>1527</i>&nbsp;        double var5 = var1.getY();
+<i>1528</i>&nbsp;        switch(this.state) {
+<i>1529</i>&nbsp;        case 0:
+<i>1530</i>&nbsp;            ((Point2D)var2).setLocation(var3, var5);
+<i>1531</i>&nbsp;            return (Point2D)var2;
+<i>1532</i>&nbsp;        case 1:
+<i>1533</i>&nbsp;            ((Point2D)var2).setLocation(var3 + this.m02, var5 + this.m12);
+<i>1534</i>&nbsp;            return (Point2D)var2;
+<i>1535</i>&nbsp;        case 2:
+<i>1536</i>&nbsp;            ((Point2D)var2).setLocation(var3 * this.m00, var5 * this.m11);
+<i>1537</i>&nbsp;            return (Point2D)var2;
+<i>1538</i>&nbsp;        case 3:
+<i>1539</i>&nbsp;            ((Point2D)var2).setLocation(var3 * this.m00 + this.m02, var5 * this.m11 + this.m12);
+<b class="nc"><i>1540</i>&nbsp;            return (Point2D)var2;</b>
+<i>1541</i>&nbsp;        case 4:
+<b class="nc"><i>1542</i>&nbsp;            ((Point2D)var2).setLocation(var5 * this.m01, var3 * this.m10);</b>
+<i>1543</i>&nbsp;            return (Point2D)var2;
+<b class="nc"><i>1544</i>&nbsp;        case 5:</b>
+<b class="nc"><i>1545</i>&nbsp;            ((Point2D)var2).setLocation(var5 * this.m01 + this.m02, var3 * this.m10 + this.m12);</b>
+<i>1546</i>&nbsp;            return (Point2D)var2;
+<b class="nc"><i>1547</i>&nbsp;        case 6:</b>
+<b class="nc"><i>1548</i>&nbsp;            ((Point2D)var2).setLocation(var3 * this.m00 + var5 * this.m01, var3 * this.m10 + var5 * this.m11);</b>
+<i>1549</i>&nbsp;            return (Point2D)var2;
+<b class="nc"><i>1550</i>&nbsp;        default:</b>
+<i>1551</i>&nbsp;            this.stateError();
+<i>1552</i>&nbsp;        case 7:
+<i>1553</i>&nbsp;            ((Point2D)var2).setLocation(var3 * this.m00 + var5 * this.m01 + this.m02, var3 * this.m10 + var5 * this.m11 + this.m12);
+<i>1554</i>&nbsp;            return (Point2D)var2;
+<i>1555</i>&nbsp;        }
+<i>1556</i>&nbsp;    }
+<i>1557</i>&nbsp;
+<i>1558</i>&nbsp;    public void transform(Point2D[] var1, int var2, Point2D[] var3, int var4, int var5) {
+<i>1559</i>&nbsp;        int var6 = this.state;
+<i>1560</i>&nbsp;
+<i>1561</i>&nbsp;        while(true) {
+<i>1562</i>&nbsp;            --var5;
+<i>1563</i>&nbsp;            if(var5 &lt; 0) {
+<i>1564</i>&nbsp;                return;
+<i>1565</i>&nbsp;            }
+<i>1566</i>&nbsp;
+<i>1567</i>&nbsp;            Point2D var7 = var1[var2++];
+<i>1568</i>&nbsp;            double var8 = var7.getX();
+<i>1569</i>&nbsp;            double var10 = var7.getY();
+<i>1570</i>&nbsp;            Object var12 = var3[var4++];
+<i>1571</i>&nbsp;            if(var12 == null) {
+<i>1572</i>&nbsp;                if(var7 instanceof Double) {
+<i>1573</i>&nbsp;                    var12 = new Double();
+<b class="nc"><i>1574</i>&nbsp;                } else {</b>
+<i>1575</i>&nbsp;                    var12 = new Float();
+<i>1576</i>&nbsp;                }
+<i>1577</i>&nbsp;
+<b class="nc"><i>1578</i>&nbsp;                var3[var4 - 1] = (Point2D)var12;</b>
+<b class="nc"><i>1579</i>&nbsp;            }</b>
+<b class="nc"><i>1580</i>&nbsp;</b>
+<b class="nc"><i>1581</i>&nbsp;            switch(var6) {</b>
+<i>1582</i>&nbsp;            case 0:
+<b class="nc"><i>1583</i>&nbsp;                ((Point2D)var12).setLocation(var8, var10);</b>
+<b class="nc"><i>1584</i>&nbsp;                break;</b>
+<b class="nc"><i>1585</i>&nbsp;            case 1:</b>
+<b class="nc"><i>1586</i>&nbsp;                ((Point2D)var12).setLocation(var8 + this.m02, var10 + this.m12);</b>
+<i>1587</i>&nbsp;                break;
+<b class="nc"><i>1588</i>&nbsp;            case 2:</b>
+<b class="nc"><i>1589</i>&nbsp;                ((Point2D)var12).setLocation(var8 * this.m00, var10 * this.m11);</b>
+<b class="nc"><i>1590</i>&nbsp;                break;</b>
+<i>1591</i>&nbsp;            case 3:
+<i>1592</i>&nbsp;                ((Point2D)var12).setLocation(var8 * this.m00 + this.m02, var10 * this.m11 + this.m12);
+<b class="nc"><i>1593</i>&nbsp;                break;</b>
+<b class="nc"><i>1594</i>&nbsp;            case 4:</b>
+<i>1595</i>&nbsp;                ((Point2D)var12).setLocation(var10 * this.m01, var8 * this.m10);
+<b class="nc"><i>1596</i>&nbsp;                break;</b>
+<i>1597</i>&nbsp;            case 5:
+<i>1598</i>&nbsp;                ((Point2D)var12).setLocation(var10 * this.m01 + this.m02, var8 * this.m10 + this.m12);
+<i>1599</i>&nbsp;                break;
+<i>1600</i>&nbsp;            case 6:
+<i>1601</i>&nbsp;                ((Point2D)var12).setLocation(var8 * this.m00 + var10 * this.m01, var8 * this.m10 + var10 * this.m11);
+<i>1602</i>&nbsp;                break;
+<i>1603</i>&nbsp;            default:
+<i>1604</i>&nbsp;                this.stateError();
+<i>1605</i>&nbsp;            case 7:
+<i>1606</i>&nbsp;                ((Point2D)var12).setLocation(var8 * this.m00 + var10 * this.m01 + this.m02, var8 * this.m10 + var10 * this.m11 + this.m12);
+<i>1607</i>&nbsp;            }
+<i>1608</i>&nbsp;        }
+<i>1609</i>&nbsp;    }
+<i>1610</i>&nbsp;
+<i>1611</i>&nbsp;    public void transform(float[] var1, int var2, float[] var3, int var4, int var5) {
+<i>1612</i>&nbsp;        if(var3 == var1 &amp;&amp; var4 &gt; var2 &amp;&amp; var4 &lt; var2 + var5 * 2) {
+<i>1613</i>&nbsp;            System.arraycopy(var1, var2, var3, var4, var5 * 2);
+<i>1614</i>&nbsp;            var2 = var4;
+<i>1615</i>&nbsp;        }
+<b class="nc"><i>1616</i>&nbsp;</b>
+<b class="nc"><i>1617</i>&nbsp;        double var6;</b>
+<i>1618</i>&nbsp;        double var8;
+<b class="nc"><i>1619</i>&nbsp;        double var10;</b>
+<i>1620</i>&nbsp;        double var12;
+<i>1621</i>&nbsp;        double var14;
+<i>1622</i>&nbsp;        double var16;
+<b class="nc"><i>1623</i>&nbsp;        double var18;</b>
+<b class="nc"><i>1624</i>&nbsp;        double var20;</b>
+<i>1625</i>&nbsp;        switch(this.state) {
+<i>1626</i>&nbsp;        case 0:
+<i>1627</i>&nbsp;            if(var1 != var3 || var2 != var4) {
+<b class="nc"><i>1628</i>&nbsp;                System.arraycopy(var1, var2, var3, var4, var5 * 2);</b>
+<b class="nc"><i>1629</i>&nbsp;            }</b>
+<b class="nc"><i>1630</i>&nbsp;</b>
+<b class="nc"><i>1631</i>&nbsp;            return;</b>
+<b class="nc"><i>1632</i>&nbsp;        case 1:</b>
+<b class="nc"><i>1633</i>&nbsp;            var10 = this.m02;</b>
+<i>1634</i>&nbsp;            var16 = this.m12;
+<i>1635</i>&nbsp;
+<i>1636</i>&nbsp;            while(true) {
+<b class="nc"><i>1637</i>&nbsp;                --var5;</b>
+<b class="nc"><i>1638</i>&nbsp;                if(var5 &lt; 0) {</b>
+<i>1639</i>&nbsp;                    return;
+<b class="nc"><i>1640</i>&nbsp;                }</b>
+<i>1641</i>&nbsp;
+<i>1642</i>&nbsp;                var3[var4++] = (float)((double)var1[var2++] + var10);
+<i>1643</i>&nbsp;                var3[var4++] = (float)((double)var1[var2++] + var16);
+<i>1644</i>&nbsp;            }
+<b class="nc"><i>1645</i>&nbsp;        case 2:</b>
+<b class="nc"><i>1646</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>1647</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>1648</i>&nbsp;</b>
+<b class="nc"><i>1649</i>&nbsp;            while(true) {</b>
+<i>1650</i>&nbsp;                --var5;
+<i>1651</i>&nbsp;                if(var5 &lt; 0) {
+<i>1652</i>&nbsp;                    return;
+<b class="nc"><i>1653</i>&nbsp;                }</b>
+<i>1654</i>&nbsp;
+<i>1655</i>&nbsp;                var3[var4++] = (float)(var6 * (double)var1[var2++]);
+<i>1656</i>&nbsp;                var3[var4++] = (float)(var14 * (double)var1[var2++]);
+<i>1657</i>&nbsp;            }
+<b class="nc"><i>1658</i>&nbsp;        case 3:</b>
+<b class="nc"><i>1659</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>1660</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>1661</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>1662</i>&nbsp;            var16 = this.m12;</b>
+<i>1663</i>&nbsp;
+<i>1664</i>&nbsp;            while(true) {
+<i>1665</i>&nbsp;                --var5;
+<i>1666</i>&nbsp;                if(var5 &lt; 0) {
+<i>1667</i>&nbsp;                    return;
+<i>1668</i>&nbsp;                }
+<i>1669</i>&nbsp;
+<i>1670</i>&nbsp;                var3[var4++] = (float)(var6 * (double)var1[var2++] + var10);
+<i>1671</i>&nbsp;                var3[var4++] = (float)(var14 * (double)var1[var2++] + var16);
+<i>1672</i>&nbsp;            }
+<i>1673</i>&nbsp;        case 4:
+<i>1674</i>&nbsp;            var8 = this.m01;
+<i>1675</i>&nbsp;            var12 = this.m10;
+<i>1676</i>&nbsp;
+<i>1677</i>&nbsp;            while(true) {
+<i>1678</i>&nbsp;                --var5;
+<i>1679</i>&nbsp;                if(var5 &lt; 0) {
+<i>1680</i>&nbsp;                    return;
+<i>1681</i>&nbsp;                }
+<i>1682</i>&nbsp;
+<i>1683</i>&nbsp;                var18 = (double)var1[var2++];
+<b class="nc"><i>1684</i>&nbsp;                var3[var4++] = (float)(var8 * (double)var1[var2++]);</b>
+<b class="nc"><i>1685</i>&nbsp;                var3[var4++] = (float)(var12 * var18);</b>
+<i>1686</i>&nbsp;            }
+<b class="nc"><i>1687</i>&nbsp;        case 5:</b>
+<i>1688</i>&nbsp;            var8 = this.m01;
+<i>1689</i>&nbsp;            var10 = this.m02;
+<i>1690</i>&nbsp;            var12 = this.m10;
+<i>1691</i>&nbsp;            var16 = this.m12;
+<b class="nc"><i>1692</i>&nbsp;</b>
+<b class="nc"><i>1693</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>1694</i>&nbsp;                --var5;</b>
+<b class="nc"><i>1695</i>&nbsp;                if(var5 &lt; 0) {</b>
+<i>1696</i>&nbsp;                    return;
+<b class="nc"><i>1697</i>&nbsp;                }</b>
+<b class="nc"><i>1698</i>&nbsp;</b>
+<b class="nc"><i>1699</i>&nbsp;                var18 = (double)var1[var2++];</b>
+<b class="nc"><i>1700</i>&nbsp;                var3[var4++] = (float)(var8 * (double)var1[var2++] + var10);</b>
+<b class="nc"><i>1701</i>&nbsp;                var3[var4++] = (float)(var12 * var18 + var16);</b>
+<i>1702</i>&nbsp;            }
+<i>1703</i>&nbsp;        case 6:
+<i>1704</i>&nbsp;            var6 = this.m00;
+<b class="nc"><i>1705</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>1706</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>1707</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>1708</i>&nbsp;</b>
+<i>1709</i>&nbsp;            while(true) {
+<b class="nc"><i>1710</i>&nbsp;                --var5;</b>
+<i>1711</i>&nbsp;                if(var5 &lt; 0) {
+<i>1712</i>&nbsp;                    return;
+<i>1713</i>&nbsp;                }
+<b class="nc"><i>1714</i>&nbsp;</b>
+<b class="nc"><i>1715</i>&nbsp;                var18 = (double)var1[var2++];</b>
+<b class="nc"><i>1716</i>&nbsp;                var20 = (double)var1[var2++];</b>
+<b class="nc"><i>1717</i>&nbsp;                var3[var4++] = (float)(var6 * var18 + var8 * var20);</b>
+<i>1718</i>&nbsp;                var3[var4++] = (float)(var12 * var18 + var14 * var20);
+<b class="nc"><i>1719</i>&nbsp;            }</b>
+<i>1720</i>&nbsp;        default:
+<i>1721</i>&nbsp;            this.stateError();
+<i>1722</i>&nbsp;        case 7:
+<b class="nc"><i>1723</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>1724</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>1725</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>1726</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>1727</i>&nbsp;            var14 = this.m11;</b>
+<i>1728</i>&nbsp;            var16 = this.m12;
+<i>1729</i>&nbsp;
+<i>1730</i>&nbsp;            while(true) {
+<i>1731</i>&nbsp;                --var5;
+<i>1732</i>&nbsp;                if(var5 &lt; 0) {
+<i>1733</i>&nbsp;                    return;
+<i>1734</i>&nbsp;                }
+<i>1735</i>&nbsp;
+<i>1736</i>&nbsp;                var18 = (double)var1[var2++];
+<i>1737</i>&nbsp;                var20 = (double)var1[var2++];
+<b class="nc"><i>1738</i>&nbsp;                var3[var4++] = (float)(var6 * var18 + var8 * var20 + var10);</b>
+<b class="nc"><i>1739</i>&nbsp;                var3[var4++] = (float)(var12 * var18 + var14 * var20 + var16);</b>
+<b class="nc"><i>1740</i>&nbsp;            }</b>
+<b class="nc"><i>1741</i>&nbsp;        }</b>
+<i>1742</i>&nbsp;    }
+<i>1743</i>&nbsp;
+<i>1744</i>&nbsp;    public void transform(double[] var1, int var2, double[] var3, int var4, int var5) {
+<i>1745</i>&nbsp;        if(var3 == var1 &amp;&amp; var4 &gt; var2 &amp;&amp; var4 &lt; var2 + var5 * 2) {
+<i>1746</i>&nbsp;            System.arraycopy(var1, var2, var3, var4, var5 * 2);
+<i>1747</i>&nbsp;            var2 = var4;
+<i>1748</i>&nbsp;        }
+<i>1749</i>&nbsp;
+<i>1750</i>&nbsp;        double var6;
+<i>1751</i>&nbsp;        double var8;
+<i>1752</i>&nbsp;        double var10;
+<i>1753</i>&nbsp;        double var12;
+<i>1754</i>&nbsp;        double var14;
+<i>1755</i>&nbsp;        double var16;
+<i>1756</i>&nbsp;        double var18;
+<i>1757</i>&nbsp;        double var20;
+<i>1758</i>&nbsp;        switch(this.state) {
+<b class="nc"><i>1759</i>&nbsp;        case 0:</b>
+<b class="nc"><i>1760</i>&nbsp;            if(var1 != var3 || var2 != var4) {</b>
+<b class="nc"><i>1761</i>&nbsp;                System.arraycopy(var1, var2, var3, var4, var5 * 2);</b>
+<b class="nc"><i>1762</i>&nbsp;            }</b>
+<b class="nc"><i>1763</i>&nbsp;</b>
+<b class="nc"><i>1764</i>&nbsp;            return;</b>
+<b class="nc"><i>1765</i>&nbsp;        case 1:</b>
+<b class="nc"><i>1766</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>1767</i>&nbsp;            var16 = this.m12;</b>
+<i>1768</i>&nbsp;
+<b class="nc"><i>1769</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>1770</i>&nbsp;                --var5;</b>
+<i>1771</i>&nbsp;                if(var5 &lt; 0) {
+<i>1772</i>&nbsp;                    return;
+<i>1773</i>&nbsp;                }
+<i>1774</i>&nbsp;
+<i>1775</i>&nbsp;                var3[var4++] = var1[var2++] + var10;
+<i>1776</i>&nbsp;                var3[var4++] = var1[var2++] + var16;
+<i>1777</i>&nbsp;            }
+<i>1778</i>&nbsp;        case 2:
+<i>1779</i>&nbsp;            var6 = this.m00;
+<i>1780</i>&nbsp;            var14 = this.m11;
+<i>1781</i>&nbsp;
+<i>1782</i>&nbsp;            while(true) {
+<i>1783</i>&nbsp;                --var5;
+<i>1784</i>&nbsp;                if(var5 &lt; 0) {
+<i>1785</i>&nbsp;                    return;
+<i>1786</i>&nbsp;                }
+<i>1787</i>&nbsp;
+<i>1788</i>&nbsp;                var3[var4++] = var6 * var1[var2++];
+<i>1789</i>&nbsp;                var3[var4++] = var14 * var1[var2++];
+<i>1790</i>&nbsp;            }
+<b class="nc"><i>1791</i>&nbsp;        case 3:</b>
+<i>1792</i>&nbsp;            var6 = this.m00;
+<b class="nc"><i>1793</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>1794</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>1795</i>&nbsp;            var16 = this.m12;</b>
+<b class="nc"><i>1796</i>&nbsp;</b>
+<i>1797</i>&nbsp;            while(true) {
+<b class="nc"><i>1798</i>&nbsp;                --var5;</b>
+<b class="nc"><i>1799</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>1800</i>&nbsp;                    return;</b>
+<b class="nc"><i>1801</i>&nbsp;                }</b>
+<b class="nc"><i>1802</i>&nbsp;</b>
+<b class="nc"><i>1803</i>&nbsp;                var3[var4++] = var6 * var1[var2++] + var10;</b>
+<b class="nc"><i>1804</i>&nbsp;                var3[var4++] = var14 * var1[var2++] + var16;</b>
+<b class="nc"><i>1805</i>&nbsp;            }</b>
+<b class="nc"><i>1806</i>&nbsp;        case 4:</b>
+<i>1807</i>&nbsp;            var8 = this.m01;
+<b class="nc"><i>1808</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>1809</i>&nbsp;</b>
+<i>1810</i>&nbsp;            while(true) {
+<i>1811</i>&nbsp;                --var5;
+<b class="nc"><i>1812</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>1813</i>&nbsp;                    return;</b>
+<b class="nc"><i>1814</i>&nbsp;                }</b>
+<b class="nc"><i>1815</i>&nbsp;</b>
+<b class="nc"><i>1816</i>&nbsp;                var18 = var1[var2++];</b>
+<b class="nc"><i>1817</i>&nbsp;                var3[var4++] = var8 * var1[var2++];</b>
+<i>1818</i>&nbsp;                var3[var4++] = var12 * var18;
+<i>1819</i>&nbsp;            }
+<i>1820</i>&nbsp;        case 5:
+<i>1821</i>&nbsp;            var8 = this.m01;
+<i>1822</i>&nbsp;            var10 = this.m02;
+<i>1823</i>&nbsp;            var12 = this.m10;
+<i>1824</i>&nbsp;            var16 = this.m12;
+<i>1825</i>&nbsp;
+<i>1826</i>&nbsp;            while(true) {
+<i>1827</i>&nbsp;                --var5;
+<i>1828</i>&nbsp;                if(var5 &lt; 0) {
+<i>1829</i>&nbsp;                    return;
+<i>1830</i>&nbsp;                }
+<i>1831</i>&nbsp;
+<i>1832</i>&nbsp;                var18 = var1[var2++];
+<i>1833</i>&nbsp;                var3[var4++] = var8 * var1[var2++] + var10;
+<i>1834</i>&nbsp;                var3[var4++] = var12 * var18 + var16;
+<i>1835</i>&nbsp;            }
+<i>1836</i>&nbsp;        case 6:
+<i>1837</i>&nbsp;            var6 = this.m00;
+<i>1838</i>&nbsp;            var8 = this.m01;
+<i>1839</i>&nbsp;            var12 = this.m10;
+<i>1840</i>&nbsp;            var14 = this.m11;
+<i>1841</i>&nbsp;
+<i>1842</i>&nbsp;            while(true) {
+<i>1843</i>&nbsp;                --var5;
+<i>1844</i>&nbsp;                if(var5 &lt; 0) {
+<i>1845</i>&nbsp;                    return;
+<i>1846</i>&nbsp;                }
+<i>1847</i>&nbsp;
+<i>1848</i>&nbsp;                var18 = var1[var2++];
+<i>1849</i>&nbsp;                var20 = var1[var2++];
+<i>1850</i>&nbsp;                var3[var4++] = var6 * var18 + var8 * var20;
+<i>1851</i>&nbsp;                var3[var4++] = var12 * var18 + var14 * var20;
+<b class="nc"><i>1852</i>&nbsp;            }</b>
+<b class="nc"><i>1853</i>&nbsp;        default:</b>
+<b class="nc"><i>1854</i>&nbsp;            this.stateError();</b>
+<b class="nc"><i>1855</i>&nbsp;        case 7:</b>
+<b class="nc"><i>1856</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>1857</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>1858</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>1859</i>&nbsp;            var12 = this.m10;</b>
+<i>1860</i>&nbsp;            var14 = this.m11;
+<i>1861</i>&nbsp;            var16 = this.m12;
+<i>1862</i>&nbsp;
+<i>1863</i>&nbsp;            while(true) {
+<i>1864</i>&nbsp;                --var5;
+<i>1865</i>&nbsp;                if(var5 &lt; 0) {
+<i>1866</i>&nbsp;                    return;
+<i>1867</i>&nbsp;                }
+<i>1868</i>&nbsp;
+<i>1869</i>&nbsp;                var18 = var1[var2++];
+<i>1870</i>&nbsp;                var20 = var1[var2++];
+<i>1871</i>&nbsp;                var3[var4++] = var6 * var18 + var8 * var20 + var10;
+<i>1872</i>&nbsp;                var3[var4++] = var12 * var18 + var14 * var20 + var16;
+<i>1873</i>&nbsp;            }
+<i>1874</i>&nbsp;        }
+<i>1875</i>&nbsp;    }
+<i>1876</i>&nbsp;
+<i>1877</i>&nbsp;    public void transform(float[] var1, int var2, double[] var3, int var4, int var5) {
+<i>1878</i>&nbsp;        double var6;
+<i>1879</i>&nbsp;        double var8;
+<i>1880</i>&nbsp;        double var10;
+<i>1881</i>&nbsp;        double var12;
+<i>1882</i>&nbsp;        double var14;
+<b class="nc"><i>1883</i>&nbsp;        double var16;</b>
+<b class="nc"><i>1884</i>&nbsp;        double var18;</b>
+<b class="nc"><i>1885</i>&nbsp;        double var20;</b>
+<b class="nc"><i>1886</i>&nbsp;        switch(this.state) {</b>
+<b class="nc"><i>1887</i>&nbsp;        case 0:</b>
+<b class="nc"><i>1888</i>&nbsp;            while(true) {</b>
+<i>1889</i>&nbsp;                --var5;
+<b class="nc"><i>1890</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>1891</i>&nbsp;                    return;</b>
+<b class="nc"><i>1892</i>&nbsp;                }</b>
+<i>1893</i>&nbsp;
+<b class="nc"><i>1894</i>&nbsp;                var3[var4++] = (double)var1[var2++];</b>
+<b class="nc"><i>1895</i>&nbsp;                var3[var4++] = (double)var1[var2++];</b>
+<b class="nc"><i>1896</i>&nbsp;            }</b>
+<b class="nc"><i>1897</i>&nbsp;        case 1:</b>
+<b class="nc"><i>1898</i>&nbsp;            var10 = this.m02;</b>
+<i>1899</i>&nbsp;            var16 = this.m12;
+<b class="nc"><i>1900</i>&nbsp;</b>
+<b class="nc"><i>1901</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>1902</i>&nbsp;                --var5;</b>
+<b class="nc"><i>1903</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>1904</i>&nbsp;                    return;</b>
+<i>1905</i>&nbsp;                }
+<b class="nc"><i>1906</i>&nbsp;</b>
+<b class="nc"><i>1907</i>&nbsp;                var3[var4++] = (double)var1[var2++] + var10;</b>
+<b class="nc"><i>1908</i>&nbsp;                var3[var4++] = (double)var1[var2++] + var16;</b>
+<b class="nc"><i>1909</i>&nbsp;            }</b>
+<b class="nc"><i>1910</i>&nbsp;        case 2:</b>
+<b class="nc"><i>1911</i>&nbsp;            var6 = this.m00;</b>
+<i>1912</i>&nbsp;            var14 = this.m11;
+<i>1913</i>&nbsp;
+<i>1914</i>&nbsp;            while(true) {
+<i>1915</i>&nbsp;                --var5;
+<i>1916</i>&nbsp;                if(var5 &lt; 0) {
+<i>1917</i>&nbsp;                    return;
+<i>1918</i>&nbsp;                }
+<i>1919</i>&nbsp;
+<i>1920</i>&nbsp;                var3[var4++] = var6 * (double)var1[var2++];
+<i>1921</i>&nbsp;                var3[var4++] = var14 * (double)var1[var2++];
+<i>1922</i>&nbsp;            }
+<i>1923</i>&nbsp;        case 3:
+<i>1924</i>&nbsp;            var6 = this.m00;
+<i>1925</i>&nbsp;            var10 = this.m02;
+<i>1926</i>&nbsp;            var14 = this.m11;
+<i>1927</i>&nbsp;            var16 = this.m12;
+<i>1928</i>&nbsp;
+<i>1929</i>&nbsp;            while(true) {
+<i>1930</i>&nbsp;                --var5;
+<i>1931</i>&nbsp;                if(var5 &lt; 0) {
+<i>1932</i>&nbsp;                    return;
+<i>1933</i>&nbsp;                }
+<i>1934</i>&nbsp;
+<i>1935</i>&nbsp;                var3[var4++] = var6 * (double)var1[var2++] + var10;
+<i>1936</i>&nbsp;                var3[var4++] = var14 * (double)var1[var2++] + var16;
+<i>1937</i>&nbsp;            }
+<i>1938</i>&nbsp;        case 4:
+<b class="nc"><i>1939</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>1940</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>1941</i>&nbsp;</b>
+<b class="nc"><i>1942</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>1943</i>&nbsp;                --var5;</b>
+<b class="nc"><i>1944</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>1945</i>&nbsp;                    return;</b>
+<b class="nc"><i>1946</i>&nbsp;                }</b>
+<i>1947</i>&nbsp;
+<i>1948</i>&nbsp;                var18 = (double)var1[var2++];
+<i>1949</i>&nbsp;                var3[var4++] = var8 * (double)var1[var2++];
+<i>1950</i>&nbsp;                var3[var4++] = var12 * var18;
+<i>1951</i>&nbsp;            }
+<i>1952</i>&nbsp;        case 5:
+<i>1953</i>&nbsp;            var8 = this.m01;
+<i>1954</i>&nbsp;            var10 = this.m02;
+<i>1955</i>&nbsp;            var12 = this.m10;
+<i>1956</i>&nbsp;            var16 = this.m12;
+<i>1957</i>&nbsp;
+<i>1958</i>&nbsp;            while(true) {
+<i>1959</i>&nbsp;                --var5;
+<i>1960</i>&nbsp;                if(var5 &lt; 0) {
+<i>1961</i>&nbsp;                    return;
+<i>1962</i>&nbsp;                }
+<b class="nc"><i>1963</i>&nbsp;</b>
+<i>1964</i>&nbsp;                var18 = (double)var1[var2++];
+<b class="nc"><i>1965</i>&nbsp;                var3[var4++] = var8 * (double)var1[var2++] + var10;</b>
+<b class="nc"><i>1966</i>&nbsp;                var3[var4++] = var12 * var18 + var16;</b>
+<b class="nc"><i>1967</i>&nbsp;            }</b>
+<b class="nc"><i>1968</i>&nbsp;        case 6:</b>
+<b class="nc"><i>1969</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>1970</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>1971</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>1972</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>1973</i>&nbsp;</b>
+<i>1974</i>&nbsp;            while(true) {
+<b class="nc"><i>1975</i>&nbsp;                --var5;</b>
+<b class="nc"><i>1976</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>1977</i>&nbsp;                    return;</b>
+<b class="nc"><i>1978</i>&nbsp;                }</b>
+<b class="nc"><i>1979</i>&nbsp;</b>
+<b class="nc"><i>1980</i>&nbsp;                var18 = (double)var1[var2++];</b>
+<b class="nc"><i>1981</i>&nbsp;                var20 = (double)var1[var2++];</b>
+<b class="nc"><i>1982</i>&nbsp;                var3[var4++] = var6 * var18 + var8 * var20;</b>
+<b class="nc"><i>1983</i>&nbsp;                var3[var4++] = var12 * var18 + var14 * var20;</b>
+<i>1984</i>&nbsp;            }
+<b class="nc"><i>1985</i>&nbsp;        default:</b>
+<b class="nc"><i>1986</i>&nbsp;            this.stateError();</b>
+<b class="nc"><i>1987</i>&nbsp;        case 7:</b>
+<b class="nc"><i>1988</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>1989</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>1990</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>1991</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>1992</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>1993</i>&nbsp;            var16 = this.m12;</b>
+<i>1994</i>&nbsp;
+<b class="nc"><i>1995</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>1996</i>&nbsp;                --var5;</b>
+<b class="nc"><i>1997</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>1998</i>&nbsp;                    return;</b>
+<b class="nc"><i>1999</i>&nbsp;                }</b>
+<b class="nc"><i>2000</i>&nbsp;</b>
+<b class="nc"><i>2001</i>&nbsp;                var18 = (double)var1[var2++];</b>
+<b class="nc"><i>2002</i>&nbsp;                var20 = (double)var1[var2++];</b>
+<i>2003</i>&nbsp;                var3[var4++] = var6 * var18 + var8 * var20 + var10;
+<i>2004</i>&nbsp;                var3[var4++] = var12 * var18 + var14 * var20 + var16;
+<i>2005</i>&nbsp;            }
+<i>2006</i>&nbsp;        }
+<i>2007</i>&nbsp;    }
+<i>2008</i>&nbsp;
+<i>2009</i>&nbsp;    public void transform(double[] var1, int var2, float[] var3, int var4, int var5) {
+<i>2010</i>&nbsp;        double var6;
+<i>2011</i>&nbsp;        double var8;
+<i>2012</i>&nbsp;        double var10;
+<i>2013</i>&nbsp;        double var12;
+<i>2014</i>&nbsp;        double var14;
+<i>2015</i>&nbsp;        double var16;
+<i>2016</i>&nbsp;        double var18;
+<i>2017</i>&nbsp;        double var20;
+<i>2018</i>&nbsp;        switch(this.state) {
+<i>2019</i>&nbsp;        case 0:
+<i>2020</i>&nbsp;            while(true) {
+<i>2021</i>&nbsp;                --var5;
+<i>2022</i>&nbsp;                if(var5 &lt; 0) {
+<i>2023</i>&nbsp;                    return;
+<i>2024</i>&nbsp;                }
+<i>2025</i>&nbsp;
+<b class="nc"><i>2026</i>&nbsp;                var3[var4++] = (float)var1[var2++];</b>
+<i>2027</i>&nbsp;                var3[var4++] = (float)var1[var2++];
+<b class="nc"><i>2028</i>&nbsp;            }</b>
+<b class="nc"><i>2029</i>&nbsp;        case 1:</b>
+<b class="nc"><i>2030</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>2031</i>&nbsp;            var16 = this.m12;</b>
+<b class="nc"><i>2032</i>&nbsp;</b>
+<b class="nc"><i>2033</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>2034</i>&nbsp;                --var5;</b>
+<b class="nc"><i>2035</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>2036</i>&nbsp;                    return;</b>
+<i>2037</i>&nbsp;                }
+<b class="nc"><i>2038</i>&nbsp;</b>
+<b class="nc"><i>2039</i>&nbsp;                var3[var4++] = (float)(var1[var2++] + var10);</b>
+<b class="nc"><i>2040</i>&nbsp;                var3[var4++] = (float)(var1[var2++] + var16);</b>
+<b class="nc"><i>2041</i>&nbsp;            }</b>
+<b class="nc"><i>2042</i>&nbsp;        case 2:</b>
+<b class="nc"><i>2043</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>2044</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>2045</i>&nbsp;</b>
+<b class="nc"><i>2046</i>&nbsp;            while(true) {</b>
+<i>2047</i>&nbsp;                --var5;
+<b class="nc"><i>2048</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>2049</i>&nbsp;                    return;</b>
+<i>2050</i>&nbsp;                }
+<b class="nc"><i>2051</i>&nbsp;</b>
+<i>2052</i>&nbsp;                var3[var4++] = (float)(var6 * var1[var2++]);
+<b class="nc"><i>2053</i>&nbsp;                var3[var4++] = (float)(var14 * var1[var2++]);</b>
+<b class="nc"><i>2054</i>&nbsp;            }</b>
+<b class="nc"><i>2055</i>&nbsp;        case 3:</b>
+<b class="nc"><i>2056</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>2057</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>2058</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>2059</i>&nbsp;            var16 = this.m12;</b>
+<b class="nc"><i>2060</i>&nbsp;</b>
+<b class="nc"><i>2061</i>&nbsp;            while(true) {</b>
+<i>2062</i>&nbsp;                --var5;
+<b class="nc"><i>2063</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>2064</i>&nbsp;                    return;</b>
+<i>2065</i>&nbsp;                }
+<b class="nc"><i>2066</i>&nbsp;</b>
+<i>2067</i>&nbsp;                var3[var4++] = (float)(var6 * var1[var2++] + var10);
+<b class="nc"><i>2068</i>&nbsp;                var3[var4++] = (float)(var14 * var1[var2++] + var16);</b>
+<b class="nc"><i>2069</i>&nbsp;            }</b>
+<b class="nc"><i>2070</i>&nbsp;        case 4:</b>
+<b class="nc"><i>2071</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>2072</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>2073</i>&nbsp;</b>
+<b class="nc"><i>2074</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>2075</i>&nbsp;                --var5;</b>
+<b class="nc"><i>2076</i>&nbsp;                if(var5 &lt; 0) {</b>
+<i>2077</i>&nbsp;                    return;
+<b class="nc"><i>2078</i>&nbsp;                }</b>
+<b class="nc"><i>2079</i>&nbsp;</b>
+<i>2080</i>&nbsp;                var18 = var1[var2++];
+<i>2081</i>&nbsp;                var3[var4++] = (float)(var8 * var1[var2++]);
+<i>2082</i>&nbsp;                var3[var4++] = (float)(var12 * var18);
+<i>2083</i>&nbsp;            }
+<i>2084</i>&nbsp;        case 5:
+<i>2085</i>&nbsp;            var8 = this.m01;
+<i>2086</i>&nbsp;            var10 = this.m02;
+<i>2087</i>&nbsp;            var12 = this.m10;
+<i>2088</i>&nbsp;            var16 = this.m12;
+<i>2089</i>&nbsp;
+<i>2090</i>&nbsp;            while(true) {
+<i>2091</i>&nbsp;                --var5;
+<i>2092</i>&nbsp;                if(var5 &lt; 0) {
+<i>2093</i>&nbsp;                    return;
+<i>2094</i>&nbsp;                }
+<i>2095</i>&nbsp;
+<i>2096</i>&nbsp;                var18 = var1[var2++];
+<i>2097</i>&nbsp;                var3[var4++] = (float)(var8 * var1[var2++] + var10);
+<i>2098</i>&nbsp;                var3[var4++] = (float)(var12 * var18 + var16);
+<i>2099</i>&nbsp;            }
+<b class="nc"><i>2100</i>&nbsp;        case 6:</b>
+<b class="nc"><i>2101</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>2102</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>2103</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>2104</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>2105</i>&nbsp;</b>
+<b class="nc"><i>2106</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>2107</i>&nbsp;                --var5;</b>
+<b class="nc"><i>2108</i>&nbsp;                if(var5 &lt; 0) {</b>
+<i>2109</i>&nbsp;                    return;
+<b class="nc"><i>2110</i>&nbsp;                }</b>
+<b class="nc"><i>2111</i>&nbsp;</b>
+<i>2112</i>&nbsp;                var18 = var1[var2++];
+<i>2113</i>&nbsp;                var20 = var1[var2++];
+<i>2114</i>&nbsp;                var3[var4++] = (float)(var6 * var18 + var8 * var20);
+<i>2115</i>&nbsp;                var3[var4++] = (float)(var12 * var18 + var14 * var20);
+<i>2116</i>&nbsp;            }
+<i>2117</i>&nbsp;        default:
+<i>2118</i>&nbsp;            this.stateError();
+<i>2119</i>&nbsp;        case 7:
+<i>2120</i>&nbsp;            var6 = this.m00;
+<i>2121</i>&nbsp;            var8 = this.m01;
+<i>2122</i>&nbsp;            var10 = this.m02;
+<i>2123</i>&nbsp;            var12 = this.m10;
+<i>2124</i>&nbsp;            var14 = this.m11;
+<i>2125</i>&nbsp;            var16 = this.m12;
+<i>2126</i>&nbsp;
+<i>2127</i>&nbsp;            while(true) {
+<i>2128</i>&nbsp;                --var5;
+<i>2129</i>&nbsp;                if(var5 &lt; 0) {
+<b class="nc"><i>2130</i>&nbsp;                    return;</b>
+<b class="nc"><i>2131</i>&nbsp;                }</b>
+<b class="nc"><i>2132</i>&nbsp;</b>
+<b class="nc"><i>2133</i>&nbsp;                var18 = var1[var2++];</b>
+<b class="nc"><i>2134</i>&nbsp;                var20 = var1[var2++];</b>
+<b class="nc"><i>2135</i>&nbsp;                var3[var4++] = (float)(var6 * var18 + var8 * var20 + var10);</b>
+<b class="nc"><i>2136</i>&nbsp;                var3[var4++] = (float)(var12 * var18 + var14 * var20 + var16);</b>
+<b class="nc"><i>2137</i>&nbsp;            }</b>
+<b class="nc"><i>2138</i>&nbsp;        }</b>
+<i>2139</i>&nbsp;    }
+<b class="nc"><i>2140</i>&nbsp;</b>
+<b class="nc"><i>2141</i>&nbsp;    public Point2D inverseTransform(Point2D var1, Point2D var2) throws NoninvertibleTransformException {</b>
+<i>2142</i>&nbsp;        if(var2 == null) {
+<i>2143</i>&nbsp;            if(var1 instanceof Double) {
+<i>2144</i>&nbsp;                var2 = new Double();
+<i>2145</i>&nbsp;            } else {
+<i>2146</i>&nbsp;                var2 = new Float();
+<i>2147</i>&nbsp;            }
+<i>2148</i>&nbsp;        }
+<i>2149</i>&nbsp;
+<i>2150</i>&nbsp;        double var3 = var1.getX();
+<i>2151</i>&nbsp;        double var5 = var1.getY();
+<i>2152</i>&nbsp;        switch(this.state) {
+<b class="nc"><i>2153</i>&nbsp;        case 0:</b>
+<b class="nc"><i>2154</i>&nbsp;            ((Point2D)var2).setLocation(var3, var5);</b>
+<b class="nc"><i>2155</i>&nbsp;            return (Point2D)var2;</b>
+<b class="nc"><i>2156</i>&nbsp;        case 1:</b>
+<b class="nc"><i>2157</i>&nbsp;            ((Point2D)var2).setLocation(var3 - this.m02, var5 - this.m12);</b>
+<b class="nc"><i>2158</i>&nbsp;            return (Point2D)var2;</b>
+<b class="nc"><i>2159</i>&nbsp;        case 3:</b>
+<b class="nc"><i>2160</i>&nbsp;            var3 -= this.m02;</b>
+<i>2161</i>&nbsp;            var5 -= this.m12;
+<i>2162</i>&nbsp;        case 2:
+<i>2163</i>&nbsp;            if(this.m00 != 0.0D &amp;&amp; this.m11 != 0.0D) {
+<i>2164</i>&nbsp;                ((Point2D)var2).setLocation(var3 / this.m00, var5 / this.m11);
+<i>2165</i>&nbsp;                return (Point2D)var2;
+<i>2166</i>&nbsp;            }
+<i>2167</i>&nbsp;
+<i>2168</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>2169</i>&nbsp;        case 5:
+<i>2170</i>&nbsp;            var3 -= this.m02;
+<i>2171</i>&nbsp;            var5 -= this.m12;
+<i>2172</i>&nbsp;        case 4:
+<i>2173</i>&nbsp;            if(this.m01 != 0.0D &amp;&amp; this.m10 != 0.0D) {
+<i>2174</i>&nbsp;                ((Point2D)var2).setLocation(var5 / this.m10, var3 / this.m01);
+<i>2175</i>&nbsp;                return (Point2D)var2;
+<i>2176</i>&nbsp;            }
+<i>2177</i>&nbsp;
+<b class="nc"><i>2178</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<b class="nc"><i>2179</i>&nbsp;        default:</b>
+<b class="nc"><i>2180</i>&nbsp;            this.stateError();</b>
+<b class="nc"><i>2181</i>&nbsp;        case 7:</b>
+<b class="nc"><i>2182</i>&nbsp;            var3 -= this.m02;</b>
+<b class="nc"><i>2183</i>&nbsp;            var5 -= this.m12;</b>
+<b class="nc"><i>2184</i>&nbsp;        case 6:</b>
+<i>2185</i>&nbsp;            double var7 = this.m00 * this.m11 - this.m01 * this.m10;
+<i>2186</i>&nbsp;            if(Math.abs(var7) &lt;= 4.9E-324D) {
+<i>2187</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot; + var7);
+<i>2188</i>&nbsp;            } else {
+<i>2189</i>&nbsp;                ((Point2D)var2).setLocation((var3 * this.m11 - var5 * this.m01) / var7, (var5 * this.m00 - var3 * this.m10) / var7);
+<i>2190</i>&nbsp;                return (Point2D)var2;
+<i>2191</i>&nbsp;            }
+<i>2192</i>&nbsp;        }
+<i>2193</i>&nbsp;    }
+<i>2194</i>&nbsp;
+<i>2195</i>&nbsp;    public void inverseTransform(double[] var1, int var2, double[] var3, int var4, int var5) throws NoninvertibleTransformException {
+<i>2196</i>&nbsp;        if(var3 == var1 &amp;&amp; var4 &gt; var2 &amp;&amp; var4 &lt; var2 + var5 * 2) {
+<i>2197</i>&nbsp;            System.arraycopy(var1, var2, var3, var4, var5 * 2);
+<i>2198</i>&nbsp;            var2 = var4;
+<i>2199</i>&nbsp;        }
+<i>2200</i>&nbsp;
+<i>2201</i>&nbsp;        double var6;
+<i>2202</i>&nbsp;        double var8;
+<i>2203</i>&nbsp;        double var10;
+<i>2204</i>&nbsp;        double var12;
+<i>2205</i>&nbsp;        double var14;
+<i>2206</i>&nbsp;        double var16;
+<i>2207</i>&nbsp;        double var18;
+<i>2208</i>&nbsp;        double var20;
+<i>2209</i>&nbsp;        double var22;
+<i>2210</i>&nbsp;        switch(this.state) {
+<i>2211</i>&nbsp;        case 0:
+<b class="nc"><i>2212</i>&nbsp;            if(var1 != var3 || var2 != var4) {</b>
+<b class="nc"><i>2213</i>&nbsp;                System.arraycopy(var1, var2, var3, var4, var5 * 2);</b>
+<b class="nc"><i>2214</i>&nbsp;            }</b>
+<i>2215</i>&nbsp;
+<i>2216</i>&nbsp;            return;
+<i>2217</i>&nbsp;        case 1:
+<i>2218</i>&nbsp;            var10 = this.m02;
+<i>2219</i>&nbsp;            var16 = this.m12;
+<i>2220</i>&nbsp;
+<i>2221</i>&nbsp;            while(true) {
+<i>2222</i>&nbsp;                --var5;
+<i>2223</i>&nbsp;                if(var5 &lt; 0) {
+<i>2224</i>&nbsp;                    return;
+<i>2225</i>&nbsp;                }
+<i>2226</i>&nbsp;
+<i>2227</i>&nbsp;                var3[var4++] = var1[var2++] - var10;
+<i>2228</i>&nbsp;                var3[var4++] = var1[var2++] - var16;
+<b class="nc"><i>2229</i>&nbsp;            }</b>
+<b class="nc"><i>2230</i>&nbsp;        case 2:</b>
+<i>2231</i>&nbsp;            var6 = this.m00;
+<i>2232</i>&nbsp;            var14 = this.m11;
+<b class="nc"><i>2233</i>&nbsp;            if(var6 != 0.0D &amp;&amp; var14 != 0.0D) {</b>
+<b class="nc"><i>2234</i>&nbsp;                while(true) {</b>
+<i>2235</i>&nbsp;                    --var5;
+<i>2236</i>&nbsp;                    if(var5 &lt; 0) {
+<b class="nc"><i>2237</i>&nbsp;                        return;</b>
+<b class="nc"><i>2238</i>&nbsp;                    }</b>
+<b class="nc"><i>2239</i>&nbsp;</b>
+<b class="nc"><i>2240</i>&nbsp;                    var3[var4++] = var1[var2++] / var6;</b>
+<i>2241</i>&nbsp;                    var3[var4++] = var1[var2++] / var14;
+<i>2242</i>&nbsp;                }
+<b class="nc"><i>2243</i>&nbsp;            }</b>
+<b class="nc"><i>2244</i>&nbsp;</b>
+<i>2245</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>2246</i>&nbsp;        case 3:
+<b class="nc"><i>2247</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>2248</i>&nbsp;            var10 = this.m02;</b>
+<b class="nc"><i>2249</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>2250</i>&nbsp;            var16 = this.m12;</b>
+<i>2251</i>&nbsp;            if(var6 != 0.0D &amp;&amp; var14 != 0.0D) {
+<i>2252</i>&nbsp;                while(true) {
+<b class="nc"><i>2253</i>&nbsp;                    --var5;</b>
+<b class="nc"><i>2254</i>&nbsp;                    if(var5 &lt; 0) {</b>
+<i>2255</i>&nbsp;                        return;
+<i>2256</i>&nbsp;                    }
+<b class="nc"><i>2257</i>&nbsp;</b>
+<b class="nc"><i>2258</i>&nbsp;                    var3[var4++] = (var1[var2++] - var10) / var6;</b>
+<b class="nc"><i>2259</i>&nbsp;                    var3[var4++] = (var1[var2++] - var16) / var14;</b>
+<b class="nc"><i>2260</i>&nbsp;                }</b>
+<b class="nc"><i>2261</i>&nbsp;            }</b>
+<i>2262</i>&nbsp;
+<i>2263</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>2264</i>&nbsp;        case 4:
+<i>2265</i>&nbsp;            var8 = this.m01;
+<i>2266</i>&nbsp;            var12 = this.m10;
+<i>2267</i>&nbsp;            if(var8 != 0.0D &amp;&amp; var12 != 0.0D) {
+<i>2268</i>&nbsp;                while(true) {
+<i>2269</i>&nbsp;                    --var5;
+<i>2270</i>&nbsp;                    if(var5 &lt; 0) {
+<i>2271</i>&nbsp;                        return;
+<b class="nc"><i>2272</i>&nbsp;                    }</b>
+<i>2273</i>&nbsp;
+<i>2274</i>&nbsp;                    var20 = var1[var2++];
+<i>2275</i>&nbsp;                    var3[var4++] = var1[var2++] / var12;
+<i>2276</i>&nbsp;                    var3[var4++] = var20 / var8;
+<i>2277</i>&nbsp;                }
+<i>2278</i>&nbsp;            }
+<i>2279</i>&nbsp;
+<i>2280</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<i>2281</i>&nbsp;        case 5:
+<i>2282</i>&nbsp;            var8 = this.m01;
+<b class="nc"><i>2283</i>&nbsp;            var10 = this.m02;</b>
+<i>2284</i>&nbsp;            var12 = this.m10;
+<i>2285</i>&nbsp;            var16 = this.m12;
+<i>2286</i>&nbsp;            if(var8 != 0.0D &amp;&amp; var12 != 0.0D) {
+<i>2287</i>&nbsp;                while(true) {
+<i>2288</i>&nbsp;                    --var5;
+<b class="nc"><i>2289</i>&nbsp;                    if(var5 &lt; 0) {</b>
+<b class="nc"><i>2290</i>&nbsp;                        return;</b>
+<b class="nc"><i>2291</i>&nbsp;                    }</b>
+<b class="nc"><i>2292</i>&nbsp;</b>
+<b class="nc"><i>2293</i>&nbsp;                    var20 = var1[var2++] - var10;</b>
+<b class="nc"><i>2294</i>&nbsp;                    var3[var4++] = (var1[var2++] - var16) / var12;</b>
+<b class="nc"><i>2295</i>&nbsp;                    var3[var4++] = var20 / var8;</b>
+<b class="nc"><i>2296</i>&nbsp;                }</b>
+<i>2297</i>&nbsp;            }
+<i>2298</i>&nbsp;
+<i>2299</i>&nbsp;            throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);
+<b class="nc"><i>2300</i>&nbsp;        case 6:</b>
+<b class="nc"><i>2301</i>&nbsp;            var6 = this.m00;</b>
+<b class="nc"><i>2302</i>&nbsp;            var8 = this.m01;</b>
+<b class="nc"><i>2303</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>2304</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>2305</i>&nbsp;            var18 = var6 * var14 - var8 * var12;</b>
+<i>2306</i>&nbsp;            if(Math.abs(var18) &lt;= 4.9E-324D) {
+<i>2307</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot; + var18);
+<i>2308</i>&nbsp;            } else {
+<b class="nc"><i>2309</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>2310</i>&nbsp;                    --var5;</b>
+<b class="nc"><i>2311</i>&nbsp;                    if(var5 &lt; 0) {</b>
+<b class="nc"><i>2312</i>&nbsp;                        return;</b>
+<b class="nc"><i>2313</i>&nbsp;                    }</b>
+<b class="nc"><i>2314</i>&nbsp;</b>
+<i>2315</i>&nbsp;                    var20 = var1[var2++];
+<i>2316</i>&nbsp;                    var22 = var1[var2++];
+<b class="nc"><i>2317</i>&nbsp;                    var3[var4++] = (var20 * var14 - var22 * var8) / var18;</b>
+<b class="nc"><i>2318</i>&nbsp;                    var3[var4++] = (var22 * var6 - var20 * var12) / var18;</b>
+<b class="nc"><i>2319</i>&nbsp;                }</b>
+<b class="nc"><i>2320</i>&nbsp;            }</b>
+<b class="nc"><i>2321</i>&nbsp;        default:</b>
+<b class="nc"><i>2322</i>&nbsp;            this.stateError();</b>
+<i>2323</i>&nbsp;        case 7:
+<i>2324</i>&nbsp;            var6 = this.m00;
+<i>2325</i>&nbsp;            var8 = this.m01;
+<i>2326</i>&nbsp;            var10 = this.m02;
+<b class="nc"><i>2327</i>&nbsp;            var12 = this.m10;</b>
+<b class="nc"><i>2328</i>&nbsp;            var14 = this.m11;</b>
+<b class="nc"><i>2329</i>&nbsp;            var16 = this.m12;</b>
+<i>2330</i>&nbsp;            var18 = var6 * var14 - var8 * var12;
+<b class="nc"><i>2331</i>&nbsp;            if(Math.abs(var18) &lt;= 4.9E-324D) {</b>
+<i>2332</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot; + var18);
+<i>2333</i>&nbsp;            } else {
+<b class="nc"><i>2334</i>&nbsp;                while(true) {</b>
+<i>2335</i>&nbsp;                    --var5;
+<i>2336</i>&nbsp;                    if(var5 &lt; 0) {
+<b class="nc"><i>2337</i>&nbsp;                        return;</b>
+<b class="nc"><i>2338</i>&nbsp;                    }</b>
+<b class="nc"><i>2339</i>&nbsp;</b>
+<b class="nc"><i>2340</i>&nbsp;                    var20 = var1[var2++] - var10;</b>
+<b class="nc"><i>2341</i>&nbsp;                    var22 = var1[var2++] - var16;</b>
+<i>2342</i>&nbsp;                    var3[var4++] = (var20 * var14 - var22 * var8) / var18;
+<b class="nc"><i>2343</i>&nbsp;                    var3[var4++] = (var22 * var6 - var20 * var12) / var18;</b>
+<b class="nc"><i>2344</i>&nbsp;                }</b>
+<b class="nc"><i>2345</i>&nbsp;            }</b>
+<b class="nc"><i>2346</i>&nbsp;        }</b>
+<b class="nc"><i>2347</i>&nbsp;    }</b>
+<b class="nc"><i>2348</i>&nbsp;</b>
+<i>2349</i>&nbsp;    public Point2D deltaTransform(Point2D var1, Point2D var2) {
+<i>2350</i>&nbsp;        if(var2 == null) {
+<i>2351</i>&nbsp;            if(var1 instanceof Double) {
+<i>2352</i>&nbsp;                var2 = new Double();
+<b class="nc"><i>2353</i>&nbsp;            } else {</b>
+<b class="nc"><i>2354</i>&nbsp;                var2 = new Float();</b>
+<b class="nc"><i>2355</i>&nbsp;            }</b>
+<b class="nc"><i>2356</i>&nbsp;        }</b>
+<i>2357</i>&nbsp;
+<b class="nc"><i>2358</i>&nbsp;        double var3 = var1.getX();</b>
+<b class="nc"><i>2359</i>&nbsp;        double var5 = var1.getY();</b>
+<b class="nc"><i>2360</i>&nbsp;        switch(this.state) {</b>
+<b class="nc"><i>2361</i>&nbsp;        case 0:</b>
+<b class="nc"><i>2362</i>&nbsp;        case 1:</b>
+<i>2363</i>&nbsp;            ((Point2D)var2).setLocation(var3, var5);
+<i>2364</i>&nbsp;            return (Point2D)var2;
+<i>2365</i>&nbsp;        case 2:
+<b class="nc"><i>2366</i>&nbsp;        case 3:</b>
+<b class="nc"><i>2367</i>&nbsp;            ((Point2D)var2).setLocation(var3 * this.m00, var5 * this.m11);</b>
+<b class="nc"><i>2368</i>&nbsp;            return (Point2D)var2;</b>
+<b class="nc"><i>2369</i>&nbsp;        case 4:</b>
+<i>2370</i>&nbsp;        case 5:
+<b class="nc"><i>2371</i>&nbsp;            ((Point2D)var2).setLocation(var5 * this.m01, var3 * this.m10);</b>
+<b class="nc"><i>2372</i>&nbsp;            return (Point2D)var2;</b>
+<b class="nc"><i>2373</i>&nbsp;        default:</b>
+<b class="nc"><i>2374</i>&nbsp;            this.stateError();</b>
+<b class="nc"><i>2375</i>&nbsp;        case 6:</b>
+<i>2376</i>&nbsp;        case 7:
+<i>2377</i>&nbsp;            ((Point2D)var2).setLocation(var3 * this.m00 + var5 * this.m01, var3 * this.m10 + var5 * this.m11);
+<b class="nc"><i>2378</i>&nbsp;            return (Point2D)var2;</b>
+<b class="nc"><i>2379</i>&nbsp;        }</b>
+<b class="nc"><i>2380</i>&nbsp;    }</b>
+<i>2381</i>&nbsp;
+<b class="nc"><i>2382</i>&nbsp;    public void deltaTransform(double[] var1, int var2, double[] var3, int var4, int var5) {</b>
+<b class="nc"><i>2383</i>&nbsp;        if(var3 == var1 &amp;&amp; var4 &gt; var2 &amp;&amp; var4 &lt; var2 + var5 * 2) {</b>
+<b class="nc"><i>2384</i>&nbsp;            System.arraycopy(var1, var2, var3, var4, var5 * 2);</b>
+<b class="nc"><i>2385</i>&nbsp;            var2 = var4;</b>
+<b class="nc"><i>2386</i>&nbsp;        }</b>
+<i>2387</i>&nbsp;
+<i>2388</i>&nbsp;        double var6;
+<b class="nc"><i>2389</i>&nbsp;        double var8;</b>
+<i>2390</i>&nbsp;        double var10;
+<i>2391</i>&nbsp;        double var12;
+<i>2392</i>&nbsp;        double var14;
+<i>2393</i>&nbsp;        switch(this.state) {
+<i>2394</i>&nbsp;        case 0:
+<i>2395</i>&nbsp;        case 1:
+<i>2396</i>&nbsp;            if(var1 != var3 || var2 != var4) {
+<i>2397</i>&nbsp;                System.arraycopy(var1, var2, var3, var4, var5 * 2);
+<i>2398</i>&nbsp;            }
+<i>2399</i>&nbsp;
+<i>2400</i>&nbsp;            return;
+<i>2401</i>&nbsp;        case 2:
+<i>2402</i>&nbsp;        case 3:
+<i>2403</i>&nbsp;            var6 = this.m00;
+<i>2404</i>&nbsp;            var12 = this.m11;
+<i>2405</i>&nbsp;
+<i>2406</i>&nbsp;            while(true) {
+<i>2407</i>&nbsp;                --var5;
+<i>2408</i>&nbsp;                if(var5 &lt; 0) {
+<i>2409</i>&nbsp;                    return;
+<i>2410</i>&nbsp;                }
+<i>2411</i>&nbsp;
+<i>2412</i>&nbsp;                var3[var4++] = var1[var2++] * var6;
+<i>2413</i>&nbsp;                var3[var4++] = var1[var2++] * var12;
+<i>2414</i>&nbsp;            }
+<i>2415</i>&nbsp;        case 4:
+<i>2416</i>&nbsp;        case 5:
+<i>2417</i>&nbsp;            var8 = this.m01;
+<i>2418</i>&nbsp;            var10 = this.m10;
+<i>2419</i>&nbsp;
+<b class="nc"><i>2420</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>2421</i>&nbsp;                --var5;</b>
+<b class="nc"><i>2422</i>&nbsp;                if(var5 &lt; 0) {</b>
+<i>2423</i>&nbsp;                    return;
+<i>2424</i>&nbsp;                }
+<i>2425</i>&nbsp;
+<i>2426</i>&nbsp;                var14 = var1[var2++];
+<i>2427</i>&nbsp;                var3[var4++] = var1[var2++] * var8;
+<i>2428</i>&nbsp;                var3[var4++] = var14 * var10;
+<i>2429</i>&nbsp;            }
+<i>2430</i>&nbsp;        default:
+<i>2431</i>&nbsp;            this.stateError();
+<i>2432</i>&nbsp;        case 6:
+<i>2433</i>&nbsp;        case 7:
+<i>2434</i>&nbsp;            var6 = this.m00;
+<i>2435</i>&nbsp;            var8 = this.m01;
+<i>2436</i>&nbsp;            var10 = this.m10;
+<i>2437</i>&nbsp;            var12 = this.m11;
+<i>2438</i>&nbsp;
+<b class="nc"><i>2439</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>2440</i>&nbsp;                --var5;</b>
+<b class="nc"><i>2441</i>&nbsp;                if(var5 &lt; 0) {</b>
+<b class="nc"><i>2442</i>&nbsp;                    return;</b>
+<i>2443</i>&nbsp;                }
+<i>2444</i>&nbsp;
+<i>2445</i>&nbsp;                var14 = var1[var2++];
+<i>2446</i>&nbsp;                double var16 = var1[var2++];
+<i>2447</i>&nbsp;                var3[var4++] = var14 * var6 + var16 * var8;
+<i>2448</i>&nbsp;                var3[var4++] = var14 * var10 + var16 * var12;
+<i>2449</i>&nbsp;            }
+<b class="nc"><i>2450</i>&nbsp;        }</b>
+<b class="nc"><i>2451</i>&nbsp;    }</b>
+<i>2452</i>&nbsp;
+<i>2453</i>&nbsp;    public Shape createTransformedShape(Shape var1) {
+<i>2454</i>&nbsp;        return var1 == null?null:new java.awt.geom.Path2D.Double(var1, this);
+<i>2455</i>&nbsp;    }
+<i>2456</i>&nbsp;
+<b class="nc"><i>2457</i>&nbsp;    private static double _matround(double var0) {</b>
+<i>2458</i>&nbsp;        return Math.rint(var0 * 1.0E15D) / 1.0E15D;
+<i>2459</i>&nbsp;    }
+<i>2460</i>&nbsp;
+<i>2461</i>&nbsp;    public String toString() {
+<i>2462</i>&nbsp;        return &quot;AffineTransform[[&quot; + _matround(this.m00) + &quot;, &quot; + _matround(this.m01) + &quot;, &quot; + _matround(this.m02) + &quot;], [&quot; + _matround(this.m10) + &quot;, &quot; + _matround(this.m11) + &quot;, &quot; + _matround(this.m12) + &quot;]]&quot;;
+<i>2463</i>&nbsp;    }
+<i>2464</i>&nbsp;
+<i>2465</i>&nbsp;    public boolean isIdentity() {
+<b class="nc"><i>2466</i>&nbsp;        return this.state == 0 || this.getType() == 0;</b>
+<b class="nc"><i>2467</i>&nbsp;    }</b>
+<b class="nc"><i>2468</i>&nbsp;</b>
+<b class="nc"><i>2469</i>&nbsp;    public Object clone() {</b>
+<b class="nc"><i>2470</i>&nbsp;        try {</b>
+<b class="nc"><i>2471</i>&nbsp;            return super.clone();</b>
+<b class="nc"><i>2472</i>&nbsp;        } catch (CloneNotSupportedException var2) {</b>
+<b class="nc"><i>2473</i>&nbsp;            throw new InternalError();</b>
+<i>2474</i>&nbsp;        }
+<i>2475</i>&nbsp;    }
+<b class="nc"><i>2476</i>&nbsp;</b>
+<b class="nc"><i>2477</i>&nbsp;    public int hashCode() {</b>
+<i>2478</i>&nbsp;        long var1 = java.lang.Double.doubleToLongBits(this.m00);
+<b class="nc"><i>2479</i>&nbsp;        var1 = var1 * 31L + java.lang.Double.doubleToLongBits(this.m01);</b>
+<b class="nc"><i>2480</i>&nbsp;        var1 = var1 * 31L + java.lang.Double.doubleToLongBits(this.m02);</b>
+<b class="nc"><i>2481</i>&nbsp;        var1 = var1 * 31L + java.lang.Double.doubleToLongBits(this.m10);</b>
+<i>2482</i>&nbsp;        var1 = var1 * 31L + java.lang.Double.doubleToLongBits(this.m11);
+<b class="nc"><i>2483</i>&nbsp;        var1 = var1 * 31L + java.lang.Double.doubleToLongBits(this.m12);</b>
+<i>2484</i>&nbsp;        return (int)var1 ^ (int)(var1 &gt;&gt; 32);
+<i>2485</i>&nbsp;    }
+<i>2486</i>&nbsp;
+<b class="nc"><i>2487</i>&nbsp;    public boolean equals(Object var1) {</b>
+<i>2488</i>&nbsp;        if(!(var1 instanceof AffineTransform)) {
+<i>2489</i>&nbsp;            return false;
+<i>2490</i>&nbsp;        } else {
+<i>2491</i>&nbsp;            AffineTransform var2 = (AffineTransform)var1;
+<i>2492</i>&nbsp;            return this.m00 == var2.m00 &amp;&amp; this.m01 == var2.m01 &amp;&amp; this.m02 == var2.m02 &amp;&amp; this.m10 == var2.m10 &amp;&amp; this.m11 == var2.m11 &amp;&amp; this.m12 == var2.m12;
+<b class="nc"><i>2493</i>&nbsp;        }</b>
+<i>2494</i>&nbsp;    }
+<i>2495</i>&nbsp;
+<i>2496</i>&nbsp;    private void writeObject(ObjectOutputStream var1) throws ClassNotFoundException, IOException {
+<i>2497</i>&nbsp;        var1.defaultWriteObject();
+<b class="nc"><i>2498</i>&nbsp;    }</b>
+<b class="nc"><i>2499</i>&nbsp;</b>
+<i>2500</i>&nbsp;    private void readObject(ObjectInputStream var1) throws ClassNotFoundException, IOException {
+<b class="nc"><i>2501</i>&nbsp;        var1.defaultReadObject();</b>
+<b class="nc"><i>2502</i>&nbsp;        this.updateState();</b>
+<b class="nc"><i>2503</i>&nbsp;    }</b>
+<i>2504</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

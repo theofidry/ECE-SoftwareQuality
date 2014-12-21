@@ -1,0 +1,963 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XSDComplexTypeTraverser</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.impl.xs.traversers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XSDComplexTypeTraverser (com.sun.org.apache.xerces.internal.impl.xs.traversers)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XSDComplexTypeTraverser</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 523)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">XSDComplexTypeTraverser$ComplexTypeRecoverableError</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 531)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.impl.xs.traversers;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dv.InvalidDatatypeFacetException;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dv.XSFacets;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dv.XSSimpleType;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.dv.xs.XSSimpleTypeDecl;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.SchemaGrammar;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.SchemaSymbols;
+<i>14</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSAnnotationImpl;
+<i>15</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSAttributeGroupDecl;
+<i>16</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSAttributeUseImpl;
+<i>17</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSComplexTypeDecl;
+<i>18</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSConstraints;
+<i>19</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSModelGroupImpl;
+<i>20</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSParticleDecl;
+<i>21</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XSWildcardDecl;
+<i>22</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSAttributeChecker;
+<i>23</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSDAbstractParticleTraverser;
+<i>24</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSDHandler;
+<i>25</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSDocumentInfo;
+<i>26</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.traversers.XSDAbstractTraverser.FacetInfo;
+<i>27</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.util.XInt;
+<i>28</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.util.XSObjectListImpl;
+<i>29</i>&nbsp;import com.sun.org.apache.xerces.internal.util.DOMUtil;
+<i>30</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.QName;
+<i>31</i>&nbsp;import com.sun.org.apache.xerces.internal.xs.XSAttributeUse;
+<i>32</i>&nbsp;import com.sun.org.apache.xerces.internal.xs.XSObjectList;
+<i>33</i>&nbsp;import com.sun.org.apache.xerces.internal.xs.XSTypeDefinition;
+<i>34</i>&nbsp;import org.w3c.dom.Element;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;class XSDComplexTypeTraverser extends XSDAbstractParticleTraverser {
+<i>37</i>&nbsp;    private static final int GLOBAL_NUM = 11;
+<i>38</i>&nbsp;    private static XSParticleDecl fErrorContent = null;
+<i>39</i>&nbsp;    private static XSWildcardDecl fErrorWildcard = null;
+<i>40</i>&nbsp;    private String fName = null;
+<i>41</i>&nbsp;    private String fTargetNamespace = null;
+<i>42</i>&nbsp;    private short fDerivedBy = 2;
+<i>43</i>&nbsp;    private short fFinal = 0;
+<i>44</i>&nbsp;    private short fBlock = 0;
+<i>45</i>&nbsp;    private short fContentType = 0;
+<i>46</i>&nbsp;    private XSTypeDefinition fBaseType = null;
+<i>47</i>&nbsp;    private XSAttributeGroupDecl fAttrGrp = null;
+<i>48</i>&nbsp;    private XSSimpleType fXSSimpleType = null;
+<i>49</i>&nbsp;    private XSParticleDecl fParticle = null;
+<i>50</i>&nbsp;    private boolean fIsAbstract = false;
+<i>51</i>&nbsp;    private XSComplexTypeDecl fComplexTypeDecl = null;
+<i>52</i>&nbsp;    private XSAnnotationImpl[] fAnnotations = null;
+<i>53</i>&nbsp;    private Object[] fGlobalStore = null;
+<i>54</i>&nbsp;    private int fGlobalStorePos = 0;
+<i>55</i>&nbsp;    private static final boolean DEBUG = false;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    private static XSParticleDecl getErrorContent() {
+<i>58</i>&nbsp;        if(fErrorContent == null) {
+<i>59</i>&nbsp;            XSParticleDecl particle = new XSParticleDecl();
+<i>60</i>&nbsp;            particle.fType = 2;
+<i>61</i>&nbsp;            particle.fValue = getErrorWildcard();
+<i>62</i>&nbsp;            particle.fMinOccurs = 0;
+<i>63</i>&nbsp;            particle.fMaxOccurs = -1;
+<i>64</i>&nbsp;            XSModelGroupImpl group = new XSModelGroupImpl();
+<i>65</i>&nbsp;            group.fCompositor = 102;
+<i>66</i>&nbsp;            group.fParticleCount = 1;
+<i>67</i>&nbsp;            group.fParticles = new XSParticleDecl[1];
+<i>68</i>&nbsp;            group.fParticles[0] = particle;
+<b class="nc"><i>69</i>&nbsp;            XSParticleDecl errorContent = new XSParticleDecl();</b>
+<b class="nc"><i>70</i>&nbsp;            errorContent.fType = 3;</b>
+<b class="nc"><i>71</i>&nbsp;            errorContent.fValue = group;</b>
+<b class="nc"><i>72</i>&nbsp;            fErrorContent = errorContent;</b>
+<b class="nc"><i>73</i>&nbsp;        }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<b class="nc"><i>75</i>&nbsp;        return fErrorContent;</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<b class="nc"><i>78</i>&nbsp;    private static XSWildcardDecl getErrorWildcard() {</b>
+<b class="nc"><i>79</i>&nbsp;        if(fErrorWildcard == null) {</b>
+<b class="nc"><i>80</i>&nbsp;            XSWildcardDecl wildcard = new XSWildcardDecl();</b>
+<b class="nc"><i>81</i>&nbsp;            wildcard.fProcessContents = 2;</b>
+<i>82</i>&nbsp;            fErrorWildcard = wildcard;
+<b class="nc"><i>83</i>&nbsp;        }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;        return fErrorWildcard;
+<b class="nc"><i>86</i>&nbsp;    }</b>
+<b class="nc"><i>87</i>&nbsp;</b>
+<i>88</i>&nbsp;    XSDComplexTypeTraverser(XSDHandler handler, XSAttributeChecker gAttrCheck) {
+<i>89</i>&nbsp;        super(handler, gAttrCheck);
+<i>90</i>&nbsp;    }
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;    XSComplexTypeDecl traverseLocal(Element complexTypeNode, XSDocumentInfo schemaDoc, SchemaGrammar grammar) {
+<i>93</i>&nbsp;        Object[] attrValues = this.fAttrChecker.checkAttributes(complexTypeNode, false, schemaDoc);
+<i>94</i>&nbsp;        String complexTypeName = this.genAnonTypeName(complexTypeNode);
+<i>95</i>&nbsp;        this.contentBackup();
+<i>96</i>&nbsp;        XSComplexTypeDecl type = this.traverseComplexTypeDecl(complexTypeNode, complexTypeName, attrValues, schemaDoc, grammar);
+<b class="nc"><i>97</i>&nbsp;        this.contentRestore();</b>
+<i>98</i>&nbsp;        grammar.addComplexTypeDecl(type, this.fSchemaHandler.element2Locator(complexTypeNode));
+<i>99</i>&nbsp;        type.setIsAnonymous();
+<i>100</i>&nbsp;        this.fAttrChecker.returnAttrArray(attrValues, schemaDoc);
+<i>101</i>&nbsp;        return type;
+<i>102</i>&nbsp;    }
+<b class="nc"><i>103</i>&nbsp;</b>
+<b class="nc"><i>104</i>&nbsp;    XSComplexTypeDecl traverseGlobal(Element complexTypeNode, XSDocumentInfo schemaDoc, SchemaGrammar grammar) {</b>
+<b class="nc"><i>105</i>&nbsp;        Object[] attrValues = this.fAttrChecker.checkAttributes(complexTypeNode, true, schemaDoc);</b>
+<b class="nc"><i>106</i>&nbsp;        String complexTypeName = (String)attrValues[XSAttributeChecker.ATTIDX_NAME];</b>
+<i>107</i>&nbsp;        this.contentBackup();
+<b class="nc"><i>108</i>&nbsp;        XSComplexTypeDecl type = this.traverseComplexTypeDecl(complexTypeNode, complexTypeName, attrValues, schemaDoc, grammar);</b>
+<b class="nc"><i>109</i>&nbsp;        this.contentRestore();</b>
+<b class="nc"><i>110</i>&nbsp;        grammar.addComplexTypeDecl(type, this.fSchemaHandler.element2Locator(complexTypeNode));</b>
+<b class="nc"><i>111</i>&nbsp;        if(complexTypeName == null) {</b>
+<i>112</i>&nbsp;            this.reportSchemaError(&quot;s4s-att-must-appear&quot;, new Object[]{SchemaSymbols.ELT_COMPLEXTYPE, SchemaSymbols.ATT_NAME}, complexTypeNode);
+<i>113</i>&nbsp;            type = null;
+<i>114</i>&nbsp;        } else {
+<i>115</i>&nbsp;            if(grammar.getGlobalTypeDecl(type.getName()) == null) {
+<i>116</i>&nbsp;                grammar.addGlobalComplexTypeDecl(type);
+<i>117</i>&nbsp;            }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;            String loc = this.fSchemaHandler.schemaDocument2SystemId(schemaDoc);
+<i>120</i>&nbsp;            XSTypeDefinition type2 = grammar.getGlobalTypeDecl(type.getName(), loc);
+<i>121</i>&nbsp;            if(type2 == null) {
+<i>122</i>&nbsp;                grammar.addGlobalComplexTypeDecl(type, loc);
+<i>123</i>&nbsp;            }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;            if(this.fSchemaHandler.fTolerateDuplicates) {
+<i>126</i>&nbsp;                if(type2 != null &amp;&amp; type2 instanceof XSComplexTypeDecl) {
+<i>127</i>&nbsp;                    type = (XSComplexTypeDecl)type2;
+<i>128</i>&nbsp;                }
+<b class="nc"><i>129</i>&nbsp;</b>
+<i>130</i>&nbsp;                this.fSchemaHandler.addGlobalTypeDecl(type);
+<b class="nc"><i>131</i>&nbsp;            }</b>
+<b class="nc"><i>132</i>&nbsp;        }</b>
+<b class="nc"><i>133</i>&nbsp;</b>
+<i>134</i>&nbsp;        this.fAttrChecker.returnAttrArray(attrValues, schemaDoc);
+<b class="nc"><i>135</i>&nbsp;        return type;</b>
+<i>136</i>&nbsp;    }
+<b class="nc"><i>137</i>&nbsp;</b>
+<b class="nc"><i>138</i>&nbsp;    private XSComplexTypeDecl traverseComplexTypeDecl(Element complexTypeDecl, String complexTypeName, Object[] attrValues, XSDocumentInfo schemaDoc, SchemaGrammar grammar) {</b>
+<b class="nc"><i>139</i>&nbsp;        this.fComplexTypeDecl = new XSComplexTypeDecl();</b>
+<i>140</i>&nbsp;        this.fAttrGrp = new XSAttributeGroupDecl();
+<b class="nc"><i>141</i>&nbsp;        Boolean abstractAtt = (Boolean)attrValues[XSAttributeChecker.ATTIDX_ABSTRACT];</b>
+<i>142</i>&nbsp;        XInt blockAtt = (XInt)attrValues[XSAttributeChecker.ATTIDX_BLOCK];
+<i>143</i>&nbsp;        Boolean mixedAtt = (Boolean)attrValues[XSAttributeChecker.ATTIDX_MIXED];
+<i>144</i>&nbsp;        XInt finalAtt = (XInt)attrValues[XSAttributeChecker.ATTIDX_FINAL];
+<i>145</i>&nbsp;        this.fName = complexTypeName;
+<i>146</i>&nbsp;        this.fComplexTypeDecl.setName(this.fName);
+<i>147</i>&nbsp;        this.fTargetNamespace = schemaDoc.fTargetNamespace;
+<i>148</i>&nbsp;        this.fBlock = blockAtt == null?schemaDoc.fBlockDefault:blockAtt.shortValue();
+<i>149</i>&nbsp;        this.fFinal = finalAtt == null?schemaDoc.fFinalDefault:finalAtt.shortValue();
+<i>150</i>&nbsp;        this.fBlock = (short)(this.fBlock &amp; 3);
+<i>151</i>&nbsp;        this.fFinal = (short)(this.fFinal &amp; 3);
+<i>152</i>&nbsp;        this.fIsAbstract = abstractAtt != null &amp;&amp; abstractAtt.booleanValue();
+<i>153</i>&nbsp;        this.fAnnotations = null;
+<i>154</i>&nbsp;        Element child = null;
+<i>155</i>&nbsp;
+<b class="nc"><i>156</i>&nbsp;        try {</b>
+<i>157</i>&nbsp;            child = DOMUtil.getFirstChildElement(complexTypeDecl);
+<b class="nc"><i>158</i>&nbsp;            String e;</b>
+<b class="nc"><i>159</i>&nbsp;            if(child != null) {</b>
+<b class="nc"><i>160</i>&nbsp;                if(DOMUtil.getLocalName(child).equals(SchemaSymbols.ELT_ANNOTATION)) {</b>
+<i>161</i>&nbsp;                    this.addAnnotation(this.traverseAnnotationDecl(child, attrValues, false, schemaDoc));
+<b class="nc"><i>162</i>&nbsp;                    child = DOMUtil.getNextSiblingElement(child);</b>
+<b class="nc"><i>163</i>&nbsp;                } else {</b>
+<b class="nc"><i>164</i>&nbsp;                    e = DOMUtil.getSyntheticAnnotation(complexTypeDecl);</b>
+<i>165</i>&nbsp;                    if(e != null) {
+<b class="nc"><i>166</i>&nbsp;                        this.addAnnotation(this.traverseSyntheticAnnotation(complexTypeDecl, e, attrValues, false, schemaDoc));</b>
+<i>167</i>&nbsp;                    }
+<i>168</i>&nbsp;                }
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;                if(child != null &amp;&amp; DOMUtil.getLocalName(child).equals(SchemaSymbols.ELT_ANNOTATION)) {</b>
+<i>171</i>&nbsp;                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, SchemaSymbols.ELT_ANNOTATION}, child);
+<b class="nc"><i>172</i>&nbsp;                }</b>
+<i>173</i>&nbsp;            } else {
+<i>174</i>&nbsp;                e = DOMUtil.getSyntheticAnnotation(complexTypeDecl);
+<i>175</i>&nbsp;                if(e != null) {
+<i>176</i>&nbsp;                    this.addAnnotation(this.traverseSyntheticAnnotation(complexTypeDecl, e, attrValues, false, schemaDoc));
+<i>177</i>&nbsp;                }
+<i>178</i>&nbsp;            }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;            if(child == null) {
+<i>181</i>&nbsp;                this.fBaseType = SchemaGrammar.fAnyType;
+<b class="nc"><i>182</i>&nbsp;                this.fDerivedBy = 2;</b>
+<b class="nc"><i>183</i>&nbsp;                this.processComplexContent(child, mixedAtt.booleanValue(), false, schemaDoc, grammar);</b>
+<b class="nc"><i>184</i>&nbsp;            } else {</b>
+<b class="nc"><i>185</i>&nbsp;                String siblingName;</b>
+<b class="nc"><i>186</i>&nbsp;                Element e1;</b>
+<b class="nc"><i>187</i>&nbsp;                if(DOMUtil.getLocalName(child).equals(SchemaSymbols.ELT_SIMPLECONTENT)) {</b>
+<i>188</i>&nbsp;                    this.traverseSimpleContent(child, schemaDoc, grammar);
+<b class="nc"><i>189</i>&nbsp;                    e1 = DOMUtil.getNextSiblingElement(child);</b>
+<b class="nc"><i>190</i>&nbsp;                    if(e1 != null) {</b>
+<b class="nc"><i>191</i>&nbsp;                        siblingName = DOMUtil.getLocalName(e1);</b>
+<i>192</i>&nbsp;                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, siblingName}, e1);
+<b class="nc"><i>193</i>&nbsp;                    }</b>
+<b class="nc"><i>194</i>&nbsp;                } else if(DOMUtil.getLocalName(child).equals(SchemaSymbols.ELT_COMPLEXCONTENT)) {</b>
+<i>195</i>&nbsp;                    this.traverseComplexContent(child, mixedAtt.booleanValue(), schemaDoc, grammar);
+<b class="nc"><i>196</i>&nbsp;                    e1 = DOMUtil.getNextSiblingElement(child);</b>
+<b class="nc"><i>197</i>&nbsp;                    if(e1 != null) {</b>
+<i>198</i>&nbsp;                        siblingName = DOMUtil.getLocalName(e1);
+<b class="nc"><i>199</i>&nbsp;                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, siblingName}, e1);</b>
+<i>200</i>&nbsp;                    }
+<b class="nc"><i>201</i>&nbsp;                } else {</b>
+<i>202</i>&nbsp;                    this.fBaseType = SchemaGrammar.fAnyType;
+<i>203</i>&nbsp;                    this.fDerivedBy = 2;
+<i>204</i>&nbsp;                    this.processComplexContent(child, mixedAtt.booleanValue(), false, schemaDoc, grammar);
+<i>205</i>&nbsp;                }
+<i>206</i>&nbsp;            }
+<b class="nc"><i>207</i>&nbsp;        } catch (XSDComplexTypeTraverser.ComplexTypeRecoverableError var13) {</b>
+<b class="nc"><i>208</i>&nbsp;            this.handleComplexTypeError(var13.getMessage(), var13.errorSubstText, var13.errorElem);</b>
+<b class="nc"><i>209</i>&nbsp;        }</b>
+<b class="nc"><i>210</i>&nbsp;</b>
+<b class="nc"><i>211</i>&nbsp;        this.fComplexTypeDecl.setValues(this.fName, this.fTargetNamespace, this.fBaseType, this.fDerivedBy, this.fFinal, this.fBlock, this.fContentType, this.fIsAbstract, this.fAttrGrp, this.fXSSimpleType, this.fParticle, new XSObjectListImpl(this.fAnnotations, this.fAnnotations == null?0:this.fAnnotations.length));</b>
+<i>212</i>&nbsp;        return this.fComplexTypeDecl;
+<i>213</i>&nbsp;    }
+<b class="nc"><i>214</i>&nbsp;</b>
+<b class="nc"><i>215</i>&nbsp;    private void traverseSimpleContent(Element simpleContentElement, XSDocumentInfo schemaDoc, SchemaGrammar grammar) throws XSDComplexTypeTraverser.ComplexTypeRecoverableError {</b>
+<b class="nc"><i>216</i>&nbsp;        Object[] simpleContentAttrValues = this.fAttrChecker.checkAttributes(simpleContentElement, false, schemaDoc);</b>
+<i>217</i>&nbsp;        this.fContentType = 1;
+<i>218</i>&nbsp;        this.fParticle = null;
+<b class="nc"><i>219</i>&nbsp;        Element simpleContent = DOMUtil.getFirstChildElement(simpleContentElement);</b>
+<b class="nc"><i>220</i>&nbsp;        String simpleContentName;</b>
+<i>221</i>&nbsp;        if(simpleContent != null &amp;&amp; DOMUtil.getLocalName(simpleContent).equals(SchemaSymbols.ELT_ANNOTATION)) {
+<i>222</i>&nbsp;            this.addAnnotation(this.traverseAnnotationDecl(simpleContent, simpleContentAttrValues, false, schemaDoc));
+<i>223</i>&nbsp;            simpleContent = DOMUtil.getNextSiblingElement(simpleContent);
+<i>224</i>&nbsp;        } else {
+<i>225</i>&nbsp;            simpleContentName = DOMUtil.getSyntheticAnnotation(simpleContentElement);
+<b class="nc"><i>226</i>&nbsp;            if(simpleContentName != null) {</b>
+<b class="nc"><i>227</i>&nbsp;                this.addAnnotation(this.traverseSyntheticAnnotation(simpleContentElement, simpleContentName, simpleContentAttrValues, false, schemaDoc));</b>
+<b class="nc"><i>228</i>&nbsp;            }</b>
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        if(simpleContent == null) {
+<i>232</i>&nbsp;            this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);
+<i>233</i>&nbsp;            throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.2&quot;, new Object[]{this.fName, SchemaSymbols.ELT_SIMPLECONTENT}, simpleContentElement);
+<b class="nc"><i>234</i>&nbsp;        } else {</b>
+<i>235</i>&nbsp;            simpleContentName = DOMUtil.getLocalName(simpleContent);
+<i>236</i>&nbsp;            if(simpleContentName.equals(SchemaSymbols.ELT_RESTRICTION)) {
+<i>237</i>&nbsp;                this.fDerivedBy = 2;
+<i>238</i>&nbsp;            } else {
+<i>239</i>&nbsp;                if(!simpleContentName.equals(SchemaSymbols.ELT_EXTENSION)) {
+<b class="nc"><i>240</i>&nbsp;                    this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>241</i>&nbsp;                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, simpleContentName}, simpleContent);</b>
+<i>242</i>&nbsp;                }
+<i>243</i>&nbsp;
+<b class="nc"><i>244</i>&nbsp;                this.fDerivedBy = 1;</b>
+<i>245</i>&nbsp;            }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;            Element elemTmp = DOMUtil.getNextSiblingElement(simpleContent);
+<i>248</i>&nbsp;            if(elemTmp != null) {
+<b class="nc"><i>249</i>&nbsp;                this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>250</i>&nbsp;                String derivationTypeAttrValues1 = DOMUtil.getLocalName(elemTmp);</b>
+<b class="nc"><i>251</i>&nbsp;                throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, derivationTypeAttrValues1}, elemTmp);</b>
+<b class="nc"><i>252</i>&nbsp;            } else {</b>
+<b class="nc"><i>253</i>&nbsp;                Object[] derivationTypeAttrValues = this.fAttrChecker.checkAttributes(simpleContent, false, schemaDoc);</b>
+<i>254</i>&nbsp;                QName baseTypeName = (QName)derivationTypeAttrValues[XSAttributeChecker.ATTIDX_BASE];
+<i>255</i>&nbsp;                if(baseTypeName == null) {
+<i>256</i>&nbsp;                    this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);
+<b class="nc"><i>257</i>&nbsp;                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>258</i>&nbsp;                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-att-must-appear&quot;, new Object[]{simpleContentName, &quot;base&quot;}, simpleContent);</b>
+<i>259</i>&nbsp;                } else {
+<b class="nc"><i>260</i>&nbsp;                    XSTypeDefinition type = (XSTypeDefinition)this.fSchemaHandler.getGlobalDecl(schemaDoc, 7, baseTypeName, simpleContent);</b>
+<i>261</i>&nbsp;                    if(type == null) {
+<b class="nc"><i>262</i>&nbsp;                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>263</i>&nbsp;                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>264</i>&nbsp;                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError();</b>
+<b class="nc"><i>265</i>&nbsp;                    } else {</b>
+<i>266</i>&nbsp;                        this.fBaseType = type;
+<i>267</i>&nbsp;                        XSSimpleType baseValidator = null;
+<i>268</i>&nbsp;                        XSComplexTypeDecl baseComplexType = null;
+<b class="nc"><i>269</i>&nbsp;                        boolean baseFinalSet = false;</b>
+<i>270</i>&nbsp;                        short baseFinalSet1;
+<i>271</i>&nbsp;                        if(type.getTypeCategory() == 15) {
+<i>272</i>&nbsp;                            baseComplexType = (XSComplexTypeDecl)type;
+<i>273</i>&nbsp;                            baseFinalSet1 = baseComplexType.getFinal();
+<i>274</i>&nbsp;                            if(baseComplexType.getContentType() == 1) {
+<i>275</i>&nbsp;                                baseValidator = (XSSimpleType)baseComplexType.getSimpleType();
+<i>276</i>&nbsp;                            } else if(this.fDerivedBy != 2 || baseComplexType.getContentType() != 3 || !((XSParticleDecl)baseComplexType.getParticle()).emptiable()) {
+<i>277</i>&nbsp;                                this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);
+<b class="nc"><i>278</i>&nbsp;                                this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>279</i>&nbsp;                                throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;src-ct.2.1&quot;, new Object[]{this.fName, baseComplexType.getName()}, simpleContent);</b>
+<i>280</i>&nbsp;                            }
+<i>281</i>&nbsp;                        } else {
+<i>282</i>&nbsp;                            baseValidator = (XSSimpleType)type;
+<i>283</i>&nbsp;                            if(this.fDerivedBy == 2) {
+<b class="nc"><i>284</i>&nbsp;                                this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>285</i>&nbsp;                                this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>286</i>&nbsp;                                throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;src-ct.2.1&quot;, new Object[]{this.fName, baseValidator.getName()}, simpleContent);
+<b class="nc"><i>287</i>&nbsp;                            }</b>
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;                            baseFinalSet1 = baseValidator.getFinal();
+<i>290</i>&nbsp;                        }
+<i>291</i>&nbsp;
+<b class="nc"><i>292</i>&nbsp;                        if((baseFinalSet1 &amp; this.fDerivedBy) != 0) {</b>
+<i>293</i>&nbsp;                            this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);
+<i>294</i>&nbsp;                            this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<i>295</i>&nbsp;                            String scElement1 = this.fDerivedBy == 1?&quot;cos-ct-extends.1.1&quot;:&quot;derivation-ok-restriction.1&quot;;
+<b class="nc"><i>296</i>&nbsp;                            throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(scElement1, new Object[]{this.fName, this.fBaseType.getName()}, simpleContent);</b>
+<i>297</i>&nbsp;                        } else {
+<i>298</i>&nbsp;                            Element scElement = simpleContent;
+<i>299</i>&nbsp;                            simpleContent = DOMUtil.getFirstChildElement(simpleContent);
+<i>300</i>&nbsp;                            String e;
+<i>301</i>&nbsp;                            if(simpleContent != null) {
+<i>302</i>&nbsp;                                if(DOMUtil.getLocalName(simpleContent).equals(SchemaSymbols.ELT_ANNOTATION)) {
+<i>303</i>&nbsp;                                    this.addAnnotation(this.traverseAnnotationDecl(simpleContent, derivationTypeAttrValues, false, schemaDoc));
+<i>304</i>&nbsp;                                    simpleContent = DOMUtil.getNextSiblingElement(simpleContent);
+<i>305</i>&nbsp;                                } else {
+<b class="nc"><i>306</i>&nbsp;                                    e = DOMUtil.getSyntheticAnnotation(scElement);</b>
+<i>307</i>&nbsp;                                    if(e != null) {
+<i>308</i>&nbsp;                                        this.addAnnotation(this.traverseSyntheticAnnotation(scElement, e, derivationTypeAttrValues, false, schemaDoc));
+<i>309</i>&nbsp;                                    }
+<i>310</i>&nbsp;                                }
+<i>311</i>&nbsp;
+<b class="nc"><i>312</i>&nbsp;                                if(simpleContent != null &amp;&amp; DOMUtil.getLocalName(simpleContent).equals(SchemaSymbols.ELT_ANNOTATION)) {</b>
+<b class="nc"><i>313</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<i>314</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<b class="nc"><i>315</i>&nbsp;                                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, SchemaSymbols.ELT_ANNOTATION}, simpleContent);</b>
+<b class="nc"><i>316</i>&nbsp;                                }</b>
+<b class="nc"><i>317</i>&nbsp;                            } else {</b>
+<b class="nc"><i>318</i>&nbsp;                                e = DOMUtil.getSyntheticAnnotation(scElement);</b>
+<i>319</i>&nbsp;                                if(e != null) {
+<i>320</i>&nbsp;                                    this.addAnnotation(this.traverseSyntheticAnnotation(scElement, e, derivationTypeAttrValues, false, schemaDoc));
+<b class="nc"><i>321</i>&nbsp;                                }</b>
+<b class="nc"><i>322</i>&nbsp;                            }</b>
+<b class="nc"><i>323</i>&nbsp;</b>
+<i>324</i>&nbsp;                            if(this.fDerivedBy == 2) {
+<i>325</i>&nbsp;                                if(simpleContent != null &amp;&amp; DOMUtil.getLocalName(simpleContent).equals(SchemaSymbols.ELT_SIMPLETYPE)) {
+<i>326</i>&nbsp;                                    XSSimpleType e2 = this.fSchemaHandler.fSimpleTypeTraverser.traverseLocal(simpleContent, schemaDoc, grammar);
+<i>327</i>&nbsp;                                    if(e2 == null) {
+<b class="nc"><i>328</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>329</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>330</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError();</b>
+<i>331</i>&nbsp;                                    }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;                                    if(baseValidator != null &amp;&amp; !XSConstraints.checkSimpleDerivationOk(e2, baseValidator, baseValidator.getFinal())) {
+<i>334</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);
+<i>335</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<i>336</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;derivation-ok-restriction.5.2.2.1&quot;, new Object[]{this.fName, e2.getName(), baseValidator.getName()}, simpleContent);
+<i>337</i>&nbsp;                                    }
+<b class="nc"><i>338</i>&nbsp;</b>
+<b class="nc"><i>339</i>&nbsp;                                    baseValidator = e2;</b>
+<b class="nc"><i>340</i>&nbsp;                                    simpleContent = DOMUtil.getNextSiblingElement(simpleContent);</b>
+<b class="nc"><i>341</i>&nbsp;                                }</b>
+<b class="nc"><i>342</i>&nbsp;</b>
+<i>343</i>&nbsp;                                if(baseValidator == null) {
+<b class="nc"><i>344</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>345</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>346</i>&nbsp;                                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;src-ct.2.2&quot;, new Object[]{this.fName}, simpleContent);
+<i>347</i>&nbsp;                                }
+<i>348</i>&nbsp;
+<b class="nc"><i>349</i>&nbsp;                                Element e1 = null;</b>
+<b class="nc"><i>350</i>&nbsp;                                XSFacets node = null;</b>
+<b class="nc"><i>351</i>&nbsp;                                short presentFacets = 0;</b>
+<b class="nc"><i>352</i>&nbsp;                                short fixedFacets = 0;</b>
+<b class="nc"><i>353</i>&nbsp;                                if(simpleContent != null) {</b>
+<i>354</i>&nbsp;                                    FacetInfo name = this.traverseFacets(simpleContent, baseValidator, schemaDoc);
+<i>355</i>&nbsp;                                    e1 = name.nodeAfterFacets;
+<i>356</i>&nbsp;                                    node = name.facetdata;
+<i>357</i>&nbsp;                                    presentFacets = name.fPresentFacets;
+<b class="nc"><i>358</i>&nbsp;                                    fixedFacets = name.fFixedFacets;</b>
+<i>359</i>&nbsp;                                }
+<b class="nc"><i>360</i>&nbsp;</b>
+<i>361</i>&nbsp;                                String name1 = this.genAnonTypeName(simpleContentElement);
+<i>362</i>&nbsp;                                this.fXSSimpleType = this.fSchemaHandler.fDVFactory.createTypeRestriction(name1, schemaDoc.fTargetNamespace, (short)0, baseValidator, (XSObjectList)null);
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;                                try {
+<i>365</i>&nbsp;                                    this.fValidationState.setNamespaceSupport(schemaDoc.fNamespaceSupport);
+<b class="nc"><i>366</i>&nbsp;                                    this.fXSSimpleType.applyFacets(node, presentFacets, fixedFacets, this.fValidationState);</b>
+<b class="nc"><i>367</i>&nbsp;                                } catch (InvalidDatatypeFacetException var23) {</b>
+<b class="nc"><i>368</i>&nbsp;                                    this.reportSchemaError(var23.getKey(), var23.getArgs(), simpleContent);</b>
+<b class="nc"><i>369</i>&nbsp;                                    this.fXSSimpleType = this.fSchemaHandler.fDVFactory.createTypeRestriction(name1, schemaDoc.fTargetNamespace, (short)0, baseValidator, (XSObjectList)null);</b>
+<i>370</i>&nbsp;                                }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;                                if(this.fXSSimpleType instanceof XSSimpleTypeDecl) {
+<b class="nc"><i>373</i>&nbsp;                                    ((XSSimpleTypeDecl)this.fXSSimpleType).setAnonymous(true);</b>
+<i>374</i>&nbsp;                                }
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;                                if(e1 != null) {</b>
+<b class="nc"><i>377</i>&nbsp;                                    if(!this.isAttrOrAttrGroup(e1)) {</b>
+<b class="nc"><i>378</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>379</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>380</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, DOMUtil.getLocalName(e1)}, e1);
+<i>381</i>&nbsp;                                    }
+<b class="nc"><i>382</i>&nbsp;</b>
+<i>383</i>&nbsp;                                    Element errArgs = this.traverseAttrsAndAttrGrps(e1, this.fAttrGrp, schemaDoc, grammar, this.fComplexTypeDecl);
+<b class="nc"><i>384</i>&nbsp;                                    if(errArgs != null) {</b>
+<b class="nc"><i>385</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>386</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>387</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, DOMUtil.getLocalName(errArgs)}, errArgs);
+<i>388</i>&nbsp;                                    }
+<b class="nc"><i>389</i>&nbsp;                                }</b>
+<i>390</i>&nbsp;
+<b class="nc"><i>391</i>&nbsp;                                try {</b>
+<b class="nc"><i>392</i>&nbsp;                                    this.mergeAttributes(baseComplexType.getAttrGrp(), this.fAttrGrp, this.fName, false, simpleContentElement);</b>
+<i>393</i>&nbsp;                                } catch (XSDComplexTypeTraverser.ComplexTypeRecoverableError var22) {
+<b class="nc"><i>394</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>395</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>396</i>&nbsp;                                    throw var22;
+<i>397</i>&nbsp;                                }
+<b class="nc"><i>398</i>&nbsp;</b>
+<i>399</i>&nbsp;                                this.fAttrGrp.removeProhibitedAttrs();
+<i>400</i>&nbsp;                                Object[] errArgs1 = this.fAttrGrp.validRestrictionOf(this.fName, baseComplexType.getAttrGrp());
+<i>401</i>&nbsp;                                if(errArgs1 != null) {
+<i>402</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);
+<b class="nc"><i>403</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>404</i>&nbsp;                                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError((String)errArgs1[errArgs1.length - 1], errArgs1, e1);</b>
+<b class="nc"><i>405</i>&nbsp;                                }</b>
+<i>406</i>&nbsp;                            } else {
+<i>407</i>&nbsp;                                this.fXSSimpleType = baseValidator;
+<i>408</i>&nbsp;                                if(simpleContent != null) {
+<i>409</i>&nbsp;                                    if(!this.isAttrOrAttrGroup(simpleContent)) {
+<b class="nc"><i>410</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<i>411</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<b class="nc"><i>412</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, DOMUtil.getLocalName(simpleContent)}, simpleContent);</b>
+<b class="nc"><i>413</i>&nbsp;                                    }</b>
+<b class="nc"><i>414</i>&nbsp;</b>
+<b class="nc"><i>415</i>&nbsp;                                    Element node1 = this.traverseAttrsAndAttrGrps(simpleContent, this.fAttrGrp, schemaDoc, grammar, this.fComplexTypeDecl);</b>
+<i>416</i>&nbsp;                                    if(node1 != null) {
+<i>417</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);
+<b class="nc"><i>418</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>419</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, DOMUtil.getLocalName(node1)}, node1);
+<i>420</i>&nbsp;                                    }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;                                    this.fAttrGrp.removeProhibitedAttrs();
+<i>423</i>&nbsp;                                }
+<b class="nc"><i>424</i>&nbsp;</b>
+<b class="nc"><i>425</i>&nbsp;                                if(baseComplexType != null) {</b>
+<b class="nc"><i>426</i>&nbsp;                                    try {</b>
+<b class="nc"><i>427</i>&nbsp;                                        this.mergeAttributes(baseComplexType.getAttrGrp(), this.fAttrGrp, this.fName, true, simpleContentElement);</b>
+<i>428</i>&nbsp;                                    } catch (XSDComplexTypeTraverser.ComplexTypeRecoverableError var21) {
+<b class="nc"><i>429</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<i>430</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<i>431</i>&nbsp;                                        throw var21;
+<i>432</i>&nbsp;                                    }
+<i>433</i>&nbsp;                                }
+<i>434</i>&nbsp;                            }
+<i>435</i>&nbsp;
+<b class="nc"><i>436</i>&nbsp;                            this.fAttrChecker.returnAttrArray(simpleContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>437</i>&nbsp;                            this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>438</i>&nbsp;                        }</b>
+<i>439</i>&nbsp;                    }
+<i>440</i>&nbsp;                }
+<b class="nc"><i>441</i>&nbsp;            }</b>
+<b class="nc"><i>442</i>&nbsp;        }</b>
+<b class="nc"><i>443</i>&nbsp;    }</b>
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;    private void traverseComplexContent(Element complexContentElement, boolean mixedOnType, XSDocumentInfo schemaDoc, SchemaGrammar grammar) throws XSDComplexTypeTraverser.ComplexTypeRecoverableError {
+<b class="nc"><i>446</i>&nbsp;        Object[] complexContentAttrValues = this.fAttrChecker.checkAttributes(complexContentElement, false, schemaDoc);</b>
+<b class="nc"><i>447</i>&nbsp;        boolean mixedContent = mixedOnType;</b>
+<b class="nc"><i>448</i>&nbsp;        Boolean mixedAtt = (Boolean)complexContentAttrValues[XSAttributeChecker.ATTIDX_MIXED];</b>
+<i>449</i>&nbsp;        if(mixedAtt != null) {
+<i>450</i>&nbsp;            mixedContent = mixedAtt.booleanValue();
+<i>451</i>&nbsp;        }
+<b class="nc"><i>452</i>&nbsp;</b>
+<i>453</i>&nbsp;        this.fXSSimpleType = null;
+<b class="nc"><i>454</i>&nbsp;        Element complexContent = DOMUtil.getFirstChildElement(complexContentElement);</b>
+<b class="nc"><i>455</i>&nbsp;        String complexContentName;</b>
+<b class="nc"><i>456</i>&nbsp;        if(complexContent != null &amp;&amp; DOMUtil.getLocalName(complexContent).equals(SchemaSymbols.ELT_ANNOTATION)) {</b>
+<i>457</i>&nbsp;            this.addAnnotation(this.traverseAnnotationDecl(complexContent, complexContentAttrValues, false, schemaDoc));
+<i>458</i>&nbsp;            complexContent = DOMUtil.getNextSiblingElement(complexContent);
+<i>459</i>&nbsp;        } else {
+<i>460</i>&nbsp;            complexContentName = DOMUtil.getSyntheticAnnotation(complexContentElement);
+<i>461</i>&nbsp;            if(complexContentName != null) {
+<b class="nc"><i>462</i>&nbsp;                this.addAnnotation(this.traverseSyntheticAnnotation(complexContentElement, complexContentName, complexContentAttrValues, false, schemaDoc));</b>
+<b class="nc"><i>463</i>&nbsp;            }</b>
+<b class="nc"><i>464</i>&nbsp;        }</b>
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;        if(complexContent == null) {
+<i>467</i>&nbsp;            this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>468</i>&nbsp;            throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.2&quot;, new Object[]{this.fName, SchemaSymbols.ELT_COMPLEXCONTENT}, complexContentElement);
+<i>469</i>&nbsp;        } else {
+<i>470</i>&nbsp;            complexContentName = DOMUtil.getLocalName(complexContent);
+<b class="nc"><i>471</i>&nbsp;            if(complexContentName.equals(SchemaSymbols.ELT_RESTRICTION)) {</b>
+<i>472</i>&nbsp;                this.fDerivedBy = 2;
+<i>473</i>&nbsp;            } else {
+<i>474</i>&nbsp;                if(!complexContentName.equals(SchemaSymbols.ELT_EXTENSION)) {
+<i>475</i>&nbsp;                    this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>476</i>&nbsp;                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, complexContentName}, complexContent);
+<b class="nc"><i>477</i>&nbsp;                }</b>
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;                this.fDerivedBy = 1;
+<b class="nc"><i>480</i>&nbsp;            }</b>
+<i>481</i>&nbsp;
+<b class="nc"><i>482</i>&nbsp;            Element elemTmp = DOMUtil.getNextSiblingElement(complexContent);</b>
+<b class="nc"><i>483</i>&nbsp;            if(elemTmp != null) {</b>
+<b class="nc"><i>484</i>&nbsp;                this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>485</i>&nbsp;                String derivationTypeAttrValues1 = DOMUtil.getLocalName(elemTmp);</b>
+<i>486</i>&nbsp;                throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, derivationTypeAttrValues1}, elemTmp);
+<i>487</i>&nbsp;            } else {
+<i>488</i>&nbsp;                Object[] derivationTypeAttrValues = this.fAttrChecker.checkAttributes(complexContent, false, schemaDoc);
+<i>489</i>&nbsp;                QName baseTypeName = (QName)derivationTypeAttrValues[XSAttributeChecker.ATTIDX_BASE];
+<b class="nc"><i>490</i>&nbsp;                if(baseTypeName == null) {</b>
+<i>491</i>&nbsp;                    this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>492</i>&nbsp;                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<b class="nc"><i>493</i>&nbsp;                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-att-must-appear&quot;, new Object[]{complexContentName, &quot;base&quot;}, complexContent);</b>
+<b class="nc"><i>494</i>&nbsp;                } else {</b>
+<b class="nc"><i>495</i>&nbsp;                    XSTypeDefinition type = (XSTypeDefinition)this.fSchemaHandler.getGlobalDecl(schemaDoc, 7, baseTypeName, complexContent);</b>
+<i>496</i>&nbsp;                    if(type == null) {
+<i>497</i>&nbsp;                        this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>498</i>&nbsp;                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<b class="nc"><i>499</i>&nbsp;                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError();</b>
+<b class="nc"><i>500</i>&nbsp;                    } else if(!(type instanceof XSComplexTypeDecl)) {</b>
+<i>501</i>&nbsp;                        this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>502</i>&nbsp;                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<i>503</i>&nbsp;                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;src-ct.1&quot;, new Object[]{this.fName, type.getName()}, complexContent);
+<i>504</i>&nbsp;                    } else {
+<b class="nc"><i>505</i>&nbsp;                        XSComplexTypeDecl baseType = (XSComplexTypeDecl)type;</b>
+<b class="nc"><i>506</i>&nbsp;                        this.fBaseType = baseType;</b>
+<b class="nc"><i>507</i>&nbsp;                        String baseContent;</b>
+<b class="nc"><i>508</i>&nbsp;                        if((baseType.getFinal() &amp; this.fDerivedBy) != 0) {</b>
+<i>509</i>&nbsp;                            this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>510</i>&nbsp;                            this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<i>511</i>&nbsp;                            baseContent = this.fDerivedBy == 1?&quot;cos-ct-extends.1.1&quot;:&quot;derivation-ok-restriction.1&quot;;
+<i>512</i>&nbsp;                            throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(baseContent, new Object[]{this.fName, this.fBaseType.getName()}, complexContent);
+<i>513</i>&nbsp;                        } else {
+<i>514</i>&nbsp;                            complexContent = DOMUtil.getFirstChildElement(complexContent);
+<b class="nc"><i>515</i>&nbsp;                            if(complexContent != null) {</b>
+<b class="nc"><i>516</i>&nbsp;                                if(DOMUtil.getLocalName(complexContent).equals(SchemaSymbols.ELT_ANNOTATION)) {</b>
+<b class="nc"><i>517</i>&nbsp;                                    this.addAnnotation(this.traverseAnnotationDecl(complexContent, derivationTypeAttrValues, false, schemaDoc));</b>
+<b class="nc"><i>518</i>&nbsp;                                    complexContent = DOMUtil.getNextSiblingElement(complexContent);</b>
+<i>519</i>&nbsp;                                } else {
+<b class="nc"><i>520</i>&nbsp;                                    baseContent = DOMUtil.getSyntheticAnnotation(complexContent);</b>
+<b class="nc"><i>521</i>&nbsp;                                    if(baseContent != null) {</b>
+<b class="nc"><i>522</i>&nbsp;                                        this.addAnnotation(this.traverseSyntheticAnnotation(complexContent, baseContent, derivationTypeAttrValues, false, schemaDoc));</b>
+<b class="nc"><i>523</i>&nbsp;                                    }</b>
+<b class="nc"><i>524</i>&nbsp;                                }</b>
+<b class="nc"><i>525</i>&nbsp;</b>
+<i>526</i>&nbsp;                                if(complexContent != null &amp;&amp; DOMUtil.getLocalName(complexContent).equals(SchemaSymbols.ELT_ANNOTATION)) {
+<i>527</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<b class="nc"><i>528</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>529</i>&nbsp;                                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, SchemaSymbols.ELT_ANNOTATION}, complexContent);
+<b class="nc"><i>530</i>&nbsp;                                }</b>
+<b class="nc"><i>531</i>&nbsp;                            } else {</b>
+<b class="nc"><i>532</i>&nbsp;                                baseContent = DOMUtil.getSyntheticAnnotation(complexContent);</b>
+<b class="nc"><i>533</i>&nbsp;                                if(baseContent != null) {</b>
+<b class="nc"><i>534</i>&nbsp;                                    this.addAnnotation(this.traverseSyntheticAnnotation(complexContent, baseContent, derivationTypeAttrValues, false, schemaDoc));</b>
+<i>535</i>&nbsp;                                }
+<i>536</i>&nbsp;                            }
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;                            try {
+<b class="nc"><i>539</i>&nbsp;                                this.processComplexContent(complexContent, mixedContent, true, schemaDoc, grammar);</b>
+<b class="nc"><i>540</i>&nbsp;                            } catch (XSDComplexTypeTraverser.ComplexTypeRecoverableError var20) {</b>
+<b class="nc"><i>541</i>&nbsp;                                this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>542</i>&nbsp;                                this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>543</i>&nbsp;                                throw var20;</b>
+<i>544</i>&nbsp;                            }
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;                            XSParticleDecl baseContent1 = (XSParticleDecl)baseType.getParticle();
+<b class="nc"><i>547</i>&nbsp;                            if(this.fDerivedBy == 2) {</b>
+<i>548</i>&nbsp;                                if(this.fContentType == 3 &amp;&amp; baseType.getContentType() != 3) {
+<b class="nc"><i>549</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>550</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<b class="nc"><i>551</i>&nbsp;                                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;derivation-ok-restriction.5.4.1.2&quot;, new Object[]{this.fName, baseType.getName()}, complexContent);</b>
+<b class="nc"><i>552</i>&nbsp;                                }</b>
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;                                try {
+<i>555</i>&nbsp;                                    this.mergeAttributes(baseType.getAttrGrp(), this.fAttrGrp, this.fName, false, complexContent);
+<i>556</i>&nbsp;                                } catch (XSDComplexTypeTraverser.ComplexTypeRecoverableError var19) {
+<i>557</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>558</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<b class="nc"><i>559</i>&nbsp;                                    throw var19;</b>
+<b class="nc"><i>560</i>&nbsp;                                }</b>
+<b class="nc"><i>561</i>&nbsp;</b>
+<b class="nc"><i>562</i>&nbsp;                                this.fAttrGrp.removeProhibitedAttrs();</b>
+<b class="nc"><i>563</i>&nbsp;                                if(baseType != SchemaGrammar.fAnyType) {</b>
+<b class="nc"><i>564</i>&nbsp;                                    Object[] e = this.fAttrGrp.validRestrictionOf(this.fName, baseType.getAttrGrp());</b>
+<i>565</i>&nbsp;                                    if(e != null) {
+<b class="nc"><i>566</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);</b>
+<i>567</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<b class="nc"><i>568</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError((String)e[e.length - 1], e, complexContent);</b>
+<b class="nc"><i>569</i>&nbsp;                                    }</b>
+<b class="nc"><i>570</i>&nbsp;                                }</b>
+<b class="nc"><i>571</i>&nbsp;                            } else {</b>
+<b class="nc"><i>572</i>&nbsp;                                if(this.fParticle == null) {</b>
+<i>573</i>&nbsp;                                    this.fContentType = baseType.getContentType();
+<i>574</i>&nbsp;                                    this.fXSSimpleType = (XSSimpleType)baseType.getSimpleType();
+<i>575</i>&nbsp;                                    this.fParticle = baseContent1;
+<b class="nc"><i>576</i>&nbsp;                                } else if(baseType.getContentType() != 0) {</b>
+<i>577</i>&nbsp;                                    if(this.fContentType == 2 &amp;&amp; baseType.getContentType() != 2) {
+<i>578</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>579</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<i>580</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;cos-ct-extends.1.4.3.2.2.1.a&quot;, new Object[]{this.fName}, complexContent);
+<b class="nc"><i>581</i>&nbsp;                                    }</b>
+<b class="nc"><i>582</i>&nbsp;</b>
+<i>583</i>&nbsp;                                    if(this.fContentType == 3 &amp;&amp; baseType.getContentType() != 3) {
+<i>584</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);
+<i>585</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<b class="nc"><i>586</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;cos-ct-extends.1.4.3.2.2.1.b&quot;, new Object[]{this.fName}, complexContent);</b>
+<b class="nc"><i>587</i>&nbsp;                                    }</b>
+<b class="nc"><i>588</i>&nbsp;</b>
+<b class="nc"><i>589</i>&nbsp;                                    if(this.fParticle.fType == 3 &amp;&amp; ((XSModelGroupImpl)this.fParticle.fValue).fCompositor == 103 || ((XSParticleDecl)baseType.getParticle()).fType == 3 &amp;&amp; ((XSModelGroupImpl)((XSParticleDecl)baseType.getParticle()).fValue).fCompositor == 103) {</b>
+<b class="nc"><i>590</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);</b>
+<i>591</i>&nbsp;                                        this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);
+<i>592</i>&nbsp;                                        throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;cos-all-limited.1.2&quot;, new Object[0], complexContent);
+<i>593</i>&nbsp;                                    }
+<b class="nc"><i>594</i>&nbsp;</b>
+<i>595</i>&nbsp;                                    XSModelGroupImpl e1 = new XSModelGroupImpl();
+<i>596</i>&nbsp;                                    e1.fCompositor = 102;
+<b class="nc"><i>597</i>&nbsp;                                    e1.fParticleCount = 2;</b>
+<b class="nc"><i>598</i>&nbsp;                                    e1.fParticles = new XSParticleDecl[2];</b>
+<b class="nc"><i>599</i>&nbsp;                                    e1.fParticles[0] = (XSParticleDecl)baseType.getParticle();</b>
+<b class="nc"><i>600</i>&nbsp;                                    e1.fParticles[1] = this.fParticle;</b>
+<i>601</i>&nbsp;                                    e1.fAnnotations = XSObjectListImpl.EMPTY_LIST;
+<i>602</i>&nbsp;                                    XSParticleDecl particle = new XSParticleDecl();
+<i>603</i>&nbsp;                                    particle.fType = 3;
+<i>604</i>&nbsp;                                    particle.fValue = e1;
+<b class="nc"><i>605</i>&nbsp;                                    particle.fAnnotations = XSObjectListImpl.EMPTY_LIST;</b>
+<i>606</i>&nbsp;                                    this.fParticle = particle;
+<i>607</i>&nbsp;                                }
+<b class="nc"><i>608</i>&nbsp;</b>
+<i>609</i>&nbsp;                                this.fAttrGrp.removeProhibitedAttrs();
+<b class="nc"><i>610</i>&nbsp;</b>
+<b class="nc"><i>611</i>&nbsp;                                try {</b>
+<b class="nc"><i>612</i>&nbsp;                                    this.mergeAttributes(baseType.getAttrGrp(), this.fAttrGrp, this.fName, true, complexContent);</b>
+<b class="nc"><i>613</i>&nbsp;                                } catch (XSDComplexTypeTraverser.ComplexTypeRecoverableError var18) {</b>
+<b class="nc"><i>614</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>615</i>&nbsp;                                    this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>616</i>&nbsp;                                    throw var18;
+<i>617</i>&nbsp;                                }
+<i>618</i>&nbsp;                            }
+<i>619</i>&nbsp;
+<b class="nc"><i>620</i>&nbsp;                            this.fAttrChecker.returnAttrArray(complexContentAttrValues, schemaDoc);</b>
+<b class="nc"><i>621</i>&nbsp;                            this.fAttrChecker.returnAttrArray(derivationTypeAttrValues, schemaDoc);</b>
+<i>622</i>&nbsp;                        }
+<i>623</i>&nbsp;                    }
+<i>624</i>&nbsp;                }
+<i>625</i>&nbsp;            }
+<i>626</i>&nbsp;        }
+<i>627</i>&nbsp;    }
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;    private void mergeAttributes(XSAttributeGroupDecl fromAttrGrp, XSAttributeGroupDecl toAttrGrp, String typeName, boolean extension, Element elem) throws XSDComplexTypeTraverser.ComplexTypeRecoverableError {
+<b class="nc"><i>630</i>&nbsp;        XSObjectList attrUseS = fromAttrGrp.getAttributeUses();</b>
+<i>631</i>&nbsp;        XSAttributeUseImpl oneAttrUse = null;
+<i>632</i>&nbsp;        int attrCount = attrUseS.getLength();
+<i>633</i>&nbsp;
+<i>634</i>&nbsp;        for(int i = 0; i &lt; attrCount; ++i) {
+<i>635</i>&nbsp;            oneAttrUse = (XSAttributeUseImpl)attrUseS.item(i);
+<i>636</i>&nbsp;            XSAttributeUse existingAttrUse = toAttrGrp.getAttributeUse(oneAttrUse.fAttrDecl.getNamespace(), oneAttrUse.fAttrDecl.getName());
+<b class="nc"><i>637</i>&nbsp;            if(existingAttrUse == null) {</b>
+<b class="nc"><i>638</i>&nbsp;                String idName = toAttrGrp.addAttributeUse(oneAttrUse);</b>
+<b class="nc"><i>639</i>&nbsp;                if(idName != null) {</b>
+<b class="nc"><i>640</i>&nbsp;                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;ct-props-correct.5&quot;, new Object[]{typeName, idName, oneAttrUse.fAttrDecl.getName()}, elem);</b>
+<i>641</i>&nbsp;                }
+<i>642</i>&nbsp;            } else if(existingAttrUse != oneAttrUse &amp;&amp; extension) {
+<i>643</i>&nbsp;                this.reportSchemaError(&quot;ct-props-correct.4&quot;, new Object[]{typeName, oneAttrUse.fAttrDecl.getName()}, elem);
+<i>644</i>&nbsp;                toAttrGrp.replaceAttributeUse(existingAttrUse, oneAttrUse);
+<i>645</i>&nbsp;            }
+<i>646</i>&nbsp;        }
+<i>647</i>&nbsp;
+<b class="nc"><i>648</i>&nbsp;        if(extension) {</b>
+<i>649</i>&nbsp;            if(toAttrGrp.fAttributeWC == null) {
+<b class="nc"><i>650</i>&nbsp;                toAttrGrp.fAttributeWC = fromAttrGrp.fAttributeWC;</b>
+<b class="nc"><i>651</i>&nbsp;            } else if(fromAttrGrp.fAttributeWC != null) {</b>
+<b class="nc"><i>652</i>&nbsp;                toAttrGrp.fAttributeWC = toAttrGrp.fAttributeWC.performUnionWith(fromAttrGrp.fAttributeWC, toAttrGrp.fAttributeWC.fProcessContents);</b>
+<b class="nc"><i>653</i>&nbsp;                if(toAttrGrp.fAttributeWC == null) {</b>
+<i>654</i>&nbsp;                    throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;src-ct.5&quot;, new Object[]{typeName}, elem);
+<i>655</i>&nbsp;                }
+<b class="nc"><i>656</i>&nbsp;            }</b>
+<b class="nc"><i>657</i>&nbsp;        }</b>
+<b class="nc"><i>658</i>&nbsp;</b>
+<i>659</i>&nbsp;    }
+<i>660</i>&nbsp;
+<i>661</i>&nbsp;    private void processComplexContent(Element complexContentChild, boolean isMixed, boolean isDerivation, XSDocumentInfo schemaDoc, SchemaGrammar grammar) throws XSDComplexTypeTraverser.ComplexTypeRecoverableError {
+<i>662</i>&nbsp;        Element attrNode = null;
+<b class="nc"><i>663</i>&nbsp;        XSParticleDecl particle = null;</b>
+<b class="nc"><i>664</i>&nbsp;        boolean emptyParticle = false;</b>
+<b class="nc"><i>665</i>&nbsp;        if(complexContentChild != null) {</b>
+<i>666</i>&nbsp;            String node = DOMUtil.getLocalName(complexContentChild);
+<i>667</i>&nbsp;            if(node.equals(SchemaSymbols.ELT_GROUP)) {
+<i>668</i>&nbsp;                particle = this.fSchemaHandler.fGroupTraverser.traverseLocal(complexContentChild, schemaDoc, grammar);
+<i>669</i>&nbsp;                attrNode = DOMUtil.getNextSiblingElement(complexContentChild);
+<i>670</i>&nbsp;            } else {
+<i>671</i>&nbsp;                XSModelGroupImpl group;
+<i>672</i>&nbsp;                if(node.equals(SchemaSymbols.ELT_SEQUENCE)) {
+<b class="nc"><i>673</i>&nbsp;                    particle = this.traverseSequence(complexContentChild, schemaDoc, grammar, 0, this.fComplexTypeDecl);</b>
+<b class="nc"><i>674</i>&nbsp;                    if(particle != null) {</b>
+<b class="nc"><i>675</i>&nbsp;                        group = (XSModelGroupImpl)particle.fValue;</b>
+<b class="nc"><i>676</i>&nbsp;                        if(group.fParticleCount == 0) {</b>
+<b class="nc"><i>677</i>&nbsp;                            emptyParticle = true;</b>
+<i>678</i>&nbsp;                        }
+<b class="nc"><i>679</i>&nbsp;                    }</b>
+<b class="nc"><i>680</i>&nbsp;</b>
+<i>681</i>&nbsp;                    attrNode = DOMUtil.getNextSiblingElement(complexContentChild);
+<i>682</i>&nbsp;                } else if(node.equals(SchemaSymbols.ELT_CHOICE)) {
+<b class="nc"><i>683</i>&nbsp;                    particle = this.traverseChoice(complexContentChild, schemaDoc, grammar, 0, this.fComplexTypeDecl);</b>
+<b class="nc"><i>684</i>&nbsp;                    if(particle != null &amp;&amp; particle.fMinOccurs == 0) {</b>
+<b class="nc"><i>685</i>&nbsp;                        group = (XSModelGroupImpl)particle.fValue;</b>
+<b class="nc"><i>686</i>&nbsp;                        if(group.fParticleCount == 0) {</b>
+<b class="nc"><i>687</i>&nbsp;                            emptyParticle = true;</b>
+<i>688</i>&nbsp;                        }
+<i>689</i>&nbsp;                    }
+<i>690</i>&nbsp;
+<b class="nc"><i>691</i>&nbsp;                    attrNode = DOMUtil.getNextSiblingElement(complexContentChild);</b>
+<i>692</i>&nbsp;                } else if(node.equals(SchemaSymbols.ELT_ALL)) {
+<b class="nc"><i>693</i>&nbsp;                    particle = this.traverseAll(complexContentChild, schemaDoc, grammar, 8, this.fComplexTypeDecl);</b>
+<i>694</i>&nbsp;                    if(particle != null) {
+<i>695</i>&nbsp;                        group = (XSModelGroupImpl)particle.fValue;
+<i>696</i>&nbsp;                        if(group.fParticleCount == 0) {
+<i>697</i>&nbsp;                            emptyParticle = true;
+<i>698</i>&nbsp;                        }
+<b class="nc"><i>699</i>&nbsp;                    }</b>
+<b class="nc"><i>700</i>&nbsp;</b>
+<b class="nc"><i>701</i>&nbsp;                    attrNode = DOMUtil.getNextSiblingElement(complexContentChild);</b>
+<b class="nc"><i>702</i>&nbsp;                } else {</b>
+<i>703</i>&nbsp;                    attrNode = complexContentChild;
+<i>704</i>&nbsp;                }
+<i>705</i>&nbsp;            }
+<b class="nc"><i>706</i>&nbsp;        }</b>
+<i>707</i>&nbsp;
+<i>708</i>&nbsp;        Element node1;
+<i>709</i>&nbsp;        if(emptyParticle) {
+<i>710</i>&nbsp;            node1 = DOMUtil.getFirstChildElement(complexContentChild);
+<b class="nc"><i>711</i>&nbsp;            if(node1 != null &amp;&amp; DOMUtil.getLocalName(node1).equals(SchemaSymbols.ELT_ANNOTATION)) {</b>
+<b class="nc"><i>712</i>&nbsp;                node1 = DOMUtil.getNextSiblingElement(node1);</b>
+<b class="nc"><i>713</i>&nbsp;            }</b>
+<b class="nc"><i>714</i>&nbsp;</b>
+<i>715</i>&nbsp;            if(node1 == null) {
+<i>716</i>&nbsp;                particle = null;
+<b class="nc"><i>717</i>&nbsp;            }</b>
+<b class="nc"><i>718</i>&nbsp;        }</b>
+<b class="nc"><i>719</i>&nbsp;</b>
+<b class="nc"><i>720</i>&nbsp;        if(particle == null &amp;&amp; isMixed) {</b>
+<i>721</i>&nbsp;            particle = XSConstraints.getEmptySequence();
+<i>722</i>&nbsp;        }
+<b class="nc"><i>723</i>&nbsp;</b>
+<b class="nc"><i>724</i>&nbsp;        this.fParticle = particle;</b>
+<i>725</i>&nbsp;        if(this.fParticle == null) {
+<i>726</i>&nbsp;            this.fContentType = 0;
+<i>727</i>&nbsp;        } else if(isMixed) {
+<i>728</i>&nbsp;            this.fContentType = 3;
+<b class="nc"><i>729</i>&nbsp;        } else {</b>
+<b class="nc"><i>730</i>&nbsp;            this.fContentType = 2;</b>
+<b class="nc"><i>731</i>&nbsp;        }</b>
+<b class="nc"><i>732</i>&nbsp;</b>
+<i>733</i>&nbsp;        if(attrNode != null) {
+<b class="nc"><i>734</i>&nbsp;            if(!this.isAttrOrAttrGroup(attrNode)) {</b>
+<i>735</i>&nbsp;                throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, DOMUtil.getLocalName(attrNode)}, attrNode);
+<i>736</i>&nbsp;            }
+<i>737</i>&nbsp;
+<i>738</i>&nbsp;            node1 = this.traverseAttrsAndAttrGrps(attrNode, this.fAttrGrp, schemaDoc, grammar, this.fComplexTypeDecl);
+<i>739</i>&nbsp;            if(node1 != null) {
+<i>740</i>&nbsp;                throw new XSDComplexTypeTraverser.ComplexTypeRecoverableError(&quot;s4s-elt-invalid-content.1&quot;, new Object[]{this.fName, DOMUtil.getLocalName(node1)}, node1);
+<b class="nc"><i>741</i>&nbsp;            }</b>
+<i>742</i>&nbsp;
+<b class="nc"><i>743</i>&nbsp;            if(!isDerivation) {</b>
+<i>744</i>&nbsp;                this.fAttrGrp.removeProhibitedAttrs();
+<b class="nc"><i>745</i>&nbsp;            }</b>
+<b class="nc"><i>746</i>&nbsp;        }</b>
+<b class="nc"><i>747</i>&nbsp;</b>
+<i>748</i>&nbsp;    }
+<i>749</i>&nbsp;
+<b class="nc"><i>750</i>&nbsp;    private boolean isAttrOrAttrGroup(Element e) {</b>
+<b class="nc"><i>751</i>&nbsp;        String elementName = DOMUtil.getLocalName(e);</b>
+<b class="nc"><i>752</i>&nbsp;        return elementName.equals(SchemaSymbols.ELT_ATTRIBUTE) || elementName.equals(SchemaSymbols.ELT_ATTRIBUTEGROUP) || elementName.equals(SchemaSymbols.ELT_ANYATTRIBUTE);</b>
+<i>753</i>&nbsp;    }
+<i>754</i>&nbsp;
+<b class="nc"><i>755</i>&nbsp;    private void traverseSimpleContentDecl(Element simpleContentDecl) {</b>
+<i>756</i>&nbsp;    }
+<b class="nc"><i>757</i>&nbsp;</b>
+<b class="nc"><i>758</i>&nbsp;    private void traverseComplexContentDecl(Element complexContentDecl, boolean mixedOnComplexTypeDecl) {</b>
+<b class="nc"><i>759</i>&nbsp;    }</b>
+<i>760</i>&nbsp;
+<i>761</i>&nbsp;    private String genAnonTypeName(Element complexTypeDecl) {
+<i>762</i>&nbsp;        StringBuffer typeName = new StringBuffer(&quot;#AnonType_&quot;);
+<i>763</i>&nbsp;
+<b class="nc"><i>764</i>&nbsp;        for(Element node = DOMUtil.getParent(complexTypeDecl); node != null &amp;&amp; node != DOMUtil.getRoot(DOMUtil.getDocument(node)); node = DOMUtil.getParent(node)) {</b>
+<b class="nc"><i>765</i>&nbsp;            typeName.append(node.getAttribute(SchemaSymbols.ATT_NAME));</b>
+<b class="nc"><i>766</i>&nbsp;        }</b>
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;        return typeName.toString();
+<i>769</i>&nbsp;    }
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;    private void handleComplexTypeError(String messageId, Object[] args, Element e) {
+<i>772</i>&nbsp;        if(messageId != null) {
+<i>773</i>&nbsp;            this.reportSchemaError(messageId, args, e);
+<b class="nc"><i>774</i>&nbsp;        }</b>
+<i>775</i>&nbsp;
+<b class="nc"><i>776</i>&nbsp;        this.fBaseType = SchemaGrammar.fAnyType;</b>
+<b class="nc"><i>777</i>&nbsp;        this.fContentType = 3;</b>
+<b class="nc"><i>778</i>&nbsp;        this.fXSSimpleType = null;</b>
+<b class="nc"><i>779</i>&nbsp;        this.fParticle = getErrorContent();</b>
+<b class="nc"><i>780</i>&nbsp;        this.fAttrGrp.fAttributeWC = getErrorWildcard();</b>
+<i>781</i>&nbsp;    }
+<i>782</i>&nbsp;
+<i>783</i>&nbsp;    private void contentBackup() {
+<i>784</i>&nbsp;        if(this.fGlobalStore == null) {
+<b class="nc"><i>785</i>&nbsp;            this.fGlobalStore = new Object[11];</b>
+<b class="nc"><i>786</i>&nbsp;            this.fGlobalStorePos = 0;</b>
+<i>787</i>&nbsp;        }
+<i>788</i>&nbsp;
+<i>789</i>&nbsp;        if(this.fGlobalStorePos == this.fGlobalStore.length) {
+<i>790</i>&nbsp;            Object[] newArray = new Object[this.fGlobalStorePos + 11];
+<i>791</i>&nbsp;            System.arraycopy(this.fGlobalStore, 0, newArray, 0, this.fGlobalStorePos);
+<i>792</i>&nbsp;            this.fGlobalStore = newArray;
+<i>793</i>&nbsp;        }
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fComplexTypeDecl;</b>
+<i>796</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fIsAbstract?Boolean.TRUE:Boolean.FALSE;
+<b class="nc"><i>797</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fName;</b>
+<b class="nc"><i>798</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fTargetNamespace;</b>
+<b class="nc"><i>799</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = new Integer((this.fDerivedBy &lt;&lt; 16) + this.fFinal);</b>
+<i>800</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = new Integer((this.fBlock &lt;&lt; 16) + this.fContentType);
+<i>801</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fBaseType;
+<i>802</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fAttrGrp;
+<i>803</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fParticle;
+<i>804</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fXSSimpleType;
+<b class="nc"><i>805</i>&nbsp;        this.fGlobalStore[this.fGlobalStorePos++] = this.fAnnotations;</b>
+<b class="nc"><i>806</i>&nbsp;    }</b>
+<b class="nc"><i>807</i>&nbsp;</b>
+<b class="nc"><i>808</i>&nbsp;    private void contentRestore() {</b>
+<b class="nc"><i>809</i>&nbsp;        this.fAnnotations = (XSAnnotationImpl[])((XSAnnotationImpl[])this.fGlobalStore[--this.fGlobalStorePos]);</b>
+<b class="nc"><i>810</i>&nbsp;        this.fXSSimpleType = (XSSimpleType)this.fGlobalStore[--this.fGlobalStorePos];</b>
+<i>811</i>&nbsp;        this.fParticle = (XSParticleDecl)this.fGlobalStore[--this.fGlobalStorePos];
+<b class="nc"><i>812</i>&nbsp;        this.fAttrGrp = (XSAttributeGroupDecl)this.fGlobalStore[--this.fGlobalStorePos];</b>
+<i>813</i>&nbsp;        this.fBaseType = (XSTypeDefinition)this.fGlobalStore[--this.fGlobalStorePos];
+<b class="nc"><i>814</i>&nbsp;        int i = ((Integer)((Integer)this.fGlobalStore[--this.fGlobalStorePos])).intValue();</b>
+<b class="nc"><i>815</i>&nbsp;        this.fBlock = (short)(i &gt;&gt; 16);</b>
+<b class="nc"><i>816</i>&nbsp;        this.fContentType = (short)i;</b>
+<b class="nc"><i>817</i>&nbsp;        i = ((Integer)((Integer)this.fGlobalStore[--this.fGlobalStorePos])).intValue();</b>
+<b class="nc"><i>818</i>&nbsp;        this.fDerivedBy = (short)(i &gt;&gt; 16);</b>
+<b class="nc"><i>819</i>&nbsp;        this.fFinal = (short)i;</b>
+<i>820</i>&nbsp;        this.fTargetNamespace = (String)this.fGlobalStore[--this.fGlobalStorePos];
+<i>821</i>&nbsp;        this.fName = (String)this.fGlobalStore[--this.fGlobalStorePos];
+<b class="nc"><i>822</i>&nbsp;        this.fIsAbstract = ((Boolean)this.fGlobalStore[--this.fGlobalStorePos]).booleanValue();</b>
+<i>823</i>&nbsp;        this.fComplexTypeDecl = (XSComplexTypeDecl)this.fGlobalStore[--this.fGlobalStorePos];
+<i>824</i>&nbsp;    }
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;    private void addAnnotation(XSAnnotationImpl annotation) {
+<i>827</i>&nbsp;        if(annotation != null) {
+<i>828</i>&nbsp;            if(this.fAnnotations == null) {
+<b class="nc"><i>829</i>&nbsp;                this.fAnnotations = new XSAnnotationImpl[1];</b>
+<b class="nc"><i>830</i>&nbsp;            } else {</b>
+<b class="nc"><i>831</i>&nbsp;                XSAnnotationImpl[] tempArray = new XSAnnotationImpl[this.fAnnotations.length + 1];</b>
+<b class="nc"><i>832</i>&nbsp;                System.arraycopy(this.fAnnotations, 0, tempArray, 0, this.fAnnotations.length);</b>
+<i>833</i>&nbsp;                this.fAnnotations = tempArray;
+<b class="nc"><i>834</i>&nbsp;            }</b>
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;            this.fAnnotations[this.fAnnotations.length - 1] = annotation;
+<i>837</i>&nbsp;        }
+<i>838</i>&nbsp;    }
+<i>839</i>&nbsp;
+<b class="nc"><i>840</i>&nbsp;    private static final class ComplexTypeRecoverableError extends Exception {</b>
+<i>841</i>&nbsp;        private static final long serialVersionUID = 6802729912091130335L;
+<b class="nc"><i>842</i>&nbsp;        Object[] errorSubstText = null;</b>
+<b class="nc"><i>843</i>&nbsp;        Element errorElem = null;</b>
+<b class="nc"><i>844</i>&nbsp;</b>
+<i>845</i>&nbsp;        ComplexTypeRecoverableError() {
+<i>846</i>&nbsp;        }
+<b class="nc"><i>847</i>&nbsp;</b>
+<i>848</i>&nbsp;        ComplexTypeRecoverableError(String msgKey, Object[] args, Element e) {
+<b class="nc"><i>849</i>&nbsp;            super(msgKey);</b>
+<b class="nc"><i>850</i>&nbsp;            this.errorSubstText = args;</b>
+<b class="nc"><i>851</i>&nbsp;            this.errorElem = e;</b>
+<i>852</i>&nbsp;        }
+<i>853</i>&nbsp;    }
+<i>854</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:36</div>
+</div>
+</body>
+</html>

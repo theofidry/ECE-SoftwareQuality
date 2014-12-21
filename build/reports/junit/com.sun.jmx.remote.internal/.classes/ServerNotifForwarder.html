@@ -1,0 +1,561 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ServerNotifForwarder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jmx.remote.internal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ServerNotifForwarder (com.sun.jmx.remote.internal)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ServerNotifForwarder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 151)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ServerNotifForwarder$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ServerNotifForwarder$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ServerNotifForwarder$IdAndFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ServerNotifForwarder$NotifForwarderBufferFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 179)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jmx.remote.internal;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.remote.internal.NotificationBuffer;
+<i>9</i>&nbsp;import com.sun.jmx.remote.internal.NotificationBufferFilter;
+<i>10</i>&nbsp;import com.sun.jmx.remote.security.NotificationAccessController;
+<i>11</i>&nbsp;import com.sun.jmx.remote.util.ClassLogger;
+<i>12</i>&nbsp;import com.sun.jmx.remote.util.EnvHelp;
+<i>13</i>&nbsp;import java.io.IOException;
+<i>14</i>&nbsp;import java.security.AccessControlContext;
+<i>15</i>&nbsp;import java.security.AccessController;
+<i>16</i>&nbsp;import java.security.PrivilegedActionException;
+<i>17</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>18</i>&nbsp;import java.util.Collection;
+<i>19</i>&nbsp;import java.util.Collections;
+<i>20</i>&nbsp;import java.util.HashMap;
+<i>21</i>&nbsp;import java.util.HashSet;
+<i>22</i>&nbsp;import java.util.Iterator;
+<i>23</i>&nbsp;import java.util.List;
+<i>24</i>&nbsp;import java.util.Map;
+<i>25</i>&nbsp;import java.util.Set;
+<i>26</i>&nbsp;import javax.management.InstanceNotFoundException;
+<i>27</i>&nbsp;import javax.management.ListenerNotFoundException;
+<i>28</i>&nbsp;import javax.management.MBeanPermission;
+<i>29</i>&nbsp;import javax.management.MBeanServer;
+<i>30</i>&nbsp;import javax.management.MBeanServerDelegate;
+<i>31</i>&nbsp;import javax.management.MBeanServerNotification;
+<i>32</i>&nbsp;import javax.management.MalformedObjectNameException;
+<i>33</i>&nbsp;import javax.management.Notification;
+<i>34</i>&nbsp;import javax.management.NotificationBroadcaster;
+<i>35</i>&nbsp;import javax.management.NotificationFilter;
+<i>36</i>&nbsp;import javax.management.ObjectInstance;
+<i>37</i>&nbsp;import javax.management.ObjectName;
+<i>38</i>&nbsp;import javax.management.remote.NotificationResult;
+<i>39</i>&nbsp;import javax.management.remote.TargetedNotification;
+<b class="nc"><i>40</i>&nbsp;import javax.security.auth.Subject;</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;public class ServerNotifForwarder {
+<i>43</i>&nbsp;    private final ServerNotifForwarder.NotifForwarderBufferFilter bufferFilter = new ServerNotifForwarder.NotifForwarderBufferFilter();
+<i>44</i>&nbsp;    private MBeanServer mbeanServer;
+<b class="nc"><i>45</i>&nbsp;    private final String connectionId;</b>
+<b class="nc"><i>46</i>&nbsp;    private final long connectionTimeout;</b>
+<b class="nc"><i>47</i>&nbsp;    private static int listenerCounter = 0;</b>
+<b class="nc"><i>48</i>&nbsp;    private static final int[] listenerCounterLock = new int[0];</b>
+<b class="nc"><i>49</i>&nbsp;    private NotificationBuffer notifBuffer;</b>
+<b class="nc"><i>50</i>&nbsp;    private final Map&lt;ObjectName, Set&lt;ServerNotifForwarder.IdAndFilter&gt;&gt; listenerMap = new HashMap();</b>
+<i>51</i>&nbsp;    private boolean terminated = false;
+<i>52</i>&nbsp;    private final int[] terminationLock = new int[0];
+<b class="nc"><i>53</i>&nbsp;    static final String broadcasterClass = NotificationBroadcaster.class.getName();</b>
+<i>54</i>&nbsp;    private final boolean checkNotificationEmission;
+<i>55</i>&nbsp;    private final NotificationAccessController notificationAccessController;
+<i>56</i>&nbsp;    private static final ClassLogger logger = new ClassLogger(&quot;javax.management.remote.misc&quot;, &quot;ServerNotifForwarder&quot;);
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public ServerNotifForwarder(MBeanServer var1, Map&lt;String, ?&gt; var2, NotificationBuffer var3, String var4) {
+<i>59</i>&nbsp;        this.mbeanServer = var1;
+<i>60</i>&nbsp;        this.notifBuffer = var3;
+<b class="nc"><i>61</i>&nbsp;        this.connectionId = var4;</b>
+<b class="nc"><i>62</i>&nbsp;        this.connectionTimeout = EnvHelp.getServerConnectionTimeout(var2);</b>
+<i>63</i>&nbsp;        String var5 = (String)var2.get(&quot;jmx.remote.x.check.notification.emission&quot;);
+<i>64</i>&nbsp;        this.checkNotificationEmission = EnvHelp.computeBooleanFromString(var5);
+<i>65</i>&nbsp;        this.notificationAccessController = EnvHelp.getNotificationAccessController(var2);
+<b class="nc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public Integer addNotificationListener(final ObjectName var1, NotificationFilter var2) throws InstanceNotFoundException, IOException {
+<i>69</i>&nbsp;        if(logger.traceOn()) {
+<b class="nc"><i>70</i>&nbsp;            logger.trace(&quot;addNotificationListener&quot;, &quot;Add a listener at &quot; + var1);</b>
+<b class="nc"><i>71</i>&nbsp;        }</b>
+<b class="nc"><i>72</i>&nbsp;</b>
+<i>73</i>&nbsp;        this.checkState();
+<i>74</i>&nbsp;        this.checkMBeanPermission(var1, &quot;addNotificationListener&quot;);
+<i>75</i>&nbsp;        if(this.notificationAccessController != null) {
+<i>76</i>&nbsp;            this.notificationAccessController.addNotificationListener(this.connectionId, var1, this.getSubject());
+<i>77</i>&nbsp;        }
+<b class="nc"><i>78</i>&nbsp;</b>
+<b class="nc"><i>79</i>&nbsp;        try {</b>
+<i>80</i>&nbsp;            boolean var3 = ((Boolean)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+<b class="nc"><i>81</i>&nbsp;                public Boolean run() throws InstanceNotFoundException {</b>
+<i>82</i>&nbsp;                    return Boolean.valueOf(ServerNotifForwarder.this.mbeanServer.isInstanceOf(var1, ServerNotifForwarder.broadcasterClass));
+<i>83</i>&nbsp;                }
+<i>84</i>&nbsp;            })).booleanValue();
+<i>85</i>&nbsp;            if(!var3) {
+<b class="nc"><i>86</i>&nbsp;                throw new IllegalArgumentException(&quot;The specified MBean [&quot; + var1 + &quot;] is not a &quot; + &quot;NotificationBroadcaster &quot; + &quot;object.&quot;);</b>
+<b class="nc"><i>87</i>&nbsp;            }</b>
+<i>88</i>&nbsp;        } catch (PrivilegedActionException var11) {
+<i>89</i>&nbsp;            throw (InstanceNotFoundException)extractException(var11);
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;        Integer var12 = this.getListenerID();</b>
+<b class="nc"><i>93</i>&nbsp;        ObjectName var4 = var1;</b>
+<b class="nc"><i>94</i>&nbsp;        if(var1.getDomain() == null || var1.getDomain().equals(&quot;&quot;)) {</b>
+<i>95</i>&nbsp;            try {
+<b class="nc"><i>96</i>&nbsp;                var4 = ObjectName.getInstance(this.mbeanServer.getDefaultDomain(), var1.getKeyPropertyList());</b>
+<i>97</i>&nbsp;            } catch (MalformedObjectNameException var10) {
+<i>98</i>&nbsp;                IOException var6 = new IOException(var10.getMessage());
+<b class="nc"><i>99</i>&nbsp;                var6.initCause(var10);</b>
+<b class="nc"><i>100</i>&nbsp;                throw var6;</b>
+<i>101</i>&nbsp;            }
+<b class="nc"><i>102</i>&nbsp;        }</b>
+<i>103</i>&nbsp;
+<b class="nc"><i>104</i>&nbsp;        Map var5 = this.listenerMap;</b>
+<i>105</i>&nbsp;        synchronized(this.listenerMap) {
+<b class="nc"><i>106</i>&nbsp;            ServerNotifForwarder.IdAndFilter var13 = new ServerNotifForwarder.IdAndFilter(var12, var2);</b>
+<b class="nc"><i>107</i>&nbsp;            Object var7 = (Set)this.listenerMap.get(var4);</b>
+<b class="nc"><i>108</i>&nbsp;            if(var7 == null) {</b>
+<b class="nc"><i>109</i>&nbsp;                var7 = Collections.singleton(var13);</b>
+<i>110</i>&nbsp;            } else {
+<i>111</i>&nbsp;                if(((Set)var7).size() == 1) {
+<b class="nc"><i>112</i>&nbsp;                    var7 = new HashSet((Collection)var7);</b>
+<b class="nc"><i>113</i>&nbsp;                }</b>
+<b class="nc"><i>114</i>&nbsp;</b>
+<i>115</i>&nbsp;                ((Set)var7).add(var13);
+<i>116</i>&nbsp;            }
+<b class="nc"><i>117</i>&nbsp;</b>
+<b class="nc"><i>118</i>&nbsp;            this.listenerMap.put(var4, var7);</b>
+<i>119</i>&nbsp;            return var12;
+<b class="nc"><i>120</i>&nbsp;        }</b>
+<b class="nc"><i>121</i>&nbsp;    }</b>
+<b class="nc"><i>122</i>&nbsp;</b>
+<i>123</i>&nbsp;    public void removeNotificationListener(ObjectName var1, Integer[] var2) throws Exception {
+<b class="nc"><i>124</i>&nbsp;        if(logger.traceOn()) {</b>
+<b class="nc"><i>125</i>&nbsp;            logger.trace(&quot;removeNotificationListener&quot;, &quot;Remove some listeners from &quot; + var1);</b>
+<i>126</i>&nbsp;        }
+<b class="nc"><i>127</i>&nbsp;</b>
+<i>128</i>&nbsp;        this.checkState();
+<i>129</i>&nbsp;        this.checkMBeanPermission(var1, &quot;removeNotificationListener&quot;);
+<i>130</i>&nbsp;        if(this.notificationAccessController != null) {
+<i>131</i>&nbsp;            this.notificationAccessController.removeNotificationListener(this.connectionId, var1, this.getSubject());
+<i>132</i>&nbsp;        }
+<i>133</i>&nbsp;
+<b class="nc"><i>134</i>&nbsp;        Exception var3 = null;</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<i>136</i>&nbsp;        for(int var4 = 0; var4 &lt; var2.length; ++var4) {
+<i>137</i>&nbsp;            try {
+<i>138</i>&nbsp;                this.removeNotificationListener(var1, (Integer)var2[var4]);
+<b class="nc"><i>139</i>&nbsp;            } catch (Exception var6) {</b>
+<i>140</i>&nbsp;                if(var3 != null) {
+<i>141</i>&nbsp;                    var3 = var6;
+<i>142</i>&nbsp;                }
+<b class="nc"><i>143</i>&nbsp;            }</b>
+<b class="nc"><i>144</i>&nbsp;        }</b>
+<b class="nc"><i>145</i>&nbsp;</b>
+<i>146</i>&nbsp;        if(var3 != null) {
+<i>147</i>&nbsp;            throw var3;
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;    public void removeNotificationListener(ObjectName var1, Integer var2) throws InstanceNotFoundException, ListenerNotFoundException, IOException {</b>
+<b class="nc"><i>152</i>&nbsp;        if(logger.traceOn()) {</b>
+<i>153</i>&nbsp;            logger.trace(&quot;removeNotificationListener&quot;, &quot;Remove the listener &quot; + var2 + &quot; from &quot; + var1);
+<b class="nc"><i>154</i>&nbsp;        }</b>
+<b class="nc"><i>155</i>&nbsp;</b>
+<i>156</i>&nbsp;        this.checkState();
+<i>157</i>&nbsp;        if(var1 != null &amp;&amp; !var1.isPattern() &amp;&amp; !this.mbeanServer.isRegistered(var1)) {
+<b class="nc"><i>158</i>&nbsp;            throw new InstanceNotFoundException(&quot;The MBean &quot; + var1 + &quot; is not registered.&quot;);</b>
+<b class="nc"><i>159</i>&nbsp;        } else {</b>
+<i>160</i>&nbsp;            Map var3 = this.listenerMap;
+<b class="nc"><i>161</i>&nbsp;            synchronized(this.listenerMap) {</b>
+<i>162</i>&nbsp;                Set var4 = (Set)this.listenerMap.get(var1);
+<b class="nc"><i>163</i>&nbsp;                ServerNotifForwarder.IdAndFilter var5 = new ServerNotifForwarder.IdAndFilter(var2, (NotificationFilter)null);</b>
+<b class="nc"><i>164</i>&nbsp;                if(var4 != null &amp;&amp; var4.contains(var5)) {</b>
+<i>165</i>&nbsp;                    if(var4.size() == 1) {
+<i>166</i>&nbsp;                        this.listenerMap.remove(var1);
+<i>167</i>&nbsp;                    } else {
+<i>168</i>&nbsp;                        var4.remove(var5);
+<i>169</i>&nbsp;                    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;                } else {
+<i>172</i>&nbsp;                    throw new ListenerNotFoundException(&quot;Listener not found&quot;);
+<i>173</i>&nbsp;                }
+<b class="nc"><i>174</i>&nbsp;            }</b>
+<b class="nc"><i>175</i>&nbsp;        }</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    public NotificationResult fetchNotifs(long var1, long var3, int var5) {
+<b class="nc"><i>179</i>&nbsp;        if(logger.traceOn()) {</b>
+<i>180</i>&nbsp;            logger.trace(&quot;fetchNotifs&quot;, &quot;Fetching notifications, the startSequenceNumber is &quot; + var1 + &quot;, the timeout is &quot; + var3 + &quot;, the maxNotifications is &quot; + var5);
+<b class="nc"><i>181</i>&nbsp;        }</b>
+<b class="nc"><i>182</i>&nbsp;</b>
+<b class="nc"><i>183</i>&nbsp;        long var7 = Math.min(this.connectionTimeout, var3);</b>
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;        NotificationResult var6;
+<i>186</i>&nbsp;        try {
+<i>187</i>&nbsp;            var6 = this.notifBuffer.fetchNotifications(this.bufferFilter, var1, var7, var5);
+<b class="nc"><i>188</i>&nbsp;            this.snoopOnUnregister(var6);</b>
+<i>189</i>&nbsp;        } catch (InterruptedException var10) {
+<i>190</i>&nbsp;            var6 = new NotificationResult(0L, 0L, new TargetedNotification[0]);
+<b class="nc"><i>191</i>&nbsp;        }</b>
+<b class="nc"><i>192</i>&nbsp;</b>
+<b class="nc"><i>193</i>&nbsp;        if(logger.traceOn()) {</b>
+<b class="nc"><i>194</i>&nbsp;            logger.trace(&quot;fetchNotifs&quot;, &quot;Forwarding the notifs: &quot; + var6);</b>
+<b class="nc"><i>195</i>&nbsp;        }</b>
+<b class="nc"><i>196</i>&nbsp;</b>
+<i>197</i>&nbsp;        return var6;
+<b class="nc"><i>198</i>&nbsp;    }</b>
+<b class="nc"><i>199</i>&nbsp;</b>
+<i>200</i>&nbsp;    private void snoopOnUnregister(NotificationResult var1) {
+<i>201</i>&nbsp;        Set var2 = (Set)this.listenerMap.get(MBeanServerDelegate.DELEGATE_NAME);
+<i>202</i>&nbsp;        if(var2 != null &amp;&amp; !var2.isEmpty()) {
+<i>203</i>&nbsp;            TargetedNotification[] var3 = var1.getTargetedNotifications();
+<i>204</i>&nbsp;            int var4 = var3.length;
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;            for(int var5 = 0; var5 &lt; var4; ++var5) {
+<i>207</i>&nbsp;                TargetedNotification var6 = var3[var5];
+<i>208</i>&nbsp;                Integer var7 = var6.getListenerID();
+<i>209</i>&nbsp;                Iterator var8 = var2.iterator();
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;                while(var8.hasNext()) {
+<i>212</i>&nbsp;                    ServerNotifForwarder.IdAndFilter var9 = (ServerNotifForwarder.IdAndFilter)var8.next();
+<i>213</i>&nbsp;                    if(var9.id == var7) {
+<b class="nc"><i>214</i>&nbsp;                        Notification var10 = var6.getNotification();</b>
+<i>215</i>&nbsp;                        if(var10 instanceof MBeanServerNotification &amp;&amp; var10.getType().equals(&quot;JMX.mbean.unregistered&quot;)) {
+<b class="nc"><i>216</i>&nbsp;                            MBeanServerNotification var11 = (MBeanServerNotification)var10;</b>
+<i>217</i>&nbsp;                            ObjectName var12 = var11.getMBeanName();
+<i>218</i>&nbsp;                            Map var13 = this.listenerMap;
+<i>219</i>&nbsp;                            synchronized(this.listenerMap) {
+<i>220</i>&nbsp;                                this.listenerMap.remove(var12);
+<i>221</i>&nbsp;                            }
+<b class="nc"><i>222</i>&nbsp;                        }</b>
+<b class="nc"><i>223</i>&nbsp;                    }</b>
+<b class="nc"><i>224</i>&nbsp;                }</b>
+<b class="nc"><i>225</i>&nbsp;            }</b>
+<b class="nc"><i>226</i>&nbsp;</b>
+<i>227</i>&nbsp;        }
+<b class="nc"><i>228</i>&nbsp;    }</b>
+<b class="nc"><i>229</i>&nbsp;</b>
+<b class="nc"><i>230</i>&nbsp;    public void terminate() {</b>
+<i>231</i>&nbsp;        if(logger.traceOn()) {
+<i>232</i>&nbsp;            logger.trace(&quot;terminate&quot;, &quot;Be called.&quot;);
+<b class="nc"><i>233</i>&nbsp;        }</b>
+<b class="nc"><i>234</i>&nbsp;</b>
+<b class="nc"><i>235</i>&nbsp;        int[] var1 = this.terminationLock;</b>
+<b class="nc"><i>236</i>&nbsp;        synchronized(this.terminationLock) {</b>
+<b class="nc"><i>237</i>&nbsp;            if(this.terminated) {</b>
+<i>238</i>&nbsp;                return;
+<b class="nc"><i>239</i>&nbsp;            }</b>
+<b class="nc"><i>240</i>&nbsp;</b>
+<i>241</i>&nbsp;            this.terminated = true;
+<i>242</i>&nbsp;            Map var2 = this.listenerMap;
+<i>243</i>&nbsp;            synchronized(this.listenerMap) {
+<i>244</i>&nbsp;                this.listenerMap.clear();
+<i>245</i>&nbsp;            }
+<i>246</i>&nbsp;        }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;        if(logger.traceOn()) {
+<b class="nc"><i>249</i>&nbsp;            logger.trace(&quot;terminate&quot;, &quot;Terminated.&quot;);</b>
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    private Subject getSubject() {
+<i>255</i>&nbsp;        return Subject.getSubject(AccessController.getContext());
+<b class="nc"><i>256</i>&nbsp;    }</b>
+<b class="nc"><i>257</i>&nbsp;</b>
+<i>258</i>&nbsp;    private void checkState() throws IOException {
+<b class="nc"><i>259</i>&nbsp;        int[] var1 = this.terminationLock;</b>
+<i>260</i>&nbsp;        synchronized(this.terminationLock) {
+<i>261</i>&nbsp;            if(this.terminated) {
+<b class="nc"><i>262</i>&nbsp;                throw new IOException(&quot;The connection has been terminated.&quot;);</b>
+<b class="nc"><i>263</i>&nbsp;            }</b>
+<b class="nc"><i>264</i>&nbsp;        }</b>
+<b class="nc"><i>265</i>&nbsp;    }</b>
+<i>266</i>&nbsp;
+<b class="nc"><i>267</i>&nbsp;    private Integer getListenerID() {</b>
+<b class="nc"><i>268</i>&nbsp;        int[] var1 = listenerCounterLock;</b>
+<i>269</i>&nbsp;        synchronized(listenerCounterLock) {
+<i>270</i>&nbsp;            return Integer.valueOf(listenerCounter++);
+<b class="nc"><i>271</i>&nbsp;        }</b>
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    public final void checkMBeanPermission(ObjectName var1, String var2) throws InstanceNotFoundException, SecurityException {
+<i>275</i>&nbsp;        checkMBeanPermission(this.mbeanServer, var1, var2);
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    static void checkMBeanPermission(final MBeanServer var0, final ObjectName var1, String var2) throws InstanceNotFoundException, SecurityException {
+<b class="nc"><i>279</i>&nbsp;        SecurityManager var3 = System.getSecurityManager();</b>
+<b class="nc"><i>280</i>&nbsp;        if(var3 != null) {</b>
+<i>281</i>&nbsp;            AccessControlContext var4 = AccessController.getContext();
+<i>282</i>&nbsp;
+<b class="nc"><i>283</i>&nbsp;            ObjectInstance var5;</b>
+<b class="nc"><i>284</i>&nbsp;            try {</b>
+<b class="nc"><i>285</i>&nbsp;                var5 = (ObjectInstance)AccessController.doPrivileged(new PrivilegedExceptionAction() {</b>
+<b class="nc"><i>286</i>&nbsp;                    public ObjectInstance run() throws InstanceNotFoundException {</b>
+<i>287</i>&nbsp;                        return var0.getObjectInstance(var1);
+<b class="nc"><i>288</i>&nbsp;                    }</b>
+<b class="nc"><i>289</i>&nbsp;                });</b>
+<i>290</i>&nbsp;            } catch (PrivilegedActionException var8) {
+<b class="nc"><i>291</i>&nbsp;                throw (InstanceNotFoundException)extractException(var8);</b>
+<b class="nc"><i>292</i>&nbsp;            }</b>
+<b class="nc"><i>293</i>&nbsp;</b>
+<b class="nc"><i>294</i>&nbsp;            String var6 = var5.getClassName();</b>
+<b class="nc"><i>295</i>&nbsp;            MBeanPermission var7 = new MBeanPermission(var6, (String)null, var1, var2);</b>
+<i>296</i>&nbsp;            var3.checkPermission(var7, var4);
+<b class="nc"><i>297</i>&nbsp;        }</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    private boolean allowNotificationEmission(ObjectName var1, TargetedNotification var2) {
+<i>302</i>&nbsp;        try {
+<b class="nc"><i>303</i>&nbsp;            if(this.checkNotificationEmission) {</b>
+<b class="nc"><i>304</i>&nbsp;                this.checkMBeanPermission(var1, &quot;addNotificationListener&quot;);</b>
+<i>305</i>&nbsp;            }
+<i>306</i>&nbsp;
+<b class="nc"><i>307</i>&nbsp;            if(this.notificationAccessController != null) {</b>
+<b class="nc"><i>308</i>&nbsp;                this.notificationAccessController.fetchNotification(this.connectionId, var1, var2.getNotification(), this.getSubject());</b>
+<b class="nc"><i>309</i>&nbsp;            }</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;            return true;
+<b class="nc"><i>312</i>&nbsp;        } catch (SecurityException var4) {</b>
+<i>313</i>&nbsp;            if(logger.debugOn()) {
+<b class="nc"><i>314</i>&nbsp;                logger.debug(&quot;fetchNotifs&quot;, &quot;Notification &quot; + var2.getNotification() + &quot; not forwarded: the &quot; + &quot;caller didn\&#39;t have the required access rights&quot;);</b>
+<b class="nc"><i>315</i>&nbsp;            }</b>
+<b class="nc"><i>316</i>&nbsp;</b>
+<b class="nc"><i>317</i>&nbsp;            return false;</b>
+<i>318</i>&nbsp;        } catch (Exception var5) {
+<b class="nc"><i>319</i>&nbsp;            if(logger.debugOn()) {</b>
+<b class="nc"><i>320</i>&nbsp;                logger.debug(&quot;fetchNotifs&quot;, &quot;Notification &quot; + var2.getNotification() + &quot; not forwarded: &quot; + &quot;got an unexpected exception: &quot; + var5);</b>
+<i>321</i>&nbsp;            }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;            return false;
+<i>324</i>&nbsp;        }
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;    private static Exception extractException(Exception var0) {
+<i>328</i>&nbsp;        while(var0 instanceof PrivilegedActionException) {
+<b class="nc"><i>329</i>&nbsp;            var0 = ((PrivilegedActionException)var0).getException();</b>
+<b class="nc"><i>330</i>&nbsp;        }</b>
+<b class="nc"><i>331</i>&nbsp;</b>
+<i>332</i>&nbsp;        return var0;
+<b class="nc"><i>333</i>&nbsp;    }</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;    private static class IdAndFilter {
+<i>336</i>&nbsp;        private Integer id;
+<b class="nc"><i>337</i>&nbsp;        private NotificationFilter filter;</b>
+<b class="nc"><i>338</i>&nbsp;</b>
+<b class="nc"><i>339</i>&nbsp;        IdAndFilter(Integer var1, NotificationFilter var2) {</b>
+<i>340</i>&nbsp;            this.id = var1;
+<i>341</i>&nbsp;            this.filter = var2;
+<i>342</i>&nbsp;        }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;        Integer getId() {
+<i>345</i>&nbsp;            return this.id;
+<i>346</i>&nbsp;        }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;        NotificationFilter getFilter() {
+<b class="nc"><i>349</i>&nbsp;            return this.filter;</b>
+<i>350</i>&nbsp;        }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;        public int hashCode() {
+<i>353</i>&nbsp;            return this.id.hashCode();
+<i>354</i>&nbsp;        }
+<i>355</i>&nbsp;
+<b class="nc"><i>356</i>&nbsp;        public boolean equals(Object var1) {</b>
+<b class="nc"><i>357</i>&nbsp;            return var1 instanceof ServerNotifForwarder.IdAndFilter &amp;&amp; ((ServerNotifForwarder.IdAndFilter)var1).getId().equals(this.getId());</b>
+<b class="nc"><i>358</i>&nbsp;        }</b>
+<b class="nc"><i>359</i>&nbsp;    }</b>
+<i>360</i>&nbsp;
+<b class="nc"><i>361</i>&nbsp;    final class NotifForwarderBufferFilter implements NotificationBufferFilter {</b>
+<b class="nc"><i>362</i>&nbsp;        NotifForwarderBufferFilter() {</b>
+<i>363</i>&nbsp;        }
+<i>364</i>&nbsp;
+<b class="nc"><i>365</i>&nbsp;        public void apply(List&lt;TargetedNotification&gt; var1, ObjectName var2, Notification var3) {</b>
+<i>366</i>&nbsp;            ServerNotifForwarder.IdAndFilter[] var4;
+<i>367</i>&nbsp;            synchronized(ServerNotifForwarder.this.listenerMap) {
+<b class="nc"><i>368</i>&nbsp;                Set var6 = (Set)ServerNotifForwarder.this.listenerMap.get(var2);</b>
+<b class="nc"><i>369</i>&nbsp;                if(var6 == null) {</b>
+<b class="nc"><i>370</i>&nbsp;                    ServerNotifForwarder.logger.debug(&quot;bufferFilter&quot;, &quot;no listeners for this name&quot;);</b>
+<b class="nc"><i>371</i>&nbsp;                    return;</b>
+<b class="nc"><i>372</i>&nbsp;                }</b>
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;                var4 = new ServerNotifForwarder.IdAndFilter[var6.size()];
+<i>375</i>&nbsp;                var6.toArray(var4);
+<b class="nc"><i>376</i>&nbsp;            }</b>
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;            ServerNotifForwarder.IdAndFilter[] var5 = var4;
+<i>379</i>&nbsp;            int var12 = var4.length;
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;            for(int var7 = 0; var7 &lt; var12; ++var7) {
+<i>382</i>&nbsp;                ServerNotifForwarder.IdAndFilter var8 = var5[var7];
+<i>383</i>&nbsp;                NotificationFilter var9 = var8.getFilter();
+<i>384</i>&nbsp;                if(var9 == null || var9.isNotificationEnabled(var3)) {
+<i>385</i>&nbsp;                    ServerNotifForwarder.logger.debug(&quot;bufferFilter&quot;, &quot;filter matches&quot;);
+<b class="nc"><i>386</i>&nbsp;                    TargetedNotification var10 = new TargetedNotification(var3, var8.getId());</b>
+<b class="nc"><i>387</i>&nbsp;                    if(ServerNotifForwarder.this.allowNotificationEmission(var2, var10)) {</b>
+<i>388</i>&nbsp;                        var1.add(var10);
+<b class="nc"><i>389</i>&nbsp;                    }</b>
+<b class="nc"><i>390</i>&nbsp;                }</b>
+<i>391</i>&nbsp;            }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;        }
+<i>394</i>&nbsp;    }
+<i>395</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

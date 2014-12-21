@@ -1,0 +1,1239 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SocketOrChannelConnectionImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.corba.se.impl.transport</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SocketOrChannelConnectionImpl (com.sun.corba.se.impl.transport)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SocketOrChannelConnectionImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 86)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 518)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.corba.se.impl.transport;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.corba.se.impl.encoding.CDROutputObject;
+<i>9</i>&nbsp;import com.sun.corba.se.impl.encoding.CachedCodeBase;
+<i>10</i>&nbsp;import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
+<i>11</i>&nbsp;import com.sun.corba.se.impl.encoding.CodeSetComponentInfo.CodeSetContext;
+<i>12</i>&nbsp;import com.sun.corba.se.impl.logging.ORBUtilSystemException;
+<i>13</i>&nbsp;import com.sun.corba.se.impl.orbutil.ORBUtility;
+<i>14</i>&nbsp;import com.sun.corba.se.impl.protocol.giopmsgheaders.CancelRequestMessage;
+<i>15</i>&nbsp;import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
+<i>16</i>&nbsp;import com.sun.corba.se.impl.protocol.giopmsgheaders.MessageBase;
+<i>17</i>&nbsp;import com.sun.corba.se.impl.transport.CorbaResponseWaitingRoomImpl;
+<i>18</i>&nbsp;import com.sun.corba.se.impl.transport.EventHandlerBase;
+<i>19</i>&nbsp;import com.sun.corba.se.pept.encoding.InputObject;
+<i>20</i>&nbsp;import com.sun.corba.se.pept.encoding.OutputObject;
+<i>21</i>&nbsp;import com.sun.corba.se.pept.protocol.MessageMediator;
+<i>22</i>&nbsp;import com.sun.corba.se.pept.transport.Acceptor;
+<i>23</i>&nbsp;import com.sun.corba.se.pept.transport.Connection;
+<i>24</i>&nbsp;import com.sun.corba.se.pept.transport.ConnectionCache;
+<i>25</i>&nbsp;import com.sun.corba.se.pept.transport.ContactInfo;
+<i>26</i>&nbsp;import com.sun.corba.se.pept.transport.EventHandler;
+<i>27</i>&nbsp;import com.sun.corba.se.pept.transport.InboundConnectionCache;
+<i>28</i>&nbsp;import com.sun.corba.se.pept.transport.OutboundConnectionCache;
+<i>29</i>&nbsp;import com.sun.corba.se.pept.transport.ResponseWaitingRoom;
+<i>30</i>&nbsp;import com.sun.corba.se.pept.transport.Selector;
+<i>31</i>&nbsp;import com.sun.corba.se.spi.ior.IOR;
+<i>32</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.GIOPVersion;
+<i>33</i>&nbsp;import com.sun.corba.se.spi.orb.ORB;
+<i>34</i>&nbsp;import com.sun.corba.se.spi.orbutil.threadpool.NoSuchThreadPoolException;
+<i>35</i>&nbsp;import com.sun.corba.se.spi.orbutil.threadpool.NoSuchWorkQueueException;
+<i>36</i>&nbsp;import com.sun.corba.se.spi.orbutil.threadpool.Work;
+<i>37</i>&nbsp;import com.sun.corba.se.spi.protocol.CorbaMessageMediator;
+<i>38</i>&nbsp;import com.sun.corba.se.spi.transport.CorbaConnection;
+<i>39</i>&nbsp;import com.sun.corba.se.spi.transport.CorbaContactInfo;
+<i>40</i>&nbsp;import com.sun.corba.se.spi.transport.CorbaResponseWaitingRoom;
+<i>41</i>&nbsp;import com.sun.corba.se.spi.transport.ReadTimeouts;
+<i>42</i>&nbsp;import com.sun.org.omg.SendingContext.CodeBase;
+<i>43</i>&nbsp;import java.io.IOException;
+<i>44</i>&nbsp;import java.io.InputStream;
+<i>45</i>&nbsp;import java.net.InetSocketAddress;
+<i>46</i>&nbsp;import java.net.Socket;
+<i>47</i>&nbsp;import java.nio.ByteBuffer;
+<i>48</i>&nbsp;import java.nio.channels.SelectableChannel;
+<i>49</i>&nbsp;import java.nio.channels.SocketChannel;
+<i>50</i>&nbsp;import java.util.Collections;
+<i>51</i>&nbsp;import java.util.HashMap;
+<i>52</i>&nbsp;import java.util.Map;
+<i>53</i>&nbsp;import org.omg.CORBA.COMM_FAILURE;
+<i>54</i>&nbsp;import org.omg.CORBA.CompletionStatus;
+<i>55</i>&nbsp;import org.omg.CORBA.INTERNAL;
+<i>56</i>&nbsp;import org.omg.CORBA.SystemException;
+<i>57</i>&nbsp;import sun.corba.OutputStreamFactory;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;public class SocketOrChannelConnectionImpl extends EventHandlerBase implements CorbaConnection, Work {
+<i>60</i>&nbsp;    public static boolean dprintWriteLocks = false;
+<i>61</i>&nbsp;    protected long enqueueTime;
+<i>62</i>&nbsp;    protected SocketChannel socketChannel;
+<i>63</i>&nbsp;    protected CorbaContactInfo contactInfo;
+<i>64</i>&nbsp;    protected Acceptor acceptor;
+<i>65</i>&nbsp;    protected ConnectionCache connectionCache;
+<i>66</i>&nbsp;    protected Socket socket;
+<i>67</i>&nbsp;    protected long timeStamp;
+<i>68</i>&nbsp;    protected boolean isServer;
+<i>69</i>&nbsp;    protected int requestId;
+<i>70</i>&nbsp;    protected CorbaResponseWaitingRoom responseWaitingRoom;
+<i>71</i>&nbsp;    protected int state;
+<i>72</i>&nbsp;    protected Object stateEvent;
+<i>73</i>&nbsp;    protected Object writeEvent;
+<i>74</i>&nbsp;    protected boolean writeLocked;
+<i>75</i>&nbsp;    protected int serverRequestCount;
+<i>76</i>&nbsp;    Map serverRequestMap;
+<i>77</i>&nbsp;    protected boolean postInitialContexts;
+<i>78</i>&nbsp;    protected IOR codeBaseServerIOR;
+<i>79</i>&nbsp;    protected CachedCodeBase cachedCodeBase;
+<i>80</i>&nbsp;    protected ORBUtilSystemException wrapper;
+<i>81</i>&nbsp;    protected ReadTimeouts readTimeouts;
+<b class="nc"><i>82</i>&nbsp;    protected boolean shouldReadGiopHeaderOnly;</b>
+<i>83</i>&nbsp;    protected CorbaMessageMediator partialMessageMediator;
+<i>84</i>&nbsp;    protected CodeSetContext codeSetContext;
+<i>85</i>&nbsp;    protected MessageMediator clientReply_1_1;
+<i>86</i>&nbsp;    protected MessageMediator serverRequest_1_1;
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public SocketChannel getSocketChannel() {
+<i>89</i>&nbsp;        return this.socketChannel;
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    protected SocketOrChannelConnectionImpl(ORB var1) {
+<b class="nc"><i>93</i>&nbsp;        this.timeStamp = 0L;</b>
+<i>94</i>&nbsp;        this.isServer = false;
+<i>95</i>&nbsp;        this.requestId = 5;
+<i>96</i>&nbsp;        this.stateEvent = new Object();
+<i>97</i>&nbsp;        this.writeEvent = new Object();
+<i>98</i>&nbsp;        this.serverRequestCount = 0;
+<i>99</i>&nbsp;        this.serverRequestMap = null;
+<i>100</i>&nbsp;        this.postInitialContexts = false;
+<i>101</i>&nbsp;        this.cachedCodeBase = new CachedCodeBase(this);
+<i>102</i>&nbsp;        this.partialMessageMediator = null;
+<i>103</i>&nbsp;        this.codeSetContext = null;
+<i>104</i>&nbsp;        this.orb = var1;
+<i>105</i>&nbsp;        this.wrapper = ORBUtilSystemException.get(var1, &quot;rpc.transport&quot;);
+<i>106</i>&nbsp;        this.setWork(this);
+<b class="nc"><i>107</i>&nbsp;        this.responseWaitingRoom = new CorbaResponseWaitingRoomImpl(var1, this);</b>
+<b class="nc"><i>108</i>&nbsp;        this.setReadTimeouts(var1.getORBData().getTransportTCPReadTimeouts());</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    protected SocketOrChannelConnectionImpl(ORB var1, boolean var2, boolean var3) {
+<b class="nc"><i>112</i>&nbsp;        this(var1);</b>
+<i>113</i>&nbsp;        this.setUseSelectThreadToWait(var2);
+<i>114</i>&nbsp;        this.setUseWorkerThreadForEvent(var3);
+<b class="nc"><i>115</i>&nbsp;    }</b>
+<b class="nc"><i>116</i>&nbsp;</b>
+<i>117</i>&nbsp;    public SocketOrChannelConnectionImpl(ORB var1, CorbaContactInfo var2, boolean var3, boolean var4, String var5, String var6, int var7) {
+<b class="nc"><i>118</i>&nbsp;        this(var1, var3, var4);</b>
+<i>119</i>&nbsp;        this.contactInfo = var2;
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        try {
+<b class="nc"><i>122</i>&nbsp;            this.socket = var1.getORBData().getSocketFactory().createSocket(var5, new InetSocketAddress(var6, var7));</b>
+<i>123</i>&nbsp;            this.socketChannel = this.socket.getChannel();
+<i>124</i>&nbsp;            if(this.socketChannel != null) {
+<i>125</i>&nbsp;                boolean var8 = !var3;
+<i>126</i>&nbsp;                this.socketChannel.configureBlocking(var8);
+<b class="nc"><i>127</i>&nbsp;            } else {</b>
+<i>128</i>&nbsp;                this.setUseSelectThreadToWait(false);
+<i>129</i>&nbsp;            }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;            if(var1.transportDebugFlag) {
+<i>132</i>&nbsp;                this.dprint(&quot;.initialize: connection created: &quot; + this.socket);
+<i>133</i>&nbsp;            }
+<i>134</i>&nbsp;        } catch (Throwable var9) {
+<i>135</i>&nbsp;            throw this.wrapper.connectFailure(var9, var5, var6, Integer.toString(var7));
+<b class="nc"><i>136</i>&nbsp;        }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;        this.state = 1;
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public SocketOrChannelConnectionImpl(ORB var1, CorbaContactInfo var2, String var3, String var4, int var5) {
+<i>142</i>&nbsp;        this(var1, var2, var1.getORBData().connectionSocketUseSelectThreadToWait(), var1.getORBData().connectionSocketUseWorkerThreadForEvent(), var3, var4, var5);
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public SocketOrChannelConnectionImpl(ORB var1, Acceptor var2, Socket var3, boolean var4, boolean var5) {
+<i>146</i>&nbsp;        this(var1, var4, var5);
+<i>147</i>&nbsp;        this.socket = var3;
+<b class="nc"><i>148</i>&nbsp;        this.socketChannel = var3.getChannel();</b>
+<i>149</i>&nbsp;        if(this.socketChannel != null) {
+<i>150</i>&nbsp;            try {
+<i>151</i>&nbsp;                boolean var6 = !var4;
+<b class="nc"><i>152</i>&nbsp;                this.socketChannel.configureBlocking(var6);</b>
+<b class="nc"><i>153</i>&nbsp;            } catch (IOException var8) {</b>
+<b class="nc"><i>154</i>&nbsp;                RuntimeException var7 = new RuntimeException();</b>
+<i>155</i>&nbsp;                var7.initCause(var8);
+<i>156</i>&nbsp;                throw var7;
+<b class="nc"><i>157</i>&nbsp;            }</b>
+<b class="nc"><i>158</i>&nbsp;        }</b>
+<b class="nc"><i>159</i>&nbsp;</b>
+<i>160</i>&nbsp;        this.acceptor = var2;
+<i>161</i>&nbsp;        this.serverRequestMap = Collections.synchronizedMap(new HashMap());
+<i>162</i>&nbsp;        this.isServer = true;
+<i>163</i>&nbsp;        this.state = 2;
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public SocketOrChannelConnectionImpl(ORB var1, Acceptor var2, Socket var3) {
+<b class="nc"><i>167</i>&nbsp;        this(var1, var2, var3, var3.getChannel() == null?false:var1.getORBData().connectionSocketUseSelectThreadToWait(), var3.getChannel() == null?false:var1.getORBData().connectionSocketUseWorkerThreadForEvent());</b>
+<b class="nc"><i>168</i>&nbsp;    }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<i>170</i>&nbsp;    public boolean shouldRegisterReadEvent() {
+<i>171</i>&nbsp;        return true;
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    public boolean shouldRegisterServerReadEvent() {
+<i>175</i>&nbsp;        return true;
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    public boolean read() {
+<i>179</i>&nbsp;        boolean var2;
+<i>180</i>&nbsp;        try {
+<b class="nc"><i>181</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<i>182</i>&nbsp;                this.dprint(&quot;.read-&gt;: &quot; + this);
+<b class="nc"><i>183</i>&nbsp;            }</b>
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;            CorbaMessageMediator var1 = this.readBits();
+<b class="nc"><i>186</i>&nbsp;            if(var1 != null) {</b>
+<i>187</i>&nbsp;                var2 = this.dispatch(var1);
+<i>188</i>&nbsp;                return var2;
+<b class="nc"><i>189</i>&nbsp;            }</b>
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;            var2 = true;</b>
+<b class="nc"><i>192</i>&nbsp;        } finally {</b>
+<b class="nc"><i>193</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>194</i>&nbsp;                this.dprint(&quot;.read&lt;-: &quot; + this);</b>
+<i>195</i>&nbsp;            }
+<i>196</i>&nbsp;
+<b class="nc"><i>197</i>&nbsp;        }</b>
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;        return var2;</b>
+<b class="nc"><i>200</i>&nbsp;    }</b>
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;    protected CorbaMessageMediator readBits() {</b>
+<b class="nc"><i>203</i>&nbsp;        try {</b>
+<i>204</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<b class="nc"><i>205</i>&nbsp;                this.dprint(&quot;.readBits-&gt;: &quot; + this);</b>
+<b class="nc"><i>206</i>&nbsp;            }</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;            MessageMediator var15;
+<i>209</i>&nbsp;            if(this.contactInfo != null) {
+<i>210</i>&nbsp;                var15 = this.contactInfo.createMessageMediator(this.orb, this);
+<i>211</i>&nbsp;            } else {
+<i>212</i>&nbsp;                if(this.acceptor == null) {
+<i>213</i>&nbsp;                    throw new RuntimeException(&quot;SocketOrChannelConnectionImpl.readBits&quot;);
+<i>214</i>&nbsp;                }
+<i>215</i>&nbsp;
+<b class="nc"><i>216</i>&nbsp;                var15 = this.acceptor.createMessageMediator(this.orb, this);</b>
+<i>217</i>&nbsp;            }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;            CorbaMessageMediator var2 = (CorbaMessageMediator)var15;
+<i>220</i>&nbsp;            return var2;
+<i>221</i>&nbsp;        } catch (ThreadDeath var11) {
+<i>222</i>&nbsp;            ThreadDeath var14 = var11;
+<i>223</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>224</i>&nbsp;                this.dprint(&quot;.readBits: &quot; + this + &quot;: ThreadDeath: &quot; + var11, var11);
+<i>225</i>&nbsp;            }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;            try {
+<i>228</i>&nbsp;                this.purgeCalls(this.wrapper.connectionAbort(var14), false, false);
+<b class="nc"><i>229</i>&nbsp;            } catch (Throwable var10) {</b>
+<i>230</i>&nbsp;                if(this.orb.transportDebugFlag) {
+<b class="nc"><i>231</i>&nbsp;                    this.dprint(&quot;.readBits: &quot; + this + &quot;: purgeCalls: Throwable: &quot; + var10, var10);</b>
+<b class="nc"><i>232</i>&nbsp;                }</b>
+<b class="nc"><i>233</i>&nbsp;            }</b>
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;            throw var11;
+<b class="nc"><i>236</i>&nbsp;        } catch (Throwable var12) {</b>
+<b class="nc"><i>237</i>&nbsp;            Throwable var1 = var12;</b>
+<b class="nc"><i>238</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>239</i>&nbsp;                this.dprint(&quot;.readBits: &quot; + this + &quot;: Throwable: &quot; + var12, var12);</b>
+<b class="nc"><i>240</i>&nbsp;            }</b>
+<b class="nc"><i>241</i>&nbsp;</b>
+<b class="nc"><i>242</i>&nbsp;            try {</b>
+<i>243</i>&nbsp;                if(var1 instanceof INTERNAL) {
+<b class="nc"><i>244</i>&nbsp;                    this.sendMessageError(GIOPVersion.DEFAULT_VERSION);</b>
+<i>245</i>&nbsp;                }
+<b class="nc"><i>246</i>&nbsp;            } catch (IOException var9) {</b>
+<b class="nc"><i>247</i>&nbsp;                if(this.orb.transportDebugFlag) {</b>
+<i>248</i>&nbsp;                    this.dprint(&quot;.readBits: &quot; + this + &quot;: sendMessageError: IOException: &quot; + var9, var9);
+<b class="nc"><i>249</i>&nbsp;                }</b>
+<i>250</i>&nbsp;            }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;            this.orb.getTransportManager().getSelector(0).unregisterForEvent(this);
+<i>253</i>&nbsp;            this.purgeCalls(this.wrapper.connectionAbort(var12), true, false);
+<i>254</i>&nbsp;        } finally {
+<i>255</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>256</i>&nbsp;                this.dprint(&quot;.readBits&lt;-: &quot; + this);
+<b class="nc"><i>257</i>&nbsp;            }</b>
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;        }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;        return null;
+<i>262</i>&nbsp;    }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;    protected CorbaMessageMediator finishReadingBits(MessageMediator var1) {
+<i>265</i>&nbsp;        try {
+<i>266</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>267</i>&nbsp;                this.dprint(&quot;.finishReadingBits-&gt;: &quot; + this);
+<i>268</i>&nbsp;            }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;            if(this.contactInfo != null) {
+<i>271</i>&nbsp;                var1 = this.contactInfo.finishCreatingMessageMediator(this.orb, this, var1);
+<i>272</i>&nbsp;            } else {
+<b class="nc"><i>273</i>&nbsp;                if(this.acceptor == null) {</b>
+<i>274</i>&nbsp;                    throw new RuntimeException(&quot;SocketOrChannelConnectionImpl.finishReadingBits&quot;);
+<i>275</i>&nbsp;                }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;                var1 = this.acceptor.finishCreatingMessageMediator(this.orb, this, var1);
+<b class="nc"><i>278</i>&nbsp;            }</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;            CorbaMessageMediator var16 = (CorbaMessageMediator)var1;
+<i>281</i>&nbsp;            return var16;
+<i>282</i>&nbsp;        } catch (ThreadDeath var12) {
+<i>283</i>&nbsp;            ThreadDeath var15 = var12;
+<b class="nc"><i>284</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>285</i>&nbsp;                this.dprint(&quot;.finishReadingBits: &quot; + this + &quot;: ThreadDeath: &quot; + var12, var12);</b>
+<i>286</i>&nbsp;            }
+<b class="nc"><i>287</i>&nbsp;</b>
+<b class="nc"><i>288</i>&nbsp;            try {</b>
+<i>289</i>&nbsp;                this.purgeCalls(this.wrapper.connectionAbort(var15), false, false);
+<i>290</i>&nbsp;            } catch (Throwable var11) {
+<b class="nc"><i>291</i>&nbsp;                if(this.orb.transportDebugFlag) {</b>
+<i>292</i>&nbsp;                    this.dprint(&quot;.finishReadingBits: &quot; + this + &quot;: purgeCalls: Throwable: &quot; + var11, var11);
+<b class="nc"><i>293</i>&nbsp;                }</b>
+<i>294</i>&nbsp;            }
+<b class="nc"><i>295</i>&nbsp;</b>
+<b class="nc"><i>296</i>&nbsp;            throw var12;</b>
+<i>297</i>&nbsp;        } catch (Throwable var13) {
+<i>298</i>&nbsp;            Throwable var2 = var13;
+<i>299</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>300</i>&nbsp;                this.dprint(&quot;.finishReadingBits: &quot; + this + &quot;: Throwable: &quot; + var13, var13);
+<i>301</i>&nbsp;            }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;            try {
+<i>304</i>&nbsp;                if(var2 instanceof INTERNAL) {
+<b class="nc"><i>305</i>&nbsp;                    this.sendMessageError(GIOPVersion.DEFAULT_VERSION);</b>
+<b class="nc"><i>306</i>&nbsp;                }</b>
+<i>307</i>&nbsp;            } catch (IOException var10) {
+<i>308</i>&nbsp;                if(this.orb.transportDebugFlag) {
+<i>309</i>&nbsp;                    this.dprint(&quot;.finishReadingBits: &quot; + this + &quot;: sendMessageError: IOException: &quot; + var10, var10);
+<i>310</i>&nbsp;                }
+<b class="nc"><i>311</i>&nbsp;            }</b>
+<b class="nc"><i>312</i>&nbsp;</b>
+<i>313</i>&nbsp;            this.orb.getTransportManager().getSelector(0).unregisterForEvent(this);
+<b class="nc"><i>314</i>&nbsp;            this.purgeCalls(this.wrapper.connectionAbort(var13), true, false);</b>
+<b class="nc"><i>315</i>&nbsp;        } finally {</b>
+<i>316</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<b class="nc"><i>317</i>&nbsp;                this.dprint(&quot;.finishReadingBits&lt;-: &quot; + this);</b>
+<i>318</i>&nbsp;            }
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;        }</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;        return null;</b>
+<b class="nc"><i>323</i>&nbsp;    }</b>
+<b class="nc"><i>324</i>&nbsp;</b>
+<i>325</i>&nbsp;    protected boolean dispatch(CorbaMessageMediator var1) {
+<i>326</i>&nbsp;        try {
+<b class="nc"><i>327</i>&nbsp;            Throwable var2;</b>
+<b class="nc"><i>328</i>&nbsp;            try {</b>
+<b class="nc"><i>329</i>&nbsp;                if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>330</i>&nbsp;                    this.dprint(&quot;.dispatch-&gt;: &quot; + this);</b>
+<i>331</i>&nbsp;                }
+<b class="nc"><i>332</i>&nbsp;</b>
+<b class="nc"><i>333</i>&nbsp;                boolean var16 = var1.getProtocolHandler().handleRequest(var1);</b>
+<b class="nc"><i>334</i>&nbsp;                boolean var3 = var16;</b>
+<b class="nc"><i>335</i>&nbsp;                return var3;</b>
+<b class="nc"><i>336</i>&nbsp;            } catch (ThreadDeath var12) {</b>
+<i>337</i>&nbsp;                ThreadDeath var15 = var12;
+<i>338</i>&nbsp;                if(this.orb.transportDebugFlag) {
+<i>339</i>&nbsp;                    this.dprint(&quot;.dispatch: ThreadDeath&quot;, var12);
+<b class="nc"><i>340</i>&nbsp;                }</b>
+<b class="nc"><i>341</i>&nbsp;</b>
+<i>342</i>&nbsp;                try {
+<b class="nc"><i>343</i>&nbsp;                    this.purgeCalls(this.wrapper.connectionAbort(var15), false, false);</b>
+<b class="nc"><i>344</i>&nbsp;                } catch (Throwable var10) {</b>
+<b class="nc"><i>345</i>&nbsp;                    if(this.orb.transportDebugFlag) {</b>
+<i>346</i>&nbsp;                        this.dprint(&quot;.dispatch: purgeCalls: Throwable&quot;, var10);
+<i>347</i>&nbsp;                    }
+<b class="nc"><i>348</i>&nbsp;                }</b>
+<i>349</i>&nbsp;
+<b class="nc"><i>350</i>&nbsp;                throw var12;</b>
+<i>351</i>&nbsp;            } catch (Throwable var13) {
+<b class="nc"><i>352</i>&nbsp;                var2 = var13;</b>
+<i>353</i>&nbsp;                if(this.orb.transportDebugFlag) {
+<i>354</i>&nbsp;                    this.dprint(&quot;.dispatch: Throwable&quot;, var13);
+<i>355</i>&nbsp;                }
+<i>356</i>&nbsp;            }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;            try {
+<i>359</i>&nbsp;                if(var2 instanceof INTERNAL) {
+<i>360</i>&nbsp;                    this.sendMessageError(GIOPVersion.DEFAULT_VERSION);
+<b class="nc"><i>361</i>&nbsp;                }</b>
+<b class="nc"><i>362</i>&nbsp;            } catch (IOException var11) {</b>
+<i>363</i>&nbsp;                if(this.orb.transportDebugFlag) {
+<i>364</i>&nbsp;                    this.dprint(&quot;.dispatch: sendMessageError: IOException&quot;, var11);
+<b class="nc"><i>365</i>&nbsp;                }</b>
+<i>366</i>&nbsp;            }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;            this.purgeCalls(this.wrapper.connectionAbort(var13), false, false);
+<i>369</i>&nbsp;        } finally {
+<i>370</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>371</i>&nbsp;                this.dprint(&quot;.dispatch&lt;-: &quot; + this);
+<b class="nc"><i>372</i>&nbsp;            }</b>
+<b class="nc"><i>373</i>&nbsp;</b>
+<i>374</i>&nbsp;        }
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;        return true;
+<b class="nc"><i>377</i>&nbsp;    }</b>
+<b class="nc"><i>378</i>&nbsp;</b>
+<i>379</i>&nbsp;    public boolean shouldUseDirectByteBuffers() {
+<b class="nc"><i>380</i>&nbsp;        return this.getSocketChannel() != null;</b>
+<b class="nc"><i>381</i>&nbsp;    }</b>
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    public ByteBuffer read(int var1, int var2, int var3, long var4) throws IOException {
+<b class="nc"><i>384</i>&nbsp;        if(this.shouldUseDirectByteBuffers()) {</b>
+<i>385</i>&nbsp;            ByteBuffer var10 = this.orb.getByteBufferPool().getByteBuffer(var1);
+<i>386</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<b class="nc"><i>387</i>&nbsp;                int var11 = System.identityHashCode(var10);</b>
+<i>388</i>&nbsp;                StringBuffer var8 = new StringBuffer(80);
+<b class="nc"><i>389</i>&nbsp;                var8.append(&quot;.read: got ByteBuffer id (&quot;);</b>
+<b class="nc"><i>390</i>&nbsp;                var8.append(var11).append(&quot;) from ByteBufferPool.&quot;);</b>
+<b class="nc"><i>391</i>&nbsp;                String var9 = var8.toString();</b>
+<i>392</i>&nbsp;                this.dprint(var9);
+<i>393</i>&nbsp;            }
+<b class="nc"><i>394</i>&nbsp;</b>
+<b class="nc"><i>395</i>&nbsp;            var10.position(var2);</b>
+<b class="nc"><i>396</i>&nbsp;            var10.limit(var1);</b>
+<b class="nc"><i>397</i>&nbsp;            this.readFully(var10, var3, var4);</b>
+<i>398</i>&nbsp;            return var10;
+<b class="nc"><i>399</i>&nbsp;        } else {</b>
+<b class="nc"><i>400</i>&nbsp;            byte[] var6 = new byte[var1];</b>
+<b class="nc"><i>401</i>&nbsp;            this.readFully(this.getSocket().getInputStream(), var6, var2, var3, var4);</b>
+<b class="nc"><i>402</i>&nbsp;            ByteBuffer var7 = ByteBuffer.wrap(var6);</b>
+<b class="nc"><i>403</i>&nbsp;            var7.limit(var1);</b>
+<i>404</i>&nbsp;            return var7;
+<i>405</i>&nbsp;        }
+<i>406</i>&nbsp;    }
+<b class="nc"><i>407</i>&nbsp;</b>
+<b class="nc"><i>408</i>&nbsp;    public ByteBuffer read(ByteBuffer var1, int var2, int var3, long var4) throws IOException {</b>
+<i>409</i>&nbsp;        int var6 = var2 + var3;
+<b class="nc"><i>410</i>&nbsp;        if(this.shouldUseDirectByteBuffers()) {</b>
+<b class="nc"><i>411</i>&nbsp;            if(!var1.isDirect()) {</b>
+<b class="nc"><i>412</i>&nbsp;                throw this.wrapper.unexpectedNonDirectByteBufferWithChannelSocket();</b>
+<i>413</i>&nbsp;            } else {
+<i>414</i>&nbsp;                if(var6 &gt; var1.capacity()) {
+<b class="nc"><i>415</i>&nbsp;                    if(this.orb.transportDebugFlag) {</b>
+<i>416</i>&nbsp;                        int var10 = System.identityHashCode(var1);
+<b class="nc"><i>417</i>&nbsp;                        StringBuffer var8 = new StringBuffer(80);</b>
+<i>418</i>&nbsp;                        var8.append(&quot;.read: releasing ByteBuffer id (&quot;).append(var10).append(&quot;) to ByteBufferPool.&quot;);
+<b class="nc"><i>419</i>&nbsp;                        String var9 = var8.toString();</b>
+<i>420</i>&nbsp;                        this.dprint(var9);
+<i>421</i>&nbsp;                    }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;                    this.orb.getByteBufferPool().releaseByteBuffer(var1);
+<i>424</i>&nbsp;                    var1 = this.orb.getByteBufferPool().getByteBuffer(var6);
+<i>425</i>&nbsp;                }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;                var1.position(var2);
+<b class="nc"><i>428</i>&nbsp;                var1.limit(var6);</b>
+<b class="nc"><i>429</i>&nbsp;                this.readFully(var1, var3, var4);</b>
+<i>430</i>&nbsp;                var1.position(0);
+<i>431</i>&nbsp;                var1.limit(var6);
+<b class="nc"><i>432</i>&nbsp;                return var1;</b>
+<i>433</i>&nbsp;            }
+<i>434</i>&nbsp;        } else if(var1.isDirect()) {
+<i>435</i>&nbsp;            throw this.wrapper.unexpectedDirectByteBufferWithNonChannelSocket();
+<i>436</i>&nbsp;        } else {
+<i>437</i>&nbsp;            byte[] var7 = new byte[var6];
+<b class="nc"><i>438</i>&nbsp;            this.readFully(this.getSocket().getInputStream(), var7, var2, var3, var4);</b>
+<b class="nc"><i>439</i>&nbsp;            return ByteBuffer.wrap(var7);</b>
+<i>440</i>&nbsp;        }
+<i>441</i>&nbsp;    }
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;    public void readFully(ByteBuffer var1, int var2, long var3) throws IOException {
+<i>444</i>&nbsp;        int var5 = 0;
+<i>445</i>&nbsp;        boolean var6 = false;
+<i>446</i>&nbsp;        long var7 = (long)this.readTimeouts.get_initial_time_to_wait();
+<i>447</i>&nbsp;        long var9 = 0L;
+<i>448</i>&nbsp;
+<b class="nc"><i>449</i>&nbsp;        do {</b>
+<i>450</i>&nbsp;            int var13 = this.getSocketChannel().read(var1);
+<i>451</i>&nbsp;            if(var13 &lt; 0) {
+<i>452</i>&nbsp;                throw new IOException(&quot;End-of-stream&quot;);
+<b class="nc"><i>453</i>&nbsp;            }</b>
+<i>454</i>&nbsp;
+<b class="nc"><i>455</i>&nbsp;            if(var13 == 0) {</b>
+<b class="nc"><i>456</i>&nbsp;                try {</b>
+<b class="nc"><i>457</i>&nbsp;                    Thread.sleep(var7);</b>
+<i>458</i>&nbsp;                    var9 += var7;
+<i>459</i>&nbsp;                    var7 = (long)((double)var7 * this.readTimeouts.get_backoff_factor());
+<b class="nc"><i>460</i>&nbsp;                } catch (InterruptedException var12) {</b>
+<b class="nc"><i>461</i>&nbsp;                    if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>462</i>&nbsp;                        this.dprint(&quot;readFully(): unexpected exception &quot; + var12.toString());</b>
+<b class="nc"><i>463</i>&nbsp;                    }</b>
+<i>464</i>&nbsp;                }
+<b class="nc"><i>465</i>&nbsp;            } else {</b>
+<b class="nc"><i>466</i>&nbsp;                var5 += var13;</b>
+<b class="nc"><i>467</i>&nbsp;            }</b>
+<b class="nc"><i>468</i>&nbsp;        } while(var5 &lt; var2 &amp;&amp; var9 &lt; var3);</b>
+<b class="nc"><i>469</i>&nbsp;</b>
+<i>470</i>&nbsp;        if(var5 &lt; var2 &amp;&amp; var9 &gt;= var3) {
+<i>471</i>&nbsp;            throw this.wrapper.transportReadTimeoutExceeded(new Integer(var2), new Integer(var5), new Long(var3), new Long(var9));
+<i>472</i>&nbsp;        } else {
+<b class="nc"><i>473</i>&nbsp;            this.getConnectionCache().stampTime(this);</b>
+<b class="nc"><i>474</i>&nbsp;        }</b>
+<i>475</i>&nbsp;    }
+<b class="nc"><i>476</i>&nbsp;</b>
+<b class="nc"><i>477</i>&nbsp;    public void readFully(InputStream var1, byte[] var2, int var3, int var4, long var5) throws IOException {</b>
+<b class="nc"><i>478</i>&nbsp;        int var7 = 0;</b>
+<i>479</i>&nbsp;        boolean var8 = false;
+<b class="nc"><i>480</i>&nbsp;        long var9 = (long)this.readTimeouts.get_initial_time_to_wait();</b>
+<b class="nc"><i>481</i>&nbsp;        long var11 = 0L;</b>
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;        do {
+<i>484</i>&nbsp;            int var15 = var1.read(var2, var3 + var7, var4 - var7);
+<b class="nc"><i>485</i>&nbsp;            if(var15 &lt; 0) {</b>
+<b class="nc"><i>486</i>&nbsp;                throw new IOException(&quot;End-of-stream&quot;);</b>
+<i>487</i>&nbsp;            }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;            if(var15 == 0) {
+<b class="nc"><i>490</i>&nbsp;                try {</b>
+<i>491</i>&nbsp;                    Thread.sleep(var9);
+<i>492</i>&nbsp;                    var11 += var9;
+<i>493</i>&nbsp;                    var9 = (long)((double)var9 * this.readTimeouts.get_backoff_factor());
+<i>494</i>&nbsp;                } catch (InterruptedException var14) {
+<b class="nc"><i>495</i>&nbsp;                    if(this.orb.transportDebugFlag) {</b>
+<i>496</i>&nbsp;                        this.dprint(&quot;readFully(): unexpected exception &quot; + var14.toString());
+<i>497</i>&nbsp;                    }
+<i>498</i>&nbsp;                }
+<i>499</i>&nbsp;            } else {
+<i>500</i>&nbsp;                var7 += var15;
+<b class="nc"><i>501</i>&nbsp;            }</b>
+<i>502</i>&nbsp;        } while(var7 &lt; var4 &amp;&amp; var11 &lt; var5);
+<b class="nc"><i>503</i>&nbsp;</b>
+<i>504</i>&nbsp;        if(var7 &lt; var4 &amp;&amp; var11 &gt;= var5) {
+<i>505</i>&nbsp;            throw this.wrapper.transportReadTimeoutExceeded(new Integer(var4), new Integer(var7), new Long(var5), new Long(var11));
+<b class="nc"><i>506</i>&nbsp;        } else {</b>
+<i>507</i>&nbsp;            this.getConnectionCache().stampTime(this);
+<b class="nc"><i>508</i>&nbsp;        }</b>
+<b class="nc"><i>509</i>&nbsp;    }</b>
+<b class="nc"><i>510</i>&nbsp;</b>
+<b class="nc"><i>511</i>&nbsp;    public void write(ByteBuffer var1) throws IOException {</b>
+<b class="nc"><i>512</i>&nbsp;        if(this.shouldUseDirectByteBuffers()) {</b>
+<b class="nc"><i>513</i>&nbsp;            do {</b>
+<i>514</i>&nbsp;                this.getSocketChannel().write(var1);
+<i>515</i>&nbsp;            } while(var1.hasRemaining());
+<b class="nc"><i>516</i>&nbsp;        } else {</b>
+<b class="nc"><i>517</i>&nbsp;            if(!var1.hasArray()) {</b>
+<i>518</i>&nbsp;                throw this.wrapper.unexpectedDirectByteBufferWithNonChannelSocket();
+<b class="nc"><i>519</i>&nbsp;            }</b>
+<i>520</i>&nbsp;
+<b class="nc"><i>521</i>&nbsp;            byte[] var2 = var1.array();</b>
+<i>522</i>&nbsp;            this.getSocket().getOutputStream().write(var2, 0, var1.limit());
+<i>523</i>&nbsp;            this.getSocket().getOutputStream().flush();
+<b class="nc"><i>524</i>&nbsp;        }</b>
+<b class="nc"><i>525</i>&nbsp;</b>
+<i>526</i>&nbsp;        this.getConnectionCache().stampTime(this);
+<b class="nc"><i>527</i>&nbsp;    }</b>
+<b class="nc"><i>528</i>&nbsp;</b>
+<b class="nc"><i>529</i>&nbsp;    public synchronized void close() {</b>
+<i>530</i>&nbsp;        try {
+<i>531</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>532</i>&nbsp;                this.dprint(&quot;.close-&gt;: &quot; + this);
+<i>533</i>&nbsp;            }
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;            this.writeLock();
+<b class="nc"><i>536</i>&nbsp;            if(!this.isBusy()) {</b>
+<b class="nc"><i>537</i>&nbsp;                try {</b>
+<i>538</i>&nbsp;                    try {
+<b class="nc"><i>539</i>&nbsp;                        this.sendCloseConnection(GIOPVersion.V1_0);</b>
+<b class="nc"><i>540</i>&nbsp;                    } catch (Throwable var10) {</b>
+<i>541</i>&nbsp;                        this.wrapper.exceptionWhenSendingCloseConnection(var10);
+<b class="nc"><i>542</i>&nbsp;                    }</b>
+<b class="nc"><i>543</i>&nbsp;</b>
+<i>544</i>&nbsp;                    Object var1 = this.stateEvent;
+<b class="nc"><i>545</i>&nbsp;                    synchronized(this.stateEvent) {</b>
+<b class="nc"><i>546</i>&nbsp;                        this.state = 3;</b>
+<b class="nc"><i>547</i>&nbsp;                        this.stateEvent.notifyAll();</b>
+<i>548</i>&nbsp;                    }
+<b class="nc"><i>549</i>&nbsp;</b>
+<b class="nc"><i>550</i>&nbsp;                    this.purgeCalls(this.wrapper.connectionRebind(), false, true);</b>
+<i>551</i>&nbsp;                } catch (Exception var12) {
+<b class="nc"><i>552</i>&nbsp;                    if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>553</i>&nbsp;                        this.dprint(&quot;.close: exception: &quot; + this, var12);</b>
+<i>554</i>&nbsp;                    }
+<b class="nc"><i>555</i>&nbsp;                }</b>
+<b class="nc"><i>556</i>&nbsp;</b>
+<b class="nc"><i>557</i>&nbsp;                try {</b>
+<b class="nc"><i>558</i>&nbsp;                    Selector var14 = this.orb.getTransportManager().getSelector(0);</b>
+<b class="nc"><i>559</i>&nbsp;                    var14.unregisterForEvent(this);</b>
+<b class="nc"><i>560</i>&nbsp;                    if(this.socketChannel != null) {</b>
+<i>561</i>&nbsp;                        this.socketChannel.close();
+<b class="nc"><i>562</i>&nbsp;                    }</b>
+<b class="nc"><i>563</i>&nbsp;</b>
+<i>564</i>&nbsp;                    this.socket.close();
+<b class="nc"><i>565</i>&nbsp;                } catch (IOException var11) {</b>
+<b class="nc"><i>566</i>&nbsp;                    if(this.orb.transportDebugFlag) {</b>
+<i>567</i>&nbsp;                        this.dprint(&quot;.close: &quot; + this, var11);
+<b class="nc"><i>568</i>&nbsp;                    }</b>
+<i>569</i>&nbsp;                }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;                this.closeConnectionResources();
+<i>572</i>&nbsp;                return;
+<i>573</i>&nbsp;            }
+<b class="nc"><i>574</i>&nbsp;</b>
+<b class="nc"><i>575</i>&nbsp;            this.writeUnlock();</b>
+<b class="nc"><i>576</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>577</i>&nbsp;                this.dprint(&quot;.close: isBusy so no close: &quot; + this);</b>
+<i>578</i>&nbsp;            }
+<i>579</i>&nbsp;        } finally {
+<i>580</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>581</i>&nbsp;                this.dprint(&quot;.close&lt;-: &quot; + this);
+<i>582</i>&nbsp;            }
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;        }
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;    }
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;    public void closeConnectionResources() {
+<i>589</i>&nbsp;        if(this.orb.transportDebugFlag) {
+<i>590</i>&nbsp;            this.dprint(&quot;.closeConnectionResources-&gt;: &quot; + this);
+<i>591</i>&nbsp;        }
+<i>592</i>&nbsp;
+<i>593</i>&nbsp;        Selector var1 = this.orb.getTransportManager().getSelector(0);
+<i>594</i>&nbsp;        var1.unregisterForEvent(this);
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;        try {
+<b class="nc"><i>597</i>&nbsp;            if(this.socketChannel != null) {</b>
+<i>598</i>&nbsp;                this.socketChannel.close();
+<b class="nc"><i>599</i>&nbsp;            }</b>
+<b class="nc"><i>600</i>&nbsp;</b>
+<i>601</i>&nbsp;            if(this.socket != null &amp;&amp; !this.socket.isClosed()) {
+<b class="nc"><i>602</i>&nbsp;                this.socket.close();</b>
+<i>603</i>&nbsp;            }
+<b class="nc"><i>604</i>&nbsp;        } catch (IOException var3) {</b>
+<b class="nc"><i>605</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>606</i>&nbsp;                this.dprint(&quot;.closeConnectionResources: &quot; + this, var3);</b>
+<i>607</i>&nbsp;            }
+<i>608</i>&nbsp;        }
+<b class="nc"><i>609</i>&nbsp;</b>
+<i>610</i>&nbsp;        if(this.orb.transportDebugFlag) {
+<b class="nc"><i>611</i>&nbsp;            this.dprint(&quot;.closeConnectionResources&lt;-: &quot; + this);</b>
+<b class="nc"><i>612</i>&nbsp;        }</b>
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;    }
+<b class="nc"><i>615</i>&nbsp;</b>
+<i>616</i>&nbsp;    public Acceptor getAcceptor() {
+<i>617</i>&nbsp;        return this.acceptor;
+<b class="nc"><i>618</i>&nbsp;    }</b>
+<i>619</i>&nbsp;
+<i>620</i>&nbsp;    public ContactInfo getContactInfo() {
+<b class="nc"><i>621</i>&nbsp;        return this.contactInfo;</b>
+<i>622</i>&nbsp;    }
+<b class="nc"><i>623</i>&nbsp;</b>
+<i>624</i>&nbsp;    public EventHandler getEventHandler() {
+<i>625</i>&nbsp;        return this;
+<b class="nc"><i>626</i>&nbsp;    }</b>
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;    public OutputObject createOutputObject(MessageMediator var1) {
+<i>629</i>&nbsp;        throw new RuntimeException(&quot;*****SocketOrChannelConnectionImpl.createOutputObject - should not be called.&quot;);
+<i>630</i>&nbsp;    }
+<b class="nc"><i>631</i>&nbsp;</b>
+<i>632</i>&nbsp;    public boolean isServer() {
+<i>633</i>&nbsp;        return this.isServer;
+<i>634</i>&nbsp;    }
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;    public boolean isBusy() {
+<i>637</i>&nbsp;        return this.serverRequestCount &gt; 0 || this.getResponseWaitingRoom().numberRegistered() &gt; 0;
+<i>638</i>&nbsp;    }
+<b class="nc"><i>639</i>&nbsp;</b>
+<b class="nc"><i>640</i>&nbsp;    public long getTimeStamp() {</b>
+<b class="nc"><i>641</i>&nbsp;        return this.timeStamp;</b>
+<b class="nc"><i>642</i>&nbsp;    }</b>
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;    public void setTimeStamp(long var1) {
+<i>645</i>&nbsp;        this.timeStamp = var1;
+<i>646</i>&nbsp;    }
+<i>647</i>&nbsp;
+<i>648</i>&nbsp;    public void setState(String var1) {
+<i>649</i>&nbsp;        Object var2 = this.stateEvent;
+<i>650</i>&nbsp;        synchronized(this.stateEvent) {
+<i>651</i>&nbsp;            if(var1.equals(&quot;ESTABLISHED&quot;)) {
+<i>652</i>&nbsp;                this.state = 2;
+<i>653</i>&nbsp;                this.stateEvent.notifyAll();
+<i>654</i>&nbsp;            }
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;        }
+<i>657</i>&nbsp;    }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;    public void writeLock() {
+<i>660</i>&nbsp;        try {
+<i>661</i>&nbsp;            if(dprintWriteLocks &amp;&amp; this.orb.transportDebugFlag) {
+<b class="nc"><i>662</i>&nbsp;                this.dprint(&quot;.writeLock-&gt;: &quot; + this);</b>
+<b class="nc"><i>663</i>&nbsp;            }</b>
+<b class="nc"><i>664</i>&nbsp;</b>
+<i>665</i>&nbsp;            label220:
+<b class="nc"><i>666</i>&nbsp;            while(true) {</b>
+<i>667</i>&nbsp;                int var1 = this.state;
+<b class="nc"><i>668</i>&nbsp;                Object var2;</b>
+<b class="nc"><i>669</i>&nbsp;                switch(var1) {</b>
+<b class="nc"><i>670</i>&nbsp;                case 1:</b>
+<i>671</i>&nbsp;                    var2 = this.stateEvent;
+<i>672</i>&nbsp;                    synchronized(this.stateEvent) {
+<b class="nc"><i>673</i>&nbsp;                        if(this.state == 1) {</b>
+<i>674</i>&nbsp;                            try {
+<b class="nc"><i>675</i>&nbsp;                                this.stateEvent.wait();</b>
+<b class="nc"><i>676</i>&nbsp;                            } catch (InterruptedException var19) {</b>
+<i>677</i>&nbsp;                                if(this.orb.transportDebugFlag) {
+<i>678</i>&nbsp;                                    this.dprint(&quot;.writeLock: OPENING InterruptedException: &quot; + this);
+<b class="nc"><i>679</i>&nbsp;                                }</b>
+<i>680</i>&nbsp;                            }
+<i>681</i>&nbsp;                        }
+<b class="nc"><i>682</i>&nbsp;                        break;</b>
+<i>683</i>&nbsp;                    }
+<i>684</i>&nbsp;                case 2:
+<b class="nc"><i>685</i>&nbsp;                    var2 = this.writeEvent;</b>
+<i>686</i>&nbsp;                    synchronized(this.writeEvent) {
+<b class="nc"><i>687</i>&nbsp;                        if(!this.writeLocked) {</b>
+<i>688</i>&nbsp;                            this.writeLocked = true;
+<i>689</i>&nbsp;                            return;
+<b class="nc"><i>690</i>&nbsp;                        }</b>
+<i>691</i>&nbsp;
+<i>692</i>&nbsp;                        while(true) {
+<i>693</i>&nbsp;                            try {
+<i>694</i>&nbsp;                                if(this.state == 2 &amp;&amp; this.writeLocked) {
+<b class="nc"><i>695</i>&nbsp;                                    this.writeEvent.wait(100L);</b>
+<i>696</i>&nbsp;                                    continue;
+<i>697</i>&nbsp;                                }
+<i>698</i>&nbsp;                            } catch (InterruptedException var18) {
+<i>699</i>&nbsp;                                if(this.orb.transportDebugFlag) {
+<i>700</i>&nbsp;                                    this.dprint(&quot;.writeLock: ESTABLISHED InterruptedException: &quot; + this);
+<b class="nc"><i>701</i>&nbsp;                                }</b>
+<i>702</i>&nbsp;                            }
+<i>703</i>&nbsp;                            continue label220;
+<i>704</i>&nbsp;                        }
+<i>705</i>&nbsp;                    }
+<i>706</i>&nbsp;                case 3:
+<i>707</i>&nbsp;                default:
+<i>708</i>&nbsp;                    if(this.orb.transportDebugFlag) {
+<i>709</i>&nbsp;                        this.dprint(&quot;.writeLock: default: &quot; + this);
+<i>710</i>&nbsp;                    }
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;                    throw new RuntimeException(&quot;.writeLock: bad state&quot;);
+<b class="nc"><i>713</i>&nbsp;                case 4:</b>
+<i>714</i>&nbsp;                    var2 = this.stateEvent;
+<b class="nc"><i>715</i>&nbsp;                    synchronized(this.stateEvent) {</b>
+<i>716</i>&nbsp;                        if(this.state == 4) {
+<i>717</i>&nbsp;                            throw this.wrapper.connectionCloseRebind();
+<b class="nc"><i>718</i>&nbsp;                        }</b>
+<b class="nc"><i>719</i>&nbsp;                        break;</b>
+<i>720</i>&nbsp;                    }
+<b class="nc"><i>721</i>&nbsp;                case 5:</b>
+<b class="nc"><i>722</i>&nbsp;                    var2 = this.stateEvent;</b>
+<b class="nc"><i>723</i>&nbsp;                    synchronized(this.stateEvent) {</b>
+<i>724</i>&nbsp;                        if(this.state == 5) {
+<i>725</i>&nbsp;                            throw this.wrapper.writeErrorSend();
+<i>726</i>&nbsp;                        }
+<i>727</i>&nbsp;                    }
+<i>728</i>&nbsp;                }
+<b class="nc"><i>729</i>&nbsp;            }</b>
+<i>730</i>&nbsp;        } finally {
+<i>731</i>&nbsp;            if(dprintWriteLocks &amp;&amp; this.orb.transportDebugFlag) {
+<i>732</i>&nbsp;                this.dprint(&quot;.writeLock&lt;-: &quot; + this);
+<i>733</i>&nbsp;            }
+<i>734</i>&nbsp;
+<i>735</i>&nbsp;        }
+<i>736</i>&nbsp;    }
+<i>737</i>&nbsp;
+<b class="nc"><i>738</i>&nbsp;    public void writeUnlock() {</b>
+<b class="nc"><i>739</i>&nbsp;        try {</b>
+<i>740</i>&nbsp;            if(dprintWriteLocks &amp;&amp; this.orb.transportDebugFlag) {
+<b class="nc"><i>741</i>&nbsp;                this.dprint(&quot;.writeUnlock-&gt;: &quot; + this);</b>
+<i>742</i>&nbsp;            }
+<i>743</i>&nbsp;
+<i>744</i>&nbsp;            Object var1 = this.writeEvent;
+<i>745</i>&nbsp;            synchronized(this.writeEvent) {
+<i>746</i>&nbsp;                this.writeLocked = false;
+<i>747</i>&nbsp;                this.writeEvent.notify();
+<i>748</i>&nbsp;            }
+<b class="nc"><i>749</i>&nbsp;        } finally {</b>
+<b class="nc"><i>750</i>&nbsp;            if(dprintWriteLocks &amp;&amp; this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>751</i>&nbsp;                this.dprint(&quot;.writeUnlock&lt;-: &quot; + this);</b>
+<b class="nc"><i>752</i>&nbsp;            }</b>
+<i>753</i>&nbsp;
+<i>754</i>&nbsp;        }
+<i>755</i>&nbsp;
+<i>756</i>&nbsp;    }
+<i>757</i>&nbsp;
+<i>758</i>&nbsp;    public void sendWithoutLock(OutputObject var1) {
+<b class="nc"><i>759</i>&nbsp;        try {</b>
+<b class="nc"><i>760</i>&nbsp;            CDROutputObject var2 = (CDROutputObject)var1;</b>
+<b class="nc"><i>761</i>&nbsp;            var2.writeTo(this);</b>
+<b class="nc"><i>762</i>&nbsp;        } catch (IOException var4) {</b>
+<i>763</i>&nbsp;            COMM_FAILURE var3 = this.wrapper.writeErrorSend(var4);
+<b class="nc"><i>764</i>&nbsp;            this.purgeCalls(var3, false, true);</b>
+<b class="nc"><i>765</i>&nbsp;            throw var3;</b>
+<b class="nc"><i>766</i>&nbsp;        }</b>
+<b class="nc"><i>767</i>&nbsp;    }</b>
+<i>768</i>&nbsp;
+<i>769</i>&nbsp;    public void registerWaiter(MessageMediator var1) {
+<i>770</i>&nbsp;        this.responseWaitingRoom.registerWaiter(var1);
+<i>771</i>&nbsp;    }
+<i>772</i>&nbsp;
+<i>773</i>&nbsp;    public void unregisterWaiter(MessageMediator var1) {
+<i>774</i>&nbsp;        this.responseWaitingRoom.unregisterWaiter(var1);
+<b class="nc"><i>775</i>&nbsp;    }</b>
+<i>776</i>&nbsp;
+<b class="nc"><i>777</i>&nbsp;    public InputObject waitForResponse(MessageMediator var1) {</b>
+<b class="nc"><i>778</i>&nbsp;        return this.responseWaitingRoom.waitForResponse(var1);</b>
+<b class="nc"><i>779</i>&nbsp;    }</b>
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;    public void setConnectionCache(ConnectionCache var1) {</b>
+<i>782</i>&nbsp;        this.connectionCache = var1;
+<b class="nc"><i>783</i>&nbsp;    }</b>
+<b class="nc"><i>784</i>&nbsp;</b>
+<b class="nc"><i>785</i>&nbsp;    public ConnectionCache getConnectionCache() {</b>
+<b class="nc"><i>786</i>&nbsp;        return this.connectionCache;</b>
+<i>787</i>&nbsp;    }
+<b class="nc"><i>788</i>&nbsp;</b>
+<b class="nc"><i>789</i>&nbsp;    public void setUseSelectThreadToWait(boolean var1) {</b>
+<b class="nc"><i>790</i>&nbsp;        this.useSelectThreadToWait = var1;</b>
+<b class="nc"><i>791</i>&nbsp;        this.setReadGiopHeaderOnly(this.shouldUseSelectThreadToWait());</b>
+<i>792</i>&nbsp;    }
+<b class="nc"><i>793</i>&nbsp;</b>
+<b class="nc"><i>794</i>&nbsp;    public void handleEvent() {</b>
+<i>795</i>&nbsp;        if(this.orb.transportDebugFlag) {
+<b class="nc"><i>796</i>&nbsp;            this.dprint(&quot;.handleEvent-&gt;: &quot; + this);</b>
+<b class="nc"><i>797</i>&nbsp;        }</b>
+<i>798</i>&nbsp;
+<i>799</i>&nbsp;        this.getSelectionKey().interestOps(this.getSelectionKey().interestOps() &amp; ~this.getInterestOps());
+<i>800</i>&nbsp;        if(this.shouldUseWorkerThreadForEvent()) {
+<i>801</i>&nbsp;            Object var1 = null;
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;            try {
+<b class="nc"><i>804</i>&nbsp;                int var2 = 0;</b>
+<b class="nc"><i>805</i>&nbsp;                if(this.shouldReadGiopHeaderOnly()) {</b>
+<i>806</i>&nbsp;                    this.partialMessageMediator = this.readBits();
+<b class="nc"><i>807</i>&nbsp;                    var2 = this.partialMessageMediator.getThreadPoolToUse();</b>
+<b class="nc"><i>808</i>&nbsp;                }</b>
+<i>809</i>&nbsp;
+<b class="nc"><i>810</i>&nbsp;                if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>811</i>&nbsp;                    this.dprint(&quot;.handleEvent: addWork to pool: &quot; + var2);</b>
+<b class="nc"><i>812</i>&nbsp;                }</b>
+<b class="nc"><i>813</i>&nbsp;</b>
+<b class="nc"><i>814</i>&nbsp;                this.orb.getThreadPoolManager().getThreadPool(var2).getWorkQueue(0).addWork(this.getWork());</b>
+<b class="nc"><i>815</i>&nbsp;            } catch (NoSuchThreadPoolException var3) {</b>
+<b class="nc"><i>816</i>&nbsp;                var1 = var3;</b>
+<i>817</i>&nbsp;            } catch (NoSuchWorkQueueException var4) {
+<b class="nc"><i>818</i>&nbsp;                var1 = var4;</b>
+<b class="nc"><i>819</i>&nbsp;            }</b>
+<b class="nc"><i>820</i>&nbsp;</b>
+<i>821</i>&nbsp;            if(var1 != null) {
+<i>822</i>&nbsp;                if(this.orb.transportDebugFlag) {
+<i>823</i>&nbsp;                    this.dprint(&quot;.handleEvent: &quot; + var1);
+<i>824</i>&nbsp;                }
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;                INTERNAL var5 = new INTERNAL(&quot;NoSuchThreadPoolException&quot;);
+<b class="nc"><i>827</i>&nbsp;                var5.initCause((Throwable)var1);</b>
+<i>828</i>&nbsp;                throw var5;
+<i>829</i>&nbsp;            }
+<i>830</i>&nbsp;        } else {
+<i>831</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<b class="nc"><i>832</i>&nbsp;                this.dprint(&quot;.handleEvent: doWork&quot;);</b>
+<i>833</i>&nbsp;            }
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;            this.getWork().doWork();
+<i>836</i>&nbsp;        }
+<b class="nc"><i>837</i>&nbsp;</b>
+<i>838</i>&nbsp;        if(this.orb.transportDebugFlag) {
+<i>839</i>&nbsp;            this.dprint(&quot;.handleEvent&lt;-: &quot; + this);
+<i>840</i>&nbsp;        }
+<i>841</i>&nbsp;
+<i>842</i>&nbsp;    }
+<b class="nc"><i>843</i>&nbsp;</b>
+<i>844</i>&nbsp;    public SelectableChannel getChannel() {
+<i>845</i>&nbsp;        return this.socketChannel;
+<i>846</i>&nbsp;    }
+<i>847</i>&nbsp;
+<i>848</i>&nbsp;    public int getInterestOps() {
+<i>849</i>&nbsp;        return 1;
+<i>850</i>&nbsp;    }
+<i>851</i>&nbsp;
+<b class="nc"><i>852</i>&nbsp;    public Connection getConnection() {</b>
+<i>853</i>&nbsp;        return this;
+<i>854</i>&nbsp;    }
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;    public String getName() {
+<b class="nc"><i>857</i>&nbsp;        return this.toString();</b>
+<i>858</i>&nbsp;    }
+<i>859</i>&nbsp;
+<b class="nc"><i>860</i>&nbsp;    public void doWork() {</b>
+<i>861</i>&nbsp;        try {
+<b class="nc"><i>862</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<i>863</i>&nbsp;                this.dprint(&quot;.doWork-&gt;: &quot; + this);
+<i>864</i>&nbsp;            }
+<i>865</i>&nbsp;
+<i>866</i>&nbsp;            if(!this.shouldReadGiopHeaderOnly()) {
+<i>867</i>&nbsp;                this.read();
+<b class="nc"><i>868</i>&nbsp;            } else {</b>
+<i>869</i>&nbsp;                CorbaMessageMediator var1 = this.getPartialMessageMediator();
+<i>870</i>&nbsp;                var1 = this.finishReadingBits(var1);
+<i>871</i>&nbsp;                if(var1 != null) {
+<i>872</i>&nbsp;                    this.dispatch(var1);
+<b class="nc"><i>873</i>&nbsp;                }</b>
+<i>874</i>&nbsp;            }
+<i>875</i>&nbsp;        } catch (Throwable var5) {
+<i>876</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>877</i>&nbsp;                this.dprint(&quot;.doWork: ignoring Throwable: &quot; + var5 + &quot; &quot; + this);
+<b class="nc"><i>878</i>&nbsp;            }</b>
+<b class="nc"><i>879</i>&nbsp;        } finally {</b>
+<b class="nc"><i>880</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>881</i>&nbsp;                this.dprint(&quot;.doWork&lt;-: &quot; + this);</b>
+<i>882</i>&nbsp;            }
+<i>883</i>&nbsp;
+<i>884</i>&nbsp;        }
+<b class="nc"><i>885</i>&nbsp;</b>
+<i>886</i>&nbsp;    }
+<i>887</i>&nbsp;
+<i>888</i>&nbsp;    public void setEnqueueTime(long var1) {
+<i>889</i>&nbsp;        this.enqueueTime = var1;
+<i>890</i>&nbsp;    }
+<i>891</i>&nbsp;
+<i>892</i>&nbsp;    public long getEnqueueTime() {
+<i>893</i>&nbsp;        return this.enqueueTime;
+<i>894</i>&nbsp;    }
+<i>895</i>&nbsp;
+<i>896</i>&nbsp;    public boolean shouldReadGiopHeaderOnly() {
+<i>897</i>&nbsp;        return this.shouldReadGiopHeaderOnly;
+<b class="nc"><i>898</i>&nbsp;    }</b>
+<b class="nc"><i>899</i>&nbsp;</b>
+<i>900</i>&nbsp;    protected void setReadGiopHeaderOnly(boolean var1) {
+<i>901</i>&nbsp;        this.shouldReadGiopHeaderOnly = var1;
+<i>902</i>&nbsp;    }
+<b class="nc"><i>903</i>&nbsp;</b>
+<b class="nc"><i>904</i>&nbsp;    public ResponseWaitingRoom getResponseWaitingRoom() {</b>
+<i>905</i>&nbsp;        return this.responseWaitingRoom;
+<i>906</i>&nbsp;    }
+<b class="nc"><i>907</i>&nbsp;</b>
+<b class="nc"><i>908</i>&nbsp;    public void serverRequestMapPut(int var1, CorbaMessageMediator var2) {</b>
+<i>909</i>&nbsp;        this.serverRequestMap.put(new Integer(var1), var2);
+<b class="nc"><i>910</i>&nbsp;    }</b>
+<i>911</i>&nbsp;
+<i>912</i>&nbsp;    public CorbaMessageMediator serverRequestMapGet(int var1) {
+<b class="nc"><i>913</i>&nbsp;        return (CorbaMessageMediator)this.serverRequestMap.get(new Integer(var1));</b>
+<b class="nc"><i>914</i>&nbsp;    }</b>
+<b class="nc"><i>915</i>&nbsp;</b>
+<b class="nc"><i>916</i>&nbsp;    public void serverRequestMapRemove(int var1) {</b>
+<i>917</i>&nbsp;        this.serverRequestMap.remove(new Integer(var1));
+<b class="nc"><i>918</i>&nbsp;    }</b>
+<b class="nc"><i>919</i>&nbsp;</b>
+<i>920</i>&nbsp;    public Socket getSocket() {
+<b class="nc"><i>921</i>&nbsp;        return this.socket;</b>
+<i>922</i>&nbsp;    }
+<i>923</i>&nbsp;
+<b class="nc"><i>924</i>&nbsp;    public synchronized void serverRequestProcessingBegins() {</b>
+<b class="nc"><i>925</i>&nbsp;        ++this.serverRequestCount;</b>
+<b class="nc"><i>926</i>&nbsp;    }</b>
+<b class="nc"><i>927</i>&nbsp;</b>
+<i>928</i>&nbsp;    public synchronized void serverRequestProcessingEnds() {
+<i>929</i>&nbsp;        --this.serverRequestCount;
+<i>930</i>&nbsp;    }
+<i>931</i>&nbsp;
+<i>932</i>&nbsp;    public synchronized int getNextRequestId() {
+<b class="nc"><i>933</i>&nbsp;        return this.requestId++;</b>
+<b class="nc"><i>934</i>&nbsp;    }</b>
+<i>935</i>&nbsp;
+<b class="nc"><i>936</i>&nbsp;    public ORB getBroker() {</b>
+<b class="nc"><i>937</i>&nbsp;        return this.orb;</b>
+<b class="nc"><i>938</i>&nbsp;    }</b>
+<i>939</i>&nbsp;
+<b class="nc"><i>940</i>&nbsp;    public CodeSetContext getCodeSetContext() {</b>
+<b class="nc"><i>941</i>&nbsp;        if(this.codeSetContext == null) {</b>
+<i>942</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>943</i>&nbsp;                return this.codeSetContext;</b>
+<i>944</i>&nbsp;            }
+<i>945</i>&nbsp;        } else {
+<i>946</i>&nbsp;            return this.codeSetContext;
+<i>947</i>&nbsp;        }
+<i>948</i>&nbsp;    }
+<i>949</i>&nbsp;
+<i>950</i>&nbsp;    public synchronized void setCodeSetContext(CodeSetContext var1) {
+<b class="nc"><i>951</i>&nbsp;        if(this.codeSetContext == null) {</b>
+<b class="nc"><i>952</i>&nbsp;            if(OSFCodeSetRegistry.lookupEntry(var1.getCharCodeSet()) == null || OSFCodeSetRegistry.lookupEntry(var1.getWCharCodeSet()) == null) {</b>
+<b class="nc"><i>953</i>&nbsp;                throw this.wrapper.badCodesetsFromClient();</b>
+<i>954</i>&nbsp;            }
+<b class="nc"><i>955</i>&nbsp;</b>
+<b class="nc"><i>956</i>&nbsp;            this.codeSetContext = var1;</b>
+<i>957</i>&nbsp;        }
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;    }
+<i>960</i>&nbsp;
+<b class="nc"><i>961</i>&nbsp;    public MessageMediator clientRequestMapGet(int var1) {</b>
+<b class="nc"><i>962</i>&nbsp;        return this.responseWaitingRoom.getMessageMediator(var1);</b>
+<b class="nc"><i>963</i>&nbsp;    }</b>
+<i>964</i>&nbsp;
+<b class="nc"><i>965</i>&nbsp;    public void clientReply_1_1_Put(MessageMediator var1) {</b>
+<b class="nc"><i>966</i>&nbsp;        this.clientReply_1_1 = var1;</b>
+<i>967</i>&nbsp;    }
+<i>968</i>&nbsp;
+<b class="nc"><i>969</i>&nbsp;    public MessageMediator clientReply_1_1_Get() {</b>
+<b class="nc"><i>970</i>&nbsp;        return this.clientReply_1_1;</b>
+<i>971</i>&nbsp;    }
+<i>972</i>&nbsp;
+<b class="nc"><i>973</i>&nbsp;    public void clientReply_1_1_Remove() {</b>
+<i>974</i>&nbsp;        this.clientReply_1_1 = null;
+<b class="nc"><i>975</i>&nbsp;    }</b>
+<i>976</i>&nbsp;
+<b class="nc"><i>977</i>&nbsp;    public void serverRequest_1_1_Put(MessageMediator var1) {</b>
+<b class="nc"><i>978</i>&nbsp;        this.serverRequest_1_1 = var1;</b>
+<i>979</i>&nbsp;    }
+<i>980</i>&nbsp;
+<i>981</i>&nbsp;    public MessageMediator serverRequest_1_1_Get() {
+<i>982</i>&nbsp;        return this.serverRequest_1_1;
+<i>983</i>&nbsp;    }
+<i>984</i>&nbsp;
+<i>985</i>&nbsp;    public void serverRequest_1_1_Remove() {
+<b class="nc"><i>986</i>&nbsp;        this.serverRequest_1_1 = null;</b>
+<b class="nc"><i>987</i>&nbsp;    }</b>
+<i>988</i>&nbsp;
+<b class="nc"><i>989</i>&nbsp;    protected String getStateString(int var1) {</b>
+<b class="nc"><i>990</i>&nbsp;        Object var2 = this.stateEvent;</b>
+<b class="nc"><i>991</i>&nbsp;        synchronized(this.stateEvent) {</b>
+<b class="nc"><i>992</i>&nbsp;            switch(var1) {</b>
+<i>993</i>&nbsp;            case 1:
+<b class="nc"><i>994</i>&nbsp;                return &quot;OPENING&quot;;</b>
+<b class="nc"><i>995</i>&nbsp;            case 2:</b>
+<i>996</i>&nbsp;                return &quot;ESTABLISHED&quot;;
+<i>997</i>&nbsp;            case 3:
+<i>998</i>&nbsp;                return &quot;CLOSE_SENT&quot;;
+<i>999</i>&nbsp;            case 4:
+<i>1000</i>&nbsp;                return &quot;CLOSE_RECVD&quot;;
+<i>1001</i>&nbsp;            case 5:
+<i>1002</i>&nbsp;                return &quot;ABORT&quot;;
+<i>1003</i>&nbsp;            default:
+<i>1004</i>&nbsp;                return &quot;???&quot;;
+<i>1005</i>&nbsp;            }
+<i>1006</i>&nbsp;        }
+<i>1007</i>&nbsp;    }
+<i>1008</i>&nbsp;
+<i>1009</i>&nbsp;    public synchronized boolean isPostInitialContexts() {
+<i>1010</i>&nbsp;        return this.postInitialContexts;
+<i>1011</i>&nbsp;    }
+<i>1012</i>&nbsp;
+<b class="nc"><i>1013</i>&nbsp;    public synchronized void setPostInitialContexts() {</b>
+<b class="nc"><i>1014</i>&nbsp;        this.postInitialContexts = true;</b>
+<i>1015</i>&nbsp;    }
+<i>1016</i>&nbsp;
+<i>1017</i>&nbsp;    public void purgeCalls(SystemException var1, boolean var2, boolean var3) {
+<b class="nc"><i>1018</i>&nbsp;        int var4 = var1.minor;</b>
+<i>1019</i>&nbsp;
+<i>1020</i>&nbsp;        try {
+<i>1021</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>1022</i>&nbsp;                this.dprint(&quot;.purgeCalls-&gt;: &quot; + var4 + &quot;/&quot; + var2 + &quot;/&quot; + var3 + &quot; &quot; + this);
+<i>1023</i>&nbsp;            }
+<i>1024</i>&nbsp;
+<i>1025</i>&nbsp;            Object var5 = this.stateEvent;
+<i>1026</i>&nbsp;            synchronized(this.stateEvent) {
+<i>1027</i>&nbsp;                if(this.state == 5 || this.state == 4) {
+<i>1028</i>&nbsp;                    if(this.orb.transportDebugFlag) {
+<i>1029</i>&nbsp;                        this.dprint(&quot;.purgeCalls: exiting since state is: &quot; + this.getStateString(this.state) + &quot; &quot; + this);
+<i>1030</i>&nbsp;                    }
+<i>1031</i>&nbsp;
+<i>1032</i>&nbsp;                    return;
+<i>1033</i>&nbsp;                }
+<i>1034</i>&nbsp;            }
+<i>1035</i>&nbsp;
+<i>1036</i>&nbsp;            try {
+<i>1037</i>&nbsp;                if(!var3) {
+<i>1038</i>&nbsp;                    this.writeLock();
+<i>1039</i>&nbsp;                }
+<i>1040</i>&nbsp;            } catch (SystemException var16) {
+<i>1041</i>&nbsp;                if(this.orb.transportDebugFlag) {
+<i>1042</i>&nbsp;                    this.dprint(&quot;.purgeCalls: SystemException&quot; + var16 + &quot;; continuing &quot; + this);
+<i>1043</i>&nbsp;                }
+<i>1044</i>&nbsp;            }
+<i>1045</i>&nbsp;
+<i>1046</i>&nbsp;            Object var6 = this.stateEvent;
+<i>1047</i>&nbsp;            synchronized(this.stateEvent) {
+<i>1048</i>&nbsp;                if(var4 == 1398079697) {
+<i>1049</i>&nbsp;                    this.state = 4;
+<i>1050</i>&nbsp;                    var1.completed = CompletionStatus.COMPLETED_NO;
+<i>1051</i>&nbsp;                } else {
+<i>1052</i>&nbsp;                    this.state = 5;
+<i>1053</i>&nbsp;                    var1.completed = CompletionStatus.COMPLETED_MAYBE;
+<i>1054</i>&nbsp;                }
+<i>1055</i>&nbsp;
+<i>1056</i>&nbsp;                this.stateEvent.notifyAll();
+<i>1057</i>&nbsp;            }
+<i>1058</i>&nbsp;
+<i>1059</i>&nbsp;            try {
+<i>1060</i>&nbsp;                this.socket.getInputStream().close();
+<i>1061</i>&nbsp;                this.socket.getOutputStream().close();
+<i>1062</i>&nbsp;                this.socket.close();
+<i>1063</i>&nbsp;            } catch (Exception var15) {
+<b class="nc"><i>1064</i>&nbsp;                if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>1065</i>&nbsp;                    this.dprint(&quot;.purgeCalls: Exception closing socket: &quot; + var15 + &quot; &quot; + this);</b>
+<b class="nc"><i>1066</i>&nbsp;                }</b>
+<b class="nc"><i>1067</i>&nbsp;            }</b>
+<i>1068</i>&nbsp;
+<i>1069</i>&nbsp;            this.responseWaitingRoom.signalExceptionToAllWaiters(var1);
+<i>1070</i>&nbsp;        } finally {
+<i>1071</i>&nbsp;            if(this.contactInfo != null) {
+<b class="nc"><i>1072</i>&nbsp;                ((OutboundConnectionCache)this.getConnectionCache()).remove(this.contactInfo);</b>
+<i>1073</i>&nbsp;            } else if(this.acceptor != null) {
+<i>1074</i>&nbsp;                ((InboundConnectionCache)this.getConnectionCache()).remove(this);
+<i>1075</i>&nbsp;            }
+<i>1076</i>&nbsp;
+<b class="nc"><i>1077</i>&nbsp;            this.writeUnlock();</b>
+<i>1078</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>1079</i>&nbsp;                this.dprint(&quot;.purgeCalls&lt;-: &quot; + var4 + &quot;/&quot; + var2 + &quot;/&quot; + var3 + &quot; &quot; + this);
+<i>1080</i>&nbsp;            }
+<i>1081</i>&nbsp;
+<b class="nc"><i>1082</i>&nbsp;        }</b>
+<i>1083</i>&nbsp;    }
+<i>1084</i>&nbsp;
+<i>1085</i>&nbsp;    public void sendCloseConnection(GIOPVersion var1) throws IOException {
+<i>1086</i>&nbsp;        Message var2 = MessageBase.createCloseConnection(var1);
+<b class="nc"><i>1087</i>&nbsp;        this.sendHelper(var1, var2);</b>
+<i>1088</i>&nbsp;    }
+<i>1089</i>&nbsp;
+<i>1090</i>&nbsp;    public void sendMessageError(GIOPVersion var1) throws IOException {
+<i>1091</i>&nbsp;        Message var2 = MessageBase.createMessageError(var1);
+<b class="nc"><i>1092</i>&nbsp;        this.sendHelper(var1, var2);</b>
+<i>1093</i>&nbsp;    }
+<i>1094</i>&nbsp;
+<i>1095</i>&nbsp;    public void sendCancelRequest(GIOPVersion var1, int var2) throws IOException {
+<i>1096</i>&nbsp;        CancelRequestMessage var3 = MessageBase.createCancelRequest(var1, var2);
+<i>1097</i>&nbsp;        this.sendHelper(var1, var3);
+<i>1098</i>&nbsp;    }
+<i>1099</i>&nbsp;
+<i>1100</i>&nbsp;    protected void sendHelper(GIOPVersion var1, Message var2) throws IOException {
+<i>1101</i>&nbsp;        CDROutputObject var3 = OutputStreamFactory.newCDROutputObject(this.orb, (CorbaMessageMediator)null, var1, this, var2, (byte)1);
+<b class="nc"><i>1102</i>&nbsp;        var2.write(var3);</b>
+<i>1103</i>&nbsp;        var3.writeTo(this);
+<i>1104</i>&nbsp;    }
+<i>1105</i>&nbsp;
+<b class="nc"><i>1106</i>&nbsp;    public void sendCancelRequestWithLock(GIOPVersion var1, int var2) throws IOException {</b>
+<i>1107</i>&nbsp;        this.writeLock();
+<i>1108</i>&nbsp;
+<i>1109</i>&nbsp;        try {
+<i>1110</i>&nbsp;            this.sendCancelRequest(var1, var2);
+<b class="nc"><i>1111</i>&nbsp;        } finally {</b>
+<b class="nc"><i>1112</i>&nbsp;            this.writeUnlock();</b>
+<i>1113</i>&nbsp;        }
+<b class="nc"><i>1114</i>&nbsp;</b>
+<i>1115</i>&nbsp;    }
+<i>1116</i>&nbsp;
+<b class="nc"><i>1117</i>&nbsp;    public final void setCodeBaseIOR(IOR var1) {</b>
+<b class="nc"><i>1118</i>&nbsp;        this.codeBaseServerIOR = var1;</b>
+<i>1119</i>&nbsp;    }
+<b class="nc"><i>1120</i>&nbsp;</b>
+<b class="nc"><i>1121</i>&nbsp;    public final IOR getCodeBaseIOR() {</b>
+<b class="nc"><i>1122</i>&nbsp;        return this.codeBaseServerIOR;</b>
+<b class="nc"><i>1123</i>&nbsp;    }</b>
+<i>1124</i>&nbsp;
+<i>1125</i>&nbsp;    public final CodeBase getCodeBase() {
+<i>1126</i>&nbsp;        return this.cachedCodeBase;
+<b class="nc"><i>1127</i>&nbsp;    }</b>
+<b class="nc"><i>1128</i>&nbsp;</b>
+<i>1129</i>&nbsp;    protected void setReadTimeouts(ReadTimeouts var1) {
+<b class="nc"><i>1130</i>&nbsp;        this.readTimeouts = var1;</b>
+<i>1131</i>&nbsp;    }
+<b class="nc"><i>1132</i>&nbsp;</b>
+<b class="nc"><i>1133</i>&nbsp;    protected void setPartialMessageMediator(CorbaMessageMediator var1) {</b>
+<b class="nc"><i>1134</i>&nbsp;        this.partialMessageMediator = var1;</b>
+<b class="nc"><i>1135</i>&nbsp;    }</b>
+<b class="nc"><i>1136</i>&nbsp;</b>
+<i>1137</i>&nbsp;    protected CorbaMessageMediator getPartialMessageMediator() {
+<b class="nc"><i>1138</i>&nbsp;        return this.partialMessageMediator;</b>
+<b class="nc"><i>1139</i>&nbsp;    }</b>
+<b class="nc"><i>1140</i>&nbsp;</b>
+<i>1141</i>&nbsp;    public String toString() {
+<b class="nc"><i>1142</i>&nbsp;        Object var1 = this.stateEvent;</b>
+<b class="nc"><i>1143</i>&nbsp;        synchronized(this.stateEvent) {</b>
+<b class="nc"><i>1144</i>&nbsp;            return &quot;SocketOrChannelConnectionImpl[ &quot; + (this.socketChannel == null?this.socket.toString():this.socketChannel.toString()) + &quot; &quot; + this.getStateString(this.state) + &quot; &quot; + this.shouldUseSelectThreadToWait() + &quot; &quot; + this.shouldUseWorkerThreadForEvent() + &quot; &quot; + this.shouldReadGiopHeaderOnly() + &quot;]&quot;;</b>
+<i>1145</i>&nbsp;        }
+<b class="nc"><i>1146</i>&nbsp;    }</b>
+<b class="nc"><i>1147</i>&nbsp;</b>
+<b class="nc"><i>1148</i>&nbsp;    public void dprint(String var1) {</b>
+<i>1149</i>&nbsp;        ORBUtility.dprint(&quot;SocketOrChannelConnectionImpl&quot;, var1);
+<b class="nc"><i>1150</i>&nbsp;    }</b>
+<i>1151</i>&nbsp;
+<b class="nc"><i>1152</i>&nbsp;    protected void dprint(String var1, Throwable var2) {</b>
+<b class="nc"><i>1153</i>&nbsp;        this.dprint(var1);</b>
+<i>1154</i>&nbsp;        var2.printStackTrace(System.out);
+<i>1155</i>&nbsp;    }
+<i>1156</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

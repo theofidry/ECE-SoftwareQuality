@@ -1,0 +1,414 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ToXMLStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xml.internal.serializer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ToXMLStream (com.sun.org.apache.xml.internal.serializer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ToXMLStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 178)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xml.internal.serializer;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.CharInfo;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.Encodings;
+<i>10</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.NamespaceMappings;
+<i>11</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.ToStream;
+<i>12</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.utils.Utils;
+<i>13</i>&nbsp;import java.io.IOException;
+<i>14</i>&nbsp;import java.io.Writer;
+<i>15</i>&nbsp;import javax.xml.transform.ErrorListener;
+<i>16</i>&nbsp;import javax.xml.transform.Transformer;
+<i>17</i>&nbsp;import javax.xml.transform.TransformerException;
+<i>18</i>&nbsp;import org.xml.sax.SAXException;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public final class ToXMLStream extends ToStream {
+<i>21</i>&nbsp;    boolean m_cdataTagOpen = false;
+<i>22</i>&nbsp;    private static CharInfo m_xmlcharInfo = CharInfo.getCharInfoInternal(&quot;com.sun.org.apache.xml.internal.serializer.XMLEntities&quot;, &quot;xml&quot;);
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public ToXMLStream() {
+<i>25</i>&nbsp;        this.m_charInfo = m_xmlcharInfo;
+<i>26</i>&nbsp;        this.initCDATA();
+<i>27</i>&nbsp;        this.m_prefixMap = new NamespaceMappings();
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public void CopyFrom(ToXMLStream xmlListener) {
+<i>31</i>&nbsp;        this.m_writer = xmlListener.m_writer;
+<i>32</i>&nbsp;        String encoding = xmlListener.getEncoding();
+<i>33</i>&nbsp;        this.setEncoding(encoding);
+<i>34</i>&nbsp;        this.setOmitXMLDeclaration(xmlListener.getOmitXMLDeclaration());
+<i>35</i>&nbsp;        this.m_ispreserve = xmlListener.m_ispreserve;
+<i>36</i>&nbsp;        this.m_preserves = xmlListener.m_preserves;
+<i>37</i>&nbsp;        this.m_isprevtext = xmlListener.m_isprevtext;
+<i>38</i>&nbsp;        this.m_doIndent = xmlListener.m_doIndent;
+<i>39</i>&nbsp;        this.setIndentAmount(xmlListener.getIndentAmount());
+<i>40</i>&nbsp;        this.m_startNewLine = xmlListener.m_startNewLine;
+<i>41</i>&nbsp;        this.m_needToOutputDocTypeDecl = xmlListener.m_needToOutputDocTypeDecl;
+<i>42</i>&nbsp;        this.setDoctypeSystem(xmlListener.getDoctypeSystem());
+<i>43</i>&nbsp;        this.setDoctypePublic(xmlListener.getDoctypePublic());
+<i>44</i>&nbsp;        this.setStandalone(xmlListener.getStandalone());
+<i>45</i>&nbsp;        this.setMediaType(xmlListener.getMediaType());
+<i>46</i>&nbsp;        this.m_maxCharacter = xmlListener.m_maxCharacter;
+<i>47</i>&nbsp;        this.m_encodingInfo = xmlListener.m_encodingInfo;
+<b class="nc"><i>48</i>&nbsp;        this.m_spaceBeforeClose = xmlListener.m_spaceBeforeClose;</b>
+<i>49</i>&nbsp;        this.m_cdataStartCalled = xmlListener.m_cdataStartCalled;
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public void startDocumentInternal() throws SAXException {
+<i>53</i>&nbsp;        if(this.m_needToCallStartDocument) {
+<i>54</i>&nbsp;            super.startDocumentInternal();
+<b class="nc"><i>55</i>&nbsp;            this.m_needToCallStartDocument = false;</b>
+<i>56</i>&nbsp;            if(this.m_inEntityRef) {
+<i>57</i>&nbsp;                return;
+<i>58</i>&nbsp;            }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;            this.m_needToOutputDocTypeDecl = true;
+<i>61</i>&nbsp;            this.m_startNewLine = false;
+<i>62</i>&nbsp;            if(!this.getOmitXMLDeclaration()) {
+<b class="nc"><i>63</i>&nbsp;                String encoding = Encodings.getMimeEncoding(this.getEncoding());</b>
+<b class="nc"><i>64</i>&nbsp;                String version = this.getVersion();</b>
+<i>65</i>&nbsp;                if(version == null) {
+<b class="nc"><i>66</i>&nbsp;                    version = &quot;1.0&quot;;</b>
+<i>67</i>&nbsp;                }
+<b class="nc"><i>68</i>&nbsp;</b>
+<i>69</i>&nbsp;                String standalone;
+<i>70</i>&nbsp;                if(this.m_standaloneWasSpecified) {
+<i>71</i>&nbsp;                    standalone = &quot; standalone=\&quot;&quot; + this.getStandalone() + &quot;\&quot;&quot;;
+<i>72</i>&nbsp;                } else {
+<i>73</i>&nbsp;                    standalone = &quot;&quot;;
+<i>74</i>&nbsp;                }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;                try {
+<i>77</i>&nbsp;                    Writer e = this.m_writer;
+<i>78</i>&nbsp;                    e.write(&quot;&lt;?xml version=\&quot;&quot;);
+<i>79</i>&nbsp;                    e.write(version);
+<b class="nc"><i>80</i>&nbsp;                    e.write(&quot;\&quot; encoding=\&quot;&quot;);</b>
+<i>81</i>&nbsp;                    e.write(encoding);
+<i>82</i>&nbsp;                    e.write(34);
+<i>83</i>&nbsp;                    e.write(standalone);
+<b class="nc"><i>84</i>&nbsp;                    e.write(&quot;?&gt;&quot;);</b>
+<b class="nc"><i>85</i>&nbsp;                    if(this.m_doIndent &amp;&amp; (this.m_standaloneWasSpecified || this.getDoctypePublic() != null || this.getDoctypeSystem() != null || this.m_isStandalone)) {</b>
+<i>86</i>&nbsp;                        e.write(this.m_lineSep, 0, this.m_lineSepLen);
+<b class="nc"><i>87</i>&nbsp;                    }</b>
+<i>88</i>&nbsp;                } catch (IOException var5) {
+<b class="nc"><i>89</i>&nbsp;                    throw new SAXException(var5);</b>
+<b class="nc"><i>90</i>&nbsp;                }</b>
+<b class="nc"><i>91</i>&nbsp;            }</b>
+<b class="nc"><i>92</i>&nbsp;        }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;    public void endDocument() throws SAXException {</b>
+<b class="nc"><i>97</i>&nbsp;        this.flushPending();</b>
+<b class="nc"><i>98</i>&nbsp;        if(this.m_doIndent &amp;&amp; !this.m_isprevtext) {</b>
+<b class="nc"><i>99</i>&nbsp;            try {</b>
+<b class="nc"><i>100</i>&nbsp;                this.outputLineSep();</b>
+<b class="nc"><i>101</i>&nbsp;            } catch (IOException var2) {</b>
+<b class="nc"><i>102</i>&nbsp;                throw new SAXException(var2);</b>
+<b class="nc"><i>103</i>&nbsp;            }</b>
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;        this.flushWriter();
+<i>107</i>&nbsp;        if(this.m_tracer != null) {
+<i>108</i>&nbsp;            super.fireEndDoc();
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    public void startPreserving() throws SAXException {
+<i>114</i>&nbsp;        this.m_preserves.push(true);
+<i>115</i>&nbsp;        this.m_ispreserve = true;
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<b class="nc"><i>118</i>&nbsp;    public void endPreserving() throws SAXException {</b>
+<i>119</i>&nbsp;        this.m_ispreserve = this.m_preserves.isEmpty()?false:this.m_preserves.pop();
+<b class="nc"><i>120</i>&nbsp;    }</b>
+<b class="nc"><i>121</i>&nbsp;</b>
+<i>122</i>&nbsp;    public void processingInstruction(String target, String data) throws SAXException {
+<b class="nc"><i>123</i>&nbsp;        if(!this.m_inEntityRef) {</b>
+<i>124</i>&nbsp;            this.flushPending();
+<i>125</i>&nbsp;            if(target.equals(&quot;javax.xml.transform.disable-output-escaping&quot;)) {
+<b class="nc"><i>126</i>&nbsp;                this.startNonEscaping();</b>
+<b class="nc"><i>127</i>&nbsp;            } else if(target.equals(&quot;javax.xml.transform.enable-output-escaping&quot;)) {</b>
+<i>128</i>&nbsp;                this.endNonEscaping();
+<i>129</i>&nbsp;            } else {
+<i>130</i>&nbsp;                try {
+<i>131</i>&nbsp;                    if(this.m_elemContext.m_startTagOpen) {
+<b class="nc"><i>132</i>&nbsp;                        this.closeStartTag();</b>
+<i>133</i>&nbsp;                        this.m_elemContext.m_startTagOpen = false;
+<b class="nc"><i>134</i>&nbsp;                    } else if(this.m_needToCallStartDocument) {</b>
+<b class="nc"><i>135</i>&nbsp;                        this.startDocumentInternal();</b>
+<b class="nc"><i>136</i>&nbsp;                    }</b>
+<b class="nc"><i>137</i>&nbsp;</b>
+<i>138</i>&nbsp;                    if(this.shouldIndent()) {
+<i>139</i>&nbsp;                        this.indent();
+<b class="nc"><i>140</i>&nbsp;                    }</b>
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;                    Writer e = this.m_writer;</b>
+<i>143</i>&nbsp;                    e.write(&quot;&lt;?&quot;);
+<i>144</i>&nbsp;                    e.write(target);
+<i>145</i>&nbsp;                    if(data.length() &gt; 0 &amp;&amp; !Character.isSpaceChar(data.charAt(0))) {
+<b class="nc"><i>146</i>&nbsp;                        e.write(32);</b>
+<i>147</i>&nbsp;                    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;                    int indexOfQLT = data.indexOf(&quot;?&gt;&quot;);
+<i>150</i>&nbsp;                    if(indexOfQLT &gt;= 0) {
+<b class="nc"><i>151</i>&nbsp;                        if(indexOfQLT &gt; 0) {</b>
+<b class="nc"><i>152</i>&nbsp;                            e.write(data.substring(0, indexOfQLT));</b>
+<b class="nc"><i>153</i>&nbsp;                        }</b>
+<b class="nc"><i>154</i>&nbsp;</b>
+<b class="nc"><i>155</i>&nbsp;                        e.write(&quot;? &gt;&quot;);</b>
+<b class="nc"><i>156</i>&nbsp;                        if(indexOfQLT + 2 &lt; data.length()) {</b>
+<b class="nc"><i>157</i>&nbsp;                            e.write(data.substring(indexOfQLT + 2));</b>
+<b class="nc"><i>158</i>&nbsp;                        }</b>
+<b class="nc"><i>159</i>&nbsp;                    } else {</b>
+<b class="nc"><i>160</i>&nbsp;                        e.write(data);</b>
+<i>161</i>&nbsp;                    }
+<b class="nc"><i>162</i>&nbsp;</b>
+<i>163</i>&nbsp;                    e.write(63);
+<b class="nc"><i>164</i>&nbsp;                    e.write(62);</b>
+<b class="nc"><i>165</i>&nbsp;                    if(this.m_elemContext.m_currentElemDepth &lt;= 0 &amp;&amp; this.m_isStandalone) {</b>
+<i>166</i>&nbsp;                        e.write(this.m_lineSep, 0, this.m_lineSepLen);
+<i>167</i>&nbsp;                    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;                    this.m_startNewLine = true;
+<i>170</i>&nbsp;                } catch (IOException var5) {
+<i>171</i>&nbsp;                    throw new SAXException(var5);
+<i>172</i>&nbsp;                }
+<i>173</i>&nbsp;            }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;            if(this.m_tracer != null) {
+<i>176</i>&nbsp;                super.fireEscapingEvent(target, data);
+<i>177</i>&nbsp;            }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;        }
+<i>180</i>&nbsp;    }
+<b class="nc"><i>181</i>&nbsp;</b>
+<b class="nc"><i>182</i>&nbsp;    public void entityReference(String name) throws SAXException {</b>
+<i>183</i>&nbsp;        if(this.m_elemContext.m_startTagOpen) {
+<i>184</i>&nbsp;            this.closeStartTag();
+<i>185</i>&nbsp;            this.m_elemContext.m_startTagOpen = false;
+<b class="nc"><i>186</i>&nbsp;        }</b>
+<i>187</i>&nbsp;
+<b class="nc"><i>188</i>&nbsp;        try {</b>
+<i>189</i>&nbsp;            if(this.shouldIndent()) {
+<b class="nc"><i>190</i>&nbsp;                this.indent();</b>
+<b class="nc"><i>191</i>&nbsp;            }</b>
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;            Writer e = this.m_writer;
+<b class="nc"><i>194</i>&nbsp;            e.write(38);</b>
+<i>195</i>&nbsp;            e.write(name);
+<b class="nc"><i>196</i>&nbsp;            e.write(59);</b>
+<b class="nc"><i>197</i>&nbsp;        } catch (IOException var3) {</b>
+<i>198</i>&nbsp;            throw new SAXException(var3);
+<i>199</i>&nbsp;        }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;        if(this.m_tracer != null) {
+<i>202</i>&nbsp;            super.fireEntityReference(name);
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    public void addUniqueAttribute(String name, String value, int flags) throws SAXException {
+<i>208</i>&nbsp;        if(this.m_elemContext.m_startTagOpen) {
+<i>209</i>&nbsp;            try {
+<i>210</i>&nbsp;                String e = this.patchName(name);
+<i>211</i>&nbsp;                Writer writer = this.m_writer;
+<i>212</i>&nbsp;                if((flags &amp; 1) &gt; 0 &amp;&amp; m_xmlcharInfo.onlyQuotAmpLtGt) {
+<i>213</i>&nbsp;                    writer.write(32);
+<i>214</i>&nbsp;                    writer.write(e);
+<i>215</i>&nbsp;                    writer.write(&quot;=\&quot;&quot;);
+<b class="nc"><i>216</i>&nbsp;                    writer.write(value);</b>
+<i>217</i>&nbsp;                    writer.write(34);
+<b class="nc"><i>218</i>&nbsp;                } else {</b>
+<i>219</i>&nbsp;                    writer.write(32);
+<i>220</i>&nbsp;                    writer.write(e);
+<i>221</i>&nbsp;                    writer.write(&quot;=\&quot;&quot;);
+<i>222</i>&nbsp;                    this.writeAttrString(writer, value, this.getEncoding());
+<i>223</i>&nbsp;                    writer.write(34);
+<i>224</i>&nbsp;                }
+<i>225</i>&nbsp;            } catch (IOException var6) {
+<i>226</i>&nbsp;                throw new SAXException(var6);
+<i>227</i>&nbsp;            }
+<i>228</i>&nbsp;        }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<b class="nc"><i>232</i>&nbsp;    public void addAttribute(String uri, String localName, String rawName, String type, String value, boolean xslAttribute) throws SAXException {</b>
+<i>233</i>&nbsp;        if(this.m_elemContext.m_startTagOpen) {
+<i>234</i>&nbsp;            boolean msg = this.addAttributeAlways(uri, localName, rawName, type, value, xslAttribute);
+<i>235</i>&nbsp;            if(msg &amp;&amp; !xslAttribute &amp;&amp; !rawName.startsWith(&quot;xmlns&quot;)) {
+<i>236</i>&nbsp;                String e = this.ensureAttributesNamespaceIsDeclared(uri, localName, rawName);
+<i>237</i>&nbsp;                if(e != null &amp;&amp; rawName != null &amp;&amp; !rawName.startsWith(e)) {
+<i>238</i>&nbsp;                    rawName = e + &quot;:&quot; + localName;
+<i>239</i>&nbsp;                }
+<i>240</i>&nbsp;            }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;            this.addAttributeAlways(uri, localName, rawName, type, value, xslAttribute);
+<i>243</i>&nbsp;        } else {
+<i>244</i>&nbsp;            String msg1 = Utils.messages.createMessage(&quot;ER_ILLEGAL_ATTRIBUTE_POSITION&quot;, new Object[]{localName});
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;            try {
+<i>247</i>&nbsp;                Transformer e1 = super.getTransformer();
+<i>248</i>&nbsp;                ErrorListener errHandler = e1.getErrorListener();
+<b class="nc"><i>249</i>&nbsp;                if(null != errHandler &amp;&amp; this.m_sourceLocator != null) {</b>
+<i>250</i>&nbsp;                    errHandler.warning(new TransformerException(msg1, this.m_sourceLocator));
+<i>251</i>&nbsp;                } else {
+<b class="nc"><i>252</i>&nbsp;                    System.out.println(msg1);</b>
+<i>253</i>&nbsp;                }
+<b class="nc"><i>254</i>&nbsp;            } catch (Exception var10) {</b>
+<i>255</i>&nbsp;                ;
+<b class="nc"><i>256</i>&nbsp;            }</b>
+<i>257</i>&nbsp;        }
+<b class="nc"><i>258</i>&nbsp;</b>
+<i>259</i>&nbsp;    }
+<b class="nc"><i>260</i>&nbsp;</b>
+<i>261</i>&nbsp;    public void endElement(String elemName) throws SAXException {
+<i>262</i>&nbsp;        this.endElement((String)null, (String)null, elemName);
+<i>263</i>&nbsp;    }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    public void namespaceAfterStartElement(String prefix, String uri) throws SAXException {
+<b class="nc"><i>266</i>&nbsp;        if(this.m_elemContext.m_elementURI == null) {</b>
+<i>267</i>&nbsp;            String prefix1 = getPrefixPart(this.m_elemContext.m_elementName);
+<b class="nc"><i>268</i>&nbsp;            if(prefix1 == null &amp;&amp; &quot;&quot;.equals(prefix)) {</b>
+<b class="nc"><i>269</i>&nbsp;                this.m_elemContext.m_elementURI = uri;</b>
+<i>270</i>&nbsp;            }
+<b class="nc"><i>271</i>&nbsp;        }</b>
+<b class="nc"><i>272</i>&nbsp;</b>
+<i>273</i>&nbsp;        this.startPrefixMapping(prefix, uri, false);
+<b class="nc"><i>274</i>&nbsp;    }</b>
+<b class="nc"><i>275</i>&nbsp;</b>
+<i>276</i>&nbsp;    protected boolean pushNamespace(String prefix, String uri) {
+<b class="nc"><i>277</i>&nbsp;        try {</b>
+<b class="nc"><i>278</i>&nbsp;            if(this.m_prefixMap.pushNamespace(prefix, uri, this.m_elemContext.m_currentElemDepth)) {</b>
+<b class="nc"><i>279</i>&nbsp;                this.startPrefixMapping(prefix, uri);</b>
+<i>280</i>&nbsp;                return true;
+<b class="nc"><i>281</i>&nbsp;            }</b>
+<i>282</i>&nbsp;        } catch (SAXException var4) {
+<b class="nc"><i>283</i>&nbsp;            ;</b>
+<i>284</i>&nbsp;        }
+<b class="nc"><i>285</i>&nbsp;</b>
+<i>286</i>&nbsp;        return false;
+<b class="nc"><i>287</i>&nbsp;    }</b>
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    public boolean reset() {
+<i>290</i>&nbsp;        boolean wasReset = false;
+<b class="nc"><i>291</i>&nbsp;        if(super.reset()) {</b>
+<i>292</i>&nbsp;            this.resetToXMLStream();
+<b class="nc"><i>293</i>&nbsp;            wasReset = true;</b>
+<i>294</i>&nbsp;        }
+<i>295</i>&nbsp;
+<b class="nc"><i>296</i>&nbsp;        return wasReset;</b>
+<i>297</i>&nbsp;    }
+<b class="nc"><i>298</i>&nbsp;</b>
+<i>299</i>&nbsp;    private void resetToXMLStream() {
+<b class="nc"><i>300</i>&nbsp;        this.m_cdataTagOpen = false;</b>
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    private String getXMLVersion() {
+<i>304</i>&nbsp;        String xmlVersion = this.getVersion();
+<b class="nc"><i>305</i>&nbsp;        if(xmlVersion != null &amp;&amp; !xmlVersion.equals(&quot;1.0&quot;)) {</b>
+<i>306</i>&nbsp;            if(xmlVersion.equals(&quot;1.1&quot;)) {
+<i>307</i>&nbsp;                xmlVersion = &quot;1.1&quot;;
+<b class="nc"><i>308</i>&nbsp;            } else {</b>
+<b class="nc"><i>309</i>&nbsp;                String msg = Utils.messages.createMessage(&quot;ER_XML_VERSION_NOT_SUPPORTED&quot;, new Object[]{xmlVersion});</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;                try {
+<i>312</i>&nbsp;                    Transformer e = super.getTransformer();
+<i>313</i>&nbsp;                    ErrorListener errHandler = e.getErrorListener();
+<b class="nc"><i>314</i>&nbsp;                    if(null != errHandler &amp;&amp; this.m_sourceLocator != null) {</b>
+<b class="nc"><i>315</i>&nbsp;                        errHandler.warning(new TransformerException(msg, this.m_sourceLocator));</b>
+<i>316</i>&nbsp;                    } else {
+<b class="nc"><i>317</i>&nbsp;                        System.out.println(msg);</b>
+<i>318</i>&nbsp;                    }
+<b class="nc"><i>319</i>&nbsp;                } catch (Exception var5) {</b>
+<i>320</i>&nbsp;                    ;
+<b class="nc"><i>321</i>&nbsp;                }</b>
+<b class="nc"><i>322</i>&nbsp;</b>
+<i>323</i>&nbsp;                xmlVersion = &quot;1.0&quot;;
+<i>324</i>&nbsp;            }
+<b class="nc"><i>325</i>&nbsp;        } else {</b>
+<b class="nc"><i>326</i>&nbsp;            xmlVersion = &quot;1.0&quot;;</b>
+<i>327</i>&nbsp;        }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;        return xmlVersion;
+<i>330</i>&nbsp;    }
+<i>331</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

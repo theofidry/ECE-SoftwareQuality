@@ -1,0 +1,334 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XPathImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xpath.internal.jaxp</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XPathImpl (com.sun.org.apache.xpath.internal.jaxp)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XPathImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 118)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xpath.internal.jaxp;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xalan.internal.res.XSLMessages;
+<i>9</i>&nbsp;import com.sun.org.apache.xalan.internal.utils.FactoryImpl;
+<i>10</i>&nbsp;import com.sun.org.apache.xalan.internal.utils.FeatureManager;
+<i>11</i>&nbsp;import com.sun.org.apache.xpath.internal.XPathContext;
+<i>12</i>&nbsp;import com.sun.org.apache.xpath.internal.jaxp.JAXPExtensionsProvider;
+<i>13</i>&nbsp;import com.sun.org.apache.xpath.internal.jaxp.JAXPPrefixResolver;
+<i>14</i>&nbsp;import com.sun.org.apache.xpath.internal.jaxp.JAXPVariableStack;
+<i>15</i>&nbsp;import com.sun.org.apache.xpath.internal.jaxp.XPathExpressionImpl;
+<i>16</i>&nbsp;import com.sun.org.apache.xpath.internal.objects.XObject;
+<i>17</i>&nbsp;import java.io.IOException;
+<i>18</i>&nbsp;import javax.xml.namespace.NamespaceContext;
+<i>19</i>&nbsp;import javax.xml.namespace.QName;
+<i>20</i>&nbsp;import javax.xml.parsers.DocumentBuilder;
+<i>21</i>&nbsp;import javax.xml.parsers.DocumentBuilderFactory;
+<i>22</i>&nbsp;import javax.xml.parsers.ParserConfigurationException;
+<i>23</i>&nbsp;import javax.xml.transform.SourceLocator;
+<i>24</i>&nbsp;import javax.xml.transform.TransformerException;
+<i>25</i>&nbsp;import javax.xml.xpath.XPath;
+<i>26</i>&nbsp;import javax.xml.xpath.XPathConstants;
+<i>27</i>&nbsp;import javax.xml.xpath.XPathExpression;
+<i>28</i>&nbsp;import javax.xml.xpath.XPathExpressionException;
+<i>29</i>&nbsp;import javax.xml.xpath.XPathFunctionException;
+<i>30</i>&nbsp;import javax.xml.xpath.XPathFunctionResolver;
+<i>31</i>&nbsp;import javax.xml.xpath.XPathVariableResolver;
+<i>32</i>&nbsp;import org.w3c.dom.Document;
+<i>33</i>&nbsp;import org.w3c.dom.Node;
+<i>34</i>&nbsp;import org.w3c.dom.traversal.NodeIterator;
+<i>35</i>&nbsp;import org.xml.sax.InputSource;
+<i>36</i>&nbsp;import org.xml.sax.SAXException;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;public class XPathImpl implements XPath {
+<i>39</i>&nbsp;    private XPathVariableResolver variableResolver;
+<i>40</i>&nbsp;    private XPathFunctionResolver functionResolver;
+<i>41</i>&nbsp;    private XPathVariableResolver origVariableResolver;
+<i>42</i>&nbsp;    private XPathFunctionResolver origFunctionResolver;
+<i>43</i>&nbsp;    private NamespaceContext namespaceContext;
+<i>44</i>&nbsp;    private JAXPPrefixResolver prefixResolver;
+<i>45</i>&nbsp;    private boolean featureSecureProcessing;
+<i>46</i>&nbsp;    private boolean useServiceMechanism;
+<i>47</i>&nbsp;    private final FeatureManager featureManager;
+<i>48</i>&nbsp;    private static Document d = null;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    XPathImpl(XPathVariableResolver vr, XPathFunctionResolver fr) {
+<i>51</i>&nbsp;        this(vr, fr, false, true, new FeatureManager());
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    XPathImpl(XPathVariableResolver vr, XPathFunctionResolver fr, boolean featureSecureProcessing, boolean useServiceMechanism, FeatureManager featureManager) {
+<i>55</i>&nbsp;        this.namespaceContext = null;
+<i>56</i>&nbsp;        this.featureSecureProcessing = false;
+<i>57</i>&nbsp;        this.useServiceMechanism = true;
+<i>58</i>&nbsp;        this.origVariableResolver = this.variableResolver = vr;
+<i>59</i>&nbsp;        this.origFunctionResolver = this.functionResolver = fr;
+<i>60</i>&nbsp;        this.featureSecureProcessing = featureSecureProcessing;
+<i>61</i>&nbsp;        this.useServiceMechanism = useServiceMechanism;
+<b class="nc"><i>62</i>&nbsp;        this.featureManager = featureManager;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public void setXPathVariableResolver(XPathVariableResolver resolver) {
+<i>66</i>&nbsp;        if(resolver == null) {
+<b class="nc"><i>67</i>&nbsp;            String fmsg = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;XPathVariableResolver&quot;});</b>
+<b class="nc"><i>68</i>&nbsp;            throw new NullPointerException(fmsg);</b>
+<i>69</i>&nbsp;        } else {
+<b class="nc"><i>70</i>&nbsp;            this.variableResolver = resolver;</b>
+<b class="nc"><i>71</i>&nbsp;        }</b>
+<b class="nc"><i>72</i>&nbsp;    }</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public XPathVariableResolver getXPathVariableResolver() {
+<i>75</i>&nbsp;        return this.variableResolver;
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<b class="nc"><i>78</i>&nbsp;    public void setXPathFunctionResolver(XPathFunctionResolver resolver) {</b>
+<b class="nc"><i>79</i>&nbsp;        if(resolver == null) {</b>
+<b class="nc"><i>80</i>&nbsp;            String fmsg = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;XPathFunctionResolver&quot;});</b>
+<i>81</i>&nbsp;            throw new NullPointerException(fmsg);
+<i>82</i>&nbsp;        } else {
+<i>83</i>&nbsp;            this.functionResolver = resolver;
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    public XPathFunctionResolver getXPathFunctionResolver() {
+<i>88</i>&nbsp;        return this.functionResolver;
+<b class="nc"><i>89</i>&nbsp;    }</b>
+<b class="nc"><i>90</i>&nbsp;</b>
+<i>91</i>&nbsp;    public void setNamespaceContext(NamespaceContext nsContext) {
+<i>92</i>&nbsp;        if(nsContext == null) {
+<b class="nc"><i>93</i>&nbsp;            String fmsg = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;NamespaceContext&quot;});</b>
+<i>94</i>&nbsp;            throw new NullPointerException(fmsg);
+<b class="nc"><i>95</i>&nbsp;        } else {</b>
+<i>96</i>&nbsp;            this.namespaceContext = nsContext;
+<i>97</i>&nbsp;            this.prefixResolver = new JAXPPrefixResolver(nsContext);
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public NamespaceContext getNamespaceContext() {
+<i>102</i>&nbsp;        return this.namespaceContext;
+<i>103</i>&nbsp;    }
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;    private DocumentBuilder getParser() {
+<i>106</i>&nbsp;        try {
+<i>107</i>&nbsp;            DocumentBuilderFactory e = FactoryImpl.getDOMFactory(this.useServiceMechanism);
+<i>108</i>&nbsp;            e.setNamespaceAware(true);
+<i>109</i>&nbsp;            e.setValidating(false);
+<i>110</i>&nbsp;            return e.newDocumentBuilder();
+<i>111</i>&nbsp;        } catch (ParserConfigurationException var2) {
+<i>112</i>&nbsp;            throw new Error(var2);
+<b class="nc"><i>113</i>&nbsp;        }</b>
+<b class="nc"><i>114</i>&nbsp;    }</b>
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    private XObject eval(String expression, Object contextItem) throws TransformerException {
+<b class="nc"><i>117</i>&nbsp;        com.sun.org.apache.xpath.internal.XPath xpath = new com.sun.org.apache.xpath.internal.XPath(expression, (SourceLocator)null, this.prefixResolver, 0);</b>
+<i>118</i>&nbsp;        XPathContext xpathSupport = null;
+<b class="nc"><i>119</i>&nbsp;        JAXPExtensionsProvider xobj;</b>
+<i>120</i>&nbsp;        if(this.functionResolver != null) {
+<i>121</i>&nbsp;            xobj = new JAXPExtensionsProvider(this.functionResolver, this.featureSecureProcessing, this.featureManager);
+<i>122</i>&nbsp;            xpathSupport = new XPathContext(xobj);
+<i>123</i>&nbsp;        } else {
+<i>124</i>&nbsp;            xpathSupport = new XPathContext();
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;        xobj = null;
+<b class="nc"><i>128</i>&nbsp;        xpathSupport.setVarStack(new JAXPVariableStack(this.variableResolver));</b>
+<i>129</i>&nbsp;        XObject xobj1;
+<i>130</i>&nbsp;        if(contextItem instanceof Node) {
+<i>131</i>&nbsp;            xobj1 = xpath.execute(xpathSupport, (Node)contextItem, this.prefixResolver);
+<i>132</i>&nbsp;        } else {
+<i>133</i>&nbsp;            xobj1 = xpath.execute(xpathSupport, -1, this.prefixResolver);
+<i>134</i>&nbsp;        }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;        return xobj1;
+<b class="nc"><i>137</i>&nbsp;    }</b>
+<b class="nc"><i>138</i>&nbsp;</b>
+<i>139</i>&nbsp;    public Object evaluate(String expression, Object item, QName returnType) throws XPathExpressionException {
+<i>140</i>&nbsp;        String te1;
+<b class="nc"><i>141</i>&nbsp;        if(expression == null) {</b>
+<i>142</i>&nbsp;            te1 = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;XPath expression&quot;});
+<b class="nc"><i>143</i>&nbsp;            throw new NullPointerException(te1);</b>
+<b class="nc"><i>144</i>&nbsp;        } else if(returnType == null) {</b>
+<i>145</i>&nbsp;            te1 = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;returnType&quot;});
+<i>146</i>&nbsp;            throw new NullPointerException(te1);
+<i>147</i>&nbsp;        } else if(!this.isSupported(returnType)) {
+<i>148</i>&nbsp;            te1 = XSLMessages.createXPATHMessage(&quot;ER_UNSUPPORTED_RETURN_TYPE&quot;, new Object[]{returnType.toString()});
+<i>149</i>&nbsp;            throw new IllegalArgumentException(te1);
+<i>150</i>&nbsp;        } else {
+<i>151</i>&nbsp;            try {
+<i>152</i>&nbsp;                XObject te = this.eval(expression, item);
+<b class="nc"><i>153</i>&nbsp;                return this.getResultAsType(te, returnType);</b>
+<i>154</i>&nbsp;            } catch (NullPointerException var6) {
+<i>155</i>&nbsp;                throw new XPathExpressionException(var6);
+<b class="nc"><i>156</i>&nbsp;            } catch (TransformerException var7) {</b>
+<i>157</i>&nbsp;                Throwable nestedException = var7.getException();
+<i>158</i>&nbsp;                if(nestedException instanceof XPathFunctionException) {
+<i>159</i>&nbsp;                    throw (XPathFunctionException)nestedException;
+<i>160</i>&nbsp;                } else {
+<i>161</i>&nbsp;                    throw new XPathExpressionException(var7);
+<i>162</i>&nbsp;                }
+<i>163</i>&nbsp;            }
+<i>164</i>&nbsp;        }
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    private boolean isSupported(QName returnType) {
+<i>168</i>&nbsp;        return returnType.equals(XPathConstants.STRING) || returnType.equals(XPathConstants.NUMBER) || returnType.equals(XPathConstants.BOOLEAN) || returnType.equals(XPathConstants.NODE) || returnType.equals(XPathConstants.NODESET);
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;    private Object getResultAsType(XObject resultObject, QName returnType) throws TransformerException {</b>
+<b class="nc"><i>172</i>&nbsp;        if(returnType.equals(XPathConstants.STRING)) {</b>
+<b class="nc"><i>173</i>&nbsp;            return resultObject.str();</b>
+<b class="nc"><i>174</i>&nbsp;        } else if(returnType.equals(XPathConstants.NUMBER)) {</b>
+<b class="nc"><i>175</i>&nbsp;            return new Double(resultObject.num());</b>
+<i>176</i>&nbsp;        } else if(returnType.equals(XPathConstants.BOOLEAN)) {
+<b class="nc"><i>177</i>&nbsp;            return new Boolean(resultObject.bool());</b>
+<i>178</i>&nbsp;        } else if(returnType.equals(XPathConstants.NODESET)) {
+<i>179</i>&nbsp;            return resultObject.nodelist();
+<i>180</i>&nbsp;        } else if(returnType.equals(XPathConstants.NODE)) {
+<i>181</i>&nbsp;            NodeIterator fmsg1 = resultObject.nodeset();
+<i>182</i>&nbsp;            return fmsg1.nextNode();
+<i>183</i>&nbsp;        } else {
+<b class="nc"><i>184</i>&nbsp;            String fmsg = XSLMessages.createXPATHMessage(&quot;ER_UNSUPPORTED_RETURN_TYPE&quot;, new Object[]{returnType.toString()});</b>
+<i>185</i>&nbsp;            throw new IllegalArgumentException(fmsg);
+<b class="nc"><i>186</i>&nbsp;        }</b>
+<b class="nc"><i>187</i>&nbsp;    }</b>
+<b class="nc"><i>188</i>&nbsp;</b>
+<i>189</i>&nbsp;    public String evaluate(String expression, Object item) throws XPathExpressionException {
+<b class="nc"><i>190</i>&nbsp;        return (String)this.evaluate(expression, (Object)item, XPathConstants.STRING);</b>
+<b class="nc"><i>191</i>&nbsp;    }</b>
+<b class="nc"><i>192</i>&nbsp;</b>
+<i>193</i>&nbsp;    public XPathExpression compile(String expression) throws XPathExpressionException {
+<i>194</i>&nbsp;        if(expression == null) {
+<b class="nc"><i>195</i>&nbsp;            String te1 = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;XPath expression&quot;});</b>
+<i>196</i>&nbsp;            throw new NullPointerException(te1);
+<b class="nc"><i>197</i>&nbsp;        } else {</b>
+<i>198</i>&nbsp;            try {
+<i>199</i>&nbsp;                com.sun.org.apache.xpath.internal.XPath te = new com.sun.org.apache.xpath.internal.XPath(expression, (SourceLocator)null, this.prefixResolver, 0);
+<b class="nc"><i>200</i>&nbsp;                XPathExpressionImpl ximpl = new XPathExpressionImpl(te, this.prefixResolver, this.functionResolver, this.variableResolver, this.featureSecureProcessing, this.useServiceMechanism, this.featureManager);</b>
+<b class="nc"><i>201</i>&nbsp;                return ximpl;</b>
+<i>202</i>&nbsp;            } catch (TransformerException var4) {
+<i>203</i>&nbsp;                throw new XPathExpressionException(var4);
+<b class="nc"><i>204</i>&nbsp;            }</b>
+<i>205</i>&nbsp;        }
+<i>206</i>&nbsp;    }
+<b class="nc"><i>207</i>&nbsp;</b>
+<i>208</i>&nbsp;    public Object evaluate(String expression, InputSource source, QName returnType) throws XPathExpressionException {
+<i>209</i>&nbsp;        String te1;
+<i>210</i>&nbsp;        if(source == null) {
+<i>211</i>&nbsp;            te1 = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;source&quot;});
+<i>212</i>&nbsp;            throw new NullPointerException(te1);
+<i>213</i>&nbsp;        } else if(expression == null) {
+<i>214</i>&nbsp;            te1 = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;XPath expression&quot;});
+<i>215</i>&nbsp;            throw new NullPointerException(te1);
+<i>216</i>&nbsp;        } else if(returnType == null) {
+<i>217</i>&nbsp;            te1 = XSLMessages.createXPATHMessage(&quot;ER_ARG_CANNOT_BE_NULL&quot;, new Object[]{&quot;returnType&quot;});
+<i>218</i>&nbsp;            throw new NullPointerException(te1);
+<i>219</i>&nbsp;        } else if(!this.isSupported(returnType)) {
+<i>220</i>&nbsp;            te1 = XSLMessages.createXPATHMessage(&quot;ER_UNSUPPORTED_RETURN_TYPE&quot;, new Object[]{returnType.toString()});
+<i>221</i>&nbsp;            throw new IllegalArgumentException(te1);
+<i>222</i>&nbsp;        } else {
+<i>223</i>&nbsp;            try {
+<i>224</i>&nbsp;                Document te = this.getParser().parse(source);
+<i>225</i>&nbsp;                XObject nestedException1 = this.eval(expression, te);
+<i>226</i>&nbsp;                return this.getResultAsType(nestedException1, returnType);
+<i>227</i>&nbsp;            } catch (SAXException var6) {
+<i>228</i>&nbsp;                throw new XPathExpressionException(var6);
+<i>229</i>&nbsp;            } catch (IOException var7) {
+<i>230</i>&nbsp;                throw new XPathExpressionException(var7);
+<i>231</i>&nbsp;            } catch (TransformerException var8) {
+<i>232</i>&nbsp;                Throwable nestedException = var8.getException();
+<i>233</i>&nbsp;                if(nestedException instanceof XPathFunctionException) {
+<i>234</i>&nbsp;                    throw (XPathFunctionException)nestedException;
+<i>235</i>&nbsp;                } else {
+<i>236</i>&nbsp;                    throw new XPathExpressionException(var8);
+<i>237</i>&nbsp;                }
+<i>238</i>&nbsp;            }
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    public String evaluate(String expression, InputSource source) throws XPathExpressionException {
+<b class="nc"><i>243</i>&nbsp;        return (String)this.evaluate(expression, (InputSource)source, XPathConstants.STRING);</b>
+<b class="nc"><i>244</i>&nbsp;    }</b>
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;    public void reset() {
+<b class="nc"><i>247</i>&nbsp;        this.variableResolver = this.origVariableResolver;</b>
+<i>248</i>&nbsp;        this.functionResolver = this.origFunctionResolver;
+<b class="nc"><i>249</i>&nbsp;        this.namespaceContext = null;</b>
+<b class="nc"><i>250</i>&nbsp;    }</b>
+<i>251</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

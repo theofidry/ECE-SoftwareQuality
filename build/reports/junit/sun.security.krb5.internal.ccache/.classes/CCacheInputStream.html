@@ -1,0 +1,463 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CCacheInputStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.krb5.internal.ccache</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CCacheInputStream (sun.security.krb5.internal.ccache)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CCacheInputStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 193)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.krb5.internal.ccache;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InputStream;
+<i>10</i>&nbsp;import java.util.StringTokenizer;
+<i>11</i>&nbsp;import sun.security.krb5.Asn1Exception;
+<i>12</i>&nbsp;import sun.security.krb5.EncryptionKey;
+<i>13</i>&nbsp;import sun.security.krb5.PrincipalName;
+<i>14</i>&nbsp;import sun.security.krb5.Realm;
+<i>15</i>&nbsp;import sun.security.krb5.RealmException;
+<i>16</i>&nbsp;import sun.security.krb5.internal.AuthorizationData;
+<i>17</i>&nbsp;import sun.security.krb5.internal.AuthorizationDataEntry;
+<i>18</i>&nbsp;import sun.security.krb5.internal.HostAddress;
+<i>19</i>&nbsp;import sun.security.krb5.internal.HostAddresses;
+<i>20</i>&nbsp;import sun.security.krb5.internal.KerberosTime;
+<i>21</i>&nbsp;import sun.security.krb5.internal.Krb5;
+<i>22</i>&nbsp;import sun.security.krb5.internal.KrbApErrException;
+<i>23</i>&nbsp;import sun.security.krb5.internal.Ticket;
+<i>24</i>&nbsp;import sun.security.krb5.internal.TicketFlags;
+<i>25</i>&nbsp;import sun.security.krb5.internal.ccache.Credentials;
+<i>26</i>&nbsp;import sun.security.krb5.internal.ccache.FileCCacheConstants;
+<i>27</i>&nbsp;import sun.security.krb5.internal.ccache.Tag;
+<i>28</i>&nbsp;import sun.security.krb5.internal.util.KrbDataInputStream;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public class CCacheInputStream extends KrbDataInputStream implements FileCCacheConstants {
+<i>31</i>&nbsp;    private static boolean DEBUG;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public CCacheInputStream(InputStream var1) {
+<i>34</i>&nbsp;        super(var1);
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public Tag readTag() throws IOException {
+<i>38</i>&nbsp;        char[] var1 = new char[1024];
+<i>39</i>&nbsp;        int var4 = -1;
+<i>40</i>&nbsp;        Integer var6 = null;
+<i>41</i>&nbsp;        Integer var7 = null;
+<i>42</i>&nbsp;        int var3 = this.read(2);
+<i>43</i>&nbsp;        if(var3 &lt; 0) {
+<i>44</i>&nbsp;            throw new IOException(&quot;stop.&quot;);
+<i>45</i>&nbsp;        } else {
+<i>46</i>&nbsp;            byte[] var2 = new byte[var3 + 2];
+<i>47</i>&nbsp;            if(var3 &gt; var1.length) {
+<i>48</i>&nbsp;                throw new IOException(&quot;Invalid tag length.&quot;);
+<i>49</i>&nbsp;            } else {
+<i>50</i>&nbsp;                while(var3 &gt; 0) {
+<i>51</i>&nbsp;                    var4 = this.read(2);
+<i>52</i>&nbsp;                    int var5 = this.read(2);
+<i>53</i>&nbsp;                    switch(var4) {
+<i>54</i>&nbsp;                    case 1:
+<i>55</i>&nbsp;                        var6 = new Integer(this.read(4));
+<i>56</i>&nbsp;                        var7 = new Integer(this.read(4));
+<i>57</i>&nbsp;                    default:
+<i>58</i>&nbsp;                        var3 -= 4 + var5;
+<i>59</i>&nbsp;                    }
+<b class="nc"><i>60</i>&nbsp;                }</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;                if(var4 == -1) {
+<b class="nc"><i>63</i>&nbsp;                    ;</b>
+<i>64</i>&nbsp;                }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;                Tag var8 = new Tag(var3, var4, var6, var7);
+<i>67</i>&nbsp;                return var8;
+<i>68</i>&nbsp;            }
+<b class="nc"><i>69</i>&nbsp;        }</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<b class="nc"><i>72</i>&nbsp;    public PrincipalName readPrincipal(int var1) throws IOException, RealmException {</b>
+<i>73</i>&nbsp;        String[] var7 = null;
+<b class="nc"><i>74</i>&nbsp;        int var2;</b>
+<b class="nc"><i>75</i>&nbsp;        if(var1 == 1281) {</b>
+<i>76</i>&nbsp;            var2 = 0;
+<b class="nc"><i>77</i>&nbsp;        } else {</b>
+<b class="nc"><i>78</i>&nbsp;            var2 = this.read(4);</b>
+<b class="nc"><i>79</i>&nbsp;        }</b>
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;        int var3 = this.read(4);</b>
+<b class="nc"><i>82</i>&nbsp;        String[] var9 = new String[var3 + 1];</b>
+<b class="nc"><i>83</i>&nbsp;        if(var1 == 1281) {</b>
+<i>84</i>&nbsp;            --var3;
+<b class="nc"><i>85</i>&nbsp;        }</b>
+<b class="nc"><i>86</i>&nbsp;</b>
+<b class="nc"><i>87</i>&nbsp;        for(int var10 = 0; var10 &lt;= var3; ++var10) {</b>
+<b class="nc"><i>88</i>&nbsp;            int var4 = this.read(4);</b>
+<i>89</i>&nbsp;            if(var4 &gt; 1024) {
+<b class="nc"><i>90</i>&nbsp;                throw new IOException(&quot;Invalid name length in principal name.&quot;);</b>
+<b class="nc"><i>91</i>&nbsp;            }</b>
+<b class="nc"><i>92</i>&nbsp;</b>
+<i>93</i>&nbsp;            byte[] var11 = new byte[var4];
+<i>94</i>&nbsp;            this.read(var11, 0, var4);
+<b class="nc"><i>95</i>&nbsp;            var9[var10] = new String(var11);</b>
+<i>96</i>&nbsp;        }
+<i>97</i>&nbsp;
+<b class="nc"><i>98</i>&nbsp;        PrincipalName var6;</b>
+<i>99</i>&nbsp;        if(this.isRealm(var9[0])) {
+<b class="nc"><i>100</i>&nbsp;            String var8 = var9[0];</b>
+<b class="nc"><i>101</i>&nbsp;            var7 = new String[var3];</b>
+<i>102</i>&nbsp;            System.arraycopy(var9, 1, var7, 0, var3);
+<i>103</i>&nbsp;            var6 = new PrincipalName(var7, var2);
+<i>104</i>&nbsp;            var6.setRealm(var8);
+<i>105</i>&nbsp;        } else {
+<i>106</i>&nbsp;            var6 = new PrincipalName(var9, var2);
+<i>107</i>&nbsp;        }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;        return var6;
+<i>110</i>&nbsp;    }
+<b class="nc"><i>111</i>&nbsp;</b>
+<i>112</i>&nbsp;    boolean isRealm(String var1) {
+<i>113</i>&nbsp;        try {
+<b class="nc"><i>114</i>&nbsp;            new Realm(var1);</b>
+<b class="nc"><i>115</i>&nbsp;        } catch (Exception var5) {</b>
+<i>116</i>&nbsp;            return false;
+<b class="nc"><i>117</i>&nbsp;        }</b>
+<i>118</i>&nbsp;
+<b class="nc"><i>119</i>&nbsp;        StringTokenizer var2 = new StringTokenizer(var1, &quot;.&quot;);</b>
+<b class="nc"><i>120</i>&nbsp;</b>
+<i>121</i>&nbsp;        while(var2.hasMoreTokens()) {
+<i>122</i>&nbsp;            String var3 = var2.nextToken();
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;            for(int var4 = 0; var4 &lt; var3.length(); ++var4) {
+<b class="nc"><i>125</i>&nbsp;                if(var3.charAt(var4) &gt;= 141) {</b>
+<b class="nc"><i>126</i>&nbsp;                    return false;</b>
+<b class="nc"><i>127</i>&nbsp;                }</b>
+<b class="nc"><i>128</i>&nbsp;            }</b>
+<b class="nc"><i>129</i>&nbsp;        }</b>
+<b class="nc"><i>130</i>&nbsp;</b>
+<i>131</i>&nbsp;        return true;
+<b class="nc"><i>132</i>&nbsp;    }</b>
+<b class="nc"><i>133</i>&nbsp;</b>
+<b class="nc"><i>134</i>&nbsp;    EncryptionKey readKey(int var1) throws IOException {</b>
+<i>135</i>&nbsp;        int var2 = this.read(2);
+<b class="nc"><i>136</i>&nbsp;        if(var1 == 1283) {</b>
+<b class="nc"><i>137</i>&nbsp;            this.read(2);</b>
+<b class="nc"><i>138</i>&nbsp;        }</b>
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;        int var3 = this.read(4);</b>
+<b class="nc"><i>141</i>&nbsp;        byte[] var4 = new byte[var3];</b>
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;        for(int var5 = 0; var5 &lt; var3; ++var5) {</b>
+<b class="nc"><i>144</i>&nbsp;            var4[var5] = (byte)this.read();</b>
+<i>145</i>&nbsp;        }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;        return new EncryptionKey(var4, var2, new Integer(var1));
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    long[] readTimes() throws IOException {
+<i>151</i>&nbsp;        long[] var1 = new long[]{(long)this.read(4) * 1000L, (long)this.read(4) * 1000L, (long)this.read(4) * 1000L, (long)this.read(4) * 1000L};
+<i>152</i>&nbsp;        return var1;
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<b class="nc"><i>155</i>&nbsp;    boolean readskey() throws IOException {</b>
+<i>156</i>&nbsp;        return this.read() != 0;
+<b class="nc"><i>157</i>&nbsp;    }</b>
+<b class="nc"><i>158</i>&nbsp;</b>
+<b class="nc"><i>159</i>&nbsp;    HostAddress[] readAddr() throws IOException, KrbApErrException {</b>
+<b class="nc"><i>160</i>&nbsp;        int var1 = this.read(4);</b>
+<i>161</i>&nbsp;        if(var1 &lt;= 0) {
+<b class="nc"><i>162</i>&nbsp;            return null;</b>
+<b class="nc"><i>163</i>&nbsp;        } else {</b>
+<b class="nc"><i>164</i>&nbsp;            HostAddress[] var4 = new HostAddress[var1];</b>
+<b class="nc"><i>165</i>&nbsp;</b>
+<b class="nc"><i>166</i>&nbsp;            for(int var5 = 0; var5 &lt; var1; ++var5) {</b>
+<i>167</i>&nbsp;                int var2 = this.read(2);
+<i>168</i>&nbsp;                int var3 = this.read(4);
+<i>169</i>&nbsp;                if(var3 != 4 &amp;&amp; var3 != 16) {
+<b class="nc"><i>170</i>&nbsp;                    if(DEBUG) {</b>
+<i>171</i>&nbsp;                        System.out.println(&quot;Incorrect address format.&quot;);
+<i>172</i>&nbsp;                    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;                    return null;
+<b class="nc"><i>175</i>&nbsp;                }</b>
+<b class="nc"><i>176</i>&nbsp;</b>
+<b class="nc"><i>177</i>&nbsp;                byte[] var6 = new byte[var3];</b>
+<b class="nc"><i>178</i>&nbsp;</b>
+<b class="nc"><i>179</i>&nbsp;                for(int var7 = 0; var7 &lt; var3; ++var7) {</b>
+<b class="nc"><i>180</i>&nbsp;                    var6[var7] = (byte)this.read(1);</b>
+<b class="nc"><i>181</i>&nbsp;                }</b>
+<i>182</i>&nbsp;
+<b class="nc"><i>183</i>&nbsp;                var4[var5] = new HostAddress(var2, var6);</b>
+<i>184</i>&nbsp;            }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;            return var4;
+<b class="nc"><i>187</i>&nbsp;        }</b>
+<b class="nc"><i>188</i>&nbsp;    }</b>
+<b class="nc"><i>189</i>&nbsp;</b>
+<b class="nc"><i>190</i>&nbsp;    AuthorizationDataEntry[] readAuth() throws IOException {</b>
+<b class="nc"><i>191</i>&nbsp;        int var1 = this.read(4);</b>
+<b class="nc"><i>192</i>&nbsp;        if(var1 &lt;= 0) {</b>
+<i>193</i>&nbsp;            return null;
+<i>194</i>&nbsp;        } else {
+<i>195</i>&nbsp;            AuthorizationDataEntry[] var4 = new AuthorizationDataEntry[var1];
+<b class="nc"><i>196</i>&nbsp;            Object var5 = null;</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<i>198</i>&nbsp;            for(int var6 = 0; var6 &lt; var1; ++var6) {
+<b class="nc"><i>199</i>&nbsp;                int var2 = this.read(2);</b>
+<i>200</i>&nbsp;                int var3 = this.read(4);
+<i>201</i>&nbsp;                byte[] var8 = new byte[var3];
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;                for(int var7 = 0; var7 &lt; var3; ++var7) {
+<b class="nc"><i>204</i>&nbsp;                    var8[var7] = (byte)this.read();</b>
+<b class="nc"><i>205</i>&nbsp;                }</b>
+<b class="nc"><i>206</i>&nbsp;</b>
+<b class="nc"><i>207</i>&nbsp;                var4[var6] = new AuthorizationDataEntry(var2, var8);</b>
+<b class="nc"><i>208</i>&nbsp;            }</b>
+<b class="nc"><i>209</i>&nbsp;</b>
+<b class="nc"><i>210</i>&nbsp;            return var4;</b>
+<b class="nc"><i>211</i>&nbsp;        }</b>
+<b class="nc"><i>212</i>&nbsp;    }</b>
+<i>213</i>&nbsp;
+<b class="nc"><i>214</i>&nbsp;    byte[] readData() throws IOException {</b>
+<b class="nc"><i>215</i>&nbsp;        int var1 = this.read(4);</b>
+<b class="nc"><i>216</i>&nbsp;        if(var1 == 0) {</b>
+<b class="nc"><i>217</i>&nbsp;            return null;</b>
+<i>218</i>&nbsp;        } else {
+<b class="nc"><i>219</i>&nbsp;            byte[] var2 = new byte[var1];</b>
+<i>220</i>&nbsp;            this.read(var2, 0, var1);
+<b class="nc"><i>221</i>&nbsp;            return var2;</b>
+<i>222</i>&nbsp;        }
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    boolean[] readFlags() throws IOException {
+<b class="nc"><i>226</i>&nbsp;        boolean[] var1 = new boolean[32];</b>
+<b class="nc"><i>227</i>&nbsp;        int var2 = this.read(4);</b>
+<b class="nc"><i>228</i>&nbsp;        if((var2 &amp; 1073741824) == 1073741824) {</b>
+<b class="nc"><i>229</i>&nbsp;            var1[1] = true;</b>
+<b class="nc"><i>230</i>&nbsp;        }</b>
+<b class="nc"><i>231</i>&nbsp;</b>
+<b class="nc"><i>232</i>&nbsp;        if((var2 &amp; 536870912) == 536870912) {</b>
+<b class="nc"><i>233</i>&nbsp;            var1[2] = true;</b>
+<b class="nc"><i>234</i>&nbsp;        }</b>
+<b class="nc"><i>235</i>&nbsp;</b>
+<i>236</i>&nbsp;        if((var2 &amp; 268435456) == 268435456) {
+<b class="nc"><i>237</i>&nbsp;            var1[3] = true;</b>
+<i>238</i>&nbsp;        }
+<b class="nc"><i>239</i>&nbsp;</b>
+<i>240</i>&nbsp;        if((var2 &amp; 134217728) == 134217728) {
+<b class="nc"><i>241</i>&nbsp;            var1[4] = true;</b>
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        if((var2 &amp; 67108864) == 67108864) {
+<i>245</i>&nbsp;            var1[5] = true;
+<b class="nc"><i>246</i>&nbsp;        }</b>
+<b class="nc"><i>247</i>&nbsp;</b>
+<b class="nc"><i>248</i>&nbsp;        if((var2 &amp; 33554432) == 33554432) {</b>
+<i>249</i>&nbsp;            var1[6] = true;
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<b class="nc"><i>251</i>&nbsp;</b>
+<b class="nc"><i>252</i>&nbsp;        if((var2 &amp; 16777216) == 16777216) {</b>
+<i>253</i>&nbsp;            var1[7] = true;
+<i>254</i>&nbsp;        }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;        if((var2 &amp; 8388608) == 8388608) {
+<b class="nc"><i>257</i>&nbsp;            var1[8] = true;</b>
+<i>258</i>&nbsp;        }
+<b class="nc"><i>259</i>&nbsp;</b>
+<b class="nc"><i>260</i>&nbsp;        if((var2 &amp; 4194304) == 4194304) {</b>
+<b class="nc"><i>261</i>&nbsp;            var1[9] = true;</b>
+<b class="nc"><i>262</i>&nbsp;        }</b>
+<b class="nc"><i>263</i>&nbsp;</b>
+<b class="nc"><i>264</i>&nbsp;        if((var2 &amp; 2097152) == 2097152) {</b>
+<b class="nc"><i>265</i>&nbsp;            var1[10] = true;</b>
+<b class="nc"><i>266</i>&nbsp;        }</b>
+<b class="nc"><i>267</i>&nbsp;</b>
+<b class="nc"><i>268</i>&nbsp;        if((var2 &amp; 1048576) == 1048576) {</b>
+<b class="nc"><i>269</i>&nbsp;            var1[11] = true;</b>
+<b class="nc"><i>270</i>&nbsp;        }</b>
+<b class="nc"><i>271</i>&nbsp;</b>
+<b class="nc"><i>272</i>&nbsp;        if(DEBUG) {</b>
+<b class="nc"><i>273</i>&nbsp;            String var3 = &quot;&gt;&gt;&gt; CCacheInputStream: readFlags() &quot;;</b>
+<b class="nc"><i>274</i>&nbsp;            if(var1[1]) {</b>
+<b class="nc"><i>275</i>&nbsp;                var3 = var3 + &quot; FORWARDABLE;&quot;;</b>
+<b class="nc"><i>276</i>&nbsp;            }</b>
+<b class="nc"><i>277</i>&nbsp;</b>
+<b class="nc"><i>278</i>&nbsp;            if(var1[2]) {</b>
+<b class="nc"><i>279</i>&nbsp;                var3 = var3 + &quot; FORWARDED;&quot;;</b>
+<b class="nc"><i>280</i>&nbsp;            }</b>
+<b class="nc"><i>281</i>&nbsp;</b>
+<b class="nc"><i>282</i>&nbsp;            if(var1[3]) {</b>
+<b class="nc"><i>283</i>&nbsp;                var3 = var3 + &quot; PROXIABLE;&quot;;</b>
+<b class="nc"><i>284</i>&nbsp;            }</b>
+<b class="nc"><i>285</i>&nbsp;</b>
+<i>286</i>&nbsp;            if(var1[4]) {
+<b class="nc"><i>287</i>&nbsp;                var3 = var3 + &quot; PROXY;&quot;;</b>
+<b class="nc"><i>288</i>&nbsp;            }</b>
+<i>289</i>&nbsp;
+<b class="nc"><i>290</i>&nbsp;            if(var1[5]) {</b>
+<b class="nc"><i>291</i>&nbsp;                var3 = var3 + &quot; MAY_POSTDATE;&quot;;</b>
+<i>292</i>&nbsp;            }
+<b class="nc"><i>293</i>&nbsp;</b>
+<b class="nc"><i>294</i>&nbsp;            if(var1[6]) {</b>
+<i>295</i>&nbsp;                var3 = var3 + &quot; POSTDATED;&quot;;
+<b class="nc"><i>296</i>&nbsp;            }</b>
+<b class="nc"><i>297</i>&nbsp;</b>
+<i>298</i>&nbsp;            if(var1[7]) {
+<b class="nc"><i>299</i>&nbsp;                var3 = var3 + &quot; INVALID;&quot;;</b>
+<b class="nc"><i>300</i>&nbsp;            }</b>
+<i>301</i>&nbsp;
+<b class="nc"><i>302</i>&nbsp;            if(var1[8]) {</b>
+<b class="nc"><i>303</i>&nbsp;                var3 = var3 + &quot; RENEWABLE;&quot;;</b>
+<i>304</i>&nbsp;            }
+<b class="nc"><i>305</i>&nbsp;</b>
+<b class="nc"><i>306</i>&nbsp;            if(var1[9]) {</b>
+<i>307</i>&nbsp;                var3 = var3 + &quot; INITIAL;&quot;;
+<i>308</i>&nbsp;            }
+<b class="nc"><i>309</i>&nbsp;</b>
+<b class="nc"><i>310</i>&nbsp;            if(var1[10]) {</b>
+<i>311</i>&nbsp;                var3 = var3 + &quot; PRE_AUTH;&quot;;
+<b class="nc"><i>312</i>&nbsp;            }</b>
+<b class="nc"><i>313</i>&nbsp;</b>
+<i>314</i>&nbsp;            if(var1[11]) {
+<b class="nc"><i>315</i>&nbsp;                var3 = var3 + &quot; HW_AUTH;&quot;;</b>
+<b class="nc"><i>316</i>&nbsp;            }</b>
+<i>317</i>&nbsp;
+<b class="nc"><i>318</i>&nbsp;            System.out.println(var3);</b>
+<i>319</i>&nbsp;        }
+<b class="nc"><i>320</i>&nbsp;</b>
+<i>321</i>&nbsp;        return var1;
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    Credentials readCred(int var1) throws IOException, RealmException, KrbApErrException, Asn1Exception {
+<i>325</i>&nbsp;        PrincipalName var2 = this.readPrincipal(var1);
+<i>326</i>&nbsp;        if(DEBUG) {
+<i>327</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt;DEBUG &lt;CCacheInputStream&gt;  client principal is &quot; + var2.toString());
+<i>328</i>&nbsp;        }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;        PrincipalName var3 = this.readPrincipal(var1);
+<i>331</i>&nbsp;        if(DEBUG) {
+<i>332</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt;DEBUG &lt;CCacheInputStream&gt; server principal is &quot; + var3.toString());
+<i>333</i>&nbsp;        }
+<b class="nc"><i>334</i>&nbsp;</b>
+<b class="nc"><i>335</i>&nbsp;        EncryptionKey var4 = this.readKey(var1);</b>
+<b class="nc"><i>336</i>&nbsp;        if(DEBUG) {</b>
+<b class="nc"><i>337</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt;DEBUG &lt;CCacheInputStream&gt; key type: &quot; + var4.getEType());</b>
+<b class="nc"><i>338</i>&nbsp;        }</b>
+<b class="nc"><i>339</i>&nbsp;</b>
+<b class="nc"><i>340</i>&nbsp;        long[] var5 = this.readTimes();</b>
+<b class="nc"><i>341</i>&nbsp;        KerberosTime var6 = new KerberosTime(var5[0]);</b>
+<b class="nc"><i>342</i>&nbsp;        KerberosTime var7 = var5[1] == 0L?null:new KerberosTime(var5[1]);</b>
+<b class="nc"><i>343</i>&nbsp;        KerberosTime var8 = new KerberosTime(var5[2]);</b>
+<b class="nc"><i>344</i>&nbsp;        KerberosTime var9 = var5[3] == 0L?null:new KerberosTime(var5[3]);</b>
+<b class="nc"><i>345</i>&nbsp;        if(DEBUG) {</b>
+<b class="nc"><i>346</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt;DEBUG &lt;CCacheInputStream&gt; auth time: &quot; + var6.toDate().toString());</b>
+<b class="nc"><i>347</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt;DEBUG &lt;CCacheInputStream&gt; start time: &quot; + (var7 == null?&quot;null&quot;:var7.toDate().toString()));</b>
+<i>348</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt;DEBUG &lt;CCacheInputStream&gt; end time: &quot; + var8.toDate().toString());
+<b class="nc"><i>349</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt;DEBUG &lt;CCacheInputStream&gt; renew_till time: &quot; + (var9 == null?&quot;null&quot;:var9.toDate().toString()));</b>
+<b class="nc"><i>350</i>&nbsp;        }</b>
+<b class="nc"><i>351</i>&nbsp;</b>
+<b class="nc"><i>352</i>&nbsp;        boolean var10 = this.readskey();</b>
+<b class="nc"><i>353</i>&nbsp;        boolean[] var11 = this.readFlags();</b>
+<i>354</i>&nbsp;        TicketFlags var12 = new TicketFlags(var11);
+<b class="nc"><i>355</i>&nbsp;        HostAddress[] var13 = this.readAddr();</b>
+<b class="nc"><i>356</i>&nbsp;        HostAddresses var14 = null;</b>
+<b class="nc"><i>357</i>&nbsp;        if(var13 != null) {</b>
+<b class="nc"><i>358</i>&nbsp;            var14 = new HostAddresses(var13);</b>
+<b class="nc"><i>359</i>&nbsp;        }</b>
+<b class="nc"><i>360</i>&nbsp;</b>
+<b class="nc"><i>361</i>&nbsp;        AuthorizationDataEntry[] var15 = this.readAuth();</b>
+<i>362</i>&nbsp;        AuthorizationData var16 = null;
+<b class="nc"><i>363</i>&nbsp;        if(var16 != null) {</b>
+<b class="nc"><i>364</i>&nbsp;            var16 = new AuthorizationData(var15);</b>
+<b class="nc"><i>365</i>&nbsp;        }</b>
+<b class="nc"><i>366</i>&nbsp;</b>
+<i>367</i>&nbsp;        byte[] var17 = this.readData();
+<b class="nc"><i>368</i>&nbsp;        byte[] var18 = this.readData();</b>
+<b class="nc"><i>369</i>&nbsp;</b>
+<i>370</i>&nbsp;        try {
+<i>371</i>&nbsp;            return new Credentials(var2, var3, var4, var6, var7, var8, var9, var10, var12, var14, var16, var17 != null?new Ticket(var17):null, var18 != null?new Ticket(var18):null);
+<b class="nc"><i>372</i>&nbsp;        } catch (Exception var20) {</b>
+<i>373</i>&nbsp;            return null;
+<i>374</i>&nbsp;        }
+<i>375</i>&nbsp;    }
+<i>376</i>&nbsp;
+<b class="nc"><i>377</i>&nbsp;    static {</b>
+<b class="nc"><i>378</i>&nbsp;        DEBUG = Krb5.DEBUG;</b>
+<i>379</i>&nbsp;    }
+<i>380</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

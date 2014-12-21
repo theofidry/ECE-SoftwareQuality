@@ -1,0 +1,926 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GIFImageWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.imageio.plugins.gif</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GIFImageWriter (com.sun.imageio.plugins.gif)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GIFImageWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 470)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.imageio.plugins.gif;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.imageio.plugins.common.LZWCompressor;
+<i>9</i>&nbsp;import com.sun.imageio.plugins.common.PaletteBuilder;
+<i>10</i>&nbsp;import com.sun.imageio.plugins.gif.GIFImageWriteParam;
+<i>11</i>&nbsp;import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
+<i>12</i>&nbsp;import com.sun.imageio.plugins.gif.GIFWritableImageMetadata;
+<i>13</i>&nbsp;import com.sun.imageio.plugins.gif.GIFWritableStreamMetadata;
+<i>14</i>&nbsp;import java.awt.Dimension;
+<i>15</i>&nbsp;import java.awt.Rectangle;
+<i>16</i>&nbsp;import java.awt.image.ColorModel;
+<i>17</i>&nbsp;import java.awt.image.ComponentSampleModel;
+<i>18</i>&nbsp;import java.awt.image.DataBufferByte;
+<i>19</i>&nbsp;import java.awt.image.IndexColorModel;
+<i>20</i>&nbsp;import java.awt.image.Raster;
+<i>21</i>&nbsp;import java.awt.image.RenderedImage;
+<i>22</i>&nbsp;import java.awt.image.SampleModel;
+<i>23</i>&nbsp;import java.io.IOException;
+<i>24</i>&nbsp;import java.nio.ByteOrder;
+<i>25</i>&nbsp;import java.util.Arrays;
+<i>26</i>&nbsp;import java.util.Iterator;
+<i>27</i>&nbsp;import javax.imageio.IIOException;
+<i>28</i>&nbsp;import javax.imageio.IIOImage;
+<i>29</i>&nbsp;import javax.imageio.ImageTypeSpecifier;
+<i>30</i>&nbsp;import javax.imageio.ImageWriteParam;
+<i>31</i>&nbsp;import javax.imageio.ImageWriter;
+<i>32</i>&nbsp;import javax.imageio.metadata.IIOInvalidTreeException;
+<i>33</i>&nbsp;import javax.imageio.metadata.IIOMetadata;
+<i>34</i>&nbsp;import javax.imageio.metadata.IIOMetadataNode;
+<i>35</i>&nbsp;import javax.imageio.stream.ImageOutputStream;
+<i>36</i>&nbsp;import org.w3c.dom.Node;
+<i>37</i>&nbsp;import org.w3c.dom.NodeList;
+<i>38</i>&nbsp;import sun.awt.image.ByteComponentRaster;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;public class GIFImageWriter extends ImageWriter {
+<i>41</i>&nbsp;    private static final boolean DEBUG = false;
+<i>42</i>&nbsp;    static final String STANDARD_METADATA_NAME = &quot;javax_imageio_1.0&quot;;
+<i>43</i>&nbsp;    static final String STREAM_METADATA_NAME = &quot;javax_imageio_gif_stream_1.0&quot;;
+<i>44</i>&nbsp;    static final String IMAGE_METADATA_NAME = &quot;javax_imageio_gif_image_1.0&quot;;
+<i>45</i>&nbsp;    private ImageOutputStream stream = null;
+<i>46</i>&nbsp;    private boolean isWritingSequence = false;
+<i>47</i>&nbsp;    private boolean wroteSequenceHeader = false;
+<i>48</i>&nbsp;    private GIFWritableStreamMetadata theStreamMetadata = null;
+<i>49</i>&nbsp;    private int imageIndex = 0;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private static int getNumBits(int var0) throws IOException {
+<i>52</i>&nbsp;        byte var1;
+<i>53</i>&nbsp;        switch(var0) {
+<i>54</i>&nbsp;        case 2:
+<i>55</i>&nbsp;            var1 = 1;
+<b class="nc"><i>56</i>&nbsp;            break;</b>
+<i>57</i>&nbsp;        case 4:
+<i>58</i>&nbsp;            var1 = 2;
+<i>59</i>&nbsp;            break;
+<i>60</i>&nbsp;        case 8:
+<b class="nc"><i>61</i>&nbsp;            var1 = 3;</b>
+<i>62</i>&nbsp;            break;
+<i>63</i>&nbsp;        case 16:
+<i>64</i>&nbsp;            var1 = 4;
+<i>65</i>&nbsp;            break;
+<b class="nc"><i>66</i>&nbsp;        case 32:</b>
+<i>67</i>&nbsp;            var1 = 5;
+<i>68</i>&nbsp;            break;
+<i>69</i>&nbsp;        case 64:
+<i>70</i>&nbsp;            var1 = 6;
+<b class="nc"><i>71</i>&nbsp;            break;</b>
+<i>72</i>&nbsp;        case 128:
+<i>73</i>&nbsp;            var1 = 7;
+<i>74</i>&nbsp;            break;
+<i>75</i>&nbsp;        case 256:
+<b class="nc"><i>76</i>&nbsp;            var1 = 8;</b>
+<i>77</i>&nbsp;            break;
+<i>78</i>&nbsp;        default:
+<i>79</i>&nbsp;            throw new IOException(&quot;Bad palette length: &quot; + var0 + &quot;!&quot;);
+<i>80</i>&nbsp;        }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;        return var1;
+<i>83</i>&nbsp;    }
+<b class="nc"><i>84</i>&nbsp;</b>
+<i>85</i>&nbsp;    private static void computeRegions(Rectangle var0, Dimension var1, ImageWriteParam var2) {
+<b class="nc"><i>86</i>&nbsp;        int var4 = 1;</b>
+<b class="nc"><i>87</i>&nbsp;        int var5 = 1;</b>
+<i>88</i>&nbsp;        if(var2 != null) {
+<b class="nc"><i>89</i>&nbsp;            int[] var6 = var2.getSourceBands();</b>
+<b class="nc"><i>90</i>&nbsp;            if(var6 != null &amp;&amp; (var6.length != 1 || var6[0] != 0)) {</b>
+<i>91</i>&nbsp;                throw new IllegalArgumentException(&quot;Cannot sub-band image!&quot;);
+<b class="nc"><i>92</i>&nbsp;            }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;            Rectangle var7 = var2.getSourceRegion();
+<b class="nc"><i>95</i>&nbsp;            if(var7 != null) {</b>
+<b class="nc"><i>96</i>&nbsp;                var7 = var7.intersection(var0);</b>
+<i>97</i>&nbsp;                var0.setBounds(var7);
+<b class="nc"><i>98</i>&nbsp;            }</b>
+<b class="nc"><i>99</i>&nbsp;</b>
+<i>100</i>&nbsp;            int var8 = var2.getSubsamplingXOffset();
+<b class="nc"><i>101</i>&nbsp;            int var9 = var2.getSubsamplingYOffset();</b>
+<b class="nc"><i>102</i>&nbsp;            var0.x += var8;</b>
+<i>103</i>&nbsp;            var0.y += var9;
+<b class="nc"><i>104</i>&nbsp;            var0.width -= var8;</b>
+<b class="nc"><i>105</i>&nbsp;            var0.height -= var9;</b>
+<i>106</i>&nbsp;            var4 = var2.getSourceXSubsampling();
+<b class="nc"><i>107</i>&nbsp;            var5 = var2.getSourceYSubsampling();</b>
+<b class="nc"><i>108</i>&nbsp;        }</b>
+<i>109</i>&nbsp;
+<b class="nc"><i>110</i>&nbsp;        var1.setSize((var0.width + var4 - 1) / var4, (var0.height + var5 - 1) / var5);</b>
+<i>111</i>&nbsp;        if(var1.width &lt;= 0 || var1.height &lt;= 0) {
+<i>112</i>&nbsp;            throw new IllegalArgumentException(&quot;Empty source region!&quot;);
+<b class="nc"><i>113</i>&nbsp;        }</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    private static byte[] createColorTable(ColorModel var0, SampleModel var1) {
+<i>117</i>&nbsp;        byte[] var2;
+<i>118</i>&nbsp;        int var4;
+<i>119</i>&nbsp;        int var5;
+<i>120</i>&nbsp;        if(var0 instanceof IndexColorModel) {
+<i>121</i>&nbsp;            IndexColorModel var3 = (IndexColorModel)var0;
+<i>122</i>&nbsp;            var4 = var3.getMapSize();
+<i>123</i>&nbsp;            var5 = getGifPaletteSize(var4);
+<b class="nc"><i>124</i>&nbsp;            byte[] var6 = new byte[var5];</b>
+<b class="nc"><i>125</i>&nbsp;            byte[] var7 = new byte[var5];</b>
+<b class="nc"><i>126</i>&nbsp;            byte[] var8 = new byte[var5];</b>
+<b class="nc"><i>127</i>&nbsp;            var3.getReds(var6);</b>
+<b class="nc"><i>128</i>&nbsp;            var3.getGreens(var7);</b>
+<i>129</i>&nbsp;            var3.getBlues(var8);
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;            int var9;</b>
+<i>132</i>&nbsp;            for(var9 = var4; var9 &lt; var5; ++var9) {
+<i>133</i>&nbsp;                var6[var9] = var6[0];
+<i>134</i>&nbsp;                var7[var9] = var7[0];
+<b class="nc"><i>135</i>&nbsp;                var8[var9] = var8[0];</b>
+<b class="nc"><i>136</i>&nbsp;            }</b>
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;            var2 = new byte[3 * var5];</b>
+<b class="nc"><i>139</i>&nbsp;            var9 = 0;</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;            for(int var10 = 0; var10 &lt; var5; ++var10) {
+<i>142</i>&nbsp;                var2[var9++] = var6[var10];
+<b class="nc"><i>143</i>&nbsp;                var2[var9++] = var7[var10];</b>
+<b class="nc"><i>144</i>&nbsp;                var2[var9++] = var8[var10];</b>
+<b class="nc"><i>145</i>&nbsp;            }</b>
+<b class="nc"><i>146</i>&nbsp;        } else if(var1.getNumBands() == 1) {</b>
+<b class="nc"><i>147</i>&nbsp;            int var11 = var1.getSampleSize()[0];</b>
+<b class="nc"><i>148</i>&nbsp;            if(var11 &gt; 8) {</b>
+<i>149</i>&nbsp;                var11 = 8;
+<i>150</i>&nbsp;            }
+<b class="nc"><i>151</i>&nbsp;</b>
+<b class="nc"><i>152</i>&nbsp;            var4 = 3 * (1 &lt;&lt; var11);</b>
+<i>153</i>&nbsp;            var2 = new byte[var4];
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;            for(var5 = 0; var5 &lt; var4; ++var5) {
+<b class="nc"><i>156</i>&nbsp;                var2[var5] = (byte)(var5 / 3);</b>
+<i>157</i>&nbsp;            }
+<b class="nc"><i>158</i>&nbsp;        } else {</b>
+<b class="nc"><i>159</i>&nbsp;            var2 = null;</b>
+<i>160</i>&nbsp;        }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;        return var2;
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    private static int getGifPaletteSize(int var0) {
+<i>166</i>&nbsp;        if(var0 &lt;= 2) {
+<i>167</i>&nbsp;            return 2;
+<i>168</i>&nbsp;        } else {
+<i>169</i>&nbsp;            --var0;
+<b class="nc"><i>170</i>&nbsp;            var0 |= var0 &gt;&gt; 1;</b>
+<b class="nc"><i>171</i>&nbsp;            var0 |= var0 &gt;&gt; 2;</b>
+<b class="nc"><i>172</i>&nbsp;            var0 |= var0 &gt;&gt; 4;</b>
+<i>173</i>&nbsp;            var0 |= var0 &gt;&gt; 8;
+<i>174</i>&nbsp;            var0 |= var0 &gt;&gt; 16;
+<i>175</i>&nbsp;            return var0 + 1;
+<i>176</i>&nbsp;        }
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<b class="nc"><i>179</i>&nbsp;    public GIFImageWriter(GIFImageWriterSpi var1) {</b>
+<i>180</i>&nbsp;        super(var1);
+<b class="nc"><i>181</i>&nbsp;    }</b>
+<b class="nc"><i>182</i>&nbsp;</b>
+<b class="nc"><i>183</i>&nbsp;    public boolean canWriteSequence() {</b>
+<b class="nc"><i>184</i>&nbsp;        return true;</b>
+<b class="nc"><i>185</i>&nbsp;    }</b>
+<b class="nc"><i>186</i>&nbsp;</b>
+<i>187</i>&nbsp;    private void convertMetadata(String var1, IIOMetadata var2, IIOMetadata var3) {
+<i>188</i>&nbsp;        String var4 = null;
+<i>189</i>&nbsp;        String var5 = var2.getNativeMetadataFormatName();
+<i>190</i>&nbsp;        if(var5 != null &amp;&amp; var5.equals(var1)) {
+<i>191</i>&nbsp;            var4 = var1;
+<b class="nc"><i>192</i>&nbsp;        } else {</b>
+<b class="nc"><i>193</i>&nbsp;            String[] var6 = var2.getExtraMetadataFormatNames();</b>
+<b class="nc"><i>194</i>&nbsp;            if(var6 != null) {</b>
+<b class="nc"><i>195</i>&nbsp;                for(int var7 = 0; var7 &lt; var6.length; ++var7) {</b>
+<i>196</i>&nbsp;                    if(var6[var7].equals(var1)) {
+<i>197</i>&nbsp;                        var4 = var1;
+<b class="nc"><i>198</i>&nbsp;                        break;</b>
+<b class="nc"><i>199</i>&nbsp;                    }</b>
+<b class="nc"><i>200</i>&nbsp;                }</b>
+<b class="nc"><i>201</i>&nbsp;            }</b>
+<b class="nc"><i>202</i>&nbsp;        }</b>
+<b class="nc"><i>203</i>&nbsp;</b>
+<i>204</i>&nbsp;        if(var4 == null &amp;&amp; var2.isStandardMetadataFormatSupported()) {
+<b class="nc"><i>205</i>&nbsp;            var4 = &quot;javax_imageio_1.0&quot;;</b>
+<i>206</i>&nbsp;        }
+<b class="nc"><i>207</i>&nbsp;</b>
+<b class="nc"><i>208</i>&nbsp;        if(var4 != null) {</b>
+<b class="nc"><i>209</i>&nbsp;            try {</b>
+<i>210</i>&nbsp;                Node var9 = var2.getAsTree(var4);
+<b class="nc"><i>211</i>&nbsp;                var3.mergeTree(var4, var9);</b>
+<b class="nc"><i>212</i>&nbsp;            } catch (IIOInvalidTreeException var8) {</b>
+<b class="nc"><i>213</i>&nbsp;                ;</b>
+<b class="nc"><i>214</i>&nbsp;            }</b>
+<i>215</i>&nbsp;        }
+<b class="nc"><i>216</i>&nbsp;</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<b class="nc"><i>219</i>&nbsp;    public IIOMetadata convertStreamMetadata(IIOMetadata var1, ImageWriteParam var2) {</b>
+<i>220</i>&nbsp;        if(var1 == null) {
+<i>221</i>&nbsp;            throw new IllegalArgumentException(&quot;inData == null!&quot;);
+<b class="nc"><i>222</i>&nbsp;        } else {</b>
+<i>223</i>&nbsp;            IIOMetadata var3 = this.getDefaultStreamMetadata(var2);
+<i>224</i>&nbsp;            this.convertMetadata(&quot;javax_imageio_gif_stream_1.0&quot;, var1, var3);
+<i>225</i>&nbsp;            return var3;
+<i>226</i>&nbsp;        }
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    public IIOMetadata convertImageMetadata(IIOMetadata var1, ImageTypeSpecifier var2, ImageWriteParam var3) {
+<b class="nc"><i>230</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>231</i>&nbsp;            throw new IllegalArgumentException(&quot;inData == null!&quot;);</b>
+<i>232</i>&nbsp;        } else if(var2 == null) {
+<b class="nc"><i>233</i>&nbsp;            throw new IllegalArgumentException(&quot;imageType == null!&quot;);</b>
+<b class="nc"><i>234</i>&nbsp;        } else {</b>
+<b class="nc"><i>235</i>&nbsp;            GIFWritableImageMetadata var4 = (GIFWritableImageMetadata)this.getDefaultImageMetadata(var2, var3);</b>
+<b class="nc"><i>236</i>&nbsp;            boolean var5 = var4.interlaceFlag;</b>
+<b class="nc"><i>237</i>&nbsp;            this.convertMetadata(&quot;javax_imageio_gif_image_1.0&quot;, var1, var4);</b>
+<b class="nc"><i>238</i>&nbsp;            if(var3 != null &amp;&amp; var3.canWriteProgressive() &amp;&amp; var3.getProgressiveMode() != 3) {</b>
+<b class="nc"><i>239</i>&nbsp;                var4.interlaceFlag = var5;</b>
+<i>240</i>&nbsp;            }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;            return var4;
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;    }
+<b class="nc"><i>245</i>&nbsp;</b>
+<i>246</i>&nbsp;    public void endWriteSequence() throws IOException {
+<i>247</i>&nbsp;        if(this.stream == null) {
+<i>248</i>&nbsp;            throw new IllegalStateException(&quot;output == null!&quot;);
+<i>249</i>&nbsp;        } else if(!this.isWritingSequence) {
+<i>250</i>&nbsp;            throw new IllegalStateException(&quot;prepareWriteSequence() was not invoked!&quot;);
+<i>251</i>&nbsp;        } else {
+<b class="nc"><i>252</i>&nbsp;            this.writeTrailer();</b>
+<i>253</i>&nbsp;            this.resetLocal();
+<i>254</i>&nbsp;        }
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier var1, ImageWriteParam var2) {
+<i>258</i>&nbsp;        GIFWritableImageMetadata var3 = new GIFWritableImageMetadata();
+<i>259</i>&nbsp;        SampleModel var4 = var1.getSampleModel();
+<i>260</i>&nbsp;        Rectangle var5 = new Rectangle(var4.getWidth(), var4.getHeight());
+<i>261</i>&nbsp;        Dimension var6 = new Dimension();
+<i>262</i>&nbsp;        computeRegions(var5, var6, var2);
+<b class="nc"><i>263</i>&nbsp;        var3.imageWidth = var6.width;</b>
+<i>264</i>&nbsp;        var3.imageHeight = var6.height;
+<b class="nc"><i>265</i>&nbsp;        if(var2 != null &amp;&amp; var2.canWriteProgressive() &amp;&amp; var2.getProgressiveMode() == 0) {</b>
+<b class="nc"><i>266</i>&nbsp;            var3.interlaceFlag = false;</b>
+<i>267</i>&nbsp;        } else {
+<b class="nc"><i>268</i>&nbsp;            var3.interlaceFlag = true;</b>
+<i>269</i>&nbsp;        }
+<b class="nc"><i>270</i>&nbsp;</b>
+<i>271</i>&nbsp;        ColorModel var7 = var1.getColorModel();
+<b class="nc"><i>272</i>&nbsp;        var3.localColorTable = createColorTable(var7, var4);</b>
+<b class="nc"><i>273</i>&nbsp;        if(var7 instanceof IndexColorModel) {</b>
+<b class="nc"><i>274</i>&nbsp;            int var8 = ((IndexColorModel)var7).getTransparentPixel();</b>
+<b class="nc"><i>275</i>&nbsp;            if(var8 != -1) {</b>
+<b class="nc"><i>276</i>&nbsp;                var3.transparentColorFlag = true;</b>
+<i>277</i>&nbsp;                var3.transparentColorIndex = var8;
+<i>278</i>&nbsp;            }
+<i>279</i>&nbsp;        }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;        return var3;
+<b class="nc"><i>282</i>&nbsp;    }</b>
+<i>283</i>&nbsp;
+<b class="nc"><i>284</i>&nbsp;    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam var1) {</b>
+<i>285</i>&nbsp;        GIFWritableStreamMetadata var2 = new GIFWritableStreamMetadata();
+<i>286</i>&nbsp;        var2.version = &quot;89a&quot;;
+<b class="nc"><i>287</i>&nbsp;        return var2;</b>
+<i>288</i>&nbsp;    }
+<b class="nc"><i>289</i>&nbsp;</b>
+<b class="nc"><i>290</i>&nbsp;    public ImageWriteParam getDefaultWriteParam() {</b>
+<b class="nc"><i>291</i>&nbsp;        return new GIFImageWriteParam(this.getLocale());</b>
+<i>292</i>&nbsp;    }
+<b class="nc"><i>293</i>&nbsp;</b>
+<i>294</i>&nbsp;    public void prepareWriteSequence(IIOMetadata var1) throws IOException {
+<i>295</i>&nbsp;        if(this.stream == null) {
+<i>296</i>&nbsp;            throw new IllegalStateException(&quot;Output is not set.&quot;);
+<i>297</i>&nbsp;        } else {
+<i>298</i>&nbsp;            this.resetLocal();
+<i>299</i>&nbsp;            if(var1 == null) {
+<i>300</i>&nbsp;                this.theStreamMetadata = (GIFWritableStreamMetadata)this.getDefaultStreamMetadata((ImageWriteParam)null);
+<i>301</i>&nbsp;            } else {
+<i>302</i>&nbsp;                this.theStreamMetadata = new GIFWritableStreamMetadata();
+<b class="nc"><i>303</i>&nbsp;                this.convertMetadata(&quot;javax_imageio_gif_stream_1.0&quot;, var1, this.theStreamMetadata);</b>
+<b class="nc"><i>304</i>&nbsp;            }</b>
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;            this.isWritingSequence = true;
+<b class="nc"><i>307</i>&nbsp;        }</b>
+<i>308</i>&nbsp;    }
+<b class="nc"><i>309</i>&nbsp;</b>
+<i>310</i>&nbsp;    public void reset() {
+<b class="nc"><i>311</i>&nbsp;        super.reset();</b>
+<i>312</i>&nbsp;        this.resetLocal();
+<i>313</i>&nbsp;    }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    private void resetLocal() {
+<i>316</i>&nbsp;        this.isWritingSequence = false;
+<i>317</i>&nbsp;        this.wroteSequenceHeader = false;
+<i>318</i>&nbsp;        this.theStreamMetadata = null;
+<i>319</i>&nbsp;        this.imageIndex = 0;
+<i>320</i>&nbsp;    }
+<b class="nc"><i>321</i>&nbsp;</b>
+<b class="nc"><i>322</i>&nbsp;    public void setOutput(Object var1) {</b>
+<i>323</i>&nbsp;        super.setOutput(var1);
+<b class="nc"><i>324</i>&nbsp;        if(var1 != null) {</b>
+<b class="nc"><i>325</i>&nbsp;            if(!(var1 instanceof ImageOutputStream)) {</b>
+<i>326</i>&nbsp;                throw new IllegalArgumentException(&quot;output is not an ImageOutputStream&quot;);
+<i>327</i>&nbsp;            }
+<b class="nc"><i>328</i>&nbsp;</b>
+<i>329</i>&nbsp;            this.stream = (ImageOutputStream)var1;
+<i>330</i>&nbsp;            this.stream.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+<i>331</i>&nbsp;        } else {
+<i>332</i>&nbsp;            this.stream = null;
+<i>333</i>&nbsp;        }
+<b class="nc"><i>334</i>&nbsp;</b>
+<i>335</i>&nbsp;    }
+<b class="nc"><i>336</i>&nbsp;</b>
+<i>337</i>&nbsp;    public void write(IIOMetadata var1, IIOImage var2, ImageWriteParam var3) throws IOException {
+<i>338</i>&nbsp;        if(this.stream == null) {
+<i>339</i>&nbsp;            throw new IllegalStateException(&quot;output == null!&quot;);
+<b class="nc"><i>340</i>&nbsp;        } else if(var2 == null) {</b>
+<i>341</i>&nbsp;            throw new IllegalArgumentException(&quot;iioimage == null!&quot;);
+<b class="nc"><i>342</i>&nbsp;        } else if(var2.hasRaster()) {</b>
+<i>343</i>&nbsp;            throw new UnsupportedOperationException(&quot;canWriteRasters() == false!&quot;);
+<i>344</i>&nbsp;        } else {
+<b class="nc"><i>345</i>&nbsp;            this.resetLocal();</b>
+<i>346</i>&nbsp;            GIFWritableStreamMetadata var4;
+<i>347</i>&nbsp;            if(var1 == null) {
+<i>348</i>&nbsp;                var4 = (GIFWritableStreamMetadata)this.getDefaultStreamMetadata(var3);
+<b class="nc"><i>349</i>&nbsp;            } else {</b>
+<b class="nc"><i>350</i>&nbsp;                var4 = (GIFWritableStreamMetadata)this.convertStreamMetadata(var1, var3);</b>
+<i>351</i>&nbsp;            }
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;            this.write(true, true, var4, var2, var3);</b>
+<i>354</i>&nbsp;        }
+<b class="nc"><i>355</i>&nbsp;    }</b>
+<b class="nc"><i>356</i>&nbsp;</b>
+<i>357</i>&nbsp;    public void writeToSequence(IIOImage var1, ImageWriteParam var2) throws IOException {
+<i>358</i>&nbsp;        if(this.stream == null) {
+<i>359</i>&nbsp;            throw new IllegalStateException(&quot;output == null!&quot;);
+<i>360</i>&nbsp;        } else if(var1 == null) {
+<b class="nc"><i>361</i>&nbsp;            throw new IllegalArgumentException(&quot;image == null!&quot;);</b>
+<i>362</i>&nbsp;        } else if(var1.hasRaster()) {
+<i>363</i>&nbsp;            throw new UnsupportedOperationException(&quot;canWriteRasters() == false!&quot;);
+<i>364</i>&nbsp;        } else if(!this.isWritingSequence) {
+<i>365</i>&nbsp;            throw new IllegalStateException(&quot;prepareWriteSequence() was not invoked!&quot;);
+<b class="nc"><i>366</i>&nbsp;        } else {</b>
+<i>367</i>&nbsp;            this.write(!this.wroteSequenceHeader, false, this.theStreamMetadata, var1, var2);
+<b class="nc"><i>368</i>&nbsp;            if(!this.wroteSequenceHeader) {</b>
+<i>369</i>&nbsp;                this.wroteSequenceHeader = true;
+<b class="nc"><i>370</i>&nbsp;            }</b>
+<b class="nc"><i>371</i>&nbsp;</b>
+<i>372</i>&nbsp;            ++this.imageIndex;
+<b class="nc"><i>373</i>&nbsp;        }</b>
+<b class="nc"><i>374</i>&nbsp;    }</b>
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;    private boolean needToCreateIndex(RenderedImage var1) {
+<i>377</i>&nbsp;        SampleModel var2 = var1.getSampleModel();
+<b class="nc"><i>378</i>&nbsp;        ColorModel var3 = var1.getColorModel();</b>
+<i>379</i>&nbsp;        return var2.getNumBands() != 1 || var2.getSampleSize()[0] &gt; 8 || var3.getComponentSize()[0] &gt; 8;
+<b class="nc"><i>380</i>&nbsp;    }</b>
+<i>381</i>&nbsp;
+<b class="nc"><i>382</i>&nbsp;    private void write(boolean var1, boolean var2, IIOMetadata var3, IIOImage var4, ImageWriteParam var5) throws IOException {</b>
+<i>383</i>&nbsp;        this.clearAbortRequest();
+<i>384</i>&nbsp;        RenderedImage var6 = var4.getRenderedImage();
+<i>385</i>&nbsp;        if(this.needToCreateIndex(var6)) {
+<i>386</i>&nbsp;            var6 = PaletteBuilder.createIndexedImage(var6);
+<b class="nc"><i>387</i>&nbsp;            var4.setRenderedImage(var6);</b>
+<i>388</i>&nbsp;        }
+<b class="nc"><i>389</i>&nbsp;</b>
+<i>390</i>&nbsp;        ColorModel var7 = var6.getColorModel();
+<i>391</i>&nbsp;        SampleModel var8 = var6.getSampleModel();
+<i>392</i>&nbsp;        Rectangle var9 = new Rectangle(var6.getMinX(), var6.getMinY(), var6.getWidth(), var6.getHeight());
+<i>393</i>&nbsp;        Dimension var10 = new Dimension();
+<b class="nc"><i>394</i>&nbsp;        computeRegions(var9, var10, var5);</b>
+<b class="nc"><i>395</i>&nbsp;        GIFWritableImageMetadata var11 = null;</b>
+<i>396</i>&nbsp;        IndexColorModel var12;
+<b class="nc"><i>397</i>&nbsp;        if(var4.getMetadata() != null) {</b>
+<b class="nc"><i>398</i>&nbsp;            var11 = new GIFWritableImageMetadata();</b>
+<b class="nc"><i>399</i>&nbsp;            this.convertMetadata(&quot;javax_imageio_gif_image_1.0&quot;, var4.getMetadata(), var11);</b>
+<i>400</i>&nbsp;            if(var11.localColorTable == null) {
+<i>401</i>&nbsp;                var11.localColorTable = createColorTable(var7, var8);
+<i>402</i>&nbsp;                if(var7 instanceof IndexColorModel) {
+<b class="nc"><i>403</i>&nbsp;                    var12 = (IndexColorModel)var7;</b>
+<i>404</i>&nbsp;                    int var13 = var12.getTransparentPixel();
+<i>405</i>&nbsp;                    var11.transparentColorFlag = var13 != -1;
+<i>406</i>&nbsp;                    if(var11.transparentColorFlag) {
+<b class="nc"><i>407</i>&nbsp;                        var11.transparentColorIndex = var13;</b>
+<i>408</i>&nbsp;                    }
+<b class="nc"><i>409</i>&nbsp;                }</b>
+<b class="nc"><i>410</i>&nbsp;            }</b>
+<i>411</i>&nbsp;        }
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;        var12 = null;
+<b class="nc"><i>414</i>&nbsp;        byte[] var15;</b>
+<i>415</i>&nbsp;        if(var1) {
+<i>416</i>&nbsp;            if(var3 == null) {
+<i>417</i>&nbsp;                throw new IllegalArgumentException(&quot;Cannot write null header!&quot;);
+<i>418</i>&nbsp;            }
+<i>419</i>&nbsp;
+<b class="nc"><i>420</i>&nbsp;            GIFWritableStreamMetadata var16 = (GIFWritableStreamMetadata)var3;</b>
+<b class="nc"><i>421</i>&nbsp;            if(var16.version == null) {</b>
+<i>422</i>&nbsp;                var16.version = &quot;89a&quot;;
+<i>423</i>&nbsp;            }
+<b class="nc"><i>424</i>&nbsp;</b>
+<i>425</i>&nbsp;            if(var16.logicalScreenWidth == -1) {
+<i>426</i>&nbsp;                var16.logicalScreenWidth = var10.width;
+<b class="nc"><i>427</i>&nbsp;            }</b>
+<b class="nc"><i>428</i>&nbsp;</b>
+<i>429</i>&nbsp;            if(var16.logicalScreenHeight == -1) {
+<i>430</i>&nbsp;                var16.logicalScreenHeight = var10.height;
+<b class="nc"><i>431</i>&nbsp;            }</b>
+<b class="nc"><i>432</i>&nbsp;</b>
+<i>433</i>&nbsp;            if(var16.colorResolution == -1) {
+<i>434</i>&nbsp;                var16.colorResolution = var7 != null?var7.getComponentSize()[0]:var8.getSampleSize()[0];
+<i>435</i>&nbsp;            }
+<b class="nc"><i>436</i>&nbsp;</b>
+<i>437</i>&nbsp;            if(var16.globalColorTable == null) {
+<i>438</i>&nbsp;                if(this.isWritingSequence &amp;&amp; var11 != null &amp;&amp; var11.localColorTable != null) {
+<i>439</i>&nbsp;                    var16.globalColorTable = var11.localColorTable;
+<b class="nc"><i>440</i>&nbsp;                } else if(var11 == null || var11.localColorTable == null) {</b>
+<b class="nc"><i>441</i>&nbsp;                    var16.globalColorTable = createColorTable(var7, var8);</b>
+<i>442</i>&nbsp;                }
+<i>443</i>&nbsp;            }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;            var15 = var16.globalColorTable;
+<i>446</i>&nbsp;            int var14;
+<i>447</i>&nbsp;            if(var15 != null) {
+<b class="nc"><i>448</i>&nbsp;                var14 = getNumBits(var15.length / 3);</b>
+<b class="nc"><i>449</i>&nbsp;            } else if(var11 != null &amp;&amp; var11.localColorTable != null) {</b>
+<b class="nc"><i>450</i>&nbsp;                var14 = getNumBits(var11.localColorTable.length / 3);</b>
+<b class="nc"><i>451</i>&nbsp;            } else {</b>
+<i>452</i>&nbsp;                var14 = var8.getSampleSize(0);
+<i>453</i>&nbsp;            }
+<i>454</i>&nbsp;
+<b class="nc"><i>455</i>&nbsp;            this.writeHeader(var16, var14);</b>
+<b class="nc"><i>456</i>&nbsp;        } else {</b>
+<b class="nc"><i>457</i>&nbsp;            if(!this.isWritingSequence) {</b>
+<b class="nc"><i>458</i>&nbsp;                throw new IllegalArgumentException(&quot;Must write header for single image!&quot;);</b>
+<i>459</i>&nbsp;            }
+<i>460</i>&nbsp;
+<b class="nc"><i>461</i>&nbsp;            var15 = this.theStreamMetadata.globalColorTable;</b>
+<b class="nc"><i>462</i>&nbsp;        }</b>
+<i>463</i>&nbsp;
+<b class="nc"><i>464</i>&nbsp;        this.writeImage(var4.getRenderedImage(), var11, var5, var15, var9, var10);</b>
+<i>465</i>&nbsp;        if(var2) {
+<i>466</i>&nbsp;            this.writeTrailer();
+<i>467</i>&nbsp;        }
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;
+<b class="nc"><i>471</i>&nbsp;    private void writeImage(RenderedImage var1, GIFWritableImageMetadata var2, ImageWriteParam var3, byte[] var4, Rectangle var5, Dimension var6) throws IOException {</b>
+<b class="nc"><i>472</i>&nbsp;        ColorModel var7 = var1.getColorModel();</b>
+<i>473</i>&nbsp;        SampleModel var8 = var1.getSampleModel();
+<b class="nc"><i>474</i>&nbsp;        boolean var9;</b>
+<b class="nc"><i>475</i>&nbsp;        if(var2 == null) {</b>
+<i>476</i>&nbsp;            var2 = (GIFWritableImageMetadata)this.getDefaultImageMetadata(new ImageTypeSpecifier(var1), var3);
+<b class="nc"><i>477</i>&nbsp;            var9 = var2.transparentColorFlag;</b>
+<b class="nc"><i>478</i>&nbsp;        } else {</b>
+<i>479</i>&nbsp;            NodeList var10 = null;
+<i>480</i>&nbsp;
+<b class="nc"><i>481</i>&nbsp;            try {</b>
+<i>482</i>&nbsp;                IIOMetadataNode var11 = (IIOMetadataNode)var2.getAsTree(&quot;javax_imageio_gif_image_1.0&quot;);
+<i>483</i>&nbsp;                var10 = var11.getElementsByTagName(&quot;GraphicControlExtension&quot;);
+<b class="nc"><i>484</i>&nbsp;            } catch (IllegalArgumentException var12) {</b>
+<b class="nc"><i>485</i>&nbsp;                ;</b>
+<i>486</i>&nbsp;            }
+<i>487</i>&nbsp;
+<b class="nc"><i>488</i>&nbsp;            var9 = var10 != null &amp;&amp; var10.getLength() &gt; 0;</b>
+<i>489</i>&nbsp;            if(var3 != null &amp;&amp; var3.canWriteProgressive()) {
+<i>490</i>&nbsp;                if(var3.getProgressiveMode() == 0) {
+<i>491</i>&nbsp;                    var2.interlaceFlag = false;
+<b class="nc"><i>492</i>&nbsp;                } else if(var3.getProgressiveMode() == 1) {</b>
+<i>493</i>&nbsp;                    var2.interlaceFlag = true;
+<i>494</i>&nbsp;                }
+<i>495</i>&nbsp;            }
+<i>496</i>&nbsp;        }
+<b class="nc"><i>497</i>&nbsp;</b>
+<b class="nc"><i>498</i>&nbsp;        if(Arrays.equals(var4, var2.localColorTable)) {</b>
+<i>499</i>&nbsp;            var2.localColorTable = null;
+<b class="nc"><i>500</i>&nbsp;        }</b>
+<b class="nc"><i>501</i>&nbsp;</b>
+<i>502</i>&nbsp;        var2.imageWidth = var6.width;
+<b class="nc"><i>503</i>&nbsp;        var2.imageHeight = var6.height;</b>
+<b class="nc"><i>504</i>&nbsp;        if(var9) {</b>
+<i>505</i>&nbsp;            this.writeGraphicControlExtension(var2);
+<b class="nc"><i>506</i>&nbsp;        }</b>
+<b class="nc"><i>507</i>&nbsp;</b>
+<i>508</i>&nbsp;        this.writePlainTextExtension(var2);
+<i>509</i>&nbsp;        this.writeApplicationExtension(var2);
+<b class="nc"><i>510</i>&nbsp;        this.writeCommentExtension(var2);</b>
+<i>511</i>&nbsp;        int var13 = getNumBits(var2.localColorTable == null?(var4 == null?var8.getSampleSize(0):var4.length / 3):var2.localColorTable.length / 3);
+<i>512</i>&nbsp;        this.writeImageDescriptor(var2, var13);
+<b class="nc"><i>513</i>&nbsp;        this.writeRasterData(var1, var5, var6, var3, var2.interlaceFlag);</b>
+<b class="nc"><i>514</i>&nbsp;    }</b>
+<i>515</i>&nbsp;
+<i>516</i>&nbsp;    private void writeRows(RenderedImage var1, LZWCompressor var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9, int var10, int var11, int var12, int var13) throws IOException {
+<b class="nc"><i>517</i>&nbsp;        int[] var14 = new int[var7];</b>
+<i>518</i>&nbsp;        byte[] var15 = new byte[var10];
+<i>519</i>&nbsp;        Raster var16 = var1.getNumXTiles() == 1 &amp;&amp; var1.getNumYTiles() == 1?var1.getTile(0, 0):var1.getData();
+<i>520</i>&nbsp;
+<i>521</i>&nbsp;        for(int var17 = var8; var17 &lt; var11; var17 += var9) {
+<i>522</i>&nbsp;            if(var12 % var13 == 0) {
+<b class="nc"><i>523</i>&nbsp;                if(this.abortRequested()) {</b>
+<b class="nc"><i>524</i>&nbsp;                    this.processWriteAborted();</b>
+<i>525</i>&nbsp;                    return;
+<b class="nc"><i>526</i>&nbsp;                }</b>
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;                this.processImageProgress((float)var12 * 100.0F / (float)var11);
+<i>529</i>&nbsp;            }
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;            var16.getSamples(var3, var5, var7, 1, 0, var14);
+<i>532</i>&nbsp;            int var18 = 0;
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;            for(int var19 = 0; var18 &lt; var10; var19 += var4) {
+<i>535</i>&nbsp;                var15[var18] = (byte)var14[var19];
+<i>536</i>&nbsp;                ++var18;
+<i>537</i>&nbsp;            }
+<i>538</i>&nbsp;
+<i>539</i>&nbsp;            var2.compress(var15, 0, var10);
+<i>540</i>&nbsp;            ++var12;
+<i>541</i>&nbsp;            var5 += var6;
+<i>542</i>&nbsp;        }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    }
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;    private void writeRowsOpt(byte[] var1, int var2, int var3, LZWCompressor var4, int var5, int var6, int var7, int var8, int var9, int var10) throws IOException {
+<i>547</i>&nbsp;        var2 += var5 * var3;
+<i>548</i>&nbsp;        var3 *= var6;
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;        for(int var11 = var5; var11 &lt; var8; var11 += var6) {
+<i>551</i>&nbsp;            if(var9 % var10 == 0) {
+<i>552</i>&nbsp;                if(this.abortRequested()) {
+<i>553</i>&nbsp;                    this.processWriteAborted();
+<i>554</i>&nbsp;                    return;
+<i>555</i>&nbsp;                }
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;                this.processImageProgress((float)var9 * 100.0F / (float)var8);
+<b class="nc"><i>558</i>&nbsp;            }</b>
+<i>559</i>&nbsp;
+<b class="nc"><i>560</i>&nbsp;            var4.compress(var1, var2, var7);</b>
+<i>561</i>&nbsp;            ++var9;
+<i>562</i>&nbsp;            var2 += var3;
+<b class="nc"><i>563</i>&nbsp;        }</b>
+<b class="nc"><i>564</i>&nbsp;</b>
+<b class="nc"><i>565</i>&nbsp;    }</b>
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;    private void writeRasterData(RenderedImage var1, Rectangle var2, Dimension var3, ImageWriteParam var4, boolean var5) throws IOException {
+<b class="nc"><i>568</i>&nbsp;        int var6 = var2.x;</b>
+<b class="nc"><i>569</i>&nbsp;        int var7 = var2.y;</b>
+<i>570</i>&nbsp;        int var8 = var2.width;
+<i>571</i>&nbsp;        int var9 = var2.height;
+<b class="nc"><i>572</i>&nbsp;        int var10 = var3.width;</b>
+<i>573</i>&nbsp;        int var11 = var3.height;
+<i>574</i>&nbsp;        int var12;
+<i>575</i>&nbsp;        int var13;
+<b class="nc"><i>576</i>&nbsp;        if(var4 == null) {</b>
+<b class="nc"><i>577</i>&nbsp;            var12 = 1;</b>
+<i>578</i>&nbsp;            var13 = 1;
+<i>579</i>&nbsp;        } else {
+<b class="nc"><i>580</i>&nbsp;            var12 = var4.getSourceXSubsampling();</b>
+<b class="nc"><i>581</i>&nbsp;            var13 = var4.getSourceYSubsampling();</b>
+<b class="nc"><i>582</i>&nbsp;        }</b>
+<b class="nc"><i>583</i>&nbsp;</b>
+<i>584</i>&nbsp;        SampleModel var14 = var1.getSampleModel();
+<i>585</i>&nbsp;        int var15 = var14.getSampleSize()[0];
+<i>586</i>&nbsp;        int var16 = var15;
+<i>587</i>&nbsp;        if(var15 == 1) {
+<i>588</i>&nbsp;            var16 = var15 + 1;
+<i>589</i>&nbsp;        }
+<i>590</i>&nbsp;
+<i>591</i>&nbsp;        this.stream.write(var16);
+<b class="nc"><i>592</i>&nbsp;        LZWCompressor var17 = new LZWCompressor(this.stream, var16, false);</b>
+<b class="nc"><i>593</i>&nbsp;        boolean var18 = var12 == 1 &amp;&amp; var13 == 1 &amp;&amp; var1.getNumXTiles() == 1 &amp;&amp; var1.getNumYTiles() == 1 &amp;&amp; var14 instanceof ComponentSampleModel &amp;&amp; var1.getTile(0, 0) instanceof ByteComponentRaster &amp;&amp; var1.getTile(0, 0).getDataBuffer() instanceof DataBufferByte;</b>
+<i>594</i>&nbsp;        byte var19 = 0;
+<i>595</i>&nbsp;        int var20 = Math.max(var11 / 20, 1);
+<i>596</i>&nbsp;        this.processImageStarted(this.imageIndex);
+<i>597</i>&nbsp;        ComponentSampleModel var23;
+<b class="nc"><i>598</i>&nbsp;        byte[] var22;</b>
+<b class="nc"><i>599</i>&nbsp;        int var25;</b>
+<i>600</i>&nbsp;        int var24;
+<b class="nc"><i>601</i>&nbsp;        if(var5) {</b>
+<b class="nc"><i>602</i>&nbsp;            int var26;</b>
+<b class="nc"><i>603</i>&nbsp;            if(var18) {</b>
+<b class="nc"><i>604</i>&nbsp;                ByteComponentRaster var21 = (ByteComponentRaster)var1.getTile(0, 0);</b>
+<i>605</i>&nbsp;                var22 = ((DataBufferByte)var21.getDataBuffer()).getData();
+<i>606</i>&nbsp;                var23 = (ComponentSampleModel)var21.getSampleModel();
+<i>607</i>&nbsp;                var24 = var23.getOffset(var6, var7, 0);
+<i>608</i>&nbsp;                var24 += var21.getDataOffset(0);
+<i>609</i>&nbsp;                var25 = var23.getScanlineStride();
+<i>610</i>&nbsp;                this.writeRowsOpt(var22, var24, var25, var17, 0, 8, var10, var11, var19, var20);
+<i>611</i>&nbsp;                if(this.abortRequested()) {
+<i>612</i>&nbsp;                    return;
+<i>613</i>&nbsp;                }
+<i>614</i>&nbsp;
+<i>615</i>&nbsp;                var26 = var19 + var11 / 8;
+<i>616</i>&nbsp;                this.writeRowsOpt(var22, var24, var25, var17, 4, 8, var10, var11, var26, var20);
+<b class="nc"><i>617</i>&nbsp;                if(this.abortRequested()) {</b>
+<i>618</i>&nbsp;                    return;
+<i>619</i>&nbsp;                }
+<i>620</i>&nbsp;
+<b class="nc"><i>621</i>&nbsp;                var26 += (var11 - 4) / 8;</b>
+<b class="nc"><i>622</i>&nbsp;                this.writeRowsOpt(var22, var24, var25, var17, 2, 4, var10, var11, var26, var20);</b>
+<b class="nc"><i>623</i>&nbsp;                if(this.abortRequested()) {</b>
+<i>624</i>&nbsp;                    return;
+<i>625</i>&nbsp;                }
+<b class="nc"><i>626</i>&nbsp;</b>
+<i>627</i>&nbsp;                var26 += (var11 - 2) / 4;
+<i>628</i>&nbsp;                this.writeRowsOpt(var22, var24, var25, var17, 1, 2, var10, var11, var26, var20);
+<i>629</i>&nbsp;            } else {
+<b class="nc"><i>630</i>&nbsp;                this.writeRows(var1, var17, var6, var12, var7, 8 * var13, var8, 0, 8, var10, var11, var19, var20);</b>
+<b class="nc"><i>631</i>&nbsp;                if(this.abortRequested()) {</b>
+<i>632</i>&nbsp;                    return;
+<i>633</i>&nbsp;                }
+<i>634</i>&nbsp;
+<b class="nc"><i>635</i>&nbsp;                var26 = var19 + var11 / 8;</b>
+<i>636</i>&nbsp;                this.writeRows(var1, var17, var6, var12, var7 + 4 * var13, 8 * var13, var8, 4, 8, var10, var11, var26, var20);
+<i>637</i>&nbsp;                if(this.abortRequested()) {
+<b class="nc"><i>638</i>&nbsp;                    return;</b>
+<i>639</i>&nbsp;                }
+<i>640</i>&nbsp;
+<b class="nc"><i>641</i>&nbsp;                var26 += (var11 - 4) / 8;</b>
+<i>642</i>&nbsp;                this.writeRows(var1, var17, var6, var12, var7 + 2 * var13, 4 * var13, var8, 2, 4, var10, var11, var26, var20);
+<i>643</i>&nbsp;                if(this.abortRequested()) {
+<b class="nc"><i>644</i>&nbsp;                    return;</b>
+<i>645</i>&nbsp;                }
+<i>646</i>&nbsp;
+<b class="nc"><i>647</i>&nbsp;                var26 += (var11 - 2) / 4;</b>
+<i>648</i>&nbsp;                this.writeRows(var1, var17, var6, var12, var7 + var13, 2 * var13, var8, 1, 2, var10, var11, var26, var20);
+<i>649</i>&nbsp;            }
+<b class="nc"><i>650</i>&nbsp;        } else if(var18) {</b>
+<i>651</i>&nbsp;            Raster var27 = var1.getTile(0, 0);
+<i>652</i>&nbsp;            var22 = ((DataBufferByte)var27.getDataBuffer()).getData();
+<i>653</i>&nbsp;            var23 = (ComponentSampleModel)var27.getSampleModel();
+<i>654</i>&nbsp;            var24 = var23.getOffset(var6, var7, 0);
+<i>655</i>&nbsp;            var25 = var23.getScanlineStride();
+<i>656</i>&nbsp;            this.writeRowsOpt(var22, var24, var25, var17, 0, 1, var10, var11, var19, var20);
+<b class="nc"><i>657</i>&nbsp;        } else {</b>
+<b class="nc"><i>658</i>&nbsp;            this.writeRows(var1, var17, var6, var12, var7, var13, var8, 0, 1, var10, var11, var19, var20);</b>
+<i>659</i>&nbsp;        }
+<i>660</i>&nbsp;
+<i>661</i>&nbsp;        if(!this.abortRequested()) {
+<b class="nc"><i>662</i>&nbsp;            this.processImageProgress(100.0F);</b>
+<i>663</i>&nbsp;            var17.flush();
+<b class="nc"><i>664</i>&nbsp;            this.stream.write(0);</b>
+<i>665</i>&nbsp;            this.processImageComplete();
+<i>666</i>&nbsp;        }
+<b class="nc"><i>667</i>&nbsp;    }</b>
+<i>668</i>&nbsp;
+<i>669</i>&nbsp;    private void writeHeader(String var1, int var2, int var3, int var4, int var5, int var6, boolean var7, int var8, byte[] var9) throws IOException {
+<i>670</i>&nbsp;        try {
+<i>671</i>&nbsp;            this.stream.writeBytes(&quot;GIF&quot; + var1);
+<i>672</i>&nbsp;            this.stream.writeShort((short)var2);
+<i>673</i>&nbsp;            this.stream.writeShort((short)var3);
+<i>674</i>&nbsp;            int var10 = var9 != null?128:0;
+<i>675</i>&nbsp;            var10 |= (var4 - 1 &amp; 7) &lt;&lt; 4;
+<i>676</i>&nbsp;            if(var7) {
+<i>677</i>&nbsp;                var10 |= 8;
+<i>678</i>&nbsp;            }
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;            var10 |= var8 - 1;
+<b class="nc"><i>681</i>&nbsp;            this.stream.write(var10);</b>
+<i>682</i>&nbsp;            this.stream.write(var6);
+<i>683</i>&nbsp;            this.stream.write(var5);
+<i>684</i>&nbsp;            if(var9 != null) {
+<b class="nc"><i>685</i>&nbsp;                this.stream.write(var9);</b>
+<b class="nc"><i>686</i>&nbsp;            }</b>
+<b class="nc"><i>687</i>&nbsp;</b>
+<i>688</i>&nbsp;        } catch (IOException var11) {
+<b class="nc"><i>689</i>&nbsp;            throw new IIOException(&quot;I/O error writing header!&quot;, var11);</b>
+<i>690</i>&nbsp;        }
+<i>691</i>&nbsp;    }
+<b class="nc"><i>692</i>&nbsp;</b>
+<i>693</i>&nbsp;    private void writeHeader(IIOMetadata var1, int var2) throws IOException {
+<b class="nc"><i>694</i>&nbsp;        GIFWritableStreamMetadata var3;</b>
+<b class="nc"><i>695</i>&nbsp;        if(var1 instanceof GIFWritableStreamMetadata) {</b>
+<b class="nc"><i>696</i>&nbsp;            var3 = (GIFWritableStreamMetadata)var1;</b>
+<i>697</i>&nbsp;        } else {
+<b class="nc"><i>698</i>&nbsp;            var3 = new GIFWritableStreamMetadata();</b>
+<i>699</i>&nbsp;            Node var4 = var1.getAsTree(&quot;javax_imageio_gif_stream_1.0&quot;);
+<i>700</i>&nbsp;            var3.setFromTree(&quot;javax_imageio_gif_stream_1.0&quot;, var4);
+<i>701</i>&nbsp;        }
+<b class="nc"><i>702</i>&nbsp;</b>
+<i>703</i>&nbsp;        this.writeHeader(var3.version, var3.logicalScreenWidth, var3.logicalScreenHeight, var3.colorResolution, var3.pixelAspectRatio, var3.backgroundColorIndex, var3.sortFlag, var2, var3.globalColorTable);
+<i>704</i>&nbsp;    }
+<i>705</i>&nbsp;
+<b class="nc"><i>706</i>&nbsp;    private void writeGraphicControlExtension(int var1, boolean var2, boolean var3, int var4, int var5) throws IOException {</b>
+<b class="nc"><i>707</i>&nbsp;        try {</b>
+<i>708</i>&nbsp;            this.stream.write(33);
+<i>709</i>&nbsp;            this.stream.write(249);
+<i>710</i>&nbsp;            this.stream.write(4);
+<i>711</i>&nbsp;            int var6 = (var1 &amp; 3) &lt;&lt; 2;
+<i>712</i>&nbsp;            if(var2) {
+<i>713</i>&nbsp;                var6 |= 2;
+<i>714</i>&nbsp;            }
+<i>715</i>&nbsp;
+<i>716</i>&nbsp;            if(var3) {
+<i>717</i>&nbsp;                var6 |= 1;
+<i>718</i>&nbsp;            }
+<i>719</i>&nbsp;
+<i>720</i>&nbsp;            this.stream.write(var6);
+<i>721</i>&nbsp;            this.stream.writeShort((short)var4);
+<i>722</i>&nbsp;            this.stream.write(var5);
+<i>723</i>&nbsp;            this.stream.write(0);
+<i>724</i>&nbsp;        } catch (IOException var7) {
+<b class="nc"><i>725</i>&nbsp;            throw new IIOException(&quot;I/O error writing Graphic Control Extension!&quot;, var7);</b>
+<b class="nc"><i>726</i>&nbsp;        }</b>
+<i>727</i>&nbsp;    }
+<i>728</i>&nbsp;
+<b class="nc"><i>729</i>&nbsp;    private void writeGraphicControlExtension(GIFWritableImageMetadata var1) throws IOException {</b>
+<i>730</i>&nbsp;        this.writeGraphicControlExtension(var1.disposalMethod, var1.userInputFlag, var1.transparentColorFlag, var1.delayTime, var1.transparentColorIndex);
+<b class="nc"><i>731</i>&nbsp;    }</b>
+<i>732</i>&nbsp;
+<i>733</i>&nbsp;    private void writeBlocks(byte[] var1) throws IOException {
+<i>734</i>&nbsp;        int var3;
+<i>735</i>&nbsp;        if(var1 != null &amp;&amp; var1.length &gt; 0) {
+<b class="nc"><i>736</i>&nbsp;            for(int var2 = 0; var2 &lt; var1.length; var2 += var3) {</b>
+<i>737</i>&nbsp;                var3 = Math.min(var1.length - var2, 255);
+<i>738</i>&nbsp;                this.stream.write(var3);
+<b class="nc"><i>739</i>&nbsp;                this.stream.write(var1, var2, var3);</b>
+<i>740</i>&nbsp;            }
+<b class="nc"><i>741</i>&nbsp;        }</b>
+<i>742</i>&nbsp;
+<b class="nc"><i>743</i>&nbsp;    }</b>
+<b class="nc"><i>744</i>&nbsp;</b>
+<i>745</i>&nbsp;    private void writePlainTextExtension(GIFWritableImageMetadata var1) throws IOException {
+<b class="nc"><i>746</i>&nbsp;        if(var1.hasPlainTextExtension) {</b>
+<i>747</i>&nbsp;            try {
+<i>748</i>&nbsp;                this.stream.write(33);
+<b class="nc"><i>749</i>&nbsp;                this.stream.write(1);</b>
+<i>750</i>&nbsp;                this.stream.write(12);
+<i>751</i>&nbsp;                this.stream.writeShort(var1.textGridLeft);
+<i>752</i>&nbsp;                this.stream.writeShort(var1.textGridTop);
+<i>753</i>&nbsp;                this.stream.writeShort(var1.textGridWidth);
+<b class="nc"><i>754</i>&nbsp;                this.stream.writeShort(var1.textGridHeight);</b>
+<b class="nc"><i>755</i>&nbsp;                this.stream.write(var1.characterCellWidth);</b>
+<i>756</i>&nbsp;                this.stream.write(var1.characterCellHeight);
+<b class="nc"><i>757</i>&nbsp;                this.stream.write(var1.textForegroundColor);</b>
+<b class="nc"><i>758</i>&nbsp;                this.stream.write(var1.textBackgroundColor);</b>
+<i>759</i>&nbsp;                this.writeBlocks(var1.text);
+<b class="nc"><i>760</i>&nbsp;                this.stream.write(0);</b>
+<i>761</i>&nbsp;            } catch (IOException var3) {
+<i>762</i>&nbsp;                throw new IIOException(&quot;I/O error writing Plain Text Extension!&quot;, var3);
+<i>763</i>&nbsp;            }
+<i>764</i>&nbsp;        }
+<i>765</i>&nbsp;
+<b class="nc"><i>766</i>&nbsp;    }</b>
+<b class="nc"><i>767</i>&nbsp;</b>
+<i>768</i>&nbsp;    private void writeApplicationExtension(GIFWritableImageMetadata var1) throws IOException {
+<i>769</i>&nbsp;        if(var1.applicationIDs != null) {
+<i>770</i>&nbsp;            Iterator var2 = var1.applicationIDs.iterator();
+<b class="nc"><i>771</i>&nbsp;            Iterator var3 = var1.authenticationCodes.iterator();</b>
+<b class="nc"><i>772</i>&nbsp;            Iterator var4 = var1.applicationData.iterator();</b>
+<i>773</i>&nbsp;
+<i>774</i>&nbsp;            while(var2.hasNext()) {
+<b class="nc"><i>775</i>&nbsp;                try {</b>
+<b class="nc"><i>776</i>&nbsp;                    this.stream.write(33);</b>
+<i>777</i>&nbsp;                    this.stream.write(255);
+<i>778</i>&nbsp;                    this.stream.write(11);
+<i>779</i>&nbsp;                    this.stream.write((byte[])((byte[])var2.next()), 0, 8);
+<b class="nc"><i>780</i>&nbsp;                    this.stream.write((byte[])((byte[])var3.next()), 0, 3);</b>
+<b class="nc"><i>781</i>&nbsp;                    this.writeBlocks((byte[])((byte[])var4.next()));</b>
+<b class="nc"><i>782</i>&nbsp;                    this.stream.write(0);</b>
+<i>783</i>&nbsp;                } catch (IOException var6) {
+<i>784</i>&nbsp;                    throw new IIOException(&quot;I/O error writing Application Extension!&quot;, var6);
+<b class="nc"><i>785</i>&nbsp;                }</b>
+<i>786</i>&nbsp;            }
+<i>787</i>&nbsp;        }
+<i>788</i>&nbsp;
+<i>789</i>&nbsp;    }
+<i>790</i>&nbsp;
+<b class="nc"><i>791</i>&nbsp;    private void writeCommentExtension(GIFWritableImageMetadata var1) throws IOException {</b>
+<i>792</i>&nbsp;        if(var1.comments != null) {
+<i>793</i>&nbsp;            try {
+<b class="nc"><i>794</i>&nbsp;                Iterator var2 = var1.comments.iterator();</b>
+<i>795</i>&nbsp;
+<i>796</i>&nbsp;                while(var2.hasNext()) {
+<i>797</i>&nbsp;                    this.stream.write(33);
+<i>798</i>&nbsp;                    this.stream.write(254);
+<i>799</i>&nbsp;                    this.writeBlocks((byte[])((byte[])var2.next()));
+<i>800</i>&nbsp;                    this.stream.write(0);
+<i>801</i>&nbsp;                }
+<i>802</i>&nbsp;            } catch (IOException var3) {
+<i>803</i>&nbsp;                throw new IIOException(&quot;I/O error writing Comment Extension!&quot;, var3);
+<i>804</i>&nbsp;            }
+<b class="nc"><i>805</i>&nbsp;        }</b>
+<b class="nc"><i>806</i>&nbsp;</b>
+<i>807</i>&nbsp;    }
+<b class="nc"><i>808</i>&nbsp;</b>
+<i>809</i>&nbsp;    private void writeImageDescriptor(int var1, int var2, int var3, int var4, boolean var5, boolean var6, int var7, byte[] var8) throws IOException {
+<i>810</i>&nbsp;        try {
+<b class="nc"><i>811</i>&nbsp;            this.stream.write(44);</b>
+<b class="nc"><i>812</i>&nbsp;            this.stream.writeShort((short)var1);</b>
+<b class="nc"><i>813</i>&nbsp;            this.stream.writeShort((short)var2);</b>
+<b class="nc"><i>814</i>&nbsp;            this.stream.writeShort((short)var3);</b>
+<i>815</i>&nbsp;            this.stream.writeShort((short)var4);
+<i>816</i>&nbsp;            int var9 = var8 != null?128:0;
+<b class="nc"><i>817</i>&nbsp;            if(var5) {</b>
+<i>818</i>&nbsp;                var9 |= 64;
+<i>819</i>&nbsp;            }
+<b class="nc"><i>820</i>&nbsp;</b>
+<b class="nc"><i>821</i>&nbsp;            if(var6) {</b>
+<b class="nc"><i>822</i>&nbsp;                var9 |= 8;</b>
+<i>823</i>&nbsp;            }
+<b class="nc"><i>824</i>&nbsp;</b>
+<b class="nc"><i>825</i>&nbsp;            var9 |= var7 - 1;</b>
+<b class="nc"><i>826</i>&nbsp;            this.stream.write(var9);</b>
+<i>827</i>&nbsp;            if(var8 != null) {
+<i>828</i>&nbsp;                this.stream.write(var8);
+<i>829</i>&nbsp;            }
+<i>830</i>&nbsp;
+<i>831</i>&nbsp;        } catch (IOException var10) {
+<i>832</i>&nbsp;            throw new IIOException(&quot;I/O error writing Image Descriptor!&quot;, var10);
+<i>833</i>&nbsp;        }
+<i>834</i>&nbsp;    }
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;    private void writeImageDescriptor(GIFWritableImageMetadata var1, int var2) throws IOException {
+<b class="nc"><i>837</i>&nbsp;        this.writeImageDescriptor(var1.imageLeftPosition, var1.imageTopPosition, var1.imageWidth, var1.imageHeight, var1.interlaceFlag, var1.sortFlag, var2, var1.localColorTable);</b>
+<b class="nc"><i>838</i>&nbsp;    }</b>
+<b class="nc"><i>839</i>&nbsp;</b>
+<b class="nc"><i>840</i>&nbsp;    private void writeTrailer() throws IOException {</b>
+<b class="nc"><i>841</i>&nbsp;        this.stream.write(59);</b>
+<b class="nc"><i>842</i>&nbsp;    }</b>
+<i>843</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClassLoaderObjectInputStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.awt.datatransfer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClassLoaderObjectInputStream (sun.awt.datatransfer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClassLoaderObjectInputStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.awt.datatransfer;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InputStream;
+<i>10</i>&nbsp;import java.io.ObjectInputStream;
+<i>11</i>&nbsp;import java.io.ObjectStreamClass;
+<i>12</i>&nbsp;import java.lang.reflect.Proxy;
+<i>13</i>&nbsp;import java.util.HashSet;
+<i>14</i>&nbsp;import java.util.Map;
+<i>15</i>&nbsp;import java.util.Set;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;final class ClassLoaderObjectInputStream extends ObjectInputStream {
+<i>18</i>&nbsp;    private final Map&lt;Set&lt;String&gt;, ClassLoader&gt; map;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    ClassLoaderObjectInputStream(InputStream var1, Map&lt;Set&lt;String&gt;, ClassLoader&gt; var2) throws IOException {
+<i>21</i>&nbsp;        super(var1);
+<i>22</i>&nbsp;        if(var2 == null) {
+<i>23</i>&nbsp;            throw new NullPointerException(&quot;Null map&quot;);
+<i>24</i>&nbsp;        } else {
+<i>25</i>&nbsp;            this.map = var2;
+<i>26</i>&nbsp;        }
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    protected Class&lt;?&gt; resolveClass(ObjectStreamClass var1) throws IOException, ClassNotFoundException {
+<i>30</i>&nbsp;        String var2 = var1.getName();
+<i>31</i>&nbsp;        HashSet var3 = new HashSet(1);
+<i>32</i>&nbsp;        var3.add(var2);
+<i>33</i>&nbsp;        ClassLoader var4 = (ClassLoader)this.map.get(var3);
+<i>34</i>&nbsp;        return var4 != null?Class.forName(var2, false, var4):super.resolveClass(var1);
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    protected Class&lt;?&gt; resolveProxyClass(String[] var1) throws IOException, ClassNotFoundException {
+<i>38</i>&nbsp;        HashSet var2 = new HashSet(var1.length);
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.length; ++var3) {
+<i>41</i>&nbsp;            var2.add(var1[var3]);
+<i>42</i>&nbsp;        }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;        ClassLoader var10 = (ClassLoader)this.map.get(var2);
+<i>45</i>&nbsp;        if(var10 == null) {
+<i>46</i>&nbsp;            return super.resolveProxyClass(var1);
+<i>47</i>&nbsp;        } else {
+<i>48</i>&nbsp;            ClassLoader var4 = null;
+<i>49</i>&nbsp;            boolean var5 = false;
+<i>50</i>&nbsp;            Class[] var6 = new Class[var1.length];
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;            for(int var7 = 0; var7 &lt; var1.length; ++var7) {
+<i>53</i>&nbsp;                Class var8 = Class.forName(var1[var7], false, var10);
+<i>54</i>&nbsp;                if((var8.getModifiers() &amp; 1) == 0) {
+<i>55</i>&nbsp;                    if(var5) {
+<i>56</i>&nbsp;                        if(var4 != var8.getClassLoader()) {
+<i>57</i>&nbsp;                            throw new IllegalAccessError(&quot;conflicting non-public interface class loaders&quot;);
+<i>58</i>&nbsp;                        }
+<i>59</i>&nbsp;                    } else {
+<i>60</i>&nbsp;                        var4 = var8.getClassLoader();
+<i>61</i>&nbsp;                        var5 = true;
+<i>62</i>&nbsp;                    }
+<i>63</i>&nbsp;                }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;                var6[var7] = var8;
+<i>66</i>&nbsp;            }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;            try {
+<i>69</i>&nbsp;                return Proxy.getProxyClass(var5?var4:var10, var6);
+<i>70</i>&nbsp;            } catch (IllegalArgumentException var9) {
+<i>71</i>&nbsp;                throw new ClassNotFoundException((String)null, var9);
+<i>72</i>&nbsp;            }
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

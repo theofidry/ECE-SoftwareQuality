@@ -1,0 +1,583 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Symtab</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.javac.code</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Symtab (com.sun.tools.javac.code)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Symtab</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 265)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Symtab$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Symtab$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 282)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.javac.code;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.javac.code.Scope;
+<i>9</i>&nbsp;import com.sun.tools.javac.code.Symbol;
+<i>10</i>&nbsp;import com.sun.tools.javac.code.Type;
+<i>11</i>&nbsp;import com.sun.tools.javac.code.Scope.ErrorScope;
+<i>12</i>&nbsp;import com.sun.tools.javac.code.Symbol.ClassSymbol;
+<i>13</i>&nbsp;import com.sun.tools.javac.code.Symbol.Completer;
+<i>14</i>&nbsp;import com.sun.tools.javac.code.Symbol.CompletionFailure;
+<i>15</i>&nbsp;import com.sun.tools.javac.code.Symbol.MethodSymbol;
+<i>16</i>&nbsp;import com.sun.tools.javac.code.Symbol.OperatorSymbol;
+<i>17</i>&nbsp;import com.sun.tools.javac.code.Symbol.PackageSymbol;
+<i>18</i>&nbsp;import com.sun.tools.javac.code.Symbol.TypeSymbol;
+<i>19</i>&nbsp;import com.sun.tools.javac.code.Symbol.VarSymbol;
+<i>20</i>&nbsp;import com.sun.tools.javac.code.Type.BottomType;
+<i>21</i>&nbsp;import com.sun.tools.javac.code.Type.ClassType;
+<i>22</i>&nbsp;import com.sun.tools.javac.code.Type.ErrorType;
+<i>23</i>&nbsp;import com.sun.tools.javac.code.Type.JCNoType;
+<i>24</i>&nbsp;import com.sun.tools.javac.code.Type.MethodType;
+<i>25</i>&nbsp;import com.sun.tools.javac.jvm.ClassReader;
+<i>26</i>&nbsp;import com.sun.tools.javac.jvm.Target;
+<i>27</i>&nbsp;import com.sun.tools.javac.util.Context;
+<i>28</i>&nbsp;import com.sun.tools.javac.util.JavacMessages;
+<i>29</i>&nbsp;import com.sun.tools.javac.util.List;
+<i>30</i>&nbsp;import com.sun.tools.javac.util.Name;
+<i>31</i>&nbsp;import com.sun.tools.javac.util.Names;
+<i>32</i>&nbsp;import com.sun.tools.javac.util.Context.Key;
+<i>33</i>&nbsp;import java.util.HashMap;
+<i>34</i>&nbsp;import java.util.Map;
+<i>35</i>&nbsp;import javax.lang.model.element.ElementVisitor;
+<b class="nc"><i>36</i>&nbsp;import javax.lang.model.type.TypeVisitor;</b>
+<i>37</i>&nbsp;
+<b class="nc"><i>38</i>&nbsp;public class Symtab {</b>
+<i>39</i>&nbsp;    protected static final Key&lt;Symtab&gt; symtabKey = new Key();
+<i>40</i>&nbsp;    public final Type byteType = new Type(1, (TypeSymbol)null);
+<i>41</i>&nbsp;    public final Type charType = new Type(2, (TypeSymbol)null);
+<i>42</i>&nbsp;    public final Type shortType = new Type(3, (TypeSymbol)null);
+<b class="nc"><i>43</i>&nbsp;    public final Type intType = new Type(4, (TypeSymbol)null);</b>
+<b class="nc"><i>44</i>&nbsp;    public final Type longType = new Type(5, (TypeSymbol)null);</b>
+<b class="nc"><i>45</i>&nbsp;    public final Type floatType = new Type(6, (TypeSymbol)null);</b>
+<b class="nc"><i>46</i>&nbsp;    public final Type doubleType = new Type(7, (TypeSymbol)null);</b>
+<i>47</i>&nbsp;    public final Type booleanType = new Type(8, (TypeSymbol)null);
+<i>48</i>&nbsp;    public final Type botType = new BottomType();
+<i>49</i>&nbsp;    public final JCNoType voidType = new JCNoType(9);
+<i>50</i>&nbsp;    private final Names names;
+<b class="nc"><i>51</i>&nbsp;    private final ClassReader reader;</b>
+<b class="nc"><i>52</i>&nbsp;    private final Target target;</b>
+<b class="nc"><i>53</i>&nbsp;    public final PackageSymbol rootPackage;</b>
+<b class="nc"><i>54</i>&nbsp;    public final PackageSymbol unnamedPackage;</b>
+<b class="nc"><i>55</i>&nbsp;    public final TypeSymbol noSymbol;</b>
+<b class="nc"><i>56</i>&nbsp;    public final ClassSymbol errSymbol;</b>
+<b class="nc"><i>57</i>&nbsp;    public final ClassSymbol unknownSymbol;</b>
+<b class="nc"><i>58</i>&nbsp;    public final Type errType;</b>
+<b class="nc"><i>59</i>&nbsp;    public final Type unknownType;</b>
+<b class="nc"><i>60</i>&nbsp;    public final ClassSymbol arrayClass;</b>
+<i>61</i>&nbsp;    public final MethodSymbol arrayCloneMethod;
+<i>62</i>&nbsp;    public final ClassSymbol boundClass;
+<i>63</i>&nbsp;    public final ClassSymbol methodClass;
+<i>64</i>&nbsp;    public final Type objectType;
+<i>65</i>&nbsp;    public final Type classType;
+<i>66</i>&nbsp;    public final Type classLoaderType;
+<i>67</i>&nbsp;    public final Type stringType;
+<i>68</i>&nbsp;    public final Type stringBufferType;
+<i>69</i>&nbsp;    public final Type stringBuilderType;
+<i>70</i>&nbsp;    public final Type cloneableType;
+<i>71</i>&nbsp;    public final Type serializableType;
+<i>72</i>&nbsp;    public final Type methodHandleType;
+<i>73</i>&nbsp;    public final Type polymorphicSignatureType;
+<i>74</i>&nbsp;    public final Type throwableType;
+<i>75</i>&nbsp;    public final Type errorType;
+<i>76</i>&nbsp;    public final Type interruptedExceptionType;
+<i>77</i>&nbsp;    public final Type illegalArgumentExceptionType;
+<i>78</i>&nbsp;    public final Type exceptionType;
+<i>79</i>&nbsp;    public final Type runtimeExceptionType;
+<i>80</i>&nbsp;    public final Type classNotFoundExceptionType;
+<i>81</i>&nbsp;    public final Type noClassDefFoundErrorType;
+<i>82</i>&nbsp;    public final Type noSuchFieldErrorType;
+<i>83</i>&nbsp;    public final Type assertionErrorType;
+<i>84</i>&nbsp;    public final Type cloneNotSupportedExceptionType;
+<i>85</i>&nbsp;    public final Type annotationType;
+<i>86</i>&nbsp;    public final TypeSymbol enumSym;
+<i>87</i>&nbsp;    public final Type listType;
+<i>88</i>&nbsp;    public final Type collectionsType;
+<i>89</i>&nbsp;    public final Type comparableType;
+<i>90</i>&nbsp;    public final Type arraysType;
+<i>91</i>&nbsp;    public final Type iterableType;
+<i>92</i>&nbsp;    public final Type iteratorType;
+<i>93</i>&nbsp;    public final Type annotationTargetType;
+<i>94</i>&nbsp;    public final Type overrideType;
+<i>95</i>&nbsp;    public final Type retentionType;
+<i>96</i>&nbsp;    public final Type deprecatedType;
+<i>97</i>&nbsp;    public final Type suppressWarningsType;
+<i>98</i>&nbsp;    public final Type inheritedType;
+<i>99</i>&nbsp;    public final Type proprietaryType;
+<i>100</i>&nbsp;    public final Type systemType;
+<i>101</i>&nbsp;    public final Type autoCloseableType;
+<i>102</i>&nbsp;    public final Type trustMeType;
+<i>103</i>&nbsp;    public final VarSymbol lengthVar;
+<i>104</i>&nbsp;    public final OperatorSymbol nullcheck;
+<i>105</i>&nbsp;    public final MethodSymbol enumFinalFinalize;
+<i>106</i>&nbsp;    public final MethodSymbol autoCloseableClose;
+<i>107</i>&nbsp;    public final Type[] typeOfTag = new Type[22];
+<i>108</i>&nbsp;    public final Name[] boxedName = new Name[22];
+<i>109</i>&nbsp;    public final Map&lt;Name, ClassSymbol&gt; classes = new HashMap();
+<i>110</i>&nbsp;    public final Map&lt;Name, PackageSymbol&gt; packages = new HashMap();
+<i>111</i>&nbsp;    public final ClassSymbol predefClass;
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    public static Symtab instance(Context var0) {
+<i>114</i>&nbsp;        Symtab var1 = (Symtab)var0.get(symtabKey);
+<i>115</i>&nbsp;        if(var1 == null) {
+<i>116</i>&nbsp;            var1 = new Symtab(var0);
+<i>117</i>&nbsp;        }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;        return var1;
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public void initType(Type var1, ClassSymbol var2) {
+<i>123</i>&nbsp;        var1.tsym = var2;
+<i>124</i>&nbsp;        this.typeOfTag[var1.tag] = var1;
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public void initType(Type var1, String var2) {
+<i>128</i>&nbsp;        this.initType(var1, (ClassSymbol)(new ClassSymbol(1L, this.names.fromString(var2), var1, this.rootPackage)));
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public void initType(Type var1, String var2, String var3) {
+<i>132</i>&nbsp;        this.initType(var1, (String)var2);
+<i>133</i>&nbsp;        this.boxedName[var1.tag] = this.names.fromString(&quot;java.lang.&quot; + var3);
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    private VarSymbol enterConstant(String var1, Type var2) {
+<i>137</i>&nbsp;        VarSymbol var3 = new VarSymbol(25L, this.names.fromString(var1), var2, this.predefClass);
+<i>138</i>&nbsp;        var3.setData(var2.constValue());
+<i>139</i>&nbsp;        this.predefClass.members().enter(var3);
+<i>140</i>&nbsp;        return var3;
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    private void enterBinop(String var1, Type var2, Type var3, Type var4, int var5) {
+<i>144</i>&nbsp;        this.predefClass.members().enter(new OperatorSymbol(this.names.fromString(var1), new MethodType(List.of(var2, var3), var4, List.nil(), this.methodClass), var5, this.predefClass));
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    private void enterBinop(String var1, Type var2, Type var3, Type var4, int var5, int var6) {
+<b class="nc"><i>148</i>&nbsp;        this.enterBinop(var1, var2, var3, var4, var5 &lt;&lt; 9 | var6);</b>
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    private OperatorSymbol enterUnop(String var1, Type var2, Type var3, int var4) {
+<b class="nc"><i>152</i>&nbsp;        OperatorSymbol var5 = new OperatorSymbol(this.names.fromString(var1), new MethodType(List.of(var2), var3, List.nil(), this.methodClass), var4, this.predefClass);</b>
+<i>153</i>&nbsp;        this.predefClass.members().enter(var5);
+<i>154</i>&nbsp;        return var5;
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    private Type enterClass(String var1) {
+<i>158</i>&nbsp;        return this.reader.enterClass(this.names.fromString(var1)).type;
+<b class="nc"><i>159</i>&nbsp;    }</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    public void synthesizeEmptyInterfaceIfMissing(Type var1) {
+<i>162</i>&nbsp;        final Completer var2 = var1.tsym.completer;
+<i>163</i>&nbsp;        if(var2 != null) {
+<i>164</i>&nbsp;            var1.tsym.completer = new Completer() {
+<b class="nc"><i>165</i>&nbsp;                public void complete(Symbol var1) throws CompletionFailure {</b>
+<i>166</i>&nbsp;                    try {
+<i>167</i>&nbsp;                        var2.complete(var1);
+<b class="nc"><i>168</i>&nbsp;                    } catch (CompletionFailure var3) {</b>
+<b class="nc"><i>169</i>&nbsp;                        var1.flags_field |= 513L;</b>
+<i>170</i>&nbsp;                        ((ClassType)var1.type).supertype_field = Symtab.this.objectType;
+<i>171</i>&nbsp;                    }
+<i>172</i>&nbsp;
+<b class="nc"><i>173</i>&nbsp;                }</b>
+<i>174</i>&nbsp;            };
+<i>175</i>&nbsp;        }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public void synthesizeBoxTypeIfMissing(final Type var1) {
+<b class="nc"><i>180</i>&nbsp;        ClassSymbol var2 = this.reader.enterClass(this.boxedName[var1.tag]);</b>
+<b class="nc"><i>181</i>&nbsp;        final Completer var3 = var2.completer;</b>
+<i>182</i>&nbsp;        if(var3 != null) {
+<i>183</i>&nbsp;            var2.completer = new Completer() {
+<i>184</i>&nbsp;                public void complete(Symbol var1x) throws CompletionFailure {
+<i>185</i>&nbsp;                    try {
+<i>186</i>&nbsp;                        var3.complete(var1x);
+<i>187</i>&nbsp;                    } catch (CompletionFailure var6) {
+<i>188</i>&nbsp;                        var1x.flags_field |= 1L;
+<i>189</i>&nbsp;                        ((ClassType)var1x.type).supertype_field = Symtab.this.objectType;
+<i>190</i>&nbsp;                        Name var3x = Symtab.this.target.boxWithConstructors()?Symtab.this.names.init:Symtab.this.names.valueOf;
+<i>191</i>&nbsp;                        MethodSymbol var4 = new MethodSymbol(9L, var3x, new MethodType(List.of(var1), var1x.type, List.nil(), Symtab.this.methodClass), var1x);
+<i>192</i>&nbsp;                        var1x.members().enter(var4);
+<b class="nc"><i>193</i>&nbsp;                        MethodSymbol var5 = new MethodSymbol(1L, var1.tsym.name.append(Symtab.this.names.Value), new MethodType(List.nil(), var1, List.nil(), Symtab.this.methodClass), var1x);</b>
+<i>194</i>&nbsp;                        var1x.members().enter(var5);
+<i>195</i>&nbsp;                    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;                }
+<b class="nc"><i>198</i>&nbsp;            };</b>
+<b class="nc"><i>199</i>&nbsp;        }</b>
+<b class="nc"><i>200</i>&nbsp;</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    protected Symtab(Context var1) throws CompletionFailure {
+<i>204</i>&nbsp;        var1.put(symtabKey, this);
+<i>205</i>&nbsp;        this.names = Names.instance(var1);
+<i>206</i>&nbsp;        this.target = Target.instance(var1);
+<i>207</i>&nbsp;        this.unknownType = new Type(20, (TypeSymbol)null) {
+<i>208</i>&nbsp;            public &lt;R, P&gt; R accept(TypeVisitor&lt;R, P&gt; var1, P var2) {
+<i>209</i>&nbsp;                return var1.visitUnknown(this, var2);
+<i>210</i>&nbsp;            }
+<i>211</i>&nbsp;        };
+<i>212</i>&nbsp;        this.rootPackage = new PackageSymbol(this.names.empty, (Symbol)null);
+<b class="nc"><i>213</i>&nbsp;        final JavacMessages var2 = JavacMessages.instance(var1);</b>
+<i>214</i>&nbsp;        this.unnamedPackage = new PackageSymbol(this.names.empty, this.rootPackage) {
+<i>215</i>&nbsp;            public String toString() {
+<i>216</i>&nbsp;                return var2.getLocalizedString(&quot;compiler.misc.unnamed.package&quot;, new Object[0]);
+<i>217</i>&nbsp;            }
+<i>218</i>&nbsp;        };
+<i>219</i>&nbsp;        this.noSymbol = new TypeSymbol(0L, Type.noType, this.rootPackage, var6) {
+<i>220</i>&nbsp;            public &lt;R, P&gt; R accept(ElementVisitor&lt;R, P&gt; var1, P var2) {
+<i>221</i>&nbsp;                return var1.visitUnknown(this, var2);
+<i>222</i>&nbsp;            }
+<i>223</i>&nbsp;        };
+<i>224</i>&nbsp;        this.noSymbol.kind = 0;
+<i>225</i>&nbsp;        this.errSymbol = new ClassSymbol(1073741833L, this.names.any, (Type)null, this.rootPackage);
+<i>226</i>&nbsp;        this.errType = new ErrorType(this.errSymbol, Type.noType);
+<i>227</i>&nbsp;        this.unknownSymbol = new ClassSymbol(1073741833L, this.names.fromString(&quot;&lt;any?&gt;&quot;), (Type)null, this.rootPackage);
+<i>228</i>&nbsp;        this.unknownSymbol.members_field = new ErrorScope(this.unknownSymbol);
+<i>229</i>&nbsp;        this.unknownSymbol.type = this.unknownType;
+<b class="nc"><i>230</i>&nbsp;        this.initType(this.byteType, &quot;byte&quot;, &quot;Byte&quot;);</b>
+<i>231</i>&nbsp;        this.initType(this.shortType, &quot;short&quot;, &quot;Short&quot;);
+<i>232</i>&nbsp;        this.initType(this.charType, &quot;char&quot;, &quot;Character&quot;);
+<i>233</i>&nbsp;        this.initType(this.intType, &quot;int&quot;, &quot;Integer&quot;);
+<i>234</i>&nbsp;        this.initType(this.longType, &quot;long&quot;, &quot;Long&quot;);
+<i>235</i>&nbsp;        this.initType(this.floatType, &quot;float&quot;, &quot;Float&quot;);
+<i>236</i>&nbsp;        this.initType(this.doubleType, &quot;double&quot;, &quot;Double&quot;);
+<i>237</i>&nbsp;        this.initType(this.booleanType, &quot;boolean&quot;, &quot;Boolean&quot;);
+<i>238</i>&nbsp;        this.initType(this.voidType, &quot;void&quot;, &quot;Void&quot;);
+<i>239</i>&nbsp;        this.initType(this.botType, (String)&quot;&lt;nulltype&gt;&quot;);
+<i>240</i>&nbsp;        this.initType(this.errType, (ClassSymbol)this.errSymbol);
+<i>241</i>&nbsp;        this.initType(this.unknownType, (ClassSymbol)this.unknownSymbol);
+<i>242</i>&nbsp;        this.arrayClass = new ClassSymbol(1073741825L, this.names.Array, this.noSymbol);
+<i>243</i>&nbsp;        this.boundClass = new ClassSymbol(1073741825L, this.names.Bound, this.noSymbol);
+<b class="nc"><i>244</i>&nbsp;        this.boundClass.members_field = new ErrorScope(this.boundClass);</b>
+<i>245</i>&nbsp;        this.methodClass = new ClassSymbol(1073741825L, this.names.Method, this.noSymbol);
+<i>246</i>&nbsp;        this.methodClass.members_field = new ErrorScope(this.boundClass);
+<i>247</i>&nbsp;        this.predefClass = new ClassSymbol(1073741825L, this.names.empty, this.rootPackage);
+<i>248</i>&nbsp;        Scope var3 = new Scope(this.predefClass);
+<i>249</i>&nbsp;        this.predefClass.members_field = var3;
+<i>250</i>&nbsp;        var3.enter(this.byteType.tsym);
+<i>251</i>&nbsp;        var3.enter(this.shortType.tsym);
+<b class="nc"><i>252</i>&nbsp;        var3.enter(this.charType.tsym);</b>
+<b class="nc"><i>253</i>&nbsp;        var3.enter(this.intType.tsym);</b>
+<i>254</i>&nbsp;        var3.enter(this.longType.tsym);
+<i>255</i>&nbsp;        var3.enter(this.floatType.tsym);
+<i>256</i>&nbsp;        var3.enter(this.doubleType.tsym);
+<i>257</i>&nbsp;        var3.enter(this.booleanType.tsym);
+<i>258</i>&nbsp;        var3.enter(this.errType.tsym);
+<i>259</i>&nbsp;        var3.enter(this.errSymbol);
+<b class="nc"><i>260</i>&nbsp;        this.classes.put(this.predefClass.fullname, this.predefClass);</b>
+<i>261</i>&nbsp;        this.reader = ClassReader.instance(var1);
+<i>262</i>&nbsp;        this.reader.init(this);
+<i>263</i>&nbsp;        this.objectType = this.enterClass(&quot;java.lang.Object&quot;);
+<b class="nc"><i>264</i>&nbsp;        this.classType = this.enterClass(&quot;java.lang.Class&quot;);</b>
+<b class="nc"><i>265</i>&nbsp;        this.stringType = this.enterClass(&quot;java.lang.String&quot;);</b>
+<b class="nc"><i>266</i>&nbsp;        this.stringBufferType = this.enterClass(&quot;java.lang.StringBuffer&quot;);</b>
+<i>267</i>&nbsp;        this.stringBuilderType = this.enterClass(&quot;java.lang.StringBuilder&quot;);
+<i>268</i>&nbsp;        this.cloneableType = this.enterClass(&quot;java.lang.Cloneable&quot;);
+<b class="nc"><i>269</i>&nbsp;        this.throwableType = this.enterClass(&quot;java.lang.Throwable&quot;);</b>
+<b class="nc"><i>270</i>&nbsp;        this.serializableType = this.enterClass(&quot;java.io.Serializable&quot;);</b>
+<b class="nc"><i>271</i>&nbsp;        this.methodHandleType = this.enterClass(&quot;java.lang.invoke.MethodHandle&quot;);</b>
+<b class="nc"><i>272</i>&nbsp;        this.polymorphicSignatureType = this.enterClass(&quot;java.lang.invoke.MethodHandle$PolymorphicSignature&quot;);</b>
+<b class="nc"><i>273</i>&nbsp;        this.errorType = this.enterClass(&quot;java.lang.Error&quot;);</b>
+<i>274</i>&nbsp;        this.illegalArgumentExceptionType = this.enterClass(&quot;java.lang.IllegalArgumentException&quot;);
+<i>275</i>&nbsp;        this.interruptedExceptionType = this.enterClass(&quot;java.lang.InterruptedException&quot;);
+<i>276</i>&nbsp;        this.exceptionType = this.enterClass(&quot;java.lang.Exception&quot;);
+<i>277</i>&nbsp;        this.runtimeExceptionType = this.enterClass(&quot;java.lang.RuntimeException&quot;);
+<i>278</i>&nbsp;        this.classNotFoundExceptionType = this.enterClass(&quot;java.lang.ClassNotFoundException&quot;);
+<i>279</i>&nbsp;        this.noClassDefFoundErrorType = this.enterClass(&quot;java.lang.NoClassDefFoundError&quot;);
+<b class="nc"><i>280</i>&nbsp;        this.noSuchFieldErrorType = this.enterClass(&quot;java.lang.NoSuchFieldError&quot;);</b>
+<b class="nc"><i>281</i>&nbsp;        this.assertionErrorType = this.enterClass(&quot;java.lang.AssertionError&quot;);</b>
+<b class="nc"><i>282</i>&nbsp;        this.cloneNotSupportedExceptionType = this.enterClass(&quot;java.lang.CloneNotSupportedException&quot;);</b>
+<b class="nc"><i>283</i>&nbsp;        this.annotationType = this.enterClass(&quot;java.lang.annotation.Annotation&quot;);</b>
+<i>284</i>&nbsp;        this.classLoaderType = this.enterClass(&quot;java.lang.ClassLoader&quot;);
+<i>285</i>&nbsp;        this.enumSym = this.reader.enterClass(this.names.java_lang_Enum);
+<b class="nc"><i>286</i>&nbsp;        this.enumFinalFinalize = new MethodSymbol(137438953492L, this.names.finalize, new MethodType(List.nil(), this.voidType, List.nil(), this.methodClass), this.enumSym);</b>
+<b class="nc"><i>287</i>&nbsp;        this.listType = this.enterClass(&quot;java.util.List&quot;);</b>
+<b class="nc"><i>288</i>&nbsp;        this.collectionsType = this.enterClass(&quot;java.util.Collections&quot;);</b>
+<b class="nc"><i>289</i>&nbsp;        this.comparableType = this.enterClass(&quot;java.lang.Comparable&quot;);</b>
+<b class="nc"><i>290</i>&nbsp;        this.arraysType = this.enterClass(&quot;java.util.Arrays&quot;);</b>
+<b class="nc"><i>291</i>&nbsp;        this.iterableType = this.target.hasIterable()?this.enterClass(&quot;java.lang.Iterable&quot;):this.enterClass(&quot;java.util.Collection&quot;);</b>
+<i>292</i>&nbsp;        this.iteratorType = this.enterClass(&quot;java.util.Iterator&quot;);
+<i>293</i>&nbsp;        this.annotationTargetType = this.enterClass(&quot;java.lang.annotation.Target&quot;);
+<i>294</i>&nbsp;        this.overrideType = this.enterClass(&quot;java.lang.Override&quot;);
+<i>295</i>&nbsp;        this.retentionType = this.enterClass(&quot;java.lang.annotation.Retention&quot;);
+<i>296</i>&nbsp;        this.deprecatedType = this.enterClass(&quot;java.lang.Deprecated&quot;);
+<b class="nc"><i>297</i>&nbsp;        this.suppressWarningsType = this.enterClass(&quot;java.lang.SuppressWarnings&quot;);</b>
+<b class="nc"><i>298</i>&nbsp;        this.inheritedType = this.enterClass(&quot;java.lang.annotation.Inherited&quot;);</b>
+<i>299</i>&nbsp;        this.systemType = this.enterClass(&quot;java.lang.System&quot;);
+<i>300</i>&nbsp;        this.autoCloseableType = this.enterClass(&quot;java.lang.AutoCloseable&quot;);
+<i>301</i>&nbsp;        this.autoCloseableClose = new MethodSymbol(1L, this.names.close, new MethodType(List.nil(), this.voidType, List.of(this.exceptionType), this.methodClass), this.autoCloseableType.tsym);
+<i>302</i>&nbsp;        this.trustMeType = this.enterClass(&quot;java.lang.SafeVarargs&quot;);
+<i>303</i>&nbsp;        this.synthesizeEmptyInterfaceIfMissing(this.autoCloseableType);
+<b class="nc"><i>304</i>&nbsp;        this.synthesizeEmptyInterfaceIfMissing(this.cloneableType);</b>
+<b class="nc"><i>305</i>&nbsp;        this.synthesizeEmptyInterfaceIfMissing(this.serializableType);</b>
+<i>306</i>&nbsp;        this.synthesizeEmptyInterfaceIfMissing(this.polymorphicSignatureType);
+<i>307</i>&nbsp;        this.synthesizeBoxTypeIfMissing(this.doubleType);
+<i>308</i>&nbsp;        this.synthesizeBoxTypeIfMissing(this.floatType);
+<i>309</i>&nbsp;        this.synthesizeBoxTypeIfMissing(this.voidType);
+<i>310</i>&nbsp;        ClassType var4 = (ClassType)this.enterClass(&quot;sun.Proprietary+Annotation&quot;);
+<i>311</i>&nbsp;        this.proprietaryType = var4;
+<i>312</i>&nbsp;        ClassSymbol var5 = (ClassSymbol)var4.tsym;
+<i>313</i>&nbsp;        var5.completer = null;
+<i>314</i>&nbsp;        var5.flags_field = 1073750529L;
+<b class="nc"><i>315</i>&nbsp;        var5.erasure_field = var4;</b>
+<b class="nc"><i>316</i>&nbsp;        var5.members_field = new Scope(var5);</b>
+<i>317</i>&nbsp;        var4.typarams_field = List.nil();
+<b class="nc"><i>318</i>&nbsp;        var4.allparams_field = List.nil();</b>
+<b class="nc"><i>319</i>&nbsp;        var4.supertype_field = this.annotationType;</b>
+<i>320</i>&nbsp;        var4.interfaces_field = List.nil();
+<i>321</i>&nbsp;        ClassType var6 = (ClassType)this.arrayClass.type;
+<b class="nc"><i>322</i>&nbsp;        var6.supertype_field = this.objectType;</b>
+<i>323</i>&nbsp;        var6.interfaces_field = List.of(this.cloneableType, this.serializableType);
+<i>324</i>&nbsp;        this.arrayClass.members_field = new Scope(this.arrayClass);
+<b class="nc"><i>325</i>&nbsp;        this.lengthVar = new VarSymbol(17L, this.names.length, this.intType, this.arrayClass);</b>
+<b class="nc"><i>326</i>&nbsp;        this.arrayClass.members().enter(this.lengthVar);</b>
+<b class="nc"><i>327</i>&nbsp;        this.arrayCloneMethod = new MethodSymbol(1L, this.names.clone, new MethodType(List.nil(), this.objectType, List.nil(), this.methodClass), this.arrayClass);</b>
+<b class="nc"><i>328</i>&nbsp;        this.arrayClass.members().enter(this.arrayCloneMethod);</b>
+<i>329</i>&nbsp;        this.enterUnop(&quot;+&quot;, this.doubleType, this.doubleType, 0);
+<i>330</i>&nbsp;        this.enterUnop(&quot;+&quot;, this.floatType, this.floatType, 0);
+<b class="nc"><i>331</i>&nbsp;        this.enterUnop(&quot;+&quot;, this.longType, this.longType, 0);</b>
+<b class="nc"><i>332</i>&nbsp;        this.enterUnop(&quot;+&quot;, this.intType, this.intType, 0);</b>
+<i>333</i>&nbsp;        this.enterUnop(&quot;-&quot;, this.doubleType, this.doubleType, 119);
+<i>334</i>&nbsp;        this.enterUnop(&quot;-&quot;, this.floatType, this.floatType, 118);
+<b class="nc"><i>335</i>&nbsp;        this.enterUnop(&quot;-&quot;, this.longType, this.longType, 117);</b>
+<b class="nc"><i>336</i>&nbsp;        this.enterUnop(&quot;-&quot;, this.intType, this.intType, 116);</b>
+<b class="nc"><i>337</i>&nbsp;        this.enterUnop(&quot;~&quot;, this.longType, this.longType, 131);</b>
+<b class="nc"><i>338</i>&nbsp;        this.enterUnop(&quot;~&quot;, this.intType, this.intType, 130);</b>
+<b class="nc"><i>339</i>&nbsp;        this.enterUnop(&quot;++&quot;, this.doubleType, this.doubleType, 99);</b>
+<b class="nc"><i>340</i>&nbsp;        this.enterUnop(&quot;++&quot;, this.floatType, this.floatType, 98);</b>
+<b class="nc"><i>341</i>&nbsp;        this.enterUnop(&quot;++&quot;, this.longType, this.longType, 97);</b>
+<b class="nc"><i>342</i>&nbsp;        this.enterUnop(&quot;++&quot;, this.intType, this.intType, 96);</b>
+<b class="nc"><i>343</i>&nbsp;        this.enterUnop(&quot;++&quot;, this.charType, this.charType, 96);</b>
+<b class="nc"><i>344</i>&nbsp;        this.enterUnop(&quot;++&quot;, this.shortType, this.shortType, 96);</b>
+<b class="nc"><i>345</i>&nbsp;        this.enterUnop(&quot;++&quot;, this.byteType, this.byteType, 96);</b>
+<b class="nc"><i>346</i>&nbsp;        this.enterUnop(&quot;--&quot;, this.doubleType, this.doubleType, 103);</b>
+<i>347</i>&nbsp;        this.enterUnop(&quot;--&quot;, this.floatType, this.floatType, 102);
+<i>348</i>&nbsp;        this.enterUnop(&quot;--&quot;, this.longType, this.longType, 101);
+<b class="nc"><i>349</i>&nbsp;        this.enterUnop(&quot;--&quot;, this.intType, this.intType, 100);</b>
+<i>350</i>&nbsp;        this.enterUnop(&quot;--&quot;, this.charType, this.charType, 100);
+<i>351</i>&nbsp;        this.enterUnop(&quot;--&quot;, this.shortType, this.shortType, 100);
+<b class="nc"><i>352</i>&nbsp;        this.enterUnop(&quot;--&quot;, this.byteType, this.byteType, 100);</b>
+<i>353</i>&nbsp;        this.enterUnop(&quot;!&quot;, this.booleanType, this.booleanType, 257);
+<i>354</i>&nbsp;        this.nullcheck = this.enterUnop(&quot;&lt;*nullchk*&gt;&quot;, this.objectType, this.objectType, 276);
+<b class="nc"><i>355</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.objectType, this.stringType, 256);</b>
+<i>356</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.objectType, this.stringType, this.stringType, 256);
+<i>357</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.stringType, this.stringType, 256);
+<b class="nc"><i>358</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.intType, this.stringType, 256);</b>
+<b class="nc"><i>359</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.longType, this.stringType, 256);</b>
+<b class="nc"><i>360</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.floatType, this.stringType, 256);</b>
+<i>361</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.doubleType, this.stringType, 256);
+<i>362</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.booleanType, this.stringType, 256);
+<b class="nc"><i>363</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.stringType, this.botType, this.stringType, 256);</b>
+<b class="nc"><i>364</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.intType, this.stringType, this.stringType, 256);</b>
+<b class="nc"><i>365</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.longType, this.stringType, this.stringType, 256);</b>
+<b class="nc"><i>366</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.floatType, this.stringType, this.stringType, 256);</b>
+<b class="nc"><i>367</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.doubleType, this.stringType, this.stringType, 256);</b>
+<b class="nc"><i>368</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.booleanType, this.stringType, this.stringType, 256);</b>
+<b class="nc"><i>369</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.stringType, this.stringType, 256);</b>
+<b class="nc"><i>370</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.botType, this.botType, 277);</b>
+<b class="nc"><i>371</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.intType, this.botType, 277);</b>
+<i>372</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.longType, this.botType, 277);
+<b class="nc"><i>373</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.floatType, this.botType, 277);</b>
+<i>374</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.doubleType, this.botType, 277);
+<b class="nc"><i>375</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.booleanType, this.botType, 277);</b>
+<b class="nc"><i>376</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.botType, this.objectType, this.botType, 277);</b>
+<i>377</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.intType, this.botType, this.botType, 277);
+<i>378</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.longType, this.botType, this.botType, 277);
+<b class="nc"><i>379</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.floatType, this.botType, this.botType, 277);</b>
+<b class="nc"><i>380</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.doubleType, this.botType, this.botType, 277);</b>
+<b class="nc"><i>381</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.booleanType, this.botType, this.botType, 277);</b>
+<b class="nc"><i>382</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.objectType, this.botType, this.botType, 277);</b>
+<b class="nc"><i>383</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.doubleType, this.doubleType, this.doubleType, 99);</b>
+<b class="nc"><i>384</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.floatType, this.floatType, this.floatType, 98);</b>
+<b class="nc"><i>385</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.longType, this.longType, this.longType, 97);</b>
+<b class="nc"><i>386</i>&nbsp;        this.enterBinop(&quot;+&quot;, this.intType, this.intType, this.intType, 96);</b>
+<b class="nc"><i>387</i>&nbsp;        this.enterBinop(&quot;-&quot;, this.doubleType, this.doubleType, this.doubleType, 103);</b>
+<b class="nc"><i>388</i>&nbsp;        this.enterBinop(&quot;-&quot;, this.floatType, this.floatType, this.floatType, 102);</b>
+<b class="nc"><i>389</i>&nbsp;        this.enterBinop(&quot;-&quot;, this.longType, this.longType, this.longType, 101);</b>
+<b class="nc"><i>390</i>&nbsp;        this.enterBinop(&quot;-&quot;, this.intType, this.intType, this.intType, 100);</b>
+<b class="nc"><i>391</i>&nbsp;        this.enterBinop(&quot;*&quot;, this.doubleType, this.doubleType, this.doubleType, 107);</b>
+<b class="nc"><i>392</i>&nbsp;        this.enterBinop(&quot;*&quot;, this.floatType, this.floatType, this.floatType, 106);</b>
+<b class="nc"><i>393</i>&nbsp;        this.enterBinop(&quot;*&quot;, this.longType, this.longType, this.longType, 105);</b>
+<b class="nc"><i>394</i>&nbsp;        this.enterBinop(&quot;*&quot;, this.intType, this.intType, this.intType, 104);</b>
+<b class="nc"><i>395</i>&nbsp;        this.enterBinop(&quot;/&quot;, this.doubleType, this.doubleType, this.doubleType, 111);</b>
+<b class="nc"><i>396</i>&nbsp;        this.enterBinop(&quot;/&quot;, this.floatType, this.floatType, this.floatType, 110);</b>
+<b class="nc"><i>397</i>&nbsp;        this.enterBinop(&quot;/&quot;, this.longType, this.longType, this.longType, 109);</b>
+<b class="nc"><i>398</i>&nbsp;        this.enterBinop(&quot;/&quot;, this.intType, this.intType, this.intType, 108);</b>
+<b class="nc"><i>399</i>&nbsp;        this.enterBinop(&quot;%&quot;, this.doubleType, this.doubleType, this.doubleType, 115);</b>
+<i>400</i>&nbsp;        this.enterBinop(&quot;%&quot;, this.floatType, this.floatType, this.floatType, 114);
+<i>401</i>&nbsp;        this.enterBinop(&quot;%&quot;, this.longType, this.longType, this.longType, 113);
+<i>402</i>&nbsp;        this.enterBinop(&quot;%&quot;, this.intType, this.intType, this.intType, 112);
+<i>403</i>&nbsp;        this.enterBinop(&quot;&amp;&quot;, this.booleanType, this.booleanType, this.booleanType, 126);
+<i>404</i>&nbsp;        this.enterBinop(&quot;&amp;&quot;, this.longType, this.longType, this.longType, 127);
+<b class="nc"><i>405</i>&nbsp;        this.enterBinop(&quot;&amp;&quot;, this.intType, this.intType, this.intType, 126);</b>
+<b class="nc"><i>406</i>&nbsp;        this.enterBinop(&quot;|&quot;, this.booleanType, this.booleanType, this.booleanType, 128);</b>
+<b class="nc"><i>407</i>&nbsp;        this.enterBinop(&quot;|&quot;, this.longType, this.longType, this.longType, 129);</b>
+<b class="nc"><i>408</i>&nbsp;        this.enterBinop(&quot;|&quot;, this.intType, this.intType, this.intType, 128);</b>
+<b class="nc"><i>409</i>&nbsp;        this.enterBinop(&quot;^&quot;, this.booleanType, this.booleanType, this.booleanType, 130);</b>
+<i>410</i>&nbsp;        this.enterBinop(&quot;^&quot;, this.longType, this.longType, this.longType, 131);
+<i>411</i>&nbsp;        this.enterBinop(&quot;^&quot;, this.intType, this.intType, this.intType, 130);
+<b class="nc"><i>412</i>&nbsp;        this.enterBinop(&quot;&lt;&lt;&quot;, this.longType, this.longType, this.longType, 271);</b>
+<b class="nc"><i>413</i>&nbsp;        this.enterBinop(&quot;&lt;&lt;&quot;, this.intType, this.longType, this.intType, 270);</b>
+<b class="nc"><i>414</i>&nbsp;        this.enterBinop(&quot;&lt;&lt;&quot;, this.longType, this.intType, this.longType, 121);</b>
+<b class="nc"><i>415</i>&nbsp;        this.enterBinop(&quot;&lt;&lt;&quot;, this.intType, this.intType, this.intType, 120);</b>
+<b class="nc"><i>416</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&quot;, this.longType, this.longType, this.longType, 273);</b>
+<b class="nc"><i>417</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&quot;, this.intType, this.longType, this.intType, 272);</b>
+<b class="nc"><i>418</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&quot;, this.longType, this.intType, this.longType, 123);</b>
+<b class="nc"><i>419</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&quot;, this.intType, this.intType, this.intType, 122);</b>
+<i>420</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&gt;&quot;, this.longType, this.longType, this.longType, 275);
+<b class="nc"><i>421</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&gt;&quot;, this.intType, this.longType, this.intType, 274);</b>
+<b class="nc"><i>422</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&gt;&quot;, this.longType, this.intType, this.longType, 125);</b>
+<b class="nc"><i>423</i>&nbsp;        this.enterBinop(&quot;&gt;&gt;&gt;&quot;, this.intType, this.intType, this.intType, 124);</b>
+<b class="nc"><i>424</i>&nbsp;        this.enterBinop(&quot;&lt;&quot;, this.doubleType, this.doubleType, this.booleanType, 152, 155);</b>
+<i>425</i>&nbsp;        this.enterBinop(&quot;&lt;&quot;, this.floatType, this.floatType, this.booleanType, 150, 155);
+<i>426</i>&nbsp;        this.enterBinop(&quot;&lt;&quot;, this.longType, this.longType, this.booleanType, 148, 155);
+<i>427</i>&nbsp;        this.enterBinop(&quot;&lt;&quot;, this.intType, this.intType, this.booleanType, 161);
+<i>428</i>&nbsp;        this.enterBinop(&quot;&gt;&quot;, this.doubleType, this.doubleType, this.booleanType, 151, 157);
+<b class="nc"><i>429</i>&nbsp;        this.enterBinop(&quot;&gt;&quot;, this.floatType, this.floatType, this.booleanType, 149, 157);</b>
+<b class="nc"><i>430</i>&nbsp;        this.enterBinop(&quot;&gt;&quot;, this.longType, this.longType, this.booleanType, 148, 157);</b>
+<b class="nc"><i>431</i>&nbsp;        this.enterBinop(&quot;&gt;&quot;, this.intType, this.intType, this.booleanType, 163);</b>
+<b class="nc"><i>432</i>&nbsp;        this.enterBinop(&quot;&lt;=&quot;, this.doubleType, this.doubleType, this.booleanType, 152, 158);</b>
+<b class="nc"><i>433</i>&nbsp;        this.enterBinop(&quot;&lt;=&quot;, this.floatType, this.floatType, this.booleanType, 150, 158);</b>
+<b class="nc"><i>434</i>&nbsp;        this.enterBinop(&quot;&lt;=&quot;, this.longType, this.longType, this.booleanType, 148, 158);</b>
+<b class="nc"><i>435</i>&nbsp;        this.enterBinop(&quot;&lt;=&quot;, this.intType, this.intType, this.booleanType, 164);</b>
+<b class="nc"><i>436</i>&nbsp;        this.enterBinop(&quot;&gt;=&quot;, this.doubleType, this.doubleType, this.booleanType, 151, 156);</b>
+<b class="nc"><i>437</i>&nbsp;        this.enterBinop(&quot;&gt;=&quot;, this.floatType, this.floatType, this.booleanType, 149, 156);</b>
+<b class="nc"><i>438</i>&nbsp;        this.enterBinop(&quot;&gt;=&quot;, this.longType, this.longType, this.booleanType, 148, 156);</b>
+<b class="nc"><i>439</i>&nbsp;        this.enterBinop(&quot;&gt;=&quot;, this.intType, this.intType, this.booleanType, 162);</b>
+<i>440</i>&nbsp;        this.enterBinop(&quot;==&quot;, this.objectType, this.objectType, this.booleanType, 165);
+<i>441</i>&nbsp;        this.enterBinop(&quot;==&quot;, this.booleanType, this.booleanType, this.booleanType, 159);
+<i>442</i>&nbsp;        this.enterBinop(&quot;==&quot;, this.doubleType, this.doubleType, this.booleanType, 151, 153);
+<i>443</i>&nbsp;        this.enterBinop(&quot;==&quot;, this.floatType, this.floatType, this.booleanType, 149, 153);
+<b class="nc"><i>444</i>&nbsp;        this.enterBinop(&quot;==&quot;, this.longType, this.longType, this.booleanType, 148, 153);</b>
+<b class="nc"><i>445</i>&nbsp;        this.enterBinop(&quot;==&quot;, this.intType, this.intType, this.booleanType, 159);</b>
+<b class="nc"><i>446</i>&nbsp;        this.enterBinop(&quot;!=&quot;, this.objectType, this.objectType, this.booleanType, 166);</b>
+<b class="nc"><i>447</i>&nbsp;        this.enterBinop(&quot;!=&quot;, this.booleanType, this.booleanType, this.booleanType, 160);</b>
+<b class="nc"><i>448</i>&nbsp;        this.enterBinop(&quot;!=&quot;, this.doubleType, this.doubleType, this.booleanType, 151, 154);</b>
+<i>449</i>&nbsp;        this.enterBinop(&quot;!=&quot;, this.floatType, this.floatType, this.booleanType, 149, 154);
+<i>450</i>&nbsp;        this.enterBinop(&quot;!=&quot;, this.longType, this.longType, this.booleanType, 148, 154);
+<i>451</i>&nbsp;        this.enterBinop(&quot;!=&quot;, this.intType, this.intType, this.booleanType, 160);
+<i>452</i>&nbsp;        this.enterBinop(&quot;&amp;&amp;&quot;, this.booleanType, this.booleanType, this.booleanType, 258);
+<b class="nc"><i>453</i>&nbsp;        this.enterBinop(&quot;||&quot;, this.booleanType, this.booleanType, this.booleanType, 259);</b>
+<b class="nc"><i>454</i>&nbsp;    }</b>
+<i>455</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

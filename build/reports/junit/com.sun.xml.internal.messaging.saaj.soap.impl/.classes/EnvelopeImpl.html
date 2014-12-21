@@ -1,0 +1,330 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EnvelopeImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.messaging.saaj.soap.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EnvelopeImpl (com.sun.xml.internal.messaging.saaj.soap.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EnvelopeImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 109)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.messaging.saaj.soap.impl;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.messaging.saaj.SOAPExceptionImpl;
+<i>9</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.Envelope;
+<i>10</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.SOAPDocumentImpl;
+<i>11</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.impl.BodyImpl;
+<i>12</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.impl.ElementImpl;
+<i>13</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.impl.HeaderImpl;
+<i>14</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.name.NameImpl;
+<i>15</i>&nbsp;import com.sun.xml.internal.messaging.saaj.util.FastInfosetReflection;
+<i>16</i>&nbsp;import com.sun.xml.internal.messaging.saaj.util.transform.EfficientStreamingTransformer;
+<i>17</i>&nbsp;import java.io.IOException;
+<i>18</i>&nbsp;import java.io.OutputStream;
+<i>19</i>&nbsp;import java.io.OutputStreamWriter;
+<i>20</i>&nbsp;import java.util.Iterator;
+<i>21</i>&nbsp;import java.util.logging.Level;
+<i>22</i>&nbsp;import javax.xml.namespace.QName;
+<i>23</i>&nbsp;import javax.xml.soap.Name;
+<i>24</i>&nbsp;import javax.xml.soap.SOAPBody;
+<i>25</i>&nbsp;import javax.xml.soap.SOAPElement;
+<i>26</i>&nbsp;import javax.xml.soap.SOAPException;
+<i>27</i>&nbsp;import javax.xml.soap.SOAPHeader;
+<i>28</i>&nbsp;import javax.xml.transform.Source;
+<i>29</i>&nbsp;import javax.xml.transform.Transformer;
+<i>30</i>&nbsp;import javax.xml.transform.dom.DOMSource;
+<i>31</i>&nbsp;import javax.xml.transform.stream.StreamResult;
+<i>32</i>&nbsp;import org.w3c.dom.Node;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;public abstract class EnvelopeImpl extends ElementImpl implements Envelope {
+<i>35</i>&nbsp;    protected HeaderImpl header;
+<i>36</i>&nbsp;    protected BodyImpl body;
+<i>37</i>&nbsp;    String omitXmlDecl;
+<i>38</i>&nbsp;    String charset;
+<i>39</i>&nbsp;    String xmlDecl;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    protected EnvelopeImpl(SOAPDocumentImpl ownerDoc, Name name) {
+<i>42</i>&nbsp;        super(ownerDoc, name);
+<i>43</i>&nbsp;        this.omitXmlDecl = &quot;yes&quot;;
+<i>44</i>&nbsp;        this.charset = &quot;utf-8&quot;;
+<i>45</i>&nbsp;        this.xmlDecl = null;
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    protected EnvelopeImpl(SOAPDocumentImpl ownerDoc, QName name) {
+<i>49</i>&nbsp;        super(ownerDoc, name);
+<i>50</i>&nbsp;        this.omitXmlDecl = &quot;yes&quot;;
+<i>51</i>&nbsp;        this.charset = &quot;utf-8&quot;;
+<i>52</i>&nbsp;        this.xmlDecl = null;
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    protected EnvelopeImpl(SOAPDocumentImpl ownerDoc, NameImpl name, boolean createHeader, boolean createBody) throws SOAPException {
+<i>56</i>&nbsp;        this(ownerDoc, (Name)name);
+<i>57</i>&nbsp;        this.ensureNamespaceIsDeclared(this.getElementQName().getPrefix(), this.getElementQName().getNamespaceURI());
+<i>58</i>&nbsp;        if(createHeader) {
+<b class="nc"><i>59</i>&nbsp;            this.addHeader();</b>
+<b class="nc"><i>60</i>&nbsp;        }</b>
+<b class="nc"><i>61</i>&nbsp;</b>
+<i>62</i>&nbsp;        if(createBody) {
+<i>63</i>&nbsp;            this.addBody();
+<b class="nc"><i>64</i>&nbsp;        }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;    protected abstract NameImpl getHeaderName(String var1);</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    protected abstract NameImpl getBodyName(String var1);
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public SOAPHeader addHeader() throws SOAPException {
+<i>73</i>&nbsp;        return this.addHeader((String)null);
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public SOAPHeader addHeader(String prefix) throws SOAPException {
+<b class="nc"><i>77</i>&nbsp;        if(prefix == null || prefix.equals(&quot;&quot;)) {</b>
+<i>78</i>&nbsp;            prefix = this.getPrefix();
+<b class="nc"><i>79</i>&nbsp;        }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;        NameImpl headerName = this.getHeaderName(prefix);
+<i>82</i>&nbsp;        NameImpl bodyName = this.getBodyName(prefix);
+<b class="nc"><i>83</i>&nbsp;        HeaderImpl header = null;</b>
+<b class="nc"><i>84</i>&nbsp;        SOAPElement firstChild = null;</b>
+<i>85</i>&nbsp;        Iterator eachChild = this.getChildElementNodes();
+<b class="nc"><i>86</i>&nbsp;        if(eachChild.hasNext()) {</b>
+<b class="nc"><i>87</i>&nbsp;            firstChild = (SOAPElement)eachChild.next();</b>
+<i>88</i>&nbsp;            if(firstChild.getElementName().equals(headerName)) {
+<i>89</i>&nbsp;                log.severe(&quot;SAAJ0120.impl.header.already.exists&quot;);
+<i>90</i>&nbsp;                throw new SOAPExceptionImpl(&quot;Can\&#39;t add a header when one is already present.&quot;);
+<i>91</i>&nbsp;            }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;            if(!firstChild.getElementName().equals(bodyName)) {
+<b class="nc"><i>94</i>&nbsp;                log.severe(&quot;SAAJ0121.impl.invalid.first.child.of.envelope&quot;);</b>
+<i>95</i>&nbsp;                throw new SOAPExceptionImpl(&quot;First child of Envelope must be either a Header or Body&quot;);
+<i>96</i>&nbsp;            }
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;        header = (HeaderImpl)this.createElement(headerName);</b>
+<b class="nc"><i>100</i>&nbsp;        this.insertBefore(header, firstChild);</b>
+<i>101</i>&nbsp;        header.ensureNamespaceIsDeclared(headerName.getPrefix(), headerName.getURI());
+<i>102</i>&nbsp;        return header;
+<b class="nc"><i>103</i>&nbsp;    }</b>
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;    protected void lookForHeader() throws SOAPException {
+<b class="nc"><i>106</i>&nbsp;        NameImpl headerName = this.getHeaderName((String)null);</b>
+<b class="nc"><i>107</i>&nbsp;        HeaderImpl hdr = (HeaderImpl)this.findChild(headerName);</b>
+<i>108</i>&nbsp;        this.header = hdr;
+<b class="nc"><i>109</i>&nbsp;    }</b>
+<b class="nc"><i>110</i>&nbsp;</b>
+<b class="nc"><i>111</i>&nbsp;    public SOAPHeader getHeader() throws SOAPException {</b>
+<b class="nc"><i>112</i>&nbsp;        this.lookForHeader();</b>
+<b class="nc"><i>113</i>&nbsp;        return this.header;</b>
+<b class="nc"><i>114</i>&nbsp;    }</b>
+<b class="nc"><i>115</i>&nbsp;</b>
+<b class="nc"><i>116</i>&nbsp;    protected void lookForBody() throws SOAPException {</b>
+<b class="nc"><i>117</i>&nbsp;        NameImpl bodyName = this.getBodyName((String)null);</b>
+<i>118</i>&nbsp;        BodyImpl bodyChildElement = (BodyImpl)this.findChild(bodyName);
+<i>119</i>&nbsp;        this.body = bodyChildElement;
+<i>120</i>&nbsp;    }
+<b class="nc"><i>121</i>&nbsp;</b>
+<b class="nc"><i>122</i>&nbsp;    public SOAPBody addBody() throws SOAPException {</b>
+<b class="nc"><i>123</i>&nbsp;        return this.addBody((String)null);</b>
+<i>124</i>&nbsp;    }
+<b class="nc"><i>125</i>&nbsp;</b>
+<i>126</i>&nbsp;    public SOAPBody addBody(String prefix) throws SOAPException {
+<i>127</i>&nbsp;        this.lookForBody();
+<i>128</i>&nbsp;        if(prefix == null || prefix.equals(&quot;&quot;)) {
+<b class="nc"><i>129</i>&nbsp;            prefix = this.getPrefix();</b>
+<i>130</i>&nbsp;        }
+<b class="nc"><i>131</i>&nbsp;</b>
+<b class="nc"><i>132</i>&nbsp;        if(this.body == null) {</b>
+<i>133</i>&nbsp;            NameImpl bodyName = this.getBodyName(prefix);
+<i>134</i>&nbsp;            this.body = (BodyImpl)this.createElement(bodyName);
+<i>135</i>&nbsp;            this.insertBefore(this.body, (Node)null);
+<b class="nc"><i>136</i>&nbsp;            this.body.ensureNamespaceIsDeclared(bodyName.getPrefix(), bodyName.getURI());</b>
+<b class="nc"><i>137</i>&nbsp;            return this.body;</b>
+<i>138</i>&nbsp;        } else {
+<i>139</i>&nbsp;            log.severe(&quot;SAAJ0122.impl.body.already.exists&quot;);
+<i>140</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Can\&#39;t add a body when one is already present.&quot;);
+<b class="nc"><i>141</i>&nbsp;        }</b>
+<i>142</i>&nbsp;    }
+<b class="nc"><i>143</i>&nbsp;</b>
+<b class="nc"><i>144</i>&nbsp;    protected SOAPElement addElement(Name name) throws SOAPException {</b>
+<i>145</i>&nbsp;        return (SOAPElement)(this.getBodyName((String)null).equals(name)?this.addBody(name.getPrefix()):(this.getHeaderName((String)null).equals(name)?this.addHeader(name.getPrefix()):super.addElement(name)));
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;    protected SOAPElement addElement(QName name) throws SOAPException {</b>
+<i>149</i>&nbsp;        return (SOAPElement)(this.getBodyName((String)null).equals(NameImpl.convertToName(name))?this.addBody(name.getPrefix()):(this.getHeaderName((String)null).equals(NameImpl.convertToName(name))?this.addHeader(name.getPrefix()):super.addElement(name)));
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<b class="nc"><i>152</i>&nbsp;    public SOAPBody getBody() throws SOAPException {</b>
+<i>153</i>&nbsp;        this.lookForBody();
+<b class="nc"><i>154</i>&nbsp;        return this.body;</b>
+<b class="nc"><i>155</i>&nbsp;    }</b>
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    public Source getContent() {
+<b class="nc"><i>158</i>&nbsp;        return new DOMSource(this.getOwnerDocument());</b>
+<b class="nc"><i>159</i>&nbsp;    }</b>
+<b class="nc"><i>160</i>&nbsp;</b>
+<b class="nc"><i>161</i>&nbsp;    public Name createName(String localName, String prefix, String uri) throws SOAPException {</b>
+<b class="nc"><i>162</i>&nbsp;        if(&quot;xmlns&quot;.equals(prefix)) {</b>
+<b class="nc"><i>163</i>&nbsp;            log.severe(&quot;SAAJ0123.impl.no.reserved.xmlns&quot;);</b>
+<b class="nc"><i>164</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Cannot declare reserved xmlns prefix&quot;);</b>
+<b class="nc"><i>165</i>&nbsp;        } else if(prefix == null &amp;&amp; &quot;xmlns&quot;.equals(localName)) {</b>
+<i>166</i>&nbsp;            log.severe(&quot;SAAJ0124.impl.qualified.name.cannot.be.xmlns&quot;);
+<i>167</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Qualified name cannot be xmlns&quot;);
+<b class="nc"><i>168</i>&nbsp;        } else {</b>
+<i>169</i>&nbsp;            return NameImpl.create(localName, prefix, uri);
+<i>170</i>&nbsp;        }
+<i>171</i>&nbsp;    }
+<b class="nc"><i>172</i>&nbsp;</b>
+<b class="nc"><i>173</i>&nbsp;    public Name createName(String localName, String prefix) throws SOAPException {</b>
+<i>174</i>&nbsp;        String namespace = this.getNamespaceURI(prefix);
+<b class="nc"><i>175</i>&nbsp;        if(namespace == null) {</b>
+<b class="nc"><i>176</i>&nbsp;            log.log(Level.SEVERE, &quot;SAAJ0126.impl.cannot.locate.ns&quot;, new String[]{prefix});</b>
+<i>177</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Unable to locate namespace for prefix &quot; + prefix);
+<i>178</i>&nbsp;        } else {
+<b class="nc"><i>179</i>&nbsp;            return NameImpl.create(localName, prefix, namespace);</b>
+<i>180</i>&nbsp;        }
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<b class="nc"><i>183</i>&nbsp;    public Name createName(String localName) throws SOAPException {</b>
+<b class="nc"><i>184</i>&nbsp;        return NameImpl.createFromUnqualifiedName(localName);</b>
+<i>185</i>&nbsp;    }
+<b class="nc"><i>186</i>&nbsp;</b>
+<b class="nc"><i>187</i>&nbsp;    public void setOmitXmlDecl(String value) {</b>
+<i>188</i>&nbsp;        this.omitXmlDecl = value;
+<i>189</i>&nbsp;    }
+<b class="nc"><i>190</i>&nbsp;</b>
+<i>191</i>&nbsp;    public void setXmlDecl(String value) {
+<i>192</i>&nbsp;        this.xmlDecl = value;
+<i>193</i>&nbsp;    }
+<b class="nc"><i>194</i>&nbsp;</b>
+<b class="nc"><i>195</i>&nbsp;    private String getOmitXmlDecl() {</b>
+<i>196</i>&nbsp;        return this.omitXmlDecl;
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;    public void setCharsetEncoding(String value) {</b>
+<i>200</i>&nbsp;        this.charset = value;
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    public void output(OutputStream out) throws IOException {
+<i>204</i>&nbsp;        try {
+<i>205</i>&nbsp;            Transformer ex = EfficientStreamingTransformer.newTransformer();
+<i>206</i>&nbsp;            ex.setOutputProperty(&quot;omit-xml-declaration&quot;, &quot;yes&quot;);
+<i>207</i>&nbsp;            ex.setOutputProperty(&quot;encoding&quot;, this.charset);
+<i>208</i>&nbsp;            if(this.omitXmlDecl.equals(&quot;no&quot;) &amp;&amp; this.xmlDecl == null) {
+<b class="nc"><i>209</i>&nbsp;                this.xmlDecl = &quot;&lt;?xml version=\&quot;&quot; + this.getOwnerDocument().getXmlVersion() + &quot;\&quot; encoding=\&quot;&quot; + this.charset + &quot;\&quot; ?&gt;&quot;;</b>
+<b class="nc"><i>210</i>&nbsp;            }</b>
+<b class="nc"><i>211</i>&nbsp;</b>
+<i>212</i>&nbsp;            StreamResult result = new StreamResult(out);
+<i>213</i>&nbsp;            if(this.xmlDecl != null) {
+<b class="nc"><i>214</i>&nbsp;                OutputStreamWriter writer = new OutputStreamWriter(out, this.charset);</b>
+<b class="nc"><i>215</i>&nbsp;                writer.write(this.xmlDecl);</b>
+<b class="nc"><i>216</i>&nbsp;                writer.flush();</b>
+<i>217</i>&nbsp;                result = new StreamResult(writer);
+<i>218</i>&nbsp;            }
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;            log.log(Level.FINE, &quot;SAAJ0190.impl.set.xml.declaration&quot;, new String[]{this.omitXmlDecl});
+<i>221</i>&nbsp;            log.log(Level.FINE, &quot;SAAJ0191.impl.set.encoding&quot;, new String[]{this.charset});
+<i>222</i>&nbsp;            ex.transform(this.getContent(), result);
+<i>223</i>&nbsp;        } catch (Exception var5) {
+<b class="nc"><i>224</i>&nbsp;            throw new IOException(var5.getMessage());</b>
+<b class="nc"><i>225</i>&nbsp;        }</b>
+<b class="nc"><i>226</i>&nbsp;    }</b>
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    public void output(OutputStream out, boolean isFastInfoset) throws IOException {
+<i>229</i>&nbsp;        if(!isFastInfoset) {
+<b class="nc"><i>230</i>&nbsp;            this.output(out);</b>
+<i>231</i>&nbsp;        } else {
+<i>232</i>&nbsp;            try {
+<b class="nc"><i>233</i>&nbsp;                Source ex = this.getContent();</b>
+<i>234</i>&nbsp;                Transformer transformer = EfficientStreamingTransformer.newTransformer();
+<i>235</i>&nbsp;                transformer.transform(this.getContent(), FastInfosetReflection.FastInfosetResult_new(out));
+<i>236</i>&nbsp;            } catch (Exception var5) {
+<b class="nc"><i>237</i>&nbsp;                throw new IOException(var5.getMessage());</b>
+<i>238</i>&nbsp;            }
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<b class="nc"><i>241</i>&nbsp;    }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    public SOAPElement setElementQName(QName newName) throws SOAPException {
+<i>244</i>&nbsp;        log.log(Level.SEVERE, &quot;SAAJ0146.impl.invalid.name.change.requested&quot;, new Object[]{this.elementQName.getLocalPart(), newName.getLocalPart()});
+<b class="nc"><i>245</i>&nbsp;        throw new SOAPException(&quot;Cannot change name for &quot; + this.elementQName.getLocalPart() + &quot; to &quot; + newName.getLocalPart());</b>
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

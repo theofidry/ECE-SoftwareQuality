@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RegistryContextFactory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jndi.rmi.registry</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RegistryContextFactory (com.sun.jndi.rmi.registry)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RegistryContextFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jndi.rmi.registry;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jndi.rmi.registry.RegistryContext;
+<i>9</i>&nbsp;import com.sun.jndi.url.rmi.rmiURLContextFactory;
+<i>10</i>&nbsp;import java.util.Enumeration;
+<i>11</i>&nbsp;import java.util.Hashtable;
+<i>12</i>&nbsp;import javax.naming.ConfigurationException;
+<i>13</i>&nbsp;import javax.naming.Context;
+<i>14</i>&nbsp;import javax.naming.Name;
+<i>15</i>&nbsp;import javax.naming.NamingException;
+<i>16</i>&nbsp;import javax.naming.NotContextException;
+<i>17</i>&nbsp;import javax.naming.RefAddr;
+<i>18</i>&nbsp;import javax.naming.Reference;
+<i>19</i>&nbsp;import javax.naming.StringRefAddr;
+<i>20</i>&nbsp;import javax.naming.spi.InitialContextFactory;
+<i>21</i>&nbsp;import javax.naming.spi.ObjectFactory;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public class RegistryContextFactory implements ObjectFactory, InitialContextFactory {
+<i>24</i>&nbsp;    public static final String ADDRESS_TYPE = &quot;URL&quot;;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public RegistryContextFactory() {
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public Context getInitialContext(Hashtable&lt;?, ?&gt; var1) throws NamingException {
+<i>30</i>&nbsp;        if(var1 != null) {
+<i>31</i>&nbsp;            var1 = (Hashtable)var1.clone();
+<i>32</i>&nbsp;        }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;        return URLToContext(getInitCtxURL(var1), var1);
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public Object getObjectInstance(Object var1, Name var2, Context var3, Hashtable&lt;?, ?&gt; var4) throws NamingException {
+<i>38</i>&nbsp;        if(!isRegistryRef(var1)) {
+<b class="nc"><i>39</i>&nbsp;            return null;</b>
+<i>40</i>&nbsp;        } else {
+<i>41</i>&nbsp;            Object var5 = URLsToObject(getURLs((Reference)var1), var4);
+<i>42</i>&nbsp;            if(var5 instanceof RegistryContext) {
+<i>43</i>&nbsp;                RegistryContext var6 = (RegistryContext)var5;
+<i>44</i>&nbsp;                var6.reference = (Reference)var1;
+<i>45</i>&nbsp;            }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;            return var5;
+<i>48</i>&nbsp;        }
+<b class="nc"><i>49</i>&nbsp;    }</b>
+<b class="nc"><i>50</i>&nbsp;</b>
+<i>51</i>&nbsp;    private static Context URLToContext(String var0, Hashtable var1) throws NamingException {
+<b class="nc"><i>52</i>&nbsp;        rmiURLContextFactory var2 = new rmiURLContextFactory();</b>
+<i>53</i>&nbsp;        Object var3 = var2.getObjectInstance(var0, (Name)null, (Context)null, var1);
+<i>54</i>&nbsp;        if(var3 instanceof Context) {
+<i>55</i>&nbsp;            return (Context)var3;
+<i>56</i>&nbsp;        } else {
+<i>57</i>&nbsp;            throw new NotContextException(var0);
+<i>58</i>&nbsp;        }
+<b class="nc"><i>59</i>&nbsp;    }</b>
+<b class="nc"><i>60</i>&nbsp;</b>
+<i>61</i>&nbsp;    private static Object URLsToObject(String[] var0, Hashtable var1) throws NamingException {
+<i>62</i>&nbsp;        rmiURLContextFactory var2 = new rmiURLContextFactory();
+<i>63</i>&nbsp;        return var2.getObjectInstance(var0, (Name)null, (Context)null, var1);
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private static String getInitCtxURL(Hashtable var0) {
+<i>67</i>&nbsp;        String var2 = null;
+<i>68</i>&nbsp;        if(var0 != null) {
+<i>69</i>&nbsp;            var2 = (String)var0.get(&quot;java.naming.provider.url&quot;);
+<i>70</i>&nbsp;        }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;        return var2 != null?var2:&quot;rmi:&quot;;
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<b class="nc"><i>75</i>&nbsp;    private static boolean isRegistryRef(Object var0) {</b>
+<b class="nc"><i>76</i>&nbsp;        if(!(var0 instanceof Reference)) {</b>
+<i>77</i>&nbsp;            return false;
+<b class="nc"><i>78</i>&nbsp;        } else {</b>
+<i>79</i>&nbsp;            String var1 = RegistryContextFactory.class.getName();
+<i>80</i>&nbsp;            Reference var2 = (Reference)var0;
+<i>81</i>&nbsp;            return var1.equals(var2.getFactoryClassName());
+<i>82</i>&nbsp;        }
+<i>83</i>&nbsp;    }
+<b class="nc"><i>84</i>&nbsp;</b>
+<b class="nc"><i>85</i>&nbsp;    private static String[] getURLs(Reference var0) throws NamingException {</b>
+<i>86</i>&nbsp;        int var1 = 0;
+<b class="nc"><i>87</i>&nbsp;        String[] var2 = new String[var0.size()];</b>
+<b class="nc"><i>88</i>&nbsp;        Enumeration var3 = var0.getAll();</b>
+<i>89</i>&nbsp;
+<b class="nc"><i>90</i>&nbsp;        while(var3.hasMoreElements()) {</b>
+<i>91</i>&nbsp;            RefAddr var4 = (RefAddr)var3.nextElement();
+<i>92</i>&nbsp;            if(var4 instanceof StringRefAddr &amp;&amp; var4.getType().equals(&quot;URL&quot;)) {
+<i>93</i>&nbsp;                var2[var1++] = (String)var4.getContent();
+<i>94</i>&nbsp;            }
+<i>95</i>&nbsp;        }
+<i>96</i>&nbsp;
+<b class="nc"><i>97</i>&nbsp;        if(var1 == 0) {</b>
+<b class="nc"><i>98</i>&nbsp;            throw new ConfigurationException(&quot;Reference contains no valid addresses&quot;);</b>
+<i>99</i>&nbsp;        } else if(var1 == var0.size()) {
+<i>100</i>&nbsp;            return var2;
+<i>101</i>&nbsp;        } else {
+<i>102</i>&nbsp;            String[] var5 = new String[var1];
+<i>103</i>&nbsp;            System.arraycopy(var2, 0, var5, 0, var1);
+<i>104</i>&nbsp;            return var5;
+<i>105</i>&nbsp;        }
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

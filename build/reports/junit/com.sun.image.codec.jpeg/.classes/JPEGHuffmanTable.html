@@ -1,0 +1,189 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JPEGHuffmanTable</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.image.codec.jpeg</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JPEGHuffmanTable (com.sun.image.codec.jpeg)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JPEGHuffmanTable</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 59)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.image.codec.jpeg;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;public class JPEGHuffmanTable {
+<i>9</i>&nbsp;    private static final int HUFF_MAX_LEN = 17;
+<i>10</i>&nbsp;    private static final int HUFF_MAX_SYM = 256;
+<i>11</i>&nbsp;    private short[] lengths;
+<i>12</i>&nbsp;    private short[] symbols;
+<i>13</i>&nbsp;    public static final JPEGHuffmanTable StdDCLuminance = new JPEGHuffmanTable();
+<i>14</i>&nbsp;    public static final JPEGHuffmanTable StdDCChrominance;
+<i>15</i>&nbsp;    public static final JPEGHuffmanTable StdACLuminance;
+<i>16</i>&nbsp;    public static final JPEGHuffmanTable StdACChrominance;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    private JPEGHuffmanTable() {
+<i>19</i>&nbsp;        this.lengths = null;
+<i>20</i>&nbsp;        this.symbols = null;
+<i>21</i>&nbsp;    }
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public JPEGHuffmanTable(short[] var1, short[] var2) {
+<i>24</i>&nbsp;        if(var1.length &gt; 17) {
+<i>25</i>&nbsp;            throw new IllegalArgumentException(&quot;lengths array is too long&quot;);
+<i>26</i>&nbsp;        } else {
+<i>27</i>&nbsp;            int var3;
+<i>28</i>&nbsp;            for(var3 = 1; var3 &lt; var1.length; ++var3) {
+<i>29</i>&nbsp;                if(var1[var3] &lt; 0) {
+<i>30</i>&nbsp;                    throw new IllegalArgumentException(&quot;Values in lengths array must be non-negative.&quot;);
+<i>31</i>&nbsp;                }
+<i>32</i>&nbsp;            }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;            if(var2.length &gt; 256) {
+<i>35</i>&nbsp;                throw new IllegalArgumentException(&quot;symbols array is too long&quot;);
+<i>36</i>&nbsp;            } else {
+<i>37</i>&nbsp;                for(var3 = 0; var3 &lt; var2.length; ++var3) {
+<i>38</i>&nbsp;                    if(var2[var3] &lt; 0) {
+<i>39</i>&nbsp;                        throw new IllegalArgumentException(&quot;Values in symbols array must be non-negative.&quot;);
+<i>40</i>&nbsp;                    }
+<i>41</i>&nbsp;                }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;                this.lengths = new short[var1.length];
+<i>44</i>&nbsp;                this.symbols = new short[var2.length];
+<i>45</i>&nbsp;                System.arraycopy(var1, 0, this.lengths, 0, var1.length);
+<i>46</i>&nbsp;                System.arraycopy(var2, 0, this.symbols, 0, var2.length);
+<i>47</i>&nbsp;                this.checkTable();
+<i>48</i>&nbsp;            }
+<b class="nc"><i>49</i>&nbsp;        }</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    private void checkTable() {
+<b class="nc"><i>53</i>&nbsp;        int var1 = 2;</b>
+<i>54</i>&nbsp;        int var2 = 0;
+<b class="nc"><i>55</i>&nbsp;</b>
+<i>56</i>&nbsp;        for(int var3 = 1; var3 &lt; this.lengths.length; ++var3) {
+<i>57</i>&nbsp;            var2 += this.lengths[var3];
+<b class="nc"><i>58</i>&nbsp;            var1 -= this.lengths[var3];</b>
+<b class="nc"><i>59</i>&nbsp;            var1 *= 2;</b>
+<b class="nc"><i>60</i>&nbsp;        }</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;        if(var1 &lt; 0) {
+<i>63</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid Huffman Table provided, lengths are incorrect.&quot;);
+<i>64</i>&nbsp;        } else if(var2 &gt; this.symbols.length) {
+<b class="nc"><i>65</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid Huffman Table provided, not enough symbols.&quot;);</b>
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;    }
+<b class="nc"><i>68</i>&nbsp;</b>
+<i>69</i>&nbsp;    public short[] getLengths() {
+<b class="nc"><i>70</i>&nbsp;        short[] var1 = new short[this.lengths.length];</b>
+<i>71</i>&nbsp;        System.arraycopy(this.lengths, 0, var1, 0, this.lengths.length);
+<i>72</i>&nbsp;        return var1;
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<b class="nc"><i>75</i>&nbsp;    public short[] getSymbols() {</b>
+<i>76</i>&nbsp;        short[] var1 = new short[this.symbols.length];
+<i>77</i>&nbsp;        System.arraycopy(this.symbols, 0, var1, 0, this.symbols.length);
+<i>78</i>&nbsp;        return var1;
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    static {
+<b class="nc"><i>82</i>&nbsp;        short[] var0 = new short[]{(short)0, (short)0, (short)1, (short)5, (short)1, (short)1, (short)1, (short)1, (short)1, (short)1, (short)0, (short)0, (short)0, (short)0, (short)0, (short)0, (short)0};</b>
+<i>83</i>&nbsp;        short[] var1 = new short[]{(short)0, (short)1, (short)2, (short)3, (short)4, (short)5, (short)6, (short)7, (short)8, (short)9, (short)10, (short)11};
+<b class="nc"><i>84</i>&nbsp;        StdDCLuminance.lengths = var0;</b>
+<i>85</i>&nbsp;        StdDCLuminance.symbols = var1;
+<i>86</i>&nbsp;        StdDCLuminance.checkTable();
+<i>87</i>&nbsp;        StdDCChrominance = new JPEGHuffmanTable();
+<i>88</i>&nbsp;        var0 = new short[]{(short)0, (short)0, (short)3, (short)1, (short)1, (short)1, (short)1, (short)1, (short)1, (short)1, (short)1, (short)1, (short)0, (short)0, (short)0, (short)0, (short)0};
+<i>89</i>&nbsp;        var1 = new short[]{(short)0, (short)1, (short)2, (short)3, (short)4, (short)5, (short)6, (short)7, (short)8, (short)9, (short)10, (short)11};
+<i>90</i>&nbsp;        StdDCChrominance.lengths = var0;
+<i>91</i>&nbsp;        StdDCChrominance.symbols = var1;
+<i>92</i>&nbsp;        StdDCChrominance.checkTable();
+<i>93</i>&nbsp;        StdACLuminance = new JPEGHuffmanTable();
+<i>94</i>&nbsp;        var0 = new short[]{(short)0, (short)0, (short)2, (short)1, (short)3, (short)3, (short)2, (short)4, (short)3, (short)5, (short)5, (short)4, (short)4, (short)0, (short)0, (short)1, (short)125};
+<i>95</i>&nbsp;        var1 = new short[]{(short)1, (short)2, (short)3, (short)0, (short)4, (short)17, (short)5, (short)18, (short)33, (short)49, (short)65, (short)6, (short)19, (short)81, (short)97, (short)7, (short)34, (short)113, (short)20, (short)50, (short)129, (short)145, (short)161, (short)8, (short)35, (short)66, (short)177, (short)193, (short)21, (short)82, (short)209, (short)240, (short)36, (short)51, (short)98, (short)114, (short)130, (short)9, (short)10, (short)22, (short)23, (short)24, (short)25, (short)26, (short)37, (short)38, (short)39, (short)40, (short)41, (short)42, (short)52, (short)53, (short)54, (short)55, (short)56, (short)57, (short)58, (short)67, (short)68, (short)69, (short)70, (short)71, (short)72, (short)73, (short)74, (short)83, (short)84, (short)85, (short)86, (short)87, (short)88, (short)89, (short)90, (short)99, (short)100, (short)101, (short)102, (short)103, (short)104, (short)105, (short)106, (short)115, (short)116, (short)117, (short)118, (short)119, (short)120, (short)121, (short)122, (short)131, (short)132, (short)133, (short)134, (short)135, (short)136, (short)137, (short)138, (short)146, (short)147, (short)148, (short)149, (short)150, (short)151, (short)152, (short)153, (short)154, (short)162, (short)163, (short)164, (short)165, (short)166, (short)167, (short)168, (short)169, (short)170, (short)178, (short)179, (short)180, (short)181, (short)182, (short)183, (short)184, (short)185, (short)186, (short)194, (short)195, (short)196, (short)197, (short)198, (short)199, (short)200, (short)201, (short)202, (short)210, (short)211, (short)212, (short)213, (short)214, (short)215, (short)216, (short)217, (short)218, (short)225, (short)226, (short)227, (short)228, (short)229, (short)230, (short)231, (short)232, (short)233, (short)234, (short)241, (short)242, (short)243, (short)244, (short)245, (short)246, (short)247, (short)248, (short)249, (short)250};
+<i>96</i>&nbsp;        StdACLuminance.lengths = var0;
+<i>97</i>&nbsp;        StdACLuminance.symbols = var1;
+<i>98</i>&nbsp;        StdACLuminance.checkTable();
+<i>99</i>&nbsp;        StdACChrominance = new JPEGHuffmanTable();
+<i>100</i>&nbsp;        var0 = new short[]{(short)0, (short)0, (short)2, (short)1, (short)2, (short)4, (short)4, (short)3, (short)4, (short)7, (short)5, (short)4, (short)4, (short)0, (short)1, (short)2, (short)119};
+<i>101</i>&nbsp;        var1 = new short[]{(short)0, (short)1, (short)2, (short)3, (short)17, (short)4, (short)5, (short)33, (short)49, (short)6, (short)18, (short)65, (short)81, (short)7, (short)97, (short)113, (short)19, (short)34, (short)50, (short)129, (short)8, (short)20, (short)66, (short)145, (short)161, (short)177, (short)193, (short)9, (short)35, (short)51, (short)82, (short)240, (short)21, (short)98, (short)114, (short)209, (short)10, (short)22, (short)36, (short)52, (short)225, (short)37, (short)241, (short)23, (short)24, (short)25, (short)26, (short)38, (short)39, (short)40, (short)41, (short)42, (short)53, (short)54, (short)55, (short)56, (short)57, (short)58, (short)67, (short)68, (short)69, (short)70, (short)71, (short)72, (short)73, (short)74, (short)83, (short)84, (short)85, (short)86, (short)87, (short)88, (short)89, (short)90, (short)99, (short)100, (short)101, (short)102, (short)103, (short)104, (short)105, (short)106, (short)115, (short)116, (short)117, (short)118, (short)119, (short)120, (short)121, (short)122, (short)130, (short)131, (short)132, (short)133, (short)134, (short)135, (short)136, (short)137, (short)138, (short)146, (short)147, (short)148, (short)149, (short)150, (short)151, (short)152, (short)153, (short)154, (short)162, (short)163, (short)164, (short)165, (short)166, (short)167, (short)168, (short)169, (short)170, (short)178, (short)179, (short)180, (short)181, (short)182, (short)183, (short)184, (short)185, (short)186, (short)194, (short)195, (short)196, (short)197, (short)198, (short)199, (short)200, (short)201, (short)202, (short)210, (short)211, (short)212, (short)213, (short)214, (short)215, (short)216, (short)217, (short)218, (short)226, (short)227, (short)228, (short)229, (short)230, (short)231, (short)232, (short)233, (short)234, (short)242, (short)243, (short)244, (short)245, (short)246, (short)247, (short)248, (short)249, (short)250};
+<i>102</i>&nbsp;        StdACChrominance.lengths = var0;
+<i>103</i>&nbsp;        StdACChrominance.symbols = var1;
+<i>104</i>&nbsp;        StdACChrominance.checkTable();
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

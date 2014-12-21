@@ -1,0 +1,869 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HierMemDirCtx</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jndi.toolkit.dir</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HierMemDirCtx (com.sun.jndi.toolkit.dir)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HierMemDirCtx</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 83)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 243)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HierMemDirCtx$FlatBindings</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">HierMemDirCtx$FlatNames</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">HierMemDirCtx$HierContextEnumerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 95)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 281)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jndi.toolkit.dir;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jndi.toolkit.dir.ContainmentFilter;
+<i>9</i>&nbsp;import com.sun.jndi.toolkit.dir.ContextEnumerator;
+<i>10</i>&nbsp;import com.sun.jndi.toolkit.dir.HierarchicalName;
+<i>11</i>&nbsp;import com.sun.jndi.toolkit.dir.HierarchicalNameParser;
+<i>12</i>&nbsp;import com.sun.jndi.toolkit.dir.LazySearchEnumerationImpl;
+<i>13</i>&nbsp;import com.sun.jndi.toolkit.dir.SearchFilter;
+<i>14</i>&nbsp;import java.util.Enumeration;
+<i>15</i>&nbsp;import java.util.Hashtable;
+<i>16</i>&nbsp;import java.util.NoSuchElementException;
+<i>17</i>&nbsp;import javax.naming.Binding;
+<i>18</i>&nbsp;import javax.naming.CompositeName;
+<i>19</i>&nbsp;import javax.naming.Context;
+<i>20</i>&nbsp;import javax.naming.InvalidNameException;
+<i>21</i>&nbsp;import javax.naming.Name;
+<i>22</i>&nbsp;import javax.naming.NameAlreadyBoundException;
+<i>23</i>&nbsp;import javax.naming.NameClassPair;
+<i>24</i>&nbsp;import javax.naming.NameNotFoundException;
+<b class="nc"><i>25</i>&nbsp;import javax.naming.NameParser;</b>
+<i>26</i>&nbsp;import javax.naming.NamingEnumeration;
+<i>27</i>&nbsp;import javax.naming.NamingException;
+<i>28</i>&nbsp;import javax.naming.OperationNotSupportedException;
+<i>29</i>&nbsp;import javax.naming.directory.Attribute;
+<b class="nc"><i>30</i>&nbsp;import javax.naming.directory.AttributeModificationException;</b>
+<b class="nc"><i>31</i>&nbsp;import javax.naming.directory.Attributes;</b>
+<b class="nc"><i>32</i>&nbsp;import javax.naming.directory.BasicAttributes;</b>
+<i>33</i>&nbsp;import javax.naming.directory.DirContext;
+<i>34</i>&nbsp;import javax.naming.directory.ModificationItem;
+<i>35</i>&nbsp;import javax.naming.directory.SchemaViolationException;
+<i>36</i>&nbsp;import javax.naming.directory.SearchControls;
+<b class="nc"><i>37</i>&nbsp;import javax.naming.spi.DirectoryManager;</b>
+<b class="nc"><i>38</i>&nbsp;import javax.naming.spi.DirStateFactory.Result;</b>
+<b class="nc"><i>39</i>&nbsp;</b>
+<i>40</i>&nbsp;public class HierMemDirCtx implements DirContext {
+<i>41</i>&nbsp;    private static final boolean debug = false;
+<i>42</i>&nbsp;    private static final NameParser defaultParser = new HierarchicalNameParser();
+<b class="nc"><i>43</i>&nbsp;    protected Hashtable myEnv;</b>
+<i>44</i>&nbsp;    protected Hashtable bindings;
+<i>45</i>&nbsp;    protected Attributes attrs;
+<i>46</i>&nbsp;    protected boolean ignoreCase;
+<i>47</i>&nbsp;    protected NamingException readOnlyEx;
+<b class="nc"><i>48</i>&nbsp;    protected NameParser myParser;</b>
+<i>49</i>&nbsp;    private boolean alwaysUseFactory;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public void close() throws NamingException {
+<b class="nc"><i>52</i>&nbsp;        this.myEnv = null;</b>
+<i>53</i>&nbsp;        this.bindings = null;
+<i>54</i>&nbsp;        this.attrs = null;
+<i>55</i>&nbsp;    }
+<b class="nc"><i>56</i>&nbsp;</b>
+<i>57</i>&nbsp;    public String getNameInNamespace() throws NamingException {
+<i>58</i>&nbsp;        throw new OperationNotSupportedException(&quot;Cannot determine full name&quot;);
+<i>59</i>&nbsp;    }
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;    public HierMemDirCtx() {</b>
+<b class="nc"><i>62</i>&nbsp;        this((Hashtable)null, false, false);</b>
+<b class="nc"><i>63</i>&nbsp;    }</b>
+<b class="nc"><i>64</i>&nbsp;</b>
+<i>65</i>&nbsp;    public HierMemDirCtx(boolean var1) {
+<i>66</i>&nbsp;        this((Hashtable)null, var1, false);
+<i>67</i>&nbsp;    }
+<b class="nc"><i>68</i>&nbsp;</b>
+<b class="nc"><i>69</i>&nbsp;    public HierMemDirCtx(Hashtable var1, boolean var2) {</b>
+<i>70</i>&nbsp;        this(var1, var2, false);
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<b class="nc"><i>73</i>&nbsp;    protected HierMemDirCtx(Hashtable var1, boolean var2, boolean var3) {</b>
+<i>74</i>&nbsp;        this.ignoreCase = false;
+<i>75</i>&nbsp;        this.readOnlyEx = null;
+<i>76</i>&nbsp;        this.myParser = defaultParser;
+<b class="nc"><i>77</i>&nbsp;        this.myEnv = var1;</b>
+<i>78</i>&nbsp;        this.ignoreCase = var2;
+<i>79</i>&nbsp;        this.init();
+<i>80</i>&nbsp;        this.alwaysUseFactory = var3;
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;    private void init() {</b>
+<b class="nc"><i>84</i>&nbsp;        this.attrs = new BasicAttributes(this.ignoreCase);</b>
+<i>85</i>&nbsp;        this.bindings = new Hashtable(11, 0.75F);
+<b class="nc"><i>86</i>&nbsp;    }</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public Object lookup(String var1) throws NamingException {
+<b class="nc"><i>89</i>&nbsp;        return this.lookup((Name)this.myParser.parse(var1));</b>
+<b class="nc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public Object lookup(Name var1) throws NamingException {
+<i>93</i>&nbsp;        return this.doLookup(var1, this.alwaysUseFactory);
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<b class="nc"><i>95</i>&nbsp;</b>
+<i>96</i>&nbsp;    public Object doLookup(Name var1, boolean var2) throws NamingException {
+<i>97</i>&nbsp;        Object var3 = null;
+<i>98</i>&nbsp;        var1 = this.canonizeName(var1);
+<b class="nc"><i>99</i>&nbsp;        switch(var1.size()) {</b>
+<b class="nc"><i>100</i>&nbsp;        case 0:</b>
+<b class="nc"><i>101</i>&nbsp;            var3 = this;</b>
+<i>102</i>&nbsp;            break;
+<b class="nc"><i>103</i>&nbsp;        case 1:</b>
+<i>104</i>&nbsp;            var3 = this.bindings.get(var1);
+<i>105</i>&nbsp;            break;
+<i>106</i>&nbsp;        default:
+<i>107</i>&nbsp;            HierMemDirCtx var4 = (HierMemDirCtx)this.bindings.get(var1.getPrefix(1));
+<b class="nc"><i>108</i>&nbsp;            if(var4 == null) {</b>
+<b class="nc"><i>109</i>&nbsp;                var3 = null;</b>
+<i>110</i>&nbsp;            } else {
+<i>111</i>&nbsp;                var3 = var4.doLookup(var1.getSuffix(1), false);
+<b class="nc"><i>112</i>&nbsp;            }</b>
+<i>113</i>&nbsp;        }
+<b class="nc"><i>114</i>&nbsp;</b>
+<i>115</i>&nbsp;        if(var3 == null) {
+<i>116</i>&nbsp;            throw new NameNotFoundException(var1.toString());
+<i>117</i>&nbsp;        } else if(var2) {
+<b class="nc"><i>118</i>&nbsp;            try {</b>
+<b class="nc"><i>119</i>&nbsp;                return DirectoryManager.getObjectInstance(var3, var1, this, this.myEnv, var3 instanceof HierMemDirCtx?((HierMemDirCtx)var3).attrs:null);</b>
+<b class="nc"><i>120</i>&nbsp;            } catch (NamingException var6) {</b>
+<b class="nc"><i>121</i>&nbsp;                throw var6;</b>
+<i>122</i>&nbsp;            } catch (Exception var7) {
+<b class="nc"><i>123</i>&nbsp;                NamingException var5 = new NamingException(&quot;Problem calling getObjectInstance&quot;);</b>
+<b class="nc"><i>124</i>&nbsp;                var5.setRootCause(var7);</b>
+<i>125</i>&nbsp;                throw var5;
+<i>126</i>&nbsp;            }
+<b class="nc"><i>127</i>&nbsp;        } else {</b>
+<i>128</i>&nbsp;            return var3;
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<b class="nc"><i>132</i>&nbsp;    public void bind(String var1, Object var2) throws NamingException {</b>
+<i>133</i>&nbsp;        this.bind((Name)this.myParser.parse(var1), var2);
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<b class="nc"><i>136</i>&nbsp;    public void bind(Name var1, Object var2) throws NamingException {</b>
+<i>137</i>&nbsp;        this.doBind(var1, var2, (Attributes)null, this.alwaysUseFactory);
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public void bind(String var1, Object var2, Attributes var3) throws NamingException {
+<b class="nc"><i>141</i>&nbsp;        this.bind((Name)this.myParser.parse(var1), var2, var3);</b>
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public void bind(Name var1, Object var2, Attributes var3) throws NamingException {
+<i>145</i>&nbsp;        this.doBind(var1, var2, var3, this.alwaysUseFactory);
+<b class="nc"><i>146</i>&nbsp;    }</b>
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    protected void doBind(Name var1, Object var2, Attributes var3, boolean var4) throws NamingException {
+<i>149</i>&nbsp;        if(var1.isEmpty()) {
+<i>150</i>&nbsp;            throw new InvalidNameException(&quot;Cannot bind empty name&quot;);
+<b class="nc"><i>151</i>&nbsp;        } else {</b>
+<b class="nc"><i>152</i>&nbsp;            if(var4) {</b>
+<i>153</i>&nbsp;                Result var5 = DirectoryManager.getStateToBind(var2, var1, this, this.myEnv, var3);
+<i>154</i>&nbsp;                var2 = var5.getObject();
+<b class="nc"><i>155</i>&nbsp;                var3 = var5.getAttributes();</b>
+<b class="nc"><i>156</i>&nbsp;            }</b>
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;            HierMemDirCtx var6 = (HierMemDirCtx)this.doLookup(this.getInternalName(var1), false);</b>
+<b class="nc"><i>159</i>&nbsp;            var6.doBindAux(this.getLeafName(var1), var2);</b>
+<i>160</i>&nbsp;            if(var3 != null &amp;&amp; var3.size() &gt; 0) {
+<i>161</i>&nbsp;                this.modifyAttributes((Name)var1, 1, var3);
+<b class="nc"><i>162</i>&nbsp;            }</b>
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;        }
+<b class="nc"><i>165</i>&nbsp;    }</b>
+<b class="nc"><i>166</i>&nbsp;</b>
+<i>167</i>&nbsp;    protected void doBindAux(Name var1, Object var2) throws NamingException {
+<i>168</i>&nbsp;        if(this.readOnlyEx != null) {
+<i>169</i>&nbsp;            throw (NamingException)this.readOnlyEx.fillInStackTrace();
+<i>170</i>&nbsp;        } else if(this.bindings.get(var1) != null) {
+<b class="nc"><i>171</i>&nbsp;            throw new NameAlreadyBoundException(var1.toString());</b>
+<b class="nc"><i>172</i>&nbsp;        } else if(var2 instanceof HierMemDirCtx) {</b>
+<i>173</i>&nbsp;            this.bindings.put(var1, var2);
+<i>174</i>&nbsp;        } else {
+<b class="nc"><i>175</i>&nbsp;            throw new SchemaViolationException(&quot;This context only supports binding objects of it\&#39;s own kind&quot;);</b>
+<b class="nc"><i>176</i>&nbsp;        }</b>
+<i>177</i>&nbsp;    }
+<b class="nc"><i>178</i>&nbsp;</b>
+<b class="nc"><i>179</i>&nbsp;    public void rebind(String var1, Object var2) throws NamingException {</b>
+<i>180</i>&nbsp;        this.rebind((Name)this.myParser.parse(var1), var2);
+<b class="nc"><i>181</i>&nbsp;    }</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    public void rebind(Name var1, Object var2) throws NamingException {
+<i>184</i>&nbsp;        this.doRebind(var1, var2, (Attributes)null, this.alwaysUseFactory);
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;    public void rebind(String var1, Object var2, Attributes var3) throws NamingException {</b>
+<i>188</i>&nbsp;        this.rebind((Name)this.myParser.parse(var1), var2, var3);
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;    public void rebind(Name var1, Object var2, Attributes var3) throws NamingException {</b>
+<i>192</i>&nbsp;        this.doRebind(var1, var2, var3, this.alwaysUseFactory);
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    protected void doRebind(Name var1, Object var2, Attributes var3, boolean var4) throws NamingException {
+<b class="nc"><i>196</i>&nbsp;        if(var1.isEmpty()) {</b>
+<i>197</i>&nbsp;            throw new InvalidNameException(&quot;Cannot rebind empty name&quot;);
+<i>198</i>&nbsp;        } else {
+<i>199</i>&nbsp;            if(var4) {
+<i>200</i>&nbsp;                Result var5 = DirectoryManager.getStateToBind(var2, var1, this, this.myEnv, var3);
+<b class="nc"><i>201</i>&nbsp;                var2 = var5.getObject();</b>
+<i>202</i>&nbsp;                var3 = var5.getAttributes();
+<i>203</i>&nbsp;            }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;            HierMemDirCtx var6 = (HierMemDirCtx)this.doLookup(this.getInternalName(var1), false);
+<b class="nc"><i>206</i>&nbsp;            var6.doRebindAux(this.getLeafName(var1), var2);</b>
+<b class="nc"><i>207</i>&nbsp;            if(var3 != null &amp;&amp; var3.size() &gt; 0) {</b>
+<i>208</i>&nbsp;                this.modifyAttributes((Name)var1, 1, var3);
+<i>209</i>&nbsp;            }
+<b class="nc"><i>210</i>&nbsp;</b>
+<b class="nc"><i>211</i>&nbsp;        }</b>
+<i>212</i>&nbsp;    }
+<b class="nc"><i>213</i>&nbsp;</b>
+<b class="nc"><i>214</i>&nbsp;    protected void doRebindAux(Name var1, Object var2) throws NamingException {</b>
+<i>215</i>&nbsp;        if(this.readOnlyEx != null) {
+<i>216</i>&nbsp;            throw (NamingException)this.readOnlyEx.fillInStackTrace();
+<b class="nc"><i>217</i>&nbsp;        } else if(var2 instanceof HierMemDirCtx) {</b>
+<b class="nc"><i>218</i>&nbsp;            this.bindings.put(var1, var2);</b>
+<i>219</i>&nbsp;        } else {
+<i>220</i>&nbsp;            throw new SchemaViolationException(&quot;This context only supports binding objects of it\&#39;s own kind&quot;);
+<i>221</i>&nbsp;        }
+<i>222</i>&nbsp;    }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    public void unbind(String var1) throws NamingException {
+<i>225</i>&nbsp;        this.unbind((Name)this.myParser.parse(var1));
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<b class="nc"><i>228</i>&nbsp;    public void unbind(Name var1) throws NamingException {</b>
+<b class="nc"><i>229</i>&nbsp;        if(var1.isEmpty()) {</b>
+<i>230</i>&nbsp;            throw new InvalidNameException(&quot;Cannot unbind empty name&quot;);
+<i>231</i>&nbsp;        } else {
+<i>232</i>&nbsp;            HierMemDirCtx var2 = (HierMemDirCtx)this.doLookup(this.getInternalName(var1), false);
+<i>233</i>&nbsp;            var2.doUnbind(this.getLeafName(var1));
+<b class="nc"><i>234</i>&nbsp;        }</b>
+<b class="nc"><i>235</i>&nbsp;    }</b>
+<i>236</i>&nbsp;
+<b class="nc"><i>237</i>&nbsp;    protected void doUnbind(Name var1) throws NamingException {</b>
+<b class="nc"><i>238</i>&nbsp;        if(this.readOnlyEx != null) {</b>
+<i>239</i>&nbsp;            throw (NamingException)this.readOnlyEx.fillInStackTrace();
+<i>240</i>&nbsp;        } else {
+<b class="nc"><i>241</i>&nbsp;            this.bindings.remove(var1);</b>
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    public void rename(String var1, String var2) throws NamingException {
+<i>246</i>&nbsp;        this.rename((Name)this.myParser.parse(var1), (Name)this.myParser.parse(var2));
+<b class="nc"><i>247</i>&nbsp;    }</b>
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    public void rename(Name var1, Name var2) throws NamingException {
+<i>250</i>&nbsp;        if(!var2.isEmpty() &amp;&amp; !var1.isEmpty()) {
+<b class="nc"><i>251</i>&nbsp;            if(!this.getInternalName(var2).equals(this.getInternalName(var1))) {</b>
+<b class="nc"><i>252</i>&nbsp;                throw new InvalidNameException(&quot;Cannot rename across contexts&quot;);</b>
+<i>253</i>&nbsp;            } else {
+<b class="nc"><i>254</i>&nbsp;                HierMemDirCtx var3 = (HierMemDirCtx)this.doLookup(this.getInternalName(var2), false);</b>
+<i>255</i>&nbsp;                var3.doRename(this.getLeafName(var1), this.getLeafName(var2));
+<b class="nc"><i>256</i>&nbsp;            }</b>
+<i>257</i>&nbsp;        } else {
+<i>258</i>&nbsp;            throw new InvalidNameException(&quot;Cannot rename empty name&quot;);
+<i>259</i>&nbsp;        }
+<i>260</i>&nbsp;    }
+<b class="nc"><i>261</i>&nbsp;</b>
+<b class="nc"><i>262</i>&nbsp;    protected void doRename(Name var1, Name var2) throws NamingException {</b>
+<i>263</i>&nbsp;        if(this.readOnlyEx != null) {
+<i>264</i>&nbsp;            throw (NamingException)this.readOnlyEx.fillInStackTrace();
+<b class="nc"><i>265</i>&nbsp;        } else {</b>
+<i>266</i>&nbsp;            var1 = this.canonizeName(var1);
+<i>267</i>&nbsp;            var2 = this.canonizeName(var2);
+<i>268</i>&nbsp;            if(this.bindings.get(var2) != null) {
+<i>269</i>&nbsp;                throw new NameAlreadyBoundException(var2.toString());
+<b class="nc"><i>270</i>&nbsp;            } else {</b>
+<i>271</i>&nbsp;                Object var3 = this.bindings.remove(var1);
+<i>272</i>&nbsp;                if(var3 == null) {
+<i>273</i>&nbsp;                    throw new NameNotFoundException(var1.toString());
+<i>274</i>&nbsp;                } else {
+<i>275</i>&nbsp;                    this.bindings.put(var2, var3);
+<b class="nc"><i>276</i>&nbsp;                }</b>
+<b class="nc"><i>277</i>&nbsp;            }</b>
+<i>278</i>&nbsp;        }
+<i>279</i>&nbsp;    }
+<b class="nc"><i>280</i>&nbsp;</b>
+<b class="nc"><i>281</i>&nbsp;    public NamingEnumeration list(String var1) throws NamingException {</b>
+<i>282</i>&nbsp;        return this.list((Name)this.myParser.parse(var1));
+<i>283</i>&nbsp;    }
+<b class="nc"><i>284</i>&nbsp;</b>
+<i>285</i>&nbsp;    public NamingEnumeration list(Name var1) throws NamingException {
+<b class="nc"><i>286</i>&nbsp;        HierMemDirCtx var2 = (HierMemDirCtx)this.doLookup(var1, false);</b>
+<i>287</i>&nbsp;        return var2.doList();
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<b class="nc"><i>290</i>&nbsp;    protected NamingEnumeration doList() throws NamingException {</b>
+<b class="nc"><i>291</i>&nbsp;        return new HierMemDirCtx.FlatNames(this.bindings.keys());</b>
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;    public NamingEnumeration listBindings(String var1) throws NamingException {</b>
+<b class="nc"><i>295</i>&nbsp;        return this.listBindings((Name)this.myParser.parse(var1));</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;    public NamingEnumeration listBindings(Name var1) throws NamingException {</b>
+<b class="nc"><i>299</i>&nbsp;        HierMemDirCtx var2 = (HierMemDirCtx)this.doLookup(var1, false);</b>
+<i>300</i>&nbsp;        return var2.doListBindings(this.alwaysUseFactory);
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<b class="nc"><i>303</i>&nbsp;    protected NamingEnumeration doListBindings(boolean var1) throws NamingException {</b>
+<b class="nc"><i>304</i>&nbsp;        return new HierMemDirCtx.FlatBindings(this.bindings, this.myEnv, var1);</b>
+<b class="nc"><i>305</i>&nbsp;    }</b>
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    public void destroySubcontext(String var1) throws NamingException {
+<b class="nc"><i>308</i>&nbsp;        this.destroySubcontext((Name)this.myParser.parse(var1));</b>
+<i>309</i>&nbsp;    }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    public void destroySubcontext(Name var1) throws NamingException {
+<b class="nc"><i>312</i>&nbsp;        HierMemDirCtx var2 = (HierMemDirCtx)this.doLookup(this.getInternalName(var1), false);</b>
+<i>313</i>&nbsp;        var2.doDestroySubcontext(this.getLeafName(var1));
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<b class="nc"><i>316</i>&nbsp;    protected void doDestroySubcontext(Name var1) throws NamingException {</b>
+<b class="nc"><i>317</i>&nbsp;        if(this.readOnlyEx != null) {</b>
+<i>318</i>&nbsp;            throw (NamingException)this.readOnlyEx.fillInStackTrace();
+<i>319</i>&nbsp;        } else {
+<i>320</i>&nbsp;            var1 = this.canonizeName(var1);
+<b class="nc"><i>321</i>&nbsp;            this.bindings.remove(var1);</b>
+<i>322</i>&nbsp;        }
+<i>323</i>&nbsp;    }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    public Context createSubcontext(String var1) throws NamingException {
+<b class="nc"><i>326</i>&nbsp;        return this.createSubcontext((Name)this.myParser.parse(var1));</b>
+<i>327</i>&nbsp;    }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    public Context createSubcontext(Name var1) throws NamingException {
+<b class="nc"><i>330</i>&nbsp;        return this.createSubcontext((Name)var1, (Attributes)null);</b>
+<b class="nc"><i>331</i>&nbsp;    }</b>
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    public DirContext createSubcontext(String var1, Attributes var2) throws NamingException {
+<i>334</i>&nbsp;        return this.createSubcontext((Name)this.myParser.parse(var1), var2);
+<i>335</i>&nbsp;    }
+<b class="nc"><i>336</i>&nbsp;</b>
+<i>337</i>&nbsp;    public DirContext createSubcontext(Name var1, Attributes var2) throws NamingException {
+<i>338</i>&nbsp;        HierMemDirCtx var3 = (HierMemDirCtx)this.doLookup(this.getInternalName(var1), false);
+<i>339</i>&nbsp;        return var3.doCreateSubcontext(this.getLeafName(var1), var2);
+<b class="nc"><i>340</i>&nbsp;    }</b>
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    protected DirContext doCreateSubcontext(Name var1, Attributes var2) throws NamingException {
+<i>343</i>&nbsp;        if(this.readOnlyEx != null) {
+<b class="nc"><i>344</i>&nbsp;            throw (NamingException)this.readOnlyEx.fillInStackTrace();</b>
+<i>345</i>&nbsp;        } else {
+<b class="nc"><i>346</i>&nbsp;            var1 = this.canonizeName(var1);</b>
+<i>347</i>&nbsp;            if(this.bindings.get(var1) != null) {
+<i>348</i>&nbsp;                throw new NameAlreadyBoundException(var1.toString());
+<i>349</i>&nbsp;            } else {
+<i>350</i>&nbsp;                HierMemDirCtx var3 = this.createNewCtx();
+<b class="nc"><i>351</i>&nbsp;                this.bindings.put(var1, var3);</b>
+<b class="nc"><i>352</i>&nbsp;                if(var2 != null) {</b>
+<i>353</i>&nbsp;                    var3.modifyAttributes((String)&quot;&quot;, 1, var2);
+<b class="nc"><i>354</i>&nbsp;                }</b>
+<b class="nc"><i>355</i>&nbsp;</b>
+<i>356</i>&nbsp;                return var3;
+<i>357</i>&nbsp;            }
+<i>358</i>&nbsp;        }
+<b class="nc"><i>359</i>&nbsp;    }</b>
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    public Object lookupLink(String var1) throws NamingException {
+<i>362</i>&nbsp;        return this.lookupLink((Name)this.myParser.parse(var1));
+<b class="nc"><i>363</i>&nbsp;    }</b>
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    public Object lookupLink(Name var1) throws NamingException {
+<i>366</i>&nbsp;        return this.lookup((Name)var1);
+<i>367</i>&nbsp;    }
+<b class="nc"><i>368</i>&nbsp;</b>
+<i>369</i>&nbsp;    public NameParser getNameParser(String var1) throws NamingException {
+<i>370</i>&nbsp;        return this.myParser;
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<b class="nc"><i>373</i>&nbsp;    public NameParser getNameParser(Name var1) throws NamingException {</b>
+<i>374</i>&nbsp;        return this.myParser;
+<b class="nc"><i>375</i>&nbsp;    }</b>
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    public String composeName(String var1, String var2) throws NamingException {
+<i>378</i>&nbsp;        Name var3 = this.composeName((Name)(new CompositeName(var1)), (Name)(new CompositeName(var2)));
+<i>379</i>&nbsp;        return var3.toString();
+<b class="nc"><i>380</i>&nbsp;    }</b>
+<b class="nc"><i>381</i>&nbsp;</b>
+<i>382</i>&nbsp;    public Name composeName(Name var1, Name var2) throws NamingException {
+<i>383</i>&nbsp;        var1 = this.canonizeName(var1);
+<b class="nc"><i>384</i>&nbsp;        var2 = this.canonizeName(var2);</b>
+<i>385</i>&nbsp;        Name var3 = (Name)((Name)var2.clone());
+<b class="nc"><i>386</i>&nbsp;        var3.addAll(var1);</b>
+<b class="nc"><i>387</i>&nbsp;        return var3;</b>
+<i>388</i>&nbsp;    }
+<b class="nc"><i>389</i>&nbsp;</b>
+<b class="nc"><i>390</i>&nbsp;    public Object addToEnvironment(String var1, Object var2) throws NamingException {</b>
+<b class="nc"><i>391</i>&nbsp;        this.myEnv = this.myEnv == null?new Hashtable(11, 0.75F):(Hashtable)this.myEnv.clone();</b>
+<b class="nc"><i>392</i>&nbsp;        return this.myEnv.put(var1, var2);</b>
+<i>393</i>&nbsp;    }
+<b class="nc"><i>394</i>&nbsp;</b>
+<i>395</i>&nbsp;    public Object removeFromEnvironment(String var1) throws NamingException {
+<i>396</i>&nbsp;        if(this.myEnv == null) {
+<i>397</i>&nbsp;            return null;
+<i>398</i>&nbsp;        } else {
+<i>399</i>&nbsp;            this.myEnv = (Hashtable)this.myEnv.clone();
+<b class="nc"><i>400</i>&nbsp;            return this.myEnv.remove(var1);</b>
+<i>401</i>&nbsp;        }
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    public Hashtable getEnvironment() throws NamingException {
+<b class="nc"><i>405</i>&nbsp;        return this.myEnv == null?new Hashtable(5, 0.75F):(Hashtable)this.myEnv.clone();</b>
+<i>406</i>&nbsp;    }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;    public Attributes getAttributes(String var1) throws NamingException {
+<b class="nc"><i>409</i>&nbsp;        return this.getAttributes((Name)this.myParser.parse(var1));</b>
+<i>410</i>&nbsp;    }
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    public Attributes getAttributes(Name var1) throws NamingException {
+<b class="nc"><i>413</i>&nbsp;        HierMemDirCtx var2 = (HierMemDirCtx)this.doLookup(var1, false);</b>
+<i>414</i>&nbsp;        return var2.doGetAttributes();
+<i>415</i>&nbsp;    }
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    protected Attributes doGetAttributes() throws NamingException {
+<b class="nc"><i>418</i>&nbsp;        return (Attributes)this.attrs.clone();</b>
+<i>419</i>&nbsp;    }
+<b class="nc"><i>420</i>&nbsp;</b>
+<i>421</i>&nbsp;    public Attributes getAttributes(String var1, String[] var2) throws NamingException {
+<i>422</i>&nbsp;        return this.getAttributes((Name)this.myParser.parse(var1), var2);
+<i>423</i>&nbsp;    }
+<i>424</i>&nbsp;
+<b class="nc"><i>425</i>&nbsp;    public Attributes getAttributes(Name var1, String[] var2) throws NamingException {</b>
+<b class="nc"><i>426</i>&nbsp;        HierMemDirCtx var3 = (HierMemDirCtx)this.doLookup(var1, false);</b>
+<b class="nc"><i>427</i>&nbsp;        return var3.doGetAttributes(var2);</b>
+<b class="nc"><i>428</i>&nbsp;    }</b>
+<b class="nc"><i>429</i>&nbsp;</b>
+<i>430</i>&nbsp;    protected Attributes doGetAttributes(String[] var1) throws NamingException {
+<i>431</i>&nbsp;        if(var1 == null) {
+<i>432</i>&nbsp;            return this.doGetAttributes();
+<i>433</i>&nbsp;        } else {
+<b class="nc"><i>434</i>&nbsp;            BasicAttributes var2 = new BasicAttributes(this.ignoreCase);</b>
+<i>435</i>&nbsp;            Attribute var3 = null;
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;            for(int var4 = 0; var4 &lt; var1.length; ++var4) {</b>
+<i>438</i>&nbsp;                var3 = this.attrs.get(var1[var4]);
+<i>439</i>&nbsp;                if(var3 != null) {
+<i>440</i>&nbsp;                    var2.put(var3);
+<i>441</i>&nbsp;                }
+<b class="nc"><i>442</i>&nbsp;            }</b>
+<b class="nc"><i>443</i>&nbsp;</b>
+<i>444</i>&nbsp;            return var2;
+<b class="nc"><i>445</i>&nbsp;        }</b>
+<b class="nc"><i>446</i>&nbsp;    }</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    public void modifyAttributes(String var1, int var2, Attributes var3) throws NamingException {
+<i>449</i>&nbsp;        this.modifyAttributes((Name)this.myParser.parse(var1), var2, var3);
+<b class="nc"><i>450</i>&nbsp;    }</b>
+<b class="nc"><i>451</i>&nbsp;</b>
+<i>452</i>&nbsp;    public void modifyAttributes(Name var1, int var2, Attributes var3) throws NamingException {
+<b class="nc"><i>453</i>&nbsp;        if(var3 != null &amp;&amp; var3.size() != 0) {</b>
+<i>454</i>&nbsp;            NamingEnumeration var4 = var3.getAll();
+<i>455</i>&nbsp;            ModificationItem[] var5 = new ModificationItem[var3.size()];
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;            for(int var6 = 0; var6 &lt; var5.length &amp;&amp; var4.hasMoreElements(); ++var6) {
+<i>458</i>&nbsp;                var5[var6] = new ModificationItem(var2, (Attribute)var4.next());
+<b class="nc"><i>459</i>&nbsp;            }</b>
+<i>460</i>&nbsp;
+<i>461</i>&nbsp;            this.modifyAttributes((Name)var1, var5);
+<i>462</i>&nbsp;        } else {
+<i>463</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot modify without an attribute&quot;);
+<b class="nc"><i>464</i>&nbsp;        }</b>
+<b class="nc"><i>465</i>&nbsp;    }</b>
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;    public void modifyAttributes(String var1, ModificationItem[] var2) throws NamingException {
+<i>468</i>&nbsp;        this.modifyAttributes((Name)this.myParser.parse(var1), var2);
+<b class="nc"><i>469</i>&nbsp;    }</b>
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    public void modifyAttributes(Name var1, ModificationItem[] var2) throws NamingException {
+<i>472</i>&nbsp;        HierMemDirCtx var3 = (HierMemDirCtx)this.doLookup(var1, false);
+<i>473</i>&nbsp;        var3.doModifyAttributes(var2);
+<b class="nc"><i>474</i>&nbsp;    }</b>
+<i>475</i>&nbsp;
+<i>476</i>&nbsp;    protected void doModifyAttributes(ModificationItem[] var1) throws NamingException {
+<i>477</i>&nbsp;        if(this.readOnlyEx != null) {
+<i>478</i>&nbsp;            throw (NamingException)this.readOnlyEx.fillInStackTrace();
+<b class="nc"><i>479</i>&nbsp;        } else {</b>
+<b class="nc"><i>480</i>&nbsp;            applyMods(var1, this.attrs);</b>
+<i>481</i>&nbsp;        }
+<i>482</i>&nbsp;    }
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;    protected static Attributes applyMods(ModificationItem[] var0, Attributes var1) throws NamingException {
+<i>485</i>&nbsp;        label49:
+<b class="nc"><i>486</i>&nbsp;        for(int var6 = 0; var6 &lt; var0.length; ++var6) {</b>
+<b class="nc"><i>487</i>&nbsp;            ModificationItem var2 = var0[var6];</b>
+<i>488</i>&nbsp;            Attribute var4 = var2.getAttribute();
+<b class="nc"><i>489</i>&nbsp;            Attribute var3;</b>
+<b class="nc"><i>490</i>&nbsp;            NamingEnumeration var5;</b>
+<b class="nc"><i>491</i>&nbsp;            switch(var2.getModificationOp()) {</b>
+<b class="nc"><i>492</i>&nbsp;            case 1:</b>
+<b class="nc"><i>493</i>&nbsp;                var3 = var1.get(var4.getID());</b>
+<b class="nc"><i>494</i>&nbsp;                if(var3 == null) {</b>
+<i>495</i>&nbsp;                    var1.put((Attribute)var4.clone());
+<i>496</i>&nbsp;                    break;
+<b class="nc"><i>497</i>&nbsp;                } else {</b>
+<i>498</i>&nbsp;                    var5 = var4.getAll();
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;                    while(true) {
+<i>501</i>&nbsp;                        if(!var5.hasMore()) {
+<b class="nc"><i>502</i>&nbsp;                            continue label49;</b>
+<i>503</i>&nbsp;                        }
+<i>504</i>&nbsp;
+<i>505</i>&nbsp;                        var3.add(var5.next());
+<i>506</i>&nbsp;                    }
+<i>507</i>&nbsp;                }
+<b class="nc"><i>508</i>&nbsp;            case 2:</b>
+<b class="nc"><i>509</i>&nbsp;                if(var4.size() == 0) {</b>
+<i>510</i>&nbsp;                    var1.remove(var4.getID());
+<i>511</i>&nbsp;                } else {
+<i>512</i>&nbsp;                    var1.put((Attribute)var4.clone());
+<i>513</i>&nbsp;                }
+<b class="nc"><i>514</i>&nbsp;                break;</b>
+<b class="nc"><i>515</i>&nbsp;            case 3:</b>
+<b class="nc"><i>516</i>&nbsp;                var3 = var1.get(var4.getID());</b>
+<b class="nc"><i>517</i>&nbsp;                if(var3 != null) {</b>
+<i>518</i>&nbsp;                    if(var4.size() == 0) {
+<i>519</i>&nbsp;                        var1.remove(var4.getID());
+<b class="nc"><i>520</i>&nbsp;                    } else {</b>
+<i>521</i>&nbsp;                        var5 = var4.getAll();
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;                        while(var5.hasMore()) {
+<i>524</i>&nbsp;                            var3.remove(var5.next());
+<b class="nc"><i>525</i>&nbsp;                        }</b>
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;                        if(var3.size() == 0) {
+<i>528</i>&nbsp;                            var1.remove(var4.getID());
+<i>529</i>&nbsp;                        }
+<b class="nc"><i>530</i>&nbsp;                    }</b>
+<b class="nc"><i>531</i>&nbsp;                }</b>
+<i>532</i>&nbsp;                break;
+<i>533</i>&nbsp;            default:
+<i>534</i>&nbsp;                throw new AttributeModificationException(&quot;Unknown mod_op&quot;);
+<i>535</i>&nbsp;            }
+<i>536</i>&nbsp;        }
+<b class="nc"><i>537</i>&nbsp;</b>
+<b class="nc"><i>538</i>&nbsp;        return var1;</b>
+<i>539</i>&nbsp;    }
+<i>540</i>&nbsp;
+<b class="nc"><i>541</i>&nbsp;    public NamingEnumeration search(String var1, Attributes var2) throws NamingException {</b>
+<i>542</i>&nbsp;        return this.search((String)var1, (Attributes)var2, (String[])null);
+<i>543</i>&nbsp;    }
+<i>544</i>&nbsp;
+<i>545</i>&nbsp;    public NamingEnumeration search(Name var1, Attributes var2) throws NamingException {
+<i>546</i>&nbsp;        return this.search((Name)var1, (Attributes)var2, (String[])null);
+<i>547</i>&nbsp;    }
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;    public NamingEnumeration search(String var1, Attributes var2, String[] var3) throws NamingException {
+<i>550</i>&nbsp;        return this.search((Name)this.myParser.parse(var1), (Attributes)var2, (String[])var3);
+<b class="nc"><i>551</i>&nbsp;    }</b>
+<b class="nc"><i>552</i>&nbsp;</b>
+<b class="nc"><i>553</i>&nbsp;    public NamingEnumeration search(Name var1, Attributes var2, String[] var3) throws NamingException {</b>
+<i>554</i>&nbsp;        HierMemDirCtx var4 = (HierMemDirCtx)this.doLookup(var1, false);
+<b class="nc"><i>555</i>&nbsp;        SearchControls var5 = new SearchControls();</b>
+<i>556</i>&nbsp;        var5.setReturningAttributes(var3);
+<i>557</i>&nbsp;        return new LazySearchEnumerationImpl(var4.doListBindings(false), new ContainmentFilter(var2), var5, this, this.myEnv, false);
+<i>558</i>&nbsp;    }
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;    public NamingEnumeration search(Name var1, String var2, SearchControls var3) throws NamingException {
+<b class="nc"><i>561</i>&nbsp;        DirContext var4 = (DirContext)this.doLookup(var1, false);</b>
+<b class="nc"><i>562</i>&nbsp;        SearchFilter var5 = new SearchFilter(var2);</b>
+<b class="nc"><i>563</i>&nbsp;        return new LazySearchEnumerationImpl(new HierMemDirCtx.HierContextEnumerator(var4, var3 != null?var3.getSearchScope():1), var5, var3, this, this.myEnv, this.alwaysUseFactory);</b>
+<i>564</i>&nbsp;    }
+<i>565</i>&nbsp;
+<b class="nc"><i>566</i>&nbsp;    public NamingEnumeration search(Name var1, String var2, Object[] var3, SearchControls var4) throws NamingException {</b>
+<b class="nc"><i>567</i>&nbsp;        String var5 = SearchFilter.format(var2, var3);</b>
+<b class="nc"><i>568</i>&nbsp;        return this.search((Name)var1, (String)var5, (SearchControls)var4);</b>
+<i>569</i>&nbsp;    }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;    public NamingEnumeration search(String var1, String var2, SearchControls var3) throws NamingException {
+<i>572</i>&nbsp;        return this.search((Name)this.myParser.parse(var1), (String)var2, (SearchControls)var3);
+<b class="nc"><i>573</i>&nbsp;    }</b>
+<b class="nc"><i>574</i>&nbsp;</b>
+<i>575</i>&nbsp;    public NamingEnumeration search(String var1, String var2, Object[] var3, SearchControls var4) throws NamingException {
+<b class="nc"><i>576</i>&nbsp;        return this.search((Name)this.myParser.parse(var1), var2, var3, var4);</b>
+<i>577</i>&nbsp;    }
+<b class="nc"><i>578</i>&nbsp;</b>
+<i>579</i>&nbsp;    protected HierMemDirCtx createNewCtx() throws NamingException {
+<b class="nc"><i>580</i>&nbsp;        return new HierMemDirCtx(this.myEnv, this.ignoreCase);</b>
+<b class="nc"><i>581</i>&nbsp;    }</b>
+<b class="nc"><i>582</i>&nbsp;</b>
+<b class="nc"><i>583</i>&nbsp;    protected Name canonizeName(Name var1) throws NamingException {</b>
+<i>584</i>&nbsp;        Object var2 = var1;
+<i>585</i>&nbsp;        if(!(var1 instanceof HierarchicalName)) {
+<b class="nc"><i>586</i>&nbsp;            var2 = new HierarchicalName();</b>
+<b class="nc"><i>587</i>&nbsp;            int var3 = var1.size();</b>
+<b class="nc"><i>588</i>&nbsp;</b>
+<i>589</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<b class="nc"><i>590</i>&nbsp;                ((Name)var2).add(var4, var1.get(var4));</b>
+<b class="nc"><i>591</i>&nbsp;            }</b>
+<i>592</i>&nbsp;        }
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;        return (Name)var2;
+<i>595</i>&nbsp;    }
+<i>596</i>&nbsp;
+<b class="nc"><i>597</i>&nbsp;    protected Name getInternalName(Name var1) throws NamingException {</b>
+<i>598</i>&nbsp;        return var1.getPrefix(var1.size() - 1);
+<i>599</i>&nbsp;    }
+<i>600</i>&nbsp;
+<b class="nc"><i>601</i>&nbsp;    protected Name getLeafName(Name var1) throws NamingException {</b>
+<i>602</i>&nbsp;        return var1.getSuffix(var1.size() - 1);
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    public DirContext getSchema(String var1) throws NamingException {
+<i>606</i>&nbsp;        throw new OperationNotSupportedException();
+<b class="nc"><i>607</i>&nbsp;    }</b>
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;    public DirContext getSchema(Name var1) throws NamingException {
+<i>610</i>&nbsp;        throw new OperationNotSupportedException();
+<i>611</i>&nbsp;    }
+<i>612</i>&nbsp;
+<b class="nc"><i>613</i>&nbsp;    public DirContext getSchemaClassDefinition(String var1) throws NamingException {</b>
+<i>614</i>&nbsp;        throw new OperationNotSupportedException();
+<i>615</i>&nbsp;    }
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;    public DirContext getSchemaClassDefinition(Name var1) throws NamingException {
+<i>618</i>&nbsp;        throw new OperationNotSupportedException();
+<i>619</i>&nbsp;    }
+<b class="nc"><i>620</i>&nbsp;</b>
+<i>621</i>&nbsp;    public void setReadOnly(NamingException var1) {
+<i>622</i>&nbsp;        this.readOnlyEx = var1;
+<i>623</i>&nbsp;    }
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    public void setIgnoreCase(boolean var1) {
+<i>626</i>&nbsp;        this.ignoreCase = var1;
+<i>627</i>&nbsp;    }
+<i>628</i>&nbsp;
+<b class="nc"><i>629</i>&nbsp;    public void setNameParser(NameParser var1) {</b>
+<i>630</i>&nbsp;        this.myParser = var1;
+<b class="nc"><i>631</i>&nbsp;    }</b>
+<b class="nc"><i>632</i>&nbsp;</b>
+<i>633</i>&nbsp;    public class HierContextEnumerator extends ContextEnumerator {
+<b class="nc"><i>634</i>&nbsp;        public HierContextEnumerator(Context var2, int var3) throws NamingException {</b>
+<i>635</i>&nbsp;            super(var2, var3);
+<i>636</i>&nbsp;        }
+<i>637</i>&nbsp;
+<i>638</i>&nbsp;        protected HierContextEnumerator(Context var2, int var3, String var4, boolean var5) throws NamingException {
+<i>639</i>&nbsp;            super(var2, var3, var4, var5);
+<i>640</i>&nbsp;        }
+<i>641</i>&nbsp;
+<i>642</i>&nbsp;        protected NamingEnumeration getImmediateChildren(Context var1) throws NamingException {
+<i>643</i>&nbsp;            return ((HierMemDirCtx)var1).doListBindings(false);
+<i>644</i>&nbsp;        }
+<b class="nc"><i>645</i>&nbsp;</b>
+<i>646</i>&nbsp;        protected ContextEnumerator newEnumerator(Context var1, int var2, String var3, boolean var4) throws NamingException {
+<b class="nc"><i>647</i>&nbsp;            return HierMemDirCtx.this.new HierContextEnumerator(var1, var2, var3, var4);</b>
+<b class="nc"><i>648</i>&nbsp;        }</b>
+<i>649</i>&nbsp;    }
+<i>650</i>&nbsp;
+<i>651</i>&nbsp;    private final class FlatBindings extends HierMemDirCtx.FlatNames {
+<i>652</i>&nbsp;        private Hashtable bds;
+<i>653</i>&nbsp;        private Hashtable env;
+<i>654</i>&nbsp;        private boolean useFactory;
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;        FlatBindings(Hashtable var2, Hashtable var3, boolean var4) {
+<i>657</i>&nbsp;            super(var2.keys());
+<i>658</i>&nbsp;            this.env = var3;
+<i>659</i>&nbsp;            this.bds = var2;
+<i>660</i>&nbsp;            this.useFactory = var4;
+<i>661</i>&nbsp;        }
+<b class="nc"><i>662</i>&nbsp;</b>
+<b class="nc"><i>663</i>&nbsp;        public Object next() throws NamingException {</b>
+<i>664</i>&nbsp;            Name var1 = (Name)this.names.nextElement();
+<i>665</i>&nbsp;            HierMemDirCtx var2 = (HierMemDirCtx)this.bds.get(var1);
+<i>666</i>&nbsp;            Object var3 = var2;
+<i>667</i>&nbsp;            if(this.useFactory) {
+<i>668</i>&nbsp;                Attributes var4 = var2.getAttributes((String)&quot;&quot;);
+<i>669</i>&nbsp;
+<b class="nc"><i>670</i>&nbsp;                try {</b>
+<i>671</i>&nbsp;                    var3 = DirectoryManager.getObjectInstance(var2, var1, HierMemDirCtx.this, this.env, var4);
+<i>672</i>&nbsp;                } catch (NamingException var7) {
+<i>673</i>&nbsp;                    throw var7;
+<i>674</i>&nbsp;                } catch (Exception var8) {
+<i>675</i>&nbsp;                    NamingException var6 = new NamingException(&quot;Problem calling getObjectInstance&quot;);
+<i>676</i>&nbsp;                    var6.setRootCause(var8);
+<i>677</i>&nbsp;                    throw var6;
+<b class="nc"><i>678</i>&nbsp;                }</b>
+<i>679</i>&nbsp;            }
+<i>680</i>&nbsp;
+<i>681</i>&nbsp;            return new Binding(var1.toString(), var3);
+<i>682</i>&nbsp;        }
+<i>683</i>&nbsp;    }
+<i>684</i>&nbsp;
+<b class="nc"><i>685</i>&nbsp;    private class FlatNames implements NamingEnumeration {</b>
+<i>686</i>&nbsp;        Enumeration names;
+<i>687</i>&nbsp;
+<i>688</i>&nbsp;        FlatNames(Enumeration var2) {
+<i>689</i>&nbsp;            this.names = var2;
+<i>690</i>&nbsp;        }
+<b class="nc"><i>691</i>&nbsp;</b>
+<i>692</i>&nbsp;        public boolean hasMoreElements() {
+<b class="nc"><i>693</i>&nbsp;            try {</b>
+<i>694</i>&nbsp;                return this.hasMore();
+<b class="nc"><i>695</i>&nbsp;            } catch (NamingException var2) {</b>
+<b class="nc"><i>696</i>&nbsp;                return false;</b>
+<b class="nc"><i>697</i>&nbsp;            }</b>
+<b class="nc"><i>698</i>&nbsp;        }</b>
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;        public boolean hasMore() throws NamingException {
+<i>701</i>&nbsp;            return this.names.hasMoreElements();
+<b class="nc"><i>702</i>&nbsp;        }</b>
+<i>703</i>&nbsp;
+<i>704</i>&nbsp;        public Object nextElement() {
+<i>705</i>&nbsp;            try {
+<b class="nc"><i>706</i>&nbsp;                return this.next();</b>
+<i>707</i>&nbsp;            } catch (NamingException var2) {
+<i>708</i>&nbsp;                throw new NoSuchElementException(var2.toString());
+<i>709</i>&nbsp;            }
+<b class="nc"><i>710</i>&nbsp;        }</b>
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;        public Object next() throws NamingException {
+<i>713</i>&nbsp;            Name var1 = (Name)this.names.nextElement();
+<i>714</i>&nbsp;            String var2 = HierMemDirCtx.this.bindings.get(var1).getClass().getName();
+<b class="nc"><i>715</i>&nbsp;            return new NameClassPair(var1.toString(), var2);</b>
+<i>716</i>&nbsp;        }
+<i>717</i>&nbsp;
+<i>718</i>&nbsp;        public void close() {
+<b class="nc"><i>719</i>&nbsp;            this.names = null;</b>
+<i>720</i>&nbsp;        }
+<i>721</i>&nbsp;    }
+<i>722</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

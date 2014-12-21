@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FixedLengthOutputStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.net.httpserver</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FixedLengthOutputStream (sun.net.httpserver)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FixedLengthOutputStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.net.httpserver;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.FilterOutputStream;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.OutputStream;
+<i>11</i>&nbsp;import sun.net.httpserver.ExchangeImpl;
+<i>12</i>&nbsp;import sun.net.httpserver.LeftOverInputStream;
+<i>13</i>&nbsp;import sun.net.httpserver.StreamClosedException;
+<i>14</i>&nbsp;import sun.net.httpserver.WriteFinishedEvent;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;class FixedLengthOutputStream extends FilterOutputStream {
+<i>17</i>&nbsp;    private long remaining;
+<i>18</i>&nbsp;    private boolean eof = false;
+<i>19</i>&nbsp;    private boolean closed = false;
+<i>20</i>&nbsp;    ExchangeImpl t;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    FixedLengthOutputStream(ExchangeImpl var1, OutputStream var2, long var3) {
+<i>23</i>&nbsp;        super(var2);
+<i>24</i>&nbsp;        this.t = var1;
+<i>25</i>&nbsp;        this.remaining = var3;
+<b class="nc"><i>26</i>&nbsp;    }</b>
+<b class="nc"><i>27</i>&nbsp;</b>
+<i>28</i>&nbsp;    public void write(int var1) throws IOException {
+<i>29</i>&nbsp;        if(this.closed) {
+<i>30</i>&nbsp;            throw new IOException(&quot;stream closed&quot;);
+<b class="nc"><i>31</i>&nbsp;        } else {</b>
+<b class="nc"><i>32</i>&nbsp;            this.eof = this.remaining == 0L;</b>
+<b class="nc"><i>33</i>&nbsp;            if(this.eof) {</b>
+<i>34</i>&nbsp;                throw new StreamClosedException();
+<i>35</i>&nbsp;            } else {
+<i>36</i>&nbsp;                this.out.write(var1);
+<b class="nc"><i>37</i>&nbsp;                --this.remaining;</b>
+<b class="nc"><i>38</i>&nbsp;            }</b>
+<i>39</i>&nbsp;        }
+<b class="nc"><i>40</i>&nbsp;    }</b>
+<b class="nc"><i>41</i>&nbsp;</b>
+<b class="nc"><i>42</i>&nbsp;    public void write(byte[] var1, int var2, int var3) throws IOException {</b>
+<i>43</i>&nbsp;        if(this.closed) {
+<b class="nc"><i>44</i>&nbsp;            throw new IOException(&quot;stream closed&quot;);</b>
+<b class="nc"><i>45</i>&nbsp;        } else {</b>
+<i>46</i>&nbsp;            this.eof = this.remaining == 0L;
+<i>47</i>&nbsp;            if(this.eof) {
+<i>48</i>&nbsp;                throw new StreamClosedException();
+<b class="nc"><i>49</i>&nbsp;            } else if((long)var3 &gt; this.remaining) {</b>
+<b class="nc"><i>50</i>&nbsp;                throw new IOException(&quot;too many bytes to write to stream&quot;);</b>
+<i>51</i>&nbsp;            } else {
+<b class="nc"><i>52</i>&nbsp;                this.out.write(var1, var2, var3);</b>
+<b class="nc"><i>53</i>&nbsp;                this.remaining -= (long)var3;</b>
+<b class="nc"><i>54</i>&nbsp;            }</b>
+<i>55</i>&nbsp;        }
+<b class="nc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;    public void close() throws IOException {</b>
+<i>59</i>&nbsp;        if(!this.closed) {
+<b class="nc"><i>60</i>&nbsp;            this.closed = true;</b>
+<b class="nc"><i>61</i>&nbsp;            if(this.remaining &gt; 0L) {</b>
+<i>62</i>&nbsp;                this.t.close();
+<i>63</i>&nbsp;                throw new IOException(&quot;insufficient bytes written to stream&quot;);
+<i>64</i>&nbsp;            } else {
+<b class="nc"><i>65</i>&nbsp;                this.flush();</b>
+<i>66</i>&nbsp;                this.eof = true;
+<i>67</i>&nbsp;                LeftOverInputStream var1 = this.t.getOriginalInputStream();
+<b class="nc"><i>68</i>&nbsp;                if(!var1.isClosed()) {</b>
+<b class="nc"><i>69</i>&nbsp;                    try {</b>
+<b class="nc"><i>70</i>&nbsp;                        var1.close();</b>
+<b class="nc"><i>71</i>&nbsp;                    } catch (IOException var3) {</b>
+<i>72</i>&nbsp;                        ;
+<b class="nc"><i>73</i>&nbsp;                    }</b>
+<b class="nc"><i>74</i>&nbsp;                }</b>
+<b class="nc"><i>75</i>&nbsp;</b>
+<b class="nc"><i>76</i>&nbsp;                WriteFinishedEvent var2 = new WriteFinishedEvent(this.t);</b>
+<i>77</i>&nbsp;                this.t.getHttpContext().getServerImpl().addEvent(var2);
+<b class="nc"><i>78</i>&nbsp;            }</b>
+<b class="nc"><i>79</i>&nbsp;        }</b>
+<i>80</i>&nbsp;    }
+<b class="nc"><i>81</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

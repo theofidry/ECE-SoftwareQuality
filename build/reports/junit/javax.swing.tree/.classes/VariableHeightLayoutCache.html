@@ -1,0 +1,1310 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VariableHeightLayoutCache</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.swing.tree</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VariableHeightLayoutCache (javax.swing.tree)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VariableHeightLayoutCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 38)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 330)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">VariableHeightLayoutCache$TreeStateNode</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 37)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 221)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">VariableHeightLayoutCache$VisibleTreeStateNodeEnumeration</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 82)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 593)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.swing.tree;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Rectangle;
+<i>9</i>&nbsp;import java.util.Enumeration;
+<i>10</i>&nbsp;import java.util.Hashtable;
+<i>11</i>&nbsp;import java.util.NoSuchElementException;
+<i>12</i>&nbsp;import java.util.Stack;
+<i>13</i>&nbsp;import java.util.Vector;
+<i>14</i>&nbsp;import javax.swing.event.TreeModelEvent;
+<i>15</i>&nbsp;import javax.swing.tree.AbstractLayoutCache;
+<i>16</i>&nbsp;import javax.swing.tree.DefaultMutableTreeNode;
+<i>17</i>&nbsp;import javax.swing.tree.MutableTreeNode;
+<i>18</i>&nbsp;import javax.swing.tree.TreeModel;
+<i>19</i>&nbsp;import javax.swing.tree.TreePath;
+<i>20</i>&nbsp;import javax.swing.tree.AbstractLayoutCache.NodeDimensions;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;public class VariableHeightLayoutCache extends AbstractLayoutCache {
+<i>23</i>&nbsp;    private Vector&lt;Object&gt; visibleNodes = new Vector();
+<i>24</i>&nbsp;    private boolean updateNodeSizes;
+<i>25</i>&nbsp;    private VariableHeightLayoutCache.TreeStateNode root;
+<i>26</i>&nbsp;    private Rectangle boundsBuffer = new Rectangle();
+<i>27</i>&nbsp;    private Hashtable&lt;TreePath, VariableHeightLayoutCache.TreeStateNode&gt; treePathMapping = new Hashtable();
+<i>28</i>&nbsp;    private Stack&lt;Stack&lt;TreePath&gt;&gt; tempStacks = new Stack();
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public VariableHeightLayoutCache() {
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public void setModel(TreeModel var1) {
+<i>34</i>&nbsp;        super.setModel(var1);
+<i>35</i>&nbsp;        this.rebuild(false);
+<i>36</i>&nbsp;    }
+<b class="nc"><i>37</i>&nbsp;</b>
+<i>38</i>&nbsp;    public void setRootVisible(boolean var1) {
+<i>39</i>&nbsp;        if(this.isRootVisible() != var1 &amp;&amp; this.root != null) {
+<i>40</i>&nbsp;            if(var1) {
+<i>41</i>&nbsp;                this.root.updatePreferredSize(0);
+<i>42</i>&nbsp;                this.visibleNodes.insertElementAt(this.root, 0);
+<i>43</i>&nbsp;            } else if(this.visibleNodes.size() &gt; 0) {
+<i>44</i>&nbsp;                this.visibleNodes.removeElementAt(0);
+<i>45</i>&nbsp;                if(this.treeSelectionModel != null) {
+<i>46</i>&nbsp;                    this.treeSelectionModel.removeSelectionPath(this.root.getTreePath());
+<i>47</i>&nbsp;                }
+<i>48</i>&nbsp;            }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;            if(this.treeSelectionModel != null) {
+<i>51</i>&nbsp;                this.treeSelectionModel.resetRowSelection();
+<i>52</i>&nbsp;            }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;            if(this.getRowCount() &gt; 0) {
+<i>55</i>&nbsp;                this.getNode(0).setYOrigin(0);
+<i>56</i>&nbsp;            }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;            this.updateYLocationsFrom(0);
+<i>59</i>&nbsp;            this.visibleNodesChanged();
+<i>60</i>&nbsp;        }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;        super.setRootVisible(var1);
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public void setRowHeight(int var1) {
+<i>66</i>&nbsp;        if(var1 != this.getRowHeight()) {
+<i>67</i>&nbsp;            super.setRowHeight(var1);
+<i>68</i>&nbsp;            this.invalidateSizes();
+<i>69</i>&nbsp;            this.visibleNodesChanged();
+<i>70</i>&nbsp;        }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;    public void setNodeDimensions(NodeDimensions var1) {</b>
+<b class="nc"><i>75</i>&nbsp;        super.setNodeDimensions(var1);</b>
+<b class="nc"><i>76</i>&nbsp;        this.invalidateSizes();</b>
+<b class="nc"><i>77</i>&nbsp;        this.visibleNodesChanged();</b>
+<b class="nc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public void setExpandedState(TreePath var1, boolean var2) {
+<i>81</i>&nbsp;        if(var1 != null) {
+<i>82</i>&nbsp;            if(var2) {
+<i>83</i>&nbsp;                this.ensurePathIsExpanded(var1, true);
+<i>84</i>&nbsp;            } else {
+<i>85</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var3 = this.getNodeForPath(var1, false, true);
+<i>86</i>&nbsp;                if(var3 != null) {
+<i>87</i>&nbsp;                    var3.makeVisible();
+<i>88</i>&nbsp;                    var3.collapse();
+<i>89</i>&nbsp;                }
+<b class="nc"><i>90</i>&nbsp;            }</b>
+<b class="nc"><i>91</i>&nbsp;        }</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public boolean getExpandedState(TreePath var1) {
+<i>96</i>&nbsp;        VariableHeightLayoutCache.TreeStateNode var2 = this.getNodeForPath(var1, true, false);
+<i>97</i>&nbsp;        return var2 != null?var2.isVisible() &amp;&amp; var2.isExpanded():false;
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public Rectangle getBounds(TreePath var1, Rectangle var2) {
+<i>101</i>&nbsp;        VariableHeightLayoutCache.TreeStateNode var3 = this.getNodeForPath(var1, true, false);
+<i>102</i>&nbsp;        if(var3 != null) {
+<i>103</i>&nbsp;            if(this.updateNodeSizes) {
+<i>104</i>&nbsp;                this.updateNodeSizes(false);
+<i>105</i>&nbsp;            }
+<b class="nc"><i>106</i>&nbsp;</b>
+<b class="nc"><i>107</i>&nbsp;            return var3.getNodeBounds(var2);</b>
+<b class="nc"><i>108</i>&nbsp;        } else {</b>
+<b class="nc"><i>109</i>&nbsp;            return null;</b>
+<i>110</i>&nbsp;        }
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<b class="nc"><i>113</i>&nbsp;    public TreePath getPathForRow(int var1) {</b>
+<b class="nc"><i>114</i>&nbsp;        return var1 &gt;= 0 &amp;&amp; var1 &lt; this.getRowCount()?this.getNode(var1).getTreePath():null;</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<b class="nc"><i>117</i>&nbsp;    public int getRowForPath(TreePath var1) {</b>
+<b class="nc"><i>118</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>119</i>&nbsp;            return -1;</b>
+<b class="nc"><i>120</i>&nbsp;        } else {</b>
+<b class="nc"><i>121</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var2 = this.getNodeForPath(var1, true, false);</b>
+<b class="nc"><i>122</i>&nbsp;            return var2 != null?var2.getRow():-1;</b>
+<i>123</i>&nbsp;        }
+<b class="nc"><i>124</i>&nbsp;    }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public int getRowCount() {
+<i>127</i>&nbsp;        return this.visibleNodes.size();
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public void invalidatePathBounds(TreePath var1) {
+<i>131</i>&nbsp;        VariableHeightLayoutCache.TreeStateNode var2 = this.getNodeForPath(var1, true, false);
+<i>132</i>&nbsp;        if(var2 != null) {
+<i>133</i>&nbsp;            var2.markSizeInvalid();
+<i>134</i>&nbsp;            if(var2.isVisible()) {
+<i>135</i>&nbsp;                this.updateYLocationsFrom(var2.getRow());
+<i>136</i>&nbsp;            }
+<i>137</i>&nbsp;        }
+<b class="nc"><i>138</i>&nbsp;</b>
+<b class="nc"><i>139</i>&nbsp;    }</b>
+<b class="nc"><i>140</i>&nbsp;</b>
+<b class="nc"><i>141</i>&nbsp;    public int getPreferredHeight() {</b>
+<i>142</i>&nbsp;        int var1 = this.getRowCount();
+<i>143</i>&nbsp;        if(var1 &gt; 0) {
+<i>144</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var2 = this.getNode(var1 - 1);
+<i>145</i>&nbsp;            return var2.getYOrigin() + var2.getPreferredHeight();
+<i>146</i>&nbsp;        } else {
+<i>147</i>&nbsp;            return 0;
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;    }
+<b class="nc"><i>150</i>&nbsp;</b>
+<b class="nc"><i>151</i>&nbsp;    public int getPreferredWidth(Rectangle var1) {</b>
+<b class="nc"><i>152</i>&nbsp;        if(this.updateNodeSizes) {</b>
+<i>153</i>&nbsp;            this.updateNodeSizes(false);
+<i>154</i>&nbsp;        }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;        return this.getMaxNodeWidth();
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    public TreePath getPathClosestTo(int var1, int var2) {
+<i>160</i>&nbsp;        if(this.getRowCount() == 0) {
+<i>161</i>&nbsp;            return null;
+<b class="nc"><i>162</i>&nbsp;        } else {</b>
+<b class="nc"><i>163</i>&nbsp;            if(this.updateNodeSizes) {</b>
+<b class="nc"><i>164</i>&nbsp;                this.updateNodeSizes(false);</b>
+<i>165</i>&nbsp;            }
+<b class="nc"><i>166</i>&nbsp;</b>
+<i>167</i>&nbsp;            int var3 = this.getRowContainingYLocation(var2);
+<b class="nc"><i>168</i>&nbsp;            return this.getNode(var3).getTreePath();</b>
+<b class="nc"><i>169</i>&nbsp;        }</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    public Enumeration&lt;TreePath&gt; getVisiblePathsFrom(TreePath var1) {
+<i>173</i>&nbsp;        VariableHeightLayoutCache.TreeStateNode var2 = this.getNodeForPath(var1, true, false);
+<i>174</i>&nbsp;        return var2 != null?new VariableHeightLayoutCache.VisibleTreeStateNodeEnumeration(var2):null;
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    public int getVisibleChildCount(TreePath var1) {
+<i>178</i>&nbsp;        VariableHeightLayoutCache.TreeStateNode var2 = this.getNodeForPath(var1, true, false);
+<i>179</i>&nbsp;        return var2 != null?var2.getVisibleChildCount():0;
+<i>180</i>&nbsp;    }
+<b class="nc"><i>181</i>&nbsp;</b>
+<i>182</i>&nbsp;    public void invalidateSizes() {
+<b class="nc"><i>183</i>&nbsp;        if(this.root != null) {</b>
+<i>184</i>&nbsp;            this.root.deepMarkSizeInvalid();
+<i>185</i>&nbsp;        }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;        if(!this.isFixedRowHeight() &amp;&amp; this.visibleNodes.size() &gt; 0) {
+<i>188</i>&nbsp;            this.updateNodeSizes(true);
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    public boolean isExpanded(TreePath var1) {
+<i>194</i>&nbsp;        if(var1 == null) {
+<i>195</i>&nbsp;            return false;
+<i>196</i>&nbsp;        } else {
+<b class="nc"><i>197</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var2 = this.getNodeForPath(var1, true, false);</b>
+<i>198</i>&nbsp;            return var2 != null &amp;&amp; var2.isExpanded();
+<b class="nc"><i>199</i>&nbsp;        }</b>
+<b class="nc"><i>200</i>&nbsp;    }</b>
+<b class="nc"><i>201</i>&nbsp;</b>
+<b class="nc"><i>202</i>&nbsp;    public void treeNodesChanged(TreeModelEvent var1) {</b>
+<i>203</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>204</i>&nbsp;            int[] var2 = var1.getChildIndices();</b>
+<i>205</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var3 = this.getNodeForPath(var1.getTreePath(), false, false);
+<i>206</i>&nbsp;            if(var3 != null) {
+<i>207</i>&nbsp;                Object var4 = var3.getValue();
+<i>208</i>&nbsp;                var3.updatePreferredSize();
+<i>209</i>&nbsp;                int var5;
+<i>210</i>&nbsp;                if(var3.hasBeenExpanded() &amp;&amp; var2 != null) {
+<i>211</i>&nbsp;                    for(var5 = 0; var5 &lt; var2.length; ++var5) {
+<i>212</i>&nbsp;                        VariableHeightLayoutCache.TreeStateNode var6 = (VariableHeightLayoutCache.TreeStateNode)var3.getChildAt(var2[var5]);
+<i>213</i>&nbsp;                        var6.setUserObject(this.treeModel.getChild(var4, var2[var5]));
+<i>214</i>&nbsp;                        var6.updatePreferredSize();
+<i>215</i>&nbsp;                    }
+<b class="nc"><i>216</i>&nbsp;                } else if(var3 == this.root) {</b>
+<b class="nc"><i>217</i>&nbsp;                    var3.updatePreferredSize();</b>
+<i>218</i>&nbsp;                }
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;                if(!this.isFixedRowHeight()) {
+<i>221</i>&nbsp;                    var5 = var3.getRow();
+<i>222</i>&nbsp;                    if(var5 != -1) {
+<i>223</i>&nbsp;                        this.updateYLocationsFrom(var5);
+<i>224</i>&nbsp;                    }
+<i>225</i>&nbsp;                }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;                this.visibleNodesChanged();
+<i>228</i>&nbsp;            }
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;    }</b>
+<b class="nc"><i>232</i>&nbsp;</b>
+<i>233</i>&nbsp;    public void treeNodesInserted(TreeModelEvent var1) {
+<b class="nc"><i>234</i>&nbsp;        if(var1 != null) {</b>
+<i>235</i>&nbsp;            int[] var2 = var1.getChildIndices();
+<b class="nc"><i>236</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var3 = this.getNodeForPath(var1.getTreePath(), false, false);</b>
+<b class="nc"><i>237</i>&nbsp;            if(var3 != null &amp;&amp; var2 != null &amp;&amp; var2.length &gt; 0) {</b>
+<b class="nc"><i>238</i>&nbsp;                if(var3.hasBeenExpanded()) {</b>
+<i>239</i>&nbsp;                    int var8 = var3.getChildCount();
+<i>240</i>&nbsp;                    Object var6 = var3.getValue();
+<i>241</i>&nbsp;                    boolean var4 = var3 == this.root &amp;&amp; !this.rootVisible || var3.getRow() != -1 &amp;&amp; var3.isExpanded();
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;                    for(int var5 = 0; var5 &lt; var2.length; ++var5) {
+<i>244</i>&nbsp;                        this.createNodeAt(var3, var2[var5]);
+<i>245</i>&nbsp;                    }
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;                    if(var8 == 0) {
+<i>248</i>&nbsp;                        var3.updatePreferredSize();
+<i>249</i>&nbsp;                    }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;                    if(this.treeSelectionModel != null) {
+<i>252</i>&nbsp;                        this.treeSelectionModel.resetRowSelection();
+<i>253</i>&nbsp;                    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;                    if(!this.isFixedRowHeight() &amp;&amp; (var4 || var8 == 0 &amp;&amp; var3.isVisible())) {
+<b class="nc"><i>256</i>&nbsp;                        if(var3 == this.root) {</b>
+<i>257</i>&nbsp;                            this.updateYLocationsFrom(0);
+<b class="nc"><i>258</i>&nbsp;                        } else {</b>
+<b class="nc"><i>259</i>&nbsp;                            this.updateYLocationsFrom(var3.getRow());</b>
+<b class="nc"><i>260</i>&nbsp;                        }</b>
+<b class="nc"><i>261</i>&nbsp;</b>
+<i>262</i>&nbsp;                        this.visibleNodesChanged();
+<i>263</i>&nbsp;                    } else if(var4) {
+<i>264</i>&nbsp;                        this.visibleNodesChanged();
+<i>265</i>&nbsp;                    }
+<i>266</i>&nbsp;                } else if(this.treeModel.getChildCount(var3.getValue()) - var2.length == 0) {
+<i>267</i>&nbsp;                    var3.updatePreferredSize();
+<i>268</i>&nbsp;                    if(!this.isFixedRowHeight() &amp;&amp; var3.isVisible()) {
+<i>269</i>&nbsp;                        this.updateYLocationsFrom(var3.getRow());
+<i>270</i>&nbsp;                    }
+<b class="nc"><i>271</i>&nbsp;                }</b>
+<i>272</i>&nbsp;            }
+<b class="nc"><i>273</i>&nbsp;        }</b>
+<b class="nc"><i>274</i>&nbsp;</b>
+<i>275</i>&nbsp;    }
+<b class="nc"><i>276</i>&nbsp;</b>
+<i>277</i>&nbsp;    public void treeNodesRemoved(TreeModelEvent var1) {
+<b class="nc"><i>278</i>&nbsp;        if(var1 != null) {</b>
+<i>279</i>&nbsp;            int[] var2 = var1.getChildIndices();
+<i>280</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var3 = this.getNodeForPath(var1.getTreePath(), false, false);
+<i>281</i>&nbsp;            if(var3 != null &amp;&amp; var2 != null &amp;&amp; var2.length &gt; 0) {
+<i>282</i>&nbsp;                if(var3.hasBeenExpanded()) {
+<i>283</i>&nbsp;                    boolean var4 = var3 == this.root &amp;&amp; !this.rootVisible || var3.getRow() != -1 &amp;&amp; var3.isExpanded();
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;                    for(int var5 = var2.length - 1; var5 &gt;= 0; --var5) {
+<i>286</i>&nbsp;                        VariableHeightLayoutCache.TreeStateNode var7 = (VariableHeightLayoutCache.TreeStateNode)var3.getChildAt(var2[var5]);
+<i>287</i>&nbsp;                        if(var7.isExpanded()) {
+<b class="nc"><i>288</i>&nbsp;                            var7.collapse(false);</b>
+<b class="nc"><i>289</i>&nbsp;                        }</b>
+<i>290</i>&nbsp;
+<b class="nc"><i>291</i>&nbsp;                        if(var4) {</b>
+<i>292</i>&nbsp;                            int var6 = var7.getRow();
+<i>293</i>&nbsp;                            if(var6 != -1) {
+<i>294</i>&nbsp;                                this.visibleNodes.removeElementAt(var6);
+<i>295</i>&nbsp;                            }
+<i>296</i>&nbsp;                        }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;                        var3.remove(var2[var5]);
+<i>299</i>&nbsp;                    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;                    if(var3.getChildCount() == 0) {
+<i>302</i>&nbsp;                        var3.updatePreferredSize();
+<i>303</i>&nbsp;                        if(var3.isExpanded() &amp;&amp; var3.isLeaf()) {
+<i>304</i>&nbsp;                            var3.collapse(false);
+<i>305</i>&nbsp;                        }
+<i>306</i>&nbsp;                    }
+<b class="nc"><i>307</i>&nbsp;</b>
+<b class="nc"><i>308</i>&nbsp;                    if(this.treeSelectionModel != null) {</b>
+<i>309</i>&nbsp;                        this.treeSelectionModel.resetRowSelection();
+<b class="nc"><i>310</i>&nbsp;                    }</b>
+<b class="nc"><i>311</i>&nbsp;</b>
+<i>312</i>&nbsp;                    if(!this.isFixedRowHeight() &amp;&amp; (var4 || var3.getChildCount() == 0 &amp;&amp; var3.isVisible())) {
+<b class="nc"><i>313</i>&nbsp;                        if(var3 == this.root) {</b>
+<i>314</i>&nbsp;                            if(this.getRowCount() &gt; 0) {
+<b class="nc"><i>315</i>&nbsp;                                this.getNode(0).setYOrigin(0);</b>
+<i>316</i>&nbsp;                            }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;                            this.updateYLocationsFrom(0);
+<i>319</i>&nbsp;                        } else {
+<i>320</i>&nbsp;                            this.updateYLocationsFrom(var3.getRow());
+<i>321</i>&nbsp;                        }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;                        this.visibleNodesChanged();
+<i>324</i>&nbsp;                    } else if(var4) {
+<i>325</i>&nbsp;                        this.visibleNodesChanged();
+<i>326</i>&nbsp;                    }
+<i>327</i>&nbsp;                } else if(this.treeModel.getChildCount(var3.getValue()) == 0) {
+<b class="nc"><i>328</i>&nbsp;                    var3.updatePreferredSize();</b>
+<i>329</i>&nbsp;                    if(!this.isFixedRowHeight() &amp;&amp; var3.isVisible()) {
+<b class="nc"><i>330</i>&nbsp;                        this.updateYLocationsFrom(var3.getRow());</b>
+<b class="nc"><i>331</i>&nbsp;                    }</b>
+<i>332</i>&nbsp;                }
+<b class="nc"><i>333</i>&nbsp;            }</b>
+<i>334</i>&nbsp;        }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    public void treeStructureChanged(TreeModelEvent var1) {
+<i>339</i>&nbsp;        if(var1 != null) {
+<i>340</i>&nbsp;            TreePath var2 = var1.getTreePath();
+<b class="nc"><i>341</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var3 = this.getNodeForPath(var2, false, false);</b>
+<i>342</i>&nbsp;            if(var3 != this.root &amp;&amp; (var3 != null || (var2 != null || this.treeModel == null || this.treeModel.getRoot() != null) &amp;&amp; (var2 == null || var2.getPathCount() != 1))) {
+<b class="nc"><i>343</i>&nbsp;                if(var3 != null) {</b>
+<i>344</i>&nbsp;                    boolean var8 = var3.isExpanded();
+<i>345</i>&nbsp;                    boolean var9 = var3.getRow() != -1;
+<i>346</i>&nbsp;                    VariableHeightLayoutCache.TreeStateNode var7 = (VariableHeightLayoutCache.TreeStateNode)var3.getParent();
+<i>347</i>&nbsp;                    int var4 = var7.getIndex(var3);
+<i>348</i>&nbsp;                    if(var9 &amp;&amp; var8) {
+<i>349</i>&nbsp;                        var3.collapse(false);
+<i>350</i>&nbsp;                    }
+<b class="nc"><i>351</i>&nbsp;</b>
+<b class="nc"><i>352</i>&nbsp;                    if(var9) {</b>
+<b class="nc"><i>353</i>&nbsp;                        this.visibleNodes.removeElement(var3);</b>
+<b class="nc"><i>354</i>&nbsp;                    }</b>
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;                    var3.removeFromParent();
+<i>357</i>&nbsp;                    this.createNodeAt(var7, var4);
+<i>358</i>&nbsp;                    VariableHeightLayoutCache.TreeStateNode var6 = (VariableHeightLayoutCache.TreeStateNode)var7.getChildAt(var4);
+<i>359</i>&nbsp;                    if(var9 &amp;&amp; var8) {
+<i>360</i>&nbsp;                        var6.expand(false);
+<i>361</i>&nbsp;                    }
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;                    int var10 = var6.getRow();
+<i>364</i>&nbsp;                    if(!this.isFixedRowHeight() &amp;&amp; var9) {
+<b class="nc"><i>365</i>&nbsp;                        if(var10 == 0) {</b>
+<b class="nc"><i>366</i>&nbsp;                            this.updateYLocationsFrom(var10);</b>
+<i>367</i>&nbsp;                        } else {
+<b class="nc"><i>368</i>&nbsp;                            this.updateYLocationsFrom(var10 - 1);</b>
+<i>369</i>&nbsp;                        }
+<b class="nc"><i>370</i>&nbsp;</b>
+<i>371</i>&nbsp;                        this.visibleNodesChanged();
+<i>372</i>&nbsp;                    } else if(var9) {
+<i>373</i>&nbsp;                        this.visibleNodesChanged();
+<i>374</i>&nbsp;                    }
+<i>375</i>&nbsp;                }
+<i>376</i>&nbsp;            } else {
+<i>377</i>&nbsp;                this.rebuild(true);
+<i>378</i>&nbsp;            }
+<i>379</i>&nbsp;        }
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    private void visibleNodesChanged() {
+<i>384</i>&nbsp;    }
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;    private void addMapping(VariableHeightLayoutCache.TreeStateNode var1) {
+<i>387</i>&nbsp;        this.treePathMapping.put(var1.getTreePath(), var1);
+<i>388</i>&nbsp;    }
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;    private void removeMapping(VariableHeightLayoutCache.TreeStateNode var1) {
+<i>391</i>&nbsp;        this.treePathMapping.remove(var1.getTreePath());
+<i>392</i>&nbsp;    }
+<i>393</i>&nbsp;
+<b class="nc"><i>394</i>&nbsp;    private VariableHeightLayoutCache.TreeStateNode getMapping(TreePath var1) {</b>
+<i>395</i>&nbsp;        return (VariableHeightLayoutCache.TreeStateNode)this.treePathMapping.get(var1);
+<i>396</i>&nbsp;    }
+<i>397</i>&nbsp;
+<b class="nc"><i>398</i>&nbsp;    private Rectangle getBounds(int var1, Rectangle var2) {</b>
+<b class="nc"><i>399</i>&nbsp;        if(this.updateNodeSizes) {</b>
+<b class="nc"><i>400</i>&nbsp;            this.updateNodeSizes(false);</b>
+<b class="nc"><i>401</i>&nbsp;        }</b>
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;        return var1 &gt;= 0 &amp;&amp; var1 &lt; this.getRowCount()?this.getNode(var1).getNodeBounds(var2):null;
+<i>404</i>&nbsp;    }
+<b class="nc"><i>405</i>&nbsp;</b>
+<b class="nc"><i>406</i>&nbsp;    private void rebuild(boolean var1) {</b>
+<i>407</i>&nbsp;        this.treePathMapping.clear();
+<i>408</i>&nbsp;        Object var2;
+<i>409</i>&nbsp;        if(this.treeModel != null &amp;&amp; (var2 = this.treeModel.getRoot()) != null) {
+<b class="nc"><i>410</i>&nbsp;            this.root = this.createNodeForValue(var2);</b>
+<b class="nc"><i>411</i>&nbsp;            this.root.path = new TreePath(var2);</b>
+<b class="nc"><i>412</i>&nbsp;            this.addMapping(this.root);</b>
+<i>413</i>&nbsp;            this.root.updatePreferredSize(0);
+<i>414</i>&nbsp;            this.visibleNodes.removeAllElements();
+<b class="nc"><i>415</i>&nbsp;            if(this.isRootVisible()) {</b>
+<i>416</i>&nbsp;                this.visibleNodes.addElement(this.root);
+<i>417</i>&nbsp;            }
+<b class="nc"><i>418</i>&nbsp;</b>
+<i>419</i>&nbsp;            if(!this.root.isExpanded()) {
+<b class="nc"><i>420</i>&nbsp;                this.root.expand();</b>
+<b class="nc"><i>421</i>&nbsp;            } else {</b>
+<i>422</i>&nbsp;                Enumeration var3 = this.root.children();
+<b class="nc"><i>423</i>&nbsp;</b>
+<i>424</i>&nbsp;                while(var3.hasMoreElements()) {
+<b class="nc"><i>425</i>&nbsp;                    this.visibleNodes.addElement(var3.nextElement());</b>
+<b class="nc"><i>426</i>&nbsp;                }</b>
+<i>427</i>&nbsp;
+<b class="nc"><i>428</i>&nbsp;                if(!this.isFixedRowHeight()) {</b>
+<b class="nc"><i>429</i>&nbsp;                    this.updateYLocationsFrom(0);</b>
+<i>430</i>&nbsp;                }
+<b class="nc"><i>431</i>&nbsp;            }</b>
+<i>432</i>&nbsp;        } else {
+<i>433</i>&nbsp;            this.visibleNodes.removeAllElements();
+<i>434</i>&nbsp;            this.root = null;
+<i>435</i>&nbsp;        }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;        if(var1 &amp;&amp; this.treeSelectionModel != null) {
+<i>438</i>&nbsp;            this.treeSelectionModel.clearSelection();
+<i>439</i>&nbsp;        }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;        this.visibleNodesChanged();
+<i>442</i>&nbsp;    }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    private VariableHeightLayoutCache.TreeStateNode createNodeAt(VariableHeightLayoutCache.TreeStateNode var1, int var2) {
+<i>445</i>&nbsp;        Object var4 = this.treeModel.getChild(var1.getValue(), var2);
+<i>446</i>&nbsp;        VariableHeightLayoutCache.TreeStateNode var5 = this.createNodeForValue(var4);
+<b class="nc"><i>447</i>&nbsp;        var1.insert(var5, var2);</b>
+<i>448</i>&nbsp;        var5.updatePreferredSize(-1);
+<i>449</i>&nbsp;        boolean var3 = var1 == this.root;
+<i>450</i>&nbsp;        if(var5 != null &amp;&amp; var1.isExpanded() &amp;&amp; (var1.getRow() != -1 || var3)) {
+<b class="nc"><i>451</i>&nbsp;            int var6;</b>
+<b class="nc"><i>452</i>&nbsp;            if(var2 == 0) {</b>
+<i>453</i>&nbsp;                if(var3 &amp;&amp; !this.isRootVisible()) {
+<i>454</i>&nbsp;                    var6 = 0;
+<i>455</i>&nbsp;                } else {
+<b class="nc"><i>456</i>&nbsp;                    var6 = var1.getRow() + 1;</b>
+<i>457</i>&nbsp;                }
+<b class="nc"><i>458</i>&nbsp;            } else if(var2 == var1.getChildCount()) {</b>
+<i>459</i>&nbsp;                var6 = var1.getLastVisibleNode().getRow() + 1;
+<i>460</i>&nbsp;            } else {
+<i>461</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var7 = (VariableHeightLayoutCache.TreeStateNode)var1.getChildAt(var2 - 1);
+<i>462</i>&nbsp;                var6 = var7.getLastVisibleNode().getRow() + 1;
+<b class="nc"><i>463</i>&nbsp;            }</b>
+<i>464</i>&nbsp;
+<i>465</i>&nbsp;            this.visibleNodes.insertElementAt(var5, var6);
+<b class="nc"><i>466</i>&nbsp;        }</b>
+<b class="nc"><i>467</i>&nbsp;</b>
+<i>468</i>&nbsp;        return var5;
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;
+<b class="nc"><i>471</i>&nbsp;    private VariableHeightLayoutCache.TreeStateNode getNodeForPath(TreePath var1, boolean var2, boolean var3) {</b>
+<i>472</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>473</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var4 = this.getMapping(var1);</b>
+<i>474</i>&nbsp;            if(var4 != null) {
+<i>475</i>&nbsp;                if(var2 &amp;&amp; !var4.isVisible()) {
+<b class="nc"><i>476</i>&nbsp;                    return null;</b>
+<i>477</i>&nbsp;                } else {
+<b class="nc"><i>478</i>&nbsp;                    return var4;</b>
+<i>479</i>&nbsp;                }
+<b class="nc"><i>480</i>&nbsp;            } else {</b>
+<b class="nc"><i>481</i>&nbsp;                Stack var5;</b>
+<i>482</i>&nbsp;                if(this.tempStacks.size() == 0) {
+<i>483</i>&nbsp;                    var5 = new Stack();
+<b class="nc"><i>484</i>&nbsp;                } else {</b>
+<i>485</i>&nbsp;                    var5 = (Stack)this.tempStacks.pop();
+<i>486</i>&nbsp;                }
+<b class="nc"><i>487</i>&nbsp;</b>
+<b class="nc"><i>488</i>&nbsp;                try {</b>
+<i>489</i>&nbsp;                    var5.push(var1);
+<b class="nc"><i>490</i>&nbsp;                    var1 = var1.getParentPath();</b>
+<i>491</i>&nbsp;
+<b class="nc"><i>492</i>&nbsp;                    for(var4 = null; var1 != null; var1 = var1.getParentPath()) {</b>
+<i>493</i>&nbsp;                        var4 = this.getMapping(var1);
+<b class="nc"><i>494</i>&nbsp;                        if(var4 != null) {</b>
+<b class="nc"><i>495</i>&nbsp;                            while(var4 != null &amp;&amp; var5.size() &gt; 0) {</b>
+<b class="nc"><i>496</i>&nbsp;                                var1 = (TreePath)var5.pop();</b>
+<b class="nc"><i>497</i>&nbsp;                                var4.getLoadedChildren(var3);</b>
+<i>498</i>&nbsp;                                int var6 = this.treeModel.getIndexOfChild(var4.getUserObject(), var1.getLastPathComponent());
+<b class="nc"><i>499</i>&nbsp;                                if(var6 != -1 &amp;&amp; var6 &lt; var4.getChildCount() &amp;&amp; (!var2 || var4.isVisible())) {</b>
+<b class="nc"><i>500</i>&nbsp;                                    var4 = (VariableHeightLayoutCache.TreeStateNode)var4.getChildAt(var6);</b>
+<b class="nc"><i>501</i>&nbsp;                                } else {</b>
+<i>502</i>&nbsp;                                    var4 = null;
+<i>503</i>&nbsp;                                }
+<i>504</i>&nbsp;                            }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;                            VariableHeightLayoutCache.TreeStateNode var10 = var4;
+<i>507</i>&nbsp;                            return var10;
+<i>508</i>&nbsp;                        }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;                        var5.push(var1);
+<i>511</i>&nbsp;                    }
+<i>512</i>&nbsp;
+<i>513</i>&nbsp;                    return null;
+<i>514</i>&nbsp;                } finally {
+<i>515</i>&nbsp;                    var5.removeAllElements();
+<i>516</i>&nbsp;                    this.tempStacks.push(var5);
+<i>517</i>&nbsp;                }
+<i>518</i>&nbsp;            }
+<i>519</i>&nbsp;        } else {
+<i>520</i>&nbsp;            return null;
+<b class="nc"><i>521</i>&nbsp;        }</b>
+<i>522</i>&nbsp;    }
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;    private void updateYLocationsFrom(int var1) {
+<b class="nc"><i>525</i>&nbsp;        if(var1 &gt;= 0 &amp;&amp; var1 &lt; this.getRowCount()) {</b>
+<b class="nc"><i>526</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var5 = this.getNode(var1);</b>
+<i>527</i>&nbsp;            int var4 = var5.getYOrigin() + var5.getPreferredHeight();
+<i>528</i>&nbsp;            int var2 = var1 + 1;
+<b class="nc"><i>529</i>&nbsp;</b>
+<i>530</i>&nbsp;            for(int var3 = this.visibleNodes.size(); var2 &lt; var3; ++var2) {
+<b class="nc"><i>531</i>&nbsp;                var5 = (VariableHeightLayoutCache.TreeStateNode)this.visibleNodes.elementAt(var2);</b>
+<i>532</i>&nbsp;                var5.setYOrigin(var4);
+<i>533</i>&nbsp;                var4 += var5.getPreferredHeight();
+<i>534</i>&nbsp;            }
+<i>535</i>&nbsp;        }
+<i>536</i>&nbsp;
+<b class="nc"><i>537</i>&nbsp;    }</b>
+<i>538</i>&nbsp;
+<i>539</i>&nbsp;    private void updateNodeSizes(boolean var1) {
+<i>540</i>&nbsp;        this.updateNodeSizes = false;
+<b class="nc"><i>541</i>&nbsp;        int var3 = 0;</b>
+<b class="nc"><i>542</i>&nbsp;        int var2 = 0;</b>
+<b class="nc"><i>543</i>&nbsp;</b>
+<i>544</i>&nbsp;        for(int var4 = this.visibleNodes.size(); var3 &lt; var4; ++var3) {
+<b class="nc"><i>545</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var5 = (VariableHeightLayoutCache.TreeStateNode)this.visibleNodes.elementAt(var3);</b>
+<b class="nc"><i>546</i>&nbsp;            var5.setYOrigin(var2);</b>
+<i>547</i>&nbsp;            if(var1 || !var5.hasValidSize()) {
+<i>548</i>&nbsp;                var5.updatePreferredSize(var3);
+<i>549</i>&nbsp;            }
+<b class="nc"><i>550</i>&nbsp;</b>
+<b class="nc"><i>551</i>&nbsp;            var2 += var5.getPreferredHeight();</b>
+<b class="nc"><i>552</i>&nbsp;        }</b>
+<b class="nc"><i>553</i>&nbsp;</b>
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<b class="nc"><i>556</i>&nbsp;    private int getRowContainingYLocation(int var1) {</b>
+<i>557</i>&nbsp;        if(this.isFixedRowHeight()) {
+<b class="nc"><i>558</i>&nbsp;            return this.getRowCount() == 0?-1:Math.max(0, Math.min(this.getRowCount() - 1, var1 / this.getRowHeight()));</b>
+<i>559</i>&nbsp;        } else {
+<b class="nc"><i>560</i>&nbsp;            int var2;</b>
+<b class="nc"><i>561</i>&nbsp;            if((var2 = this.getRowCount()) &lt;= 0) {</b>
+<i>562</i>&nbsp;                return -1;
+<i>563</i>&nbsp;            } else {
+<b class="nc"><i>564</i>&nbsp;                int var5 = 0;</b>
+<i>565</i>&nbsp;                int var4 = 0;
+<i>566</i>&nbsp;
+<b class="nc"><i>567</i>&nbsp;                while(var5 &lt; var2) {</b>
+<b class="nc"><i>568</i>&nbsp;                    var4 = (var2 - var5) / 2 + var5;</b>
+<i>569</i>&nbsp;                    VariableHeightLayoutCache.TreeStateNode var7 = (VariableHeightLayoutCache.TreeStateNode)this.visibleNodes.elementAt(var4);
+<i>570</i>&nbsp;                    int var6 = var7.getYOrigin();
+<b class="nc"><i>571</i>&nbsp;                    int var3 = var6 + var7.getPreferredHeight();</b>
+<i>572</i>&nbsp;                    if(var1 &lt; var6) {
+<i>573</i>&nbsp;                        var2 = var4 - 1;
+<b class="nc"><i>574</i>&nbsp;                    } else {</b>
+<i>575</i>&nbsp;                        if(var1 &lt; var3) {
+<i>576</i>&nbsp;                            break;
+<i>577</i>&nbsp;                        }
+<b class="nc"><i>578</i>&nbsp;</b>
+<b class="nc"><i>579</i>&nbsp;                        var5 = var4 + 1;</b>
+<b class="nc"><i>580</i>&nbsp;                    }</b>
+<i>581</i>&nbsp;                }
+<i>582</i>&nbsp;
+<b class="nc"><i>583</i>&nbsp;                if(var5 == var2) {</b>
+<b class="nc"><i>584</i>&nbsp;                    var4 = var5;</b>
+<i>585</i>&nbsp;                    if(var5 &gt;= this.getRowCount()) {
+<b class="nc"><i>586</i>&nbsp;                        var4 = this.getRowCount() - 1;</b>
+<b class="nc"><i>587</i>&nbsp;                    }</b>
+<b class="nc"><i>588</i>&nbsp;                }</b>
+<b class="nc"><i>589</i>&nbsp;</b>
+<i>590</i>&nbsp;                return var4;
+<b class="nc"><i>591</i>&nbsp;            }</b>
+<b class="nc"><i>592</i>&nbsp;        }</b>
+<b class="nc"><i>593</i>&nbsp;    }</b>
+<i>594</i>&nbsp;
+<i>595</i>&nbsp;    private void ensurePathIsExpanded(TreePath var1, boolean var2) {
+<i>596</i>&nbsp;        if(var1 != null) {
+<i>597</i>&nbsp;            if(this.treeModel.isLeaf(var1.getLastPathComponent())) {
+<i>598</i>&nbsp;                var1 = var1.getParentPath();
+<i>599</i>&nbsp;                var2 = true;
+<i>600</i>&nbsp;            }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;            if(var1 != null) {
+<i>603</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var3 = this.getNodeForPath(var1, false, true);
+<i>604</i>&nbsp;                if(var3 != null) {
+<i>605</i>&nbsp;                    var3.makeVisible();
+<i>606</i>&nbsp;                    if(var2) {
+<i>607</i>&nbsp;                        var3.expand();
+<i>608</i>&nbsp;                    }
+<i>609</i>&nbsp;                }
+<i>610</i>&nbsp;            }
+<i>611</i>&nbsp;        }
+<b class="nc"><i>612</i>&nbsp;</b>
+<i>613</i>&nbsp;    }
+<b class="nc"><i>614</i>&nbsp;</b>
+<i>615</i>&nbsp;    private VariableHeightLayoutCache.TreeStateNode getNode(int var1) {
+<i>616</i>&nbsp;        return (VariableHeightLayoutCache.TreeStateNode)this.visibleNodes.elementAt(var1);
+<b class="nc"><i>617</i>&nbsp;    }</b>
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    private int getMaxNodeWidth() {
+<i>620</i>&nbsp;        int var1 = 0;
+<b class="nc"><i>621</i>&nbsp;</b>
+<i>622</i>&nbsp;        for(int var3 = this.getRowCount() - 1; var3 &gt;= 0; --var3) {
+<i>623</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var4 = this.getNode(var3);
+<i>624</i>&nbsp;            int var2 = var4.getPreferredWidth() + var4.getXOrigin();
+<i>625</i>&nbsp;            if(var2 &gt; var1) {
+<b class="nc"><i>626</i>&nbsp;                var1 = var2;</b>
+<i>627</i>&nbsp;            }
+<b class="nc"><i>628</i>&nbsp;        }</b>
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;        return var1;
+<i>631</i>&nbsp;    }
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;    private VariableHeightLayoutCache.TreeStateNode createNodeForValue(Object var1) {
+<b class="nc"><i>634</i>&nbsp;        return new VariableHeightLayoutCache.TreeStateNode(var1);</b>
+<b class="nc"><i>635</i>&nbsp;    }</b>
+<i>636</i>&nbsp;
+<b class="nc"><i>637</i>&nbsp;    private class VisibleTreeStateNodeEnumeration implements Enumeration&lt;TreePath&gt; {</b>
+<b class="nc"><i>638</i>&nbsp;        protected VariableHeightLayoutCache.TreeStateNode parent;</b>
+<b class="nc"><i>639</i>&nbsp;        protected int nextIndex;</b>
+<b class="nc"><i>640</i>&nbsp;        protected int childCount;</b>
+<i>641</i>&nbsp;
+<b class="nc"><i>642</i>&nbsp;        protected VisibleTreeStateNodeEnumeration(VariableHeightLayoutCache.TreeStateNode var2) {</b>
+<b class="nc"><i>643</i>&nbsp;            this(var2, -1);</b>
+<b class="nc"><i>644</i>&nbsp;        }</b>
+<b class="nc"><i>645</i>&nbsp;</b>
+<b class="nc"><i>646</i>&nbsp;        protected VisibleTreeStateNodeEnumeration(VariableHeightLayoutCache.TreeStateNode var2, int var3) {</b>
+<b class="nc"><i>647</i>&nbsp;            this.parent = var2;</b>
+<b class="nc"><i>648</i>&nbsp;            this.nextIndex = var3;</b>
+<b class="nc"><i>649</i>&nbsp;            this.childCount = this.parent.getChildCount();</b>
+<b class="nc"><i>650</i>&nbsp;        }</b>
+<b class="nc"><i>651</i>&nbsp;</b>
+<b class="nc"><i>652</i>&nbsp;        public boolean hasMoreElements() {</b>
+<i>653</i>&nbsp;            return this.parent != null;
+<b class="nc"><i>654</i>&nbsp;        }</b>
+<b class="nc"><i>655</i>&nbsp;</b>
+<i>656</i>&nbsp;        public TreePath nextElement() {
+<b class="nc"><i>657</i>&nbsp;            if(!this.hasMoreElements()) {</b>
+<b class="nc"><i>658</i>&nbsp;                throw new NoSuchElementException(&quot;No more visible paths&quot;);</b>
+<i>659</i>&nbsp;            } else {
+<i>660</i>&nbsp;                TreePath var1;
+<i>661</i>&nbsp;                if(this.nextIndex == -1) {
+<i>662</i>&nbsp;                    var1 = this.parent.getTreePath();
+<i>663</i>&nbsp;                } else {
+<i>664</i>&nbsp;                    VariableHeightLayoutCache.TreeStateNode var2 = (VariableHeightLayoutCache.TreeStateNode)this.parent.getChildAt(this.nextIndex);
+<i>665</i>&nbsp;                    var1 = var2.getTreePath();
+<i>666</i>&nbsp;                }
+<i>667</i>&nbsp;
+<i>668</i>&nbsp;                this.updateNextObject();
+<i>669</i>&nbsp;                return var1;
+<i>670</i>&nbsp;            }
+<i>671</i>&nbsp;        }
+<i>672</i>&nbsp;
+<i>673</i>&nbsp;        protected void updateNextObject() {
+<i>674</i>&nbsp;            if(!this.updateNextIndex()) {
+<b class="nc"><i>675</i>&nbsp;                this.findNextValidParent();</b>
+<i>676</i>&nbsp;            }
+<i>677</i>&nbsp;
+<i>678</i>&nbsp;        }
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;        protected boolean findNextValidParent() {
+<i>681</i>&nbsp;            if(this.parent == VariableHeightLayoutCache.this.root) {
+<b class="nc"><i>682</i>&nbsp;                this.parent = null;</b>
+<i>683</i>&nbsp;                return false;
+<i>684</i>&nbsp;            } else {
+<i>685</i>&nbsp;                while(this.parent != null) {
+<i>686</i>&nbsp;                    VariableHeightLayoutCache.TreeStateNode var1 = (VariableHeightLayoutCache.TreeStateNode)this.parent.getParent();
+<i>687</i>&nbsp;                    if(var1 != null) {
+<i>688</i>&nbsp;                        this.nextIndex = var1.getIndex(this.parent);
+<i>689</i>&nbsp;                        this.parent = var1;
+<b class="nc"><i>690</i>&nbsp;                        this.childCount = this.parent.getChildCount();</b>
+<i>691</i>&nbsp;                        if(this.updateNextIndex()) {
+<i>692</i>&nbsp;                            return true;
+<i>693</i>&nbsp;                        }
+<i>694</i>&nbsp;                    } else {
+<i>695</i>&nbsp;                        this.parent = null;
+<i>696</i>&nbsp;                    }
+<i>697</i>&nbsp;                }
+<i>698</i>&nbsp;
+<b class="nc"><i>699</i>&nbsp;                return false;</b>
+<b class="nc"><i>700</i>&nbsp;            }</b>
+<i>701</i>&nbsp;        }
+<b class="nc"><i>702</i>&nbsp;</b>
+<b class="nc"><i>703</i>&nbsp;        protected boolean updateNextIndex() {</b>
+<i>704</i>&nbsp;            if(this.nextIndex == -1 &amp;&amp; !this.parent.isExpanded()) {
+<b class="nc"><i>705</i>&nbsp;                return false;</b>
+<i>706</i>&nbsp;            } else if(this.childCount == 0) {
+<i>707</i>&nbsp;                return false;
+<i>708</i>&nbsp;            } else if(++this.nextIndex &gt;= this.childCount) {
+<i>709</i>&nbsp;                return false;
+<i>710</i>&nbsp;            } else {
+<i>711</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var1 = (VariableHeightLayoutCache.TreeStateNode)this.parent.getChildAt(this.nextIndex);
+<i>712</i>&nbsp;                if(var1 != null &amp;&amp; var1.isExpanded()) {
+<i>713</i>&nbsp;                    this.parent = var1;
+<i>714</i>&nbsp;                    this.nextIndex = -1;
+<b class="nc"><i>715</i>&nbsp;                    this.childCount = var1.getChildCount();</b>
+<b class="nc"><i>716</i>&nbsp;                }</b>
+<b class="nc"><i>717</i>&nbsp;</b>
+<b class="nc"><i>718</i>&nbsp;                return true;</b>
+<b class="nc"><i>719</i>&nbsp;            }</b>
+<b class="nc"><i>720</i>&nbsp;        }</b>
+<b class="nc"><i>721</i>&nbsp;    }</b>
+<b class="nc"><i>722</i>&nbsp;</b>
+<b class="nc"><i>723</i>&nbsp;    private class TreeStateNode extends DefaultMutableTreeNode {</b>
+<b class="nc"><i>724</i>&nbsp;        protected int preferredWidth;</b>
+<b class="nc"><i>725</i>&nbsp;        protected int preferredHeight;</b>
+<i>726</i>&nbsp;        protected int xOrigin;
+<b class="nc"><i>727</i>&nbsp;        protected int yOrigin;</b>
+<b class="nc"><i>728</i>&nbsp;        protected boolean expanded;</b>
+<b class="nc"><i>729</i>&nbsp;        protected boolean hasBeenExpanded;</b>
+<i>730</i>&nbsp;        protected TreePath path;
+<b class="nc"><i>731</i>&nbsp;</b>
+<b class="nc"><i>732</i>&nbsp;        public TreeStateNode(Object var2) {</b>
+<b class="nc"><i>733</i>&nbsp;            super(var2);</b>
+<i>734</i>&nbsp;        }
+<i>735</i>&nbsp;
+<b class="nc"><i>736</i>&nbsp;        public void setParent(MutableTreeNode var1) {</b>
+<b class="nc"><i>737</i>&nbsp;            super.setParent(var1);</b>
+<i>738</i>&nbsp;            if(var1 != null) {
+<b class="nc"><i>739</i>&nbsp;                this.path = ((VariableHeightLayoutCache.TreeStateNode)var1).getTreePath().pathByAddingChild(this.getUserObject());</b>
+<b class="nc"><i>740</i>&nbsp;                VariableHeightLayoutCache.this.addMapping(this);</b>
+<i>741</i>&nbsp;            }
+<b class="nc"><i>742</i>&nbsp;</b>
+<i>743</i>&nbsp;        }
+<i>744</i>&nbsp;
+<i>745</i>&nbsp;        public void remove(int var1) {
+<i>746</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var2 = (VariableHeightLayoutCache.TreeStateNode)this.getChildAt(var1);
+<i>747</i>&nbsp;            var2.removeFromMapping();
+<i>748</i>&nbsp;            super.remove(var1);
+<i>749</i>&nbsp;        }
+<i>750</i>&nbsp;
+<i>751</i>&nbsp;        public void setUserObject(Object var1) {
+<i>752</i>&nbsp;            super.setUserObject(var1);
+<i>753</i>&nbsp;            if(this.path != null) {
+<i>754</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var2 = (VariableHeightLayoutCache.TreeStateNode)this.getParent();
+<i>755</i>&nbsp;                if(var2 != null) {
+<i>756</i>&nbsp;                    this.resetChildrenPaths(var2.getTreePath());
+<i>757</i>&nbsp;                } else {
+<i>758</i>&nbsp;                    this.resetChildrenPaths((TreePath)null);
+<i>759</i>&nbsp;                }
+<i>760</i>&nbsp;            }
+<b class="nc"><i>761</i>&nbsp;</b>
+<b class="nc"><i>762</i>&nbsp;        }</b>
+<b class="nc"><i>763</i>&nbsp;</b>
+<b class="nc"><i>764</i>&nbsp;        public Enumeration children() {</b>
+<b class="nc"><i>765</i>&nbsp;            return !this.isExpanded()?DefaultMutableTreeNode.EMPTY_ENUMERATION:super.children();</b>
+<b class="nc"><i>766</i>&nbsp;        }</b>
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;        public boolean isLeaf() {
+<i>769</i>&nbsp;            return VariableHeightLayoutCache.this.getModel().isLeaf(this.getValue());
+<i>770</i>&nbsp;        }
+<b class="nc"><i>771</i>&nbsp;</b>
+<b class="nc"><i>772</i>&nbsp;        public Rectangle getNodeBounds(Rectangle var1) {</b>
+<b class="nc"><i>773</i>&nbsp;            if(var1 == null) {</b>
+<i>774</i>&nbsp;                var1 = new Rectangle(this.getXOrigin(), this.getYOrigin(), this.getPreferredWidth(), this.getPreferredHeight());
+<b class="nc"><i>775</i>&nbsp;            } else {</b>
+<i>776</i>&nbsp;                var1.x = this.getXOrigin();
+<b class="nc"><i>777</i>&nbsp;                var1.y = this.getYOrigin();</b>
+<b class="nc"><i>778</i>&nbsp;                var1.width = this.getPreferredWidth();</b>
+<i>779</i>&nbsp;                var1.height = this.getPreferredHeight();
+<i>780</i>&nbsp;            }
+<i>781</i>&nbsp;
+<b class="nc"><i>782</i>&nbsp;            return var1;</b>
+<i>783</i>&nbsp;        }
+<b class="nc"><i>784</i>&nbsp;</b>
+<i>785</i>&nbsp;        public int getXOrigin() {
+<b class="nc"><i>786</i>&nbsp;            if(!this.hasValidSize()) {</b>
+<i>787</i>&nbsp;                this.updatePreferredSize(this.getRow());
+<b class="nc"><i>788</i>&nbsp;            }</b>
+<i>789</i>&nbsp;
+<i>790</i>&nbsp;            return this.xOrigin;
+<i>791</i>&nbsp;        }
+<i>792</i>&nbsp;
+<i>793</i>&nbsp;        public int getYOrigin() {
+<i>794</i>&nbsp;            if(VariableHeightLayoutCache.this.isFixedRowHeight()) {
+<i>795</i>&nbsp;                int var1 = this.getRow();
+<i>796</i>&nbsp;                return var1 == -1?-1:VariableHeightLayoutCache.this.getRowHeight() * var1;
+<i>797</i>&nbsp;            } else {
+<i>798</i>&nbsp;                return this.yOrigin;
+<b class="nc"><i>799</i>&nbsp;            }</b>
+<i>800</i>&nbsp;        }
+<i>801</i>&nbsp;
+<b class="nc"><i>802</i>&nbsp;        public int getPreferredHeight() {</b>
+<b class="nc"><i>803</i>&nbsp;            if(VariableHeightLayoutCache.this.isFixedRowHeight()) {</b>
+<b class="nc"><i>804</i>&nbsp;                return VariableHeightLayoutCache.this.getRowHeight();</b>
+<b class="nc"><i>805</i>&nbsp;            } else {</b>
+<b class="nc"><i>806</i>&nbsp;                if(!this.hasValidSize()) {</b>
+<i>807</i>&nbsp;                    this.updatePreferredSize(this.getRow());
+<i>808</i>&nbsp;                }
+<i>809</i>&nbsp;
+<i>810</i>&nbsp;                return this.preferredHeight;
+<i>811</i>&nbsp;            }
+<b class="nc"><i>812</i>&nbsp;        }</b>
+<b class="nc"><i>813</i>&nbsp;</b>
+<i>814</i>&nbsp;        public int getPreferredWidth() {
+<i>815</i>&nbsp;            if(!this.hasValidSize()) {
+<b class="nc"><i>816</i>&nbsp;                this.updatePreferredSize(this.getRow());</b>
+<i>817</i>&nbsp;            }
+<i>818</i>&nbsp;
+<i>819</i>&nbsp;            return this.preferredWidth;
+<b class="nc"><i>820</i>&nbsp;        }</b>
+<b class="nc"><i>821</i>&nbsp;</b>
+<b class="nc"><i>822</i>&nbsp;        public boolean hasValidSize() {</b>
+<b class="nc"><i>823</i>&nbsp;            return this.preferredHeight != 0;</b>
+<b class="nc"><i>824</i>&nbsp;        }</b>
+<b class="nc"><i>825</i>&nbsp;</b>
+<i>826</i>&nbsp;        public int getRow() {
+<i>827</i>&nbsp;            return VariableHeightLayoutCache.this.visibleNodes.indexOf(this);
+<b class="nc"><i>828</i>&nbsp;        }</b>
+<b class="nc"><i>829</i>&nbsp;</b>
+<b class="nc"><i>830</i>&nbsp;        public boolean hasBeenExpanded() {</b>
+<i>831</i>&nbsp;            return this.hasBeenExpanded;
+<b class="nc"><i>832</i>&nbsp;        }</b>
+<i>833</i>&nbsp;
+<i>834</i>&nbsp;        public boolean isExpanded() {
+<i>835</i>&nbsp;            return this.expanded;
+<b class="nc"><i>836</i>&nbsp;        }</b>
+<i>837</i>&nbsp;
+<i>838</i>&nbsp;        public VariableHeightLayoutCache.TreeStateNode getLastVisibleNode() {
+<b class="nc"><i>839</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var1;</b>
+<i>840</i>&nbsp;            for(var1 = this; var1.isExpanded() &amp;&amp; var1.getChildCount() &gt; 0; var1 = (VariableHeightLayoutCache.TreeStateNode)var1.getLastChild()) {
+<i>841</i>&nbsp;                ;
+<b class="nc"><i>842</i>&nbsp;            }</b>
+<i>843</i>&nbsp;
+<b class="nc"><i>844</i>&nbsp;            return var1;</b>
+<b class="nc"><i>845</i>&nbsp;        }</b>
+<i>846</i>&nbsp;
+<b class="nc"><i>847</i>&nbsp;        public boolean isVisible() {</b>
+<b class="nc"><i>848</i>&nbsp;            if(this == VariableHeightLayoutCache.this.root) {</b>
+<i>849</i>&nbsp;                return true;
+<b class="nc"><i>850</i>&nbsp;            } else {</b>
+<i>851</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var1 = (VariableHeightLayoutCache.TreeStateNode)this.getParent();
+<b class="nc"><i>852</i>&nbsp;                return var1 != null &amp;&amp; var1.isExpanded() &amp;&amp; var1.isVisible();</b>
+<b class="nc"><i>853</i>&nbsp;            }</b>
+<b class="nc"><i>854</i>&nbsp;        }</b>
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;        public int getModelChildCount() {
+<i>857</i>&nbsp;            return this.hasBeenExpanded?super.getChildCount():VariableHeightLayoutCache.this.getModel().getChildCount(this.getValue());
+<b class="nc"><i>858</i>&nbsp;        }</b>
+<i>859</i>&nbsp;
+<i>860</i>&nbsp;        public int getVisibleChildCount() {
+<i>861</i>&nbsp;            int var1 = 0;
+<i>862</i>&nbsp;            if(this.isExpanded()) {
+<i>863</i>&nbsp;                int var2 = this.getChildCount();
+<i>864</i>&nbsp;                var1 += var2;
+<i>865</i>&nbsp;
+<b class="nc"><i>866</i>&nbsp;                for(int var3 = 0; var3 &lt; var2; ++var3) {</b>
+<i>867</i>&nbsp;                    var1 += ((VariableHeightLayoutCache.TreeStateNode)this.getChildAt(var3)).getVisibleChildCount();
+<i>868</i>&nbsp;                }
+<i>869</i>&nbsp;            }
+<b class="nc"><i>870</i>&nbsp;</b>
+<b class="nc"><i>871</i>&nbsp;            return var1;</b>
+<b class="nc"><i>872</i>&nbsp;        }</b>
+<b class="nc"><i>873</i>&nbsp;</b>
+<b class="nc"><i>874</i>&nbsp;        public void toggleExpanded() {</b>
+<i>875</i>&nbsp;            if(this.isExpanded()) {
+<b class="nc"><i>876</i>&nbsp;                this.collapse();</b>
+<b class="nc"><i>877</i>&nbsp;            } else {</b>
+<i>878</i>&nbsp;                this.expand();
+<i>879</i>&nbsp;            }
+<i>880</i>&nbsp;
+<i>881</i>&nbsp;        }
+<i>882</i>&nbsp;
+<i>883</i>&nbsp;        public void makeVisible() {
+<i>884</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var1 = (VariableHeightLayoutCache.TreeStateNode)this.getParent();
+<i>885</i>&nbsp;            if(var1 != null) {
+<i>886</i>&nbsp;                var1.expandParentAndReceiver();
+<i>887</i>&nbsp;            }
+<i>888</i>&nbsp;
+<i>889</i>&nbsp;        }
+<i>890</i>&nbsp;
+<i>891</i>&nbsp;        public void expand() {
+<i>892</i>&nbsp;            this.expand(true);
+<i>893</i>&nbsp;        }
+<b class="nc"><i>894</i>&nbsp;</b>
+<b class="nc"><i>895</i>&nbsp;        public void collapse() {</b>
+<b class="nc"><i>896</i>&nbsp;            this.collapse(true);</b>
+<b class="nc"><i>897</i>&nbsp;        }</b>
+<b class="nc"><i>898</i>&nbsp;</b>
+<b class="nc"><i>899</i>&nbsp;        public Object getValue() {</b>
+<b class="nc"><i>900</i>&nbsp;            return this.getUserObject();</b>
+<b class="nc"><i>901</i>&nbsp;        }</b>
+<i>902</i>&nbsp;
+<i>903</i>&nbsp;        public TreePath getTreePath() {
+<i>904</i>&nbsp;            return this.path;
+<i>905</i>&nbsp;        }
+<i>906</i>&nbsp;
+<i>907</i>&nbsp;        protected void resetChildrenPaths(TreePath var1) {
+<i>908</i>&nbsp;            VariableHeightLayoutCache.this.removeMapping(this);
+<i>909</i>&nbsp;            if(var1 == null) {
+<i>910</i>&nbsp;                this.path = new TreePath(this.getUserObject());
+<b class="nc"><i>911</i>&nbsp;            } else {</b>
+<b class="nc"><i>912</i>&nbsp;                this.path = var1.pathByAddingChild(this.getUserObject());</b>
+<b class="nc"><i>913</i>&nbsp;            }</b>
+<b class="nc"><i>914</i>&nbsp;</b>
+<i>915</i>&nbsp;            VariableHeightLayoutCache.this.addMapping(this);
+<i>916</i>&nbsp;
+<i>917</i>&nbsp;            for(int var2 = this.getChildCount() - 1; var2 &gt;= 0; --var2) {
+<i>918</i>&nbsp;                ((VariableHeightLayoutCache.TreeStateNode)this.getChildAt(var2)).resetChildrenPaths(this.path);
+<i>919</i>&nbsp;            }
+<i>920</i>&nbsp;
+<b class="nc"><i>921</i>&nbsp;        }</b>
+<b class="nc"><i>922</i>&nbsp;</b>
+<b class="nc"><i>923</i>&nbsp;        protected void setYOrigin(int var1) {</b>
+<b class="nc"><i>924</i>&nbsp;            this.yOrigin = var1;</b>
+<b class="nc"><i>925</i>&nbsp;        }</b>
+<b class="nc"><i>926</i>&nbsp;</b>
+<b class="nc"><i>927</i>&nbsp;        protected void shiftYOriginBy(int var1) {</b>
+<b class="nc"><i>928</i>&nbsp;            this.yOrigin += var1;</b>
+<b class="nc"><i>929</i>&nbsp;        }</b>
+<b class="nc"><i>930</i>&nbsp;</b>
+<i>931</i>&nbsp;        protected void updatePreferredSize() {
+<b class="nc"><i>932</i>&nbsp;            this.updatePreferredSize(this.getRow());</b>
+<b class="nc"><i>933</i>&nbsp;        }</b>
+<i>934</i>&nbsp;
+<i>935</i>&nbsp;        protected void updatePreferredSize(int var1) {
+<i>936</i>&nbsp;            Rectangle var2 = VariableHeightLayoutCache.this.getNodeDimensions(this.getUserObject(), var1, this.getLevel(), this.isExpanded(), VariableHeightLayoutCache.this.boundsBuffer);
+<i>937</i>&nbsp;            if(var2 == null) {
+<b class="nc"><i>938</i>&nbsp;                this.xOrigin = 0;</b>
+<b class="nc"><i>939</i>&nbsp;                this.preferredWidth = this.preferredHeight = 0;</b>
+<b class="nc"><i>940</i>&nbsp;                VariableHeightLayoutCache.this.updateNodeSizes = true;</b>
+<b class="nc"><i>941</i>&nbsp;            } else if(var2.height == 0) {</b>
+<i>942</i>&nbsp;                this.xOrigin = 0;
+<b class="nc"><i>943</i>&nbsp;                this.preferredWidth = this.preferredHeight = 0;</b>
+<i>944</i>&nbsp;                VariableHeightLayoutCache.this.updateNodeSizes = true;
+<i>945</i>&nbsp;            } else {
+<i>946</i>&nbsp;                this.xOrigin = var2.x;
+<i>947</i>&nbsp;                this.preferredWidth = var2.width;
+<i>948</i>&nbsp;                if(VariableHeightLayoutCache.this.isFixedRowHeight()) {
+<i>949</i>&nbsp;                    this.preferredHeight = VariableHeightLayoutCache.this.getRowHeight();
+<i>950</i>&nbsp;                } else {
+<i>951</i>&nbsp;                    this.preferredHeight = var2.height;
+<i>952</i>&nbsp;                }
+<b class="nc"><i>953</i>&nbsp;            }</b>
+<i>954</i>&nbsp;
+<b class="nc"><i>955</i>&nbsp;        }</b>
+<b class="nc"><i>956</i>&nbsp;</b>
+<b class="nc"><i>957</i>&nbsp;        protected void markSizeInvalid() {</b>
+<i>958</i>&nbsp;            this.preferredHeight = 0;
+<b class="nc"><i>959</i>&nbsp;        }</b>
+<b class="nc"><i>960</i>&nbsp;</b>
+<i>961</i>&nbsp;        protected void deepMarkSizeInvalid() {
+<i>962</i>&nbsp;            this.markSizeInvalid();
+<b class="nc"><i>963</i>&nbsp;</b>
+<b class="nc"><i>964</i>&nbsp;            for(int var1 = this.getChildCount() - 1; var1 &gt;= 0; --var1) {</b>
+<b class="nc"><i>965</i>&nbsp;                ((VariableHeightLayoutCache.TreeStateNode)this.getChildAt(var1)).deepMarkSizeInvalid();</b>
+<b class="nc"><i>966</i>&nbsp;            }</b>
+<i>967</i>&nbsp;
+<i>968</i>&nbsp;        }
+<i>969</i>&nbsp;
+<i>970</i>&nbsp;        protected Enumeration getLoadedChildren(boolean var1) {
+<i>971</i>&nbsp;            if(var1 &amp;&amp; !this.hasBeenExpanded) {
+<i>972</i>&nbsp;                Object var3 = this.getValue();
+<i>973</i>&nbsp;                TreeModel var4 = VariableHeightLayoutCache.this.getModel();
+<i>974</i>&nbsp;                int var5 = var4.getChildCount(var3);
+<i>975</i>&nbsp;                this.hasBeenExpanded = true;
+<b class="nc"><i>976</i>&nbsp;                int var6 = this.getRow();</b>
+<i>977</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var2;
+<i>978</i>&nbsp;                int var7;
+<i>979</i>&nbsp;                if(var6 == -1) {
+<i>980</i>&nbsp;                    for(var7 = 0; var7 &lt; var5; ++var7) {
+<i>981</i>&nbsp;                        var2 = VariableHeightLayoutCache.this.createNodeForValue(var4.getChild(var3, var7));
+<i>982</i>&nbsp;                        this.add(var2);
+<b class="nc"><i>983</i>&nbsp;                        var2.updatePreferredSize(-1);</b>
+<i>984</i>&nbsp;                    }
+<i>985</i>&nbsp;                } else {
+<i>986</i>&nbsp;                    ++var6;
+<i>987</i>&nbsp;
+<b class="nc"><i>988</i>&nbsp;                    for(var7 = 0; var7 &lt; var5; ++var7) {</b>
+<b class="nc"><i>989</i>&nbsp;                        var2 = VariableHeightLayoutCache.this.createNodeForValue(var4.getChild(var3, var7));</b>
+<b class="nc"><i>990</i>&nbsp;                        this.add(var2);</b>
+<b class="nc"><i>991</i>&nbsp;                        var2.updatePreferredSize(var6++);</b>
+<b class="nc"><i>992</i>&nbsp;                    }</b>
+<i>993</i>&nbsp;                }
+<b class="nc"><i>994</i>&nbsp;</b>
+<i>995</i>&nbsp;                return super.children();
+<i>996</i>&nbsp;            } else {
+<i>997</i>&nbsp;                return super.children();
+<i>998</i>&nbsp;            }
+<i>999</i>&nbsp;        }
+<i>1000</i>&nbsp;
+<i>1001</i>&nbsp;        protected void didAdjustTree() {
+<b class="nc"><i>1002</i>&nbsp;        }</b>
+<i>1003</i>&nbsp;
+<i>1004</i>&nbsp;        protected void expandParentAndReceiver() {
+<i>1005</i>&nbsp;            VariableHeightLayoutCache.TreeStateNode var1 = (VariableHeightLayoutCache.TreeStateNode)this.getParent();
+<i>1006</i>&nbsp;            if(var1 != null) {
+<i>1007</i>&nbsp;                var1.expandParentAndReceiver();
+<i>1008</i>&nbsp;            }
+<i>1009</i>&nbsp;
+<i>1010</i>&nbsp;            this.expand();
+<i>1011</i>&nbsp;        }
+<i>1012</i>&nbsp;
+<i>1013</i>&nbsp;        protected void expand(boolean var1) {
+<i>1014</i>&nbsp;            if(!this.isExpanded() &amp;&amp; !this.isLeaf()) {
+<i>1015</i>&nbsp;                boolean var2 = VariableHeightLayoutCache.this.isFixedRowHeight();
+<i>1016</i>&nbsp;                int var3 = this.getPreferredHeight();
+<i>1017</i>&nbsp;                int var4 = this.getRow();
+<i>1018</i>&nbsp;                this.expanded = true;
+<i>1019</i>&nbsp;                this.updatePreferredSize(var4);
+<i>1020</i>&nbsp;                int var9;
+<i>1021</i>&nbsp;                int var10;
+<i>1022</i>&nbsp;                if(!this.hasBeenExpanded) {
+<i>1023</i>&nbsp;                    Object var6 = this.getValue();
+<i>1024</i>&nbsp;                    TreeModel var7 = VariableHeightLayoutCache.this.getModel();
+<i>1025</i>&nbsp;                    int var8 = var7.getChildCount(var6);
+<i>1026</i>&nbsp;                    this.hasBeenExpanded = true;
+<i>1027</i>&nbsp;                    VariableHeightLayoutCache.TreeStateNode var5;
+<i>1028</i>&nbsp;                    if(var4 == -1) {
+<i>1029</i>&nbsp;                        for(var9 = 0; var9 &lt; var8; ++var9) {
+<i>1030</i>&nbsp;                            var5 = VariableHeightLayoutCache.this.createNodeForValue(var7.getChild(var6, var9));
+<i>1031</i>&nbsp;                            this.add(var5);
+<b class="nc"><i>1032</i>&nbsp;                            var5.updatePreferredSize(-1);</b>
+<b class="nc"><i>1033</i>&nbsp;                        }</b>
+<i>1034</i>&nbsp;                    } else {
+<i>1035</i>&nbsp;                        var9 = var4 + 1;
+<i>1036</i>&nbsp;
+<i>1037</i>&nbsp;                        for(var10 = 0; var10 &lt; var8; ++var10) {
+<i>1038</i>&nbsp;                            var5 = VariableHeightLayoutCache.this.createNodeForValue(var7.getChild(var6, var10));
+<i>1039</i>&nbsp;                            this.add(var5);
+<i>1040</i>&nbsp;                            var5.updatePreferredSize(var9);
+<i>1041</i>&nbsp;                        }
+<i>1042</i>&nbsp;                    }
+<i>1043</i>&nbsp;                }
+<i>1044</i>&nbsp;
+<b class="nc"><i>1045</i>&nbsp;                int var11 = var4;</b>
+<b class="nc"><i>1046</i>&nbsp;                Enumeration var12 = this.preorderEnumeration();</b>
+<b class="nc"><i>1047</i>&nbsp;                var12.nextElement();</b>
+<i>1048</i>&nbsp;                int var13;
+<b class="nc"><i>1049</i>&nbsp;                if(var2) {</b>
+<i>1050</i>&nbsp;                    var13 = 0;
+<i>1051</i>&nbsp;                } else if(this == VariableHeightLayoutCache.this.root &amp;&amp; !VariableHeightLayoutCache.this.isRootVisible()) {
+<i>1052</i>&nbsp;                    var13 = 0;
+<i>1053</i>&nbsp;                } else {
+<i>1054</i>&nbsp;                    var13 = this.getYOrigin() + this.getPreferredHeight();
+<i>1055</i>&nbsp;                }
+<i>1056</i>&nbsp;
+<i>1057</i>&nbsp;                Vector var10000;
+<b class="nc"><i>1058</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var14;</b>
+<i>1059</i>&nbsp;                if(!var2) {
+<b class="nc"><i>1060</i>&nbsp;                    while(var12.hasMoreElements()) {</b>
+<b class="nc"><i>1061</i>&nbsp;                        var14 = (VariableHeightLayoutCache.TreeStateNode)var12.nextElement();</b>
+<i>1062</i>&nbsp;                        if(!VariableHeightLayoutCache.this.updateNodeSizes &amp;&amp; !var14.hasValidSize()) {
+<i>1063</i>&nbsp;                            var14.updatePreferredSize(var11 + 1);
+<i>1064</i>&nbsp;                        }
+<i>1065</i>&nbsp;
+<i>1066</i>&nbsp;                        var14.setYOrigin(var13);
+<i>1067</i>&nbsp;                        var13 += var14.getPreferredHeight();
+<b class="nc"><i>1068</i>&nbsp;                        var10000 = VariableHeightLayoutCache.this.visibleNodes;</b>
+<b class="nc"><i>1069</i>&nbsp;                        ++var11;</b>
+<b class="nc"><i>1070</i>&nbsp;                        var10000.insertElementAt(var14, var11);</b>
+<i>1071</i>&nbsp;                    }
+<b class="nc"><i>1072</i>&nbsp;                } else {</b>
+<b class="nc"><i>1073</i>&nbsp;                    while(var12.hasMoreElements()) {</b>
+<i>1074</i>&nbsp;                        var14 = (VariableHeightLayoutCache.TreeStateNode)var12.nextElement();
+<b class="nc"><i>1075</i>&nbsp;                        var10000 = VariableHeightLayoutCache.this.visibleNodes;</b>
+<i>1076</i>&nbsp;                        ++var11;
+<i>1077</i>&nbsp;                        var10000.insertElementAt(var14, var11);
+<i>1078</i>&nbsp;                    }
+<i>1079</i>&nbsp;                }
+<i>1080</i>&nbsp;
+<i>1081</i>&nbsp;                if(var1 &amp;&amp; (var4 != var11 || this.getPreferredHeight() != var3)) {
+<i>1082</i>&nbsp;                    if(!var2) {
+<i>1083</i>&nbsp;                        ++var11;
+<i>1084</i>&nbsp;                        if(var11 &lt; VariableHeightLayoutCache.this.getRowCount()) {
+<b class="nc"><i>1085</i>&nbsp;                            var10 = var13 - (this.getYOrigin() + this.getPreferredHeight()) + (this.getPreferredHeight() - var3);</b>
+<b class="nc"><i>1086</i>&nbsp;</b>
+<i>1087</i>&nbsp;                            for(var9 = VariableHeightLayoutCache.this.visibleNodes.size() - 1; var9 &gt;= var11; --var9) {
+<b class="nc"><i>1088</i>&nbsp;                                ((VariableHeightLayoutCache.TreeStateNode)VariableHeightLayoutCache.this.visibleNodes.elementAt(var9)).shiftYOriginBy(var10);</b>
+<i>1089</i>&nbsp;                            }
+<i>1090</i>&nbsp;                        }
+<i>1091</i>&nbsp;                    }
+<i>1092</i>&nbsp;
+<i>1093</i>&nbsp;                    this.didAdjustTree();
+<i>1094</i>&nbsp;                    VariableHeightLayoutCache.this.visibleNodesChanged();
+<i>1095</i>&nbsp;                }
+<b class="nc"><i>1096</i>&nbsp;</b>
+<i>1097</i>&nbsp;                if(VariableHeightLayoutCache.this.treeSelectionModel != null) {
+<i>1098</i>&nbsp;                    VariableHeightLayoutCache.this.treeSelectionModel.resetRowSelection();
+<i>1099</i>&nbsp;                }
+<i>1100</i>&nbsp;            }
+<i>1101</i>&nbsp;
+<i>1102</i>&nbsp;        }
+<i>1103</i>&nbsp;
+<i>1104</i>&nbsp;        protected void collapse(boolean var1) {
+<i>1105</i>&nbsp;            if(this.isExpanded()) {
+<i>1106</i>&nbsp;                Enumeration var2 = this.preorderEnumeration();
+<b class="nc"><i>1107</i>&nbsp;                var2.nextElement();</b>
+<b class="nc"><i>1108</i>&nbsp;                int var3 = 0;</b>
+<i>1109</i>&nbsp;                boolean var4 = VariableHeightLayoutCache.this.isFixedRowHeight();
+<i>1110</i>&nbsp;                int var5;
+<i>1111</i>&nbsp;                if(var4) {
+<b class="nc"><i>1112</i>&nbsp;                    var5 = 0;</b>
+<b class="nc"><i>1113</i>&nbsp;                } else {</b>
+<b class="nc"><i>1114</i>&nbsp;                    var5 = this.getPreferredHeight() + this.getYOrigin();</b>
+<b class="nc"><i>1115</i>&nbsp;                }</b>
+<i>1116</i>&nbsp;
+<b class="nc"><i>1117</i>&nbsp;                int var6 = this.getPreferredHeight();</b>
+<i>1118</i>&nbsp;                int var8 = this.getRow();
+<i>1119</i>&nbsp;                VariableHeightLayoutCache.TreeStateNode var9;
+<i>1120</i>&nbsp;                if(!var4) {
+<i>1121</i>&nbsp;                    while(var2.hasMoreElements()) {
+<i>1122</i>&nbsp;                        var9 = (VariableHeightLayoutCache.TreeStateNode)var2.nextElement();
+<i>1123</i>&nbsp;                        if(var9.isVisible()) {
+<b class="nc"><i>1124</i>&nbsp;                            ++var3;</b>
+<b class="nc"><i>1125</i>&nbsp;                            var5 = var9.getYOrigin() + var9.getPreferredHeight();</b>
+<b class="nc"><i>1126</i>&nbsp;                        }</b>
+<i>1127</i>&nbsp;                    }
+<i>1128</i>&nbsp;                } else {
+<i>1129</i>&nbsp;                    while(var2.hasMoreElements()) {
+<i>1130</i>&nbsp;                        var9 = (VariableHeightLayoutCache.TreeStateNode)var2.nextElement();
+<i>1131</i>&nbsp;                        if(var9.isVisible()) {
+<i>1132</i>&nbsp;                            ++var3;
+<b class="nc"><i>1133</i>&nbsp;                        }</b>
+<b class="nc"><i>1134</i>&nbsp;                    }</b>
+<i>1135</i>&nbsp;                }
+<b class="nc"><i>1136</i>&nbsp;</b>
+<b class="nc"><i>1137</i>&nbsp;                int var12;</b>
+<b class="nc"><i>1138</i>&nbsp;                for(var12 = var3 + var8; var12 &gt; var8; --var12) {</b>
+<i>1139</i>&nbsp;                    VariableHeightLayoutCache.this.visibleNodes.removeElementAt(var12);
+<b class="nc"><i>1140</i>&nbsp;                }</b>
+<i>1141</i>&nbsp;
+<i>1142</i>&nbsp;                this.expanded = false;
+<i>1143</i>&nbsp;                if(var8 == -1) {
+<i>1144</i>&nbsp;                    this.markSizeInvalid();
+<i>1145</i>&nbsp;                } else if(var1) {
+<i>1146</i>&nbsp;                    this.updatePreferredSize(var8);
+<b class="nc"><i>1147</i>&nbsp;                }</b>
+<b class="nc"><i>1148</i>&nbsp;</b>
+<b class="nc"><i>1149</i>&nbsp;                if(var8 != -1 &amp;&amp; var1 &amp;&amp; (var3 &gt; 0 || var6 != this.getPreferredHeight())) {</b>
+<b class="nc"><i>1150</i>&nbsp;                    int var7 = var5 + (this.getPreferredHeight() - var6);</b>
+<b class="nc"><i>1151</i>&nbsp;                    if(!var4 &amp;&amp; var8 + 1 &lt; VariableHeightLayoutCache.this.getRowCount() &amp;&amp; var7 != var5) {</b>
+<i>1152</i>&nbsp;                        int var11 = var7 - var5;
+<i>1153</i>&nbsp;                        var12 = var8 + 1;
+<i>1154</i>&nbsp;
+<i>1155</i>&nbsp;                        for(int var10 = VariableHeightLayoutCache.this.visibleNodes.size(); var12 &lt; var10; ++var12) {
+<i>1156</i>&nbsp;                            ((VariableHeightLayoutCache.TreeStateNode)VariableHeightLayoutCache.this.visibleNodes.elementAt(var12)).shiftYOriginBy(var11);
+<i>1157</i>&nbsp;                        }
+<b class="nc"><i>1158</i>&nbsp;                    }</b>
+<b class="nc"><i>1159</i>&nbsp;</b>
+<b class="nc"><i>1160</i>&nbsp;                    this.didAdjustTree();</b>
+<i>1161</i>&nbsp;                    VariableHeightLayoutCache.this.visibleNodesChanged();
+<i>1162</i>&nbsp;                }
+<i>1163</i>&nbsp;
+<i>1164</i>&nbsp;                if(VariableHeightLayoutCache.this.treeSelectionModel != null &amp;&amp; var3 &gt; 0 &amp;&amp; var8 != -1) {
+<i>1165</i>&nbsp;                    VariableHeightLayoutCache.this.treeSelectionModel.resetRowSelection();
+<i>1166</i>&nbsp;                }
+<b class="nc"><i>1167</i>&nbsp;            }</b>
+<i>1168</i>&nbsp;
+<i>1169</i>&nbsp;        }
+<i>1170</i>&nbsp;
+<i>1171</i>&nbsp;        protected void removeFromMapping() {
+<i>1172</i>&nbsp;            if(this.path != null) {
+<i>1173</i>&nbsp;                VariableHeightLayoutCache.this.removeMapping(this);
+<b class="nc"><i>1174</i>&nbsp;</b>
+<i>1175</i>&nbsp;                for(int var1 = this.getChildCount() - 1; var1 &gt;= 0; --var1) {
+<i>1176</i>&nbsp;                    ((VariableHeightLayoutCache.TreeStateNode)this.getChildAt(var1)).removeFromMapping();
+<i>1177</i>&nbsp;                }
+<i>1178</i>&nbsp;            }
+<i>1179</i>&nbsp;
+<i>1180</i>&nbsp;        }
+<b class="nc"><i>1181</i>&nbsp;    }</b>
+<i>1182</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

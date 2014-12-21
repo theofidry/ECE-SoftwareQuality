@@ -1,0 +1,159 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InlineReturnStatement</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.tools.tree</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InlineReturnStatement (sun.tools.tree)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InlineReturnStatement</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.tools.tree;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.PrintStream;
+<i>9</i>&nbsp;import sun.tools.asm.Assembler;
+<i>10</i>&nbsp;import sun.tools.java.Environment;
+<i>11</i>&nbsp;import sun.tools.tree.CodeContext;
+<i>12</i>&nbsp;import sun.tools.tree.Context;
+<i>13</i>&nbsp;import sun.tools.tree.Expression;
+<i>14</i>&nbsp;import sun.tools.tree.Statement;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;public class InlineReturnStatement extends Statement {
+<i>17</i>&nbsp;    Expression expr;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    public InlineReturnStatement(long var1, Expression var3) {
+<i>20</i>&nbsp;        super(149, var1);
+<i>21</i>&nbsp;        this.expr = var3;
+<i>22</i>&nbsp;    }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    Context getDestination(Context var1) {
+<i>25</i>&nbsp;        while(var1 != null) {
+<i>26</i>&nbsp;            if(var1.node != null &amp;&amp; (var1.node.op == 150 || var1.node.op == 151)) {
+<i>27</i>&nbsp;                return var1;
+<b class="nc"><i>28</i>&nbsp;            }</b>
+<b class="nc"><i>29</i>&nbsp;</b>
+<i>30</i>&nbsp;            var1 = var1.prev;
+<i>31</i>&nbsp;        }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;        return null;
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<b class="nc"><i>36</i>&nbsp;    public Statement inline(Environment var1, Context var2) {</b>
+<b class="nc"><i>37</i>&nbsp;        if(this.expr != null) {</b>
+<b class="nc"><i>38</i>&nbsp;            this.expr = this.expr.inlineValue(var1, var2);</b>
+<i>39</i>&nbsp;        }
+<i>40</i>&nbsp;
+<b class="nc"><i>41</i>&nbsp;        return this;</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public Statement copyInline(Context var1, boolean var2) {
+<i>45</i>&nbsp;        InlineReturnStatement var3 = (InlineReturnStatement)this.clone();
+<i>46</i>&nbsp;        if(this.expr != null) {
+<i>47</i>&nbsp;            var3.expr = this.expr.copyInline(var1);
+<b class="nc"><i>48</i>&nbsp;        }</b>
+<b class="nc"><i>49</i>&nbsp;</b>
+<i>50</i>&nbsp;        return var3;
+<b class="nc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public int costInline(int var1, Environment var2, Context var3) {
+<i>54</i>&nbsp;        return 1 + (this.expr != null?this.expr.costInline(var1, var2, var3):0);
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public void code(Environment var1, Context var2, Assembler var3) {
+<b class="nc"><i>58</i>&nbsp;        if(this.expr != null) {</b>
+<b class="nc"><i>59</i>&nbsp;            this.expr.codeValue(var1, var2, var3);</b>
+<b class="nc"><i>60</i>&nbsp;        }</b>
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;        CodeContext var4 = (CodeContext)this.getDestination(var2);</b>
+<i>63</i>&nbsp;        var3.add(this.where, 167, var4.breakLabel);
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public void print(PrintStream var1, int var2) {
+<i>67</i>&nbsp;        super.print(var1, var2);
+<i>68</i>&nbsp;        var1.print(&quot;inline-return&quot;);
+<b class="nc"><i>69</i>&nbsp;        if(this.expr != null) {</b>
+<i>70</i>&nbsp;            var1.print(&quot; &quot;);
+<i>71</i>&nbsp;            this.expr.print(var1);
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;        var1.print(&quot;;&quot;);
+<i>75</i>&nbsp;    }
+<b class="nc"><i>76</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

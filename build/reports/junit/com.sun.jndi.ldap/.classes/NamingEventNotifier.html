@@ -1,0 +1,284 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NamingEventNotifier</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jndi.ldap</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NamingEventNotifier (com.sun.jndi.ldap)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NamingEventNotifier</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 81)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jndi.ldap;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jndi.ldap.EntryChangeResponseControl;
+<i>9</i>&nbsp;import com.sun.jndi.ldap.EventSupport;
+<i>10</i>&nbsp;import com.sun.jndi.ldap.LdapCtx;
+<i>11</i>&nbsp;import com.sun.jndi.ldap.LdapSearchEnumeration;
+<i>12</i>&nbsp;import com.sun.jndi.ldap.NotifierArgs;
+<i>13</i>&nbsp;import com.sun.jndi.ldap.Obj;
+<i>14</i>&nbsp;import com.sun.jndi.ldap.PersistentSearchControl;
+<i>15</i>&nbsp;import com.sun.jndi.toolkit.ctx.Continuation;
+<i>16</i>&nbsp;import java.io.IOException;
+<i>17</i>&nbsp;import java.util.Vector;
+<i>18</i>&nbsp;import javax.naming.Binding;
+<i>19</i>&nbsp;import javax.naming.CompositeName;
+<i>20</i>&nbsp;import javax.naming.InterruptedNamingException;
+<i>21</i>&nbsp;import javax.naming.Name;
+<i>22</i>&nbsp;import javax.naming.NamingEnumeration;
+<i>23</i>&nbsp;import javax.naming.NamingException;
+<i>24</i>&nbsp;import javax.naming.directory.SearchResult;
+<i>25</i>&nbsp;import javax.naming.event.EventContext;
+<i>26</i>&nbsp;import javax.naming.event.NamingEvent;
+<i>27</i>&nbsp;import javax.naming.event.NamingExceptionEvent;
+<i>28</i>&nbsp;import javax.naming.event.NamingListener;
+<i>29</i>&nbsp;import javax.naming.ldap.Control;
+<i>30</i>&nbsp;import javax.naming.ldap.HasControls;
+<i>31</i>&nbsp;import javax.naming.ldap.LdapName;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;final class NamingEventNotifier implements Runnable {
+<i>34</i>&nbsp;    private static final boolean debug = false;
+<i>35</i>&nbsp;    private Vector namingListeners;
+<i>36</i>&nbsp;    private Thread worker;
+<i>37</i>&nbsp;    private LdapCtx context;
+<i>38</i>&nbsp;    private EventContext eventSrc;
+<i>39</i>&nbsp;    private EventSupport support;
+<i>40</i>&nbsp;    private NamingEnumeration results;
+<i>41</i>&nbsp;    NotifierArgs info;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    NamingEventNotifier(EventSupport var1, LdapCtx var2, NotifierArgs var3, NamingListener var4) throws NamingException {
+<i>44</i>&nbsp;        this.info = var3;
+<i>45</i>&nbsp;        this.support = var1;
+<b class="nc"><i>46</i>&nbsp;</b>
+<b class="nc"><i>47</i>&nbsp;        PersistentSearchControl var5;</b>
+<b class="nc"><i>48</i>&nbsp;        try {</b>
+<i>49</i>&nbsp;            var5 = new PersistentSearchControl(var3.mask, true, true, true);
+<i>50</i>&nbsp;        } catch (IOException var8) {
+<i>51</i>&nbsp;            NamingException var7 = new NamingException(&quot;Problem creating persistent search control&quot;);
+<b class="nc"><i>52</i>&nbsp;            var7.setRootCause(var8);</b>
+<i>53</i>&nbsp;            throw var7;
+<i>54</i>&nbsp;        }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;        this.context = (LdapCtx)var2.newInstance(new Control[]{var5});
+<b class="nc"><i>57</i>&nbsp;        this.eventSrc = var2;</b>
+<b class="nc"><i>58</i>&nbsp;        this.namingListeners = new Vector();</b>
+<i>59</i>&nbsp;        this.namingListeners.addElement(var4);
+<b class="nc"><i>60</i>&nbsp;        this.worker = Obj.helper.createThread(this);</b>
+<b class="nc"><i>61</i>&nbsp;        this.worker.setDaemon(true);</b>
+<b class="nc"><i>62</i>&nbsp;        this.worker.start();</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;    void addNamingListener(NamingListener var1) {</b>
+<b class="nc"><i>66</i>&nbsp;        this.namingListeners.addElement(var1);</b>
+<i>67</i>&nbsp;    }
+<b class="nc"><i>68</i>&nbsp;</b>
+<b class="nc"><i>69</i>&nbsp;    void removeNamingListener(NamingListener var1) {</b>
+<i>70</i>&nbsp;        this.namingListeners.removeElement(var1);
+<b class="nc"><i>71</i>&nbsp;    }</b>
+<b class="nc"><i>72</i>&nbsp;</b>
+<b class="nc"><i>73</i>&nbsp;    boolean hasNamingListeners() {</b>
+<i>74</i>&nbsp;        return this.namingListeners.size() &gt; 0;
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public void run() {
+<b class="nc"><i>78</i>&nbsp;        try {</b>
+<i>79</i>&nbsp;            Continuation var1 = new Continuation();
+<i>80</i>&nbsp;            var1.setError(this, this.info.name);
+<i>81</i>&nbsp;            Object var2 = this.info.name != null &amp;&amp; !this.info.name.equals(&quot;&quot;)?(new CompositeName()).add(this.info.name):new CompositeName();
+<i>82</i>&nbsp;            this.results = this.context.searchAux((Name)var2, this.info.filter, this.info.controls, true, false, var1);
+<b class="nc"><i>83</i>&nbsp;            ((LdapSearchEnumeration)this.results).setStartName(this.context.currentParsedDN);</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;            while(this.results.hasMore()) {
+<i>86</i>&nbsp;                SearchResult var3 = (SearchResult)this.results.next();
+<i>87</i>&nbsp;                Control[] var4 = var3 instanceof HasControls?((HasControls)var3).getControls():null;
+<b class="nc"><i>88</i>&nbsp;                if(var4 != null) {</b>
+<i>89</i>&nbsp;                    byte var8 = 0;
+<i>90</i>&nbsp;                    if(var8 &lt; var4.length &amp;&amp; var4[var8] instanceof EntryChangeResponseControl) {
+<i>91</i>&nbsp;                        EntryChangeResponseControl var5 = (EntryChangeResponseControl)var4[var8];
+<i>92</i>&nbsp;                        long var6 = var5.getChangeNumber();
+<i>93</i>&nbsp;                        switch(var5.getChangeType()) {
+<i>94</i>&nbsp;                        case 1:
+<i>95</i>&nbsp;                            this.fireObjectAdded(var3, var6);
+<i>96</i>&nbsp;                            break;
+<i>97</i>&nbsp;                        case 2:
+<b class="nc"><i>98</i>&nbsp;                            this.fireObjectRemoved(var3, var6);</b>
+<b class="nc"><i>99</i>&nbsp;                        case 3:</b>
+<b class="nc"><i>100</i>&nbsp;                        case 5:</b>
+<i>101</i>&nbsp;                        case 6:
+<i>102</i>&nbsp;                        case 7:
+<b class="nc"><i>103</i>&nbsp;                        default:</b>
+<i>104</i>&nbsp;                            break;
+<i>105</i>&nbsp;                        case 4:
+<i>106</i>&nbsp;                            this.fireObjectChanged(var3, var6);
+<i>107</i>&nbsp;                            break;
+<i>108</i>&nbsp;                        case 8:
+<b class="nc"><i>109</i>&nbsp;                            this.fireObjectRenamed(var3, var5.getPreviousDN(), var6);</b>
+<i>110</i>&nbsp;                        }
+<i>111</i>&nbsp;                    }
+<i>112</i>&nbsp;                }
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;        } catch (InterruptedNamingException var13) {
+<i>115</i>&nbsp;            ;
+<b class="nc"><i>116</i>&nbsp;        } catch (NamingException var14) {</b>
+<b class="nc"><i>117</i>&nbsp;            this.fireNamingException(var14);</b>
+<b class="nc"><i>118</i>&nbsp;            this.support.removeDeadNotifier(this.info);</b>
+<i>119</i>&nbsp;        } finally {
+<i>120</i>&nbsp;            this.cleanup();
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    private void cleanup() {
+<i>126</i>&nbsp;        try {
+<b class="nc"><i>127</i>&nbsp;            if(this.results != null) {</b>
+<b class="nc"><i>128</i>&nbsp;                this.results.close();</b>
+<i>129</i>&nbsp;                this.results = null;
+<i>130</i>&nbsp;            }
+<b class="nc"><i>131</i>&nbsp;</b>
+<b class="nc"><i>132</i>&nbsp;            if(this.context != null) {</b>
+<b class="nc"><i>133</i>&nbsp;                this.context.close();</b>
+<b class="nc"><i>134</i>&nbsp;                this.context = null;</b>
+<i>135</i>&nbsp;            }
+<b class="nc"><i>136</i>&nbsp;        } catch (NamingException var2) {</b>
+<b class="nc"><i>137</i>&nbsp;            ;</b>
+<i>138</i>&nbsp;        }
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;    void stop() {</b>
+<b class="nc"><i>143</i>&nbsp;        if(this.worker != null) {</b>
+<i>144</i>&nbsp;            this.worker.interrupt();
+<b class="nc"><i>145</i>&nbsp;            this.worker = null;</b>
+<i>146</i>&nbsp;        }
+<b class="nc"><i>147</i>&nbsp;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    private void fireObjectAdded(Binding var1, long var2) {
+<i>151</i>&nbsp;        if(this.namingListeners != null &amp;&amp; this.namingListeners.size() != 0) {
+<i>152</i>&nbsp;            NamingEvent var4 = new NamingEvent(this.eventSrc, 0, var1, (Binding)null, new Long(var2));
+<i>153</i>&nbsp;            this.support.queueEvent(var4, this.namingListeners);
+<b class="nc"><i>154</i>&nbsp;        }</b>
+<i>155</i>&nbsp;    }
+<b class="nc"><i>156</i>&nbsp;</b>
+<i>157</i>&nbsp;    private void fireObjectRemoved(Binding var1, long var2) {
+<b class="nc"><i>158</i>&nbsp;        if(this.namingListeners != null &amp;&amp; this.namingListeners.size() != 0) {</b>
+<i>159</i>&nbsp;            NamingEvent var4 = new NamingEvent(this.eventSrc, 1, (Binding)null, var1, new Long(var2));
+<i>160</i>&nbsp;            this.support.queueEvent(var4, this.namingListeners);
+<b class="nc"><i>161</i>&nbsp;        }</b>
+<i>162</i>&nbsp;    }
+<b class="nc"><i>163</i>&nbsp;</b>
+<b class="nc"><i>164</i>&nbsp;    private void fireObjectChanged(Binding var1, long var2) {</b>
+<i>165</i>&nbsp;        if(this.namingListeners != null &amp;&amp; this.namingListeners.size() != 0) {
+<i>166</i>&nbsp;            Binding var4 = new Binding(var1.getName(), (Object)null, var1.isRelative());
+<i>167</i>&nbsp;            NamingEvent var5 = new NamingEvent(this.eventSrc, 3, var1, var4, new Long(var2));
+<i>168</i>&nbsp;            this.support.queueEvent(var5, this.namingListeners);
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<b class="nc"><i>172</i>&nbsp;    private void fireObjectRenamed(Binding var1, String var2, long var3) {</b>
+<i>173</i>&nbsp;        if(this.namingListeners != null &amp;&amp; this.namingListeners.size() != 0) {
+<b class="nc"><i>174</i>&nbsp;            Binding var5 = null;</b>
+<b class="nc"><i>175</i>&nbsp;</b>
+<i>176</i>&nbsp;            try {
+<b class="nc"><i>177</i>&nbsp;                LdapName var6 = new LdapName(var2);</b>
+<i>178</i>&nbsp;                if(var6.startsWith(this.context.currentParsedDN)) {
+<b class="nc"><i>179</i>&nbsp;                    String var7 = var6.getSuffix(this.context.currentParsedDN.size()).toString();</b>
+<b class="nc"><i>180</i>&nbsp;                    var5 = new Binding(var7, (Object)null);</b>
+<i>181</i>&nbsp;                }
+<b class="nc"><i>182</i>&nbsp;            } catch (NamingException var8) {</b>
+<i>183</i>&nbsp;                ;
+<i>184</i>&nbsp;            }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;            if(var5 == null) {
+<i>187</i>&nbsp;                var5 = new Binding(var2, (Object)null, false);
+<i>188</i>&nbsp;            }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;            NamingEvent var9 = new NamingEvent(this.eventSrc, 2, var1, var5, new Long(var3));
+<b class="nc"><i>191</i>&nbsp;            this.support.queueEvent(var9, this.namingListeners);</b>
+<b class="nc"><i>192</i>&nbsp;        }</b>
+<b class="nc"><i>193</i>&nbsp;    }</b>
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    private void fireNamingException(NamingException var1) {
+<i>196</i>&nbsp;        if(this.namingListeners != null &amp;&amp; this.namingListeners.size() != 0) {
+<i>197</i>&nbsp;            NamingExceptionEvent var2 = new NamingExceptionEvent(this.eventSrc, var1);
+<i>198</i>&nbsp;            this.support.queueEvent(var2, this.namingListeners);
+<i>199</i>&nbsp;        }
+<i>200</i>&nbsp;    }
+<b class="nc"><i>201</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

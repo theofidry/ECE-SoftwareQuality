@@ -1,0 +1,337 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DOMScanner</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.bind.unmarshaller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DOMScanner (com.sun.xml.internal.bind.unmarshaller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DOMScanner</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 108)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.bind.unmarshaller;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.bind.unmarshaller.InfosetScanner;
+<i>9</i>&nbsp;import com.sun.xml.internal.bind.v2.runtime.unmarshaller.LocatorEx;
+<i>10</i>&nbsp;import java.util.Enumeration;
+<i>11</i>&nbsp;import javax.xml.bind.ValidationEventLocator;
+<i>12</i>&nbsp;import javax.xml.bind.helpers.ValidationEventLocatorImpl;
+<i>13</i>&nbsp;import org.w3c.dom.Attr;
+<i>14</i>&nbsp;import org.w3c.dom.Document;
+<i>15</i>&nbsp;import org.w3c.dom.Element;
+<i>16</i>&nbsp;import org.w3c.dom.NamedNodeMap;
+<i>17</i>&nbsp;import org.w3c.dom.Node;
+<i>18</i>&nbsp;import org.w3c.dom.NodeList;
+<i>19</i>&nbsp;import org.w3c.dom.ProcessingInstruction;
+<i>20</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>21</i>&nbsp;import org.xml.sax.Locator;
+<i>22</i>&nbsp;import org.xml.sax.SAXException;
+<i>23</i>&nbsp;import org.xml.sax.helpers.AttributesImpl;
+<i>24</i>&nbsp;import org.xml.sax.helpers.NamespaceSupport;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;public class DOMScanner implements LocatorEx, InfosetScanner {
+<i>27</i>&nbsp;    private Node currentNode = null;
+<i>28</i>&nbsp;    private final AttributesImpl atts = new AttributesImpl();
+<i>29</i>&nbsp;    private ContentHandler receiver = null;
+<i>30</i>&nbsp;    private Locator locator = this;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public DOMScanner() {
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public void setLocator(Locator loc) {
+<i>36</i>&nbsp;        this.locator = loc;
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public void scan(Object node) throws SAXException {
+<i>40</i>&nbsp;        if(node instanceof Document) {
+<i>41</i>&nbsp;            this.scan((Document)((Document)node));
+<i>42</i>&nbsp;        } else {
+<i>43</i>&nbsp;            this.scan((Element)((Element)node));
+<i>44</i>&nbsp;        }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public void scan(Document doc) throws SAXException {
+<i>49</i>&nbsp;        this.scan((Element)doc.getDocumentElement());
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public void scan(Element e) throws SAXException {
+<i>53</i>&nbsp;        this.setCurrentLocation(e);
+<i>54</i>&nbsp;        this.receiver.setDocumentLocator(this.locator);
+<i>55</i>&nbsp;        this.receiver.startDocument();
+<i>56</i>&nbsp;        NamespaceSupport nss = new NamespaceSupport();
+<i>57</i>&nbsp;        this.buildNamespaceSupport(nss, e.getParentNode());
+<i>58</i>&nbsp;        Enumeration en = nss.getPrefixes();
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;        String prefix;
+<i>61</i>&nbsp;        while(en.hasMoreElements()) {
+<i>62</i>&nbsp;            prefix = (String)en.nextElement();
+<i>63</i>&nbsp;            this.receiver.startPrefixMapping(prefix, nss.getURI(prefix));
+<b class="nc"><i>64</i>&nbsp;        }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;        this.visit((Element)e);
+<b class="nc"><i>67</i>&nbsp;        en = nss.getPrefixes();</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;        while(en.hasMoreElements()) {
+<b class="nc"><i>70</i>&nbsp;            prefix = (String)en.nextElement();</b>
+<i>71</i>&nbsp;            this.receiver.endPrefixMapping(prefix);
+<b class="nc"><i>72</i>&nbsp;        }</b>
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;        this.setCurrentLocation(e);</b>
+<i>75</i>&nbsp;        this.receiver.endDocument();
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    /** @deprecated */
+<i>79</i>&nbsp;    public void parse(Element e, ContentHandler handler) throws SAXException {
+<i>80</i>&nbsp;        this.receiver = handler;
+<i>81</i>&nbsp;        this.setCurrentLocation(e);
+<b class="nc"><i>82</i>&nbsp;        this.receiver.startDocument();</b>
+<i>83</i>&nbsp;        this.receiver.setDocumentLocator(this.locator);
+<i>84</i>&nbsp;        this.visit((Element)e);
+<i>85</i>&nbsp;        this.setCurrentLocation(e);
+<b class="nc"><i>86</i>&nbsp;        this.receiver.endDocument();</b>
+<b class="nc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<b class="nc"><i>89</i>&nbsp;    /** @deprecated */</b>
+<i>90</i>&nbsp;    public void parseWithContext(Element e, ContentHandler handler) throws SAXException {
+<i>91</i>&nbsp;        this.setContentHandler(handler);
+<i>92</i>&nbsp;        this.scan((Element)e);
+<i>93</i>&nbsp;    }
+<b class="nc"><i>94</i>&nbsp;</b>
+<i>95</i>&nbsp;    private void buildNamespaceSupport(NamespaceSupport nss, Node node) {
+<i>96</i>&nbsp;        if(node != null &amp;&amp; node.getNodeType() == 1) {
+<i>97</i>&nbsp;            this.buildNamespaceSupport(nss, node.getParentNode());
+<b class="nc"><i>98</i>&nbsp;            nss.pushContext();</b>
+<i>99</i>&nbsp;            NamedNodeMap atts = node.getAttributes();
+<b class="nc"><i>100</i>&nbsp;</b>
+<b class="nc"><i>101</i>&nbsp;            for(int i = 0; i &lt; atts.getLength(); ++i) {</b>
+<i>102</i>&nbsp;                Attr a = (Attr)atts.item(i);
+<b class="nc"><i>103</i>&nbsp;                if(&quot;xmlns&quot;.equals(a.getPrefix())) {</b>
+<b class="nc"><i>104</i>&nbsp;                    nss.declarePrefix(a.getLocalName(), a.getValue());</b>
+<i>105</i>&nbsp;                } else if(&quot;xmlns&quot;.equals(a.getName())) {
+<b class="nc"><i>106</i>&nbsp;                    nss.declarePrefix(&quot;&quot;, a.getValue());</b>
+<b class="nc"><i>107</i>&nbsp;                }</b>
+<b class="nc"><i>108</i>&nbsp;            }</b>
+<b class="nc"><i>109</i>&nbsp;</b>
+<i>110</i>&nbsp;        }
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;    public void visit(Element e) throws SAXException {</b>
+<b class="nc"><i>114</i>&nbsp;        this.setCurrentLocation(e);</b>
+<b class="nc"><i>115</i>&nbsp;        NamedNodeMap attributes = e.getAttributes();</b>
+<b class="nc"><i>116</i>&nbsp;        this.atts.clear();</b>
+<i>117</i>&nbsp;        int len = attributes == null?0:attributes.getLength();
+<i>118</i>&nbsp;
+<b class="nc"><i>119</i>&nbsp;        String qname;</b>
+<b class="nc"><i>120</i>&nbsp;        for(int uri = len - 1; uri &gt;= 0; --uri) {</b>
+<i>121</i>&nbsp;            Attr local = (Attr)attributes.item(uri);
+<i>122</i>&nbsp;            qname = local.getName();
+<i>123</i>&nbsp;            String children;
+<i>124</i>&nbsp;            if(qname.startsWith(&quot;xmlns&quot;)) {
+<i>125</i>&nbsp;                if(qname.length() == 5) {
+<i>126</i>&nbsp;                    this.receiver.startPrefixMapping(&quot;&quot;, local.getValue());
+<i>127</i>&nbsp;                } else {
+<i>128</i>&nbsp;                    children = local.getLocalName();
+<i>129</i>&nbsp;                    if(children == null) {
+<i>130</i>&nbsp;                        children = qname.substring(6);
+<i>131</i>&nbsp;                    }
+<b class="nc"><i>132</i>&nbsp;</b>
+<i>133</i>&nbsp;                    this.receiver.startPrefixMapping(children, local.getValue());
+<b class="nc"><i>134</i>&nbsp;                }</b>
+<b class="nc"><i>135</i>&nbsp;            } else {</b>
+<i>136</i>&nbsp;                children = local.getNamespaceURI();
+<b class="nc"><i>137</i>&nbsp;                if(children == null) {</b>
+<b class="nc"><i>138</i>&nbsp;                    children = &quot;&quot;;</b>
+<i>139</i>&nbsp;                }
+<b class="nc"><i>140</i>&nbsp;</b>
+<b class="nc"><i>141</i>&nbsp;                String clen = local.getLocalName();</b>
+<i>142</i>&nbsp;                if(clen == null) {
+<i>143</i>&nbsp;                    clen = local.getName();
+<i>144</i>&nbsp;                }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;                this.atts.addAttribute(children, clen, local.getName(), &quot;CDATA&quot;, local.getValue());
+<i>147</i>&nbsp;            }
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;        String var12 = e.getNamespaceURI();
+<i>151</i>&nbsp;        if(var12 == null) {
+<b class="nc"><i>152</i>&nbsp;            var12 = &quot;&quot;;</b>
+<b class="nc"><i>153</i>&nbsp;        }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;        String var13 = e.getLocalName();
+<i>156</i>&nbsp;        qname = e.getTagName();
+<i>157</i>&nbsp;        if(var13 == null) {
+<i>158</i>&nbsp;            var13 = qname;
+<i>159</i>&nbsp;        }
+<b class="nc"><i>160</i>&nbsp;</b>
+<i>161</i>&nbsp;        this.receiver.startElement(var12, var13, qname, this.atts);
+<i>162</i>&nbsp;        NodeList var15 = e.getChildNodes();
+<b class="nc"><i>163</i>&nbsp;        int var14 = var15.getLength();</b>
+<i>164</i>&nbsp;
+<b class="nc"><i>165</i>&nbsp;        int i;</b>
+<b class="nc"><i>166</i>&nbsp;        for(i = 0; i &lt; var14; ++i) {</b>
+<b class="nc"><i>167</i>&nbsp;            this.visit((Node)var15.item(i));</b>
+<b class="nc"><i>168</i>&nbsp;        }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;        this.setCurrentLocation(e);</b>
+<b class="nc"><i>171</i>&nbsp;        this.receiver.endElement(var12, var13, qname);</b>
+<i>172</i>&nbsp;
+<b class="nc"><i>173</i>&nbsp;        for(i = len - 1; i &gt;= 0; --i) {</b>
+<b class="nc"><i>174</i>&nbsp;            Attr a = (Attr)attributes.item(i);</b>
+<b class="nc"><i>175</i>&nbsp;            String name = a.getName();</b>
+<i>176</i>&nbsp;            if(name.startsWith(&quot;xmlns&quot;)) {
+<i>177</i>&nbsp;                if(name.length() == 5) {
+<i>178</i>&nbsp;                    this.receiver.endPrefixMapping(&quot;&quot;);
+<i>179</i>&nbsp;                } else {
+<i>180</i>&nbsp;                    this.receiver.endPrefixMapping(a.getLocalName());
+<i>181</i>&nbsp;                }
+<i>182</i>&nbsp;            }
+<i>183</i>&nbsp;        }
+<b class="nc"><i>184</i>&nbsp;</b>
+<b class="nc"><i>185</i>&nbsp;    }</b>
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;    private void visit(Node n) throws SAXException {</b>
+<b class="nc"><i>188</i>&nbsp;        this.setCurrentLocation(n);</b>
+<i>189</i>&nbsp;        switch(n.getNodeType()) {
+<b class="nc"><i>190</i>&nbsp;        case 1:</b>
+<b class="nc"><i>191</i>&nbsp;            this.visit((Element)((Element)n));</b>
+<b class="nc"><i>192</i>&nbsp;        case 2:</b>
+<i>193</i>&nbsp;        case 6:
+<b class="nc"><i>194</i>&nbsp;        default:</b>
+<b class="nc"><i>195</i>&nbsp;            break;</b>
+<b class="nc"><i>196</i>&nbsp;        case 3:</b>
+<i>197</i>&nbsp;        case 4:
+<b class="nc"><i>198</i>&nbsp;            String value = n.getNodeValue();</b>
+<b class="nc"><i>199</i>&nbsp;            this.receiver.characters(value.toCharArray(), 0, value.length());</b>
+<i>200</i>&nbsp;            break;
+<b class="nc"><i>201</i>&nbsp;        case 5:</b>
+<i>202</i>&nbsp;            this.receiver.skippedEntity(n.getNodeName());
+<b class="nc"><i>203</i>&nbsp;            break;</b>
+<i>204</i>&nbsp;        case 7:
+<b class="nc"><i>205</i>&nbsp;            ProcessingInstruction pi = (ProcessingInstruction)n;</b>
+<i>206</i>&nbsp;            this.receiver.processingInstruction(pi.getTarget(), pi.getData());
+<i>207</i>&nbsp;        }
+<b class="nc"><i>208</i>&nbsp;</b>
+<b class="nc"><i>209</i>&nbsp;    }</b>
+<i>210</i>&nbsp;
+<b class="nc"><i>211</i>&nbsp;    private void setCurrentLocation(Node currNode) {</b>
+<b class="nc"><i>212</i>&nbsp;        this.currentNode = currNode;</b>
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<b class="nc"><i>215</i>&nbsp;    public Node getCurrentLocation() {</b>
+<i>216</i>&nbsp;        return this.currentNode;
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    public Object getCurrentElement() {
+<i>220</i>&nbsp;        return this.currentNode;
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;    public LocatorEx getLocator() {</b>
+<b class="nc"><i>224</i>&nbsp;        return this;</b>
+<b class="nc"><i>225</i>&nbsp;    }</b>
+<b class="nc"><i>226</i>&nbsp;</b>
+<b class="nc"><i>227</i>&nbsp;    public void setContentHandler(ContentHandler handler) {</b>
+<b class="nc"><i>228</i>&nbsp;        this.receiver = handler;</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;    public ContentHandler getContentHandler() {</b>
+<b class="nc"><i>232</i>&nbsp;        return this.receiver;</b>
+<b class="nc"><i>233</i>&nbsp;    }</b>
+<b class="nc"><i>234</i>&nbsp;</b>
+<i>235</i>&nbsp;    public String getPublicId() {
+<i>236</i>&nbsp;        return null;
+<i>237</i>&nbsp;    }
+<b class="nc"><i>238</i>&nbsp;</b>
+<b class="nc"><i>239</i>&nbsp;    public String getSystemId() {</b>
+<i>240</i>&nbsp;        return null;
+<i>241</i>&nbsp;    }
+<b class="nc"><i>242</i>&nbsp;</b>
+<b class="nc"><i>243</i>&nbsp;    public int getLineNumber() {</b>
+<b class="nc"><i>244</i>&nbsp;        return -1;</b>
+<b class="nc"><i>245</i>&nbsp;    }</b>
+<b class="nc"><i>246</i>&nbsp;</b>
+<b class="nc"><i>247</i>&nbsp;    public int getColumnNumber() {</b>
+<i>248</i>&nbsp;        return -1;
+<b class="nc"><i>249</i>&nbsp;    }</b>
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    public ValidationEventLocator getLocation() {
+<i>252</i>&nbsp;        return new ValidationEventLocatorImpl(this.getCurrentLocation());
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,512 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PrintStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.io</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PrintStream (java.io)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PrintStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 46)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 198)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.io;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.BufferedWriter;
+<i>9</i>&nbsp;import java.io.Closeable;
+<i>10</i>&nbsp;import java.io.File;
+<i>11</i>&nbsp;import java.io.FileNotFoundException;
+<i>12</i>&nbsp;import java.io.FileOutputStream;
+<i>13</i>&nbsp;import java.io.FilterOutputStream;
+<i>14</i>&nbsp;import java.io.IOException;
+<i>15</i>&nbsp;import java.io.InterruptedIOException;
+<i>16</i>&nbsp;import java.io.OutputStream;
+<i>17</i>&nbsp;import java.io.OutputStreamWriter;
+<i>18</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>19</i>&nbsp;import java.nio.charset.Charset;
+<i>20</i>&nbsp;import java.nio.charset.IllegalCharsetNameException;
+<i>21</i>&nbsp;import java.nio.charset.UnsupportedCharsetException;
+<i>22</i>&nbsp;import java.util.Formatter;
+<i>23</i>&nbsp;import java.util.Locale;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;public class PrintStream extends FilterOutputStream implements Appendable, Closeable {
+<i>26</i>&nbsp;    private final boolean autoFlush;
+<i>27</i>&nbsp;    private boolean trouble;
+<i>28</i>&nbsp;    private Formatter formatter;
+<i>29</i>&nbsp;    private BufferedWriter textOut;
+<i>30</i>&nbsp;    private OutputStreamWriter charOut;
+<i>31</i>&nbsp;    private boolean closing;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private static &lt;T&gt; T requireNonNull(T var0, String var1) {
+<i>34</i>&nbsp;        if(var0 == null) {
+<i>35</i>&nbsp;            throw new NullPointerException(var1);
+<i>36</i>&nbsp;        } else {
+<i>37</i>&nbsp;            return var0;
+<i>38</i>&nbsp;        }
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    private static Charset toCharset(String var0) throws UnsupportedEncodingException {
+<b class="nc"><i>42</i>&nbsp;        requireNonNull(var0, &quot;charsetName&quot;);</b>
+<b class="nc"><i>43</i>&nbsp;</b>
+<i>44</i>&nbsp;        try {
+<i>45</i>&nbsp;            return Charset.forName(var0);
+<i>46</i>&nbsp;        } catch (UnsupportedCharsetException | IllegalCharsetNameException var2) {
+<i>47</i>&nbsp;            throw new UnsupportedEncodingException(var0);
+<i>48</i>&nbsp;        }
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private PrintStream(boolean var1, OutputStream var2) {
+<i>52</i>&nbsp;        super(var2);
+<i>53</i>&nbsp;        this.trouble = false;
+<i>54</i>&nbsp;        this.closing = false;
+<i>55</i>&nbsp;        this.autoFlush = var1;
+<i>56</i>&nbsp;        this.charOut = new OutputStreamWriter(this);
+<i>57</i>&nbsp;        this.textOut = new BufferedWriter(this.charOut);
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    private PrintStream(boolean var1, OutputStream var2, Charset var3) {
+<i>61</i>&nbsp;        super(var2);
+<b class="nc"><i>62</i>&nbsp;        this.trouble = false;</b>
+<i>63</i>&nbsp;        this.closing = false;
+<i>64</i>&nbsp;        this.autoFlush = var1;
+<i>65</i>&nbsp;        this.charOut = new OutputStreamWriter(this, var3);
+<i>66</i>&nbsp;        this.textOut = new BufferedWriter(this.charOut);
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    private PrintStream(boolean var1, Charset var2, OutputStream var3) throws UnsupportedEncodingException {
+<i>70</i>&nbsp;        this(var1, (OutputStream)var3, (Charset)var2);
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public PrintStream(OutputStream var1) {
+<i>74</i>&nbsp;        this(var1, false);
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<b class="nc"><i>76</i>&nbsp;</b>
+<b class="nc"><i>77</i>&nbsp;    public PrintStream(OutputStream var1, boolean var2) {</b>
+<b class="nc"><i>78</i>&nbsp;        this(var2, (OutputStream)requireNonNull(var1, &quot;Null output stream&quot;));</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public PrintStream(OutputStream var1, boolean var2, String var3) throws UnsupportedEncodingException {
+<b class="nc"><i>82</i>&nbsp;        this(var2, (OutputStream)((OutputStream)requireNonNull(var1, &quot;Null output stream&quot;)), (Charset)toCharset(var3));</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public PrintStream(String var1) throws FileNotFoundException {
+<i>86</i>&nbsp;        this(false, new FileOutputStream(var1));
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public PrintStream(String var1, String var2) throws FileNotFoundException, UnsupportedEncodingException {
+<i>90</i>&nbsp;        this(false, (Charset)toCharset(var2), (OutputStream)(new FileOutputStream(var1)));
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public PrintStream(File var1) throws FileNotFoundException {
+<i>94</i>&nbsp;        this(false, new FileOutputStream(var1));
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public PrintStream(File var1, String var2) throws FileNotFoundException, UnsupportedEncodingException {
+<i>98</i>&nbsp;        this(false, (Charset)toCharset(var2), (OutputStream)(new FileOutputStream(var1)));
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<b class="nc"><i>100</i>&nbsp;</b>
+<i>101</i>&nbsp;    private void ensureOpen() throws IOException {
+<i>102</i>&nbsp;        if(this.out == null) {
+<i>103</i>&nbsp;            throw new IOException(&quot;Stream closed&quot;);
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public void flush() {
+<i>108</i>&nbsp;        synchronized(this) {
+<i>109</i>&nbsp;            try {
+<i>110</i>&nbsp;                this.ensureOpen();
+<i>111</i>&nbsp;                this.out.flush();
+<i>112</i>&nbsp;            } catch (IOException var4) {
+<i>113</i>&nbsp;                this.trouble = true;
+<i>114</i>&nbsp;            }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;        }
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public void close() {
+<i>120</i>&nbsp;        synchronized(this) {
+<i>121</i>&nbsp;            if(!this.closing) {
+<i>122</i>&nbsp;                this.closing = true;
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;                try {</b>
+<b class="nc"><i>125</i>&nbsp;                    this.textOut.close();</b>
+<i>126</i>&nbsp;                    this.out.close();
+<i>127</i>&nbsp;                } catch (IOException var4) {
+<i>128</i>&nbsp;                    this.trouble = true;
+<i>129</i>&nbsp;                }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;                this.textOut = null;
+<i>132</i>&nbsp;                this.charOut = null;
+<i>133</i>&nbsp;                this.out = null;
+<i>134</i>&nbsp;            }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    public boolean checkError() {
+<i>140</i>&nbsp;        if(this.out != null) {
+<i>141</i>&nbsp;            this.flush();
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;        if(this.out instanceof PrintStream) {
+<i>145</i>&nbsp;            PrintStream var1 = (PrintStream)this.out;
+<i>146</i>&nbsp;            return var1.checkError();
+<i>147</i>&nbsp;        } else {
+<i>148</i>&nbsp;            return this.trouble;
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    protected void setError() {
+<i>153</i>&nbsp;        this.trouble = true;
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<b class="nc"><i>156</i>&nbsp;    protected void clearError() {</b>
+<b class="nc"><i>157</i>&nbsp;        this.trouble = false;</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    public void write(int var1) {
+<i>161</i>&nbsp;        try {
+<i>162</i>&nbsp;            synchronized(this) {
+<i>163</i>&nbsp;                this.ensureOpen();
+<i>164</i>&nbsp;                this.out.write(var1);
+<i>165</i>&nbsp;                if(var1 == 10 &amp;&amp; this.autoFlush) {
+<i>166</i>&nbsp;                    this.out.flush();
+<i>167</i>&nbsp;                }
+<i>168</i>&nbsp;            }
+<i>169</i>&nbsp;        } catch (InterruptedIOException var5) {
+<i>170</i>&nbsp;            Thread.currentThread().interrupt();
+<i>171</i>&nbsp;        } catch (IOException var6) {
+<i>172</i>&nbsp;            this.trouble = true;
+<i>173</i>&nbsp;        }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    public void write(byte[] var1, int var2, int var3) {
+<i>178</i>&nbsp;        try {
+<i>179</i>&nbsp;            synchronized(this) {
+<i>180</i>&nbsp;                this.ensureOpen();
+<i>181</i>&nbsp;                this.out.write(var1, var2, var3);
+<i>182</i>&nbsp;                if(this.autoFlush) {
+<i>183</i>&nbsp;                    this.out.flush();
+<i>184</i>&nbsp;                }
+<i>185</i>&nbsp;            }
+<i>186</i>&nbsp;        } catch (InterruptedIOException var7) {
+<i>187</i>&nbsp;            Thread.currentThread().interrupt();
+<i>188</i>&nbsp;        } catch (IOException var8) {
+<i>189</i>&nbsp;            this.trouble = true;
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    private void write(char[] var1) {
+<i>195</i>&nbsp;        try {
+<b class="nc"><i>196</i>&nbsp;            synchronized(this) {</b>
+<b class="nc"><i>197</i>&nbsp;                this.ensureOpen();</b>
+<i>198</i>&nbsp;                this.textOut.write(var1);
+<i>199</i>&nbsp;                this.textOut.flushBuffer();
+<i>200</i>&nbsp;                this.charOut.flushBuffer();
+<i>201</i>&nbsp;                if(this.autoFlush) {
+<i>202</i>&nbsp;                    for(int var3 = 0; var3 &lt; var1.length; ++var3) {
+<i>203</i>&nbsp;                        if(var1[var3] == 10) {
+<i>204</i>&nbsp;                            this.out.flush();
+<i>205</i>&nbsp;                        }
+<i>206</i>&nbsp;                    }
+<i>207</i>&nbsp;                }
+<i>208</i>&nbsp;            }
+<i>209</i>&nbsp;        } catch (InterruptedIOException var6) {
+<i>210</i>&nbsp;            Thread.currentThread().interrupt();
+<i>211</i>&nbsp;        } catch (IOException var7) {
+<i>212</i>&nbsp;            this.trouble = true;
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    private void write(String var1) {
+<i>218</i>&nbsp;        try {
+<i>219</i>&nbsp;            synchronized(this) {
+<i>220</i>&nbsp;                this.ensureOpen();
+<i>221</i>&nbsp;                this.textOut.write(var1);
+<i>222</i>&nbsp;                this.textOut.flushBuffer();
+<i>223</i>&nbsp;                this.charOut.flushBuffer();
+<i>224</i>&nbsp;                if(this.autoFlush &amp;&amp; var1.indexOf(10) &gt;= 0) {
+<i>225</i>&nbsp;                    this.out.flush();
+<i>226</i>&nbsp;                }
+<i>227</i>&nbsp;            }
+<b class="nc"><i>228</i>&nbsp;        } catch (InterruptedIOException var5) {</b>
+<b class="nc"><i>229</i>&nbsp;            Thread.currentThread().interrupt();</b>
+<i>230</i>&nbsp;        } catch (IOException var6) {
+<i>231</i>&nbsp;            this.trouble = true;
+<i>232</i>&nbsp;        }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    private void newLine() {
+<i>237</i>&nbsp;        try {
+<i>238</i>&nbsp;            synchronized(this) {
+<i>239</i>&nbsp;                this.ensureOpen();
+<i>240</i>&nbsp;                this.textOut.newLine();
+<i>241</i>&nbsp;                this.textOut.flushBuffer();
+<i>242</i>&nbsp;                this.charOut.flushBuffer();
+<i>243</i>&nbsp;                if(this.autoFlush) {
+<i>244</i>&nbsp;                    this.out.flush();
+<i>245</i>&nbsp;                }
+<i>246</i>&nbsp;            }
+<i>247</i>&nbsp;        } catch (InterruptedIOException var4) {
+<i>248</i>&nbsp;            Thread.currentThread().interrupt();
+<i>249</i>&nbsp;        } catch (IOException var5) {
+<i>250</i>&nbsp;            this.trouble = true;
+<i>251</i>&nbsp;        }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    public void print(boolean var1) {
+<i>256</i>&nbsp;        this.write((String)(var1?&quot;true&quot;:&quot;false&quot;));
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    public void print(char var1) {
+<i>260</i>&nbsp;        this.write((String)String.valueOf(var1));
+<i>261</i>&nbsp;    }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    public void print(int var1) {
+<i>264</i>&nbsp;        this.write((String)String.valueOf(var1));
+<i>265</i>&nbsp;    }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;    public void print(long var1) {
+<b class="nc"><i>268</i>&nbsp;        this.write((String)String.valueOf(var1));</b>
+<b class="nc"><i>269</i>&nbsp;    }</b>
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;    public void print(float var1) {
+<i>272</i>&nbsp;        this.write((String)String.valueOf(var1));
+<i>273</i>&nbsp;    }
+<b class="nc"><i>274</i>&nbsp;</b>
+<b class="nc"><i>275</i>&nbsp;    public void print(double var1) {</b>
+<i>276</i>&nbsp;        this.write((String)String.valueOf(var1));
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    public void print(char[] var1) {
+<i>280</i>&nbsp;        this.write((char[])var1);
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    public void print(String var1) {
+<i>284</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>285</i>&nbsp;            var1 = &quot;null&quot;;</b>
+<i>286</i>&nbsp;        }
+<b class="nc"><i>287</i>&nbsp;</b>
+<b class="nc"><i>288</i>&nbsp;        this.write((String)var1);</b>
+<i>289</i>&nbsp;    }
+<b class="nc"><i>290</i>&nbsp;</b>
+<b class="nc"><i>291</i>&nbsp;    public void print(Object var1) {</b>
+<b class="nc"><i>292</i>&nbsp;        this.write((String)String.valueOf(var1));</b>
+<b class="nc"><i>293</i>&nbsp;    }</b>
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    public void println() {
+<b class="nc"><i>296</i>&nbsp;        this.newLine();</b>
+<i>297</i>&nbsp;    }
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    public void println(boolean var1) {
+<i>300</i>&nbsp;        synchronized(this) {
+<i>301</i>&nbsp;            this.print(var1);
+<i>302</i>&nbsp;            this.newLine();
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;    }
+<b class="nc"><i>305</i>&nbsp;</b>
+<b class="nc"><i>306</i>&nbsp;    public void println(char var1) {</b>
+<b class="nc"><i>307</i>&nbsp;        synchronized(this) {</b>
+<i>308</i>&nbsp;            this.print((char)var1);
+<b class="nc"><i>309</i>&nbsp;            this.newLine();</b>
+<b class="nc"><i>310</i>&nbsp;        }</b>
+<i>311</i>&nbsp;    }
+<b class="nc"><i>312</i>&nbsp;</b>
+<b class="nc"><i>313</i>&nbsp;    public void println(int var1) {</b>
+<b class="nc"><i>314</i>&nbsp;        synchronized(this) {</b>
+<b class="nc"><i>315</i>&nbsp;            this.print((int)var1);</b>
+<b class="nc"><i>316</i>&nbsp;            this.newLine();</b>
+<b class="nc"><i>317</i>&nbsp;        }</b>
+<i>318</i>&nbsp;    }
+<b class="nc"><i>319</i>&nbsp;</b>
+<i>320</i>&nbsp;    public void println(long var1) {
+<i>321</i>&nbsp;        synchronized(this) {
+<i>322</i>&nbsp;            this.print(var1);
+<i>323</i>&nbsp;            this.newLine();
+<i>324</i>&nbsp;        }
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;    public void println(float var1) {
+<i>328</i>&nbsp;        synchronized(this) {
+<i>329</i>&nbsp;            this.print(var1);
+<i>330</i>&nbsp;            this.newLine();
+<i>331</i>&nbsp;        }
+<i>332</i>&nbsp;    }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    public void println(double var1) {
+<i>335</i>&nbsp;        synchronized(this) {
+<i>336</i>&nbsp;            this.print(var1);
+<i>337</i>&nbsp;            this.newLine();
+<i>338</i>&nbsp;        }
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;
+<b class="nc"><i>341</i>&nbsp;    public void println(char[] var1) {</b>
+<b class="nc"><i>342</i>&nbsp;        synchronized(this) {</b>
+<b class="nc"><i>343</i>&nbsp;            this.print((char[])var1);</b>
+<b class="nc"><i>344</i>&nbsp;            this.newLine();</b>
+<b class="nc"><i>345</i>&nbsp;        }</b>
+<i>346</i>&nbsp;    }
+<b class="nc"><i>347</i>&nbsp;</b>
+<i>348</i>&nbsp;    public void println(String var1) {
+<i>349</i>&nbsp;        synchronized(this) {
+<i>350</i>&nbsp;            this.print((String)var1);
+<i>351</i>&nbsp;            this.newLine();
+<i>352</i>&nbsp;        }
+<i>353</i>&nbsp;    }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    public void println(Object var1) {
+<i>356</i>&nbsp;        String var2 = String.valueOf(var1);
+<i>357</i>&nbsp;        synchronized(this) {
+<i>358</i>&nbsp;            this.print((String)var2);
+<i>359</i>&nbsp;            this.newLine();
+<b class="nc"><i>360</i>&nbsp;        }</b>
+<i>361</i>&nbsp;    }
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;    public PrintStream printf(String var1, Object... var2) {
+<i>364</i>&nbsp;        return this.format(var1, var2);
+<i>365</i>&nbsp;    }
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;    public PrintStream printf(Locale var1, String var2, Object... var3) {
+<i>368</i>&nbsp;        return this.format(var1, var2, var3);
+<i>369</i>&nbsp;    }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    public PrintStream format(String var1, Object... var2) {
+<i>372</i>&nbsp;        try {
+<b class="nc"><i>373</i>&nbsp;            synchronized(this) {</b>
+<i>374</i>&nbsp;                this.ensureOpen();
+<i>375</i>&nbsp;                if(this.formatter == null || this.formatter.locale() != Locale.getDefault()) {
+<i>376</i>&nbsp;                    this.formatter = new Formatter(this);
+<i>377</i>&nbsp;                }
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;                this.formatter.format(Locale.getDefault(), var1, var2);
+<i>380</i>&nbsp;            }
+<i>381</i>&nbsp;        } catch (InterruptedIOException var6) {
+<i>382</i>&nbsp;            Thread.currentThread().interrupt();
+<i>383</i>&nbsp;        } catch (IOException var7) {
+<i>384</i>&nbsp;            this.trouble = true;
+<i>385</i>&nbsp;        }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;        return this;
+<i>388</i>&nbsp;    }
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;    public PrintStream format(Locale var1, String var2, Object... var3) {
+<i>391</i>&nbsp;        try {
+<i>392</i>&nbsp;            synchronized(this) {
+<i>393</i>&nbsp;                this.ensureOpen();
+<i>394</i>&nbsp;                if(this.formatter == null || this.formatter.locale() != var1) {
+<i>395</i>&nbsp;                    this.formatter = new Formatter(this, var1);
+<i>396</i>&nbsp;                }
+<b class="nc"><i>397</i>&nbsp;</b>
+<b class="nc"><i>398</i>&nbsp;                this.formatter.format(var1, var2, var3);</b>
+<b class="nc"><i>399</i>&nbsp;            }</b>
+<b class="nc"><i>400</i>&nbsp;        } catch (InterruptedIOException var7) {</b>
+<b class="nc"><i>401</i>&nbsp;            Thread.currentThread().interrupt();</b>
+<b class="nc"><i>402</i>&nbsp;        } catch (IOException var8) {</b>
+<i>403</i>&nbsp;            this.trouble = true;
+<b class="nc"><i>404</i>&nbsp;        }</b>
+<b class="nc"><i>405</i>&nbsp;</b>
+<i>406</i>&nbsp;        return this;
+<b class="nc"><i>407</i>&nbsp;    }</b>
+<b class="nc"><i>408</i>&nbsp;</b>
+<b class="nc"><i>409</i>&nbsp;    public PrintStream append(CharSequence var1) {</b>
+<i>410</i>&nbsp;        if(var1 == null) {
+<i>411</i>&nbsp;            this.print((String)&quot;null&quot;);
+<i>412</i>&nbsp;        } else {
+<i>413</i>&nbsp;            this.print((String)var1.toString());
+<i>414</i>&nbsp;        }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;        return this;
+<i>417</i>&nbsp;    }
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;    public PrintStream append(CharSequence var1, int var2, int var3) {
+<i>420</i>&nbsp;        Object var4 = var1 == null?&quot;null&quot;:var1;
+<i>421</i>&nbsp;        this.write((String)((CharSequence)var4).subSequence(var2, var3).toString());
+<i>422</i>&nbsp;        return this;
+<i>423</i>&nbsp;    }
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;    public PrintStream append(char var1) {
+<i>426</i>&nbsp;        this.print((char)var1);
+<i>427</i>&nbsp;        return this;
+<b class="nc"><i>428</i>&nbsp;    }</b>
+<b class="nc"><i>429</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

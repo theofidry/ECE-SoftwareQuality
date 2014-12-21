@@ -1,0 +1,281 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Timer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Timer (java.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Timer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 66)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Timer$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 71)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.Date;
+<i>9</i>&nbsp;import java.util.TaskQueue;
+<i>10</i>&nbsp;import java.util.TimerTask;
+<i>11</i>&nbsp;import java.util.TimerThread;
+<i>12</i>&nbsp;import java.util.concurrent.atomic.AtomicInteger;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public class Timer {
+<i>15</i>&nbsp;    private final TaskQueue queue;
+<i>16</i>&nbsp;    private final TimerThread thread;
+<i>17</i>&nbsp;    private final Object threadReaper;
+<i>18</i>&nbsp;    private static final AtomicInteger nextSerialNumber = new AtomicInteger(0);
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    private static int serialNumber() {
+<i>21</i>&nbsp;        return nextSerialNumber.getAndIncrement();
+<i>22</i>&nbsp;    }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public Timer() {
+<i>25</i>&nbsp;        this(&quot;Timer-&quot; + serialNumber());
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public Timer(boolean var1) {
+<i>29</i>&nbsp;        this(&quot;Timer-&quot; + serialNumber(), var1);
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public Timer(String var1) {
+<i>33</i>&nbsp;        this.queue = new TaskQueue();
+<i>34</i>&nbsp;        this.thread = new TimerThread(this.queue);
+<i>35</i>&nbsp;        this.threadReaper = new Object() {
+<i>36</i>&nbsp;            protected void finalize() throws Throwable {
+<i>37</i>&nbsp;                synchronized(Timer.this.queue) {
+<i>38</i>&nbsp;                    Timer.this.thread.newTasksMayBeScheduled = false;
+<i>39</i>&nbsp;                    Timer.this.queue.notify();
+<i>40</i>&nbsp;                }
+<i>41</i>&nbsp;            }
+<i>42</i>&nbsp;        };
+<i>43</i>&nbsp;        this.thread.setName(var1);
+<i>44</i>&nbsp;        this.thread.start();
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public Timer(String var1, boolean var2) {
+<i>48</i>&nbsp;        this.queue = new TaskQueue();
+<i>49</i>&nbsp;        this.thread = new TimerThread(this.queue);
+<i>50</i>&nbsp;        this.threadReaper = new Object() {
+<i>51</i>&nbsp;            protected void finalize() throws Throwable {
+<i>52</i>&nbsp;                synchronized(Timer.this.queue) {
+<i>53</i>&nbsp;                    Timer.this.thread.newTasksMayBeScheduled = false;
+<i>54</i>&nbsp;                    Timer.this.queue.notify();
+<i>55</i>&nbsp;                }
+<i>56</i>&nbsp;            }
+<i>57</i>&nbsp;        };
+<i>58</i>&nbsp;        this.thread.setName(var1);
+<b class="nc"><i>59</i>&nbsp;        this.thread.setDaemon(var2);</b>
+<i>60</i>&nbsp;        this.thread.start();
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public void schedule(TimerTask var1, long var2) {
+<i>64</i>&nbsp;        if(var2 &lt; 0L) {
+<i>65</i>&nbsp;            throw new IllegalArgumentException(&quot;Negative delay.&quot;);
+<b class="nc"><i>66</i>&nbsp;        } else {</b>
+<i>67</i>&nbsp;            this.sched(var1, System.currentTimeMillis() + var2, 0L);
+<i>68</i>&nbsp;        }
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<b class="nc"><i>71</i>&nbsp;    public void schedule(TimerTask var1, Date var2) {</b>
+<i>72</i>&nbsp;        this.sched(var1, var2.getTime(), 0L);
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    public void schedule(TimerTask var1, long var2, long var4) {
+<i>76</i>&nbsp;        if(var2 &lt; 0L) {
+<i>77</i>&nbsp;            throw new IllegalArgumentException(&quot;Negative delay.&quot;);
+<i>78</i>&nbsp;        } else if(var4 &lt;= 0L) {
+<i>79</i>&nbsp;            throw new IllegalArgumentException(&quot;Non-positive period.&quot;);
+<b class="nc"><i>80</i>&nbsp;        } else {</b>
+<i>81</i>&nbsp;            this.sched(var1, System.currentTimeMillis() + var2, -var4);
+<b class="nc"><i>82</i>&nbsp;        }</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<b class="nc"><i>84</i>&nbsp;</b>
+<b class="nc"><i>85</i>&nbsp;    public void schedule(TimerTask var1, Date var2, long var3) {</b>
+<i>86</i>&nbsp;        if(var3 &lt;= 0L) {
+<i>87</i>&nbsp;            throw new IllegalArgumentException(&quot;Non-positive period.&quot;);
+<i>88</i>&nbsp;        } else {
+<i>89</i>&nbsp;            this.sched(var1, var2.getTime(), -var3);
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<b class="nc"><i>93</i>&nbsp;    public void scheduleAtFixedRate(TimerTask var1, long var2, long var4) {</b>
+<i>94</i>&nbsp;        if(var2 &lt; 0L) {
+<b class="nc"><i>95</i>&nbsp;            throw new IllegalArgumentException(&quot;Negative delay.&quot;);</b>
+<i>96</i>&nbsp;        } else if(var4 &lt;= 0L) {
+<i>97</i>&nbsp;            throw new IllegalArgumentException(&quot;Non-positive period.&quot;);
+<i>98</i>&nbsp;        } else {
+<i>99</i>&nbsp;            this.sched(var1, System.currentTimeMillis() + var2, var4);
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public void scheduleAtFixedRate(TimerTask var1, Date var2, long var3) {
+<i>104</i>&nbsp;        if(var3 &lt;= 0L) {
+<i>105</i>&nbsp;            throw new IllegalArgumentException(&quot;Non-positive period.&quot;);
+<b class="nc"><i>106</i>&nbsp;        } else {</b>
+<i>107</i>&nbsp;            this.sched(var1, var2.getTime(), var3);
+<i>108</i>&nbsp;        }
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    private void sched(TimerTask var1, long var2, long var4) {
+<i>112</i>&nbsp;        if(var2 &lt; 0L) {
+<i>113</i>&nbsp;            throw new IllegalArgumentException(&quot;Illegal execution time.&quot;);
+<i>114</i>&nbsp;        } else {
+<i>115</i>&nbsp;            if(Math.abs(var4) &gt; 4611686018427387903L) {
+<i>116</i>&nbsp;                var4 &gt;&gt;= 1;
+<i>117</i>&nbsp;            }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;            TaskQueue var6 = this.queue;
+<i>120</i>&nbsp;            synchronized(this.queue) {
+<i>121</i>&nbsp;                if(!this.thread.newTasksMayBeScheduled) {
+<b class="nc"><i>122</i>&nbsp;                    throw new IllegalStateException(&quot;Timer already cancelled.&quot;);</b>
+<i>123</i>&nbsp;                } else {
+<i>124</i>&nbsp;                    Object var7 = var1.lock;
+<i>125</i>&nbsp;                    synchronized(var1.lock) {
+<i>126</i>&nbsp;                        if(var1.state != 0) {
+<i>127</i>&nbsp;                            throw new IllegalStateException(&quot;Task already scheduled or cancelled&quot;);
+<i>128</i>&nbsp;                        }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;                        var1.nextExecutionTime = var2;
+<i>131</i>&nbsp;                        var1.period = var4;
+<i>132</i>&nbsp;                        var1.state = 1;
+<i>133</i>&nbsp;                    }
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;                    this.queue.add(var1);</b>
+<b class="nc"><i>136</i>&nbsp;                    if(this.queue.getMin() == var1) {</b>
+<b class="nc"><i>137</i>&nbsp;                        this.queue.notify();</b>
+<i>138</i>&nbsp;                    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;                }
+<i>141</i>&nbsp;            }
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public void cancel() {
+<i>146</i>&nbsp;        TaskQueue var1 = this.queue;
+<i>147</i>&nbsp;        synchronized(this.queue) {
+<i>148</i>&nbsp;            this.thread.newTasksMayBeScheduled = false;
+<i>149</i>&nbsp;            this.queue.clear();
+<i>150</i>&nbsp;            this.queue.notify();
+<b class="nc"><i>151</i>&nbsp;        }</b>
+<b class="nc"><i>152</i>&nbsp;    }</b>
+<b class="nc"><i>153</i>&nbsp;</b>
+<b class="nc"><i>154</i>&nbsp;    public int purge() {</b>
+<i>155</i>&nbsp;        int var1 = 0;
+<i>156</i>&nbsp;        TaskQueue var2 = this.queue;
+<i>157</i>&nbsp;        synchronized(this.queue) {
+<i>158</i>&nbsp;            for(int var3 = this.queue.size(); var3 &gt; 0; --var3) {
+<i>159</i>&nbsp;                if(this.queue.get(var3).state == 3) {
+<i>160</i>&nbsp;                    this.queue.quickRemove(var3);
+<i>161</i>&nbsp;                    ++var1;
+<i>162</i>&nbsp;                }
+<i>163</i>&nbsp;            }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;            if(var1 != 0) {
+<i>166</i>&nbsp;                this.queue.heapify();
+<i>167</i>&nbsp;            }
+<b class="nc"><i>168</i>&nbsp;</b>
+<b class="nc"><i>169</i>&nbsp;            return var1;</b>
+<b class="nc"><i>170</i>&nbsp;        }</b>
+<i>171</i>&nbsp;    }
+<i>172</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

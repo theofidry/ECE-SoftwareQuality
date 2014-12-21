@@ -1,0 +1,448 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KerberosTicket</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.security.auth.kerberos</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KerberosTicket (javax.security.auth.kerberos)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KerberosTicket</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 145)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.security.auth.kerberos;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InvalidObjectException;
+<i>10</i>&nbsp;import java.io.ObjectInputStream;
+<i>11</i>&nbsp;import java.io.Serializable;
+<i>12</i>&nbsp;import java.net.InetAddress;
+<i>13</i>&nbsp;import java.util.Arrays;
+<i>14</i>&nbsp;import java.util.Date;
+<i>15</i>&nbsp;import javax.crypto.SecretKey;
+<i>16</i>&nbsp;import javax.security.auth.DestroyFailedException;
+<i>17</i>&nbsp;import javax.security.auth.Destroyable;
+<i>18</i>&nbsp;import javax.security.auth.RefreshFailedException;
+<i>19</i>&nbsp;import javax.security.auth.Refreshable;
+<i>20</i>&nbsp;import javax.security.auth.kerberos.KerberosPrincipal;
+<i>21</i>&nbsp;import javax.security.auth.kerberos.KeyImpl;
+<i>22</i>&nbsp;import sun.misc.HexDumpEncoder;
+<i>23</i>&nbsp;import sun.security.krb5.Credentials;
+<i>24</i>&nbsp;import sun.security.krb5.KrbException;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;public class KerberosTicket implements Destroyable, Refreshable, Serializable {
+<i>27</i>&nbsp;    private static final long serialVersionUID = 7395334370157380539L;
+<i>28</i>&nbsp;    private static final int FORWARDABLE_TICKET_FLAG = 1;
+<i>29</i>&nbsp;    private static final int FORWARDED_TICKET_FLAG = 2;
+<i>30</i>&nbsp;    private static final int PROXIABLE_TICKET_FLAG = 3;
+<i>31</i>&nbsp;    private static final int PROXY_TICKET_FLAG = 4;
+<i>32</i>&nbsp;    private static final int POSTDATED_TICKET_FLAG = 6;
+<i>33</i>&nbsp;    private static final int RENEWABLE_TICKET_FLAG = 8;
+<i>34</i>&nbsp;    private static final int INITIAL_TICKET_FLAG = 9;
+<i>35</i>&nbsp;    private static final int NUM_FLAGS = 32;
+<i>36</i>&nbsp;    private byte[] asn1Encoding;
+<i>37</i>&nbsp;    private KeyImpl sessionKey;
+<i>38</i>&nbsp;    private boolean[] flags;
+<i>39</i>&nbsp;    private Date authTime;
+<i>40</i>&nbsp;    private Date startTime;
+<i>41</i>&nbsp;    private Date endTime;
+<i>42</i>&nbsp;    private Date renewTill;
+<i>43</i>&nbsp;    private KerberosPrincipal client;
+<i>44</i>&nbsp;    private KerberosPrincipal server;
+<i>45</i>&nbsp;    private InetAddress[] clientAddresses;
+<i>46</i>&nbsp;    private transient boolean destroyed = false;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public KerberosTicket(byte[] var1, KerberosPrincipal var2, KerberosPrincipal var3, byte[] var4, int var5, boolean[] var6, Date var7, Date var8, Date var9, Date var10, InetAddress[] var11) {
+<i>49</i>&nbsp;        this.init(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11);
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    private void init(byte[] var1, KerberosPrincipal var2, KerberosPrincipal var3, byte[] var4, int var5, boolean[] var6, Date var7, Date var8, Date var9, Date var10, InetAddress[] var11) {
+<i>53</i>&nbsp;        if(var4 == null) {
+<i>54</i>&nbsp;            throw new IllegalArgumentException(&quot;Session key for ticket cannot be null&quot;);
+<i>55</i>&nbsp;        } else {
+<i>56</i>&nbsp;            this.init(var1, var2, var3, new KeyImpl(var4, var5), var6, var7, var8, var9, var10, var11);
+<i>57</i>&nbsp;        }
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    private void init(byte[] var1, KerberosPrincipal var2, KerberosPrincipal var3, KeyImpl var4, boolean[] var5, Date var6, Date var7, Date var8, Date var9, InetAddress[] var10) {
+<i>61</i>&nbsp;        if(var1 == null) {
+<i>62</i>&nbsp;            throw new IllegalArgumentException(&quot;ASN.1 encoding of ticket cannot be null&quot;);
+<i>63</i>&nbsp;        } else {
+<i>64</i>&nbsp;            this.asn1Encoding = (byte[])var1.clone();
+<i>65</i>&nbsp;            if(var2 == null) {
+<i>66</i>&nbsp;                throw new IllegalArgumentException(&quot;Client name in ticket cannot be null&quot;);
+<i>67</i>&nbsp;            } else {
+<i>68</i>&nbsp;                this.client = var2;
+<i>69</i>&nbsp;                if(var3 == null) {
+<i>70</i>&nbsp;                    throw new IllegalArgumentException(&quot;Server name in ticket cannot be null&quot;);
+<i>71</i>&nbsp;                } else {
+<i>72</i>&nbsp;                    this.server = var3;
+<i>73</i>&nbsp;                    this.sessionKey = var4;
+<i>74</i>&nbsp;                    if(var5 != null) {
+<i>75</i>&nbsp;                        if(var5.length &gt;= 32) {
+<i>76</i>&nbsp;                            this.flags = (boolean[])var5.clone();
+<i>77</i>&nbsp;                        } else {
+<i>78</i>&nbsp;                            this.flags = new boolean[32];
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;                            for(int var11 = 0; var11 &lt; var5.length; ++var11) {
+<i>81</i>&nbsp;                                this.flags[var11] = var5[var11];
+<i>82</i>&nbsp;                            }
+<i>83</i>&nbsp;                        }
+<i>84</i>&nbsp;                    } else {
+<i>85</i>&nbsp;                        this.flags = new boolean[32];
+<i>86</i>&nbsp;                    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;                    if(this.flags[8]) {
+<i>89</i>&nbsp;                        if(var9 == null) {
+<i>90</i>&nbsp;                            throw new IllegalArgumentException(&quot;The renewable period end time cannot be null for renewable tickets.&quot;);
+<i>91</i>&nbsp;                        }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;                        this.renewTill = new Date(var9.getTime());
+<i>94</i>&nbsp;                    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;                    if(var6 != null) {
+<i>97</i>&nbsp;                        this.authTime = new Date(var6.getTime());
+<i>98</i>&nbsp;                    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;                    if(var7 != null) {
+<i>101</i>&nbsp;                        this.startTime = new Date(var7.getTime());
+<i>102</i>&nbsp;                    } else {
+<i>103</i>&nbsp;                        this.startTime = this.authTime;
+<i>104</i>&nbsp;                    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;                    if(var8 == null) {
+<i>107</i>&nbsp;                        throw new IllegalArgumentException(&quot;End time for ticket validity cannot be null&quot;);
+<i>108</i>&nbsp;                    } else {
+<i>109</i>&nbsp;                        this.endTime = new Date(var8.getTime());
+<i>110</i>&nbsp;                        if(var10 != null) {
+<i>111</i>&nbsp;                            this.clientAddresses = (InetAddress[])var10.clone();
+<i>112</i>&nbsp;                        }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;                    }
+<i>115</i>&nbsp;                }
+<i>116</i>&nbsp;            }
+<i>117</i>&nbsp;        }
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public final KerberosPrincipal getClient() {
+<i>121</i>&nbsp;        return this.client;
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public final KerberosPrincipal getServer() {
+<i>125</i>&nbsp;        return this.server;
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public final SecretKey getSessionKey() {
+<i>129</i>&nbsp;        if(this.destroyed) {
+<i>130</i>&nbsp;            throw new IllegalStateException(&quot;This ticket is no longer valid&quot;);
+<i>131</i>&nbsp;        } else {
+<i>132</i>&nbsp;            return this.sessionKey;
+<i>133</i>&nbsp;        }
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public final int getSessionKeyType() {
+<i>137</i>&nbsp;        if(this.destroyed) {
+<i>138</i>&nbsp;            throw new IllegalStateException(&quot;This ticket is no longer valid&quot;);
+<i>139</i>&nbsp;        } else {
+<i>140</i>&nbsp;            return this.sessionKey.getKeyType();
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public final boolean isForwardable() {
+<i>145</i>&nbsp;        return this.flags[1];
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    public final boolean isForwarded() {
+<i>149</i>&nbsp;        return this.flags[2];
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public final boolean isProxiable() {
+<i>153</i>&nbsp;        return this.flags[3];
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    public final boolean isProxy() {
+<i>157</i>&nbsp;        return this.flags[4];
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    public final boolean isPostdated() {
+<i>161</i>&nbsp;        return this.flags[6];
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    public final boolean isRenewable() {
+<i>165</i>&nbsp;        return this.flags[8];
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    public final boolean isInitial() {
+<i>169</i>&nbsp;        return this.flags[9];
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    public final boolean[] getFlags() {
+<i>173</i>&nbsp;        return this.flags == null?null:(boolean[])this.flags.clone();
+<i>174</i>&nbsp;    }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;    public final Date getAuthTime() {
+<i>177</i>&nbsp;        return this.authTime == null?null:(Date)this.authTime.clone();
+<i>178</i>&nbsp;    }
+<b class="nc"><i>179</i>&nbsp;</b>
+<i>180</i>&nbsp;    public final Date getStartTime() {
+<i>181</i>&nbsp;        return this.startTime == null?null:(Date)this.startTime.clone();
+<i>182</i>&nbsp;    }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    public final Date getEndTime() {
+<i>185</i>&nbsp;        return (Date)this.endTime.clone();
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    public final Date getRenewTill() {
+<i>189</i>&nbsp;        return this.renewTill == null?null:(Date)this.renewTill.clone();
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public final InetAddress[] getClientAddresses() {
+<i>193</i>&nbsp;        return this.clientAddresses == null?null:(InetAddress[])this.clientAddresses.clone();
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    public final byte[] getEncoded() {
+<i>197</i>&nbsp;        if(this.destroyed) {
+<i>198</i>&nbsp;            throw new IllegalStateException(&quot;This ticket is no longer valid&quot;);
+<i>199</i>&nbsp;        } else {
+<i>200</i>&nbsp;            return (byte[])this.asn1Encoding.clone();
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    public boolean isCurrent() {
+<i>205</i>&nbsp;        return System.currentTimeMillis() &lt;= this.getEndTime().getTime();
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    public void refresh() throws RefreshFailedException {
+<i>209</i>&nbsp;        if(this.destroyed) {
+<i>210</i>&nbsp;            throw new RefreshFailedException(&quot;A destroyed ticket cannot be renewd.&quot;);
+<i>211</i>&nbsp;        } else if(!this.isRenewable()) {
+<i>212</i>&nbsp;            throw new RefreshFailedException(&quot;This ticket is not renewable&quot;);
+<i>213</i>&nbsp;        } else if(System.currentTimeMillis() &gt; this.getRenewTill().getTime()) {
+<i>214</i>&nbsp;            throw new RefreshFailedException(&quot;This ticket is past its last renewal time.&quot;);
+<i>215</i>&nbsp;        } else {
+<i>216</i>&nbsp;            Object var1 = null;
+<i>217</i>&nbsp;            Credentials var2 = null;
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;            try {
+<i>220</i>&nbsp;                var2 = new Credentials(this.asn1Encoding, this.client.toString(), this.server.toString(), this.sessionKey.getEncoded(), this.sessionKey.getKeyType(), this.flags, this.authTime, this.startTime, this.endTime, this.renewTill, this.clientAddresses);
+<i>221</i>&nbsp;                var2 = var2.renew();
+<b class="nc"><i>222</i>&nbsp;            } catch (KrbException var8) {</b>
+<i>223</i>&nbsp;                var1 = var8;
+<b class="nc"><i>224</i>&nbsp;            } catch (IOException var9) {</b>
+<i>225</i>&nbsp;                var1 = var9;
+<i>226</i>&nbsp;            }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;            if(var1 != null) {
+<i>229</i>&nbsp;                RefreshFailedException var3 = new RefreshFailedException(&quot;Failed to renew Kerberos Ticket for client &quot; + this.client + &quot; and server &quot; + this.server + &quot; - &quot; + ((Throwable)var1).getMessage());
+<i>230</i>&nbsp;                var3.initCause((Throwable)var1);
+<i>231</i>&nbsp;                throw var3;
+<i>232</i>&nbsp;            } else {
+<i>233</i>&nbsp;                synchronized(this) {
+<i>234</i>&nbsp;                    try {
+<i>235</i>&nbsp;                        this.destroy();
+<i>236</i>&nbsp;                    } catch (DestroyFailedException var6) {
+<i>237</i>&nbsp;                        ;
+<i>238</i>&nbsp;                    }
+<i>239</i>&nbsp;
+<b class="nc"><i>240</i>&nbsp;                    this.init(var2.getEncoded(), new KerberosPrincipal(var2.getClient().getName()), new KerberosPrincipal(var2.getServer().getName(), 2), var2.getSessionKey().getBytes(), var2.getSessionKey().getEType(), var2.getFlags(), var2.getAuthTime(), var2.getStartTime(), var2.getEndTime(), var2.getRenewTill(), var2.getClientAddresses());</b>
+<b class="nc"><i>241</i>&nbsp;                    this.destroyed = false;</b>
+<i>242</i>&nbsp;                }
+<b class="nc"><i>243</i>&nbsp;            }</b>
+<i>244</i>&nbsp;        }
+<b class="nc"><i>245</i>&nbsp;    }</b>
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;    public void destroy() throws DestroyFailedException {
+<b class="nc"><i>248</i>&nbsp;        if(!this.destroyed) {</b>
+<i>249</i>&nbsp;            Arrays.fill(this.asn1Encoding, (byte)0);
+<b class="nc"><i>250</i>&nbsp;            this.client = null;</b>
+<b class="nc"><i>251</i>&nbsp;            this.server = null;</b>
+<i>252</i>&nbsp;            this.sessionKey.destroy();
+<b class="nc"><i>253</i>&nbsp;            this.flags = null;</b>
+<i>254</i>&nbsp;            this.authTime = null;
+<b class="nc"><i>255</i>&nbsp;            this.startTime = null;</b>
+<b class="nc"><i>256</i>&nbsp;            this.endTime = null;</b>
+<i>257</i>&nbsp;            this.renewTill = null;
+<b class="nc"><i>258</i>&nbsp;            this.clientAddresses = null;</b>
+<i>259</i>&nbsp;            this.destroyed = true;
+<b class="nc"><i>260</i>&nbsp;        }</b>
+<b class="nc"><i>261</i>&nbsp;</b>
+<b class="nc"><i>262</i>&nbsp;    }</b>
+<i>263</i>&nbsp;
+<b class="nc"><i>264</i>&nbsp;    public boolean isDestroyed() {</b>
+<i>265</i>&nbsp;        return this.destroyed;
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<b class="nc"><i>267</i>&nbsp;</b>
+<i>268</i>&nbsp;    public String toString() {
+<i>269</i>&nbsp;        if(this.destroyed) {
+<b class="nc"><i>270</i>&nbsp;            throw new IllegalStateException(&quot;This ticket is no longer valid&quot;);</b>
+<i>271</i>&nbsp;        } else {
+<b class="nc"><i>272</i>&nbsp;            StringBuffer var1 = new StringBuffer();</b>
+<b class="nc"><i>273</i>&nbsp;            if(this.clientAddresses != null) {</b>
+<b class="nc"><i>274</i>&nbsp;                for(int var2 = 0; var2 &lt; this.clientAddresses.length; ++var2) {</b>
+<i>275</i>&nbsp;                    var1.append(&quot;clientAddresses[&quot; + var2 + &quot;] = &quot; + this.clientAddresses[var2].toString());
+<i>276</i>&nbsp;                }
+<b class="nc"><i>277</i>&nbsp;            }</b>
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;            return &quot;Ticket (hex) = \n&quot; + (new HexDumpEncoder()).encodeBuffer(this.asn1Encoding) + &quot;\n&quot; + &quot;Client Principal = &quot; + this.client.toString() + &quot;\n&quot; + &quot;Server Principal = &quot; + this.server.toString() + &quot;\n&quot; + &quot;Session Key = &quot; + this.sessionKey.toString() + &quot;\n&quot; + &quot;Forwardable Ticket &quot; + this.flags[1] + &quot;\n&quot; + &quot;Forwarded Ticket &quot; + this.flags[2] + &quot;\n&quot; + &quot;Proxiable Ticket &quot; + this.flags[3] + &quot;\n&quot; + &quot;Proxy Ticket &quot; + this.flags[4] + &quot;\n&quot; + &quot;Postdated Ticket &quot; + this.flags[6] + &quot;\n&quot; + &quot;Renewable Ticket &quot; + this.flags[8] + &quot;\n&quot; + &quot;Initial Ticket &quot; + this.flags[8] + &quot;\n&quot; + &quot;Auth Time = &quot; + this.authTime + &quot;\n&quot; + &quot;Start Time = &quot; + this.startTime + &quot;\n&quot; + &quot;End Time = &quot; + this.endTime.toString() + &quot;\n&quot; + &quot;Renew Till = &quot; + this.renewTill + &quot;\n&quot; + &quot;Client Addresses &quot; + (this.clientAddresses == null?&quot; Null &quot;:var1.toString() + &quot;\n&quot;);
+<b class="nc"><i>280</i>&nbsp;        }</b>
+<i>281</i>&nbsp;    }
+<b class="nc"><i>282</i>&nbsp;</b>
+<i>283</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>284</i>&nbsp;        byte var1 = 17;</b>
+<b class="nc"><i>285</i>&nbsp;        if(this.isDestroyed()) {</b>
+<i>286</i>&nbsp;            return var1;
+<b class="nc"><i>287</i>&nbsp;        } else {</b>
+<i>288</i>&nbsp;            int var2 = var1 * 37 + Arrays.hashCode(this.getEncoded());
+<b class="nc"><i>289</i>&nbsp;            var2 = var2 * 37 + this.endTime.hashCode();</b>
+<b class="nc"><i>290</i>&nbsp;            var2 = var2 * 37 + this.client.hashCode();</b>
+<i>291</i>&nbsp;            var2 = var2 * 37 + this.server.hashCode();
+<i>292</i>&nbsp;            var2 = var2 * 37 + this.sessionKey.hashCode();
+<i>293</i>&nbsp;            if(this.authTime != null) {
+<i>294</i>&nbsp;                var2 = var2 * 37 + this.authTime.hashCode();
+<i>295</i>&nbsp;            }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;            if(this.startTime != null) {
+<i>298</i>&nbsp;                var2 = var2 * 37 + this.startTime.hashCode();
+<b class="nc"><i>299</i>&nbsp;            }</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;            if(this.renewTill != null) {
+<i>302</i>&nbsp;                var2 = var2 * 37 + this.renewTill.hashCode();
+<i>303</i>&nbsp;            }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;            var2 = var2 * 37 + Arrays.hashCode(this.clientAddresses);
+<i>306</i>&nbsp;            return var2 * 37 + Arrays.hashCode(this.flags);
+<i>307</i>&nbsp;        }
+<b class="nc"><i>308</i>&nbsp;    }</b>
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    public boolean equals(Object var1) {
+<i>311</i>&nbsp;        if(var1 == this) {
+<i>312</i>&nbsp;            return true;
+<i>313</i>&nbsp;        } else if(!(var1 instanceof KerberosTicket)) {
+<i>314</i>&nbsp;            return false;
+<i>315</i>&nbsp;        } else {
+<i>316</i>&nbsp;            KerberosTicket var2 = (KerberosTicket)var1;
+<b class="nc"><i>317</i>&nbsp;            if(!this.isDestroyed() &amp;&amp; !var2.isDestroyed()) {</b>
+<b class="nc"><i>318</i>&nbsp;                if(Arrays.equals(this.getEncoded(), var2.getEncoded()) &amp;&amp; this.endTime.equals(var2.getEndTime()) &amp;&amp; this.server.equals(var2.getServer()) &amp;&amp; this.client.equals(var2.getClient()) &amp;&amp; this.sessionKey.equals(var2.getSessionKey()) &amp;&amp; Arrays.equals(this.clientAddresses, var2.getClientAddresses()) &amp;&amp; Arrays.equals(this.flags, var2.getFlags())) {</b>
+<b class="nc"><i>319</i>&nbsp;                    if(this.authTime == null) {</b>
+<i>320</i>&nbsp;                        if(var2.getAuthTime() != null) {
+<i>321</i>&nbsp;                            return false;
+<i>322</i>&nbsp;                        }
+<i>323</i>&nbsp;                    } else if(!this.authTime.equals(var2.getAuthTime())) {
+<i>324</i>&nbsp;                        return false;
+<i>325</i>&nbsp;                    }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;                    if(this.startTime == null) {
+<i>328</i>&nbsp;                        if(var2.getStartTime() != null) {
+<i>329</i>&nbsp;                            return false;
+<i>330</i>&nbsp;                        }
+<i>331</i>&nbsp;                    } else if(!this.startTime.equals(var2.getStartTime())) {
+<b class="nc"><i>332</i>&nbsp;                        return false;</b>
+<b class="nc"><i>333</i>&nbsp;                    }</b>
+<b class="nc"><i>334</i>&nbsp;</b>
+<i>335</i>&nbsp;                    if(this.renewTill == null) {
+<i>336</i>&nbsp;                        if(var2.getRenewTill() != null) {
+<i>337</i>&nbsp;                            return false;
+<i>338</i>&nbsp;                        }
+<i>339</i>&nbsp;                    } else if(!this.renewTill.equals(var2.getRenewTill())) {
+<i>340</i>&nbsp;                        return false;
+<i>341</i>&nbsp;                    }
+<i>342</i>&nbsp;
+<b class="nc"><i>343</i>&nbsp;                    return true;</b>
+<i>344</i>&nbsp;                } else {
+<i>345</i>&nbsp;                    return false;
+<i>346</i>&nbsp;                }
+<i>347</i>&nbsp;            } else {
+<i>348</i>&nbsp;                return false;
+<i>349</i>&nbsp;            }
+<i>350</i>&nbsp;        }
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<i>354</i>&nbsp;        var1.defaultReadObject();
+<b class="nc"><i>355</i>&nbsp;        if(this.sessionKey == null) {</b>
+<i>356</i>&nbsp;            throw new InvalidObjectException(&quot;Session key cannot be null&quot;);
+<i>357</i>&nbsp;        } else {
+<i>358</i>&nbsp;            try {
+<i>359</i>&nbsp;                this.init(this.asn1Encoding, this.client, this.server, this.sessionKey, this.flags, this.authTime, this.startTime, this.endTime, this.renewTill, this.clientAddresses);
+<i>360</i>&nbsp;            } catch (IllegalArgumentException var3) {
+<i>361</i>&nbsp;                throw (InvalidObjectException)(new InvalidObjectException(var3.getMessage())).initCause(var3);
+<i>362</i>&nbsp;            }
+<i>363</i>&nbsp;        }
+<b class="nc"><i>364</i>&nbsp;    }</b>
+<i>365</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

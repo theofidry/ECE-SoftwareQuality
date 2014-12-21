@@ -1,0 +1,549 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GifImageDecoder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.awt.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GifImageDecoder (sun.awt.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GifImageDecoder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 230)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.awt.image;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.image.ColorModel;
+<i>9</i>&nbsp;import java.awt.image.IndexColorModel;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.io.InputStream;
+<i>12</i>&nbsp;import java.util.Hashtable;
+<i>13</i>&nbsp;import sun.awt.image.GifFrame;
+<i>14</i>&nbsp;import sun.awt.image.ImageDecoder;
+<i>15</i>&nbsp;import sun.awt.image.ImageFetcher;
+<i>16</i>&nbsp;import sun.awt.image.ImageFormatException;
+<i>17</i>&nbsp;import sun.awt.image.InputStreamImageSource;
+<i>18</i>&nbsp;import sun.awt.image.NativeLibLoader;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class GifImageDecoder extends ImageDecoder {
+<i>21</i>&nbsp;    private static final boolean verbose = false;
+<i>22</i>&nbsp;    private static final int IMAGESEP = 44;
+<i>23</i>&nbsp;    private static final int EXBLOCK = 33;
+<i>24</i>&nbsp;    private static final int EX_GRAPHICS_CONTROL = 249;
+<i>25</i>&nbsp;    private static final int EX_COMMENT = 254;
+<i>26</i>&nbsp;    private static final int EX_APPLICATION = 255;
+<i>27</i>&nbsp;    private static final int TERMINATOR = 59;
+<i>28</i>&nbsp;    private static final int TRANSPARENCYMASK = 1;
+<i>29</i>&nbsp;    private static final int INTERLACEMASK = 64;
+<i>30</i>&nbsp;    private static final int COLORMAPMASK = 128;
+<i>31</i>&nbsp;    int num_global_colors;
+<i>32</i>&nbsp;    byte[] global_colormap;
+<i>33</i>&nbsp;    int trans_pixel = -1;
+<i>34</i>&nbsp;    IndexColorModel global_model;
+<i>35</i>&nbsp;    Hashtable props = new Hashtable();
+<i>36</i>&nbsp;    byte[] saved_image;
+<i>37</i>&nbsp;    IndexColorModel saved_model;
+<i>38</i>&nbsp;    int global_width;
+<i>39</i>&nbsp;    int global_height;
+<i>40</i>&nbsp;    int global_bgpixel;
+<i>41</i>&nbsp;    GifFrame curframe;
+<i>42</i>&nbsp;    private static final int normalflags = 30;
+<i>43</i>&nbsp;    private static final int interlaceflags = 29;
+<b class="nc"><i>44</i>&nbsp;    private short[] prefix = new short[4096];</b>
+<i>45</i>&nbsp;    private byte[] suffix = new byte[4096];
+<i>46</i>&nbsp;    private byte[] outCode = new byte[4097];
+<b class="nc"><i>47</i>&nbsp;</b>
+<i>48</i>&nbsp;    public GifImageDecoder(InputStreamImageSource var1, InputStream var2) {
+<i>49</i>&nbsp;        super(var1, var2);
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    private static void error(String var0) throws ImageFormatException {
+<i>53</i>&nbsp;        throw new ImageFormatException(var0);
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    private int readBytes(byte[] var1, int var2, int var3) {
+<i>57</i>&nbsp;        while(true) {
+<i>58</i>&nbsp;            if(var3 &gt; 0) {
+<b class="nc"><i>59</i>&nbsp;                try {</b>
+<i>60</i>&nbsp;                    int var4 = this.input.read(var1, var2, var3);
+<i>61</i>&nbsp;                    if(var4 &gt;= 0) {
+<i>62</i>&nbsp;                        var2 += var4;
+<i>63</i>&nbsp;                        var3 -= var4;
+<i>64</i>&nbsp;                        continue;
+<i>65</i>&nbsp;                    }
+<b class="nc"><i>66</i>&nbsp;                } catch (IOException var5) {</b>
+<i>67</i>&nbsp;                    ;
+<i>68</i>&nbsp;                }
+<i>69</i>&nbsp;            }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;            return var3;
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;    }
+<b class="nc"><i>74</i>&nbsp;</b>
+<i>75</i>&nbsp;    private static final int ExtractByte(byte[] var0, int var1) {
+<b class="nc"><i>76</i>&nbsp;        return var0[var1] &amp; 255;</b>
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<b class="nc"><i>78</i>&nbsp;</b>
+<i>79</i>&nbsp;    private static final int ExtractWord(byte[] var0, int var1) {
+<b class="nc"><i>80</i>&nbsp;        return var0[var1] &amp; 255 | (var0[var1 + 1] &amp; 255) &lt;&lt; 8;</b>
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<b class="nc"><i>82</i>&nbsp;</b>
+<b class="nc"><i>83</i>&nbsp;    public void produceImage() throws IOException, ImageFormatException {</b>
+<b class="nc"><i>84</i>&nbsp;        try {</b>
+<i>85</i>&nbsp;            this.readHeader();
+<b class="nc"><i>86</i>&nbsp;            int var1 = 0;</b>
+<i>87</i>&nbsp;            int var2 = 0;
+<i>88</i>&nbsp;            int var3 = -1;
+<i>89</i>&nbsp;            int var4 = 0;
+<b class="nc"><i>90</i>&nbsp;            int var5 = -1;</b>
+<i>91</i>&nbsp;            boolean var6 = false;
+<i>92</i>&nbsp;            boolean var7 = false;
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;            label290:</b>
+<i>95</i>&nbsp;            while(!this.aborted) {
+<i>96</i>&nbsp;                switch(this.input.read()) {
+<i>97</i>&nbsp;                case -1:
+<i>98</i>&nbsp;                default:
+<i>99</i>&nbsp;                    if(var2 == 0) {
+<i>100</i>&nbsp;                        return;
+<i>101</i>&nbsp;                    }
+<b class="nc"><i>102</i>&nbsp;                case 59:</b>
+<i>103</i>&nbsp;                    if(var3 != 0 &amp;&amp; var3-- &lt; 0) {
+<b class="nc"><i>104</i>&nbsp;                        this.imageComplete(3, true);</b>
+<b class="nc"><i>105</i>&nbsp;                        return;</b>
+<b class="nc"><i>106</i>&nbsp;                    }</b>
+<b class="nc"><i>107</i>&nbsp;</b>
+<b class="nc"><i>108</i>&nbsp;                    try {</b>
+<b class="nc"><i>109</i>&nbsp;                        if(this.curframe != null) {</b>
+<b class="nc"><i>110</i>&nbsp;                            this.curframe.dispose();</b>
+<i>111</i>&nbsp;                            this.curframe = null;
+<b class="nc"><i>112</i>&nbsp;                        }</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;                        this.input.reset();
+<b class="nc"><i>115</i>&nbsp;                        this.saved_image = null;</b>
+<i>116</i>&nbsp;                        this.saved_model = null;
+<b class="nc"><i>117</i>&nbsp;                        var2 = 0;</b>
+<i>118</i>&nbsp;                        break;
+<b class="nc"><i>119</i>&nbsp;                    } catch (IOException var17) {</b>
+<b class="nc"><i>120</i>&nbsp;                        return;</b>
+<i>121</i>&nbsp;                    }
+<i>122</i>&nbsp;                case 33:
+<b class="nc"><i>123</i>&nbsp;                    int var8;</b>
+<i>124</i>&nbsp;                    switch(var8 = this.input.read()) {
+<i>125</i>&nbsp;                    case -1:
+<i>126</i>&nbsp;                        return;
+<b class="nc"><i>127</i>&nbsp;                    case 249:</b>
+<b class="nc"><i>128</i>&nbsp;                        byte[] var9 = new byte[6];</b>
+<b class="nc"><i>129</i>&nbsp;                        if(this.readBytes(var9, 0, 6) != 0) {</b>
+<b class="nc"><i>130</i>&nbsp;                            return;</b>
+<i>131</i>&nbsp;                        }
+<b class="nc"><i>132</i>&nbsp;</b>
+<b class="nc"><i>133</i>&nbsp;                        if(var9[0] != 4 || var9[5] != 0) {</b>
+<b class="nc"><i>134</i>&nbsp;                            return;</b>
+<i>135</i>&nbsp;                        }
+<b class="nc"><i>136</i>&nbsp;</b>
+<i>137</i>&nbsp;                        var5 = ExtractWord(var9, 2) * 10;
+<b class="nc"><i>138</i>&nbsp;                        if(var5 &gt; 0 &amp;&amp; !var7) {</b>
+<i>139</i>&nbsp;                            var7 = true;
+<i>140</i>&nbsp;                            ImageFetcher.startingAnimation();
+<i>141</i>&nbsp;                        }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;                        var4 = var9[1] &gt;&gt; 2 &amp; 7;
+<b class="nc"><i>144</i>&nbsp;                        if((var9[1] &amp; 1) != 0) {</b>
+<b class="nc"><i>145</i>&nbsp;                            this.trans_pixel = ExtractByte(var9, 4);</b>
+<i>146</i>&nbsp;                        } else {
+<b class="nc"><i>147</i>&nbsp;                            this.trans_pixel = -1;</b>
+<b class="nc"><i>148</i>&nbsp;                        }</b>
+<b class="nc"><i>149</i>&nbsp;                        continue;</b>
+<i>150</i>&nbsp;                    case 254:
+<b class="nc"><i>151</i>&nbsp;                    case 255:</b>
+<b class="nc"><i>152</i>&nbsp;                    default:</b>
+<i>153</i>&nbsp;                        boolean var20 = false;
+<i>154</i>&nbsp;                        String var10 = &quot;&quot;;
+<b class="nc"><i>155</i>&nbsp;</b>
+<b class="nc"><i>156</i>&nbsp;                        while(true) {</b>
+<b class="nc"><i>157</i>&nbsp;                            int var11 = this.input.read();</b>
+<b class="nc"><i>158</i>&nbsp;                            if(var11 &lt;= 0) {</b>
+<b class="nc"><i>159</i>&nbsp;                                if(var8 == 254) {</b>
+<b class="nc"><i>160</i>&nbsp;                                    this.props.put(&quot;comment&quot;, var10);</b>
+<b class="nc"><i>161</i>&nbsp;                                }</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;                                if(var20 &amp;&amp; !var7) {
+<b class="nc"><i>164</i>&nbsp;                                    var7 = true;</b>
+<b class="nc"><i>165</i>&nbsp;                                    ImageFetcher.startingAnimation();</b>
+<i>166</i>&nbsp;                                }
+<i>167</i>&nbsp;                                continue label290;
+<b class="nc"><i>168</i>&nbsp;                            }</b>
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;                            byte[] var12 = new byte[var11];
+<b class="nc"><i>171</i>&nbsp;                            if(this.readBytes(var12, 0, var11) != 0) {</b>
+<b class="nc"><i>172</i>&nbsp;                                return;</b>
+<i>173</i>&nbsp;                            }
+<i>174</i>&nbsp;
+<b class="nc"><i>175</i>&nbsp;                            if(var8 == 254) {</b>
+<b class="nc"><i>176</i>&nbsp;                                var10 = var10 + new String(var12, 0);</b>
+<b class="nc"><i>177</i>&nbsp;                            } else if(var8 == 255) {</b>
+<i>178</i>&nbsp;                                if(var20) {
+<b class="nc"><i>179</i>&nbsp;                                    if(var11 == 3 &amp;&amp; var12[0] == 1) {</b>
+<b class="nc"><i>180</i>&nbsp;                                        if(var6) {</b>
+<b class="nc"><i>181</i>&nbsp;                                            ExtractWord(var12, 1);</b>
+<i>182</i>&nbsp;                                        } else {
+<i>183</i>&nbsp;                                            var3 = ExtractWord(var12, 1);
+<i>184</i>&nbsp;                                            var6 = true;
+<i>185</i>&nbsp;                                        }
+<i>186</i>&nbsp;                                    } else {
+<i>187</i>&nbsp;                                        var20 = false;
+<b class="nc"><i>188</i>&nbsp;                                    }</b>
+<i>189</i>&nbsp;                                }
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;                                if(&quot;NETSCAPE2.0&quot;.equals(new String(var12, 0))) {</b>
+<b class="nc"><i>192</i>&nbsp;                                    var20 = true;</b>
+<i>193</i>&nbsp;                                }
+<i>194</i>&nbsp;                            }
+<b class="nc"><i>195</i>&nbsp;                        }</b>
+<i>196</i>&nbsp;                    }
+<i>197</i>&nbsp;                case 44:
+<i>198</i>&nbsp;                    if(!var7) {
+<i>199</i>&nbsp;                        this.input.mark(0);
+<b class="nc"><i>200</i>&nbsp;                    }</b>
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;                    try {
+<i>203</i>&nbsp;                        if(!this.readImage(var1 == 0, var4, var5)) {
+<i>204</i>&nbsp;                            return;
+<b class="nc"><i>205</i>&nbsp;                        }</b>
+<b class="nc"><i>206</i>&nbsp;                    } catch (Exception var18) {</b>
+<b class="nc"><i>207</i>&nbsp;                        return;</b>
+<b class="nc"><i>208</i>&nbsp;                    }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;                    ++var2;
+<i>211</i>&nbsp;                    ++var1;
+<i>212</i>&nbsp;                }
+<i>213</i>&nbsp;            }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;        } finally {
+<i>216</i>&nbsp;            this.close();
+<i>217</i>&nbsp;        }
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    private void readHeader() throws IOException, ImageFormatException {
+<b class="nc"><i>221</i>&nbsp;        byte[] var1 = new byte[13];</b>
+<i>222</i>&nbsp;        if(this.readBytes(var1, 0, 13) != 0) {
+<i>223</i>&nbsp;            throw new IOException();
+<i>224</i>&nbsp;        } else {
+<i>225</i>&nbsp;            if(var1[0] != 71 || var1[1] != 73 || var1[2] != 70) {
+<i>226</i>&nbsp;                error(&quot;not a GIF file.&quot;);
+<b class="nc"><i>227</i>&nbsp;            }</b>
+<i>228</i>&nbsp;
+<b class="nc"><i>229</i>&nbsp;            this.global_width = ExtractWord(var1, 6);</b>
+<b class="nc"><i>230</i>&nbsp;            this.global_height = ExtractWord(var1, 8);</b>
+<b class="nc"><i>231</i>&nbsp;            int var2 = ExtractByte(var1, 10);</b>
+<i>232</i>&nbsp;            if((var2 &amp; 128) == 0) {
+<b class="nc"><i>233</i>&nbsp;                this.num_global_colors = 2;</b>
+<b class="nc"><i>234</i>&nbsp;                this.global_bgpixel = 0;</b>
+<b class="nc"><i>235</i>&nbsp;                this.global_colormap = new byte[6];</b>
+<b class="nc"><i>236</i>&nbsp;                this.global_colormap[0] = this.global_colormap[1] = this.global_colormap[2] = 0;</b>
+<b class="nc"><i>237</i>&nbsp;                this.global_colormap[3] = this.global_colormap[4] = this.global_colormap[5] = -1;</b>
+<b class="nc"><i>238</i>&nbsp;            } else {</b>
+<i>239</i>&nbsp;                this.num_global_colors = 1 &lt;&lt; (var2 &amp; 7) + 1;
+<i>240</i>&nbsp;                this.global_bgpixel = ExtractByte(var1, 11);
+<i>241</i>&nbsp;                if(var1[12] != 0) {
+<i>242</i>&nbsp;                    this.props.put(&quot;aspectratio&quot;, &quot;&quot; + (double)(ExtractByte(var1, 12) + 15) / 64.0D);
+<i>243</i>&nbsp;                }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;                this.global_colormap = new byte[this.num_global_colors * 3];
+<i>246</i>&nbsp;                if(this.readBytes(this.global_colormap, 0, this.num_global_colors * 3) != 0) {
+<b class="nc"><i>247</i>&nbsp;                    throw new IOException();</b>
+<i>248</i>&nbsp;                }
+<i>249</i>&nbsp;            }
+<b class="nc"><i>250</i>&nbsp;</b>
+<i>251</i>&nbsp;            this.input.mark(2147483647);
+<b class="nc"><i>252</i>&nbsp;        }</b>
+<b class="nc"><i>253</i>&nbsp;    }</b>
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    private static native void initIDs();
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    private native boolean parseImage(int var1, int var2, int var3, int var4, boolean var5, int var6, byte[] var7, byte[] var8, IndexColorModel var9);
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    private int sendPixels(int var1, int var2, int var3, int var4, byte[] var5, ColorModel var6) {
+<i>260</i>&nbsp;        if(var2 &lt; 0) {
+<b class="nc"><i>261</i>&nbsp;            var4 += var2;</b>
+<i>262</i>&nbsp;            var2 = 0;
+<i>263</i>&nbsp;        }
+<b class="nc"><i>264</i>&nbsp;</b>
+<b class="nc"><i>265</i>&nbsp;        if(var2 + var4 &gt; this.global_height) {</b>
+<i>266</i>&nbsp;            var4 = this.global_height - var2;
+<i>267</i>&nbsp;        }
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;        if(var4 &lt;= 0) {</b>
+<b class="nc"><i>270</i>&nbsp;            return 1;</b>
+<i>271</i>&nbsp;        } else {
+<i>272</i>&nbsp;            int var7;
+<i>273</i>&nbsp;            int var9;
+<b class="nc"><i>274</i>&nbsp;            if(var1 &lt; 0) {</b>
+<b class="nc"><i>275</i>&nbsp;                var7 = -var1;</b>
+<i>276</i>&nbsp;                var3 += var1;
+<i>277</i>&nbsp;                var9 = 0;
+<b class="nc"><i>278</i>&nbsp;            } else {</b>
+<b class="nc"><i>279</i>&nbsp;                var7 = 0;</b>
+<i>280</i>&nbsp;                var9 = var1;
+<i>281</i>&nbsp;            }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;            if(var9 + var3 &gt; this.global_width) {
+<i>284</i>&nbsp;                var3 = this.global_width - var9;
+<i>285</i>&nbsp;            }
+<b class="nc"><i>286</i>&nbsp;</b>
+<b class="nc"><i>287</i>&nbsp;            if(var3 &lt;= 0) {</b>
+<b class="nc"><i>288</i>&nbsp;                return 1;</b>
+<b class="nc"><i>289</i>&nbsp;            } else {</b>
+<b class="nc"><i>290</i>&nbsp;                int var8 = var7 + var3;</b>
+<i>291</i>&nbsp;                int var10 = var2 * this.global_width + var9;
+<i>292</i>&nbsp;                boolean var11 = this.curframe.disposal_method == 1;
+<i>293</i>&nbsp;                int var12;
+<b class="nc"><i>294</i>&nbsp;                if(this.trans_pixel &gt;= 0 &amp;&amp; !this.curframe.initialframe) {</b>
+<i>295</i>&nbsp;                    if(this.saved_image == null || !var6.equals(this.saved_model)) {
+<b class="nc"><i>296</i>&nbsp;                        var12 = -1;</b>
+<i>297</i>&nbsp;                        int var16 = 1;
+<b class="nc"><i>298</i>&nbsp;</b>
+<b class="nc"><i>299</i>&nbsp;                        for(int var14 = var7; var14 &lt; var8; ++var10) {</b>
+<i>300</i>&nbsp;                            byte var15 = var5[var14];
+<i>301</i>&nbsp;                            if((var15 &amp; 255) == this.trans_pixel) {
+<i>302</i>&nbsp;                                if(var12 &gt;= 0) {
+<b class="nc"><i>303</i>&nbsp;                                    var16 = this.setPixels(var1 + var12, var2, var14 - var12, 1, var6, var5, var12, 0);</b>
+<b class="nc"><i>304</i>&nbsp;                                    if(var16 == 0) {</b>
+<b class="nc"><i>305</i>&nbsp;                                        break;</b>
+<i>306</i>&nbsp;                                    }
+<i>307</i>&nbsp;                                }
+<b class="nc"><i>308</i>&nbsp;</b>
+<i>309</i>&nbsp;                                var12 = -1;
+<i>310</i>&nbsp;                            } else {
+<i>311</i>&nbsp;                                if(var12 &lt; 0) {
+<i>312</i>&nbsp;                                    var12 = var14;
+<i>313</i>&nbsp;                                }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;                                if(var11) {
+<i>316</i>&nbsp;                                    this.saved_image[var10] = var15;
+<i>317</i>&nbsp;                                }
+<i>318</i>&nbsp;                            }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;                            ++var14;
+<i>321</i>&nbsp;                        }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;                        if(var12 &gt;= 0) {
+<i>324</i>&nbsp;                            var16 = this.setPixels(var1 + var12, var2, var8 - var12, 1, var6, var5, var12, 0);
+<b class="nc"><i>325</i>&nbsp;                        }</b>
+<b class="nc"><i>326</i>&nbsp;</b>
+<b class="nc"><i>327</i>&nbsp;                        return var16;</b>
+<i>328</i>&nbsp;                    }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;                    for(var12 = var7; var12 &lt; var8; ++var10) {
+<i>331</i>&nbsp;                        byte var13 = var5[var12];
+<i>332</i>&nbsp;                        if((var13 &amp; 255) == this.trans_pixel) {
+<b class="nc"><i>333</i>&nbsp;                            var5[var12] = this.saved_image[var10];</b>
+<b class="nc"><i>334</i>&nbsp;                        } else if(var11) {</b>
+<i>335</i>&nbsp;                            this.saved_image[var10] = var13;
+<i>336</i>&nbsp;                        }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;                        ++var12;
+<i>339</i>&nbsp;                    }
+<i>340</i>&nbsp;                } else if(var11) {
+<i>341</i>&nbsp;                    System.arraycopy(var5, var7, this.saved_image, var10, var3);
+<i>342</i>&nbsp;                }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;                var12 = this.setPixels(var9, var2, var3, var4, var6, var5, var7, 0);
+<b class="nc"><i>345</i>&nbsp;                return var12;</b>
+<b class="nc"><i>346</i>&nbsp;            }</b>
+<b class="nc"><i>347</i>&nbsp;        }</b>
+<i>348</i>&nbsp;    }
+<b class="nc"><i>349</i>&nbsp;</b>
+<b class="nc"><i>350</i>&nbsp;    private boolean readImage(boolean var1, int var2, int var3) throws IOException {</b>
+<i>351</i>&nbsp;        if(this.curframe != null &amp;&amp; !this.curframe.dispose()) {
+<b class="nc"><i>352</i>&nbsp;            this.abort();</b>
+<b class="nc"><i>353</i>&nbsp;            return false;</b>
+<i>354</i>&nbsp;        } else {
+<i>355</i>&nbsp;            long var4 = 0L;
+<i>356</i>&nbsp;            byte[] var6 = new byte[259];
+<b class="nc"><i>357</i>&nbsp;            if(this.readBytes(var6, 0, 10) != 0) {</b>
+<b class="nc"><i>358</i>&nbsp;                throw new IOException();</b>
+<b class="nc"><i>359</i>&nbsp;            } else {</b>
+<b class="nc"><i>360</i>&nbsp;                int var7 = ExtractWord(var6, 0);</b>
+<i>361</i>&nbsp;                int var8 = ExtractWord(var6, 2);
+<b class="nc"><i>362</i>&nbsp;                int var9 = ExtractWord(var6, 4);</b>
+<i>363</i>&nbsp;                int var10 = ExtractWord(var6, 6);
+<b class="nc"><i>364</i>&nbsp;                if(var9 == 0 &amp;&amp; this.global_width != 0) {</b>
+<i>365</i>&nbsp;                    var9 = this.global_width - var7;
+<i>366</i>&nbsp;                }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;                if(var10 == 0 &amp;&amp; this.global_height != 0) {
+<b class="nc"><i>369</i>&nbsp;                    var10 = this.global_height - var8;</b>
+<b class="nc"><i>370</i>&nbsp;                }</b>
+<i>371</i>&nbsp;
+<b class="nc"><i>372</i>&nbsp;                boolean var11 = (var6[8] &amp; 64) != 0;</b>
+<b class="nc"><i>373</i>&nbsp;                IndexColorModel var12 = this.global_model;</b>
+<i>374</i>&nbsp;                int var13;
+<b class="nc"><i>375</i>&nbsp;                byte[] var14;</b>
+<i>376</i>&nbsp;                if((var6[8] &amp; 128) != 0) {
+<i>377</i>&nbsp;                    var13 = 1 &lt;&lt; (var6[8] &amp; 7) + 1;
+<b class="nc"><i>378</i>&nbsp;                    var14 = new byte[var13 * 3];</b>
+<b class="nc"><i>379</i>&nbsp;                    var14[0] = var6[9];</b>
+<b class="nc"><i>380</i>&nbsp;                    if(this.readBytes(var14, 1, var13 * 3 - 1) != 0) {</b>
+<b class="nc"><i>381</i>&nbsp;                        throw new IOException();</b>
+<b class="nc"><i>382</i>&nbsp;                    }</b>
+<b class="nc"><i>383</i>&nbsp;</b>
+<b class="nc"><i>384</i>&nbsp;                    if(this.readBytes(var6, 9, 1) != 0) {</b>
+<b class="nc"><i>385</i>&nbsp;                        throw new IOException();</b>
+<b class="nc"><i>386</i>&nbsp;                    }</b>
+<b class="nc"><i>387</i>&nbsp;</b>
+<i>388</i>&nbsp;                    if(this.trans_pixel &gt;= var13) {
+<i>389</i>&nbsp;                        var13 = this.trans_pixel + 1;
+<i>390</i>&nbsp;                        var14 = grow_colormap(var14, var13);
+<i>391</i>&nbsp;                    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;                    var12 = new IndexColorModel(8, var13, var14, 0, false, this.trans_pixel);
+<i>394</i>&nbsp;                } else if(var12 == null || this.trans_pixel != var12.getTransparentPixel()) {
+<b class="nc"><i>395</i>&nbsp;                    if(this.trans_pixel &gt;= this.num_global_colors) {</b>
+<b class="nc"><i>396</i>&nbsp;                        this.num_global_colors = this.trans_pixel + 1;</b>
+<b class="nc"><i>397</i>&nbsp;                        this.global_colormap = grow_colormap(this.global_colormap, this.num_global_colors);</b>
+<b class="nc"><i>398</i>&nbsp;                    }</b>
+<b class="nc"><i>399</i>&nbsp;</b>
+<b class="nc"><i>400</i>&nbsp;                    var12 = new IndexColorModel(8, this.num_global_colors, this.global_colormap, 0, false, this.trans_pixel);</b>
+<b class="nc"><i>401</i>&nbsp;                    this.global_model = var12;</b>
+<i>402</i>&nbsp;                }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;                if(var1) {
+<b class="nc"><i>405</i>&nbsp;                    if(this.global_width == 0) {</b>
+<b class="nc"><i>406</i>&nbsp;                        this.global_width = var9;</b>
+<i>407</i>&nbsp;                    }
+<i>408</i>&nbsp;
+<b class="nc"><i>409</i>&nbsp;                    if(this.global_height == 0) {</b>
+<i>410</i>&nbsp;                        this.global_height = var10;
+<b class="nc"><i>411</i>&nbsp;                    }</b>
+<b class="nc"><i>412</i>&nbsp;</b>
+<i>413</i>&nbsp;                    this.setDimensions(this.global_width, this.global_height);
+<b class="nc"><i>414</i>&nbsp;                    this.setProperties(this.props);</b>
+<b class="nc"><i>415</i>&nbsp;                    this.setColorModel(var12);</b>
+<i>416</i>&nbsp;                    this.headerComplete();
+<i>417</i>&nbsp;                }
+<i>418</i>&nbsp;
+<b class="nc"><i>419</i>&nbsp;                int var15;</b>
+<b class="nc"><i>420</i>&nbsp;                if(var2 == 1 &amp;&amp; this.saved_image == null) {</b>
+<i>421</i>&nbsp;                    this.saved_image = new byte[this.global_width * this.global_height];
+<i>422</i>&nbsp;                    if(var10 &lt; this.global_height &amp;&amp; var12 != null) {
+<i>423</i>&nbsp;                        byte var17 = (byte)var12.getTransparentPixel();
+<i>424</i>&nbsp;                        if(var17 &gt;= 0) {
+<b class="nc"><i>425</i>&nbsp;                            var14 = new byte[this.global_width];</b>
+<i>426</i>&nbsp;
+<b class="nc"><i>427</i>&nbsp;                            for(var15 = 0; var15 &lt; this.global_width; ++var15) {</b>
+<b class="nc"><i>428</i>&nbsp;                                var14[var15] = var17;</b>
+<i>429</i>&nbsp;                            }
+<b class="nc"><i>430</i>&nbsp;</b>
+<i>431</i>&nbsp;                            this.setPixels(0, 0, this.global_width, var8, var12, var14, 0, 0);
+<b class="nc"><i>432</i>&nbsp;                            this.setPixels(0, var8 + var10, this.global_width, this.global_height - var10 - var8, var12, var14, 0, 0);</b>
+<i>433</i>&nbsp;                        }
+<i>434</i>&nbsp;                    }
+<i>435</i>&nbsp;                }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;                var13 = var11?29:30;
+<i>438</i>&nbsp;                this.setHints(var13);
+<i>439</i>&nbsp;                this.curframe = new GifFrame(this, var2, var3, this.curframe == null, var12, var7, var8, var9, var10);
+<i>440</i>&nbsp;                var14 = new byte[var9];
+<b class="nc"><i>441</i>&nbsp;                var15 = ExtractByte(var6, 9);</b>
+<b class="nc"><i>442</i>&nbsp;                if(var15 &gt;= 12) {</b>
+<b class="nc"><i>443</i>&nbsp;                    return false;</b>
+<i>444</i>&nbsp;                } else {
+<i>445</i>&nbsp;                    boolean var16 = this.parseImage(var7, var8, var9, var10, var11, var15, var6, var14, var12);
+<b class="nc"><i>446</i>&nbsp;                    if(!var16) {</b>
+<i>447</i>&nbsp;                        this.abort();
+<i>448</i>&nbsp;                    }
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;                    return var16;
+<i>451</i>&nbsp;                }
+<i>452</i>&nbsp;            }
+<b class="nc"><i>453</i>&nbsp;        }</b>
+<i>454</i>&nbsp;    }
+<i>455</i>&nbsp;
+<b class="nc"><i>456</i>&nbsp;    public static byte[] grow_colormap(byte[] var0, int var1) {</b>
+<b class="nc"><i>457</i>&nbsp;        byte[] var2 = new byte[var1 * 3];</b>
+<i>458</i>&nbsp;        System.arraycopy(var0, 0, var2, 0, var0.length);
+<b class="nc"><i>459</i>&nbsp;        return var2;</b>
+<b class="nc"><i>460</i>&nbsp;    }</b>
+<b class="nc"><i>461</i>&nbsp;</b>
+<b class="nc"><i>462</i>&nbsp;    static {</b>
+<i>463</i>&nbsp;        NativeLibLoader.loadLibraries();
+<i>464</i>&nbsp;        initIDs();
+<i>465</i>&nbsp;    }
+<i>466</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

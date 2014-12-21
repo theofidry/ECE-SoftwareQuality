@@ -1,0 +1,477 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MimeTable</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.net.www</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MimeTable (sun.net.www)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MimeTable</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 144)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MimeTable$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MimeTable$DefaultInstanceHolder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MimeTable$DefaultInstanceHolder$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 155)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.net.www;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.BufferedInputStream;
+<i>9</i>&nbsp;import java.io.File;
+<i>10</i>&nbsp;import java.io.FileInputStream;
+<i>11</i>&nbsp;import java.io.FileOutputStream;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.net.FileNameMap;
+<i>14</i>&nbsp;import java.security.AccessController;
+<i>15</i>&nbsp;import java.security.PrivilegedAction;
+<i>16</i>&nbsp;import java.util.Enumeration;
+<i>17</i>&nbsp;import java.util.Hashtable;
+<i>18</i>&nbsp;import java.util.Properties;
+<i>19</i>&nbsp;import java.util.StringTokenizer;
+<b class="nc"><i>20</i>&nbsp;import sun.net.www.MimeEntry;</b>
+<i>21</i>&nbsp;import sun.net.www.URLConnection;
+<b class="nc"><i>22</i>&nbsp;</b>
+<i>23</i>&nbsp;public class MimeTable implements FileNameMap {
+<i>24</i>&nbsp;    private Hashtable&lt;String, MimeEntry&gt; entries = new Hashtable();
+<b class="nc"><i>25</i>&nbsp;    private Hashtable&lt;String, MimeEntry&gt; extensionMap = new Hashtable();</b>
+<i>26</i>&nbsp;    private static String tempFileTemplate;
+<i>27</i>&nbsp;    private static final String filePreamble = &quot;sun.net.www MIME content-types table&quot;;
+<i>28</i>&nbsp;    private static final String fileMagic = &quot;#sun.net.www MIME content-types table&quot;;
+<i>29</i>&nbsp;    protected static String[] mailcapLocations;
+<i>30</i>&nbsp;
+<b class="nc"><i>31</i>&nbsp;    MimeTable() {</b>
+<b class="nc"><i>32</i>&nbsp;        this.load();</b>
+<i>33</i>&nbsp;    }
+<b class="nc"><i>34</i>&nbsp;</b>
+<i>35</i>&nbsp;    public static MimeTable getDefaultTable() {
+<i>36</i>&nbsp;        return MimeTable.DefaultInstanceHolder.defaultInstance;
+<i>37</i>&nbsp;    }
+<b class="nc"><i>38</i>&nbsp;</b>
+<i>39</i>&nbsp;    public static FileNameMap loadTable() {
+<i>40</i>&nbsp;        MimeTable var0 = getDefaultTable();
+<i>41</i>&nbsp;        return var0;
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public synchronized int getSize() {
+<i>45</i>&nbsp;        return this.entries.size();
+<i>46</i>&nbsp;    }
+<b class="nc"><i>47</i>&nbsp;</b>
+<i>48</i>&nbsp;    public synchronized String getContentTypeFor(String var1) {
+<i>49</i>&nbsp;        MimeEntry var2 = this.findByFileName(var1);
+<i>50</i>&nbsp;        return var2 != null?var2.getType():null;
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public synchronized void add(MimeEntry var1) {
+<i>54</i>&nbsp;        this.entries.put(var1.getType(), var1);
+<i>55</i>&nbsp;        String[] var2 = var1.getExtensions();
+<b class="nc"><i>56</i>&nbsp;        if(var2 != null) {</b>
+<b class="nc"><i>57</i>&nbsp;            for(int var3 = 0; var3 &lt; var2.length; ++var3) {</b>
+<i>58</i>&nbsp;                this.extensionMap.put(var2[var3], var1);
+<i>59</i>&nbsp;            }
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;        }</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;    public synchronized MimeEntry remove(String var1) {</b>
+<b class="nc"><i>65</i>&nbsp;        MimeEntry var2 = (MimeEntry)this.entries.get(var1);</b>
+<i>66</i>&nbsp;        return this.remove((MimeEntry)var2);
+<b class="nc"><i>67</i>&nbsp;    }</b>
+<b class="nc"><i>68</i>&nbsp;</b>
+<b class="nc"><i>69</i>&nbsp;    public synchronized MimeEntry remove(MimeEntry var1) {</b>
+<i>70</i>&nbsp;        String[] var2 = var1.getExtensions();
+<i>71</i>&nbsp;        if(var2 != null) {
+<i>72</i>&nbsp;            for(int var3 = 0; var3 &lt; var2.length; ++var3) {
+<i>73</i>&nbsp;                this.extensionMap.remove(var2[var3]);
+<i>74</i>&nbsp;            }
+<i>75</i>&nbsp;        }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;        return (MimeEntry)this.entries.remove(var1.getType());
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;    public synchronized MimeEntry find(String var1) {</b>
+<i>81</i>&nbsp;        MimeEntry var2 = (MimeEntry)this.entries.get(var1);
+<i>82</i>&nbsp;        if(var2 == null) {
+<i>83</i>&nbsp;            Enumeration var3 = this.entries.elements();
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;            while(var3.hasMoreElements()) {
+<i>86</i>&nbsp;                MimeEntry var4 = (MimeEntry)var3.nextElement();
+<b class="nc"><i>87</i>&nbsp;                if(var4.matches(var1)) {</b>
+<b class="nc"><i>88</i>&nbsp;                    return var4;</b>
+<i>89</i>&nbsp;                }
+<i>90</i>&nbsp;            }
+<i>91</i>&nbsp;        }
+<b class="nc"><i>92</i>&nbsp;</b>
+<i>93</i>&nbsp;        return var2;
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<b class="nc"><i>96</i>&nbsp;    public MimeEntry findByFileName(String var1) {</b>
+<b class="nc"><i>97</i>&nbsp;        String var2 = &quot;&quot;;</b>
+<b class="nc"><i>98</i>&nbsp;        int var3 = var1.lastIndexOf(35);</b>
+<i>99</i>&nbsp;        if(var3 &gt; 0) {
+<b class="nc"><i>100</i>&nbsp;            var1 = var1.substring(0, var3 - 1);</b>
+<i>101</i>&nbsp;        }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;        var3 = var1.lastIndexOf(46);
+<i>104</i>&nbsp;        var3 = Math.max(var3, var1.lastIndexOf(47));
+<b class="nc"><i>105</i>&nbsp;        var3 = Math.max(var3, var1.lastIndexOf(63));</b>
+<i>106</i>&nbsp;        if(var3 != -1 &amp;&amp; var1.charAt(var3) == 46) {
+<b class="nc"><i>107</i>&nbsp;            var2 = var1.substring(var3).toLowerCase();</b>
+<b class="nc"><i>108</i>&nbsp;        }</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        return this.findByExt(var2);
+<i>111</i>&nbsp;    }
+<b class="nc"><i>112</i>&nbsp;</b>
+<b class="nc"><i>113</i>&nbsp;    public synchronized MimeEntry findByExt(String var1) {</b>
+<i>114</i>&nbsp;        return (MimeEntry)this.extensionMap.get(var1);
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public synchronized MimeEntry findByDescription(String var1) {
+<b class="nc"><i>118</i>&nbsp;        Enumeration var2 = this.elements();</b>
+<b class="nc"><i>119</i>&nbsp;</b>
+<i>120</i>&nbsp;        MimeEntry var3;
+<i>121</i>&nbsp;        do {
+<i>122</i>&nbsp;            if(!var2.hasMoreElements()) {
+<b class="nc"><i>123</i>&nbsp;                return this.find(var1);</b>
+<b class="nc"><i>124</i>&nbsp;            }</b>
+<b class="nc"><i>125</i>&nbsp;</b>
+<b class="nc"><i>126</i>&nbsp;            var3 = (MimeEntry)var2.nextElement();</b>
+<i>127</i>&nbsp;        } while(!var1.equals(var3.getDescription()));
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;        return var3;
+<b class="nc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    String getTempFileTemplate() {
+<i>133</i>&nbsp;        return tempFileTemplate;
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<i>136</i>&nbsp;    public synchronized Enumeration&lt;MimeEntry&gt; elements() {
+<b class="nc"><i>137</i>&nbsp;        return this.entries.elements();</b>
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;    public synchronized void load() {</b>
+<b class="nc"><i>141</i>&nbsp;        Properties var1 = new Properties();</b>
+<i>142</i>&nbsp;        File var2 = null;
+<b class="nc"><i>143</i>&nbsp;</b>
+<i>144</i>&nbsp;        try {
+<i>145</i>&nbsp;            String var4 = System.getProperty(&quot;content.types.user.table&quot;);
+<b class="nc"><i>146</i>&nbsp;            if(var4 != null) {</b>
+<i>147</i>&nbsp;                var2 = new File(var4);
+<i>148</i>&nbsp;                if(!var2.exists()) {
+<i>149</i>&nbsp;                    var2 = new File(System.getProperty(&quot;java.home&quot;) + File.separator + &quot;lib&quot; + File.separator + &quot;content-types.properties&quot;);
+<i>150</i>&nbsp;                }
+<i>151</i>&nbsp;            } else {
+<i>152</i>&nbsp;                var2 = new File(System.getProperty(&quot;java.home&quot;) + File.separator + &quot;lib&quot; + File.separator + &quot;content-types.properties&quot;);
+<i>153</i>&nbsp;            }
+<b class="nc"><i>154</i>&nbsp;</b>
+<i>155</i>&nbsp;            BufferedInputStream var3 = new BufferedInputStream(new FileInputStream(var2));
+<b class="nc"><i>156</i>&nbsp;            var1.load(var3);</b>
+<i>157</i>&nbsp;            var3.close();
+<b class="nc"><i>158</i>&nbsp;        } catch (IOException var5) {</b>
+<b class="nc"><i>159</i>&nbsp;            System.err.println(&quot;Warning: default mime table not found: &quot; + var2.getPath());</b>
+<i>160</i>&nbsp;            return;
+<i>161</i>&nbsp;        }
+<b class="nc"><i>162</i>&nbsp;</b>
+<i>163</i>&nbsp;        this.parse(var1);
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<b class="nc"><i>165</i>&nbsp;</b>
+<i>166</i>&nbsp;    void parse(Properties var1) {
+<b class="nc"><i>167</i>&nbsp;        String var2 = (String)var1.get(&quot;temp.file.template&quot;);</b>
+<b class="nc"><i>168</i>&nbsp;        if(var2 != null) {</b>
+<i>169</i>&nbsp;            var1.remove(&quot;temp.file.template&quot;);
+<i>170</i>&nbsp;            tempFileTemplate = var2;
+<b class="nc"><i>171</i>&nbsp;        }</b>
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;        Enumeration var3 = var1.propertyNames();
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;        while(var3.hasMoreElements()) {
+<i>176</i>&nbsp;            String var4 = (String)var3.nextElement();
+<i>177</i>&nbsp;            String var5 = var1.getProperty(var4);
+<i>178</i>&nbsp;            this.parse(var4, (String)var5);
+<b class="nc"><i>179</i>&nbsp;        }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<b class="nc"><i>183</i>&nbsp;    void parse(String var1, String var2) {</b>
+<b class="nc"><i>184</i>&nbsp;        MimeEntry var3 = new MimeEntry(var1);</b>
+<b class="nc"><i>185</i>&nbsp;        StringTokenizer var4 = new StringTokenizer(var2, &quot;;&quot;);</b>
+<b class="nc"><i>186</i>&nbsp;</b>
+<b class="nc"><i>187</i>&nbsp;        while(var4.hasMoreTokens()) {</b>
+<i>188</i>&nbsp;            String var5 = var4.nextToken();
+<b class="nc"><i>189</i>&nbsp;            this.parse(var5, (MimeEntry)var3);</b>
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;        this.add(var3);</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    void parse(String var1, MimeEntry var2) {
+<b class="nc"><i>196</i>&nbsp;        String var3 = null;</b>
+<i>197</i>&nbsp;        String var4 = null;
+<i>198</i>&nbsp;        boolean var5 = false;
+<i>199</i>&nbsp;        StringTokenizer var6 = new StringTokenizer(var1, &quot;=&quot;);
+<b class="nc"><i>200</i>&nbsp;</b>
+<i>201</i>&nbsp;        while(var6.hasMoreTokens()) {
+<i>202</i>&nbsp;            if(var5) {
+<i>203</i>&nbsp;                var4 = var6.nextToken().trim();
+<i>204</i>&nbsp;            } else {
+<i>205</i>&nbsp;                var3 = var6.nextToken().trim();
+<i>206</i>&nbsp;                var5 = true;
+<i>207</i>&nbsp;            }
+<i>208</i>&nbsp;        }
+<b class="nc"><i>209</i>&nbsp;</b>
+<b class="nc"><i>210</i>&nbsp;        this.fill(var2, var3, var4);</b>
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    void fill(MimeEntry var1, String var2, String var3) {
+<b class="nc"><i>214</i>&nbsp;        if(&quot;description&quot;.equalsIgnoreCase(var2)) {</b>
+<i>215</i>&nbsp;            var1.setDescription(var3);
+<b class="nc"><i>216</i>&nbsp;        } else if(&quot;action&quot;.equalsIgnoreCase(var2)) {</b>
+<b class="nc"><i>217</i>&nbsp;            var1.setAction(this.getActionCode(var3));</b>
+<b class="nc"><i>218</i>&nbsp;        } else if(&quot;application&quot;.equalsIgnoreCase(var2)) {</b>
+<i>219</i>&nbsp;            var1.setCommand(var3);
+<b class="nc"><i>220</i>&nbsp;        } else if(&quot;icon&quot;.equalsIgnoreCase(var2)) {</b>
+<i>221</i>&nbsp;            var1.setImageFileName(var3);
+<i>222</i>&nbsp;        } else if(&quot;file_extensions&quot;.equalsIgnoreCase(var2)) {
+<i>223</i>&nbsp;            var1.setExtensions(var3);
+<i>224</i>&nbsp;        }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    String[] getExtensions(String var1) {
+<b class="nc"><i>229</i>&nbsp;        StringTokenizer var2 = new StringTokenizer(var1, &quot;,&quot;);</b>
+<i>230</i>&nbsp;        int var3 = var2.countTokens();
+<i>231</i>&nbsp;        String[] var4 = new String[var3];
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;        for(int var5 = 0; var5 &lt; var3; ++var5) {
+<i>234</i>&nbsp;            var4[var5] = var2.nextToken();
+<i>235</i>&nbsp;        }
+<b class="nc"><i>236</i>&nbsp;</b>
+<b class="nc"><i>237</i>&nbsp;        return var4;</b>
+<b class="nc"><i>238</i>&nbsp;    }</b>
+<i>239</i>&nbsp;
+<b class="nc"><i>240</i>&nbsp;    int getActionCode(String var1) {</b>
+<b class="nc"><i>241</i>&nbsp;        for(int var2 = 0; var2 &lt; MimeEntry.actionKeywords.length; ++var2) {</b>
+<i>242</i>&nbsp;            if(var1.equalsIgnoreCase(MimeEntry.actionKeywords[var2])) {
+<i>243</i>&nbsp;                return var2;
+<b class="nc"><i>244</i>&nbsp;            }</b>
+<b class="nc"><i>245</i>&nbsp;        }</b>
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;        return 0;
+<i>248</i>&nbsp;    }
+<i>249</i>&nbsp;
+<b class="nc"><i>250</i>&nbsp;    public synchronized boolean save(String var1) {</b>
+<b class="nc"><i>251</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>252</i>&nbsp;            var1 = System.getProperty(&quot;user.home&quot; + File.separator + &quot;lib&quot; + File.separator + &quot;content-types.properties&quot;);</b>
+<b class="nc"><i>253</i>&nbsp;        }</b>
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;        return this.saveAsProperties(new File(var1));
+<i>256</i>&nbsp;    }
+<b class="nc"><i>257</i>&nbsp;</b>
+<b class="nc"><i>258</i>&nbsp;    public Properties getAsProperties() {</b>
+<b class="nc"><i>259</i>&nbsp;        Properties var1 = new Properties();</b>
+<b class="nc"><i>260</i>&nbsp;        Enumeration var2 = this.elements();</b>
+<b class="nc"><i>261</i>&nbsp;</b>
+<b class="nc"><i>262</i>&nbsp;        while(var2.hasMoreElements()) {</b>
+<i>263</i>&nbsp;            MimeEntry var3 = (MimeEntry)var2.nextElement();
+<i>264</i>&nbsp;            var1.put(var3.getType(), var3.toProperty());
+<i>265</i>&nbsp;        }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;        return var1;
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    protected boolean saveAsProperties(File var1) {
+<i>271</i>&nbsp;        FileOutputStream var2 = null;
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;        boolean var4;
+<i>274</i>&nbsp;        try {
+<i>275</i>&nbsp;            var2 = new FileOutputStream(var1);
+<i>276</i>&nbsp;            Properties var3 = this.getAsProperties();
+<i>277</i>&nbsp;            var3.put(&quot;temp.file.template&quot;, tempFileTemplate);
+<i>278</i>&nbsp;            String var5 = System.getProperty(&quot;user.name&quot;);
+<i>279</i>&nbsp;            if(var5 != null) {
+<i>280</i>&nbsp;                String var16 = &quot;; customized for &quot; + var5;
+<i>281</i>&nbsp;                var3.save(var2, &quot;sun.net.www MIME content-types table&quot; + var16);
+<i>282</i>&nbsp;            } else {
+<i>283</i>&nbsp;                var3.save(var2, &quot;sun.net.www MIME content-types table&quot;);
+<i>284</i>&nbsp;            }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;            return true;
+<i>287</i>&nbsp;        } catch (IOException var14) {
+<i>288</i>&nbsp;            var14.printStackTrace();
+<i>289</i>&nbsp;            var4 = false;
+<i>290</i>&nbsp;        } finally {
+<i>291</i>&nbsp;            if(var2 != null) {
+<i>292</i>&nbsp;                try {
+<b class="nc"><i>293</i>&nbsp;                    var2.close();</b>
+<i>294</i>&nbsp;                } catch (IOException var13) {
+<i>295</i>&nbsp;                    ;
+<b class="nc"><i>296</i>&nbsp;                }</b>
+<b class="nc"><i>297</i>&nbsp;            }</b>
+<b class="nc"><i>298</i>&nbsp;</b>
+<b class="nc"><i>299</i>&nbsp;        }</b>
+<b class="nc"><i>300</i>&nbsp;</b>
+<i>301</i>&nbsp;        return var4;
+<b class="nc"><i>302</i>&nbsp;    }</b>
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    static {
+<i>305</i>&nbsp;        AccessController.doPrivileged(new PrivilegedAction() {
+<i>306</i>&nbsp;            public Void run() {
+<b class="nc"><i>307</i>&nbsp;                MimeTable.tempFileTemplate = System.getProperty(&quot;content.types.temp.file.template&quot;, &quot;/tmp/%s&quot;);</b>
+<b class="nc"><i>308</i>&nbsp;                MimeTable.mailcapLocations = new String[]{System.getProperty(&quot;user.mailcap&quot;), System.getProperty(&quot;user.home&quot;) + &quot;/.mailcap&quot;, &quot;/etc/mailcap&quot;, &quot;/usr/etc/mailcap&quot;, &quot;/usr/local/etc/mailcap&quot;, System.getProperty(&quot;hotjava.home&quot;, &quot;/usr/local/hotjava&quot;) + &quot;/lib/mailcap&quot;};</b>
+<i>309</i>&nbsp;                return null;
+<b class="nc"><i>310</i>&nbsp;            }</b>
+<b class="nc"><i>311</i>&nbsp;        });</b>
+<b class="nc"><i>312</i>&nbsp;    }</b>
+<b class="nc"><i>313</i>&nbsp;</b>
+<b class="nc"><i>314</i>&nbsp;    private static class DefaultInstanceHolder {</b>
+<i>315</i>&nbsp;        static final MimeTable defaultInstance = getDefaultInstance();
+<i>316</i>&nbsp;
+<b class="nc"><i>317</i>&nbsp;        private DefaultInstanceHolder() {</b>
+<b class="nc"><i>318</i>&nbsp;        }</b>
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;        static MimeTable getDefaultInstance() {
+<i>321</i>&nbsp;            return (MimeTable)AccessController.doPrivileged(new PrivilegedAction() {
+<b class="nc"><i>322</i>&nbsp;                public MimeTable run() {</b>
+<i>323</i>&nbsp;                    MimeTable var1 = new MimeTable();
+<i>324</i>&nbsp;                    URLConnection.setFileNameMap(var1);
+<i>325</i>&nbsp;                    return var1;
+<b class="nc"><i>326</i>&nbsp;                }</b>
+<b class="nc"><i>327</i>&nbsp;            });</b>
+<i>328</i>&nbsp;        }
+<b class="nc"><i>329</i>&nbsp;    }</b>
+<b class="nc"><i>330</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:57</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,540 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BerDecoder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jmx.snmp</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BerDecoder (com.sun.jmx.snmp)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BerDecoder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 252)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jmx.snmp;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.snmp.BerException;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;public class BerDecoder {
+<i>11</i>&nbsp;    public static final int BooleanTag = 1;
+<i>12</i>&nbsp;    public static final int IntegerTag = 2;
+<i>13</i>&nbsp;    public static final int OctetStringTag = 4;
+<i>14</i>&nbsp;    public static final int NullTag = 5;
+<i>15</i>&nbsp;    public static final int OidTag = 6;
+<i>16</i>&nbsp;    public static final int SequenceTag = 48;
+<i>17</i>&nbsp;    private final byte[] bytes;
+<i>18</i>&nbsp;    private int next = 0;
+<i>19</i>&nbsp;    private final int[] stackBuf = new int[200];
+<i>20</i>&nbsp;    private int stackTop = 0;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public BerDecoder(byte[] var1) {
+<i>23</i>&nbsp;        this.bytes = var1;
+<i>24</i>&nbsp;        this.reset();
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public void reset() {
+<i>28</i>&nbsp;        this.next = 0;
+<i>29</i>&nbsp;        this.stackTop = 0;
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public int fetchInteger() throws BerException {
+<i>33</i>&nbsp;        return this.fetchInteger(2);
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public int fetchInteger(int var1) throws BerException {
+<i>37</i>&nbsp;        boolean var2 = false;
+<i>38</i>&nbsp;        int var3 = this.next;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;        try {
+<i>41</i>&nbsp;            if(this.fetchTag() != var1) {
+<i>42</i>&nbsp;                throw new BerException();
+<i>43</i>&nbsp;            } else {
+<i>44</i>&nbsp;                int var6 = this.fetchIntegerValue();
+<i>45</i>&nbsp;                return var6;
+<i>46</i>&nbsp;            }
+<b class="nc"><i>47</i>&nbsp;        } catch (BerException var5) {</b>
+<b class="nc"><i>48</i>&nbsp;            this.next = var3;</b>
+<b class="nc"><i>49</i>&nbsp;            throw var5;</b>
+<i>50</i>&nbsp;        }
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<b class="nc"><i>53</i>&nbsp;    public long fetchIntegerAsLong() throws BerException {</b>
+<b class="nc"><i>54</i>&nbsp;        return this.fetchIntegerAsLong(2);</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public long fetchIntegerAsLong(int var1) throws BerException {
+<i>58</i>&nbsp;        long var2 = 0L;
+<i>59</i>&nbsp;        int var4 = this.next;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;        try {
+<i>62</i>&nbsp;            if(this.fetchTag() != var1) {
+<i>63</i>&nbsp;                throw new BerException();
+<i>64</i>&nbsp;            } else {
+<i>65</i>&nbsp;                var2 = this.fetchIntegerValueAsLong();
+<b class="nc"><i>66</i>&nbsp;                return var2;</b>
+<i>67</i>&nbsp;            }
+<i>68</i>&nbsp;        } catch (BerException var6) {
+<i>69</i>&nbsp;            this.next = var4;
+<i>70</i>&nbsp;            throw var6;
+<i>71</i>&nbsp;        }
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public byte[] fetchOctetString() throws BerException {
+<i>75</i>&nbsp;        return this.fetchOctetString(4);
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public byte[] fetchOctetString(int var1) throws BerException {
+<i>79</i>&nbsp;        Object var2 = null;
+<i>80</i>&nbsp;        int var3 = this.next;
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;        try {</b>
+<b class="nc"><i>83</i>&nbsp;            if(this.fetchTag() != var1) {</b>
+<i>84</i>&nbsp;                throw new BerException();
+<b class="nc"><i>85</i>&nbsp;            } else {</b>
+<b class="nc"><i>86</i>&nbsp;                byte[] var6 = this.fetchStringValue();</b>
+<i>87</i>&nbsp;                return var6;
+<b class="nc"><i>88</i>&nbsp;            }</b>
+<i>89</i>&nbsp;        } catch (BerException var5) {
+<b class="nc"><i>90</i>&nbsp;            this.next = var3;</b>
+<b class="nc"><i>91</i>&nbsp;            throw var5;</b>
+<b class="nc"><i>92</i>&nbsp;        }</b>
+<b class="nc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;
+<b class="nc"><i>95</i>&nbsp;    public long[] fetchOid() throws BerException {</b>
+<i>96</i>&nbsp;        return this.fetchOid(6);
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    public long[] fetchOid(int var1) throws BerException {
+<i>100</i>&nbsp;        Object var2 = null;
+<i>101</i>&nbsp;        int var3 = this.next;
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;        try {
+<i>104</i>&nbsp;            if(this.fetchTag() != var1) {
+<i>105</i>&nbsp;                throw new BerException();
+<i>106</i>&nbsp;            } else {
+<i>107</i>&nbsp;                long[] var6 = this.fetchOidValue();
+<i>108</i>&nbsp;                return var6;
+<b class="nc"><i>109</i>&nbsp;            }</b>
+<i>110</i>&nbsp;        } catch (BerException var5) {
+<i>111</i>&nbsp;            this.next = var3;
+<i>112</i>&nbsp;            throw var5;
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public void fetchNull() throws BerException {
+<i>117</i>&nbsp;        this.fetchNull(5);
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public void fetchNull(int var1) throws BerException {
+<i>121</i>&nbsp;        int var2 = this.next;
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        try {
+<i>124</i>&nbsp;            if(this.fetchTag() != var1) {
+<b class="nc"><i>125</i>&nbsp;                throw new BerException();</b>
+<b class="nc"><i>126</i>&nbsp;            } else {</b>
+<i>127</i>&nbsp;                int var3 = this.fetchLength();
+<b class="nc"><i>128</i>&nbsp;                if(var3 != 0) {</b>
+<b class="nc"><i>129</i>&nbsp;                    throw new BerException();</b>
+<i>130</i>&nbsp;                }
+<b class="nc"><i>131</i>&nbsp;            }</b>
+<i>132</i>&nbsp;        } catch (BerException var4) {
+<b class="nc"><i>133</i>&nbsp;            this.next = var2;</b>
+<b class="nc"><i>134</i>&nbsp;            throw var4;</b>
+<b class="nc"><i>135</i>&nbsp;        }</b>
+<b class="nc"><i>136</i>&nbsp;    }</b>
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;    public byte[] fetchAny() throws BerException {</b>
+<i>139</i>&nbsp;        Object var1 = null;
+<i>140</i>&nbsp;        int var2 = this.next;
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;        try {
+<i>143</i>&nbsp;            int var3 = this.fetchTag();
+<i>144</i>&nbsp;            int var4 = this.fetchLength();
+<i>145</i>&nbsp;            if(var4 &lt; 0) {
+<i>146</i>&nbsp;                throw new BerException();
+<i>147</i>&nbsp;            } else {
+<i>148</i>&nbsp;                int var5 = this.next + var4 - var2;
+<i>149</i>&nbsp;                if(var4 &gt; this.bytes.length - this.next) {
+<i>150</i>&nbsp;                    throw new IndexOutOfBoundsException(&quot;Decoded length exceeds buffer&quot;);
+<i>151</i>&nbsp;                } else {
+<b class="nc"><i>152</i>&nbsp;                    byte[] var6 = new byte[var5];</b>
+<i>153</i>&nbsp;                    System.arraycopy(this.bytes, var2, var6, 0, var5);
+<i>154</i>&nbsp;                    this.next += var4;
+<i>155</i>&nbsp;                    return var6;
+<i>156</i>&nbsp;                }
+<i>157</i>&nbsp;            }
+<i>158</i>&nbsp;        } catch (IndexOutOfBoundsException var7) {
+<i>159</i>&nbsp;            this.next = var2;
+<i>160</i>&nbsp;            throw new BerException();
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    public byte[] fetchAny(int var1) throws BerException {
+<i>165</i>&nbsp;        if(this.getTag() != var1) {
+<i>166</i>&nbsp;            throw new BerException();
+<i>167</i>&nbsp;        } else {
+<b class="nc"><i>168</i>&nbsp;            return this.fetchAny();</b>
+<b class="nc"><i>169</i>&nbsp;        }</b>
+<i>170</i>&nbsp;    }
+<b class="nc"><i>171</i>&nbsp;</b>
+<b class="nc"><i>172</i>&nbsp;    public void openSequence() throws BerException {</b>
+<i>173</i>&nbsp;        this.openSequence(48);
+<b class="nc"><i>174</i>&nbsp;    }</b>
+<i>175</i>&nbsp;
+<b class="nc"><i>176</i>&nbsp;    public void openSequence(int var1) throws BerException {</b>
+<b class="nc"><i>177</i>&nbsp;        int var2 = this.next;</b>
+<b class="nc"><i>178</i>&nbsp;</b>
+<b class="nc"><i>179</i>&nbsp;        try {</b>
+<i>180</i>&nbsp;            if(this.fetchTag() != var1) {
+<b class="nc"><i>181</i>&nbsp;                throw new BerException();</b>
+<i>182</i>&nbsp;            } else {
+<i>183</i>&nbsp;                int var3 = this.fetchLength();
+<i>184</i>&nbsp;                if(var3 &lt; 0) {
+<i>185</i>&nbsp;                    throw new BerException();
+<i>186</i>&nbsp;                } else if(var3 &gt; this.bytes.length - this.next) {
+<i>187</i>&nbsp;                    throw new BerException();
+<i>188</i>&nbsp;                } else {
+<i>189</i>&nbsp;                    this.stackBuf[this.stackTop++] = this.next + var3;
+<i>190</i>&nbsp;                }
+<i>191</i>&nbsp;            }
+<b class="nc"><i>192</i>&nbsp;        } catch (BerException var4) {</b>
+<i>193</i>&nbsp;            this.next = var2;
+<i>194</i>&nbsp;            throw var4;
+<i>195</i>&nbsp;        }
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    public void closeSequence() throws BerException {
+<i>199</i>&nbsp;        if(this.stackBuf[this.stackTop - 1] == this.next) {
+<i>200</i>&nbsp;            --this.stackTop;
+<i>201</i>&nbsp;        } else {
+<i>202</i>&nbsp;            throw new BerException();
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public boolean cannotCloseSequence() {
+<i>207</i>&nbsp;        return this.next &lt; this.stackBuf[this.stackTop - 1];
+<b class="nc"><i>208</i>&nbsp;    }</b>
+<b class="nc"><i>209</i>&nbsp;</b>
+<i>210</i>&nbsp;    public int getTag() throws BerException {
+<b class="nc"><i>211</i>&nbsp;        boolean var1 = false;</b>
+<b class="nc"><i>212</i>&nbsp;        int var2 = this.next;</b>
+<i>213</i>&nbsp;
+<b class="nc"><i>214</i>&nbsp;        int var6;</b>
+<i>215</i>&nbsp;        try {
+<b class="nc"><i>216</i>&nbsp;            var6 = this.fetchTag();</b>
+<b class="nc"><i>217</i>&nbsp;        } finally {</b>
+<b class="nc"><i>218</i>&nbsp;            this.next = var2;</b>
+<b class="nc"><i>219</i>&nbsp;        }</b>
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;        return var6;</b>
+<i>222</i>&nbsp;    }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    public String toString() {
+<i>225</i>&nbsp;        StringBuffer var1 = new StringBuffer(this.bytes.length * 2);
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;        for(int var2 = 0; var2 &lt; this.bytes.length; ++var2) {
+<i>228</i>&nbsp;            int var3 = this.bytes[var2] &gt; 0?this.bytes[var2]:this.bytes[var2] + 256;
+<i>229</i>&nbsp;            if(var2 == this.next) {
+<i>230</i>&nbsp;                var1.append(&quot;(&quot;);
+<i>231</i>&nbsp;            }
+<b class="nc"><i>232</i>&nbsp;</b>
+<i>233</i>&nbsp;            var1.append(Character.forDigit(var3 / 16, 16));
+<i>234</i>&nbsp;            var1.append(Character.forDigit(var3 % 16, 16));
+<i>235</i>&nbsp;            if(var2 == this.next) {
+<i>236</i>&nbsp;                var1.append(&quot;)&quot;);
+<i>237</i>&nbsp;            }
+<i>238</i>&nbsp;        }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;        if(this.bytes.length == this.next) {
+<i>241</i>&nbsp;            var1.append(&quot;()&quot;);
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        return new String(var1);
+<i>245</i>&nbsp;    }
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;    private final int fetchTag() throws BerException {
+<b class="nc"><i>248</i>&nbsp;        boolean var1 = false;</b>
+<b class="nc"><i>249</i>&nbsp;        int var2 = this.next;</b>
+<i>250</i>&nbsp;
+<b class="nc"><i>251</i>&nbsp;        try {</b>
+<b class="nc"><i>252</i>&nbsp;            byte var3 = this.bytes[this.next++];</b>
+<i>253</i>&nbsp;            int var5 = var3 &gt;= 0?var3:var3 + 256;
+<b class="nc"><i>254</i>&nbsp;            if((var5 &amp; 31) == 31) {</b>
+<b class="nc"><i>255</i>&nbsp;                while((this.bytes[this.next] &amp; 128) != 0) {</b>
+<b class="nc"><i>256</i>&nbsp;                    var5 &lt;&lt;= 7;</b>
+<b class="nc"><i>257</i>&nbsp;                    var5 |= this.bytes[this.next++] &amp; 127;</b>
+<i>258</i>&nbsp;                }
+<i>259</i>&nbsp;            }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;            return var5;
+<i>262</i>&nbsp;        } catch (IndexOutOfBoundsException var4) {
+<i>263</i>&nbsp;            this.next = var2;
+<i>264</i>&nbsp;            throw new BerException();
+<i>265</i>&nbsp;        }
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    private final int fetchLength() throws BerException {
+<i>269</i>&nbsp;        int var1 = 0;
+<i>270</i>&nbsp;        int var2 = this.next;
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;        try {</b>
+<b class="nc"><i>273</i>&nbsp;            byte var3 = this.bytes[this.next++];</b>
+<i>274</i>&nbsp;            if(var3 &gt;= 0) {
+<b class="nc"><i>275</i>&nbsp;                var1 = var3;</b>
+<b class="nc"><i>276</i>&nbsp;            } else {</b>
+<b class="nc"><i>277</i>&nbsp;                for(int var4 = 128 + var3; var4 &gt; 0; --var4) {</b>
+<b class="nc"><i>278</i>&nbsp;                    byte var5 = this.bytes[this.next++];</b>
+<b class="nc"><i>279</i>&nbsp;                    var1 &lt;&lt;= 8;</b>
+<b class="nc"><i>280</i>&nbsp;                    var1 |= var5 &gt;= 0?var5:var5 + 256;</b>
+<b class="nc"><i>281</i>&nbsp;                }</b>
+<b class="nc"><i>282</i>&nbsp;            }</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;            return var1;
+<i>285</i>&nbsp;        } catch (IndexOutOfBoundsException var6) {
+<b class="nc"><i>286</i>&nbsp;            this.next = var2;</b>
+<b class="nc"><i>287</i>&nbsp;            throw new BerException();</b>
+<i>288</i>&nbsp;        }
+<b class="nc"><i>289</i>&nbsp;    }</b>
+<b class="nc"><i>290</i>&nbsp;</b>
+<b class="nc"><i>291</i>&nbsp;    private int fetchIntegerValue() throws BerException {</b>
+<b class="nc"><i>292</i>&nbsp;        boolean var1 = false;</b>
+<i>293</i>&nbsp;        int var2 = this.next;
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;        try {
+<i>296</i>&nbsp;            int var3 = this.fetchLength();
+<i>297</i>&nbsp;            if(var3 &lt;= 0) {
+<b class="nc"><i>298</i>&nbsp;                throw new BerException();</b>
+<i>299</i>&nbsp;            } else if(var3 &gt; this.bytes.length - this.next) {
+<i>300</i>&nbsp;                throw new IndexOutOfBoundsException(&quot;Decoded length exceeds buffer&quot;);
+<i>301</i>&nbsp;            } else {
+<i>302</i>&nbsp;                int var4 = this.next + var3;
+<i>303</i>&nbsp;                int var9 = this.bytes[this.next++];
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;                while(this.next &lt; var4) {
+<i>306</i>&nbsp;                    byte var5 = this.bytes[this.next++];
+<i>307</i>&nbsp;                    if(var5 &lt; 0) {
+<i>308</i>&nbsp;                        var9 = var9 &lt;&lt; 8 | 256 + var5;
+<i>309</i>&nbsp;                    } else {
+<i>310</i>&nbsp;                        var9 = var9 &lt;&lt; 8 | var5;
+<i>311</i>&nbsp;                    }
+<i>312</i>&nbsp;                }
+<b class="nc"><i>313</i>&nbsp;</b>
+<b class="nc"><i>314</i>&nbsp;                return var9;</b>
+<i>315</i>&nbsp;            }
+<b class="nc"><i>316</i>&nbsp;        } catch (BerException var6) {</b>
+<i>317</i>&nbsp;            this.next = var2;
+<i>318</i>&nbsp;            throw var6;
+<i>319</i>&nbsp;        } catch (IndexOutOfBoundsException var7) {
+<i>320</i>&nbsp;            this.next = var2;
+<i>321</i>&nbsp;            throw new BerException();
+<i>322</i>&nbsp;        } catch (ArithmeticException var8) {
+<i>323</i>&nbsp;            this.next = var2;
+<i>324</i>&nbsp;            throw new BerException();
+<i>325</i>&nbsp;        }
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    private final long fetchIntegerValueAsLong() throws BerException {
+<i>329</i>&nbsp;        long var1 = 0L;
+<b class="nc"><i>330</i>&nbsp;        int var3 = this.next;</b>
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;        try {
+<i>333</i>&nbsp;            int var4 = this.fetchLength();
+<i>334</i>&nbsp;            if(var4 &lt;= 0) {
+<i>335</i>&nbsp;                throw new BerException();
+<i>336</i>&nbsp;            } else if(var4 &gt; this.bytes.length - this.next) {
+<i>337</i>&nbsp;                throw new IndexOutOfBoundsException(&quot;Decoded length exceeds buffer&quot;);
+<i>338</i>&nbsp;            } else {
+<i>339</i>&nbsp;                int var5 = this.next + var4;
+<i>340</i>&nbsp;                var1 = (long)this.bytes[this.next++];
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;                while(this.next &lt; var5) {
+<i>343</i>&nbsp;                    byte var6 = this.bytes[this.next++];
+<b class="nc"><i>344</i>&nbsp;                    if(var6 &lt; 0) {</b>
+<i>345</i>&nbsp;                        var1 = var1 &lt;&lt; 8 | (long)(256 + var6);
+<b class="nc"><i>346</i>&nbsp;                    } else {</b>
+<b class="nc"><i>347</i>&nbsp;                        var1 = var1 &lt;&lt; 8 | (long)var6;</b>
+<i>348</i>&nbsp;                    }
+<b class="nc"><i>349</i>&nbsp;                }</b>
+<b class="nc"><i>350</i>&nbsp;</b>
+<b class="nc"><i>351</i>&nbsp;                return var1;</b>
+<b class="nc"><i>352</i>&nbsp;            }</b>
+<i>353</i>&nbsp;        } catch (BerException var7) {
+<b class="nc"><i>354</i>&nbsp;            this.next = var3;</b>
+<b class="nc"><i>355</i>&nbsp;            throw var7;</b>
+<b class="nc"><i>356</i>&nbsp;        } catch (IndexOutOfBoundsException var8) {</b>
+<b class="nc"><i>357</i>&nbsp;            this.next = var3;</b>
+<i>358</i>&nbsp;            throw new BerException();
+<i>359</i>&nbsp;        } catch (ArithmeticException var9) {
+<i>360</i>&nbsp;            this.next = var3;
+<i>361</i>&nbsp;            throw new BerException();
+<i>362</i>&nbsp;        }
+<i>363</i>&nbsp;    }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    private byte[] fetchStringValue() throws BerException {
+<i>366</i>&nbsp;        Object var1 = null;
+<i>367</i>&nbsp;        int var2 = this.next;
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;        try {
+<i>370</i>&nbsp;            int var3 = this.fetchLength();
+<b class="nc"><i>371</i>&nbsp;            if(var3 &lt; 0) {</b>
+<b class="nc"><i>372</i>&nbsp;                throw new BerException();</b>
+<i>373</i>&nbsp;            } else if(var3 &gt; this.bytes.length - this.next) {
+<i>374</i>&nbsp;                throw new IndexOutOfBoundsException(&quot;Decoded length exceeds buffer&quot;);
+<b class="nc"><i>375</i>&nbsp;            } else {</b>
+<i>376</i>&nbsp;                byte[] var4 = new byte[var3];
+<i>377</i>&nbsp;                System.arraycopy(this.bytes, this.next, var4, 0, var3);
+<i>378</i>&nbsp;                this.next += var3;
+<i>379</i>&nbsp;                return var4;
+<i>380</i>&nbsp;            }
+<i>381</i>&nbsp;        } catch (BerException var5) {
+<i>382</i>&nbsp;            this.next = var2;
+<i>383</i>&nbsp;            throw var5;
+<i>384</i>&nbsp;        } catch (IndexOutOfBoundsException var6) {
+<i>385</i>&nbsp;            this.next = var2;
+<i>386</i>&nbsp;            throw new BerException();
+<i>387</i>&nbsp;        } catch (ArithmeticException var7) {
+<i>388</i>&nbsp;            this.next = var2;
+<b class="nc"><i>389</i>&nbsp;            throw new BerException();</b>
+<i>390</i>&nbsp;        }
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    private final long[] fetchOidValue() throws BerException {
+<i>394</i>&nbsp;        Object var1 = null;
+<i>395</i>&nbsp;        int var2 = this.next;
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;        try {
+<i>398</i>&nbsp;            int var3 = this.fetchLength();
+<i>399</i>&nbsp;            if(var3 &lt;= 0) {
+<i>400</i>&nbsp;                throw new BerException();
+<b class="nc"><i>401</i>&nbsp;            } else if(var3 &gt; this.bytes.length - this.next) {</b>
+<b class="nc"><i>402</i>&nbsp;                throw new IndexOutOfBoundsException(&quot;Decoded length exceeds buffer&quot;);</b>
+<i>403</i>&nbsp;            } else {
+<b class="nc"><i>404</i>&nbsp;                int var4 = 2;</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;                int var5;
+<b class="nc"><i>407</i>&nbsp;                for(var5 = 1; var5 &lt; var3; ++var5) {</b>
+<b class="nc"><i>408</i>&nbsp;                    if((this.bytes[this.next + var5] &amp; 128) == 0) {</b>
+<i>409</i>&nbsp;                        ++var4;
+<b class="nc"><i>410</i>&nbsp;                    }</b>
+<i>411</i>&nbsp;                }
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;                var5 = var4;
+<i>414</i>&nbsp;                long[] var6 = new long[var4];
+<i>415</i>&nbsp;                byte var7 = this.bytes[this.next++];
+<b class="nc"><i>416</i>&nbsp;                if(var7 &lt; 0) {</b>
+<b class="nc"><i>417</i>&nbsp;                    throw new BerException();</b>
+<b class="nc"><i>418</i>&nbsp;                } else {</b>
+<b class="nc"><i>419</i>&nbsp;                    long var8 = (long)(var7 / 40);</b>
+<b class="nc"><i>420</i>&nbsp;                    if(var8 &gt; 2L) {</b>
+<i>421</i>&nbsp;                        throw new BerException();
+<b class="nc"><i>422</i>&nbsp;                    } else {</b>
+<b class="nc"><i>423</i>&nbsp;                        long var10 = (long)(var7 % 40);</b>
+<b class="nc"><i>424</i>&nbsp;                        var6[0] = var8;</b>
+<b class="nc"><i>425</i>&nbsp;                        var6[1] = var10;</b>
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;                        long var13;
+<b class="nc"><i>428</i>&nbsp;                        for(int var12 = 2; var12 &lt; var5; var6[var12++] = var13) {</b>
+<b class="nc"><i>429</i>&nbsp;                            var13 = 0L;</b>
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;                            byte var15;
+<b class="nc"><i>432</i>&nbsp;                            for(var15 = this.bytes[this.next++]; (var15 &amp; 128) != 0; var15 = this.bytes[this.next++]) {</b>
+<i>433</i>&nbsp;                                var13 = var13 &lt;&lt; 7 | (long)(var15 &amp; 127);
+<i>434</i>&nbsp;                                if(var13 &lt; 0L) {
+<i>435</i>&nbsp;                                    throw new BerException();
+<i>436</i>&nbsp;                                }
+<i>437</i>&nbsp;                            }
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;                            var13 = var13 &lt;&lt; 7 | (long)var15;
+<i>440</i>&nbsp;                            if(var13 &lt; 0L) {
+<i>441</i>&nbsp;                                throw new BerException();
+<i>442</i>&nbsp;                            }
+<i>443</i>&nbsp;                        }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;                        return var6;
+<i>446</i>&nbsp;                    }
+<i>447</i>&nbsp;                }
+<i>448</i>&nbsp;            }
+<i>449</i>&nbsp;        } catch (BerException var16) {
+<i>450</i>&nbsp;            this.next = var2;
+<i>451</i>&nbsp;            throw var16;
+<i>452</i>&nbsp;        } catch (IndexOutOfBoundsException var17) {
+<i>453</i>&nbsp;            this.next = var2;
+<i>454</i>&nbsp;            throw new BerException();
+<i>455</i>&nbsp;        }
+<i>456</i>&nbsp;    }
+<i>457</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

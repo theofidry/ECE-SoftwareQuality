@@ -1,0 +1,195 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SnmpNamedListTableCache</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.management.snmp.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SnmpNamedListTableCache (sun.management.snmp.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SnmpNamedListTableCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.management.snmp.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.mbeanserver.Util;
+<i>9</i>&nbsp;import com.sun.jmx.snmp.SnmpOid;
+<i>10</i>&nbsp;import java.util.List;
+<i>11</i>&nbsp;import java.util.Map;
+<i>12</i>&nbsp;import java.util.TreeMap;
+<i>13</i>&nbsp;import sun.management.snmp.util.MibLogger;
+<i>14</i>&nbsp;import sun.management.snmp.util.SnmpCachedData;
+<i>15</i>&nbsp;import sun.management.snmp.util.SnmpListTableCache;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;public abstract class SnmpNamedListTableCache extends SnmpListTableCache {
+<i>18</i>&nbsp;    protected TreeMap names = new TreeMap();
+<i>19</i>&nbsp;    protected long last = 0L;
+<i>20</i>&nbsp;    boolean wrapped = false;
+<i>21</i>&nbsp;    static final MibLogger log = new MibLogger(SnmpNamedListTableCache.class);
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public SnmpNamedListTableCache() {
+<i>24</i>&nbsp;    }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    protected abstract String getKey(Object var1, List var2, int var3, Object var4);
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    protected SnmpOid makeIndex(Object var1, List var2, int var3, Object var4) {
+<i>29</i>&nbsp;        if(++this.last &gt; 4294967295L) {
+<i>30</i>&nbsp;            log.debug(&quot;makeIndex&quot;, &quot;Index wrapping...&quot;);
+<i>31</i>&nbsp;            this.last = 0L;
+<i>32</i>&nbsp;            this.wrapped = true;
+<i>33</i>&nbsp;        }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;        if(!this.wrapped) {
+<b class="nc"><i>36</i>&nbsp;            return new SnmpOid(this.last);</b>
+<i>37</i>&nbsp;        } else {
+<i>38</i>&nbsp;            for(int var5 = 1; (long)var5 &lt; 4294967295L; ++var5) {
+<i>39</i>&nbsp;                if(++this.last &gt; 4294967295L) {
+<i>40</i>&nbsp;                    this.last = 1L;
+<i>41</i>&nbsp;                }
+<b class="nc"><i>42</i>&nbsp;</b>
+<i>43</i>&nbsp;                SnmpOid var6 = new SnmpOid(this.last);
+<i>44</i>&nbsp;                if(this.names == null) {
+<i>45</i>&nbsp;                    return var6;
+<i>46</i>&nbsp;                }
+<b class="nc"><i>47</i>&nbsp;</b>
+<i>48</i>&nbsp;                if(!this.names.containsValue(var6)) {
+<i>49</i>&nbsp;                    if(var1 == null) {
+<i>50</i>&nbsp;                        return var6;
+<i>51</i>&nbsp;                    }
+<b class="nc"><i>52</i>&nbsp;</b>
+<i>53</i>&nbsp;                    if(!((Map)var1).containsValue(var6)) {
+<i>54</i>&nbsp;                        return var6;
+<i>55</i>&nbsp;                    }
+<i>56</i>&nbsp;                }
+<i>57</i>&nbsp;            }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;            return null;
+<i>60</i>&nbsp;        }
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    protected SnmpOid getIndex(Object var1, List var2, int var3, Object var4) {
+<i>64</i>&nbsp;        String var5 = this.getKey(var1, var2, var3, var4);
+<i>65</i>&nbsp;        Object var6 = this.names != null &amp;&amp; var5 != null?this.names.get(var5):null;
+<i>66</i>&nbsp;        SnmpOid var7 = var6 != null?(SnmpOid)var6:this.makeIndex(var1, var2, var3, var4);
+<i>67</i>&nbsp;        if(var1 != null &amp;&amp; var5 != null &amp;&amp; var7 != null) {
+<i>68</i>&nbsp;            Map var8 = (Map)Util.cast(var1);
+<i>69</i>&nbsp;            var8.put(var5, var7);
+<i>70</i>&nbsp;        }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;        log.debug(&quot;getIndex&quot;, &quot;key=&quot; + var5 + &quot;, index=&quot; + var7);
+<i>73</i>&nbsp;        return var7;
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    protected SnmpCachedData updateCachedDatas(Object var1, List var2) {
+<i>77</i>&nbsp;        TreeMap var3 = new TreeMap();
+<i>78</i>&nbsp;        SnmpCachedData var4 = super.updateCachedDatas(var1, var2);
+<i>79</i>&nbsp;        this.names = var3;
+<i>80</i>&nbsp;        return var4;
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    protected abstract List loadRawDatas(Map var1);
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    protected abstract String getRawDatasKey();
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    protected List getRawDatas(Map&lt;Object, Object&gt; var1, String var2) {
+<b class="nc"><i>88</i>&nbsp;        List var3 = null;</b>
+<i>89</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>90</i>&nbsp;            var3 = (List)var1.get(var2);</b>
+<b class="nc"><i>91</i>&nbsp;        }</b>
+<b class="nc"><i>92</i>&nbsp;</b>
+<i>93</i>&nbsp;        if(var3 == null) {
+<i>94</i>&nbsp;            var3 = this.loadRawDatas(var1);
+<i>95</i>&nbsp;            if(var3 != null &amp;&amp; var1 != null) {
+<b class="nc"><i>96</i>&nbsp;                var1.put(var2, var3);</b>
+<i>97</i>&nbsp;            }
+<i>98</i>&nbsp;        }
+<b class="nc"><i>99</i>&nbsp;</b>
+<b class="nc"><i>100</i>&nbsp;        return var3;</b>
+<b class="nc"><i>101</i>&nbsp;    }</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    protected SnmpCachedData updateCachedDatas(Object var1) {
+<b class="nc"><i>104</i>&nbsp;        Map var2 = var1 instanceof Map?(Map)Util.cast(var1):null;</b>
+<b class="nc"><i>105</i>&nbsp;        List var3 = this.getRawDatas(var2, this.getRawDatasKey());</b>
+<i>106</i>&nbsp;        log.debug(&quot;updateCachedDatas&quot;, &quot;rawDatas.size()=&quot; + (var3 == null?&quot;&lt;no data&gt;&quot;:&quot;&quot; + var3.size()));
+<i>107</i>&nbsp;        TreeMap var4 = new TreeMap();
+<b class="nc"><i>108</i>&nbsp;        SnmpCachedData var5 = super.updateCachedDatas(var4, var3);</b>
+<b class="nc"><i>109</i>&nbsp;        this.names = var4;</b>
+<i>110</i>&nbsp;        return var5;
+<i>111</i>&nbsp;    }
+<b class="nc"><i>112</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,225 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Encoder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.beans</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Encoder (java.beans)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Encoder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 51)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.beans;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.beans.finder.PersistenceDelegateFinder;
+<i>9</i>&nbsp;import java.beans.ExceptionListener;
+<i>10</i>&nbsp;import java.beans.Expression;
+<i>11</i>&nbsp;import java.beans.MetaData;
+<i>12</i>&nbsp;import java.beans.PersistenceDelegate;
+<i>13</i>&nbsp;import java.beans.Statement;
+<i>14</i>&nbsp;import java.util.HashMap;
+<i>15</i>&nbsp;import java.util.IdentityHashMap;
+<i>16</i>&nbsp;import java.util.Map;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;public class Encoder {
+<i>19</i>&nbsp;    private final PersistenceDelegateFinder finder = new PersistenceDelegateFinder();
+<i>20</i>&nbsp;    private Map bindings = new IdentityHashMap();
+<i>21</i>&nbsp;    private ExceptionListener exceptionListener;
+<i>22</i>&nbsp;    boolean executeStatements = true;
+<i>23</i>&nbsp;    private Map attributes;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public Encoder() {
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    protected void writeObject(Object var1) {
+<b class="nc"><i>29</i>&nbsp;        if(var1 != this) {</b>
+<b class="nc"><i>30</i>&nbsp;            PersistenceDelegate var2 = this.getPersistenceDelegate(var1 == null?null:var1.getClass());</b>
+<i>31</i>&nbsp;            var2.writeObject(var1, this);
+<b class="nc"><i>32</i>&nbsp;        }</b>
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public void setExceptionListener(ExceptionListener var1) {
+<i>36</i>&nbsp;        this.exceptionListener = var1;
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public ExceptionListener getExceptionListener() {
+<i>40</i>&nbsp;        return this.exceptionListener != null?this.exceptionListener:Statement.defaultExceptionListener;
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    Object getValue(Expression var1) {
+<i>44</i>&nbsp;        try {
+<i>45</i>&nbsp;            return var1 == null?null:var1.getValue();
+<i>46</i>&nbsp;        } catch (Exception var3) {
+<i>47</i>&nbsp;            this.getExceptionListener().exceptionThrown(var3);
+<i>48</i>&nbsp;            throw new RuntimeException(&quot;failed to evaluate: &quot; + var1.toString());
+<i>49</i>&nbsp;        }
+<b class="nc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public PersistenceDelegate getPersistenceDelegate(Class&lt;?&gt; var1) {
+<b class="nc"><i>53</i>&nbsp;        PersistenceDelegate var2 = this.finder.find(var1);</b>
+<b class="nc"><i>54</i>&nbsp;        if(var2 == null) {</b>
+<i>55</i>&nbsp;            var2 = MetaData.getPersistenceDelegate(var1);
+<i>56</i>&nbsp;            if(var2 != null) {
+<i>57</i>&nbsp;                this.finder.register(var1, var2);
+<i>58</i>&nbsp;            }
+<i>59</i>&nbsp;        }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;        return var2;
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public void setPersistenceDelegate(Class&lt;?&gt; var1, PersistenceDelegate var2) {
+<i>65</i>&nbsp;        this.finder.register(var1, var2);
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;    public Object remove(Object var1) {</b>
+<i>69</i>&nbsp;        Expression var2 = (Expression)this.bindings.remove(var1);
+<i>70</i>&nbsp;        return this.getValue(var2);
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public Object get(Object var1) {
+<i>74</i>&nbsp;        if(var1 != null &amp;&amp; var1 != this &amp;&amp; var1.getClass() != String.class) {
+<i>75</i>&nbsp;            Expression var2 = (Expression)this.bindings.get(var1);
+<i>76</i>&nbsp;            return this.getValue(var2);
+<i>77</i>&nbsp;        } else {
+<i>78</i>&nbsp;            return var1;
+<i>79</i>&nbsp;        }
+<b class="nc"><i>80</i>&nbsp;    }</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private Object writeObject1(Object var1) {
+<i>83</i>&nbsp;        Object var2 = this.get(var1);
+<i>84</i>&nbsp;        if(var2 == null) {
+<b class="nc"><i>85</i>&nbsp;            this.writeObject(var1);</b>
+<i>86</i>&nbsp;            var2 = this.get(var1);
+<b class="nc"><i>87</i>&nbsp;        }</b>
+<b class="nc"><i>88</i>&nbsp;</b>
+<b class="nc"><i>89</i>&nbsp;        return var2;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    private Statement cloneStatement(Statement var1) {
+<i>93</i>&nbsp;        Object var2 = var1.getTarget();
+<i>94</i>&nbsp;        Object var3 = this.writeObject1(var2);
+<i>95</i>&nbsp;        Object[] var4 = var1.getArguments();
+<i>96</i>&nbsp;        Object[] var5 = new Object[var4.length];
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;        for(int var6 = 0; var6 &lt; var4.length; ++var6) {
+<i>99</i>&nbsp;            var5[var6] = this.writeObject1(var4[var6]);
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;        Object var7 = Statement.class.equals(var1.getClass())?new Statement(var3, var1.getMethodName(), var5):new Expression(var3, var1.getMethodName(), var5);
+<i>103</i>&nbsp;        ((Statement)var7).loader = var1.loader;
+<i>104</i>&nbsp;        return (Statement)var7;
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public void writeStatement(Statement var1) {
+<i>108</i>&nbsp;        Statement var2 = this.cloneStatement(var1);
+<i>109</i>&nbsp;        if(var1.getTarget() != this &amp;&amp; this.executeStatements) {
+<i>110</i>&nbsp;            try {
+<i>111</i>&nbsp;                var2.execute();
+<i>112</i>&nbsp;            } catch (Exception var4) {
+<i>113</i>&nbsp;                this.getExceptionListener().exceptionThrown(new Exception(&quot;Encoder: discarding statement &quot; + var2, var4));
+<i>114</i>&nbsp;            }
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public void writeExpression(Expression var1) {
+<i>120</i>&nbsp;        Object var2 = this.getValue(var1);
+<i>121</i>&nbsp;        if(this.get(var2) == null) {
+<i>122</i>&nbsp;            this.bindings.put(var2, (Expression)this.cloneStatement(var1));
+<i>123</i>&nbsp;            this.writeObject(var2);
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    void clear() {
+<i>128</i>&nbsp;        this.bindings.clear();
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    void setAttribute(Object var1, Object var2) {
+<i>132</i>&nbsp;        if(this.attributes == null) {
+<i>133</i>&nbsp;            this.attributes = new HashMap();
+<i>134</i>&nbsp;        }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;        this.attributes.put(var1, var2);
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    Object getAttribute(Object var1) {
+<i>140</i>&nbsp;        return this.attributes == null?null:this.attributes.get(var1);
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

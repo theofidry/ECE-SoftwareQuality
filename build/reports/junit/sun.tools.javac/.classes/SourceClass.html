@@ -1,0 +1,1939 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SourceClass</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.tools.javac</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SourceClass (sun.tools.javac)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SourceClass</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 39)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1083)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.tools.javac;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>9</i>&nbsp;import java.io.DataOutputStream;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.io.OutputStream;
+<i>12</i>&nbsp;import java.util.Arrays;
+<i>13</i>&nbsp;import java.util.Enumeration;
+<i>14</i>&nbsp;import java.util.Hashtable;
+<i>15</i>&nbsp;import java.util.Iterator;
+<i>16</i>&nbsp;import java.util.Vector;
+<i>17</i>&nbsp;import sun.tools.asm.Assembler;
+<i>18</i>&nbsp;import sun.tools.asm.ConstantPool;
+<i>19</i>&nbsp;import sun.tools.java.AmbiguousClass;
+<i>20</i>&nbsp;import sun.tools.java.ClassDeclaration;
+<i>21</i>&nbsp;import sun.tools.java.ClassDefinition;
+<i>22</i>&nbsp;import sun.tools.java.ClassFile;
+<i>23</i>&nbsp;import sun.tools.java.ClassNotFound;
+<i>24</i>&nbsp;import sun.tools.java.CompilerError;
+<i>25</i>&nbsp;import sun.tools.java.Environment;
+<i>26</i>&nbsp;import sun.tools.java.Identifier;
+<i>27</i>&nbsp;import sun.tools.java.IdentifierToken;
+<i>28</i>&nbsp;import sun.tools.java.Imports;
+<i>29</i>&nbsp;import sun.tools.java.MemberDefinition;
+<i>30</i>&nbsp;import sun.tools.java.Type;
+<i>31</i>&nbsp;import sun.tools.javac.CompilerMember;
+<i>32</i>&nbsp;import sun.tools.javac.SourceMember;
+<i>33</i>&nbsp;import sun.tools.tree.AssignExpression;
+<i>34</i>&nbsp;import sun.tools.tree.CatchStatement;
+<i>35</i>&nbsp;import sun.tools.tree.CompoundStatement;
+<i>36</i>&nbsp;import sun.tools.tree.Context;
+<i>37</i>&nbsp;import sun.tools.tree.Expression;
+<i>38</i>&nbsp;import sun.tools.tree.ExpressionStatement;
+<i>39</i>&nbsp;import sun.tools.tree.FieldExpression;
+<i>40</i>&nbsp;import sun.tools.tree.IdentifierExpression;
+<i>41</i>&nbsp;import sun.tools.tree.LocalMember;
+<i>42</i>&nbsp;import sun.tools.tree.MethodExpression;
+<i>43</i>&nbsp;import sun.tools.tree.NewInstanceExpression;
+<i>44</i>&nbsp;import sun.tools.tree.Node;
+<i>45</i>&nbsp;import sun.tools.tree.ReturnStatement;
+<i>46</i>&nbsp;import sun.tools.tree.Statement;
+<i>47</i>&nbsp;import sun.tools.tree.StringExpression;
+<i>48</i>&nbsp;import sun.tools.tree.SuperExpression;
+<i>49</i>&nbsp;import sun.tools.tree.ThisExpression;
+<b class="nc"><i>50</i>&nbsp;import sun.tools.tree.ThrowStatement;</b>
+<i>51</i>&nbsp;import sun.tools.tree.TryStatement;
+<i>52</i>&nbsp;import sun.tools.tree.TypeExpression;
+<i>53</i>&nbsp;import sun.tools.tree.UplevelReference;
+<i>54</i>&nbsp;import sun.tools.tree.Vset;
+<b class="nc"><i>55</i>&nbsp;</b>
+<i>56</i>&nbsp;/** @deprecated */
+<i>57</i>&nbsp;@Deprecated
+<i>58</i>&nbsp;public class SourceClass extends ClassDefinition {
+<i>59</i>&nbsp;    Environment toplevelEnv;
+<i>60</i>&nbsp;    SourceMember defConstructor;
+<i>61</i>&nbsp;    ConstantPool tab = new ConstantPool();
+<i>62</i>&nbsp;    Hashtable deps = new Hashtable(11);
+<i>63</i>&nbsp;    LocalMember thisArg;
+<i>64</i>&nbsp;    long endPosition;
+<i>65</i>&nbsp;    private Type dummyArgumentType = null;
+<i>66</i>&nbsp;    private boolean sourceFileChecked = false;
+<i>67</i>&nbsp;    private boolean supersChecked = false;
+<i>68</i>&nbsp;    private boolean basicChecking = false;
+<i>69</i>&nbsp;    private boolean basicCheckDone = false;
+<i>70</i>&nbsp;    private boolean resolving = false;
+<i>71</i>&nbsp;    private boolean inlinedLocalClass = false;
+<i>72</i>&nbsp;    private static int[] classModifierBits = new int[]{1, 2, 4, 8, 16, 512, 1024, 32, 65536, 131072, 2097152, 2048};
+<i>73</i>&nbsp;    private static String[] classModifierNames = new String[]{&quot;PUBLIC&quot;, &quot;PRIVATE&quot;, &quot;PROTECTED&quot;, &quot;STATIC&quot;, &quot;FINAL&quot;, &quot;INTERFACE&quot;, &quot;ABSTRACT&quot;, &quot;SUPER&quot;, &quot;ANONYMOUS&quot;, &quot;LOCAL&quot;, &quot;STRICTFP&quot;, &quot;STRICT&quot;};
+<i>74</i>&nbsp;    private MemberDefinition lookup = null;
+<i>75</i>&nbsp;    private static Vector active = new Vector();
+<i>76</i>&nbsp;
+<b class="nc"><i>77</i>&nbsp;    public SourceClass(Environment var1, long var2, ClassDeclaration var4, String var5, int var6, IdentifierToken var7, IdentifierToken[] var8, SourceClass var9, Identifier var10) {</b>
+<i>78</i>&nbsp;        super(var1.getSource(), var2, var4, var6, var7, var8);
+<i>79</i>&nbsp;        this.setOuterClass(var9);
+<i>80</i>&nbsp;        this.toplevelEnv = var1;
+<i>81</i>&nbsp;        this.documentation = var5;
+<i>82</i>&nbsp;        if(ClassDefinition.containsDeprecated(var5)) {
+<i>83</i>&nbsp;            this.modifiers |= 262144;
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;        if(this.isStatic() &amp;&amp; var9 == null) {
+<b class="nc"><i>87</i>&nbsp;            var1.error(var2, &quot;static.class&quot;, this);</b>
+<i>88</i>&nbsp;            this.modifiers &amp;= -9;
+<b class="nc"><i>89</i>&nbsp;        }</b>
+<i>90</i>&nbsp;
+<b class="nc"><i>91</i>&nbsp;        if(this.isLocal() || var9 != null &amp;&amp; !var9.isTopLevel()) {</b>
+<b class="nc"><i>92</i>&nbsp;            if(this.isInterface()) {</b>
+<i>93</i>&nbsp;                var1.error(var2, &quot;inner.interface&quot;);
+<b class="nc"><i>94</i>&nbsp;            } else if(this.isStatic()) {</b>
+<b class="nc"><i>95</i>&nbsp;                var1.error(var2, &quot;static.inner.class&quot;, this);</b>
+<i>96</i>&nbsp;                this.modifiers &amp;= -9;
+<i>97</i>&nbsp;                if(this.innerClassMember != null) {
+<i>98</i>&nbsp;                    this.innerClassMember.subModifiers(8);
+<b class="nc"><i>99</i>&nbsp;                }</b>
+<b class="nc"><i>100</i>&nbsp;            }</b>
+<b class="nc"><i>101</i>&nbsp;        }</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;        if(this.isPrivate() &amp;&amp; var9 == null) {
+<i>104</i>&nbsp;            var1.error(var2, &quot;private.class&quot;, this);
+<i>105</i>&nbsp;            this.modifiers &amp;= -3;
+<i>106</i>&nbsp;        }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;        if(this.isProtected() &amp;&amp; var9 == null) {
+<i>109</i>&nbsp;            var1.error(var2, &quot;protected.class&quot;, this);
+<i>110</i>&nbsp;            this.modifiers &amp;= -5;
+<b class="nc"><i>111</i>&nbsp;        }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<b class="nc"><i>113</i>&nbsp;        if(!this.isTopLevel() &amp;&amp; !this.isLocal()) {</b>
+<b class="nc"><i>114</i>&nbsp;            LocalMember var11 = var9.getThisArgument();</b>
+<b class="nc"><i>115</i>&nbsp;            UplevelReference var12 = this.getReference(var11);</b>
+<b class="nc"><i>116</i>&nbsp;            this.setOuterMember(var12.getLocalField(var1));</b>
+<b class="nc"><i>117</i>&nbsp;        }</b>
+<b class="nc"><i>118</i>&nbsp;</b>
+<i>119</i>&nbsp;        if(var10 != null) {
+<i>120</i>&nbsp;            this.setLocalName(var10);
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;        Identifier var14 = this.getLocalName();</b>
+<b class="nc"><i>124</i>&nbsp;        if(var14 != idNull) {</b>
+<b class="nc"><i>125</i>&nbsp;            for(Object var15 = var9; var15 != null; var15 = ((ClassDefinition)var15).getOuterClass()) {</b>
+<i>126</i>&nbsp;                Identifier var13 = ((ClassDefinition)var15).getLocalName();
+<b class="nc"><i>127</i>&nbsp;                if(var14.equals(var13)) {</b>
+<b class="nc"><i>128</i>&nbsp;                    var1.error(var2, &quot;inner.redefined&quot;, var14);</b>
+<b class="nc"><i>129</i>&nbsp;                }</b>
+<i>130</i>&nbsp;            }
+<i>131</i>&nbsp;        }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    public long getEndPosition() {
+<i>136</i>&nbsp;        return this.endPosition;
+<i>137</i>&nbsp;    }
+<b class="nc"><i>138</i>&nbsp;</b>
+<b class="nc"><i>139</i>&nbsp;    public void setEndPosition(long var1) {</b>
+<b class="nc"><i>140</i>&nbsp;        this.endPosition = var1;</b>
+<b class="nc"><i>141</i>&nbsp;    }</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    public String getAbsoluteName() {
+<i>144</i>&nbsp;        String var1 = ((ClassFile)this.getSource()).getAbsoluteName();
+<i>145</i>&nbsp;        return var1;
+<i>146</i>&nbsp;    }
+<b class="nc"><i>147</i>&nbsp;</b>
+<b class="nc"><i>148</i>&nbsp;    public Imports getImports() {</b>
+<i>149</i>&nbsp;        return this.toplevelEnv.getImports();
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public LocalMember getThisArgument() {
+<i>153</i>&nbsp;        if(this.thisArg == null) {
+<i>154</i>&nbsp;            this.thisArg = new LocalMember(this.where, this, 0, this.getType(), idThis);
+<b class="nc"><i>155</i>&nbsp;        }</b>
+<b class="nc"><i>156</i>&nbsp;</b>
+<i>157</i>&nbsp;        return this.thisArg;
+<i>158</i>&nbsp;    }
+<b class="nc"><i>159</i>&nbsp;</b>
+<b class="nc"><i>160</i>&nbsp;    public void addDependency(ClassDeclaration var1) {</b>
+<b class="nc"><i>161</i>&nbsp;        if(this.tab != null) {</b>
+<b class="nc"><i>162</i>&nbsp;            this.tab.put(var1);</b>
+<b class="nc"><i>163</i>&nbsp;        }</b>
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;        if(this.toplevelEnv.print_dependencies() &amp;&amp; var1 != this.getClassDeclaration()) {
+<i>166</i>&nbsp;            this.deps.put(var1, var1);
+<i>167</i>&nbsp;        }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    public void addMember(Environment var1, MemberDefinition var2) {
+<i>172</i>&nbsp;        switch(var2.getModifiers() &amp; 7) {
+<b class="nc"><i>173</i>&nbsp;        case 0:</b>
+<i>174</i>&nbsp;        case 1:
+<i>175</i>&nbsp;        case 2:
+<i>176</i>&nbsp;        case 4:
+<b class="nc"><i>177</i>&nbsp;            break;</b>
+<i>178</i>&nbsp;        case 3:
+<i>179</i>&nbsp;        default:
+<i>180</i>&nbsp;            var1.error(var2.getWhere(), &quot;inconsistent.modifier&quot;, var2);
+<i>181</i>&nbsp;            if(var2.isPublic()) {
+<i>182</i>&nbsp;                var2.subModifiers(6);
+<i>183</i>&nbsp;            } else {
+<i>184</i>&nbsp;                var2.subModifiers(2);
+<i>185</i>&nbsp;            }
+<b class="nc"><i>186</i>&nbsp;        }</b>
+<i>187</i>&nbsp;
+<b class="nc"><i>188</i>&nbsp;        if(var2.isStatic() &amp;&amp; !this.isTopLevel() &amp;&amp; !var2.isSynthetic()) {</b>
+<i>189</i>&nbsp;            if(var2.isMethod()) {
+<i>190</i>&nbsp;                var1.error(var2.getWhere(), &quot;static.inner.method&quot;, var2, this);
+<i>191</i>&nbsp;                var2.subModifiers(8);
+<i>192</i>&nbsp;            } else if(var2.isVariable()) {
+<i>193</i>&nbsp;                if(!var2.isFinal() || var2.isBlankFinal()) {
+<i>194</i>&nbsp;                    var1.error(var2.getWhere(), &quot;static.inner.field&quot;, var2.getName(), this);
+<i>195</i>&nbsp;                    var2.subModifiers(8);
+<b class="nc"><i>196</i>&nbsp;                }</b>
+<i>197</i>&nbsp;            } else {
+<i>198</i>&nbsp;                var2.subModifiers(8);
+<i>199</i>&nbsp;            }
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;        if(var2.isMethod()) {
+<b class="nc"><i>203</i>&nbsp;            if(var2.isConstructor()) {</b>
+<b class="nc"><i>204</i>&nbsp;                if(var2.getClassDefinition().isInterface()) {</b>
+<i>205</i>&nbsp;                    var1.error(var2.getWhere(), &quot;intf.constructor&quot;);
+<b class="nc"><i>206</i>&nbsp;                    return;</b>
+<i>207</i>&nbsp;                }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;                if(var2.isNative() || var2.isAbstract() || var2.isStatic() || var2.isSynchronized() || var2.isFinal()) {
+<i>210</i>&nbsp;                    var1.error(var2.getWhere(), &quot;constr.modifier&quot;, var2);
+<i>211</i>&nbsp;                    var2.subModifiers(1336);
+<i>212</i>&nbsp;                }
+<b class="nc"><i>213</i>&nbsp;            } else if(var2.isInitializer() &amp;&amp; var2.getClassDefinition().isInterface()) {</b>
+<b class="nc"><i>214</i>&nbsp;                var1.error(var2.getWhere(), &quot;intf.initializer&quot;);</b>
+<i>215</i>&nbsp;                return;
+<i>216</i>&nbsp;            }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;            if(var2.getType().getReturnType().isVoidArray()) {
+<b class="nc"><i>219</i>&nbsp;                var1.error(var2.getWhere(), &quot;void.array&quot;);</b>
+<b class="nc"><i>220</i>&nbsp;            }</b>
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;            if(var2.getClassDefinition().isInterface() &amp;&amp; (var2.isStatic() || var2.isSynchronized() || var2.isNative() || var2.isFinal() || var2.isPrivate() || var2.isProtected())) {
+<i>223</i>&nbsp;                var1.error(var2.getWhere(), &quot;intf.modifier.method&quot;, var2);
+<i>224</i>&nbsp;                var2.subModifiers(314);
+<i>225</i>&nbsp;            }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;            if(var2.isTransient()) {
+<i>228</i>&nbsp;                var1.error(var2.getWhere(), &quot;transient.meth&quot;, var2);
+<b class="nc"><i>229</i>&nbsp;                var2.subModifiers(128);</b>
+<i>230</i>&nbsp;            }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;            if(var2.isVolatile()) {
+<i>233</i>&nbsp;                var1.error(var2.getWhere(), &quot;volatile.meth&quot;, var2);
+<b class="nc"><i>234</i>&nbsp;                var2.subModifiers(64);</b>
+<i>235</i>&nbsp;            }
+<b class="nc"><i>236</i>&nbsp;</b>
+<i>237</i>&nbsp;            if(var2.isAbstract()) {
+<b class="nc"><i>238</i>&nbsp;                if(var2.isPrivate()) {</b>
+<b class="nc"><i>239</i>&nbsp;                    var1.error(var2.getWhere(), &quot;abstract.private.modifier&quot;, var2);</b>
+<i>240</i>&nbsp;                    var2.subModifiers(2);
+<b class="nc"><i>241</i>&nbsp;                }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;                if(var2.isStatic()) {
+<i>244</i>&nbsp;                    var1.error(var2.getWhere(), &quot;abstract.static.modifier&quot;, var2);
+<i>245</i>&nbsp;                    var2.subModifiers(8);
+<i>246</i>&nbsp;                }
+<b class="nc"><i>247</i>&nbsp;</b>
+<b class="nc"><i>248</i>&nbsp;                if(var2.isFinal()) {</b>
+<b class="nc"><i>249</i>&nbsp;                    var1.error(var2.getWhere(), &quot;abstract.final.modifier&quot;, var2);</b>
+<b class="nc"><i>250</i>&nbsp;                    var2.subModifiers(16);</b>
+<b class="nc"><i>251</i>&nbsp;                }</b>
+<b class="nc"><i>252</i>&nbsp;</b>
+<b class="nc"><i>253</i>&nbsp;                if(var2.isNative()) {</b>
+<b class="nc"><i>254</i>&nbsp;                    var1.error(var2.getWhere(), &quot;abstract.native.modifier&quot;, var2);</b>
+<i>255</i>&nbsp;                    var2.subModifiers(256);
+<i>256</i>&nbsp;                }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;                if(var2.isSynchronized()) {
+<i>259</i>&nbsp;                    var1.error(var2.getWhere(), &quot;abstract.synchronized.modifier&quot;, var2);
+<i>260</i>&nbsp;                    var2.subModifiers(32);
+<i>261</i>&nbsp;                }
+<b class="nc"><i>262</i>&nbsp;            }</b>
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;            if(!var2.isAbstract() &amp;&amp; !var2.isNative()) {
+<i>265</i>&nbsp;                if(var2.getValue() == null) {
+<b class="nc"><i>266</i>&nbsp;                    if(var2.isConstructor()) {</b>
+<b class="nc"><i>267</i>&nbsp;                        var1.error(var2.getWhere(), &quot;no.constructor.body&quot;, var2);</b>
+<b class="nc"><i>268</i>&nbsp;                    } else {</b>
+<b class="nc"><i>269</i>&nbsp;                        var1.error(var2.getWhere(), &quot;no.meth.body&quot;, var2);</b>
+<i>270</i>&nbsp;                    }
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;                    var2.addModifiers(1024);</b>
+<i>273</i>&nbsp;                }
+<b class="nc"><i>274</i>&nbsp;            } else if(var2.getValue() != null) {</b>
+<b class="nc"><i>275</i>&nbsp;                var1.error(var2.getWhere(), &quot;invalid.meth.body&quot;, var2);</b>
+<i>276</i>&nbsp;                var2.setValue((Node)null);
+<i>277</i>&nbsp;            }
+<b class="nc"><i>278</i>&nbsp;</b>
+<b class="nc"><i>279</i>&nbsp;            Vector var3 = var2.getArguments();</b>
+<b class="nc"><i>280</i>&nbsp;            if(var3 != null) {</b>
+<i>281</i>&nbsp;                int var4 = var3.size();
+<i>282</i>&nbsp;                Type[] var5 = var2.getType().getArgumentTypes();
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;                for(int var6 = 0; var6 &lt; var5.length; ++var6) {
+<i>285</i>&nbsp;                    Object var7 = var3.elementAt(var6);
+<b class="nc"><i>286</i>&nbsp;                    long var8 = var2.getWhere();</b>
+<b class="nc"><i>287</i>&nbsp;                    if(var7 instanceof MemberDefinition) {</b>
+<i>288</i>&nbsp;                        var8 = ((MemberDefinition)var7).getWhere();
+<i>289</i>&nbsp;                        var7 = ((MemberDefinition)var7).getName();
+<b class="nc"><i>290</i>&nbsp;                    }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;                    if(var5[var6].isType(11) || var5[var6].isVoidArray()) {
+<b class="nc"><i>293</i>&nbsp;                        var1.error(var8, &quot;void.argument&quot;, var7);</b>
+<b class="nc"><i>294</i>&nbsp;                    }</b>
+<i>295</i>&nbsp;                }
+<i>296</i>&nbsp;            }
+<b class="nc"><i>297</i>&nbsp;        } else if(var2.isInnerClass()) {</b>
+<b class="nc"><i>298</i>&nbsp;            if(var2.isVolatile() || var2.isTransient() || var2.isNative() || var2.isSynchronized()) {</b>
+<b class="nc"><i>299</i>&nbsp;                var1.error(var2.getWhere(), &quot;inner.modifier&quot;, var2);</b>
+<i>300</i>&nbsp;                var2.subModifiers(480);
+<b class="nc"><i>301</i>&nbsp;            }</b>
+<b class="nc"><i>302</i>&nbsp;</b>
+<b class="nc"><i>303</i>&nbsp;            if(var2.getClassDefinition().isInterface() &amp;&amp; (var2.isPrivate() || var2.isProtected())) {</b>
+<i>304</i>&nbsp;                var1.error(var2.getWhere(), &quot;intf.modifier.field&quot;, var2);
+<b class="nc"><i>305</i>&nbsp;                var2.subModifiers(6);</b>
+<b class="nc"><i>306</i>&nbsp;                var2.addModifiers(1);</b>
+<b class="nc"><i>307</i>&nbsp;                ClassDefinition var10 = var2.getInnerClass();</b>
+<b class="nc"><i>308</i>&nbsp;                var10.subModifiers(6);</b>
+<i>309</i>&nbsp;                var10.addModifiers(1);
+<b class="nc"><i>310</i>&nbsp;            }</b>
+<b class="nc"><i>311</i>&nbsp;        } else {</b>
+<b class="nc"><i>312</i>&nbsp;            if(var2.getType().isType(11) || var2.getType().isVoidArray()) {</b>
+<i>313</i>&nbsp;                var1.error(var2.getWhere(), &quot;void.inst.var&quot;, var2.getName());
+<b class="nc"><i>314</i>&nbsp;                return;</b>
+<b class="nc"><i>315</i>&nbsp;            }</b>
+<b class="nc"><i>316</i>&nbsp;</b>
+<i>317</i>&nbsp;            if(var2.isSynchronized() || var2.isAbstract() || var2.isNative()) {
+<b class="nc"><i>318</i>&nbsp;                var1.error(var2.getWhere(), &quot;var.modifier&quot;, var2);</b>
+<b class="nc"><i>319</i>&nbsp;                var2.subModifiers(1312);</b>
+<b class="nc"><i>320</i>&nbsp;            }</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;            if(var2.isStrict()) {</b>
+<b class="nc"><i>323</i>&nbsp;                var1.error(var2.getWhere(), &quot;var.floatmodifier&quot;, var2);</b>
+<b class="nc"><i>324</i>&nbsp;                var2.subModifiers(2097152);</b>
+<i>325</i>&nbsp;            }
+<i>326</i>&nbsp;
+<b class="nc"><i>327</i>&nbsp;            if(var2.isTransient() &amp;&amp; this.isInterface()) {</b>
+<b class="nc"><i>328</i>&nbsp;                var1.error(var2.getWhere(), &quot;transient.modifier&quot;, var2);</b>
+<b class="nc"><i>329</i>&nbsp;                var2.subModifiers(128);</b>
+<b class="nc"><i>330</i>&nbsp;            }</b>
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;            if(var2.isVolatile() &amp;&amp; (this.isInterface() || var2.isFinal())) {
+<b class="nc"><i>333</i>&nbsp;                var1.error(var2.getWhere(), &quot;volatile.modifier&quot;, var2);</b>
+<b class="nc"><i>334</i>&nbsp;                var2.subModifiers(64);</b>
+<b class="nc"><i>335</i>&nbsp;            }</b>
+<i>336</i>&nbsp;
+<b class="nc"><i>337</i>&nbsp;            if(var2.isFinal() &amp;&amp; var2.getValue() == null &amp;&amp; this.isInterface()) {</b>
+<i>338</i>&nbsp;                var1.error(var2.getWhere(), &quot;initializer.needed&quot;, var2);
+<b class="nc"><i>339</i>&nbsp;                var2.subModifiers(16);</b>
+<i>340</i>&nbsp;            }
+<i>341</i>&nbsp;
+<b class="nc"><i>342</i>&nbsp;            if(var2.getClassDefinition().isInterface() &amp;&amp; (var2.isPrivate() || var2.isProtected())) {</b>
+<b class="nc"><i>343</i>&nbsp;                var1.error(var2.getWhere(), &quot;intf.modifier.field&quot;, var2);</b>
+<i>344</i>&nbsp;                var2.subModifiers(6);
+<b class="nc"><i>345</i>&nbsp;                var2.addModifiers(1);</b>
+<b class="nc"><i>346</i>&nbsp;            }</b>
+<b class="nc"><i>347</i>&nbsp;        }</b>
+<b class="nc"><i>348</i>&nbsp;</b>
+<b class="nc"><i>349</i>&nbsp;        if(!var2.isInitializer()) {</b>
+<b class="nc"><i>350</i>&nbsp;            for(MemberDefinition var11 = this.getFirstMatch(var2.getName()); var11 != null; var11 = var11.getNextMatch()) {</b>
+<b class="nc"><i>351</i>&nbsp;                if(var2.isVariable() &amp;&amp; var11.isVariable()) {</b>
+<b class="nc"><i>352</i>&nbsp;                    var1.error(var2.getWhere(), &quot;var.multidef&quot;, var2, var11);</b>
+<i>353</i>&nbsp;                    return;
+<i>354</i>&nbsp;                }
+<b class="nc"><i>355</i>&nbsp;</b>
+<i>356</i>&nbsp;                if(var2.isInnerClass() &amp;&amp; var11.isInnerClass() &amp;&amp; !var2.getInnerClass().isLocal() &amp;&amp; !var11.getInnerClass().isLocal()) {
+<b class="nc"><i>357</i>&nbsp;                    var1.error(var2.getWhere(), &quot;inner.class.multidef&quot;, var2);</b>
+<i>358</i>&nbsp;                    return;
+<i>359</i>&nbsp;                }
+<i>360</i>&nbsp;            }
+<b class="nc"><i>361</i>&nbsp;        }</b>
+<b class="nc"><i>362</i>&nbsp;</b>
+<i>363</i>&nbsp;        super.addMember(var1, var2);
+<b class="nc"><i>364</i>&nbsp;    }</b>
+<b class="nc"><i>365</i>&nbsp;</b>
+<i>366</i>&nbsp;    public Environment setupEnv(Environment var1) {
+<i>367</i>&nbsp;        return new Environment(this.toplevelEnv, this);
+<i>368</i>&nbsp;    }
+<b class="nc"><i>369</i>&nbsp;</b>
+<i>370</i>&nbsp;    public boolean reportDeprecated(Environment var1) {
+<b class="nc"><i>371</i>&nbsp;        return false;</b>
+<b class="nc"><i>372</i>&nbsp;    }</b>
+<b class="nc"><i>373</i>&nbsp;</b>
+<i>374</i>&nbsp;    public void noteUsedBy(ClassDefinition var1, long var2, Environment var4) {
+<i>375</i>&nbsp;        super.noteUsedBy(var1, var2, var4);
+<b class="nc"><i>376</i>&nbsp;</b>
+<b class="nc"><i>377</i>&nbsp;        Object var5;</b>
+<b class="nc"><i>378</i>&nbsp;        for(var5 = this; ((ClassDefinition)var5).isInnerClass(); var5 = ((ClassDefinition)var5).getOuterClass()) {</b>
+<b class="nc"><i>379</i>&nbsp;            ;</b>
+<i>380</i>&nbsp;        }
+<b class="nc"><i>381</i>&nbsp;</b>
+<b class="nc"><i>382</i>&nbsp;        if(!((ClassDefinition)var5).isPublic()) {</b>
+<i>383</i>&nbsp;            while(var1.isInnerClass()) {
+<i>384</i>&nbsp;                var1 = var1.getOuterClass();
+<i>385</i>&nbsp;            }
+<i>386</i>&nbsp;
+<b class="nc"><i>387</i>&nbsp;            if(!((ClassDefinition)var5).getSource().equals(var1.getSource())) {</b>
+<b class="nc"><i>388</i>&nbsp;                ((SourceClass)var5).checkSourceFile(var4, var2);</b>
+<b class="nc"><i>389</i>&nbsp;            }</b>
+<i>390</i>&nbsp;        }
+<b class="nc"><i>391</i>&nbsp;    }</b>
+<b class="nc"><i>392</i>&nbsp;</b>
+<b class="nc"><i>393</i>&nbsp;    public void check(Environment var1) throws ClassNotFound {</b>
+<i>394</i>&nbsp;        var1.dtEnter(&quot;SourceClass.check: &quot; + this.getName());
+<b class="nc"><i>395</i>&nbsp;        if(this.isInsideLocal()) {</b>
+<b class="nc"><i>396</i>&nbsp;            var1.dtEvent(&quot;SourceClass.check: INSIDE LOCAL &quot; + this.getOuterClass().getName());</b>
+<b class="nc"><i>397</i>&nbsp;            this.getOuterClass().check(var1);</b>
+<i>398</i>&nbsp;        } else {
+<b class="nc"><i>399</i>&nbsp;            if(this.isInnerClass()) {</b>
+<b class="nc"><i>400</i>&nbsp;                var1.dtEvent(&quot;SourceClass.check: INNER CLASS &quot; + this.getOuterClass().getName());</b>
+<b class="nc"><i>401</i>&nbsp;                ((SourceClass)this.getOuterClass()).maybeCheck(var1);</b>
+<i>402</i>&nbsp;            }
+<b class="nc"><i>403</i>&nbsp;</b>
+<b class="nc"><i>404</i>&nbsp;            Vset var2 = new Vset();</b>
+<b class="nc"><i>405</i>&nbsp;            Object var3 = null;</b>
+<i>406</i>&nbsp;            var1.dtEvent(&quot;SourceClass.check: CHECK INTERNAL &quot; + this.getName());
+<i>407</i>&nbsp;            this.checkInternal(this.setupEnv(var1), (Context)var3, var2);
+<b class="nc"><i>408</i>&nbsp;        }</b>
+<i>409</i>&nbsp;
+<b class="nc"><i>410</i>&nbsp;        var1.dtExit(&quot;SourceClass.check: &quot; + this.getName());</b>
+<b class="nc"><i>411</i>&nbsp;    }</b>
+<b class="nc"><i>412</i>&nbsp;</b>
+<i>413</i>&nbsp;    private void maybeCheck(Environment var1) throws ClassNotFound {
+<i>414</i>&nbsp;        var1.dtEvent(&quot;SourceClass.maybeCheck: &quot; + this.getName());
+<i>415</i>&nbsp;        ClassDeclaration var2 = this.getClassDeclaration();
+<b class="nc"><i>416</i>&nbsp;        if(var2.getStatus() == 4) {</b>
+<b class="nc"><i>417</i>&nbsp;            var2.setDefinition(this, 5);</b>
+<b class="nc"><i>418</i>&nbsp;            this.check(var1);</b>
+<b class="nc"><i>419</i>&nbsp;        }</b>
+<b class="nc"><i>420</i>&nbsp;</b>
+<i>421</i>&nbsp;    }
+<b class="nc"><i>422</i>&nbsp;</b>
+<i>423</i>&nbsp;    private Vset checkInternal(Environment var1, Context var2, Vset var3) throws ClassNotFound {
+<i>424</i>&nbsp;        Identifier var4 = this.getClassDeclaration().getName();
+<i>425</i>&nbsp;        if(var1.verbose()) {
+<i>426</i>&nbsp;            var1.output(&quot;[checking class &quot; + var4 + &quot;]&quot;);
+<i>427</i>&nbsp;        }
+<b class="nc"><i>428</i>&nbsp;</b>
+<i>429</i>&nbsp;        this.classContext = var2;
+<i>430</i>&nbsp;        this.basicCheck(Context.newEnvironment(var1, var2));
+<i>431</i>&nbsp;        ClassDeclaration var5 = this.getSuperClass();
+<i>432</i>&nbsp;        if(var5 != null) {
+<i>433</i>&nbsp;            long var6 = this.getWhere();
+<b class="nc"><i>434</i>&nbsp;            var6 = IdentifierToken.getWhere(this.superClassId, var6);</b>
+<i>435</i>&nbsp;            var1.resolveExtendsByName(var6, this, var5.getName());
+<i>436</i>&nbsp;        }
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;        for(int var12 = 0; var12 &lt; this.interfaces.length; ++var12) {
+<i>439</i>&nbsp;            ClassDeclaration var7 = this.interfaces[var12];
+<i>440</i>&nbsp;            long var8 = this.getWhere();
+<i>441</i>&nbsp;            if(this.interfaceIds != null &amp;&amp; this.interfaceIds.length == this.interfaces.length) {
+<i>442</i>&nbsp;                var8 = IdentifierToken.getWhere(this.interfaceIds[var12], var8);
+<i>443</i>&nbsp;            }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;            var1.resolveExtendsByName(var8, this, var7.getName());
+<i>446</i>&nbsp;        }
+<i>447</i>&nbsp;
+<b class="nc"><i>448</i>&nbsp;        if(!this.isInnerClass() &amp;&amp; !this.isInsideLocal()) {</b>
+<i>449</i>&nbsp;            Identifier var13 = var4.getName();
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;            Identifier var15;
+<i>452</i>&nbsp;            try {
+<i>453</i>&nbsp;                Imports var14 = this.toplevelEnv.getImports();
+<i>454</i>&nbsp;                var15 = var14.resolve(var1, var13);
+<i>455</i>&nbsp;                if(var15 != this.getName()) {
+<i>456</i>&nbsp;                    var1.error(this.where, &quot;class.multidef.import&quot;, var13, var15);
+<b class="nc"><i>457</i>&nbsp;                }</b>
+<i>458</i>&nbsp;            } catch (AmbiguousClass var10) {
+<i>459</i>&nbsp;                var15 = var10.name1 != this.getName()?var10.name1:var10.name2;
+<i>460</i>&nbsp;                var1.error(this.where, &quot;class.multidef.import&quot;, var13, var15);
+<i>461</i>&nbsp;            } catch (ClassNotFound var11) {
+<i>462</i>&nbsp;                ;
+<i>463</i>&nbsp;            }
+<i>464</i>&nbsp;
+<i>465</i>&nbsp;            if(this.isPublic()) {
+<b class="nc"><i>466</i>&nbsp;                this.checkSourceFile(var1, this.getWhere());</b>
+<b class="nc"><i>467</i>&nbsp;            }</b>
+<b class="nc"><i>468</i>&nbsp;        }</b>
+<b class="nc"><i>469</i>&nbsp;</b>
+<i>470</i>&nbsp;        var3 = this.checkMembers(var1, var2, var3);
+<b class="nc"><i>471</i>&nbsp;        return var3;</b>
+<i>472</i>&nbsp;    }
+<i>473</i>&nbsp;
+<b class="nc"><i>474</i>&nbsp;    public void checkSourceFile(Environment var1, long var2) {</b>
+<b class="nc"><i>475</i>&nbsp;        if(!this.sourceFileChecked) {</b>
+<i>476</i>&nbsp;            this.sourceFileChecked = true;
+<b class="nc"><i>477</i>&nbsp;            String var4 = this.getName().getName() + &quot;.java&quot;;</b>
+<i>478</i>&nbsp;            String var5 = ((ClassFile)this.getSource()).getName();
+<i>479</i>&nbsp;            if(!var5.equals(var4)) {
+<b class="nc"><i>480</i>&nbsp;                if(this.isPublic()) {</b>
+<i>481</i>&nbsp;                    var1.error(var2, &quot;public.class.file&quot;, this, var4);
+<i>482</i>&nbsp;                } else {
+<i>483</i>&nbsp;                    var1.error(var2, &quot;warn.package.class.file&quot;, this, var5, var4);
+<i>484</i>&nbsp;                }
+<i>485</i>&nbsp;            }
+<i>486</i>&nbsp;
+<b class="nc"><i>487</i>&nbsp;        }</b>
+<b class="nc"><i>488</i>&nbsp;    }</b>
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;    public ClassDeclaration getSuperClass(Environment var1) {
+<i>491</i>&nbsp;        var1.dtEnter(&quot;SourceClass.getSuperClass: &quot; + this);
+<i>492</i>&nbsp;        if(this.superClass == null &amp;&amp; this.superClassId != null &amp;&amp; !this.supersChecked) {
+<i>493</i>&nbsp;            this.resolveTypeStructure(var1);
+<b class="nc"><i>494</i>&nbsp;        }</b>
+<i>495</i>&nbsp;
+<b class="nc"><i>496</i>&nbsp;        var1.dtExit(&quot;SourceClass.getSuperClass: &quot; + this);</b>
+<i>497</i>&nbsp;        return this.superClass;
+<b class="nc"><i>498</i>&nbsp;    }</b>
+<b class="nc"><i>499</i>&nbsp;</b>
+<i>500</i>&nbsp;    private void checkSupers(Environment var1) throws ClassNotFound {
+<i>501</i>&nbsp;        this.supersCheckStarted = true;
+<b class="nc"><i>502</i>&nbsp;        var1.dtEnter(&quot;SourceClass.checkSupers: &quot; + this);</b>
+<i>503</i>&nbsp;        if(this.isInterface()) {
+<b class="nc"><i>504</i>&nbsp;            if(this.isFinal()) {</b>
+<b class="nc"><i>505</i>&nbsp;                Identifier var2 = this.getClassDeclaration().getName();</b>
+<i>506</i>&nbsp;                var1.error(this.getWhere(), &quot;final.intf&quot;, var2);
+<b class="nc"><i>507</i>&nbsp;            }</b>
+<b class="nc"><i>508</i>&nbsp;        } else if(this.getSuperClass(var1) != null) {</b>
+<i>509</i>&nbsp;            long var14 = this.getWhere();
+<i>510</i>&nbsp;            var14 = IdentifierToken.getWhere(this.superClassId, var14);
+<b class="nc"><i>511</i>&nbsp;</b>
+<i>512</i>&nbsp;            ClassNotFound var4;
+<i>513</i>&nbsp;            try {
+<i>514</i>&nbsp;                ClassDefinition var16 = this.getSuperClass().getClassDefinition(var1);
+<b class="nc"><i>515</i>&nbsp;                var16.resolveTypeStructure(var1);</b>
+<i>516</i>&nbsp;                if(!this.extendsCanAccess(var1, this.getSuperClass())) {
+<i>517</i>&nbsp;                    var1.error(var14, &quot;cant.access.class&quot;, this.getSuperClass());
+<b class="nc"><i>518</i>&nbsp;                    this.superClass = null;</b>
+<b class="nc"><i>519</i>&nbsp;                } else if(var16.isFinal()) {</b>
+<i>520</i>&nbsp;                    var1.error(var14, &quot;super.is.final&quot;, this.getSuperClass());
+<b class="nc"><i>521</i>&nbsp;                    this.superClass = null;</b>
+<b class="nc"><i>522</i>&nbsp;                } else if(var16.isInterface()) {</b>
+<i>523</i>&nbsp;                    var1.error(var14, &quot;super.is.intf&quot;, this.getSuperClass());
+<i>524</i>&nbsp;                    this.superClass = null;
+<i>525</i>&nbsp;                } else if(this.superClassOf(var1, this.getSuperClass())) {
+<i>526</i>&nbsp;                    var1.error(var14, &quot;cyclic.super&quot;);
+<i>527</i>&nbsp;                    this.superClass = null;
+<b class="nc"><i>528</i>&nbsp;                } else {</b>
+<b class="nc"><i>529</i>&nbsp;                    var16.noteUsedBy(this, var14, var1);</b>
+<b class="nc"><i>530</i>&nbsp;                }</b>
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;                if(this.superClass == null) {
+<i>533</i>&nbsp;                    var4 = null;
+<i>534</i>&nbsp;                } else {
+<b class="nc"><i>535</i>&nbsp;                    ClassDefinition var5 = var16;</b>
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;                    while(true) {
+<i>538</i>&nbsp;                        if(this.enclosingClassOf(var5)) {
+<i>539</i>&nbsp;                            var1.error(var14, &quot;super.is.inner&quot;);
+<i>540</i>&nbsp;                            this.superClass = null;
+<b class="nc"><i>541</i>&nbsp;                            break;</b>
+<i>542</i>&nbsp;                        }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;                        ClassDeclaration var6 = var5.getSuperClass(var1);
+<i>545</i>&nbsp;                        if(var6 == null) {
+<i>546</i>&nbsp;                            break;
+<i>547</i>&nbsp;                        }
+<b class="nc"><i>548</i>&nbsp;</b>
+<b class="nc"><i>549</i>&nbsp;                        var5 = var6.getClassDefinition(var1);</b>
+<b class="nc"><i>550</i>&nbsp;                    }</b>
+<b class="nc"><i>551</i>&nbsp;                }</b>
+<b class="nc"><i>552</i>&nbsp;            } catch (ClassNotFound var13) {</b>
+<i>553</i>&nbsp;                label119: {
+<b class="nc"><i>554</i>&nbsp;                    var4 = var13;</b>
+<b class="nc"><i>555</i>&nbsp;</b>
+<b class="nc"><i>556</i>&nbsp;                    try {</b>
+<i>557</i>&nbsp;                        var1.resolve(var4.name);
+<i>558</i>&nbsp;                    } catch (AmbiguousClass var11) {
+<b class="nc"><i>559</i>&nbsp;                        var1.error(var14, &quot;ambig.class&quot;, var11.name1, var11.name2);</b>
+<i>560</i>&nbsp;                        this.superClass = null;
+<b class="nc"><i>561</i>&nbsp;                        break label119;</b>
+<i>562</i>&nbsp;                    } catch (ClassNotFound var12) {
+<b class="nc"><i>563</i>&nbsp;                        ;</b>
+<i>564</i>&nbsp;                    }
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;                    var1.error(var14, &quot;super.not.found&quot;, var13.name, this);
+<i>567</i>&nbsp;                    this.superClass = null;
+<b class="nc"><i>568</i>&nbsp;                }</b>
+<i>569</i>&nbsp;            }
+<b class="nc"><i>570</i>&nbsp;        } else {</b>
+<i>571</i>&nbsp;            if(this.isAnonymous()) {
+<i>572</i>&nbsp;                throw new CompilerError(&quot;anonymous super&quot;);
+<b class="nc"><i>573</i>&nbsp;            }</b>
+<b class="nc"><i>574</i>&nbsp;</b>
+<b class="nc"><i>575</i>&nbsp;            if(!this.getName().equals(idJavaLangObject)) {</b>
+<b class="nc"><i>576</i>&nbsp;                throw new CompilerError(&quot;unresolved super&quot;);</b>
+<b class="nc"><i>577</i>&nbsp;            }</b>
+<i>578</i>&nbsp;        }
+<b class="nc"><i>579</i>&nbsp;</b>
+<b class="nc"><i>580</i>&nbsp;        this.supersChecked = true;</b>
+<b class="nc"><i>581</i>&nbsp;</b>
+<i>582</i>&nbsp;        for(int var15 = 0; var15 &lt; this.interfaces.length; ++var15) {
+<b class="nc"><i>583</i>&nbsp;            ClassDeclaration var3 = this.interfaces[var15];</b>
+<i>584</i>&nbsp;            long var17 = this.getWhere();
+<i>585</i>&nbsp;            if(this.interfaceIds != null &amp;&amp; this.interfaceIds.length == this.interfaces.length) {
+<i>586</i>&nbsp;                var17 = IdentifierToken.getWhere(this.interfaceIds[var15], var17);
+<i>587</i>&nbsp;            }
+<i>588</i>&nbsp;
+<i>589</i>&nbsp;            try {
+<i>590</i>&nbsp;                ClassDefinition var18 = var3.getClassDefinition(var1);
+<i>591</i>&nbsp;                var18.resolveTypeStructure(var1);
+<i>592</i>&nbsp;                if(!this.extendsCanAccess(var1, var3)) {
+<i>593</i>&nbsp;                    var1.error(var17, &quot;cant.access.class&quot;, var3);
+<i>594</i>&nbsp;                } else if(!var3.getClassDefinition(var1).isInterface()) {
+<i>595</i>&nbsp;                    var1.error(var17, &quot;not.intf&quot;, var3);
+<i>596</i>&nbsp;                } else {
+<i>597</i>&nbsp;                    if(!this.isInterface() || !this.implementedBy(var1, var3)) {
+<i>598</i>&nbsp;                        var18.noteUsedBy(this, var17, var1);
+<i>599</i>&nbsp;                        continue;
+<i>600</i>&nbsp;                    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;                    var1.error(var17, &quot;cyclic.intf&quot;, var3);
+<i>603</i>&nbsp;                }
+<b class="nc"><i>604</i>&nbsp;            } catch (ClassNotFound var10) {</b>
+<b class="nc"><i>605</i>&nbsp;                label121: {</b>
+<i>606</i>&nbsp;                    ClassNotFound var19 = var10;
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;                    try {
+<b class="nc"><i>609</i>&nbsp;                        var1.resolve(var19.name);</b>
+<b class="nc"><i>610</i>&nbsp;                    } catch (AmbiguousClass var8) {</b>
+<i>611</i>&nbsp;                        var1.error(var17, &quot;ambig.class&quot;, var8.name1, var8.name2);
+<i>612</i>&nbsp;                        this.superClass = null;
+<b class="nc"><i>613</i>&nbsp;                        break label121;</b>
+<i>614</i>&nbsp;                    } catch (ClassNotFound var9) {
+<i>615</i>&nbsp;                        ;
+<i>616</i>&nbsp;                    }
+<i>617</i>&nbsp;
+<i>618</i>&nbsp;                    var1.error(var17, &quot;intf.not.found&quot;, var10.name, this);
+<i>619</i>&nbsp;                    this.superClass = null;
+<b class="nc"><i>620</i>&nbsp;                }</b>
+<b class="nc"><i>621</i>&nbsp;            }</b>
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;            ClassDeclaration[] var20 = new ClassDeclaration[this.interfaces.length - 1];</b>
+<b class="nc"><i>624</i>&nbsp;            System.arraycopy(this.interfaces, 0, var20, 0, var15);</b>
+<b class="nc"><i>625</i>&nbsp;            System.arraycopy(this.interfaces, var15 + 1, var20, var15, var20.length - var15);</b>
+<b class="nc"><i>626</i>&nbsp;            this.interfaces = var20;</b>
+<b class="nc"><i>627</i>&nbsp;            --var15;</b>
+<i>628</i>&nbsp;        }
+<b class="nc"><i>629</i>&nbsp;</b>
+<i>630</i>&nbsp;        var1.dtExit(&quot;SourceClass.checkSupers: &quot; + this);
+<i>631</i>&nbsp;    }
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;    private Vset checkMembers(Environment var1, Context var2, Vset var3) throws ClassNotFound {
+<i>634</i>&nbsp;        if(this.getError()) {
+<i>635</i>&nbsp;            return var3;
+<i>636</i>&nbsp;        } else {
+<i>637</i>&nbsp;            for(MemberDefinition var4 = this.getFirstMember(); var4 != null; var4 = var4.getNextMember()) {
+<b class="nc"><i>638</i>&nbsp;                if(var4.isInnerClass()) {</b>
+<i>639</i>&nbsp;                    SourceClass var5 = (SourceClass)var4.getInnerClass();
+<i>640</i>&nbsp;                    if(var5.isMember()) {
+<i>641</i>&nbsp;                        var5.basicCheck(var1);
+<i>642</i>&nbsp;                    }
+<i>643</i>&nbsp;                }
+<i>644</i>&nbsp;            }
+<b class="nc"><i>645</i>&nbsp;</b>
+<i>646</i>&nbsp;            if(this.isFinal() &amp;&amp; this.isAbstract()) {
+<i>647</i>&nbsp;                var1.error(this.where, &quot;final.abstract&quot;, this.getName().getName());
+<i>648</i>&nbsp;            }
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;            if(!this.isInterface() &amp;&amp; !this.isAbstract() &amp;&amp; this.mustBeAbstract(var1)) {
+<b class="nc"><i>651</i>&nbsp;                this.modifiers |= 1024;</b>
+<b class="nc"><i>652</i>&nbsp;                Iterator var14 = this.getPermanentlyAbstractMethods();</b>
+<i>653</i>&nbsp;
+<i>654</i>&nbsp;                MemberDefinition var16;
+<i>655</i>&nbsp;                while(var14.hasNext()) {
+<i>656</i>&nbsp;                    var16 = (MemberDefinition)var14.next();
+<i>657</i>&nbsp;                    var1.error(this.where, &quot;abstract.class.cannot.override&quot;, this.getClassDeclaration(), var16, var16.getDefiningClassDeclaration());
+<i>658</i>&nbsp;                }
+<b class="nc"><i>659</i>&nbsp;</b>
+<b class="nc"><i>660</i>&nbsp;                var14 = this.getMethods(var1);</b>
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;                while(var14.hasNext()) {
+<i>663</i>&nbsp;                    var16 = (MemberDefinition)var14.next();
+<i>664</i>&nbsp;                    if(var16.isAbstract()) {
+<i>665</i>&nbsp;                        var1.error(this.where, &quot;abstract.class&quot;, this.getClassDeclaration(), var16, var16.getDefiningClassDeclaration());
+<i>666</i>&nbsp;                    }
+<i>667</i>&nbsp;                }
+<i>668</i>&nbsp;            }
+<i>669</i>&nbsp;
+<i>670</i>&nbsp;            Context var15 = new Context(var2);
+<i>671</i>&nbsp;            Vset var17 = var3.copy();
+<b class="nc"><i>672</i>&nbsp;            Vset var6 = var3.copy();</b>
+<i>673</i>&nbsp;
+<b class="nc"><i>674</i>&nbsp;            for(MemberDefinition var7 = this.getFirstMember(); var7 != null; var7 = var7.getNextMember()) {</b>
+<i>675</i>&nbsp;                if(var7.isVariable() &amp;&amp; var7.isBlankFinal()) {
+<b class="nc"><i>676</i>&nbsp;                    int var8 = var15.declareFieldNumber(var7);</b>
+<b class="nc"><i>677</i>&nbsp;                    if(var7.isStatic()) {</b>
+<b class="nc"><i>678</i>&nbsp;                        var6 = var6.addVarUnassigned(var8);</b>
+<b class="nc"><i>679</i>&nbsp;                        var17 = var17.addVar(var8);</b>
+<i>680</i>&nbsp;                    } else {
+<i>681</i>&nbsp;                        var17 = var17.addVarUnassigned(var8);
+<b class="nc"><i>682</i>&nbsp;                        var6 = var6.addVar(var8);</b>
+<i>683</i>&nbsp;                    }
+<i>684</i>&nbsp;                }
+<i>685</i>&nbsp;            }
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;            Context var18 = new Context(var15, this);
+<i>688</i>&nbsp;            LocalMember var19 = this.getThisArgument();
+<i>689</i>&nbsp;            int var9 = var18.declare(var1, var19);
+<b class="nc"><i>690</i>&nbsp;            var17 = var17.addVar(var9);</b>
+<b class="nc"><i>691</i>&nbsp;</b>
+<b class="nc"><i>692</i>&nbsp;            MemberDefinition var10;</b>
+<i>693</i>&nbsp;            for(var10 = this.getFirstMember(); var10 != null; var10 = var10.getNextMember()) {
+<b class="nc"><i>694</i>&nbsp;                try {</b>
+<i>695</i>&nbsp;                    if(var10.isVariable() || var10.isInitializer()) {
+<i>696</i>&nbsp;                        if(var10.isStatic()) {
+<b class="nc"><i>697</i>&nbsp;                            var6 = var10.check(var1, var15, var6);</b>
+<i>698</i>&nbsp;                        } else {
+<i>699</i>&nbsp;                            var17 = var10.check(var1, var18, var17);
+<i>700</i>&nbsp;                        }
+<i>701</i>&nbsp;                    }
+<b class="nc"><i>702</i>&nbsp;                } catch (ClassNotFound var13) {</b>
+<b class="nc"><i>703</i>&nbsp;                    var1.error(var10.getWhere(), &quot;class.not.found&quot;, var13.name, this);</b>
+<i>704</i>&nbsp;                }
+<b class="nc"><i>705</i>&nbsp;            }</b>
+<b class="nc"><i>706</i>&nbsp;</b>
+<b class="nc"><i>707</i>&nbsp;            this.checkBlankFinals(var1, var15, var6, true);</b>
+<i>708</i>&nbsp;
+<b class="nc"><i>709</i>&nbsp;            for(var10 = this.getFirstMember(); var10 != null; var10 = var10.getNextMember()) {</b>
+<b class="nc"><i>710</i>&nbsp;                try {</b>
+<b class="nc"><i>711</i>&nbsp;                    if(var10.isConstructor()) {</b>
+<b class="nc"><i>712</i>&nbsp;                        Vset var11 = var10.check(var1, var15, var17.copy());</b>
+<b class="nc"><i>713</i>&nbsp;                        this.checkBlankFinals(var1, var15, var11, false);</b>
+<b class="nc"><i>714</i>&nbsp;                    } else {</b>
+<b class="nc"><i>715</i>&nbsp;                        var10.check(var1, var2, var3.copy());</b>
+<i>716</i>&nbsp;                    }
+<b class="nc"><i>717</i>&nbsp;                } catch (ClassNotFound var12) {</b>
+<i>718</i>&nbsp;                    var1.error(var10.getWhere(), &quot;class.not.found&quot;, var12.name, this);
+<b class="nc"><i>719</i>&nbsp;                }</b>
+<b class="nc"><i>720</i>&nbsp;            }</b>
+<i>721</i>&nbsp;
+<i>722</i>&nbsp;            this.getClassDeclaration().setDefinition(this, 5);
+<i>723</i>&nbsp;
+<i>724</i>&nbsp;            for(var10 = this.getFirstMember(); var10 != null; var10 = var10.getNextMember()) {
+<i>725</i>&nbsp;                if(var10.isInnerClass()) {
+<i>726</i>&nbsp;                    SourceClass var20 = (SourceClass)var10.getInnerClass();
+<b class="nc"><i>727</i>&nbsp;                    if(!var20.isInsideLocal()) {</b>
+<i>728</i>&nbsp;                        var20.maybeCheck(var1);
+<b class="nc"><i>729</i>&nbsp;                    }</b>
+<i>730</i>&nbsp;                }
+<i>731</i>&nbsp;            }
+<b class="nc"><i>732</i>&nbsp;</b>
+<b class="nc"><i>733</i>&nbsp;            return var3;</b>
+<b class="nc"><i>734</i>&nbsp;        }</b>
+<i>735</i>&nbsp;    }
+<i>736</i>&nbsp;
+<i>737</i>&nbsp;    private void checkBlankFinals(Environment var1, Context var2, Vset var3, boolean var4) {
+<i>738</i>&nbsp;        for(int var5 = 0; var5 &lt; var2.getVarNumber(); ++var5) {
+<i>739</i>&nbsp;            if(!var3.testVar(var5)) {
+<i>740</i>&nbsp;                MemberDefinition var6 = var2.getElement(var5);
+<b class="nc"><i>741</i>&nbsp;                if(var6 != null &amp;&amp; var6.isBlankFinal() &amp;&amp; var6.isStatic() == var4 &amp;&amp; var6.getClassDefinition() == this) {</b>
+<b class="nc"><i>742</i>&nbsp;                    var1.error(var6.getWhere(), &quot;final.var.not.initialized&quot;, var6.getName());</b>
+<i>743</i>&nbsp;                }
+<b class="nc"><i>744</i>&nbsp;            }</b>
+<i>745</i>&nbsp;        }
+<b class="nc"><i>746</i>&nbsp;</b>
+<b class="nc"><i>747</i>&nbsp;    }</b>
+<i>748</i>&nbsp;
+<b class="nc"><i>749</i>&nbsp;    protected void basicCheck(Environment var1) throws ClassNotFound {</b>
+<i>750</i>&nbsp;        var1.dtEnter(&quot;SourceClass.basicCheck: &quot; + this.getName());
+<i>751</i>&nbsp;        super.basicCheck(var1);
+<i>752</i>&nbsp;        if(!this.basicChecking &amp;&amp; !this.basicCheckDone) {
+<i>753</i>&nbsp;            var1.dtEvent(&quot;SourceClass.basicCheck: CHECKING &quot; + this.getName());
+<i>754</i>&nbsp;            this.basicChecking = true;
+<i>755</i>&nbsp;            var1 = this.setupEnv(var1);
+<i>756</i>&nbsp;            Imports var2 = var1.getImports();
+<i>757</i>&nbsp;            if(var2 != null) {
+<i>758</i>&nbsp;                var2.resolve(var1);
+<b class="nc"><i>759</i>&nbsp;            }</b>
+<b class="nc"><i>760</i>&nbsp;</b>
+<b class="nc"><i>761</i>&nbsp;            this.resolveTypeStructure(var1);</b>
+<i>762</i>&nbsp;            if(!this.isInterface() &amp;&amp; !this.hasConstructor()) {
+<b class="nc"><i>763</i>&nbsp;                CompoundStatement var3 = new CompoundStatement(this.getWhere(), new Statement[0]);</b>
+<b class="nc"><i>764</i>&nbsp;                Type var4 = Type.tMethod(Type.tVoid);</b>
+<b class="nc"><i>765</i>&nbsp;                int var5 = this.getModifiers() &amp; (this.isInnerClass()?5:1);</b>
+<i>766</i>&nbsp;                var1.makeMemberDefinition(var1, this.getWhere(), this, (String)null, var5, var4, idInit, (IdentifierToken[])null, (IdentifierToken[])null, var3);
+<b class="nc"><i>767</i>&nbsp;            }</b>
+<b class="nc"><i>768</i>&nbsp;</b>
+<b class="nc"><i>769</i>&nbsp;            if(doInheritanceChecks) {</b>
+<i>770</i>&nbsp;                this.collectInheritedMethods(var1);
+<b class="nc"><i>771</i>&nbsp;            }</b>
+<i>772</i>&nbsp;
+<b class="nc"><i>773</i>&nbsp;            this.basicChecking = false;</b>
+<i>774</i>&nbsp;            this.basicCheckDone = true;
+<i>775</i>&nbsp;            var1.dtExit(&quot;SourceClass.basicCheck: &quot; + this.getName());
+<i>776</i>&nbsp;        } else {
+<i>777</i>&nbsp;            var1.dtExit(&quot;SourceClass.basicCheck: OK &quot; + this.getName());
+<i>778</i>&nbsp;        }
+<b class="nc"><i>779</i>&nbsp;    }</b>
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;    protected void addMirandaMethods(Environment var1, Iterator var2) {</b>
+<b class="nc"><i>782</i>&nbsp;        while(var2.hasNext()) {</b>
+<b class="nc"><i>783</i>&nbsp;            MemberDefinition var3 = (MemberDefinition)var2.next();</b>
+<i>784</i>&nbsp;            this.addMember(var3);
+<i>785</i>&nbsp;        }
+<i>786</i>&nbsp;
+<i>787</i>&nbsp;    }
+<i>788</i>&nbsp;
+<i>789</i>&nbsp;    public void resolveTypeStructure(Environment var1) {
+<b class="nc"><i>790</i>&nbsp;        var1.dtEnter(&quot;SourceClass.resolveTypeStructure: &quot; + this.getName());</b>
+<i>791</i>&nbsp;        ClassDefinition var2 = this.getOuterClass();
+<i>792</i>&nbsp;        if(var2 != null &amp;&amp; var2 instanceof SourceClass &amp;&amp; !((SourceClass)var2).resolved) {
+<b class="nc"><i>793</i>&nbsp;            ((SourceClass)var2).resolveTypeStructure(var1);</b>
+<b class="nc"><i>794</i>&nbsp;        }</b>
+<b class="nc"><i>795</i>&nbsp;</b>
+<b class="nc"><i>796</i>&nbsp;        if(!this.resolved &amp;&amp; !this.resolving) {</b>
+<i>797</i>&nbsp;            this.resolving = true;
+<b class="nc"><i>798</i>&nbsp;            var1.dtEvent(&quot;SourceClass.resolveTypeStructure: RESOLVING &quot; + this.getName());</b>
+<i>799</i>&nbsp;            var1 = this.setupEnv(var1);
+<i>800</i>&nbsp;            this.resolveSupers(var1);
+<b class="nc"><i>801</i>&nbsp;</b>
+<i>802</i>&nbsp;            try {
+<b class="nc"><i>803</i>&nbsp;                this.checkSupers(var1);</b>
+<i>804</i>&nbsp;            } catch (ClassNotFound var5) {
+<i>805</i>&nbsp;                var1.error(this.where, &quot;class.not.found&quot;, var5.name, this);
+<b class="nc"><i>806</i>&nbsp;            }</b>
+<b class="nc"><i>807</i>&nbsp;</b>
+<b class="nc"><i>808</i>&nbsp;            MemberDefinition var3;</b>
+<b class="nc"><i>809</i>&nbsp;            for(var3 = this.getFirstMember(); var3 != null; var3 = var3.getNextMember()) {</b>
+<b class="nc"><i>810</i>&nbsp;                if(var3 instanceof SourceMember) {</b>
+<b class="nc"><i>811</i>&nbsp;                    ((SourceMember)var3).resolveTypeStructure(var1);</b>
+<i>812</i>&nbsp;                }
+<b class="nc"><i>813</i>&nbsp;            }</b>
+<i>814</i>&nbsp;
+<b class="nc"><i>815</i>&nbsp;            this.resolving = false;</b>
+<i>816</i>&nbsp;            this.resolved = true;
+<b class="nc"><i>817</i>&nbsp;</b>
+<i>818</i>&nbsp;            for(var3 = this.getFirstMember(); var3 != null; var3 = var3.getNextMember()) {
+<i>819</i>&nbsp;                if(!var3.isInitializer() &amp;&amp; var3.isMethod()) {
+<i>820</i>&nbsp;                    MemberDefinition var4 = var3;
+<i>821</i>&nbsp;
+<i>822</i>&nbsp;                    while((var4 = var4.getNextMatch()) != null) {
+<i>823</i>&nbsp;                        if(var4.isMethod()) {
+<i>824</i>&nbsp;                            if(var3.getType().equals(var4.getType())) {
+<i>825</i>&nbsp;                                var1.error(var3.getWhere(), &quot;meth.multidef&quot;, var3);
+<b class="nc"><i>826</i>&nbsp;                            } else if(var3.getType().equalArguments(var4.getType())) {</b>
+<b class="nc"><i>827</i>&nbsp;                                var1.error(var3.getWhere(), &quot;meth.redef.rettype&quot;, var3, var4);</b>
+<b class="nc"><i>828</i>&nbsp;                            }</b>
+<i>829</i>&nbsp;                        }
+<b class="nc"><i>830</i>&nbsp;                    }</b>
+<b class="nc"><i>831</i>&nbsp;                }</b>
+<b class="nc"><i>832</i>&nbsp;            }</b>
+<i>833</i>&nbsp;
+<b class="nc"><i>834</i>&nbsp;            var1.dtExit(&quot;SourceClass.resolveTypeStructure: &quot; + this.getName());</b>
+<b class="nc"><i>835</i>&nbsp;        } else {</b>
+<b class="nc"><i>836</i>&nbsp;            var1.dtExit(&quot;SourceClass.resolveTypeStructure: OK &quot; + this.getName());</b>
+<i>837</i>&nbsp;        }
+<b class="nc"><i>838</i>&nbsp;    }</b>
+<i>839</i>&nbsp;
+<i>840</i>&nbsp;    protected void resolveSupers(Environment var1) {
+<b class="nc"><i>841</i>&nbsp;        var1.dtEnter(&quot;SourceClass.resolveSupers: &quot; + this);</b>
+<i>842</i>&nbsp;        if(this.superClassId != null &amp;&amp; this.superClass == null) {
+<b class="nc"><i>843</i>&nbsp;            this.superClass = this.resolveSuper(var1, this.superClassId);</b>
+<b class="nc"><i>844</i>&nbsp;            if(this.superClass == this.getClassDeclaration() &amp;&amp; this.getName().equals(idJavaLangObject)) {</b>
+<i>845</i>&nbsp;                this.superClass = null;
+<b class="nc"><i>846</i>&nbsp;                this.superClassId = null;</b>
+<b class="nc"><i>847</i>&nbsp;            }</b>
+<i>848</i>&nbsp;        }
+<b class="nc"><i>849</i>&nbsp;</b>
+<i>850</i>&nbsp;        if(this.interfaceIds != null &amp;&amp; this.interfaces == null) {
+<i>851</i>&nbsp;            this.interfaces = new ClassDeclaration[this.interfaceIds.length];
+<i>852</i>&nbsp;
+<i>853</i>&nbsp;            for(int var2 = 0; var2 &lt; this.interfaces.length; ++var2) {
+<i>854</i>&nbsp;                this.interfaces[var2] = this.resolveSuper(var1, this.interfaceIds[var2]);
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;                for(int var3 = 0; var3 &lt; var2; ++var3) {
+<i>857</i>&nbsp;                    if(this.interfaces[var2] == this.interfaces[var3]) {
+<i>858</i>&nbsp;                        Identifier var4 = this.interfaceIds[var2].getName();
+<i>859</i>&nbsp;                        long var5 = this.interfaceIds[var3].getWhere();
+<i>860</i>&nbsp;                        var1.error(var5, &quot;intf.repeated&quot;, var4);
+<i>861</i>&nbsp;                    }
+<i>862</i>&nbsp;                }
+<i>863</i>&nbsp;            }
+<i>864</i>&nbsp;        }
+<i>865</i>&nbsp;
+<i>866</i>&nbsp;        var1.dtExit(&quot;SourceClass.resolveSupers: &quot; + this);
+<b class="nc"><i>867</i>&nbsp;    }</b>
+<b class="nc"><i>868</i>&nbsp;</b>
+<i>869</i>&nbsp;    private ClassDeclaration resolveSuper(Environment var1, IdentifierToken var2) {
+<i>870</i>&nbsp;        Identifier var3 = var2.getName();
+<i>871</i>&nbsp;        var1.dtEnter(&quot;SourceClass.resolveSuper: &quot; + var3);
+<i>872</i>&nbsp;        if(this.isInnerClass()) {
+<i>873</i>&nbsp;            var3 = this.outerClass.resolveName(var1, var3);
+<i>874</i>&nbsp;        } else {
+<i>875</i>&nbsp;            var3 = var1.resolveName(var3);
+<i>876</i>&nbsp;        }
+<i>877</i>&nbsp;
+<b class="nc"><i>878</i>&nbsp;        ClassDeclaration var4 = var1.getClassDeclaration(var3);</b>
+<b class="nc"><i>879</i>&nbsp;        var1.dtExit(&quot;SourceClass.resolveSuper: &quot; + var3);</b>
+<b class="nc"><i>880</i>&nbsp;        return var4;</b>
+<i>881</i>&nbsp;    }
+<b class="nc"><i>882</i>&nbsp;</b>
+<b class="nc"><i>883</i>&nbsp;    public Vset checkLocalClass(Environment var1, Context var2, Vset var3, ClassDefinition var4, Expression[] var5, Type[] var6) throws ClassNotFound {</b>
+<b class="nc"><i>884</i>&nbsp;        var1 = this.setupEnv(var1);</b>
+<i>885</i>&nbsp;        if(var4 != null != this.isAnonymous()) {
+<i>886</i>&nbsp;            throw new CompilerError(&quot;resolveAnonymousStructure&quot;);
+<i>887</i>&nbsp;        } else {
+<i>888</i>&nbsp;            if(this.isAnonymous()) {
+<b class="nc"><i>889</i>&nbsp;                this.resolveAnonymousStructure(var1, var4, var5, var6);</b>
+<b class="nc"><i>890</i>&nbsp;            }</b>
+<i>891</i>&nbsp;
+<i>892</i>&nbsp;            var3 = this.checkInternal(var1, var2, var3);
+<i>893</i>&nbsp;            return var3;
+<i>894</i>&nbsp;        }
+<i>895</i>&nbsp;    }
+<i>896</i>&nbsp;
+<i>897</i>&nbsp;    public void inlineLocalClass(Environment var1) {
+<i>898</i>&nbsp;        MemberDefinition var2;
+<b class="nc"><i>899</i>&nbsp;        for(var2 = this.getFirstMember(); var2 != null; var2 = var2.getNextMember()) {</b>
+<i>900</i>&nbsp;            if(!var2.isVariable() &amp;&amp; !var2.isInitializer() || var2.isStatic()) {
+<b class="nc"><i>901</i>&nbsp;                try {</b>
+<i>902</i>&nbsp;                    ((SourceMember)var2).inline(var1);
+<i>903</i>&nbsp;                } catch (ClassNotFound var4) {
+<i>904</i>&nbsp;                    var1.error(var2.getWhere(), &quot;class.not.found&quot;, var4.name, this);
+<i>905</i>&nbsp;                }
+<b class="nc"><i>906</i>&nbsp;            }</b>
+<b class="nc"><i>907</i>&nbsp;        }</b>
+<b class="nc"><i>908</i>&nbsp;</b>
+<i>909</i>&nbsp;        if(this.getReferencesFrozen() != null &amp;&amp; !this.inlinedLocalClass) {
+<i>910</i>&nbsp;            this.inlinedLocalClass = true;
+<i>911</i>&nbsp;
+<b class="nc"><i>912</i>&nbsp;            for(var2 = this.getFirstMember(); var2 != null; var2 = var2.getNextMember()) {</b>
+<i>913</i>&nbsp;                if(var2.isConstructor()) {
+<i>914</i>&nbsp;                    ((SourceMember)var2).addUplevelArguments();
+<b class="nc"><i>915</i>&nbsp;                }</b>
+<i>916</i>&nbsp;            }
+<i>917</i>&nbsp;        }
+<b class="nc"><i>918</i>&nbsp;</b>
+<b class="nc"><i>919</i>&nbsp;    }</b>
+<i>920</i>&nbsp;
+<i>921</i>&nbsp;    public Vset checkInsideClass(Environment var1, Context var2, Vset var3) throws ClassNotFound {
+<b class="nc"><i>922</i>&nbsp;        if(this.isInsideLocal() &amp;&amp; !this.isLocal()) {</b>
+<b class="nc"><i>923</i>&nbsp;            return this.checkInternal(var1, var2, var3);</b>
+<b class="nc"><i>924</i>&nbsp;        } else {</b>
+<i>925</i>&nbsp;            throw new CompilerError(&quot;checkInsideClass&quot;);
+<i>926</i>&nbsp;        }
+<i>927</i>&nbsp;    }
+<b class="nc"><i>928</i>&nbsp;</b>
+<i>929</i>&nbsp;    private void resolveAnonymousStructure(Environment var1, ClassDefinition var2, Expression[] var3, Type[] var4) throws ClassNotFound {
+<i>930</i>&nbsp;        var1.dtEvent(&quot;SourceClass.resolveAnonymousStructure: &quot; + this + &quot;, super &quot; + var2);
+<i>931</i>&nbsp;        if(var2.isInterface()) {
+<i>932</i>&nbsp;            int var5 = this.interfaces == null?0:this.interfaces.length;
+<i>933</i>&nbsp;            ClassDeclaration[] var6 = new ClassDeclaration[1 + var5];
+<b class="nc"><i>934</i>&nbsp;            if(var5 &gt; 0) {</b>
+<b class="nc"><i>935</i>&nbsp;                System.arraycopy(this.interfaces, 0, var6, 1, var5);</b>
+<b class="nc"><i>936</i>&nbsp;                if(this.interfaceIds != null &amp;&amp; this.interfaceIds.length == var5) {</b>
+<i>937</i>&nbsp;                    IdentifierToken[] var7 = new IdentifierToken[1 + var5];
+<i>938</i>&nbsp;                    System.arraycopy(this.interfaceIds, 0, var7, 1, var5);
+<i>939</i>&nbsp;                    var7[0] = new IdentifierToken(var2.getName());
+<i>940</i>&nbsp;                }
+<i>941</i>&nbsp;            }
+<i>942</i>&nbsp;
+<i>943</i>&nbsp;            var6[0] = var2.getClassDeclaration();
+<b class="nc"><i>944</i>&nbsp;            this.interfaces = var6;</b>
+<b class="nc"><i>945</i>&nbsp;            var2 = this.toplevelEnv.getClassDefinition(idJavaLangObject);</b>
+<b class="nc"><i>946</i>&nbsp;        }</b>
+<i>947</i>&nbsp;
+<i>948</i>&nbsp;        this.superClass = var2.getClassDeclaration();
+<b class="nc"><i>949</i>&nbsp;        if(this.hasConstructor()) {</b>
+<b class="nc"><i>950</i>&nbsp;            throw new CompilerError(&quot;anonymous constructor&quot;);</b>
+<b class="nc"><i>951</i>&nbsp;        } else {</b>
+<b class="nc"><i>952</i>&nbsp;            Type var16 = Type.tMethod(Type.tVoid, var4);</b>
+<i>953</i>&nbsp;            IdentifierToken[] var17 = new IdentifierToken[var4.length];
+<b class="nc"><i>954</i>&nbsp;</b>
+<b class="nc"><i>955</i>&nbsp;            int var18;</b>
+<i>956</i>&nbsp;            for(var18 = 0; var18 &lt; var17.length; ++var18) {
+<i>957</i>&nbsp;                var17[var18] = new IdentifierToken(var3[var18].getWhere(), Identifier.lookup(&quot;$&quot; + var18));
+<i>958</i>&nbsp;            }
+<i>959</i>&nbsp;
+<i>960</i>&nbsp;            var18 = !var2.isTopLevel() &amp;&amp; !var2.isLocal()?1:0;
+<b class="nc"><i>961</i>&nbsp;            Expression[] var8 = new Expression[-var18 + var3.length];</b>
+<b class="nc"><i>962</i>&nbsp;</b>
+<b class="nc"><i>963</i>&nbsp;            for(int var9 = var18; var9 &lt; var3.length; ++var9) {</b>
+<b class="nc"><i>964</i>&nbsp;                var8[-var18 + var9] = new IdentifierExpression(var17[var9]);</b>
+<i>965</i>&nbsp;            }
+<i>966</i>&nbsp;
+<i>967</i>&nbsp;            long var19 = this.getWhere();
+<b class="nc"><i>968</i>&nbsp;            SuperExpression var11;</b>
+<b class="nc"><i>969</i>&nbsp;            if(var18 == 0) {</b>
+<i>970</i>&nbsp;                var11 = new SuperExpression(var19);
+<b class="nc"><i>971</i>&nbsp;            } else {</b>
+<b class="nc"><i>972</i>&nbsp;                var11 = new SuperExpression(var19, new IdentifierExpression(var17[0]));</b>
+<b class="nc"><i>973</i>&nbsp;            }</b>
+<i>974</i>&nbsp;
+<b class="nc"><i>975</i>&nbsp;            MethodExpression var12 = new MethodExpression(var19, var11, idInit, var8);</b>
+<i>976</i>&nbsp;            Statement[] var13 = new Statement[]{new ExpressionStatement(var19, var12)};
+<i>977</i>&nbsp;            CompoundStatement var14 = new CompoundStatement(var19, var13);
+<b class="nc"><i>978</i>&nbsp;            int var15 = 524288;</b>
+<b class="nc"><i>979</i>&nbsp;            var1.makeMemberDefinition(var1, var19, this, (String)null, var15, var16, idInit, var17, (IdentifierToken[])null, var14);</b>
+<b class="nc"><i>980</i>&nbsp;        }</b>
+<i>981</i>&nbsp;    }
+<i>982</i>&nbsp;
+<b class="nc"><i>983</i>&nbsp;    static String classModifierString(int var0) {</b>
+<i>984</i>&nbsp;        String var1 = &quot;&quot;;
+<i>985</i>&nbsp;
+<i>986</i>&nbsp;        for(int var2 = 0; var2 &lt; classModifierBits.length; ++var2) {
+<b class="nc"><i>987</i>&nbsp;            if((var0 &amp; classModifierBits[var2]) != 0) {</b>
+<b class="nc"><i>988</i>&nbsp;                var1 = var1 + &quot; &quot; + classModifierNames[var2];</b>
+<i>989</i>&nbsp;                var0 &amp;= ~classModifierBits[var2];
+<b class="nc"><i>990</i>&nbsp;            }</b>
+<i>991</i>&nbsp;        }
+<i>992</i>&nbsp;
+<i>993</i>&nbsp;        if(var0 != 0) {
+<b class="nc"><i>994</i>&nbsp;            var1 = var1 + &quot; ILLEGAL:&quot; + Integer.toHexString(var0);</b>
+<i>995</i>&nbsp;        }
+<b class="nc"><i>996</i>&nbsp;</b>
+<i>997</i>&nbsp;        return var1;
+<b class="nc"><i>998</i>&nbsp;    }</b>
+<b class="nc"><i>999</i>&nbsp;</b>
+<i>1000</i>&nbsp;    public MemberDefinition getAccessMember(Environment var1, Context var2, MemberDefinition var3, boolean var4) {
+<i>1001</i>&nbsp;        return this.getAccessMember(var1, var2, var3, false, var4);
+<b class="nc"><i>1002</i>&nbsp;    }</b>
+<b class="nc"><i>1003</i>&nbsp;</b>
+<b class="nc"><i>1004</i>&nbsp;    public MemberDefinition getUpdateMember(Environment var1, Context var2, MemberDefinition var3, boolean var4) {</b>
+<i>1005</i>&nbsp;        if(!var3.isVariable()) {
+<i>1006</i>&nbsp;            throw new CompilerError(&quot;method&quot;);
+<i>1007</i>&nbsp;        } else {
+<i>1008</i>&nbsp;            return this.getAccessMember(var1, var2, var3, true, var4);
+<i>1009</i>&nbsp;        }
+<b class="nc"><i>1010</i>&nbsp;    }</b>
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;    private MemberDefinition getAccessMember(Environment var1, Context var2, MemberDefinition var3, boolean var4, boolean var5) {
+<i>1013</i>&nbsp;        boolean var6 = var3.isStatic();
+<i>1014</i>&nbsp;        boolean var7 = var3.isMethod();
+<i>1015</i>&nbsp;
+<i>1016</i>&nbsp;        MemberDefinition var8;
+<b class="nc"><i>1017</i>&nbsp;        for(var8 = this.getFirstMember(); var8 != null; var8 = var8.getNextMember()) {</b>
+<b class="nc"><i>1018</i>&nbsp;            if(var8.getAccessMethodTarget() == var3) {</b>
+<b class="nc"><i>1019</i>&nbsp;                if(var7 &amp;&amp; var8.isSuperAccessMethod() == var5) {</b>
+<b class="nc"><i>1020</i>&nbsp;                    break;</b>
+<b class="nc"><i>1021</i>&nbsp;                }</b>
+<b class="nc"><i>1022</i>&nbsp;</b>
+<i>1023</i>&nbsp;                int var9 = var8.getType().getArgumentTypes().length;
+<i>1024</i>&nbsp;                if(var9 == (var6?0:1)) {
+<i>1025</i>&nbsp;                    break;
+<i>1026</i>&nbsp;                }
+<i>1027</i>&nbsp;            }
+<i>1028</i>&nbsp;        }
+<i>1029</i>&nbsp;
+<b class="nc"><i>1030</i>&nbsp;        if(var8 != null) {</b>
+<i>1031</i>&nbsp;            if(!var4) {
+<i>1032</i>&nbsp;                return var8;
+<i>1033</i>&nbsp;            }
+<i>1034</i>&nbsp;
+<i>1035</i>&nbsp;            MemberDefinition var28 = var8.getAccessUpdateMember();
+<i>1036</i>&nbsp;            if(var28 != null) {
+<b class="nc"><i>1037</i>&nbsp;                return var28;</b>
+<b class="nc"><i>1038</i>&nbsp;            }</b>
+<b class="nc"><i>1039</i>&nbsp;        } else if(var4) {</b>
+<b class="nc"><i>1040</i>&nbsp;            var8 = this.getAccessMember(var1, var2, var3, false, var5);</b>
+<i>1041</i>&nbsp;        }
+<i>1042</i>&nbsp;
+<b class="nc"><i>1043</i>&nbsp;        Type var10 = null;</b>
+<i>1044</i>&nbsp;        int var15;
+<i>1045</i>&nbsp;        ClassDefinition var19;
+<i>1046</i>&nbsp;        Type[] var18;
+<i>1047</i>&nbsp;        Identifier var29;
+<i>1048</i>&nbsp;        if(var3.isConstructor()) {
+<i>1049</i>&nbsp;            var29 = idInit;
+<i>1050</i>&nbsp;            SourceClass var11 = (SourceClass)this.getTopClass();
+<i>1051</i>&nbsp;            var10 = var11.dummyArgumentType;
+<i>1052</i>&nbsp;            if(var10 == null) {
+<i>1053</i>&nbsp;                IdentifierToken var12 = new IdentifierToken(0L, idJavaLangObject);
+<i>1054</i>&nbsp;                IdentifierToken[] var13 = new IdentifierToken[0];
+<b class="nc"><i>1055</i>&nbsp;                IdentifierToken var14 = new IdentifierToken(0L, idNull);</b>
+<b class="nc"><i>1056</i>&nbsp;                var15 = 589832;</b>
+<i>1057</i>&nbsp;                if(var11.isInterface()) {
+<i>1058</i>&nbsp;                    var15 |= 1;
+<b class="nc"><i>1059</i>&nbsp;                }</b>
+<i>1060</i>&nbsp;
+<b class="nc"><i>1061</i>&nbsp;                ClassDefinition var16 = this.toplevelEnv.makeClassDefinition(this.toplevelEnv, 0L, var14, (String)null, var15, var12, var13, var11);</b>
+<i>1062</i>&nbsp;                var16.getClassDeclaration().setDefinition(var16, 4);
+<b class="nc"><i>1063</i>&nbsp;                Expression[] var17 = new Expression[0];</b>
+<b class="nc"><i>1064</i>&nbsp;                var18 = new Type[0];</b>
+<i>1065</i>&nbsp;
+<i>1066</i>&nbsp;                try {
+<i>1067</i>&nbsp;                    var19 = this.toplevelEnv.getClassDefinition(idJavaLangObject);
+<b class="nc"><i>1068</i>&nbsp;                    var16.checkLocalClass(this.toplevelEnv, (Context)null, new Vset(), var19, var17, var18);</b>
+<i>1069</i>&nbsp;                } catch (ClassNotFound var27) {
+<b class="nc"><i>1070</i>&nbsp;                    ;</b>
+<i>1071</i>&nbsp;                }
+<b class="nc"><i>1072</i>&nbsp;</b>
+<i>1073</i>&nbsp;                var10 = var16.getType();
+<b class="nc"><i>1074</i>&nbsp;                var11.dummyArgumentType = var10;</b>
+<b class="nc"><i>1075</i>&nbsp;            }</b>
+<b class="nc"><i>1076</i>&nbsp;        } else {</b>
+<i>1077</i>&nbsp;            int var30 = 0;
+<i>1078</i>&nbsp;
+<b class="nc"><i>1079</i>&nbsp;            while(true) {</b>
+<i>1080</i>&nbsp;                var29 = Identifier.lookup(&quot;access$&quot; + var30);
+<i>1081</i>&nbsp;                if(this.getFirstMatch(var29) == null) {
+<i>1082</i>&nbsp;                    break;
+<i>1083</i>&nbsp;                }
+<i>1084</i>&nbsp;
+<i>1085</i>&nbsp;                ++var30;
+<i>1086</i>&nbsp;            }
+<i>1087</i>&nbsp;        }
+<b class="nc"><i>1088</i>&nbsp;</b>
+<i>1089</i>&nbsp;        Type var31 = var3.getType();
+<i>1090</i>&nbsp;        Type[] var32;
+<i>1091</i>&nbsp;        int var40;
+<i>1092</i>&nbsp;        if(var6) {
+<i>1093</i>&nbsp;            if(!var7) {
+<i>1094</i>&nbsp;                Type[] var34;
+<i>1095</i>&nbsp;                if(!var4) {
+<b class="nc"><i>1096</i>&nbsp;                    var34 = new Type[0];</b>
+<b class="nc"><i>1097</i>&nbsp;                    var32 = var34;</b>
+<b class="nc"><i>1098</i>&nbsp;                    var31 = Type.tMethod(var31);</b>
+<i>1099</i>&nbsp;                } else {
+<i>1100</i>&nbsp;                    var34 = new Type[]{var31};
+<i>1101</i>&nbsp;                    var32 = var34;
+<i>1102</i>&nbsp;                    var31 = Type.tMethod(Type.tVoid, var34);
+<i>1103</i>&nbsp;                }
+<i>1104</i>&nbsp;            } else {
+<i>1105</i>&nbsp;                var32 = var31.getArgumentTypes();
+<i>1106</i>&nbsp;            }
+<i>1107</i>&nbsp;        } else {
+<i>1108</i>&nbsp;            Type var33 = this.getType();
+<i>1109</i>&nbsp;            Type[] var36;
+<i>1110</i>&nbsp;            if(!var7) {
+<i>1111</i>&nbsp;                if(!var4) {
+<i>1112</i>&nbsp;                    var36 = new Type[]{var33};
+<i>1113</i>&nbsp;                    var32 = var36;
+<i>1114</i>&nbsp;                    var31 = Type.tMethod(var31, var36);
+<i>1115</i>&nbsp;                } else {
+<i>1116</i>&nbsp;                    var36 = new Type[]{var33, var31};
+<b class="nc"><i>1117</i>&nbsp;                    var32 = var36;</b>
+<i>1118</i>&nbsp;                    var31 = Type.tMethod(Type.tVoid, var36);
+<b class="nc"><i>1119</i>&nbsp;                }</b>
+<i>1120</i>&nbsp;            } else {
+<i>1121</i>&nbsp;                var36 = var31.getArgumentTypes();
+<i>1122</i>&nbsp;                var15 = var36.length;
+<i>1123</i>&nbsp;                if(var3.isConstructor()) {
+<i>1124</i>&nbsp;                    LocalMember var39 = ((SourceMember)var3).getOuterThisArg();
+<i>1125</i>&nbsp;                    if(var39 != null) {
+<i>1126</i>&nbsp;                        if(var36[0] != var39.getType()) {
+<i>1127</i>&nbsp;                            throw new CompilerError(&quot;misplaced outer this&quot;);
+<b class="nc"><i>1128</i>&nbsp;                        }</b>
+<i>1129</i>&nbsp;
+<i>1130</i>&nbsp;                        var32 = new Type[var15];
+<i>1131</i>&nbsp;                        var32[0] = var10;
+<b class="nc"><i>1132</i>&nbsp;</b>
+<i>1133</i>&nbsp;                        for(var40 = 1; var40 &lt; var15; ++var40) {
+<i>1134</i>&nbsp;                            var32[var40] = var36[var40];
+<b class="nc"><i>1135</i>&nbsp;                        }</b>
+<b class="nc"><i>1136</i>&nbsp;                    } else {</b>
+<b class="nc"><i>1137</i>&nbsp;                        var32 = new Type[var15 + 1];</b>
+<i>1138</i>&nbsp;                        var32[0] = var10;
+<i>1139</i>&nbsp;
+<i>1140</i>&nbsp;                        for(var40 = 0; var40 &lt; var15; ++var40) {
+<i>1141</i>&nbsp;                            var32[var40 + 1] = var36[var40];
+<i>1142</i>&nbsp;                        }
+<i>1143</i>&nbsp;                    }
+<i>1144</i>&nbsp;                } else {
+<i>1145</i>&nbsp;                    var32 = new Type[var15 + 1];
+<i>1146</i>&nbsp;                    var32[0] = var33;
+<i>1147</i>&nbsp;
+<i>1148</i>&nbsp;                    for(int var38 = 0; var38 &lt; var15; ++var38) {
+<i>1149</i>&nbsp;                        var32[var38 + 1] = var36[var38];
+<b class="nc"><i>1150</i>&nbsp;                    }</b>
+<b class="nc"><i>1151</i>&nbsp;                }</b>
+<i>1152</i>&nbsp;
+<i>1153</i>&nbsp;                var31 = Type.tMethod(var31.getReturnType(), var32);
+<b class="nc"><i>1154</i>&nbsp;            }</b>
+<i>1155</i>&nbsp;        }
+<i>1156</i>&nbsp;
+<i>1157</i>&nbsp;        int var37 = var32.length;
+<b class="nc"><i>1158</i>&nbsp;        long var35 = var3.getWhere();</b>
+<i>1159</i>&nbsp;        IdentifierToken[] var41 = new IdentifierToken[var37];
+<i>1160</i>&nbsp;
+<i>1161</i>&nbsp;        for(var40 = 0; var40 &lt; var37; ++var40) {
+<i>1162</i>&nbsp;            var41[var40] = new IdentifierToken(var35, Identifier.lookup(&quot;$&quot; + var40));
+<i>1163</i>&nbsp;        }
+<i>1164</i>&nbsp;
+<i>1165</i>&nbsp;        Object var42 = null;
+<i>1166</i>&nbsp;        var18 = null;
+<i>1167</i>&nbsp;        var19 = null;
+<i>1168</i>&nbsp;        int var20;
+<i>1169</i>&nbsp;        Expression[] var44;
+<i>1170</i>&nbsp;        if(var6) {
+<i>1171</i>&nbsp;            var44 = new Expression[var37];
+<i>1172</i>&nbsp;
+<i>1173</i>&nbsp;            for(var20 = 0; var20 &lt; var37; ++var20) {
+<i>1174</i>&nbsp;                var44[var20] = new IdentifierExpression(var41[var20]);
+<i>1175</i>&nbsp;            }
+<i>1176</i>&nbsp;        } else {
+<i>1177</i>&nbsp;            Object var43;
+<b class="nc"><i>1178</i>&nbsp;            if(var3.isConstructor()) {</b>
+<i>1179</i>&nbsp;                var43 = new ThisExpression(var35);
+<i>1180</i>&nbsp;                var44 = new Expression[var37 - 1];
+<i>1181</i>&nbsp;
+<i>1182</i>&nbsp;                for(var20 = 1; var20 &lt; var37; ++var20) {
+<b class="nc"><i>1183</i>&nbsp;                    var44[var20 - 1] = new IdentifierExpression(var41[var20]);</b>
+<i>1184</i>&nbsp;                }
+<i>1185</i>&nbsp;            } else {
+<i>1186</i>&nbsp;                var43 = new IdentifierExpression(var41[0]);
+<b class="nc"><i>1187</i>&nbsp;                var44 = new Expression[var37 - 1];</b>
+<b class="nc"><i>1188</i>&nbsp;</b>
+<i>1189</i>&nbsp;                for(var20 = 1; var20 &lt; var37; ++var20) {
+<i>1190</i>&nbsp;                    var44[var20 - 1] = new IdentifierExpression(var41[var20]);
+<b class="nc"><i>1191</i>&nbsp;                }</b>
+<i>1192</i>&nbsp;            }
+<i>1193</i>&nbsp;
+<i>1194</i>&nbsp;            var42 = var43;
+<i>1195</i>&nbsp;        }
+<i>1196</i>&nbsp;
+<b class="nc"><i>1197</i>&nbsp;        if(!var7) {</b>
+<i>1198</i>&nbsp;            var42 = new FieldExpression(var35, (Expression)var42, var3);
+<b class="nc"><i>1199</i>&nbsp;            if(var4) {</b>
+<i>1200</i>&nbsp;                var42 = new AssignExpression(var35, (Expression)var42, var44[0]);
+<i>1201</i>&nbsp;            }
+<i>1202</i>&nbsp;        } else {
+<i>1203</i>&nbsp;            var42 = new MethodExpression(var35, (Expression)var42, var3, var44, var5);
+<i>1204</i>&nbsp;        }
+<i>1205</i>&nbsp;
+<i>1206</i>&nbsp;        Object var46;
+<b class="nc"><i>1207</i>&nbsp;        if(var31.getReturnType().isType(11)) {</b>
+<i>1208</i>&nbsp;            var46 = new ExpressionStatement(var35, (Expression)var42);
+<i>1209</i>&nbsp;        } else {
+<b class="nc"><i>1210</i>&nbsp;            var46 = new ReturnStatement(var35, (Expression)var42);</b>
+<i>1211</i>&nbsp;        }
+<b class="nc"><i>1212</i>&nbsp;</b>
+<i>1213</i>&nbsp;        Statement[] var21 = new Statement[]{(Statement)var46};
+<i>1214</i>&nbsp;        CompoundStatement var45 = new CompoundStatement(var35, var21);
+<i>1215</i>&nbsp;        int var22 = 524288;
+<b class="nc"><i>1216</i>&nbsp;        if(!var3.isConstructor()) {</b>
+<i>1217</i>&nbsp;            var22 |= 8;
+<i>1218</i>&nbsp;        }
+<i>1219</i>&nbsp;
+<i>1220</i>&nbsp;        SourceMember var23 = (SourceMember)var1.makeMemberDefinition(var1, var35, this, (String)null, var22, var31, var29, var41, var3.getExceptionIds(), var45);
+<i>1221</i>&nbsp;        var23.setExceptions(var3.getExceptions(var1));
+<i>1222</i>&nbsp;        var23.setAccessMethodTarget(var3);
+<i>1223</i>&nbsp;        if(var4) {
+<i>1224</i>&nbsp;            var8.setAccessUpdateMember(var23);
+<i>1225</i>&nbsp;        }
+<b class="nc"><i>1226</i>&nbsp;</b>
+<b class="nc"><i>1227</i>&nbsp;        var23.setIsSuperAccessMethod(var5);</b>
+<i>1228</i>&nbsp;        Context var24 = var23.getClassDefinition().getClassContext();
+<b class="nc"><i>1229</i>&nbsp;        if(var24 != null) {</b>
+<b class="nc"><i>1230</i>&nbsp;            try {</b>
+<i>1231</i>&nbsp;                var23.check(var1, var24, new Vset());
+<i>1232</i>&nbsp;            } catch (ClassNotFound var26) {
+<b class="nc"><i>1233</i>&nbsp;                var1.error(var35, &quot;class.not.found&quot;, var26.name, this);</b>
+<b class="nc"><i>1234</i>&nbsp;            }</b>
+<b class="nc"><i>1235</i>&nbsp;        }</b>
+<i>1236</i>&nbsp;
+<i>1237</i>&nbsp;        return var23;
+<b class="nc"><i>1238</i>&nbsp;    }</b>
+<i>1239</i>&nbsp;
+<i>1240</i>&nbsp;    SourceClass findLookupContext() {
+<i>1241</i>&nbsp;        MemberDefinition var1;
+<i>1242</i>&nbsp;        SourceClass var2;
+<i>1243</i>&nbsp;        for(var1 = this.getFirstMember(); var1 != null; var1 = var1.getNextMember()) {
+<i>1244</i>&nbsp;            if(var1.isInnerClass()) {
+<i>1245</i>&nbsp;                var2 = (SourceClass)var1.getInnerClass();
+<i>1246</i>&nbsp;                if(!var2.isInterface()) {
+<i>1247</i>&nbsp;                    return var2;
+<i>1248</i>&nbsp;                }
+<i>1249</i>&nbsp;            }
+<i>1250</i>&nbsp;        }
+<b class="nc"><i>1251</i>&nbsp;</b>
+<i>1252</i>&nbsp;        for(var1 = this.getFirstMember(); var1 != null; var1 = var1.getNextMember()) {
+<i>1253</i>&nbsp;            if(var1.isInnerClass()) {
+<i>1254</i>&nbsp;                var2 = ((SourceClass)var1.getInnerClass()).findLookupContext();
+<b class="nc"><i>1255</i>&nbsp;                if(var2 != null) {</b>
+<b class="nc"><i>1256</i>&nbsp;                    return var2;</b>
+<b class="nc"><i>1257</i>&nbsp;                }</b>
+<b class="nc"><i>1258</i>&nbsp;            }</b>
+<b class="nc"><i>1259</i>&nbsp;        }</b>
+<b class="nc"><i>1260</i>&nbsp;</b>
+<b class="nc"><i>1261</i>&nbsp;        return null;</b>
+<b class="nc"><i>1262</i>&nbsp;    }</b>
+<i>1263</i>&nbsp;
+<b class="nc"><i>1264</i>&nbsp;    public MemberDefinition getClassLiteralLookup(long var1) {</b>
+<b class="nc"><i>1265</i>&nbsp;        if(this.lookup != null) {</b>
+<b class="nc"><i>1266</i>&nbsp;            return this.lookup;</b>
+<i>1267</i>&nbsp;        } else if(this.outerClass != null) {
+<i>1268</i>&nbsp;            this.lookup = this.outerClass.getClassLiteralLookup(var1);
+<i>1269</i>&nbsp;            return this.lookup;
+<i>1270</i>&nbsp;        } else {
+<b class="nc"><i>1271</i>&nbsp;            SourceClass var3 = this;</b>
+<i>1272</i>&nbsp;            boolean var4 = false;
+<i>1273</i>&nbsp;            if(this.isInterface()) {
+<i>1274</i>&nbsp;                var3 = this.findLookupContext();
+<i>1275</i>&nbsp;                if(var3 == null) {
+<b class="nc"><i>1276</i>&nbsp;                    var4 = true;</b>
+<i>1277</i>&nbsp;                    IdentifierToken var5 = new IdentifierToken(var1, idJavaLangObject);
+<b class="nc"><i>1278</i>&nbsp;                    IdentifierToken[] var6 = new IdentifierToken[0];</b>
+<b class="nc"><i>1279</i>&nbsp;                    IdentifierToken var7 = new IdentifierToken(var1, idNull);</b>
+<i>1280</i>&nbsp;                    int var8 = 589833;
+<i>1281</i>&nbsp;                    var3 = (SourceClass)this.toplevelEnv.makeClassDefinition(this.toplevelEnv, var1, var7, (String)null, var8, var5, var6, this);
+<i>1282</i>&nbsp;                }
+<b class="nc"><i>1283</i>&nbsp;            }</b>
+<i>1284</i>&nbsp;
+<b class="nc"><i>1285</i>&nbsp;            Identifier var28 = Identifier.lookup(&quot;class$&quot;);</b>
+<b class="nc"><i>1286</i>&nbsp;            Type[] var29 = new Type[]{Type.tString};</b>
+<i>1287</i>&nbsp;            long var30 = var3.getWhere();
+<i>1288</i>&nbsp;            IdentifierToken var9 = new IdentifierToken(var30, var28);
+<i>1289</i>&nbsp;            IdentifierExpression var10 = new IdentifierExpression(var9);
+<b class="nc"><i>1290</i>&nbsp;            Expression[] var11 = new Expression[]{var10};</b>
+<b class="nc"><i>1291</i>&nbsp;            Identifier var12 = Identifier.lookup(&quot;forName&quot;);</b>
+<b class="nc"><i>1292</i>&nbsp;            MethodExpression var32 = new MethodExpression(var30, new TypeExpression(var30, Type.tClassDesc), var12, var11);</b>
+<b class="nc"><i>1293</i>&nbsp;            ReturnStatement var13 = new ReturnStatement(var30, var32);</b>
+<b class="nc"><i>1294</i>&nbsp;            Identifier var14 = Identifier.lookup(&quot;java.lang.ClassNotFoundException&quot;);</b>
+<b class="nc"><i>1295</i>&nbsp;            Identifier var15 = Identifier.lookup(&quot;java.lang.NoClassDefFoundError&quot;);</b>
+<b class="nc"><i>1296</i>&nbsp;            Type var16 = Type.tClass(var14);</b>
+<b class="nc"><i>1297</i>&nbsp;            Type var17 = Type.tClass(var15);</b>
+<b class="nc"><i>1298</i>&nbsp;            Identifier var18 = Identifier.lookup(&quot;getMessage&quot;);</b>
+<i>1299</i>&nbsp;            var10 = new IdentifierExpression(var30, var12);
+<i>1300</i>&nbsp;            var32 = new MethodExpression(var30, var10, var18, new Expression[0]);
+<i>1301</i>&nbsp;            Expression[] var19 = new Expression[]{var32};
+<i>1302</i>&nbsp;            NewInstanceExpression var31 = new NewInstanceExpression(var30, new TypeExpression(var30, var17), var19);
+<i>1303</i>&nbsp;            CatchStatement var20 = new CatchStatement(var30, new TypeExpression(var30, var16), new IdentifierToken(var12), new ThrowStatement(var30, var31));
+<b class="nc"><i>1304</i>&nbsp;            Statement[] var21 = new Statement[]{var20};</b>
+<i>1305</i>&nbsp;            TryStatement var33 = new TryStatement(var30, var13, var21);
+<i>1306</i>&nbsp;            Type var22 = Type.tMethod(Type.tClassDesc, var29);
+<i>1307</i>&nbsp;            IdentifierToken[] var23 = new IdentifierToken[]{var9};
+<b class="nc"><i>1308</i>&nbsp;            this.lookup = this.toplevelEnv.makeMemberDefinition(this.toplevelEnv, var30, var3, (String)null, 524296, var22, var28, var23, (IdentifierToken[])null, var33);</b>
+<i>1309</i>&nbsp;            if(var4) {
+<b class="nc"><i>1310</i>&nbsp;                if(var3.getClassDeclaration().getStatus() == 5) {</b>
+<b class="nc"><i>1311</i>&nbsp;                    throw new CompilerError(&quot;duplicate check&quot;);</b>
+<b class="nc"><i>1312</i>&nbsp;                }</b>
+<i>1313</i>&nbsp;
+<b class="nc"><i>1314</i>&nbsp;                var3.getClassDeclaration().setDefinition(var3, 4);</b>
+<b class="nc"><i>1315</i>&nbsp;                Expression[] var24 = new Expression[0];</b>
+<i>1316</i>&nbsp;                Type[] var25 = new Type[0];
+<i>1317</i>&nbsp;
+<b class="nc"><i>1318</i>&nbsp;                try {</b>
+<b class="nc"><i>1319</i>&nbsp;                    ClassDefinition var26 = this.toplevelEnv.getClassDefinition(idJavaLangObject);</b>
+<i>1320</i>&nbsp;                    var3.checkLocalClass(this.toplevelEnv, (Context)null, new Vset(), var26, var24, var25);
+<i>1321</i>&nbsp;                } catch (ClassNotFound var27) {
+<i>1322</i>&nbsp;                    ;
+<i>1323</i>&nbsp;                }
+<i>1324</i>&nbsp;            }
+<i>1325</i>&nbsp;
+<i>1326</i>&nbsp;            return this.lookup;
+<i>1327</i>&nbsp;        }
+<i>1328</i>&nbsp;    }
+<i>1329</i>&nbsp;
+<i>1330</i>&nbsp;    public void compile(OutputStream var1) throws InterruptedException, IOException {
+<i>1331</i>&nbsp;        Environment var2 = this.toplevelEnv;
+<i>1332</i>&nbsp;        Vector var3 = active;
+<b class="nc"><i>1333</i>&nbsp;        synchronized(active) {</b>
+<i>1334</i>&nbsp;            while(active.contains(this.getName())) {
+<b class="nc"><i>1335</i>&nbsp;                active.wait();</b>
+<b class="nc"><i>1336</i>&nbsp;            }</b>
+<i>1337</i>&nbsp;
+<b class="nc"><i>1338</i>&nbsp;            active.addElement(this.getName());</b>
+<b class="nc"><i>1339</i>&nbsp;        }</b>
+<i>1340</i>&nbsp;
+<i>1341</i>&nbsp;        boolean var14 = false;
+<i>1342</i>&nbsp;
+<b class="nc"><i>1343</i>&nbsp;        try {</b>
+<i>1344</i>&nbsp;            var14 = true;
+<i>1345</i>&nbsp;            this.compileClass(var2, var1);
+<i>1346</i>&nbsp;            var14 = false;
+<i>1347</i>&nbsp;        } catch (ClassNotFound var17) {
+<b class="nc"><i>1348</i>&nbsp;            throw new CompilerError(var17);</b>
+<i>1349</i>&nbsp;        } finally {
+<i>1350</i>&nbsp;            if(var14) {
+<i>1351</i>&nbsp;                Vector var7 = active;
+<i>1352</i>&nbsp;                synchronized(active) {
+<i>1353</i>&nbsp;                    active.removeElement(this.getName());
+<i>1354</i>&nbsp;                    active.notifyAll();
+<i>1355</i>&nbsp;                }
+<b class="nc"><i>1356</i>&nbsp;            }</b>
+<b class="nc"><i>1357</i>&nbsp;        }</b>
+<b class="nc"><i>1358</i>&nbsp;</b>
+<i>1359</i>&nbsp;        var3 = active;
+<i>1360</i>&nbsp;        synchronized(active) {
+<b class="nc"><i>1361</i>&nbsp;            active.removeElement(this.getName());</b>
+<b class="nc"><i>1362</i>&nbsp;            active.notifyAll();</b>
+<b class="nc"><i>1363</i>&nbsp;        }</b>
+<b class="nc"><i>1364</i>&nbsp;    }</b>
+<i>1365</i>&nbsp;
+<b class="nc"><i>1366</i>&nbsp;    private static void assertModifiers(int var0, int var1) {</b>
+<b class="nc"><i>1367</i>&nbsp;        if((var0 &amp; var1) != var1) {</b>
+<i>1368</i>&nbsp;            throw new CompilerError(&quot;illegal class modifiers&quot;);
+<i>1369</i>&nbsp;        }
+<b class="nc"><i>1370</i>&nbsp;    }</b>
+<b class="nc"><i>1371</i>&nbsp;</b>
+<i>1372</i>&nbsp;    protected void compileClass(Environment var1, OutputStream var2) throws IOException, ClassNotFound {
+<b class="nc"><i>1373</i>&nbsp;        Vector var3 = new Vector();</b>
+<i>1374</i>&nbsp;        Vector var4 = new Vector();
+<i>1375</i>&nbsp;        Vector var5 = new Vector();
+<i>1376</i>&nbsp;        CompilerMember var6 = new CompilerMember(new MemberDefinition(this.getWhere(), this, 8, Type.tMethod(Type.tVoid), idClassInit, (IdentifierToken[])null, (Node)null), new Assembler());
+<i>1377</i>&nbsp;        Context var7 = new Context((Context)null, var6.field);
+<b class="nc"><i>1378</i>&nbsp;</b>
+<i>1379</i>&nbsp;        for(Object var8 = this; ((ClassDefinition)var8).isInnerClass(); var8 = ((ClassDefinition)var8).getOuterClass()) {
+<i>1380</i>&nbsp;            var5.addElement(var8);
+<i>1381</i>&nbsp;        }
+<i>1382</i>&nbsp;
+<i>1383</i>&nbsp;        int var34 = var5.size();
+<i>1384</i>&nbsp;        int var9 = var34;
+<b class="nc"><i>1385</i>&nbsp;</b>
+<b class="nc"><i>1386</i>&nbsp;        while(true) {</b>
+<i>1387</i>&nbsp;            --var9;
+<b class="nc"><i>1388</i>&nbsp;            if(var9 &lt; 0) {</b>
+<i>1389</i>&nbsp;                var9 = var34;
+<i>1390</i>&nbsp;
+<i>1391</i>&nbsp;                while(true) {
+<i>1392</i>&nbsp;                    --var9;
+<i>1393</i>&nbsp;                    if(var9 &lt; 0) {
+<i>1394</i>&nbsp;                        boolean var35 = this.isDeprecated();
+<i>1395</i>&nbsp;                        boolean var10 = this.isSynthetic();
+<i>1396</i>&nbsp;                        boolean var11 = false;
+<i>1397</i>&nbsp;                        boolean var12 = false;
+<i>1398</i>&nbsp;
+<i>1399</i>&nbsp;                        for(SourceMember var13 = (SourceMember)this.getFirstMember(); var13 != null; var13 = (SourceMember)var13.getNextMember()) {
+<b class="nc"><i>1400</i>&nbsp;                            var35 |= var13.isDeprecated();</b>
+<i>1401</i>&nbsp;                            var10 |= var13.isSynthetic();
+<i>1402</i>&nbsp;
+<i>1403</i>&nbsp;                            try {
+<i>1404</i>&nbsp;                                CompilerMember var14;
+<i>1405</i>&nbsp;                                if(var13.isMethod()) {
+<i>1406</i>&nbsp;                                    var12 |= var13.getExceptions(var1).length &gt; 0;
+<i>1407</i>&nbsp;                                    if(var13.isInitializer()) {
+<i>1408</i>&nbsp;                                        if(var13.isStatic()) {
+<i>1409</i>&nbsp;                                            var13.code(var1, var6.asm);
+<i>1410</i>&nbsp;                                        }
+<i>1411</i>&nbsp;                                    } else {
+<i>1412</i>&nbsp;                                        var14 = new CompilerMember(var13, new Assembler());
+<i>1413</i>&nbsp;                                        var13.code(var1, var14.asm);
+<b class="nc"><i>1414</i>&nbsp;                                        var4.addElement(var14);</b>
+<i>1415</i>&nbsp;                                    }
+<b class="nc"><i>1416</i>&nbsp;                                } else if(var13.isInnerClass()) {</b>
+<b class="nc"><i>1417</i>&nbsp;                                    var5.addElement(var13.getInnerClass());</b>
+<b class="nc"><i>1418</i>&nbsp;                                } else if(var13.isVariable()) {</b>
+<b class="nc"><i>1419</i>&nbsp;                                    var13.inline(var1);</b>
+<b class="nc"><i>1420</i>&nbsp;                                    var14 = new CompilerMember(var13, (Assembler)null);</b>
+<b class="nc"><i>1421</i>&nbsp;                                    var3.addElement(var14);</b>
+<b class="nc"><i>1422</i>&nbsp;                                    if(var13.isStatic()) {</b>
+<b class="nc"><i>1423</i>&nbsp;                                        var13.codeInit(var1, var7, var6.asm);</b>
+<i>1424</i>&nbsp;                                    }
+<i>1425</i>&nbsp;
+<b class="nc"><i>1426</i>&nbsp;                                    var11 |= var13.getInitialValue() != null;</b>
+<b class="nc"><i>1427</i>&nbsp;                                }</b>
+<i>1428</i>&nbsp;                            } catch (CompilerError var32) {
+<b class="nc"><i>1429</i>&nbsp;                                var32.printStackTrace();</b>
+<i>1430</i>&nbsp;                                var1.error(var13, 0L, &quot;generic&quot;, var13.getClassDeclaration() + &quot;:&quot; + var13 + &quot;@&quot; + var32.toString(), (Object)null, (Object)null);
+<b class="nc"><i>1431</i>&nbsp;                            }</b>
+<i>1432</i>&nbsp;                        }
+<b class="nc"><i>1433</i>&nbsp;</b>
+<b class="nc"><i>1434</i>&nbsp;                        if(!var6.asm.empty()) {</b>
+<i>1435</i>&nbsp;                            var6.asm.add(this.getWhere(), 177, true);
+<i>1436</i>&nbsp;                            var4.addElement(var6);
+<i>1437</i>&nbsp;                        }
+<b class="nc"><i>1438</i>&nbsp;</b>
+<b class="nc"><i>1439</i>&nbsp;                        if(this.getNestError()) {</b>
+<b class="nc"><i>1440</i>&nbsp;                            return;</b>
+<b class="nc"><i>1441</i>&nbsp;                        } else {</b>
+<i>1442</i>&nbsp;                            int var36 = 0;
+<i>1443</i>&nbsp;                            if(var4.size() &gt; 0) {
+<b class="nc"><i>1444</i>&nbsp;                                this.tab.put(&quot;Code&quot;);</b>
+<b class="nc"><i>1445</i>&nbsp;                            }</b>
+<b class="nc"><i>1446</i>&nbsp;</b>
+<b class="nc"><i>1447</i>&nbsp;                            if(var11) {</b>
+<i>1448</i>&nbsp;                                this.tab.put(&quot;ConstantValue&quot;);
+<b class="nc"><i>1449</i>&nbsp;                            }</b>
+<i>1450</i>&nbsp;
+<b class="nc"><i>1451</i>&nbsp;                            String var37 = null;</b>
+<b class="nc"><i>1452</i>&nbsp;                            if(var1.debug_source()) {</b>
+<i>1453</i>&nbsp;                                var37 = ((ClassFile)this.getSource()).getName();
+<b class="nc"><i>1454</i>&nbsp;                                this.tab.put(&quot;SourceFile&quot;);</b>
+<i>1455</i>&nbsp;                                this.tab.put(var37);
+<i>1456</i>&nbsp;                                ++var36;
+<b class="nc"><i>1457</i>&nbsp;                            }</b>
+<i>1458</i>&nbsp;
+<i>1459</i>&nbsp;                            if(var12) {
+<b class="nc"><i>1460</i>&nbsp;                                this.tab.put(&quot;Exceptions&quot;);</b>
+<b class="nc"><i>1461</i>&nbsp;                            }</b>
+<b class="nc"><i>1462</i>&nbsp;</b>
+<b class="nc"><i>1463</i>&nbsp;                            if(var1.debug_lines()) {</b>
+<i>1464</i>&nbsp;                                this.tab.put(&quot;LineNumberTable&quot;);
+<i>1465</i>&nbsp;                            }
+<i>1466</i>&nbsp;
+<i>1467</i>&nbsp;                            if(var35) {
+<i>1468</i>&nbsp;                                this.tab.put(&quot;Deprecated&quot;);
+<i>1469</i>&nbsp;                                if(this.isDeprecated()) {
+<i>1470</i>&nbsp;                                    ++var36;
+<i>1471</i>&nbsp;                                }
+<i>1472</i>&nbsp;                            }
+<i>1473</i>&nbsp;
+<b class="nc"><i>1474</i>&nbsp;                            if(var10) {</b>
+<i>1475</i>&nbsp;                                this.tab.put(&quot;Synthetic&quot;);
+<i>1476</i>&nbsp;                                if(this.isSynthetic()) {
+<i>1477</i>&nbsp;                                    ++var36;
+<i>1478</i>&nbsp;                                }
+<b class="nc"><i>1479</i>&nbsp;                            }</b>
+<i>1480</i>&nbsp;
+<i>1481</i>&nbsp;                            if(var1.coverage()) {
+<i>1482</i>&nbsp;                                var36 += 2;
+<i>1483</i>&nbsp;                                this.tab.put(&quot;AbsoluteSourcePath&quot;);
+<i>1484</i>&nbsp;                                this.tab.put(&quot;TimeStamp&quot;);
+<b class="nc"><i>1485</i>&nbsp;                                this.tab.put(&quot;CoverageTable&quot;);</b>
+<b class="nc"><i>1486</i>&nbsp;                            }</b>
+<b class="nc"><i>1487</i>&nbsp;</b>
+<b class="nc"><i>1488</i>&nbsp;                            if(var1.debug_vars()) {</b>
+<b class="nc"><i>1489</i>&nbsp;                                this.tab.put(&quot;LocalVariableTable&quot;);</b>
+<i>1490</i>&nbsp;                            }
+<i>1491</i>&nbsp;
+<b class="nc"><i>1492</i>&nbsp;                            if(var5.size() &gt; 0) {</b>
+<b class="nc"><i>1493</i>&nbsp;                                this.tab.put(&quot;InnerClasses&quot;);</b>
+<i>1494</i>&nbsp;                                ++var36;
+<b class="nc"><i>1495</i>&nbsp;                            }</b>
+<i>1496</i>&nbsp;
+<i>1497</i>&nbsp;                            String var15 = &quot;&quot;;
+<i>1498</i>&nbsp;                            long var16 = 0L;
+<i>1499</i>&nbsp;                            if(var1.coverage()) {
+<i>1500</i>&nbsp;                                var15 = this.getAbsoluteName();
+<i>1501</i>&nbsp;                                var16 = System.currentTimeMillis();
+<i>1502</i>&nbsp;                                this.tab.put(var15);
+<i>1503</i>&nbsp;                            }
+<b class="nc"><i>1504</i>&nbsp;</b>
+<i>1505</i>&nbsp;                            this.tab.put(this.getClassDeclaration());
+<i>1506</i>&nbsp;                            if(this.getSuperClass() != null) {
+<i>1507</i>&nbsp;                                this.tab.put(this.getSuperClass());
+<i>1508</i>&nbsp;                            }
+<b class="nc"><i>1509</i>&nbsp;</b>
+<b class="nc"><i>1510</i>&nbsp;                            for(int var18 = 0; var18 &lt; this.interfaces.length; ++var18) {</b>
+<i>1511</i>&nbsp;                                this.tab.put(this.interfaces[var18]);
+<b class="nc"><i>1512</i>&nbsp;                            }</b>
+<i>1513</i>&nbsp;
+<i>1514</i>&nbsp;                            CompilerMember[] var38 = new CompilerMember[var4.size()];
+<i>1515</i>&nbsp;                            var4.copyInto(var38);
+<i>1516</i>&nbsp;                            Arrays.sort(var38);
+<i>1517</i>&nbsp;
+<i>1518</i>&nbsp;                            for(int var19 = 0; var19 &lt; var4.size(); ++var19) {
+<i>1519</i>&nbsp;                                var4.setElementAt(var38[var19], var19);
+<i>1520</i>&nbsp;                            }
+<i>1521</i>&nbsp;
+<i>1522</i>&nbsp;                            Enumeration var41 = var4.elements();
+<i>1523</i>&nbsp;
+<i>1524</i>&nbsp;                            CompilerMember var20;
+<i>1525</i>&nbsp;                            while(var41.hasMoreElements()) {
+<i>1526</i>&nbsp;                                var20 = (CompilerMember)var41.nextElement();
+<b class="nc"><i>1527</i>&nbsp;</b>
+<b class="nc"><i>1528</i>&nbsp;                                try {</b>
+<i>1529</i>&nbsp;                                    var20.asm.optimize(var1);
+<i>1530</i>&nbsp;                                    var20.asm.collect(var1, var20.field, this.tab);
+<i>1531</i>&nbsp;                                    this.tab.put(var20.name);
+<i>1532</i>&nbsp;                                    this.tab.put(var20.sig);
+<i>1533</i>&nbsp;                                    ClassDeclaration[] var21 = var20.field.getExceptions(var1);
+<i>1534</i>&nbsp;
+<i>1535</i>&nbsp;                                    for(int var22 = 0; var22 &lt; var21.length; ++var22) {
+<b class="nc"><i>1536</i>&nbsp;                                        this.tab.put(var21[var22]);</b>
+<b class="nc"><i>1537</i>&nbsp;                                    }</b>
+<b class="nc"><i>1538</i>&nbsp;                                } catch (Exception var33) {</b>
+<b class="nc"><i>1539</i>&nbsp;                                    var33.printStackTrace();</b>
+<i>1540</i>&nbsp;                                    var1.error(var20.field, -1L, &quot;generic&quot;, var20.field.getName() + &quot;@&quot; + var33.toString(), (Object)null, (Object)null);
+<i>1541</i>&nbsp;                                    var20.asm.listing(System.out);
+<i>1542</i>&nbsp;                                }
+<b class="nc"><i>1543</i>&nbsp;                            }</b>
+<i>1544</i>&nbsp;
+<i>1545</i>&nbsp;                            var41 = var3.elements();
+<i>1546</i>&nbsp;
+<b class="nc"><i>1547</i>&nbsp;                            while(var41.hasMoreElements()) {</b>
+<b class="nc"><i>1548</i>&nbsp;                                var20 = (CompilerMember)var41.nextElement();</b>
+<i>1549</i>&nbsp;                                this.tab.put(var20.name);
+<i>1550</i>&nbsp;                                this.tab.put(var20.sig);
+<i>1551</i>&nbsp;                                Object var47 = var20.field.getInitialValue();
+<i>1552</i>&nbsp;                                if(var47 != null) {
+<b class="nc"><i>1553</i>&nbsp;                                    this.tab.put(var47 instanceof String?new StringExpression(var20.field.getWhere(), (String)var47):var47);</b>
+<b class="nc"><i>1554</i>&nbsp;                                }</b>
+<b class="nc"><i>1555</i>&nbsp;                            }</b>
+<i>1556</i>&nbsp;
+<b class="nc"><i>1557</i>&nbsp;                            var41 = var5.elements();</b>
+<b class="nc"><i>1558</i>&nbsp;</b>
+<b class="nc"><i>1559</i>&nbsp;                            Identifier var49;</b>
+<i>1560</i>&nbsp;                            while(var41.hasMoreElements()) {
+<b class="nc"><i>1561</i>&nbsp;                                ClassDefinition var40 = (ClassDefinition)var41.nextElement();</b>
+<b class="nc"><i>1562</i>&nbsp;                                this.tab.put(var40.getClassDeclaration());</b>
+<i>1563</i>&nbsp;                                if(!var40.isLocal()) {
+<b class="nc"><i>1564</i>&nbsp;                                    ClassDefinition var48 = var40.getOuterClass();</b>
+<i>1565</i>&nbsp;                                    this.tab.put(var48.getClassDeclaration());
+<i>1566</i>&nbsp;                                }
+<i>1567</i>&nbsp;
+<i>1568</i>&nbsp;                                var49 = var40.getLocalName();
+<i>1569</i>&nbsp;                                if(var49 != idNull) {
+<b class="nc"><i>1570</i>&nbsp;                                    this.tab.put(var49.toString());</b>
+<i>1571</i>&nbsp;                                }
+<b class="nc"><i>1572</i>&nbsp;                            }</b>
+<i>1573</i>&nbsp;
+<i>1574</i>&nbsp;                            DataOutputStream var39 = new DataOutputStream(var2);
+<i>1575</i>&nbsp;                            var39.writeInt(-889275714);
+<b class="nc"><i>1576</i>&nbsp;                            var39.writeShort(this.toplevelEnv.getMinorVersion());</b>
+<i>1577</i>&nbsp;                            var39.writeShort(this.toplevelEnv.getMajorVersion());
+<b class="nc"><i>1578</i>&nbsp;                            this.tab.write(var1, var39);</b>
+<b class="nc"><i>1579</i>&nbsp;                            int var46 = this.getModifiers() &amp; 2098705;</b>
+<b class="nc"><i>1580</i>&nbsp;                            if(this.isInterface()) {</b>
+<i>1581</i>&nbsp;                                assertModifiers(var46, 1024);
+<b class="nc"><i>1582</i>&nbsp;                            } else {</b>
+<i>1583</i>&nbsp;                                var46 |= 32;
+<b class="nc"><i>1584</i>&nbsp;                            }</b>
+<b class="nc"><i>1585</i>&nbsp;</b>
+<b class="nc"><i>1586</i>&nbsp;                            if(this.outerClass != null) {</b>
+<i>1587</i>&nbsp;                                if(this.isProtected()) {
+<i>1588</i>&nbsp;                                    var46 |= 1;
+<b class="nc"><i>1589</i>&nbsp;                                }</b>
+<b class="nc"><i>1590</i>&nbsp;</b>
+<i>1591</i>&nbsp;                                if(this.outerClass.isInterface()) {
+<b class="nc"><i>1592</i>&nbsp;                                    assertModifiers(var46, 1);</b>
+<i>1593</i>&nbsp;                                }
+<i>1594</i>&nbsp;                            }
+<i>1595</i>&nbsp;
+<i>1596</i>&nbsp;                            var39.writeShort(var46);
+<i>1597</i>&nbsp;                            if(var1.dumpModifiers()) {
+<i>1598</i>&nbsp;                                var49 = this.getName();
+<i>1599</i>&nbsp;                                Identifier var43 = Identifier.lookup(var49.getQualifier(), var49.getFlatName());
+<b class="nc"><i>1600</i>&nbsp;                                System.out.println();</b>
+<b class="nc"><i>1601</i>&nbsp;                                System.out.println(&quot;CLASSFILE  &quot; + var43);</b>
+<b class="nc"><i>1602</i>&nbsp;                                System.out.println(&quot;---&quot; + classModifierString(var46));</b>
+<i>1603</i>&nbsp;                            }
+<b class="nc"><i>1604</i>&nbsp;</b>
+<i>1605</i>&nbsp;                            var39.writeShort(this.tab.index(this.getClassDeclaration()));
+<b class="nc"><i>1606</i>&nbsp;                            var39.writeShort(this.getSuperClass() != null?this.tab.index(this.getSuperClass()):0);</b>
+<i>1607</i>&nbsp;                            var39.writeShort(this.interfaces.length);
+<b class="nc"><i>1608</i>&nbsp;</b>
+<i>1609</i>&nbsp;                            for(int var42 = 0; var42 &lt; this.interfaces.length; ++var42) {
+<b class="nc"><i>1610</i>&nbsp;                                var39.writeShort(this.tab.index(this.interfaces[var42]));</b>
+<b class="nc"><i>1611</i>&nbsp;                            }</b>
+<i>1612</i>&nbsp;
+<b class="nc"><i>1613</i>&nbsp;                            ByteArrayOutputStream var45 = new ByteArrayOutputStream(256);</b>
+<i>1614</i>&nbsp;                            ByteArrayOutputStream var44 = new ByteArrayOutputStream(256);
+<i>1615</i>&nbsp;                            DataOutputStream var23 = new DataOutputStream(var45);
+<b class="nc"><i>1616</i>&nbsp;                            var39.writeShort(var3.size());</b>
+<b class="nc"><i>1617</i>&nbsp;                            Enumeration var24 = var3.elements();</b>
+<b class="nc"><i>1618</i>&nbsp;</b>
+<b class="nc"><i>1619</i>&nbsp;                            CompilerMember var25;</b>
+<i>1620</i>&nbsp;                            int var27;
+<i>1621</i>&nbsp;                            boolean var29;
+<i>1622</i>&nbsp;                            while(var24.hasMoreElements()) {
+<i>1623</i>&nbsp;                                var25 = (CompilerMember)var24.nextElement();
+<i>1624</i>&nbsp;                                Object var26 = var25.field.getInitialValue();
+<b class="nc"><i>1625</i>&nbsp;                                var39.writeShort(var25.field.getModifiers() &amp; 223);</b>
+<i>1626</i>&nbsp;                                var39.writeShort(this.tab.index(var25.name));
+<b class="nc"><i>1627</i>&nbsp;                                var39.writeShort(this.tab.index(var25.sig));</b>
+<b class="nc"><i>1628</i>&nbsp;                                var27 = var26 != null?1:0;</b>
+<b class="nc"><i>1629</i>&nbsp;                                boolean var28 = var25.field.isDeprecated();</b>
+<b class="nc"><i>1630</i>&nbsp;                                var29 = var25.field.isSynthetic();</b>
+<b class="nc"><i>1631</i>&nbsp;                                var27 += (var28?1:0) + (var29?1:0);</b>
+<b class="nc"><i>1632</i>&nbsp;                                var39.writeShort(var27);</b>
+<b class="nc"><i>1633</i>&nbsp;                                if(var26 != null) {</b>
+<b class="nc"><i>1634</i>&nbsp;                                    var39.writeShort(this.tab.index(&quot;ConstantValue&quot;));</b>
+<b class="nc"><i>1635</i>&nbsp;                                    var39.writeInt(2);</b>
+<b class="nc"><i>1636</i>&nbsp;                                    var39.writeShort(this.tab.index(var26 instanceof String?new StringExpression(var25.field.getWhere(), (String)var26):var26));</b>
+<b class="nc"><i>1637</i>&nbsp;                                }</b>
+<i>1638</i>&nbsp;
+<i>1639</i>&nbsp;                                if(var28) {
+<i>1640</i>&nbsp;                                    var39.writeShort(this.tab.index(&quot;Deprecated&quot;));
+<b class="nc"><i>1641</i>&nbsp;                                    var39.writeInt(0);</b>
+<i>1642</i>&nbsp;                                }
+<i>1643</i>&nbsp;
+<i>1644</i>&nbsp;                                if(var29) {
+<i>1645</i>&nbsp;                                    var39.writeShort(this.tab.index(&quot;Synthetic&quot;));
+<i>1646</i>&nbsp;                                    var39.writeInt(0);
+<i>1647</i>&nbsp;                                }
+<b class="nc"><i>1648</i>&nbsp;                            }</b>
+<b class="nc"><i>1649</i>&nbsp;</b>
+<b class="nc"><i>1650</i>&nbsp;                            var39.writeShort(var4.size());</b>
+<b class="nc"><i>1651</i>&nbsp;                            var24 = var4.elements();</b>
+<b class="nc"><i>1652</i>&nbsp;</b>
+<b class="nc"><i>1653</i>&nbsp;                            while(var24.hasMoreElements()) {</b>
+<b class="nc"><i>1654</i>&nbsp;                                var25 = (CompilerMember)var24.nextElement();</b>
+<b class="nc"><i>1655</i>&nbsp;                                int var56 = var25.field.getModifiers() &amp; 2098495;</b>
+<b class="nc"><i>1656</i>&nbsp;                                if((var56 &amp; 2097152) == 0 &amp;&amp; (var46 &amp; 2097152) == 0) {</b>
+<b class="nc"><i>1657</i>&nbsp;                                    if(var1.strictdefault()) {</b>
+<b class="nc"><i>1658</i>&nbsp;                                        var56 |= 2048;</b>
+<i>1659</i>&nbsp;                                    }
+<i>1660</i>&nbsp;                                } else {
+<b class="nc"><i>1661</i>&nbsp;                                    var56 |= 2048;</b>
+<b class="nc"><i>1662</i>&nbsp;                                }</b>
+<b class="nc"><i>1663</i>&nbsp;</b>
+<i>1664</i>&nbsp;                                var39.writeShort(var56);
+<i>1665</i>&nbsp;                                var39.writeShort(this.tab.index(var25.name));
+<b class="nc"><i>1666</i>&nbsp;                                var39.writeShort(this.tab.index(var25.sig));</b>
+<i>1667</i>&nbsp;                                ClassDeclaration[] var53 = var25.field.getExceptions(var1);
+<b class="nc"><i>1668</i>&nbsp;                                int var55 = var53.length &gt; 0?1:0;</b>
+<i>1669</i>&nbsp;                                var29 = var25.field.isDeprecated();
+<i>1670</i>&nbsp;                                boolean var30 = var25.field.isSynthetic();
+<i>1671</i>&nbsp;                                var55 += (var29?1:0) + (var30?1:0);
+<b class="nc"><i>1672</i>&nbsp;                                int var31;</b>
+<b class="nc"><i>1673</i>&nbsp;                                if(!var25.asm.empty()) {</b>
+<i>1674</i>&nbsp;                                    var39.writeShort(var55 + 1);
+<i>1675</i>&nbsp;                                    var25.asm.write(var1, var23, var25.field, this.tab);
+<i>1676</i>&nbsp;                                    var31 = 0;
+<b class="nc"><i>1677</i>&nbsp;                                    if(var1.debug_lines()) {</b>
+<b class="nc"><i>1678</i>&nbsp;                                        ++var31;</b>
+<b class="nc"><i>1679</i>&nbsp;                                    }</b>
+<b class="nc"><i>1680</i>&nbsp;</b>
+<i>1681</i>&nbsp;                                    if(var1.coverage()) {
+<i>1682</i>&nbsp;                                        ++var31;
+<i>1683</i>&nbsp;                                    }
+<b class="nc"><i>1684</i>&nbsp;</b>
+<b class="nc"><i>1685</i>&nbsp;                                    if(var1.debug_vars()) {</b>
+<b class="nc"><i>1686</i>&nbsp;                                        ++var31;</b>
+<b class="nc"><i>1687</i>&nbsp;                                    }</b>
+<i>1688</i>&nbsp;
+<i>1689</i>&nbsp;                                    var23.writeShort(var31);
+<b class="nc"><i>1690</i>&nbsp;                                    if(var1.debug_lines()) {</b>
+<i>1691</i>&nbsp;                                        var25.asm.writeLineNumberTable(var1, new DataOutputStream(var44), this.tab);
+<i>1692</i>&nbsp;                                        var23.writeShort(this.tab.index(&quot;LineNumberTable&quot;));
+<b class="nc"><i>1693</i>&nbsp;                                        var23.writeInt(var44.size());</b>
+<b class="nc"><i>1694</i>&nbsp;                                        var44.writeTo(var45);</b>
+<b class="nc"><i>1695</i>&nbsp;                                        var44.reset();</b>
+<b class="nc"><i>1696</i>&nbsp;                                    }</b>
+<i>1697</i>&nbsp;
+<i>1698</i>&nbsp;                                    if(var1.coverage()) {
+<b class="nc"><i>1699</i>&nbsp;                                        var25.asm.writeCoverageTable(var1, this, new DataOutputStream(var44), this.tab, var25.field.getWhere());</b>
+<i>1700</i>&nbsp;                                        var23.writeShort(this.tab.index(&quot;CoverageTable&quot;));
+<i>1701</i>&nbsp;                                        var23.writeInt(var44.size());
+<i>1702</i>&nbsp;                                        var44.writeTo(var45);
+<b class="nc"><i>1703</i>&nbsp;                                        var44.reset();</b>
+<b class="nc"><i>1704</i>&nbsp;                                    }</b>
+<b class="nc"><i>1705</i>&nbsp;</b>
+<b class="nc"><i>1706</i>&nbsp;                                    if(var1.debug_vars()) {</b>
+<b class="nc"><i>1707</i>&nbsp;                                        var25.asm.writeLocalVariableTable(var1, var25.field, new DataOutputStream(var44), this.tab);</b>
+<i>1708</i>&nbsp;                                        var23.writeShort(this.tab.index(&quot;LocalVariableTable&quot;));
+<i>1709</i>&nbsp;                                        var23.writeInt(var44.size());
+<b class="nc"><i>1710</i>&nbsp;                                        var44.writeTo(var45);</b>
+<b class="nc"><i>1711</i>&nbsp;                                        var44.reset();</b>
+<b class="nc"><i>1712</i>&nbsp;                                    }</b>
+<i>1713</i>&nbsp;
+<b class="nc"><i>1714</i>&nbsp;                                    var39.writeShort(this.tab.index(&quot;Code&quot;));</b>
+<b class="nc"><i>1715</i>&nbsp;                                    var39.writeInt(var45.size());</b>
+<b class="nc"><i>1716</i>&nbsp;                                    var45.writeTo(var39);</b>
+<b class="nc"><i>1717</i>&nbsp;                                    var45.reset();</b>
+<i>1718</i>&nbsp;                                } else {
+<i>1719</i>&nbsp;                                    if(var1.coverage() &amp;&amp; (var25.field.getModifiers() &amp; 256) &gt; 0) {
+<b class="nc"><i>1720</i>&nbsp;                                        var25.asm.addNativeToJcovTab(var1, this);</b>
+<i>1721</i>&nbsp;                                    }
+<i>1722</i>&nbsp;
+<b class="nc"><i>1723</i>&nbsp;                                    var39.writeShort(var55);</b>
+<i>1724</i>&nbsp;                                }
+<i>1725</i>&nbsp;
+<b class="nc"><i>1726</i>&nbsp;                                if(var53.length &gt; 0) {</b>
+<b class="nc"><i>1727</i>&nbsp;                                    var39.writeShort(this.tab.index(&quot;Exceptions&quot;));</b>
+<b class="nc"><i>1728</i>&nbsp;                                    var39.writeInt(2 + var53.length * 2);</b>
+<i>1729</i>&nbsp;                                    var39.writeShort(var53.length);
+<i>1730</i>&nbsp;
+<i>1731</i>&nbsp;                                    for(var31 = 0; var31 &lt; var53.length; ++var31) {
+<i>1732</i>&nbsp;                                        var39.writeShort(this.tab.index(var53[var31]));
+<b class="nc"><i>1733</i>&nbsp;                                    }</b>
+<i>1734</i>&nbsp;                                }
+<b class="nc"><i>1735</i>&nbsp;</b>
+<b class="nc"><i>1736</i>&nbsp;                                if(var29) {</b>
+<b class="nc"><i>1737</i>&nbsp;                                    var39.writeShort(this.tab.index(&quot;Deprecated&quot;));</b>
+<i>1738</i>&nbsp;                                    var39.writeInt(0);
+<i>1739</i>&nbsp;                                }
+<b class="nc"><i>1740</i>&nbsp;</b>
+<i>1741</i>&nbsp;                                if(var30) {
+<i>1742</i>&nbsp;                                    var39.writeShort(this.tab.index(&quot;Synthetic&quot;));
+<b class="nc"><i>1743</i>&nbsp;                                    var39.writeInt(0);</b>
+<b class="nc"><i>1744</i>&nbsp;                                }</b>
+<b class="nc"><i>1745</i>&nbsp;                            }</b>
+<b class="nc"><i>1746</i>&nbsp;</b>
+<i>1747</i>&nbsp;                            var39.writeShort(var36);
+<i>1748</i>&nbsp;                            if(var1.debug_source()) {
+<i>1749</i>&nbsp;                                var39.writeShort(this.tab.index(&quot;SourceFile&quot;));
+<b class="nc"><i>1750</i>&nbsp;                                var39.writeInt(2);</b>
+<i>1751</i>&nbsp;                                var39.writeShort(this.tab.index(var37));
+<i>1752</i>&nbsp;                            }
+<i>1753</i>&nbsp;
+<b class="nc"><i>1754</i>&nbsp;                            if(this.isDeprecated()) {</b>
+<b class="nc"><i>1755</i>&nbsp;                                var39.writeShort(this.tab.index(&quot;Deprecated&quot;));</b>
+<i>1756</i>&nbsp;                                var39.writeInt(0);
+<b class="nc"><i>1757</i>&nbsp;                            }</b>
+<i>1758</i>&nbsp;
+<b class="nc"><i>1759</i>&nbsp;                            if(this.isSynthetic()) {</b>
+<b class="nc"><i>1760</i>&nbsp;                                var39.writeShort(this.tab.index(&quot;Synthetic&quot;));</b>
+<i>1761</i>&nbsp;                                var39.writeInt(0);
+<i>1762</i>&nbsp;                            }
+<i>1763</i>&nbsp;
+<i>1764</i>&nbsp;                            if(var1.coverage()) {
+<i>1765</i>&nbsp;                                var39.writeShort(this.tab.index(&quot;AbsoluteSourcePath&quot;));
+<b class="nc"><i>1766</i>&nbsp;                                var39.writeInt(2);</b>
+<b class="nc"><i>1767</i>&nbsp;                                var39.writeShort(this.tab.index(var15));</b>
+<b class="nc"><i>1768</i>&nbsp;                                var39.writeShort(this.tab.index(&quot;TimeStamp&quot;));</b>
+<i>1769</i>&nbsp;                                var39.writeInt(8);
+<i>1770</i>&nbsp;                                var39.writeLong(var16);
+<i>1771</i>&nbsp;                            }
+<i>1772</i>&nbsp;
+<i>1773</i>&nbsp;                            if(var5.size() &gt; 0) {
+<i>1774</i>&nbsp;                                var39.writeShort(this.tab.index(&quot;InnerClasses&quot;));
+<i>1775</i>&nbsp;                                var39.writeInt(2 + 8 * var5.size());
+<i>1776</i>&nbsp;                                var39.writeShort(var5.size());
+<i>1777</i>&nbsp;                                var24 = var5.elements();
+<i>1778</i>&nbsp;
+<i>1779</i>&nbsp;                                while(var24.hasMoreElements()) {
+<i>1780</i>&nbsp;                                    ClassDefinition var51 = (ClassDefinition)var24.nextElement();
+<i>1781</i>&nbsp;                                    var39.writeShort(this.tab.index(var51.getClassDeclaration()));
+<i>1782</i>&nbsp;                                    if(!var51.isLocal() &amp;&amp; !var51.isAnonymous()) {
+<i>1783</i>&nbsp;                                        ClassDefinition var54 = var51.getOuterClass();
+<i>1784</i>&nbsp;                                        var39.writeShort(this.tab.index(var54.getClassDeclaration()));
+<i>1785</i>&nbsp;                                    } else {
+<b class="nc"><i>1786</i>&nbsp;                                        var39.writeShort(0);</b>
+<i>1787</i>&nbsp;                                    }
+<i>1788</i>&nbsp;
+<i>1789</i>&nbsp;                                    Identifier var52 = var51.getLocalName();
+<i>1790</i>&nbsp;                                    if(var52 == idNull) {
+<i>1791</i>&nbsp;                                        if(!var51.isAnonymous()) {
+<i>1792</i>&nbsp;                                            throw new CompilerError(&quot;compileClass(), anonymous&quot;);
+<b class="nc"><i>1793</i>&nbsp;                                        }</b>
+<i>1794</i>&nbsp;
+<b class="nc"><i>1795</i>&nbsp;                                        var39.writeShort(0);</b>
+<b class="nc"><i>1796</i>&nbsp;                                    } else {</b>
+<b class="nc"><i>1797</i>&nbsp;                                        var39.writeShort(this.tab.index(var52.toString()));</b>
+<i>1798</i>&nbsp;                                    }
+<b class="nc"><i>1799</i>&nbsp;</b>
+<i>1800</i>&nbsp;                                    var27 = var51.getInnerClassMember().getModifiers() &amp; 3615;
+<i>1801</i>&nbsp;                                    if(var51.isInterface()) {
+<i>1802</i>&nbsp;                                        assertModifiers(var27, 1032);
+<i>1803</i>&nbsp;                                    }
+<i>1804</i>&nbsp;
+<i>1805</i>&nbsp;                                    if(var51.getOuterClass().isInterface()) {
+<i>1806</i>&nbsp;                                        var27 &amp;= -7;
+<i>1807</i>&nbsp;                                        assertModifiers(var27, 9);
+<i>1808</i>&nbsp;                                    }
+<i>1809</i>&nbsp;
+<i>1810</i>&nbsp;                                    var39.writeShort(var27);
+<i>1811</i>&nbsp;                                    if(var1.dumpModifiers()) {
+<i>1812</i>&nbsp;                                        Identifier var57 = var51.getInnerClassMember().getName();
+<i>1813</i>&nbsp;                                        Identifier var58 = Identifier.lookup(var57.getQualifier(), var57.getFlatName());
+<i>1814</i>&nbsp;                                        System.out.println(&quot;INNERCLASS &quot; + var58);
+<i>1815</i>&nbsp;                                        System.out.println(&quot;---&quot; + classModifierString(var27));
+<i>1816</i>&nbsp;                                    }
+<i>1817</i>&nbsp;                                }
+<i>1818</i>&nbsp;                            }
+<i>1819</i>&nbsp;
+<i>1820</i>&nbsp;                            var39.flush();
+<i>1821</i>&nbsp;                            this.tab = null;
+<i>1822</i>&nbsp;                            if(var1.covdata()) {
+<i>1823</i>&nbsp;                                Assembler var50 = new Assembler();
+<i>1824</i>&nbsp;                                var50.GenVecJCov(var1, this, var16);
+<b class="nc"><i>1825</i>&nbsp;                            }</b>
+<b class="nc"><i>1826</i>&nbsp;</b>
+<i>1827</i>&nbsp;                            return;
+<i>1828</i>&nbsp;                        }
+<b class="nc"><i>1829</i>&nbsp;                    }</b>
+<b class="nc"><i>1830</i>&nbsp;</b>
+<b class="nc"><i>1831</i>&nbsp;                    var5.removeElementAt(var9);</b>
+<b class="nc"><i>1832</i>&nbsp;                }</b>
+<i>1833</i>&nbsp;            }
+<i>1834</i>&nbsp;
+<i>1835</i>&nbsp;            var5.addElement(var5.elementAt(var9));
+<i>1836</i>&nbsp;        }
+<i>1837</i>&nbsp;    }
+<i>1838</i>&nbsp;
+<i>1839</i>&nbsp;    public void printClassDependencies(Environment var1) {
+<b class="nc"><i>1840</i>&nbsp;        if(this.toplevelEnv.print_dependencies()) {</b>
+<i>1841</i>&nbsp;            String var2 = ((ClassFile)this.getSource()).getAbsoluteName();
+<i>1842</i>&nbsp;            String var3 = Type.mangleInnerType(this.getName()).toString();
+<i>1843</i>&nbsp;            long var4 = this.getWhere() &gt;&gt; 32;
+<i>1844</i>&nbsp;            long var6 = this.getEndPosition() &gt;&gt; 32;
+<i>1845</i>&nbsp;            System.out.println(&quot;CLASS:&quot; + var2 + &quot;,&quot; + var4 + &quot;,&quot; + var6 + &quot;,&quot; + var3);
+<i>1846</i>&nbsp;            Enumeration var8 = this.deps.elements();
+<i>1847</i>&nbsp;
+<i>1848</i>&nbsp;            while(var8.hasMoreElements()) {
+<i>1849</i>&nbsp;                ClassDeclaration var9 = (ClassDeclaration)var8.nextElement();
+<b class="nc"><i>1850</i>&nbsp;                String var10 = Type.mangleInnerType(var9.getName()).toString();</b>
+<b class="nc"><i>1851</i>&nbsp;                var1.output(&quot;CLDEP:&quot; + var3 + &quot;,&quot; + var10);</b>
+<b class="nc"><i>1852</i>&nbsp;            }</b>
+<b class="nc"><i>1853</i>&nbsp;        }</b>
+<b class="nc"><i>1854</i>&nbsp;</b>
+<b class="nc"><i>1855</i>&nbsp;    }</b>
+<b class="nc"><i>1856</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

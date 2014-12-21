@@ -1,0 +1,261 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KeepAliveStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.net.www.http</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KeepAliveStream (sun.net.www.http)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeepAliveStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 57)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">KeepAliveStream$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 67)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.net.www.http;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>9</i>&nbsp;import java.io.DataInputStream;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.io.InputStream;
+<i>12</i>&nbsp;import java.security.AccessController;
+<i>13</i>&nbsp;import java.security.PrivilegedAction;
+<i>14</i>&nbsp;import sun.net.ProgressSource;
+<i>15</i>&nbsp;import sun.net.www.MeteredStream;
+<i>16</i>&nbsp;import sun.net.www.http.HttpClient;
+<i>17</i>&nbsp;import sun.net.www.http.Hurryable;
+<i>18</i>&nbsp;import sun.net.www.http.KeepAliveCleanerEntry;
+<i>19</i>&nbsp;import sun.net.www.http.KeepAliveStreamCleaner;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;public class KeepAliveStream extends MeteredStream implements Hurryable {
+<i>22</i>&nbsp;    HttpClient hc;
+<i>23</i>&nbsp;    boolean hurried;
+<i>24</i>&nbsp;    protected boolean queuedForCleanup = false;
+<i>25</i>&nbsp;    private static final KeepAliveStreamCleaner queue = new KeepAliveStreamCleaner();
+<b class="nc"><i>26</i>&nbsp;    private static Thread cleanerThread;</b>
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public KeepAliveStream(InputStream var1, ProgressSource var2, long var3, HttpClient var5) {
+<i>29</i>&nbsp;        super(var1, var2, var3);
+<i>30</i>&nbsp;        this.hc = var5;
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public void close() throws IOException {
+<b class="nc"><i>34</i>&nbsp;        if(!this.closed) {</b>
+<i>35</i>&nbsp;            if(!this.queuedForCleanup) {
+<b class="nc"><i>36</i>&nbsp;                try {</b>
+<b class="nc"><i>37</i>&nbsp;                    if(this.expected &gt; this.count) {</b>
+<i>38</i>&nbsp;                        long var1 = this.expected - this.count;
+<i>39</i>&nbsp;                        if(var1 &lt;= (long)this.available()) {
+<i>40</i>&nbsp;                            for(long var3 = 0L; var3 &lt; var1; var3 = this.skip(var1)) {
+<i>41</i>&nbsp;                                var1 -= var3;
+<i>42</i>&nbsp;                            }
+<i>43</i>&nbsp;                        } else if(this.expected &lt;= (long)KeepAliveStreamCleaner.MAX_DATA_REMAINING &amp;&amp; !this.hurried) {
+<b class="nc"><i>44</i>&nbsp;                            queueForCleanup(new KeepAliveCleanerEntry(this, this.hc));</b>
+<b class="nc"><i>45</i>&nbsp;                        } else {</b>
+<i>46</i>&nbsp;                            this.hc.closeServer();
+<i>47</i>&nbsp;                        }
+<i>48</i>&nbsp;                    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;                    if(!this.closed &amp;&amp; !this.hurried &amp;&amp; !this.queuedForCleanup) {
+<i>51</i>&nbsp;                        this.hc.finished();
+<i>52</i>&nbsp;                    }
+<b class="nc"><i>53</i>&nbsp;                } finally {</b>
+<i>54</i>&nbsp;                    if(this.pi != null) {
+<i>55</i>&nbsp;                        this.pi.finishTracking();
+<i>56</i>&nbsp;                    }
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;                    if(!this.queuedForCleanup) {</b>
+<i>59</i>&nbsp;                        this.in = null;
+<i>60</i>&nbsp;                        this.hc = null;
+<i>61</i>&nbsp;                        this.closed = true;
+<i>62</i>&nbsp;                    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;                }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;            }
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<b class="nc"><i>70</i>&nbsp;    public boolean markSupported() {</b>
+<b class="nc"><i>71</i>&nbsp;        return false;</b>
+<b class="nc"><i>72</i>&nbsp;    }</b>
+<b class="nc"><i>73</i>&nbsp;</b>
+<b class="nc"><i>74</i>&nbsp;    public void mark(int var1) {</b>
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<b class="nc"><i>76</i>&nbsp;</b>
+<i>77</i>&nbsp;    public void reset() throws IOException {
+<b class="nc"><i>78</i>&nbsp;        throw new IOException(&quot;mark/reset not supported&quot;);</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;    public synchronized boolean hurry() {</b>
+<i>82</i>&nbsp;        try {
+<b class="nc"><i>83</i>&nbsp;            if(!this.closed &amp;&amp; this.count &lt; this.expected) {</b>
+<i>84</i>&nbsp;                if((long)this.in.available() &lt; this.expected - this.count) {
+<i>85</i>&nbsp;                    return false;
+<b class="nc"><i>86</i>&nbsp;                } else {</b>
+<b class="nc"><i>87</i>&nbsp;                    int var1 = (int)(this.expected - this.count);</b>
+<i>88</i>&nbsp;                    byte[] var2 = new byte[var1];
+<i>89</i>&nbsp;                    DataInputStream var3 = new DataInputStream(this.in);
+<b class="nc"><i>90</i>&nbsp;                    var3.readFully(var2);</b>
+<b class="nc"><i>91</i>&nbsp;                    this.in = new ByteArrayInputStream(var2);</b>
+<i>92</i>&nbsp;                    this.hurried = true;
+<b class="nc"><i>93</i>&nbsp;                    return true;</b>
+<i>94</i>&nbsp;                }
+<i>95</i>&nbsp;            } else {
+<b class="nc"><i>96</i>&nbsp;                return false;</b>
+<b class="nc"><i>97</i>&nbsp;            }</b>
+<b class="nc"><i>98</i>&nbsp;        } catch (IOException var4) {</b>
+<i>99</i>&nbsp;            return false;
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    private static void queueForCleanup(KeepAliveCleanerEntry var0) {
+<i>104</i>&nbsp;        KeepAliveStreamCleaner var1 = queue;
+<i>105</i>&nbsp;        synchronized(queue) {
+<b class="nc"><i>106</i>&nbsp;            if(!var0.getQueuedForCleanup()) {</b>
+<i>107</i>&nbsp;                if(!queue.offer(var0)) {
+<i>108</i>&nbsp;                    var0.getHttpClient().closeServer();
+<i>109</i>&nbsp;                    return;
+<i>110</i>&nbsp;                }
+<i>111</i>&nbsp;
+<b class="nc"><i>112</i>&nbsp;                var0.setQueuedForCleanup();</b>
+<i>113</i>&nbsp;                queue.notifyAll();
+<i>114</i>&nbsp;            }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;            boolean var2 = cleanerThread == null;
+<i>117</i>&nbsp;            if(!var2 &amp;&amp; !cleanerThread.isAlive()) {
+<b class="nc"><i>118</i>&nbsp;                var2 = true;</b>
+<b class="nc"><i>119</i>&nbsp;            }</b>
+<b class="nc"><i>120</i>&nbsp;</b>
+<i>121</i>&nbsp;            if(var2) {
+<b class="nc"><i>122</i>&nbsp;                AccessController.doPrivileged(new PrivilegedAction() {</b>
+<i>123</i>&nbsp;                    public Void run() {
+<i>124</i>&nbsp;                        ThreadGroup var1 = Thread.currentThread().getThreadGroup();
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;                        for(ThreadGroup var2 = null; (var2 = var1.getParent()) != null; var1 = var2) {
+<b class="nc"><i>127</i>&nbsp;                            ;</b>
+<b class="nc"><i>128</i>&nbsp;                        }</b>
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;                        KeepAliveStream.cleanerThread = new Thread(var1, KeepAliveStream.queue, &quot;Keep-Alive-SocketCleaner&quot;);</b>
+<b class="nc"><i>131</i>&nbsp;                        KeepAliveStream.cleanerThread.setDaemon(true);</b>
+<b class="nc"><i>132</i>&nbsp;                        KeepAliveStream.cleanerThread.setPriority(8);</b>
+<i>133</i>&nbsp;                        KeepAliveStream.cleanerThread.setContextClassLoader((ClassLoader)null);
+<b class="nc"><i>134</i>&nbsp;                        KeepAliveStream.cleanerThread.start();</b>
+<i>135</i>&nbsp;                        return null;
+<b class="nc"><i>136</i>&nbsp;                    }</b>
+<i>137</i>&nbsp;                });
+<i>138</i>&nbsp;            }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;        }
+<i>141</i>&nbsp;    }
+<b class="nc"><i>142</i>&nbsp;</b>
+<b class="nc"><i>143</i>&nbsp;    protected long remainingToRead() {</b>
+<b class="nc"><i>144</i>&nbsp;        return this.expected - this.count;</b>
+<b class="nc"><i>145</i>&nbsp;    }</b>
+<b class="nc"><i>146</i>&nbsp;</b>
+<i>147</i>&nbsp;    protected void setClosed() {
+<i>148</i>&nbsp;        this.in = null;
+<b class="nc"><i>149</i>&nbsp;        this.hc = null;</b>
+<i>150</i>&nbsp;        this.closed = true;
+<b class="nc"><i>151</i>&nbsp;    }</b>
+<i>152</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

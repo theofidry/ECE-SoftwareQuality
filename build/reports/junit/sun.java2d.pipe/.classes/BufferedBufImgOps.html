@@ -1,0 +1,356 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BufferedBufImgOps</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.java2d.pipe</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BufferedBufImgOps (sun.java2d.pipe)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BufferedBufImgOps</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 161)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.java2d.pipe;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.image.BufferedImage;
+<i>9</i>&nbsp;import java.awt.image.BufferedImageOp;
+<i>10</i>&nbsp;import java.awt.image.ByteLookupTable;
+<i>11</i>&nbsp;import java.awt.image.ColorModel;
+<i>12</i>&nbsp;import java.awt.image.ConvolveOp;
+<i>13</i>&nbsp;import java.awt.image.IndexColorModel;
+<i>14</i>&nbsp;import java.awt.image.Kernel;
+<i>15</i>&nbsp;import java.awt.image.LookupOp;
+<i>16</i>&nbsp;import java.awt.image.LookupTable;
+<i>17</i>&nbsp;import java.awt.image.RescaleOp;
+<i>18</i>&nbsp;import java.awt.image.ShortLookupTable;
+<i>19</i>&nbsp;import sun.java2d.SurfaceData;
+<i>20</i>&nbsp;import sun.java2d.pipe.RenderBuffer;
+<i>21</i>&nbsp;import sun.java2d.pipe.RenderQueue;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public class BufferedBufImgOps {
+<i>24</i>&nbsp;    public BufferedBufImgOps() {
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public static void enableBufImgOp(RenderQueue var0, SurfaceData var1, BufferedImage var2, BufferedImageOp var3) {
+<b class="nc"><i>28</i>&nbsp;        if(var3 instanceof ConvolveOp) {</b>
+<i>29</i>&nbsp;            enableConvolveOp(var0, var1, (ConvolveOp)var3);
+<i>30</i>&nbsp;        } else if(var3 instanceof RescaleOp) {
+<i>31</i>&nbsp;            enableRescaleOp(var0, var1, var2, (RescaleOp)var3);
+<i>32</i>&nbsp;        } else {
+<i>33</i>&nbsp;            if(!(var3 instanceof LookupOp)) {
+<b class="nc"><i>34</i>&nbsp;                throw new InternalError(&quot;Unknown BufferedImageOp&quot;);</b>
+<b class="nc"><i>35</i>&nbsp;            }</b>
+<b class="nc"><i>36</i>&nbsp;</b>
+<b class="nc"><i>37</i>&nbsp;            enableLookupOp(var0, var1, var2, (LookupOp)var3);</b>
+<b class="nc"><i>38</i>&nbsp;        }</b>
+<b class="nc"><i>39</i>&nbsp;</b>
+<i>40</i>&nbsp;    }
+<b class="nc"><i>41</i>&nbsp;</b>
+<i>42</i>&nbsp;    public static void disableBufImgOp(RenderQueue var0, BufferedImageOp var1) {
+<i>43</i>&nbsp;        if(var1 instanceof ConvolveOp) {
+<i>44</i>&nbsp;            disableConvolveOp(var0);
+<i>45</i>&nbsp;        } else if(var1 instanceof RescaleOp) {
+<b class="nc"><i>46</i>&nbsp;            disableRescaleOp(var0);</b>
+<b class="nc"><i>47</i>&nbsp;        } else {</b>
+<b class="nc"><i>48</i>&nbsp;            if(!(var1 instanceof LookupOp)) {</b>
+<b class="nc"><i>49</i>&nbsp;                throw new InternalError(&quot;Unknown BufferedImageOp&quot;);</b>
+<b class="nc"><i>50</i>&nbsp;            }</b>
+<b class="nc"><i>51</i>&nbsp;</b>
+<i>52</i>&nbsp;            disableLookupOp(var0);
+<b class="nc"><i>53</i>&nbsp;        }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public static boolean isConvolveOpValid(ConvolveOp var0) {
+<i>58</i>&nbsp;        Kernel var1 = var0.getKernel();
+<i>59</i>&nbsp;        int var2 = var1.getWidth();
+<b class="nc"><i>60</i>&nbsp;        int var3 = var1.getHeight();</b>
+<b class="nc"><i>61</i>&nbsp;        return var2 == 3 &amp;&amp; var3 == 3 || var2 == 5 &amp;&amp; var3 == 5;</b>
+<b class="nc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    private static void enableConvolveOp(RenderQueue var0, SurfaceData var1, ConvolveOp var2) {
+<i>65</i>&nbsp;        boolean var3 = var2.getEdgeCondition() == 0;
+<b class="nc"><i>66</i>&nbsp;        Kernel var4 = var2.getKernel();</b>
+<b class="nc"><i>67</i>&nbsp;        int var5 = var4.getWidth();</b>
+<i>68</i>&nbsp;        int var6 = var4.getHeight();
+<b class="nc"><i>69</i>&nbsp;        int var7 = var5 * var6;</b>
+<i>70</i>&nbsp;        byte var8 = 4;
+<i>71</i>&nbsp;        int var9 = 24 + var7 * var8;
+<i>72</i>&nbsp;        RenderBuffer var10 = var0.getBuffer();
+<i>73</i>&nbsp;        var0.ensureCapacityAndAlignment(var9, 4);
+<i>74</i>&nbsp;        var10.putInt(120);
+<i>75</i>&nbsp;        var10.putLong(var1.getNativeOps());
+<i>76</i>&nbsp;        var10.putInt(var3?1:0);
+<b class="nc"><i>77</i>&nbsp;        var10.putInt(var5);</b>
+<i>78</i>&nbsp;        var10.putInt(var6);
+<b class="nc"><i>79</i>&nbsp;        var10.put(var4.getKernelData((float[])null));</b>
+<b class="nc"><i>80</i>&nbsp;    }</b>
+<b class="nc"><i>81</i>&nbsp;</b>
+<b class="nc"><i>82</i>&nbsp;    private static void disableConvolveOp(RenderQueue var0) {</b>
+<b class="nc"><i>83</i>&nbsp;        RenderBuffer var1 = var0.getBuffer();</b>
+<b class="nc"><i>84</i>&nbsp;        var0.ensureCapacity(4);</b>
+<i>85</i>&nbsp;        var1.putInt(121);
+<b class="nc"><i>86</i>&nbsp;    }</b>
+<b class="nc"><i>87</i>&nbsp;</b>
+<b class="nc"><i>88</i>&nbsp;    public static boolean isRescaleOpValid(RescaleOp var0, BufferedImage var1) {</b>
+<b class="nc"><i>89</i>&nbsp;        int var2 = var0.getNumFactors();</b>
+<b class="nc"><i>90</i>&nbsp;        ColorModel var3 = var1.getColorModel();</b>
+<b class="nc"><i>91</i>&nbsp;        if(var3 instanceof IndexColorModel) {</b>
+<b class="nc"><i>92</i>&nbsp;            throw new IllegalArgumentException(&quot;Rescaling cannot be performed on an indexed image&quot;);</b>
+<b class="nc"><i>93</i>&nbsp;        } else if(var2 != 1 &amp;&amp; var2 != var3.getNumColorComponents() &amp;&amp; var2 != var3.getNumComponents()) {</b>
+<i>94</i>&nbsp;            throw new IllegalArgumentException(&quot;Number of scaling constants does not equal the number of of color or color/alpha  components&quot;);
+<i>95</i>&nbsp;        } else {
+<i>96</i>&nbsp;            int var4 = var3.getColorSpace().getType();
+<i>97</i>&nbsp;            return var4 != 5 &amp;&amp; var4 != 6?false:var2 != 2 &amp;&amp; var2 &lt;= 4;
+<b class="nc"><i>98</i>&nbsp;        }</b>
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<b class="nc"><i>100</i>&nbsp;</b>
+<i>101</i>&nbsp;    private static void enableRescaleOp(RenderQueue var0, SurfaceData var1, BufferedImage var2, RescaleOp var3) {
+<i>102</i>&nbsp;        ColorModel var4 = var2.getColorModel();
+<i>103</i>&nbsp;        boolean var5 = var4.hasAlpha() &amp;&amp; var4.isAlphaPremultiplied();
+<i>104</i>&nbsp;        int var6 = var3.getNumFactors();
+<i>105</i>&nbsp;        float[] var7 = var3.getScaleFactors((float[])null);
+<i>106</i>&nbsp;        float[] var8 = var3.getOffsets((float[])null);
+<i>107</i>&nbsp;        float[] var9;
+<b class="nc"><i>108</i>&nbsp;        float[] var10;</b>
+<b class="nc"><i>109</i>&nbsp;        int var11;</b>
+<i>110</i>&nbsp;        if(var6 == 1) {
+<b class="nc"><i>111</i>&nbsp;            var9 = new float[4];</b>
+<b class="nc"><i>112</i>&nbsp;            var10 = new float[4];</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;            for(var11 = 0; var11 &lt; 3; ++var11) {
+<i>115</i>&nbsp;                var9[var11] = var7[0];
+<b class="nc"><i>116</i>&nbsp;                var10[var11] = var8[0];</b>
+<i>117</i>&nbsp;            }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;            var9[3] = 1.0F;
+<b class="nc"><i>120</i>&nbsp;            var10[3] = 0.0F;</b>
+<i>121</i>&nbsp;        } else if(var6 == 3) {
+<i>122</i>&nbsp;            var9 = new float[4];
+<i>123</i>&nbsp;            var10 = new float[4];
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;            for(var11 = 0; var11 &lt; 3; ++var11) {
+<b class="nc"><i>126</i>&nbsp;                var9[var11] = var7[var11];</b>
+<b class="nc"><i>127</i>&nbsp;                var10[var11] = var8[var11];</b>
+<i>128</i>&nbsp;            }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;            var9[3] = 1.0F;
+<b class="nc"><i>131</i>&nbsp;            var10[3] = 0.0F;</b>
+<i>132</i>&nbsp;        } else {
+<i>133</i>&nbsp;            var9 = var7;
+<b class="nc"><i>134</i>&nbsp;            var10 = var8;</b>
+<i>135</i>&nbsp;        }
+<b class="nc"><i>136</i>&nbsp;</b>
+<i>137</i>&nbsp;        int var12;
+<i>138</i>&nbsp;        int var13;
+<b class="nc"><i>139</i>&nbsp;        if(var4.getNumComponents() == 1) {</b>
+<i>140</i>&nbsp;            var11 = var4.getComponentSize(0);
+<i>141</i>&nbsp;            var12 = (1 &lt;&lt; var11) - 1;
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;            for(var13 = 0; var13 &lt; 3; ++var13) {
+<i>144</i>&nbsp;                var10[var13] /= (float)var12;
+<i>145</i>&nbsp;            }
+<i>146</i>&nbsp;        } else {
+<i>147</i>&nbsp;            for(var11 = 0; var11 &lt; var4.getNumComponents(); ++var11) {
+<b class="nc"><i>148</i>&nbsp;                var12 = var4.getComponentSize(var11);</b>
+<b class="nc"><i>149</i>&nbsp;                var13 = (1 &lt;&lt; var12) - 1;</b>
+<i>150</i>&nbsp;                var10[var11] /= (float)var13;
+<i>151</i>&nbsp;            }
+<i>152</i>&nbsp;        }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;        byte var15 = 4;
+<i>155</i>&nbsp;        var12 = 16 + 4 * var15 * 2;
+<i>156</i>&nbsp;        RenderBuffer var14 = var0.getBuffer();
+<i>157</i>&nbsp;        var0.ensureCapacityAndAlignment(var12, 4);
+<i>158</i>&nbsp;        var14.putInt(122);
+<i>159</i>&nbsp;        var14.putLong(var1.getNativeOps());
+<i>160</i>&nbsp;        var14.putInt(var5?1:0);
+<i>161</i>&nbsp;        var14.put(var9);
+<i>162</i>&nbsp;        var14.put(var10);
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    private static void disableRescaleOp(RenderQueue var0) {
+<i>166</i>&nbsp;        RenderBuffer var1 = var0.getBuffer();
+<i>167</i>&nbsp;        var0.ensureCapacity(4);
+<b class="nc"><i>168</i>&nbsp;        var1.putInt(123);</b>
+<b class="nc"><i>169</i>&nbsp;    }</b>
+<b class="nc"><i>170</i>&nbsp;</b>
+<i>171</i>&nbsp;    public static boolean isLookupOpValid(LookupOp var0, BufferedImage var1) {
+<i>172</i>&nbsp;        LookupTable var2 = var0.getTable();
+<i>173</i>&nbsp;        int var3 = var2.getNumComponents();
+<i>174</i>&nbsp;        ColorModel var4 = var1.getColorModel();
+<i>175</i>&nbsp;        if(var4 instanceof IndexColorModel) {
+<i>176</i>&nbsp;            throw new IllegalArgumentException(&quot;LookupOp cannot be performed on an indexed image&quot;);
+<b class="nc"><i>177</i>&nbsp;        } else if(var3 != 1 &amp;&amp; var3 != var4.getNumComponents() &amp;&amp; var3 != var4.getNumColorComponents()) {</b>
+<b class="nc"><i>178</i>&nbsp;            throw new IllegalArgumentException(&quot;Number of arrays in the  lookup table (&quot; + var3 + &quot;) is not compatible with&quot; + &quot; the src image: &quot; + var1);</b>
+<b class="nc"><i>179</i>&nbsp;        } else {</b>
+<b class="nc"><i>180</i>&nbsp;            int var5 = var4.getColorSpace().getType();</b>
+<b class="nc"><i>181</i>&nbsp;            if(var5 != 5 &amp;&amp; var5 != 6) {</b>
+<b class="nc"><i>182</i>&nbsp;                return false;</b>
+<i>183</i>&nbsp;            } else if(var3 != 2 &amp;&amp; var3 &lt;= 4) {
+<i>184</i>&nbsp;                int var7;
+<b class="nc"><i>185</i>&nbsp;                if(var2 instanceof ByteLookupTable) {</b>
+<b class="nc"><i>186</i>&nbsp;                    byte[][] var6 = ((ByteLookupTable)var2).getTable();</b>
+<b class="nc"><i>187</i>&nbsp;</b>
+<b class="nc"><i>188</i>&nbsp;                    for(var7 = 1; var7 &lt; var6.length; ++var7) {</b>
+<b class="nc"><i>189</i>&nbsp;                        if(var6[var7].length &gt; 256 || var6[var7].length != var6[var7 - 1].length) {</b>
+<b class="nc"><i>190</i>&nbsp;                            return false;</b>
+<b class="nc"><i>191</i>&nbsp;                        }</b>
+<b class="nc"><i>192</i>&nbsp;                    }</b>
+<i>193</i>&nbsp;                } else {
+<i>194</i>&nbsp;                    if(!(var2 instanceof ShortLookupTable)) {
+<b class="nc"><i>195</i>&nbsp;                        return false;</b>
+<b class="nc"><i>196</i>&nbsp;                    }</b>
+<i>197</i>&nbsp;
+<b class="nc"><i>198</i>&nbsp;                    short[][] var8 = ((ShortLookupTable)var2).getTable();</b>
+<b class="nc"><i>199</i>&nbsp;</b>
+<i>200</i>&nbsp;                    for(var7 = 1; var7 &lt; var8.length; ++var7) {
+<i>201</i>&nbsp;                        if(var8[var7].length &gt; 256 || var8[var7].length != var8[var7 - 1].length) {
+<i>202</i>&nbsp;                            return false;
+<i>203</i>&nbsp;                        }
+<i>204</i>&nbsp;                    }
+<i>205</i>&nbsp;                }
+<b class="nc"><i>206</i>&nbsp;</b>
+<i>207</i>&nbsp;                return true;
+<b class="nc"><i>208</i>&nbsp;            } else {</b>
+<b class="nc"><i>209</i>&nbsp;                return false;</b>
+<b class="nc"><i>210</i>&nbsp;            }</b>
+<b class="nc"><i>211</i>&nbsp;        }</b>
+<i>212</i>&nbsp;    }
+<b class="nc"><i>213</i>&nbsp;</b>
+<i>214</i>&nbsp;    private static void enableLookupOp(RenderQueue var0, SurfaceData var1, BufferedImage var2, LookupOp var3) {
+<b class="nc"><i>215</i>&nbsp;        boolean var4 = var2.getColorModel().hasAlpha() &amp;&amp; var2.isAlphaPremultiplied();</b>
+<b class="nc"><i>216</i>&nbsp;        LookupTable var5 = var3.getTable();</b>
+<b class="nc"><i>217</i>&nbsp;        int var6 = var5.getNumComponents();</b>
+<b class="nc"><i>218</i>&nbsp;        int var7 = var5.getOffset();</b>
+<i>219</i>&nbsp;        int var8;
+<i>220</i>&nbsp;        byte var9;
+<i>221</i>&nbsp;        boolean var10;
+<b class="nc"><i>222</i>&nbsp;        if(var5 instanceof ShortLookupTable) {</b>
+<b class="nc"><i>223</i>&nbsp;            short[][] var11 = ((ShortLookupTable)var5).getTable();</b>
+<i>224</i>&nbsp;            var8 = var11[0].length;
+<b class="nc"><i>225</i>&nbsp;            var9 = 2;</b>
+<b class="nc"><i>226</i>&nbsp;            var10 = true;</b>
+<b class="nc"><i>227</i>&nbsp;        } else {</b>
+<b class="nc"><i>228</i>&nbsp;            byte[][] var18 = ((ByteLookupTable)var5).getTable();</b>
+<b class="nc"><i>229</i>&nbsp;            var8 = var18[0].length;</b>
+<b class="nc"><i>230</i>&nbsp;            var9 = 1;</b>
+<b class="nc"><i>231</i>&nbsp;            var10 = false;</b>
+<i>232</i>&nbsp;        }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;        int var19 = var6 * var8 * var9;
+<i>235</i>&nbsp;        int var12 = var19 + 3 &amp; -4;
+<b class="nc"><i>236</i>&nbsp;        int var13 = var12 - var19;</b>
+<b class="nc"><i>237</i>&nbsp;        int var14 = 32 + var12;</b>
+<b class="nc"><i>238</i>&nbsp;        RenderBuffer var15 = var0.getBuffer();</b>
+<i>239</i>&nbsp;        var0.ensureCapacityAndAlignment(var14, 4);
+<i>240</i>&nbsp;        var15.putInt(124);
+<i>241</i>&nbsp;        var15.putLong(var1.getNativeOps());
+<i>242</i>&nbsp;        var15.putInt(var4?1:0);
+<i>243</i>&nbsp;        var15.putInt(var10?1:0);
+<i>244</i>&nbsp;        var15.putInt(var6);
+<i>245</i>&nbsp;        var15.putInt(var8);
+<b class="nc"><i>246</i>&nbsp;        var15.putInt(var7);</b>
+<b class="nc"><i>247</i>&nbsp;        int var17;</b>
+<b class="nc"><i>248</i>&nbsp;        if(var10) {</b>
+<i>249</i>&nbsp;            short[][] var16 = ((ShortLookupTable)var5).getTable();
+<b class="nc"><i>250</i>&nbsp;</b>
+<b class="nc"><i>251</i>&nbsp;            for(var17 = 0; var17 &lt; var6; ++var17) {</b>
+<i>252</i>&nbsp;                var15.put(var16[var17]);
+<i>253</i>&nbsp;            }
+<i>254</i>&nbsp;        } else {
+<b class="nc"><i>255</i>&nbsp;            byte[][] var20 = ((ByteLookupTable)var5).getTable();</b>
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;            for(var17 = 0; var17 &lt; var6; ++var17) {
+<i>258</i>&nbsp;                var15.put(var20[var17]);
+<b class="nc"><i>259</i>&nbsp;            }</b>
+<i>260</i>&nbsp;        }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;        if(var13 != 0) {
+<i>263</i>&nbsp;            var15.position((long)(var15.position() + var13));
+<i>264</i>&nbsp;        }
+<i>265</i>&nbsp;
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<b class="nc"><i>267</i>&nbsp;</b>
+<i>268</i>&nbsp;    private static void disableLookupOp(RenderQueue var0) {
+<i>269</i>&nbsp;        RenderBuffer var1 = var0.getBuffer();
+<i>270</i>&nbsp;        var0.ensureCapacity(4);
+<b class="nc"><i>271</i>&nbsp;        var1.putInt(125);</b>
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

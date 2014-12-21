@@ -1,0 +1,627 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DocEnv</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.javadoc</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DocEnv (com.sun.tools.javadoc)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DocEnv</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 52)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 210)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.javadoc;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.javadoc.SourcePosition;
+<i>9</i>&nbsp;import com.sun.tools.javac.code.Symbol;
+<i>10</i>&nbsp;import com.sun.tools.javac.code.Symtab;
+<i>11</i>&nbsp;import com.sun.tools.javac.code.Types;
+<i>12</i>&nbsp;import com.sun.tools.javac.code.Symbol.ClassSymbol;
+<i>13</i>&nbsp;import com.sun.tools.javac.code.Symbol.CompletionFailure;
+<i>14</i>&nbsp;import com.sun.tools.javac.code.Symbol.MethodSymbol;
+<i>15</i>&nbsp;import com.sun.tools.javac.code.Symbol.PackageSymbol;
+<i>16</i>&nbsp;import com.sun.tools.javac.code.Symbol.VarSymbol;
+<i>17</i>&nbsp;import com.sun.tools.javac.code.Type.ClassType;
+<i>18</i>&nbsp;import com.sun.tools.javac.comp.Check;
+<i>19</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+<i>20</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+<i>21</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+<i>22</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
+<i>23</i>&nbsp;import com.sun.tools.javac.util.Context;
+<i>24</i>&nbsp;import com.sun.tools.javac.util.Names;
+<i>25</i>&nbsp;import com.sun.tools.javac.util.Context.Key;
+<i>26</i>&nbsp;import com.sun.tools.javac.util.JCDiagnostic.DiagnosticPosition;
+<i>27</i>&nbsp;import com.sun.tools.javac.util.Position.LineMap;
+<i>28</i>&nbsp;import com.sun.tools.javadoc.AnnotationTypeDocImpl;
+<i>29</i>&nbsp;import com.sun.tools.javadoc.AnnotationTypeElementDocImpl;
+<i>30</i>&nbsp;import com.sun.tools.javadoc.ClassDocImpl;
+<i>31</i>&nbsp;import com.sun.tools.javadoc.ConstructorDocImpl;
+<i>32</i>&nbsp;import com.sun.tools.javadoc.DocImpl;
+<i>33</i>&nbsp;import com.sun.tools.javadoc.DocLocale;
+<i>34</i>&nbsp;import com.sun.tools.javadoc.ExecutableMemberDocImpl;
+<i>35</i>&nbsp;import com.sun.tools.javadoc.FieldDocImpl;
+<i>36</i>&nbsp;import com.sun.tools.javadoc.JavadocClassReader;
+<b class="nc"><i>37</i>&nbsp;import com.sun.tools.javadoc.JavadocEnter;</b>
+<b class="nc"><i>38</i>&nbsp;import com.sun.tools.javadoc.Messager;</b>
+<i>39</i>&nbsp;import com.sun.tools.javadoc.MethodDocImpl;
+<i>40</i>&nbsp;import com.sun.tools.javadoc.ModifierFilter;
+<i>41</i>&nbsp;import com.sun.tools.javadoc.PackageDocImpl;
+<b class="nc"><i>42</i>&nbsp;import com.sun.tools.javadoc.ParameterizedTypeImpl;</b>
+<b class="nc"><i>43</i>&nbsp;import java.util.HashMap;</b>
+<b class="nc"><i>44</i>&nbsp;import java.util.Map;</b>
+<b class="nc"><i>45</i>&nbsp;import javax.tools.JavaFileManager;</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;public class DocEnv {
+<i>48</i>&nbsp;    protected static final Key&lt;DocEnv&gt; docEnvKey = new Key();
+<i>49</i>&nbsp;    private Messager messager;
+<i>50</i>&nbsp;    DocLocale doclocale;
+<i>51</i>&nbsp;    Symtab syms;
+<i>52</i>&nbsp;    JavadocClassReader reader;
+<i>53</i>&nbsp;    JavadocEnter enter;
+<i>54</i>&nbsp;    Names names;
+<i>55</i>&nbsp;    private String encoding;
+<i>56</i>&nbsp;    final Symbol externalizableSym;
+<i>57</i>&nbsp;    protected ModifierFilter showAccess;
+<i>58</i>&nbsp;    boolean breakiterator;
+<i>59</i>&nbsp;    boolean quiet = false;
+<i>60</i>&nbsp;    Check chk;
+<i>61</i>&nbsp;    Types types;
+<i>62</i>&nbsp;    JavaFileManager fileManager;
+<i>63</i>&nbsp;    boolean docClasses = false;
+<i>64</i>&nbsp;    protected boolean legacyDoclet = true;
+<i>65</i>&nbsp;    private boolean silent = false;
+<i>66</i>&nbsp;    protected Map&lt;PackageSymbol, PackageDocImpl&gt; packageMap = new HashMap();
+<i>67</i>&nbsp;    protected Map&lt;ClassSymbol, ClassDocImpl&gt; classMap = new HashMap();
+<i>68</i>&nbsp;    protected Map&lt;VarSymbol, FieldDocImpl&gt; fieldMap = new HashMap();
+<i>69</i>&nbsp;    protected Map&lt;MethodSymbol, ExecutableMemberDocImpl&gt; methodMap = new HashMap();
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public static DocEnv instance(Context var0) {
+<i>72</i>&nbsp;        DocEnv var1 = (DocEnv)var0.get(docEnvKey);
+<i>73</i>&nbsp;        if(var1 == null) {
+<i>74</i>&nbsp;            var1 = new DocEnv(var0);
+<i>75</i>&nbsp;        }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;        return var1;
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    protected DocEnv(Context var1) {
+<i>81</i>&nbsp;        var1.put(docEnvKey, this);
+<i>82</i>&nbsp;        this.messager = Messager.instance0(var1);
+<i>83</i>&nbsp;        this.syms = Symtab.instance(var1);
+<b class="nc"><i>84</i>&nbsp;        this.reader = JavadocClassReader.instance0(var1);</b>
+<i>85</i>&nbsp;        this.enter = JavadocEnter.instance0(var1);
+<i>86</i>&nbsp;        this.names = Names.instance(var1);
+<i>87</i>&nbsp;        this.externalizableSym = this.reader.enterClass(this.names.fromString(&quot;java.io.Externalizable&quot;));
+<i>88</i>&nbsp;        this.chk = Check.instance(var1);
+<i>89</i>&nbsp;        this.types = Types.instance(var1);
+<b class="nc"><i>90</i>&nbsp;        this.fileManager = (JavaFileManager)var1.get(JavaFileManager.class);</b>
+<i>91</i>&nbsp;        this.doclocale = new DocLocale(this, &quot;&quot;, this.breakiterator);
+<i>92</i>&nbsp;    }
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;    public void setSilent(boolean var1) {
+<i>95</i>&nbsp;        this.silent = var1;
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public ClassDocImpl lookupClass(String var1) {
+<b class="nc"><i>99</i>&nbsp;        ClassSymbol var2 = this.getClassSymbol(var1);</b>
+<i>100</i>&nbsp;        return var2 != null?this.getClassDoc(var2):null;
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public ClassDocImpl loadClass(String var1) {
+<i>104</i>&nbsp;        try {
+<i>105</i>&nbsp;            ClassSymbol var2 = this.reader.loadClass(this.names.fromString(var1));
+<b class="nc"><i>106</i>&nbsp;            return this.getClassDoc(var2);</b>
+<b class="nc"><i>107</i>&nbsp;        } catch (CompletionFailure var3) {</b>
+<i>108</i>&nbsp;            this.chk.completionError((DiagnosticPosition)null, var3);
+<b class="nc"><i>109</i>&nbsp;            return null;</b>
+<b class="nc"><i>110</i>&nbsp;        }</b>
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<b class="nc"><i>113</i>&nbsp;    public PackageDocImpl lookupPackage(String var1) {</b>
+<b class="nc"><i>114</i>&nbsp;        PackageSymbol var2 = (PackageSymbol)this.syms.packages.get(this.names.fromString(var1));</b>
+<b class="nc"><i>115</i>&nbsp;        ClassSymbol var3 = this.getClassSymbol(var1);</b>
+<b class="nc"><i>116</i>&nbsp;        return var2 != null &amp;&amp; var3 == null?this.getPackageDoc(var2):null;</b>
+<b class="nc"><i>117</i>&nbsp;    }</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    ClassSymbol getClassSymbol(String var1) {
+<b class="nc"><i>120</i>&nbsp;        int var2 = var1.length();</b>
+<i>121</i>&nbsp;        char[] var3 = var1.toCharArray();
+<i>122</i>&nbsp;        int var4 = var1.length();
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;        while(true) {</b>
+<i>125</i>&nbsp;            ClassSymbol var5 = (ClassSymbol)this.syms.classes.get(this.names.fromChars(var3, 0, var2));
+<i>126</i>&nbsp;            if(var5 != null) {
+<i>127</i>&nbsp;                return var5;
+<i>128</i>&nbsp;            }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;            var4 = var1.substring(0, var4).lastIndexOf(46);
+<b class="nc"><i>131</i>&nbsp;            if(var4 &lt; 0) {</b>
+<b class="nc"><i>132</i>&nbsp;                return null;</b>
+<b class="nc"><i>133</i>&nbsp;            }</b>
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;            var3[var4] = 36;</b>
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    public void setLocale(String var1) {
+<i>140</i>&nbsp;        this.doclocale = new DocLocale(this, var1, this.breakiterator);
+<i>141</i>&nbsp;        this.messager.reset();
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;    public boolean shouldDocument(VarSymbol var1) {</b>
+<b class="nc"><i>145</i>&nbsp;        long var2 = var1.flags();</b>
+<b class="nc"><i>146</i>&nbsp;        return (var2 &amp; 4096L) != 0L?false:this.showAccess.checkModifier(translateModifiers(var2));</b>
+<b class="nc"><i>147</i>&nbsp;    }</b>
+<b class="nc"><i>148</i>&nbsp;</b>
+<i>149</i>&nbsp;    public boolean shouldDocument(MethodSymbol var1) {
+<i>150</i>&nbsp;        long var2 = var1.flags();
+<i>151</i>&nbsp;        return (var2 &amp; 4096L) != 0L?false:this.showAccess.checkModifier(translateModifiers(var2));
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public boolean shouldDocument(ClassSymbol var1) {
+<i>155</i>&nbsp;        return (var1.flags_field &amp; 4096L) == 0L &amp;&amp; (this.docClasses || this.getClassDoc(var1).tree != null) &amp;&amp; this.isVisible(var1);
+<i>156</i>&nbsp;    }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    protected boolean isVisible(ClassSymbol var1) {
+<i>159</i>&nbsp;        long var2 = var1.flags_field;
+<b class="nc"><i>160</i>&nbsp;        if(!this.showAccess.checkModifier(translateModifiers(var2))) {</b>
+<b class="nc"><i>161</i>&nbsp;            return false;</b>
+<b class="nc"><i>162</i>&nbsp;        } else {</b>
+<b class="nc"><i>163</i>&nbsp;            ClassSymbol var4 = var1.owner.enclClass();</b>
+<i>164</i>&nbsp;            return var4 == null || (var2 &amp; 8L) != 0L || this.isVisible(var4);
+<b class="nc"><i>165</i>&nbsp;        }</b>
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    public void printError(String var1) {
+<i>169</i>&nbsp;        if(!this.silent) {
+<i>170</i>&nbsp;            this.messager.printError(var1);
+<i>171</i>&nbsp;        }
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    public void error(DocImpl var1, String var2) {
+<b class="nc"><i>175</i>&nbsp;        if(!this.silent) {</b>
+<b class="nc"><i>176</i>&nbsp;            this.messager.error(var1 == null?null:var1.position(), var2);</b>
+<b class="nc"><i>177</i>&nbsp;        }</b>
+<i>178</i>&nbsp;    }
+<b class="nc"><i>179</i>&nbsp;</b>
+<b class="nc"><i>180</i>&nbsp;    public void error(SourcePosition var1, String var2) {</b>
+<b class="nc"><i>181</i>&nbsp;        if(!this.silent) {</b>
+<b class="nc"><i>182</i>&nbsp;            this.messager.error(var1, var2);</b>
+<b class="nc"><i>183</i>&nbsp;        }</b>
+<b class="nc"><i>184</i>&nbsp;    }</b>
+<b class="nc"><i>185</i>&nbsp;</b>
+<b class="nc"><i>186</i>&nbsp;    public void printError(SourcePosition var1, String var2) {</b>
+<i>187</i>&nbsp;        if(!this.silent) {
+<i>188</i>&nbsp;            this.messager.printError(var1, var2);
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public void error(DocImpl var1, String var2, String var3) {
+<i>193</i>&nbsp;        if(!this.silent) {
+<b class="nc"><i>194</i>&nbsp;            this.messager.error(var1 == null?null:var1.position(), var2, var3);</b>
+<i>195</i>&nbsp;        }
+<b class="nc"><i>196</i>&nbsp;    }</b>
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    public void error(DocImpl var1, String var2, String var3, String var4) {
+<i>199</i>&nbsp;        if(!this.silent) {
+<i>200</i>&nbsp;            this.messager.error(var1 == null?null:var1.position(), var2, var3, var4);
+<b class="nc"><i>201</i>&nbsp;        }</b>
+<i>202</i>&nbsp;    }
+<b class="nc"><i>203</i>&nbsp;</b>
+<b class="nc"><i>204</i>&nbsp;    public void error(DocImpl var1, String var2, String var3, String var4, String var5) {</b>
+<i>205</i>&nbsp;        if(!this.silent) {
+<i>206</i>&nbsp;            this.messager.error(var1 == null?null:var1.position(), var2, var3, var4, var5);
+<b class="nc"><i>207</i>&nbsp;        }</b>
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public void printWarning(String var1) {
+<i>211</i>&nbsp;        if(!this.silent) {
+<b class="nc"><i>212</i>&nbsp;            this.messager.printWarning(var1);</b>
+<i>213</i>&nbsp;        }
+<b class="nc"><i>214</i>&nbsp;    }</b>
+<b class="nc"><i>215</i>&nbsp;</b>
+<i>216</i>&nbsp;    public void warning(DocImpl var1, String var2) {
+<i>217</i>&nbsp;        if(!this.silent) {
+<b class="nc"><i>218</i>&nbsp;            this.messager.warning(var1 == null?null:var1.position(), var2);</b>
+<i>219</i>&nbsp;        }
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    public void printWarning(SourcePosition var1, String var2) {
+<b class="nc"><i>223</i>&nbsp;        if(!this.silent) {</b>
+<i>224</i>&nbsp;            this.messager.printWarning(var1, var2);
+<i>225</i>&nbsp;        }
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    public void warning(DocImpl var1, String var2, String var3) {
+<i>229</i>&nbsp;        if(!this.silent) {
+<i>230</i>&nbsp;            this.messager.warning(var1 == null?null:var1.position(), var2, var3);
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    public void warning(DocImpl var1, String var2, String var3, String var4) {
+<i>235</i>&nbsp;        if(!this.silent) {
+<i>236</i>&nbsp;            this.messager.warning(var1 == null?null:var1.position(), var2, var3, var4);
+<i>237</i>&nbsp;        }
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    public void warning(DocImpl var1, String var2, String var3, String var4, String var5) {
+<i>241</i>&nbsp;        if(!this.silent) {
+<i>242</i>&nbsp;            this.messager.warning(var1 == null?null:var1.position(), var2, var3, var4, var5);
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;    }
+<b class="nc"><i>245</i>&nbsp;</b>
+<b class="nc"><i>246</i>&nbsp;    public void warning(DocImpl var1, String var2, String var3, String var4, String var5, String var6) {</b>
+<b class="nc"><i>247</i>&nbsp;        if(!this.silent) {</b>
+<i>248</i>&nbsp;            this.messager.warning(var1 == null?null:var1.position(), var2, var3, var4, var5, var6);
+<b class="nc"><i>249</i>&nbsp;        }</b>
+<b class="nc"><i>250</i>&nbsp;    }</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    public void printNotice(String var1) {
+<i>253</i>&nbsp;        if(!this.silent &amp;&amp; !this.quiet) {
+<i>254</i>&nbsp;            this.messager.printNotice(var1);
+<i>255</i>&nbsp;        }
+<i>256</i>&nbsp;    }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    public void notice(String var1) {
+<i>259</i>&nbsp;        if(!this.silent &amp;&amp; !this.quiet) {
+<i>260</i>&nbsp;            this.messager.notice(var1);
+<b class="nc"><i>261</i>&nbsp;        }</b>
+<i>262</i>&nbsp;    }
+<b class="nc"><i>263</i>&nbsp;</b>
+<i>264</i>&nbsp;    public void printNotice(SourcePosition var1, String var2) {
+<i>265</i>&nbsp;        if(!this.silent &amp;&amp; !this.quiet) {
+<i>266</i>&nbsp;            this.messager.printNotice(var1, var2);
+<i>267</i>&nbsp;        }
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public void notice(String var1, String var2) {
+<i>271</i>&nbsp;        if(!this.silent &amp;&amp; !this.quiet) {
+<b class="nc"><i>272</i>&nbsp;            this.messager.notice(var1, var2);</b>
+<i>273</i>&nbsp;        }
+<b class="nc"><i>274</i>&nbsp;    }</b>
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    public void notice(String var1, String var2, String var3) {
+<i>277</i>&nbsp;        if(!this.silent &amp;&amp; !this.quiet) {
+<i>278</i>&nbsp;            this.messager.notice(var1, var2, var3);
+<i>279</i>&nbsp;        }
+<i>280</i>&nbsp;    }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    public void notice(String var1, String var2, String var3, String var4) {
+<b class="nc"><i>283</i>&nbsp;        if(!this.silent &amp;&amp; !this.quiet) {</b>
+<i>284</i>&nbsp;            this.messager.notice(var1, var2, var3, var4);
+<b class="nc"><i>285</i>&nbsp;        }</b>
+<i>286</i>&nbsp;    }
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    public void exit() {
+<i>289</i>&nbsp;        this.messager.exit();
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public PackageDocImpl getPackageDoc(PackageSymbol var1) {
+<i>293</i>&nbsp;        PackageDocImpl var2 = (PackageDocImpl)this.packageMap.get(var1);
+<b class="nc"><i>294</i>&nbsp;        if(var2 != null) {</b>
+<i>295</i>&nbsp;            return var2;
+<b class="nc"><i>296</i>&nbsp;        } else {</b>
+<i>297</i>&nbsp;            var2 = new PackageDocImpl(this, var1);
+<i>298</i>&nbsp;            this.packageMap.put(var1, var2);
+<i>299</i>&nbsp;            return var2;
+<i>300</i>&nbsp;        }
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    void makePackageDoc(PackageSymbol var1, String var2, JCCompilationUnit var3) {
+<i>304</i>&nbsp;        PackageDocImpl var4 = (PackageDocImpl)this.packageMap.get(var1);
+<i>305</i>&nbsp;        if(var4 != null) {
+<b class="nc"><i>306</i>&nbsp;            if(var2 != null) {</b>
+<i>307</i>&nbsp;                var4.setRawCommentText(var2);
+<b class="nc"><i>308</i>&nbsp;            }</b>
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;            if(var3 != null) {
+<i>311</i>&nbsp;                var4.setTree(var3);
+<i>312</i>&nbsp;            }
+<i>313</i>&nbsp;        } else {
+<i>314</i>&nbsp;            var4 = new PackageDocImpl(this, var1, var2, var3);
+<i>315</i>&nbsp;            this.packageMap.put(var1, var4);
+<i>316</i>&nbsp;        }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    }
+<b class="nc"><i>319</i>&nbsp;</b>
+<i>320</i>&nbsp;    public ClassDocImpl getClassDoc(ClassSymbol var1) {
+<b class="nc"><i>321</i>&nbsp;        ClassDocImpl var2 = (ClassDocImpl)this.classMap.get(var1);</b>
+<i>322</i>&nbsp;        if(var2 != null) {
+<i>323</i>&nbsp;            return var2;
+<i>324</i>&nbsp;        } else {
+<i>325</i>&nbsp;            Object var3;
+<i>326</i>&nbsp;            if(isAnnotationType((ClassSymbol)var1)) {
+<i>327</i>&nbsp;                var3 = new AnnotationTypeDocImpl(this, var1);
+<i>328</i>&nbsp;            } else {
+<i>329</i>&nbsp;                var3 = new ClassDocImpl(this, var1);
+<i>330</i>&nbsp;            }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;            this.classMap.put(var1, var3);
+<b class="nc"><i>333</i>&nbsp;            return (ClassDocImpl)var3;</b>
+<i>334</i>&nbsp;        }
+<b class="nc"><i>335</i>&nbsp;    }</b>
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    protected void makeClassDoc(ClassSymbol var1, String var2, JCClassDecl var3, LineMap var4) {
+<i>338</i>&nbsp;        ClassDocImpl var5 = (ClassDocImpl)this.classMap.get(var1);
+<i>339</i>&nbsp;        if(var5 != null) {
+<i>340</i>&nbsp;            if(var2 != null) {
+<i>341</i>&nbsp;                var5.setRawCommentText(var2);
+<i>342</i>&nbsp;            }
+<i>343</i>&nbsp;
+<b class="nc"><i>344</i>&nbsp;            if(var3 != null) {</b>
+<i>345</i>&nbsp;                var5.setTree(var3);
+<b class="nc"><i>346</i>&nbsp;            }</b>
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;        } else {
+<i>349</i>&nbsp;            Object var6;
+<i>350</i>&nbsp;            if(isAnnotationType((JCClassDecl)var3)) {
+<i>351</i>&nbsp;                var6 = new AnnotationTypeDocImpl(this, var1, var2, var3, var4);
+<i>352</i>&nbsp;            } else {
+<i>353</i>&nbsp;                var6 = new ClassDocImpl(this, var1, var2, var3, var4);
+<i>354</i>&nbsp;            }
+<b class="nc"><i>355</i>&nbsp;</b>
+<i>356</i>&nbsp;            this.classMap.put(var1, var6);
+<b class="nc"><i>357</i>&nbsp;        }</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    protected static boolean isAnnotationType(ClassSymbol var0) {
+<i>361</i>&nbsp;        return ClassDocImpl.isAnnotationType(var0);
+<i>362</i>&nbsp;    }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;    protected static boolean isAnnotationType(JCClassDecl var0) {
+<i>365</i>&nbsp;        return (var0.mods.flags &amp; 8192L) != 0L;
+<b class="nc"><i>366</i>&nbsp;    }</b>
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;    public FieldDocImpl getFieldDoc(VarSymbol var1) {</b>
+<i>369</i>&nbsp;        FieldDocImpl var2 = (FieldDocImpl)this.fieldMap.get(var1);
+<i>370</i>&nbsp;        if(var2 != null) {
+<i>371</i>&nbsp;            return var2;
+<i>372</i>&nbsp;        } else {
+<i>373</i>&nbsp;            var2 = new FieldDocImpl(this, var1);
+<i>374</i>&nbsp;            this.fieldMap.put(var1, var2);
+<i>375</i>&nbsp;            return var2;
+<i>376</i>&nbsp;        }
+<i>377</i>&nbsp;    }
+<b class="nc"><i>378</i>&nbsp;</b>
+<i>379</i>&nbsp;    protected void makeFieldDoc(VarSymbol var1, String var2, JCVariableDecl var3, LineMap var4) {
+<b class="nc"><i>380</i>&nbsp;        FieldDocImpl var5 = (FieldDocImpl)this.fieldMap.get(var1);</b>
+<i>381</i>&nbsp;        if(var5 != null) {
+<i>382</i>&nbsp;            if(var2 != null) {
+<i>383</i>&nbsp;                var5.setRawCommentText(var2);
+<i>384</i>&nbsp;            }
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;            if(var3 != null) {
+<i>387</i>&nbsp;                var5.setTree(var3);
+<i>388</i>&nbsp;            }
+<i>389</i>&nbsp;        } else {
+<i>390</i>&nbsp;            var5 = new FieldDocImpl(this, var1, var2, var3, var4);
+<b class="nc"><i>391</i>&nbsp;            this.fieldMap.put(var1, var5);</b>
+<i>392</i>&nbsp;        }
+<b class="nc"><i>393</i>&nbsp;</b>
+<i>394</i>&nbsp;    }
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;    protected void makeMethodDoc(MethodSymbol var1, String var2, JCMethodDecl var3, LineMap var4) {
+<i>397</i>&nbsp;        MethodDocImpl var5 = (MethodDocImpl)this.methodMap.get(var1);
+<i>398</i>&nbsp;        if(var5 != null) {
+<i>399</i>&nbsp;            if(var2 != null) {
+<i>400</i>&nbsp;                var5.setRawCommentText(var2);
+<i>401</i>&nbsp;            }
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;            if(var3 != null) {
+<i>404</i>&nbsp;                var5.setTree(var3);
+<b class="nc"><i>405</i>&nbsp;            }</b>
+<i>406</i>&nbsp;        } else {
+<b class="nc"><i>407</i>&nbsp;            var5 = new MethodDocImpl(this, var1, var2, var3, var4);</b>
+<i>408</i>&nbsp;            this.methodMap.put(var1, var5);
+<i>409</i>&nbsp;        }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    }
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;    public MethodDocImpl getMethodDoc(MethodSymbol var1) {
+<i>414</i>&nbsp;        assert !var1.isConstructor() : &quot;not expecting a constructor symbol&quot;;
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;        MethodDocImpl var2 = (MethodDocImpl)this.methodMap.get(var1);
+<i>417</i>&nbsp;        if(var2 != null) {
+<i>418</i>&nbsp;            return var2;
+<i>419</i>&nbsp;        } else {
+<b class="nc"><i>420</i>&nbsp;            var2 = new MethodDocImpl(this, var1);</b>
+<i>421</i>&nbsp;            this.methodMap.put(var1, var2);
+<b class="nc"><i>422</i>&nbsp;            return var2;</b>
+<i>423</i>&nbsp;        }
+<i>424</i>&nbsp;    }
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;    protected void makeConstructorDoc(MethodSymbol var1, String var2, JCMethodDecl var3, LineMap var4) {
+<i>427</i>&nbsp;        ConstructorDocImpl var5 = (ConstructorDocImpl)this.methodMap.get(var1);
+<i>428</i>&nbsp;        if(var5 != null) {
+<i>429</i>&nbsp;            if(var2 != null) {
+<i>430</i>&nbsp;                var5.setRawCommentText(var2);
+<b class="nc"><i>431</i>&nbsp;            }</b>
+<i>432</i>&nbsp;
+<b class="nc"><i>433</i>&nbsp;            if(var3 != null) {</b>
+<i>434</i>&nbsp;                var5.setTree(var3);
+<i>435</i>&nbsp;            }
+<i>436</i>&nbsp;        } else {
+<i>437</i>&nbsp;            var5 = new ConstructorDocImpl(this, var1, var2, var3, var4);
+<i>438</i>&nbsp;            this.methodMap.put(var1, var5);
+<i>439</i>&nbsp;        }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;    }
+<i>442</i>&nbsp;
+<b class="nc"><i>443</i>&nbsp;    public ConstructorDocImpl getConstructorDoc(MethodSymbol var1) {</b>
+<i>444</i>&nbsp;        assert var1.isConstructor() : &quot;expecting a constructor symbol&quot;;
+<b class="nc"><i>445</i>&nbsp;</b>
+<i>446</i>&nbsp;        ConstructorDocImpl var2 = (ConstructorDocImpl)this.methodMap.get(var1);
+<i>447</i>&nbsp;        if(var2 != null) {
+<i>448</i>&nbsp;            return var2;
+<i>449</i>&nbsp;        } else {
+<i>450</i>&nbsp;            var2 = new ConstructorDocImpl(this, var1);
+<i>451</i>&nbsp;            this.methodMap.put(var1, var2);
+<i>452</i>&nbsp;            return var2;
+<i>453</i>&nbsp;        }
+<b class="nc"><i>454</i>&nbsp;    }</b>
+<i>455</i>&nbsp;
+<b class="nc"><i>456</i>&nbsp;    protected void makeAnnotationTypeElementDoc(MethodSymbol var1, String var2, JCMethodDecl var3, LineMap var4) {</b>
+<i>457</i>&nbsp;        AnnotationTypeElementDocImpl var5 = (AnnotationTypeElementDocImpl)this.methodMap.get(var1);
+<i>458</i>&nbsp;        if(var5 != null) {
+<i>459</i>&nbsp;            if(var2 != null) {
+<i>460</i>&nbsp;                var5.setRawCommentText(var2);
+<i>461</i>&nbsp;            }
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;            if(var3 != null) {
+<i>464</i>&nbsp;                var5.setTree(var3);
+<i>465</i>&nbsp;            }
+<b class="nc"><i>466</i>&nbsp;        } else {</b>
+<i>467</i>&nbsp;            var5 = new AnnotationTypeElementDocImpl(this, var1, var2, var3, var4);
+<b class="nc"><i>468</i>&nbsp;            this.methodMap.put(var1, var5);</b>
+<i>469</i>&nbsp;        }
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    }
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;    public AnnotationTypeElementDocImpl getAnnotationTypeElementDoc(MethodSymbol var1) {
+<i>474</i>&nbsp;        AnnotationTypeElementDocImpl var2 = (AnnotationTypeElementDocImpl)this.methodMap.get(var1);
+<i>475</i>&nbsp;        if(var2 != null) {
+<i>476</i>&nbsp;            return var2;
+<i>477</i>&nbsp;        } else {
+<i>478</i>&nbsp;            var2 = new AnnotationTypeElementDocImpl(this, var1);
+<b class="nc"><i>479</i>&nbsp;            this.methodMap.put(var1, var2);</b>
+<i>480</i>&nbsp;            return var2;
+<b class="nc"><i>481</i>&nbsp;        }</b>
+<i>482</i>&nbsp;    }
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;    ParameterizedTypeImpl getParameterizedType(ClassType var1) {
+<i>485</i>&nbsp;        return new ParameterizedTypeImpl(this, var1);
+<i>486</i>&nbsp;    }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;    public void setEncoding(String var1) {
+<i>489</i>&nbsp;        this.encoding = var1;
+<i>490</i>&nbsp;    }
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;    public String getEncoding() {
+<b class="nc"><i>493</i>&nbsp;        return this.encoding;</b>
+<i>494</i>&nbsp;    }
+<b class="nc"><i>495</i>&nbsp;</b>
+<i>496</i>&nbsp;    static int translateModifiers(long var0) {
+<i>497</i>&nbsp;        int var2 = 0;
+<i>498</i>&nbsp;        if((var0 &amp; 1024L) != 0L) {
+<i>499</i>&nbsp;            var2 |= 1024;
+<i>500</i>&nbsp;        }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;        if((var0 &amp; 16L) != 0L) {
+<i>503</i>&nbsp;            var2 |= 16;
+<i>504</i>&nbsp;        }
+<b class="nc"><i>505</i>&nbsp;</b>
+<i>506</i>&nbsp;        if((var0 &amp; 512L) != 0L) {
+<i>507</i>&nbsp;            var2 |= 512;
+<b class="nc"><i>508</i>&nbsp;        }</b>
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;        if((var0 &amp; 256L) != 0L) {
+<i>511</i>&nbsp;            var2 |= 256;
+<i>512</i>&nbsp;        }
+<i>513</i>&nbsp;
+<b class="nc"><i>514</i>&nbsp;        if((var0 &amp; 2L) != 0L) {</b>
+<b class="nc"><i>515</i>&nbsp;            var2 |= 2;</b>
+<b class="nc"><i>516</i>&nbsp;        }</b>
+<b class="nc"><i>517</i>&nbsp;</b>
+<b class="nc"><i>518</i>&nbsp;        if((var0 &amp; 4L) != 0L) {</b>
+<i>519</i>&nbsp;            var2 |= 4;
+<i>520</i>&nbsp;        }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;        if((var0 &amp; 1L) != 0L) {
+<i>523</i>&nbsp;            var2 |= 1;
+<i>524</i>&nbsp;        }
+<b class="nc"><i>525</i>&nbsp;</b>
+<b class="nc"><i>526</i>&nbsp;        if((var0 &amp; 8L) != 0L) {</b>
+<b class="nc"><i>527</i>&nbsp;            var2 |= 8;</b>
+<b class="nc"><i>528</i>&nbsp;        }</b>
+<i>529</i>&nbsp;
+<b class="nc"><i>530</i>&nbsp;        if((var0 &amp; 32L) != 0L) {</b>
+<b class="nc"><i>531</i>&nbsp;            var2 |= 32;</b>
+<i>532</i>&nbsp;        }
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;        if((var0 &amp; 128L) != 0L) {
+<i>535</i>&nbsp;            var2 |= 128;
+<b class="nc"><i>536</i>&nbsp;        }</b>
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;        if((var0 &amp; 64L) != 0L) {
+<i>539</i>&nbsp;            var2 |= 64;
+<i>540</i>&nbsp;        }
+<i>541</i>&nbsp;
+<b class="nc"><i>542</i>&nbsp;        return var2;</b>
+<b class="nc"><i>543</i>&nbsp;    }</b>
+<b class="nc"><i>544</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:57</div>
+</div>
+</body>
+</html>

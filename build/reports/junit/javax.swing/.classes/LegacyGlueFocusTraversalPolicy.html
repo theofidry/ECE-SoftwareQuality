@@ -1,0 +1,222 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LegacyGlueFocusTraversalPolicy</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.swing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LegacyGlueFocusTraversalPolicy (javax.swing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LegacyGlueFocusTraversalPolicy</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 73)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.swing;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Component;
+<i>9</i>&nbsp;import java.awt.Container;
+<i>10</i>&nbsp;import java.awt.FocusTraversalPolicy;
+<i>11</i>&nbsp;import java.awt.Window;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.io.ObjectInputStream;
+<i>14</i>&nbsp;import java.io.ObjectOutputStream;
+<i>15</i>&nbsp;import java.io.Serializable;
+<i>16</i>&nbsp;import java.util.HashMap;
+<i>17</i>&nbsp;import java.util.HashSet;
+<i>18</i>&nbsp;import javax.swing.DefaultFocusManager;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;final class LegacyGlueFocusTraversalPolicy extends FocusTraversalPolicy implements Serializable {
+<i>21</i>&nbsp;    private transient FocusTraversalPolicy delegatePolicy;
+<i>22</i>&nbsp;    private transient DefaultFocusManager delegateManager;
+<i>23</i>&nbsp;    private HashMap&lt;Component, Component&gt; forwardMap = new HashMap();
+<i>24</i>&nbsp;    private HashMap&lt;Component, Component&gt; backwardMap = new HashMap();
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    LegacyGlueFocusTraversalPolicy(FocusTraversalPolicy var1) {
+<i>27</i>&nbsp;        this.delegatePolicy = var1;
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    LegacyGlueFocusTraversalPolicy(DefaultFocusManager var1) {
+<i>31</i>&nbsp;        this.delegateManager = var1;
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<b class="nc"><i>34</i>&nbsp;    void setNextFocusableComponent(Component var1, Component var2) {</b>
+<i>35</i>&nbsp;        this.forwardMap.put(var1, var2);
+<i>36</i>&nbsp;        this.backwardMap.put(var2, var1);
+<b class="nc"><i>37</i>&nbsp;    }</b>
+<b class="nc"><i>38</i>&nbsp;</b>
+<i>39</i>&nbsp;    void unsetNextFocusableComponent(Component var1, Component var2) {
+<b class="nc"><i>40</i>&nbsp;        this.forwardMap.remove(var1);</b>
+<b class="nc"><i>41</i>&nbsp;        this.backwardMap.remove(var2);</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public Component getComponentAfter(Container var1, Component var2) {
+<b class="nc"><i>45</i>&nbsp;        Component var3 = var2;</b>
+<b class="nc"><i>46</i>&nbsp;        HashSet var5 = new HashSet();</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;        do {
+<b class="nc"><i>49</i>&nbsp;            Component var4 = var3;</b>
+<b class="nc"><i>50</i>&nbsp;            var3 = (Component)this.forwardMap.get(var3);</b>
+<i>51</i>&nbsp;            if(var3 == null) {
+<i>52</i>&nbsp;                return this.delegatePolicy != null &amp;&amp; var4.isFocusCycleRoot(var1)?this.delegatePolicy.getComponentAfter(var1, var4):(this.delegateManager != null?this.delegateManager.getComponentAfter(var1, var2):null);
+<i>53</i>&nbsp;            }
+<i>54</i>&nbsp;
+<b class="nc"><i>55</i>&nbsp;            if(var5.contains(var3)) {</b>
+<b class="nc"><i>56</i>&nbsp;                return null;</b>
+<i>57</i>&nbsp;            }
+<i>58</i>&nbsp;
+<b class="nc"><i>59</i>&nbsp;            var5.add(var3);</b>
+<b class="nc"><i>60</i>&nbsp;        } while(!this.accept(var3));</b>
+<b class="nc"><i>61</i>&nbsp;</b>
+<b class="nc"><i>62</i>&nbsp;        return var3;</b>
+<i>63</i>&nbsp;    }
+<b class="nc"><i>64</i>&nbsp;</b>
+<i>65</i>&nbsp;    public Component getComponentBefore(Container var1, Component var2) {
+<b class="nc"><i>66</i>&nbsp;        Component var3 = var2;</b>
+<b class="nc"><i>67</i>&nbsp;        HashSet var5 = new HashSet();</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;        do {
+<b class="nc"><i>70</i>&nbsp;            Component var4 = var3;</b>
+<i>71</i>&nbsp;            var3 = (Component)this.backwardMap.get(var3);
+<i>72</i>&nbsp;            if(var3 == null) {
+<b class="nc"><i>73</i>&nbsp;                return this.delegatePolicy != null &amp;&amp; var4.isFocusCycleRoot(var1)?this.delegatePolicy.getComponentBefore(var1, var4):(this.delegateManager != null?this.delegateManager.getComponentBefore(var1, var2):null);</b>
+<i>74</i>&nbsp;            }
+<b class="nc"><i>75</i>&nbsp;</b>
+<i>76</i>&nbsp;            if(var5.contains(var3)) {
+<b class="nc"><i>77</i>&nbsp;                return null;</b>
+<b class="nc"><i>78</i>&nbsp;            }</b>
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;            var5.add(var3);</b>
+<i>81</i>&nbsp;        } while(!this.accept(var3));
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;        return var3;
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<i>86</i>&nbsp;    public Component getFirstComponent(Container var1) {
+<i>87</i>&nbsp;        return this.delegatePolicy != null?this.delegatePolicy.getFirstComponent(var1):(this.delegateManager != null?this.delegateManager.getFirstComponent(var1):null);
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<b class="nc"><i>89</i>&nbsp;</b>
+<b class="nc"><i>90</i>&nbsp;    public Component getLastComponent(Container var1) {</b>
+<b class="nc"><i>91</i>&nbsp;        return this.delegatePolicy != null?this.delegatePolicy.getLastComponent(var1):(this.delegateManager != null?this.delegateManager.getLastComponent(var1):null);</b>
+<i>92</i>&nbsp;    }
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;    public Component getDefaultComponent(Container var1) {
+<b class="nc"><i>95</i>&nbsp;        return this.delegatePolicy != null?this.delegatePolicy.getDefaultComponent(var1):this.getFirstComponent(var1);</b>
+<b class="nc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    private boolean accept(Component var1) {
+<b class="nc"><i>99</i>&nbsp;        if(var1.isVisible() &amp;&amp; var1.isDisplayable() &amp;&amp; var1.isFocusable() &amp;&amp; var1.isEnabled()) {</b>
+<i>100</i>&nbsp;            if(!(var1 instanceof Window)) {
+<i>101</i>&nbsp;                for(Container var2 = var1.getParent(); var2 != null; var2 = var2.getParent()) {
+<b class="nc"><i>102</i>&nbsp;                    if(!var2.isEnabled() &amp;&amp; !var2.isLightweight()) {</b>
+<i>103</i>&nbsp;                        return false;
+<b class="nc"><i>104</i>&nbsp;                    }</b>
+<i>105</i>&nbsp;
+<b class="nc"><i>106</i>&nbsp;                    if(var2 instanceof Window) {</b>
+<b class="nc"><i>107</i>&nbsp;                        break;</b>
+<i>108</i>&nbsp;                    }
+<b class="nc"><i>109</i>&nbsp;                }</b>
+<i>110</i>&nbsp;            }
+<i>111</i>&nbsp;
+<b class="nc"><i>112</i>&nbsp;            return true;</b>
+<b class="nc"><i>113</i>&nbsp;        } else {</b>
+<b class="nc"><i>114</i>&nbsp;            return false;</b>
+<b class="nc"><i>115</i>&nbsp;        }</b>
+<i>116</i>&nbsp;    }
+<b class="nc"><i>117</i>&nbsp;</b>
+<i>118</i>&nbsp;    private void writeObject(ObjectOutputStream var1) throws IOException {
+<i>119</i>&nbsp;        var1.defaultWriteObject();
+<i>120</i>&nbsp;        if(this.delegatePolicy instanceof Serializable) {
+<b class="nc"><i>121</i>&nbsp;            var1.writeObject(this.delegatePolicy);</b>
+<b class="nc"><i>122</i>&nbsp;        } else {</b>
+<b class="nc"><i>123</i>&nbsp;            var1.writeObject((Object)null);</b>
+<b class="nc"><i>124</i>&nbsp;        }</b>
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;        if(this.delegateManager instanceof Serializable) {</b>
+<i>127</i>&nbsp;            var1.writeObject(this.delegateManager);
+<i>128</i>&nbsp;        } else {
+<i>129</i>&nbsp;            var1.writeObject((Object)null);
+<b class="nc"><i>130</i>&nbsp;        }</b>
+<b class="nc"><i>131</i>&nbsp;</b>
+<i>132</i>&nbsp;    }
+<b class="nc"><i>133</i>&nbsp;</b>
+<i>134</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<i>135</i>&nbsp;        var1.defaultReadObject();
+<i>136</i>&nbsp;        this.delegatePolicy = (FocusTraversalPolicy)var1.readObject();
+<b class="nc"><i>137</i>&nbsp;        this.delegateManager = (DefaultFocusManager)var1.readObject();</b>
+<i>138</i>&nbsp;    }
+<b class="nc"><i>139</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:36</div>
+</div>
+</body>
+</html>

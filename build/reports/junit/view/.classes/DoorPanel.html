@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DoorPanel</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">view</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DoorPanel (view)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DoorPanel</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (20/ 22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package view;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import model.Door;
+<i>4</i>&nbsp;import model.enums.DoorStateEnum;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;import javax.swing.JLabel;
+<i>7</i>&nbsp;import javax.swing.JPanel;
+<i>8</i>&nbsp;import javax.swing.SwingConstants;
+<i>9</i>&nbsp;import java.awt.GridLayout;
+<i>10</i>&nbsp;import java.awt.TextField;
+<i>11</i>&nbsp;import java.beans.PropertyChangeEvent;
+<i>12</i>&nbsp;import java.beans.PropertyChangeListener;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;/**
+<i>15</i>&nbsp; * Door panel, is composed of a label and updates its value accordingly to the given model.
+<i>16</i>&nbsp; */
+<i>17</i>&nbsp;public class DoorPanel extends JPanel implements PropertyChangeListener {
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    /**
+<i>20</i>&nbsp;     * Door model.
+<i>21</i>&nbsp;     */
+<i>22</i>&nbsp;    private Door door;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    /**
+<i>25</i>&nbsp;     * Panel&#39;s label.
+<i>26</i>&nbsp;     */
+<b class="fc"><i>27</i>&nbsp;    private JLabel label = new JLabel();</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    /**
+<i>30</i>&nbsp;     * Panel&#39;s text field, used to display the door state.
+<i>31</i>&nbsp;     */
+<b class="fc"><i>32</i>&nbsp;    private TextField field = new TextField();</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    /**
+<i>35</i>&nbsp;     * Instantiate a door panel.
+<i>36</i>&nbsp;     *
+<i>37</i>&nbsp;     * @param door model to which the view is bound
+<i>38</i>&nbsp;     * @param name label content, if empty is set to default value
+<i>39</i>&nbsp;     */
+<b class="fc"><i>40</i>&nbsp;    public DoorPanel(Door door, String name) {</b>
+<i>41</i>&nbsp;
+<b class="fc"><i>42</i>&nbsp;        this.door = door;</b>
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;        if (name.isEmpty()) {</b>
+<b class="fc"><i>45</i>&nbsp;            name = &quot;Door&quot;;</b>
+<i>46</i>&nbsp;        }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;        //
+<i>49</i>&nbsp;        // Initialize components
+<i>50</i>&nbsp;        //
+<b class="fc"><i>51</i>&nbsp;        this.setLayout(new GridLayout());</b>
+<i>52</i>&nbsp;
+<b class="fc"><i>53</i>&nbsp;        label.setText(name);</b>
+<b class="fc"><i>54</i>&nbsp;        label.setHorizontalAlignment(SwingConstants.LEFT);</b>
+<b class="fc"><i>55</i>&nbsp;        label.setLabelFor(field);</b>
+<b class="fc"><i>56</i>&nbsp;        this.add(label);</b>
+<i>57</i>&nbsp;
+<b class="fc"><i>58</i>&nbsp;        field.setEditable(false);</b>
+<b class="fc"><i>59</i>&nbsp;        this.add(field);</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;        //
+<i>62</i>&nbsp;        // Binds model to view
+<i>63</i>&nbsp;        //
+<b class="fc"><i>64</i>&nbsp;        this.door.addPropertyChangeListener(this);</b>
+<b class="fc"><i>65</i>&nbsp;        modelToView(door.state);</b>
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * Updates the view according to the model value.
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * @param evt event triggering the update
+<i>72</i>&nbsp;     */
+<i>73</i>&nbsp;    public void propertyChange(PropertyChangeEvent evt) {
+<b class="nc"><i>74</i>&nbsp;        modelToView((DoorStateEnum) evt.getNewValue());</b>
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * Helper used to update the new model value to the view.
+<i>79</i>&nbsp;     *
+<i>80</i>&nbsp;     * @param state state of the door
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    private void modelToView(DoorStateEnum state) {
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;        // Reformat enum to text in lowercase and with the first letter capitalized
+<b class="fc"><i>85</i>&nbsp;        String text = state.toString().toLowerCase();</b>
+<b class="fc"><i>86</i>&nbsp;        text = text.substring(0, 1).toUpperCase() + text.substring(1);</b>
+<i>87</i>&nbsp;
+<b class="fc"><i>88</i>&nbsp;        field.setText(text);</b>
+<b class="fc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

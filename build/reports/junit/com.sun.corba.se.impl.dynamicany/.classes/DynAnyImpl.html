@@ -1,0 +1,217 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DynAnyImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.corba.se.impl.dynamicany</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DynAnyImpl (com.sun.corba.se.impl.dynamicany)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DynAnyImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 49)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.corba.se.impl.dynamicany;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.corba.se.impl.dynamicany.DynAnyUtil;
+<i>9</i>&nbsp;import com.sun.corba.se.impl.logging.ORBUtilSystemException;
+<i>10</i>&nbsp;import com.sun.corba.se.spi.orb.ORB;
+<i>11</i>&nbsp;import org.omg.CORBA.Any;
+<i>12</i>&nbsp;import org.omg.CORBA.LocalObject;
+<i>13</i>&nbsp;import org.omg.CORBA.TypeCode;
+<i>14</i>&nbsp;import org.omg.CORBA.ORBPackage.InvalidName;
+<i>15</i>&nbsp;import org.omg.CORBA.portable.OutputStream;
+<i>16</i>&nbsp;import org.omg.DynamicAny.DynAny;
+<i>17</i>&nbsp;import org.omg.DynamicAny.DynAnyFactory;
+<i>18</i>&nbsp;import org.omg.DynamicAny.DynAnyPackage.InvalidValue;
+<i>19</i>&nbsp;import org.omg.DynamicAny.DynAnyPackage.TypeMismatch;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;abstract class DynAnyImpl extends LocalObject implements DynAny {
+<i>22</i>&nbsp;    protected static final int NO_INDEX = -1;
+<i>23</i>&nbsp;    protected static final byte STATUS_DESTROYABLE = 0;
+<i>24</i>&nbsp;    protected static final byte STATUS_UNDESTROYABLE = 1;
+<i>25</i>&nbsp;    protected static final byte STATUS_DESTROYED = 2;
+<i>26</i>&nbsp;    protected ORB orb = null;
+<i>27</i>&nbsp;    protected ORBUtilSystemException wrapper;
+<i>28</i>&nbsp;    protected Any any = null;
+<i>29</i>&nbsp;    protected byte status = 0;
+<i>30</i>&nbsp;    protected int index = -1;
+<i>31</i>&nbsp;    private String[] __ids = new String[]{&quot;IDL:omg.org/DynamicAny/DynAny:1.0&quot;};
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    protected DynAnyImpl() {
+<i>34</i>&nbsp;        this.wrapper = ORBUtilSystemException.get(&quot;rpc.presentation&quot;);
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    protected DynAnyImpl(ORB var1, Any var2, boolean var3) {
+<i>38</i>&nbsp;        this.orb = var1;
+<b class="nc"><i>39</i>&nbsp;        this.wrapper = ORBUtilSystemException.get(var1, &quot;rpc.presentation&quot;);</b>
+<i>40</i>&nbsp;        if(var3) {
+<i>41</i>&nbsp;            this.any = DynAnyUtil.copy(var2, var1);
+<i>42</i>&nbsp;        } else {
+<i>43</i>&nbsp;            this.any = var2;
+<i>44</i>&nbsp;        }
+<i>45</i>&nbsp;
+<b class="nc"><i>46</i>&nbsp;        this.index = -1;</b>
+<i>47</i>&nbsp;    }
+<b class="nc"><i>48</i>&nbsp;</b>
+<b class="nc"><i>49</i>&nbsp;    protected DynAnyImpl(ORB var1, TypeCode var2) {</b>
+<i>50</i>&nbsp;        this.orb = var1;
+<i>51</i>&nbsp;        this.wrapper = ORBUtilSystemException.get(var1, &quot;rpc.presentation&quot;);
+<i>52</i>&nbsp;        this.any = DynAnyUtil.createDefaultAnyOfType(var2, var1);
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<b class="nc"><i>55</i>&nbsp;    protected DynAnyFactory factory() {</b>
+<b class="nc"><i>56</i>&nbsp;        try {</b>
+<i>57</i>&nbsp;            return (DynAnyFactory)this.orb.resolve_initial_references(&quot;DynAnyFactory&quot;);
+<i>58</i>&nbsp;        } catch (InvalidName var2) {
+<i>59</i>&nbsp;            throw new RuntimeException(&quot;Unable to find DynAnyFactory&quot;);
+<b class="nc"><i>60</i>&nbsp;        }</b>
+<b class="nc"><i>61</i>&nbsp;    }</b>
+<b class="nc"><i>62</i>&nbsp;</b>
+<i>63</i>&nbsp;    protected Any getAny() {
+<b class="nc"><i>64</i>&nbsp;        return this.any;</b>
+<b class="nc"><i>65</i>&nbsp;    }</b>
+<i>66</i>&nbsp;
+<b class="nc"><i>67</i>&nbsp;    protected Any getAny(DynAny var1) {</b>
+<i>68</i>&nbsp;        return var1 instanceof DynAnyImpl?((DynAnyImpl)var1).getAny():var1.to_any();
+<b class="nc"><i>69</i>&nbsp;    }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    protected void writeAny(OutputStream var1) {
+<b class="nc"><i>72</i>&nbsp;        this.any.write_value(var1);</b>
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<i>75</i>&nbsp;    protected void setStatus(byte var1) {
+<b class="nc"><i>76</i>&nbsp;        this.status = var1;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    protected void clearData() {
+<i>80</i>&nbsp;        this.any.type(this.any.type());
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;    public TypeCode type() {</b>
+<b class="nc"><i>84</i>&nbsp;        if(this.status == 2) {</b>
+<i>85</i>&nbsp;            throw this.wrapper.dynAnyDestroyed();
+<i>86</i>&nbsp;        } else {
+<i>87</i>&nbsp;            return this.any.type();
+<i>88</i>&nbsp;        }
+<b class="nc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public void assign(DynAny var1) throws TypeMismatch {
+<i>92</i>&nbsp;        if(this.status == 2) {
+<i>93</i>&nbsp;            throw this.wrapper.dynAnyDestroyed();
+<i>94</i>&nbsp;        } else if(this.any != null &amp;&amp; !this.any.type().equal(var1.type())) {
+<b class="nc"><i>95</i>&nbsp;            throw new TypeMismatch();</b>
+<b class="nc"><i>96</i>&nbsp;        } else {</b>
+<i>97</i>&nbsp;            this.any = var1.to_any();
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public void from_any(Any var1) throws TypeMismatch, InvalidValue {
+<b class="nc"><i>102</i>&nbsp;        if(this.status == 2) {</b>
+<i>103</i>&nbsp;            throw this.wrapper.dynAnyDestroyed();
+<i>104</i>&nbsp;        } else if(this.any != null &amp;&amp; !this.any.type().equal(var1.type())) {
+<i>105</i>&nbsp;            throw new TypeMismatch();
+<i>106</i>&nbsp;        } else {
+<b class="nc"><i>107</i>&nbsp;            Any var2 = null;</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;            try {
+<i>110</i>&nbsp;                var2 = DynAnyUtil.copy(var1, this.orb);
+<b class="nc"><i>111</i>&nbsp;            } catch (Exception var4) {</b>
+<i>112</i>&nbsp;                throw new InvalidValue();
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;            if(!DynAnyUtil.isInitialized(var2)) {
+<b class="nc"><i>116</i>&nbsp;                throw new InvalidValue();</b>
+<i>117</i>&nbsp;            } else {
+<i>118</i>&nbsp;                this.any = var2;
+<i>119</i>&nbsp;            }
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public abstract Any to_any();
+<b class="nc"><i>124</i>&nbsp;</b>
+<b class="nc"><i>125</i>&nbsp;    public abstract boolean equal(DynAny var1);</b>
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;    public abstract void destroy();</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public abstract DynAny copy();
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public String[] _ids() {
+<i>132</i>&nbsp;        return (String[])((String[])this.__ids.clone());
+<i>133</i>&nbsp;    }
+<b class="nc"><i>134</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

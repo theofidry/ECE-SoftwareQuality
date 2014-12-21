@@ -1,0 +1,896 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SpNegoContext</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.jgss.spnego</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SpNegoContext (sun.security.jgss.spnego)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SpNegoContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 61)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 413)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.jgss.spnego;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.security.jgss.ExtendedGSSContext;
+<i>9</i>&nbsp;import com.sun.security.jgss.InquireType;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.io.InputStream;
+<i>12</i>&nbsp;import java.io.OutputStream;
+<i>13</i>&nbsp;import java.security.AccessController;
+<i>14</i>&nbsp;import java.security.Provider;
+<i>15</i>&nbsp;import org.ietf.jgss.ChannelBinding;
+<i>16</i>&nbsp;import org.ietf.jgss.GSSContext;
+<i>17</i>&nbsp;import org.ietf.jgss.GSSException;
+<i>18</i>&nbsp;import org.ietf.jgss.GSSName;
+<i>19</i>&nbsp;import org.ietf.jgss.MessageProp;
+<i>20</i>&nbsp;import org.ietf.jgss.Oid;
+<i>21</i>&nbsp;import sun.security.action.GetBooleanAction;
+<i>22</i>&nbsp;import sun.security.jgss.GSSCredentialImpl;
+<i>23</i>&nbsp;import sun.security.jgss.GSSNameImpl;
+<i>24</i>&nbsp;import sun.security.jgss.GSSUtil;
+<i>25</i>&nbsp;import sun.security.jgss.spi.GSSContextSpi;
+<i>26</i>&nbsp;import sun.security.jgss.spi.GSSCredentialSpi;
+<i>27</i>&nbsp;import sun.security.jgss.spi.GSSNameSpi;
+<i>28</i>&nbsp;import sun.security.jgss.spnego.NegTokenInit;
+<i>29</i>&nbsp;import sun.security.jgss.spnego.NegTokenTarg;
+<i>30</i>&nbsp;import sun.security.jgss.spnego.SpNegoCredElement;
+<i>31</i>&nbsp;import sun.security.jgss.spnego.SpNegoMechFactory;
+<i>32</i>&nbsp;import sun.security.jgss.spnego.SpNegoToken;
+<i>33</i>&nbsp;import sun.security.jgss.spnego.SpNegoToken.NegoResult;
+<i>34</i>&nbsp;import sun.security.util.BitArray;
+<b class="nc"><i>35</i>&nbsp;import sun.security.util.DerOutputStream;</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;public class SpNegoContext implements GSSContextSpi {
+<i>38</i>&nbsp;    private static final int STATE_NEW = 1;
+<i>39</i>&nbsp;    private static final int STATE_IN_PROCESS = 2;
+<i>40</i>&nbsp;    private static final int STATE_DONE = 3;
+<b class="nc"><i>41</i>&nbsp;    private static final int STATE_DELETED = 4;</b>
+<b class="nc"><i>42</i>&nbsp;    private int state = 1;</b>
+<b class="nc"><i>43</i>&nbsp;    private boolean credDelegState = false;</b>
+<b class="nc"><i>44</i>&nbsp;    private boolean mutualAuthState = true;</b>
+<b class="nc"><i>45</i>&nbsp;    private boolean replayDetState = true;</b>
+<b class="nc"><i>46</i>&nbsp;    private boolean sequenceDetState = true;</b>
+<i>47</i>&nbsp;    private boolean confState = true;
+<b class="nc"><i>48</i>&nbsp;    private boolean integState = true;</b>
+<b class="nc"><i>49</i>&nbsp;    private boolean delegPolicyState = false;</b>
+<b class="nc"><i>50</i>&nbsp;    private GSSNameSpi peerName = null;</b>
+<i>51</i>&nbsp;    private GSSNameSpi myName = null;
+<b class="nc"><i>52</i>&nbsp;    private SpNegoCredElement myCred = null;</b>
+<b class="nc"><i>53</i>&nbsp;    private GSSContext mechContext = null;</b>
+<i>54</i>&nbsp;    private byte[] DER_mechTypes = null;
+<i>55</i>&nbsp;    private int lifetime;
+<i>56</i>&nbsp;    private ChannelBinding channelBinding;
+<i>57</i>&nbsp;    private boolean initiator;
+<i>58</i>&nbsp;    private Oid internal_mech = null;
+<i>59</i>&nbsp;    private final SpNegoMechFactory factory;
+<b class="nc"><i>60</i>&nbsp;    static final boolean DEBUG = ((Boolean)AccessController.doPrivileged(new GetBooleanAction(&quot;sun.security.spnego.debug&quot;))).booleanValue();</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public SpNegoContext(SpNegoMechFactory var1, GSSNameSpi var2, GSSCredentialSpi var3, int var4) throws GSSException {
+<i>63</i>&nbsp;        if(var2 == null) {
+<i>64</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot have null peer name&quot;);
+<i>65</i>&nbsp;        } else if(var3 != null &amp;&amp; !(var3 instanceof SpNegoCredElement)) {
+<b class="nc"><i>66</i>&nbsp;            throw new IllegalArgumentException(&quot;Wrong cred element type&quot;);</b>
+<i>67</i>&nbsp;        } else {
+<i>68</i>&nbsp;            this.peerName = var2;
+<i>69</i>&nbsp;            this.myCred = (SpNegoCredElement)var3;
+<i>70</i>&nbsp;            this.lifetime = var4;
+<i>71</i>&nbsp;            this.initiator = true;
+<i>72</i>&nbsp;            this.factory = var1;
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public SpNegoContext(SpNegoMechFactory var1, GSSCredentialSpi var2) throws GSSException {
+<b class="nc"><i>77</i>&nbsp;        if(var2 != null &amp;&amp; !(var2 instanceof SpNegoCredElement)) {</b>
+<i>78</i>&nbsp;            throw new IllegalArgumentException(&quot;Wrong cred element type&quot;);
+<b class="nc"><i>79</i>&nbsp;        } else {</b>
+<b class="nc"><i>80</i>&nbsp;            this.myCred = (SpNegoCredElement)var2;</b>
+<b class="nc"><i>81</i>&nbsp;            this.initiator = false;</b>
+<b class="nc"><i>82</i>&nbsp;            this.factory = var1;</b>
+<i>83</i>&nbsp;        }
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<b class="nc"><i>86</i>&nbsp;    public SpNegoContext(SpNegoMechFactory var1, byte[] var2) throws GSSException {</b>
+<b class="nc"><i>87</i>&nbsp;        throw new GSSException(16, -1, &quot;GSS Import Context not available&quot;);</b>
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public final void requestConf(boolean var1) throws GSSException {
+<i>91</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<i>92</i>&nbsp;            this.confState = var1;
+<i>93</i>&nbsp;        }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    }
+<b class="nc"><i>96</i>&nbsp;</b>
+<b class="nc"><i>97</i>&nbsp;    public final boolean getConfState() {</b>
+<b class="nc"><i>98</i>&nbsp;        return this.confState;</b>
+<i>99</i>&nbsp;    }
+<b class="nc"><i>100</i>&nbsp;</b>
+<b class="nc"><i>101</i>&nbsp;    public final void requestInteg(boolean var1) throws GSSException {</b>
+<b class="nc"><i>102</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {</b>
+<i>103</i>&nbsp;            this.integState = var1;
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public final void requestDelegPolicy(boolean var1) throws GSSException {
+<b class="nc"><i>109</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {</b>
+<b class="nc"><i>110</i>&nbsp;            this.delegPolicyState = var1;</b>
+<i>111</i>&nbsp;        }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public final boolean getIntegState() {
+<i>116</i>&nbsp;        return this.integState;
+<i>117</i>&nbsp;    }
+<b class="nc"><i>118</i>&nbsp;</b>
+<b class="nc"><i>119</i>&nbsp;    public final boolean getDelegPolicyState() {</b>
+<i>120</i>&nbsp;        return this.isInitiator() &amp;&amp; this.mechContext != null &amp;&amp; this.mechContext instanceof ExtendedGSSContext &amp;&amp; (this.state == 2 || this.state == 3)?((ExtendedGSSContext)this.mechContext).getDelegPolicyState():this.delegPolicyState;
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public final void requestCredDeleg(boolean var1) throws GSSException {
+<i>124</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<i>125</i>&nbsp;            this.credDelegState = var1;
+<b class="nc"><i>126</i>&nbsp;        }</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public final boolean getCredDelegState() {
+<i>131</i>&nbsp;        return this.isInitiator() &amp;&amp; this.mechContext != null &amp;&amp; (this.state == 2 || this.state == 3)?this.mechContext.getCredDelegState():this.credDelegState;
+<i>132</i>&nbsp;    }
+<b class="nc"><i>133</i>&nbsp;</b>
+<b class="nc"><i>134</i>&nbsp;    public final void requestMutualAuth(boolean var1) throws GSSException {</b>
+<i>135</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<i>136</i>&nbsp;            this.mutualAuthState = var1;
+<i>137</i>&nbsp;        }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<b class="nc"><i>141</i>&nbsp;    public final boolean getMutualAuthState() {</b>
+<i>142</i>&nbsp;        return this.mutualAuthState;
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public final Oid getMech() {
+<i>146</i>&nbsp;        return this.isEstablished()?this.getNegotiatedMech():SpNegoMechFactory.GSS_SPNEGO_MECH_OID;
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<b class="nc"><i>149</i>&nbsp;    public final Oid getNegotiatedMech() {</b>
+<b class="nc"><i>150</i>&nbsp;        return this.internal_mech;</b>
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    public final Provider getProvider() {
+<i>154</i>&nbsp;        return SpNegoMechFactory.PROVIDER;
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;    public final void dispose() throws GSSException {</b>
+<i>158</i>&nbsp;        this.mechContext = null;
+<b class="nc"><i>159</i>&nbsp;        this.state = 4;</b>
+<i>160</i>&nbsp;    }
+<b class="nc"><i>161</i>&nbsp;</b>
+<i>162</i>&nbsp;    public final boolean isInitiator() {
+<i>163</i>&nbsp;        return this.initiator;
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public final boolean isProtReady() {
+<i>167</i>&nbsp;        return this.state == 3;
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    public final byte[] initSecContext(InputStream var1, int var2) throws GSSException {
+<b class="nc"><i>171</i>&nbsp;        byte[] var3 = null;</b>
+<b class="nc"><i>172</i>&nbsp;        NegTokenInit var4 = null;</b>
+<i>173</i>&nbsp;        byte[] var5 = null;
+<i>174</i>&nbsp;        byte var6 = 11;
+<i>175</i>&nbsp;        if(DEBUG) {
+<i>176</i>&nbsp;            System.out.println(&quot;Entered SpNego.initSecContext with state=&quot; + printState(this.state));
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;        if(!this.isInitiator()) {
+<i>180</i>&nbsp;            throw new GSSException(11, -1, &quot;initSecContext on an acceptor GSSContext&quot;);
+<i>181</i>&nbsp;        } else {
+<b class="nc"><i>182</i>&nbsp;            GSSException var8;</b>
+<i>183</i>&nbsp;            try {
+<i>184</i>&nbsp;                if(this.state == 1) {
+<i>185</i>&nbsp;                    this.state = 2;
+<b class="nc"><i>186</i>&nbsp;                    boolean var15 = true;</b>
+<i>187</i>&nbsp;                    Oid[] var7 = this.getAvailableMechs();
+<i>188</i>&nbsp;                    this.DER_mechTypes = this.getEncodedMechs(var7);
+<i>189</i>&nbsp;                    this.internal_mech = var7[0];
+<b class="nc"><i>190</i>&nbsp;                    var5 = this.GSS_initSecContext((byte[])null);</b>
+<i>191</i>&nbsp;                    var15 = true;
+<i>192</i>&nbsp;                    var4 = new NegTokenInit(this.DER_mechTypes, this.getContextFlags(), var5, (byte[])null);
+<i>193</i>&nbsp;                    if(DEBUG) {
+<b class="nc"><i>194</i>&nbsp;                        System.out.println(&quot;SpNegoContext.initSecContext: sending token of type = &quot; + SpNegoToken.getTokenName(var4.getType()));</b>
+<i>195</i>&nbsp;                    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;                    var3 = var4.getEncoded();
+<b class="nc"><i>198</i>&nbsp;                } else if(this.state == 2) {</b>
+<i>199</i>&nbsp;                    var6 = 11;
+<i>200</i>&nbsp;                    if(var1 == null) {
+<i>201</i>&nbsp;                        throw new GSSException(var6, -1, &quot;No token received from peer!&quot;);
+<b class="nc"><i>202</i>&nbsp;                    }</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;                    var6 = 10;
+<i>205</i>&nbsp;                    byte[] var16 = new byte[var1.available()];
+<b class="nc"><i>206</i>&nbsp;                    SpNegoToken.readFully(var1, var16);</b>
+<i>207</i>&nbsp;                    if(DEBUG) {
+<i>208</i>&nbsp;                        System.out.println(&quot;SpNegoContext.initSecContext: process received token = &quot; + SpNegoToken.getHexBytes(var16));
+<i>209</i>&nbsp;                    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;                    NegTokenTarg var17 = new NegTokenTarg(var16);
+<i>212</i>&nbsp;                    if(DEBUG) {
+<i>213</i>&nbsp;                        System.out.println(&quot;SpNegoContext.initSecContext: received token of type = &quot; + SpNegoToken.getTokenName(var17.getType()));
+<i>214</i>&nbsp;                    }
+<b class="nc"><i>215</i>&nbsp;</b>
+<b class="nc"><i>216</i>&nbsp;                    this.internal_mech = var17.getSupportedMech();</b>
+<i>217</i>&nbsp;                    if(this.internal_mech == null) {
+<b class="nc"><i>218</i>&nbsp;                        throw new GSSException(var6, -1, &quot;supported mechansim from server is null&quot;);</b>
+<i>219</i>&nbsp;                    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;                    NegoResult var9 = null;
+<b class="nc"><i>222</i>&nbsp;                    int var10 = var17.getNegotiatedResult();</b>
+<i>223</i>&nbsp;                    switch(var10) {
+<i>224</i>&nbsp;                    case 0:
+<i>225</i>&nbsp;                        var9 = NegoResult.ACCEPT_COMPLETE;
+<b class="nc"><i>226</i>&nbsp;                        this.state = 3;</b>
+<i>227</i>&nbsp;                        break;
+<i>228</i>&nbsp;                    case 1:
+<i>229</i>&nbsp;                        var9 = NegoResult.ACCEPT_INCOMPLETE;
+<b class="nc"><i>230</i>&nbsp;                        this.state = 2;</b>
+<b class="nc"><i>231</i>&nbsp;                        break;</b>
+<i>232</i>&nbsp;                    case 2:
+<i>233</i>&nbsp;                        var9 = NegoResult.REJECT;
+<i>234</i>&nbsp;                        this.state = 4;
+<i>235</i>&nbsp;                        break;
+<i>236</i>&nbsp;                    default:
+<i>237</i>&nbsp;                        this.state = 3;
+<i>238</i>&nbsp;                    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;                    var6 = 2;
+<b class="nc"><i>241</i>&nbsp;                    if(var9 == NegoResult.REJECT) {</b>
+<i>242</i>&nbsp;                        throw new GSSException(var6, -1, this.internal_mech.toString());
+<i>243</i>&nbsp;                    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;                    var6 = 10;
+<i>246</i>&nbsp;                    if(var9 == NegoResult.ACCEPT_COMPLETE || var9 == NegoResult.ACCEPT_INCOMPLETE) {
+<i>247</i>&nbsp;                        byte[] var11 = var17.getResponseToken();
+<i>248</i>&nbsp;                        if(var11 == null) {
+<i>249</i>&nbsp;                            if(!this.isMechContextEstablished()) {
+<i>250</i>&nbsp;                                throw new GSSException(var6, -1, &quot;mechanism token from server is null&quot;);
+<i>251</i>&nbsp;                            }
+<i>252</i>&nbsp;                        } else {
+<b class="nc"><i>253</i>&nbsp;                            var5 = this.GSS_initSecContext(var11);</b>
+<i>254</i>&nbsp;                        }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;                        if(!GSSUtil.useMSInterop()) {
+<i>257</i>&nbsp;                            byte[] var12 = var17.getMechListMIC();
+<i>258</i>&nbsp;                            if(!this.verifyMechListMIC(this.DER_mechTypes, var12)) {
+<i>259</i>&nbsp;                                throw new GSSException(var6, -1, &quot;verification of MIC on MechList Failed!&quot;);
+<i>260</i>&nbsp;                            }
+<i>261</i>&nbsp;                        }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;                        if(this.isMechContextEstablished()) {
+<i>264</i>&nbsp;                            this.state = 3;
+<i>265</i>&nbsp;                            var3 = var5;
+<i>266</i>&nbsp;                            if(DEBUG) {
+<i>267</i>&nbsp;                                System.out.println(&quot;SPNEGO Negotiated Mechanism = &quot; + this.internal_mech + &quot; &quot; + GSSUtil.getMechStr(this.internal_mech));
+<i>268</i>&nbsp;                            }
+<i>269</i>&nbsp;                        } else {
+<i>270</i>&nbsp;                            var4 = new NegTokenInit((byte[])null, (BitArray)null, var5, (byte[])null);
+<i>271</i>&nbsp;                            if(DEBUG) {
+<b class="nc"><i>272</i>&nbsp;                                System.out.println(&quot;SpNegoContext.initSecContext: continue sending token of type = &quot; + SpNegoToken.getTokenName(var4.getType()));</b>
+<b class="nc"><i>273</i>&nbsp;                            }</b>
+<b class="nc"><i>274</i>&nbsp;</b>
+<b class="nc"><i>275</i>&nbsp;                            var3 = var4.getEncoded();</b>
+<i>276</i>&nbsp;                        }
+<b class="nc"><i>277</i>&nbsp;                    }</b>
+<b class="nc"><i>278</i>&nbsp;                } else if(DEBUG) {</b>
+<i>279</i>&nbsp;                    System.out.println(this.state);
+<i>280</i>&nbsp;                }
+<b class="nc"><i>281</i>&nbsp;</b>
+<b class="nc"><i>282</i>&nbsp;                if(DEBUG &amp;&amp; var3 != null) {</b>
+<i>283</i>&nbsp;                    System.out.println(&quot;SNegoContext.initSecContext: sending token = &quot; + SpNegoToken.getHexBytes(var3));
+<i>284</i>&nbsp;                }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;                return var3;
+<b class="nc"><i>287</i>&nbsp;            } catch (GSSException var13) {</b>
+<b class="nc"><i>288</i>&nbsp;                var8 = new GSSException(var6, -1, var13.getMessage());</b>
+<i>289</i>&nbsp;                var8.initCause(var13);
+<b class="nc"><i>290</i>&nbsp;                throw var8;</b>
+<i>291</i>&nbsp;            } catch (IOException var14) {
+<i>292</i>&nbsp;                var8 = new GSSException(11, -1, var14.getMessage());
+<b class="nc"><i>293</i>&nbsp;                var8.initCause(var14);</b>
+<b class="nc"><i>294</i>&nbsp;                throw var8;</b>
+<i>295</i>&nbsp;            }
+<i>296</i>&nbsp;        }
+<b class="nc"><i>297</i>&nbsp;    }</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    public final byte[] acceptSecContext(InputStream var1, int var2) throws GSSException {
+<b class="nc"><i>300</i>&nbsp;        byte[] var3 = null;</b>
+<i>301</i>&nbsp;        boolean var5 = true;
+<b class="nc"><i>302</i>&nbsp;        if(DEBUG) {</b>
+<b class="nc"><i>303</i>&nbsp;            System.out.println(&quot;Entered SpNegoContext.acceptSecContext with state=&quot; + printState(this.state));</b>
+<b class="nc"><i>304</i>&nbsp;        }</b>
+<i>305</i>&nbsp;
+<b class="nc"><i>306</i>&nbsp;        if(this.isInitiator()) {</b>
+<i>307</i>&nbsp;            throw new GSSException(11, -1, &quot;acceptSecContext on an initiator GSSContext&quot;);
+<i>308</i>&nbsp;        } else {
+<b class="nc"><i>309</i>&nbsp;            try {</b>
+<i>310</i>&nbsp;                NegoResult var4;
+<b class="nc"><i>311</i>&nbsp;                byte[] var6;</b>
+<b class="nc"><i>312</i>&nbsp;                if(this.state == 1) {</b>
+<i>313</i>&nbsp;                    this.state = 2;
+<i>314</i>&nbsp;                    var6 = new byte[var1.available()];
+<i>315</i>&nbsp;                    SpNegoToken.readFully(var1, var6);
+<i>316</i>&nbsp;                    if(DEBUG) {
+<b class="nc"><i>317</i>&nbsp;                        System.out.println(&quot;SpNegoContext.acceptSecContext: receiving token = &quot; + SpNegoToken.getHexBytes(var6));</b>
+<i>318</i>&nbsp;                    }
+<b class="nc"><i>319</i>&nbsp;</b>
+<i>320</i>&nbsp;                    NegTokenInit var15 = new NegTokenInit(var6);
+<b class="nc"><i>321</i>&nbsp;                    if(DEBUG) {</b>
+<b class="nc"><i>322</i>&nbsp;                        System.out.println(&quot;SpNegoContext.acceptSecContext: received token of type = &quot; + SpNegoToken.getTokenName(var15.getType()));</b>
+<b class="nc"><i>323</i>&nbsp;                    }</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;                    Oid[] var8 = var15.getMechTypeList();
+<i>326</i>&nbsp;                    this.DER_mechTypes = var15.getMechTypes();
+<b class="nc"><i>327</i>&nbsp;                    if(this.DER_mechTypes == null) {</b>
+<b class="nc"><i>328</i>&nbsp;                        var5 = false;</b>
+<b class="nc"><i>329</i>&nbsp;                    }</b>
+<b class="nc"><i>330</i>&nbsp;</b>
+<b class="nc"><i>331</i>&nbsp;                    byte[] var9 = var15.getMechToken();</b>
+<i>332</i>&nbsp;                    if(var9 == null) {
+<i>333</i>&nbsp;                        throw new GSSException(11, -1, &quot;mechToken is missing&quot;);
+<i>334</i>&nbsp;                    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;                    Oid[] var10 = this.getAvailableMechs();
+<i>337</i>&nbsp;                    Oid var11 = negotiate_mech_type(var10, var8);
+<b class="nc"><i>338</i>&nbsp;                    if(var11 == null) {</b>
+<i>339</i>&nbsp;                        var5 = false;
+<b class="nc"><i>340</i>&nbsp;                    }</b>
+<b class="nc"><i>341</i>&nbsp;</b>
+<i>342</i>&nbsp;                    this.internal_mech = var11;
+<i>343</i>&nbsp;                    byte[] var12 = this.GSS_acceptSecContext(var9);
+<i>344</i>&nbsp;                    if(!GSSUtil.useMSInterop() &amp;&amp; var5) {
+<i>345</i>&nbsp;                        var5 = this.verifyMechListMIC(this.DER_mechTypes, var15.getMechListMIC());
+<i>346</i>&nbsp;                    }
+<b class="nc"><i>347</i>&nbsp;</b>
+<b class="nc"><i>348</i>&nbsp;                    if(var5) {</b>
+<i>349</i>&nbsp;                        if(this.isMechContextEstablished()) {
+<b class="nc"><i>350</i>&nbsp;                            var4 = NegoResult.ACCEPT_COMPLETE;</b>
+<i>351</i>&nbsp;                            this.state = 3;
+<i>352</i>&nbsp;                            this.setContextFlags();
+<i>353</i>&nbsp;                            if(DEBUG) {
+<i>354</i>&nbsp;                                System.out.println(&quot;SPNEGO Negotiated Mechanism = &quot; + this.internal_mech + &quot; &quot; + GSSUtil.getMechStr(this.internal_mech));
+<b class="nc"><i>355</i>&nbsp;                            }</b>
+<b class="nc"><i>356</i>&nbsp;                        } else {</b>
+<b class="nc"><i>357</i>&nbsp;                            var4 = NegoResult.ACCEPT_INCOMPLETE;</b>
+<i>358</i>&nbsp;                            this.state = 2;
+<b class="nc"><i>359</i>&nbsp;                        }</b>
+<b class="nc"><i>360</i>&nbsp;                    } else {</b>
+<b class="nc"><i>361</i>&nbsp;                        var4 = NegoResult.REJECT;</b>
+<i>362</i>&nbsp;                        this.state = 3;
+<b class="nc"><i>363</i>&nbsp;                    }</b>
+<b class="nc"><i>364</i>&nbsp;</b>
+<b class="nc"><i>365</i>&nbsp;                    if(DEBUG) {</b>
+<i>366</i>&nbsp;                        System.out.println(&quot;SpNegoContext.acceptSecContext: mechanism wanted = &quot; + var11);
+<b class="nc"><i>367</i>&nbsp;                        System.out.println(&quot;SpNegoContext.acceptSecContext: negotiated result = &quot; + var4);</b>
+<b class="nc"><i>368</i>&nbsp;                    }</b>
+<b class="nc"><i>369</i>&nbsp;</b>
+<i>370</i>&nbsp;                    NegTokenTarg var13 = new NegTokenTarg(var4.ordinal(), var11, var12, (byte[])null);
+<b class="nc"><i>371</i>&nbsp;                    if(DEBUG) {</b>
+<i>372</i>&nbsp;                        System.out.println(&quot;SpNegoContext.acceptSecContext: sending token of type = &quot; + SpNegoToken.getTokenName(var13.getType()));
+<i>373</i>&nbsp;                    }
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;                    var3 = var13.getEncoded();</b>
+<i>376</i>&nbsp;                } else if(this.state == 2) {
+<b class="nc"><i>377</i>&nbsp;                    var6 = new byte[var1.available()];</b>
+<b class="nc"><i>378</i>&nbsp;                    SpNegoToken.readFully(var1, var6);</b>
+<i>379</i>&nbsp;                    byte[] var16 = this.GSS_acceptSecContext(var6);
+<i>380</i>&nbsp;                    if(var16 == null) {
+<i>381</i>&nbsp;                        var5 = false;
+<b class="nc"><i>382</i>&nbsp;                    }</b>
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;                    if(var5) {</b>
+<i>385</i>&nbsp;                        if(this.isMechContextEstablished()) {
+<i>386</i>&nbsp;                            var4 = NegoResult.ACCEPT_COMPLETE;
+<i>387</i>&nbsp;                            this.state = 3;
+<b class="nc"><i>388</i>&nbsp;                        } else {</b>
+<b class="nc"><i>389</i>&nbsp;                            var4 = NegoResult.ACCEPT_INCOMPLETE;</b>
+<i>390</i>&nbsp;                            this.state = 2;
+<b class="nc"><i>391</i>&nbsp;                        }</b>
+<i>392</i>&nbsp;                    } else {
+<i>393</i>&nbsp;                        var4 = NegoResult.REJECT;
+<i>394</i>&nbsp;                        this.state = 3;
+<b class="nc"><i>395</i>&nbsp;                    }</b>
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;                    NegTokenTarg var17 = new NegTokenTarg(var4.ordinal(), (Oid)null, var16, (byte[])null);
+<b class="nc"><i>398</i>&nbsp;                    if(DEBUG) {</b>
+<b class="nc"><i>399</i>&nbsp;                        System.out.println(&quot;SpNegoContext.acceptSecContext: sending token of type = &quot; + SpNegoToken.getTokenName(var17.getType()));</b>
+<b class="nc"><i>400</i>&nbsp;                    }</b>
+<b class="nc"><i>401</i>&nbsp;</b>
+<i>402</i>&nbsp;                    var3 = var17.getEncoded();
+<i>403</i>&nbsp;                } else if(DEBUG) {
+<i>404</i>&nbsp;                    System.out.println(&quot;AcceptSecContext: state = &quot; + this.state);
+<i>405</i>&nbsp;                }
+<b class="nc"><i>406</i>&nbsp;</b>
+<b class="nc"><i>407</i>&nbsp;                if(DEBUG) {</b>
+<b class="nc"><i>408</i>&nbsp;                    System.out.println(&quot;SpNegoContext.acceptSecContext: sending token = &quot; + SpNegoToken.getHexBytes(var3));</b>
+<b class="nc"><i>409</i>&nbsp;                }</b>
+<b class="nc"><i>410</i>&nbsp;            } catch (IOException var14) {</b>
+<i>411</i>&nbsp;                GSSException var7 = new GSSException(11, -1, var14.getMessage());
+<i>412</i>&nbsp;                var7.initCause(var14);
+<i>413</i>&nbsp;                throw var7;
+<i>414</i>&nbsp;            }
+<i>415</i>&nbsp;
+<b class="nc"><i>416</i>&nbsp;            if(this.state == 3) {</b>
+<i>417</i>&nbsp;                this.setContextFlags();
+<b class="nc"><i>418</i>&nbsp;            }</b>
+<b class="nc"><i>419</i>&nbsp;</b>
+<i>420</i>&nbsp;            return var3;
+<i>421</i>&nbsp;        }
+<i>422</i>&nbsp;    }
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;    private Oid[] getAvailableMechs() {</b>
+<i>425</i>&nbsp;        if(this.myCred != null) {
+<i>426</i>&nbsp;            Oid[] var1 = new Oid[]{this.myCred.getInternalMech()};
+<i>427</i>&nbsp;            return var1;
+<b class="nc"><i>428</i>&nbsp;        } else {</b>
+<i>429</i>&nbsp;            return this.factory.availableMechs;
+<b class="nc"><i>430</i>&nbsp;        }</b>
+<b class="nc"><i>431</i>&nbsp;    }</b>
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    private byte[] getEncodedMechs(Oid[] var1) throws IOException, GSSException {
+<b class="nc"><i>434</i>&nbsp;        DerOutputStream var2 = new DerOutputStream();</b>
+<b class="nc"><i>435</i>&nbsp;</b>
+<b class="nc"><i>436</i>&nbsp;        byte[] var4;</b>
+<i>437</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.length; ++var3) {
+<i>438</i>&nbsp;            var4 = var1[var3].getDER();
+<i>439</i>&nbsp;            var2.write(var4);
+<b class="nc"><i>440</i>&nbsp;        }</b>
+<b class="nc"><i>441</i>&nbsp;</b>
+<i>442</i>&nbsp;        DerOutputStream var5 = new DerOutputStream();
+<b class="nc"><i>443</i>&nbsp;        var5.write((byte)48, var2);</b>
+<b class="nc"><i>444</i>&nbsp;        var4 = var5.toByteArray();</b>
+<b class="nc"><i>445</i>&nbsp;        return var4;</b>
+<b class="nc"><i>446</i>&nbsp;    }</b>
+<i>447</i>&nbsp;
+<b class="nc"><i>448</i>&nbsp;    private BitArray getContextFlags() {</b>
+<b class="nc"><i>449</i>&nbsp;        BitArray var1 = new BitArray(7);</b>
+<b class="nc"><i>450</i>&nbsp;        if(this.getCredDelegState()) {</b>
+<i>451</i>&nbsp;            var1.set(0, true);
+<b class="nc"><i>452</i>&nbsp;        }</b>
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;        if(this.getMutualAuthState()) {
+<i>455</i>&nbsp;            var1.set(1, true);
+<i>456</i>&nbsp;        }
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;        if(this.getReplayDetState()) {
+<i>459</i>&nbsp;            var1.set(2, true);
+<i>460</i>&nbsp;        }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;        if(this.getSequenceDetState()) {
+<i>463</i>&nbsp;            var1.set(3, true);
+<i>464</i>&nbsp;        }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;        if(this.getConfState()) {
+<i>467</i>&nbsp;            var1.set(5, true);
+<i>468</i>&nbsp;        }
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;        if(this.getIntegState()) {
+<b class="nc"><i>471</i>&nbsp;            var1.set(6, true);</b>
+<i>472</i>&nbsp;        }
+<b class="nc"><i>473</i>&nbsp;</b>
+<i>474</i>&nbsp;        return var1;
+<b class="nc"><i>475</i>&nbsp;    }</b>
+<b class="nc"><i>476</i>&nbsp;</b>
+<i>477</i>&nbsp;    private void setContextFlags() {
+<i>478</i>&nbsp;        if(this.mechContext != null) {
+<i>479</i>&nbsp;            if(this.mechContext.getCredDelegState()) {
+<b class="nc"><i>480</i>&nbsp;                this.credDelegState = true;</b>
+<b class="nc"><i>481</i>&nbsp;            }</b>
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;            if(!this.mechContext.getMutualAuthState()) {
+<i>484</i>&nbsp;                this.mutualAuthState = false;
+<i>485</i>&nbsp;            }
+<b class="nc"><i>486</i>&nbsp;</b>
+<b class="nc"><i>487</i>&nbsp;            if(!this.mechContext.getReplayDetState()) {</b>
+<i>488</i>&nbsp;                this.replayDetState = false;
+<i>489</i>&nbsp;            }
+<b class="nc"><i>490</i>&nbsp;</b>
+<b class="nc"><i>491</i>&nbsp;            if(!this.mechContext.getSequenceDetState()) {</b>
+<b class="nc"><i>492</i>&nbsp;                this.sequenceDetState = false;</b>
+<b class="nc"><i>493</i>&nbsp;            }</b>
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;            if(!this.mechContext.getIntegState()) {
+<i>496</i>&nbsp;                this.integState = false;
+<i>497</i>&nbsp;            }
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;            if(!this.mechContext.getConfState()) {
+<b class="nc"><i>500</i>&nbsp;                this.confState = false;</b>
+<i>501</i>&nbsp;            }
+<b class="nc"><i>502</i>&nbsp;        }</b>
+<b class="nc"><i>503</i>&nbsp;</b>
+<i>504</i>&nbsp;    }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;    private boolean verifyMechListMIC(byte[] var1, byte[] var2) throws GSSException {
+<i>507</i>&nbsp;        if(var2 == null) {
+<b class="nc"><i>508</i>&nbsp;            if(DEBUG) {</b>
+<b class="nc"><i>509</i>&nbsp;                System.out.println(&quot;SpNegoContext: no MIC token validation&quot;);</b>
+<b class="nc"><i>510</i>&nbsp;            }</b>
+<b class="nc"><i>511</i>&nbsp;</b>
+<i>512</i>&nbsp;            return true;
+<i>513</i>&nbsp;        } else if(!this.mechContext.getIntegState()) {
+<i>514</i>&nbsp;            if(DEBUG) {
+<b class="nc"><i>515</i>&nbsp;                System.out.println(&quot;SpNegoContext: no MIC token validation - mechanism does not support integrity&quot;);</b>
+<i>516</i>&nbsp;            }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;            return true;
+<i>519</i>&nbsp;        } else {
+<i>520</i>&nbsp;            boolean var3 = false;
+<i>521</i>&nbsp;
+<b class="nc"><i>522</i>&nbsp;            try {</b>
+<b class="nc"><i>523</i>&nbsp;                MessageProp var4 = new MessageProp(0, true);</b>
+<i>524</i>&nbsp;                this.verifyMIC(var2, 0, var2.length, var1, 0, var1.length, var4);
+<b class="nc"><i>525</i>&nbsp;                var3 = true;</b>
+<b class="nc"><i>526</i>&nbsp;            } catch (GSSException var5) {</b>
+<i>527</i>&nbsp;                var3 = false;
+<i>528</i>&nbsp;                if(DEBUG) {
+<b class="nc"><i>529</i>&nbsp;                    System.out.println(&quot;SpNegoContext: MIC validation failed! &quot; + var5.getMessage());</b>
+<i>530</i>&nbsp;                }
+<i>531</i>&nbsp;            }
+<b class="nc"><i>532</i>&nbsp;</b>
+<b class="nc"><i>533</i>&nbsp;            return var3;</b>
+<b class="nc"><i>534</i>&nbsp;        }</b>
+<i>535</i>&nbsp;    }
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;    private byte[] GSS_initSecContext(byte[] var1) throws GSSException {
+<b class="nc"><i>538</i>&nbsp;        Object var2 = null;</b>
+<b class="nc"><i>539</i>&nbsp;        if(this.mechContext == null) {</b>
+<i>540</i>&nbsp;            GSSName var3 = this.factory.manager.createName(this.peerName.toString(), this.peerName.getStringNameType(), this.internal_mech);
+<i>541</i>&nbsp;            GSSCredentialImpl var4 = null;
+<i>542</i>&nbsp;            if(this.myCred != null) {
+<i>543</i>&nbsp;                var4 = new GSSCredentialImpl(this.factory.manager, this.myCred.getInternalCred());
+<b class="nc"><i>544</i>&nbsp;            }</b>
+<b class="nc"><i>545</i>&nbsp;</b>
+<b class="nc"><i>546</i>&nbsp;            this.mechContext = this.factory.manager.createContext(var3, this.internal_mech, var4, 0);</b>
+<b class="nc"><i>547</i>&nbsp;            this.mechContext.requestConf(this.confState);</b>
+<i>548</i>&nbsp;            this.mechContext.requestInteg(this.integState);
+<b class="nc"><i>549</i>&nbsp;            this.mechContext.requestCredDeleg(this.credDelegState);</b>
+<i>550</i>&nbsp;            this.mechContext.requestMutualAuth(this.mutualAuthState);
+<b class="nc"><i>551</i>&nbsp;            this.mechContext.requestReplayDet(this.replayDetState);</b>
+<b class="nc"><i>552</i>&nbsp;            this.mechContext.requestSequenceDet(this.sequenceDetState);</b>
+<i>553</i>&nbsp;            if(this.mechContext instanceof ExtendedGSSContext) {
+<i>554</i>&nbsp;                ((ExtendedGSSContext)this.mechContext).requestDelegPolicy(this.delegPolicyState);
+<i>555</i>&nbsp;            }
+<i>556</i>&nbsp;        }
+<b class="nc"><i>557</i>&nbsp;</b>
+<b class="nc"><i>558</i>&nbsp;        byte[] var5;</b>
+<i>559</i>&nbsp;        if(var1 != null) {
+<i>560</i>&nbsp;            var5 = var1;
+<b class="nc"><i>561</i>&nbsp;        } else {</b>
+<b class="nc"><i>562</i>&nbsp;            var5 = new byte[0];</b>
+<i>563</i>&nbsp;        }
+<i>564</i>&nbsp;
+<b class="nc"><i>565</i>&nbsp;        byte[] var6 = this.mechContext.initSecContext(var5, 0, var5.length);</b>
+<b class="nc"><i>566</i>&nbsp;        return var6;</b>
+<i>567</i>&nbsp;    }
+<b class="nc"><i>568</i>&nbsp;</b>
+<i>569</i>&nbsp;    private byte[] GSS_acceptSecContext(byte[] var1) throws GSSException {
+<i>570</i>&nbsp;        if(this.mechContext == null) {
+<i>571</i>&nbsp;            GSSCredentialImpl var2 = null;
+<i>572</i>&nbsp;            if(this.myCred != null) {
+<b class="nc"><i>573</i>&nbsp;                var2 = new GSSCredentialImpl(this.factory.manager, this.myCred.getInternalCred());</b>
+<b class="nc"><i>574</i>&nbsp;            }</b>
+<b class="nc"><i>575</i>&nbsp;</b>
+<i>576</i>&nbsp;            this.mechContext = this.factory.manager.createContext(var2);
+<i>577</i>&nbsp;        }
+<i>578</i>&nbsp;
+<b class="nc"><i>579</i>&nbsp;        byte[] var3 = this.mechContext.acceptSecContext(var1, 0, var1.length);</b>
+<i>580</i>&nbsp;        return var3;
+<b class="nc"><i>581</i>&nbsp;    }</b>
+<b class="nc"><i>582</i>&nbsp;</b>
+<i>583</i>&nbsp;    private static Oid negotiate_mech_type(Oid[] var0, Oid[] var1) {
+<i>584</i>&nbsp;        for(int var2 = 0; var2 &lt; var0.length; ++var2) {
+<i>585</i>&nbsp;            for(int var3 = 0; var3 &lt; var1.length; ++var3) {
+<i>586</i>&nbsp;                if(var1[var3].equals(var0[var2])) {
+<b class="nc"><i>587</i>&nbsp;                    if(DEBUG) {</b>
+<i>588</i>&nbsp;                        System.out.println(&quot;SpNegoContext: negotiated mechanism = &quot; + var1[var3]);
+<b class="nc"><i>589</i>&nbsp;                    }</b>
+<i>590</i>&nbsp;
+<b class="nc"><i>591</i>&nbsp;                    return var1[var3];</b>
+<b class="nc"><i>592</i>&nbsp;                }</b>
+<b class="nc"><i>593</i>&nbsp;            }</b>
+<b class="nc"><i>594</i>&nbsp;        }</b>
+<b class="nc"><i>595</i>&nbsp;</b>
+<i>596</i>&nbsp;        return null;
+<i>597</i>&nbsp;    }
+<i>598</i>&nbsp;
+<b class="nc"><i>599</i>&nbsp;    public final boolean isEstablished() {</b>
+<b class="nc"><i>600</i>&nbsp;        return this.state == 3;</b>
+<b class="nc"><i>601</i>&nbsp;    }</b>
+<b class="nc"><i>602</i>&nbsp;</b>
+<i>603</i>&nbsp;    public final boolean isMechContextEstablished() {
+<b class="nc"><i>604</i>&nbsp;        if(this.mechContext != null) {</b>
+<b class="nc"><i>605</i>&nbsp;            return this.mechContext.isEstablished();</b>
+<i>606</i>&nbsp;        } else {
+<i>607</i>&nbsp;            if(DEBUG) {
+<b class="nc"><i>608</i>&nbsp;                System.out.println(&quot;The underlying mechansim context has not been initialized&quot;);</b>
+<b class="nc"><i>609</i>&nbsp;            }</b>
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;            return false;
+<i>612</i>&nbsp;        }
+<b class="nc"><i>613</i>&nbsp;    }</b>
+<i>614</i>&nbsp;
+<b class="nc"><i>615</i>&nbsp;    public final byte[] export() throws GSSException {</b>
+<b class="nc"><i>616</i>&nbsp;        throw new GSSException(16, -1, &quot;GSS Export Context not available&quot;);</b>
+<i>617</i>&nbsp;    }
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    public final void setChannelBinding(ChannelBinding var1) throws GSSException {
+<i>620</i>&nbsp;        this.channelBinding = var1;
+<b class="nc"><i>621</i>&nbsp;    }</b>
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;    final ChannelBinding getChannelBinding() {</b>
+<i>624</i>&nbsp;        return this.channelBinding;
+<b class="nc"><i>625</i>&nbsp;    }</b>
+<b class="nc"><i>626</i>&nbsp;</b>
+<i>627</i>&nbsp;    public final void requestAnonymity(boolean var1) throws GSSException {
+<i>628</i>&nbsp;    }
+<b class="nc"><i>629</i>&nbsp;</b>
+<b class="nc"><i>630</i>&nbsp;    public final boolean getAnonymityState() {</b>
+<i>631</i>&nbsp;        return false;
+<i>632</i>&nbsp;    }
+<b class="nc"><i>633</i>&nbsp;</b>
+<b class="nc"><i>634</i>&nbsp;    public void requestLifetime(int var1) throws GSSException {</b>
+<i>635</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<b class="nc"><i>636</i>&nbsp;            this.lifetime = var1;</b>
+<b class="nc"><i>637</i>&nbsp;        }</b>
+<b class="nc"><i>638</i>&nbsp;</b>
+<i>639</i>&nbsp;    }
+<b class="nc"><i>640</i>&nbsp;</b>
+<i>641</i>&nbsp;    public final int getLifetime() {
+<i>642</i>&nbsp;        return this.mechContext != null?this.mechContext.getLifetime():2147483647;
+<i>643</i>&nbsp;    }
+<i>644</i>&nbsp;
+<i>645</i>&nbsp;    public final boolean isTransferable() throws GSSException {
+<i>646</i>&nbsp;        return false;
+<b class="nc"><i>647</i>&nbsp;    }</b>
+<b class="nc"><i>648</i>&nbsp;</b>
+<b class="nc"><i>649</i>&nbsp;    public final void requestSequenceDet(boolean var1) throws GSSException {</b>
+<b class="nc"><i>650</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {</b>
+<i>651</i>&nbsp;            this.sequenceDetState = var1;
+<b class="nc"><i>652</i>&nbsp;        }</b>
+<i>653</i>&nbsp;
+<i>654</i>&nbsp;    }
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;    public final boolean getSequenceDetState() {
+<i>657</i>&nbsp;        return this.sequenceDetState || this.replayDetState;
+<i>658</i>&nbsp;    }
+<i>659</i>&nbsp;
+<i>660</i>&nbsp;    public final void requestReplayDet(boolean var1) throws GSSException {
+<i>661</i>&nbsp;        if(this.state == 1 &amp;&amp; this.isInitiator()) {
+<b class="nc"><i>662</i>&nbsp;            this.replayDetState = var1;</b>
+<b class="nc"><i>663</i>&nbsp;        }</b>
+<b class="nc"><i>664</i>&nbsp;</b>
+<b class="nc"><i>665</i>&nbsp;    }</b>
+<i>666</i>&nbsp;
+<i>667</i>&nbsp;    public final boolean getReplayDetState() {
+<b class="nc"><i>668</i>&nbsp;        return this.replayDetState || this.sequenceDetState;</b>
+<b class="nc"><i>669</i>&nbsp;    }</b>
+<b class="nc"><i>670</i>&nbsp;</b>
+<b class="nc"><i>671</i>&nbsp;    public final GSSNameSpi getTargName() throws GSSException {</b>
+<i>672</i>&nbsp;        if(this.mechContext != null) {
+<i>673</i>&nbsp;            GSSNameImpl var1 = (GSSNameImpl)this.mechContext.getTargName();
+<i>674</i>&nbsp;            this.peerName = var1.getElement(this.internal_mech);
+<i>675</i>&nbsp;            return this.peerName;
+<i>676</i>&nbsp;        } else {
+<i>677</i>&nbsp;            if(DEBUG) {
+<i>678</i>&nbsp;                System.out.println(&quot;The underlying mechansim context has not been initialized&quot;);
+<b class="nc"><i>679</i>&nbsp;            }</b>
+<i>680</i>&nbsp;
+<b class="nc"><i>681</i>&nbsp;            return null;</b>
+<b class="nc"><i>682</i>&nbsp;        }</b>
+<b class="nc"><i>683</i>&nbsp;    }</b>
+<b class="nc"><i>684</i>&nbsp;</b>
+<b class="nc"><i>685</i>&nbsp;    public final GSSNameSpi getSrcName() throws GSSException {</b>
+<b class="nc"><i>686</i>&nbsp;        if(this.mechContext != null) {</b>
+<i>687</i>&nbsp;            GSSNameImpl var1 = (GSSNameImpl)this.mechContext.getSrcName();
+<b class="nc"><i>688</i>&nbsp;            this.myName = var1.getElement(this.internal_mech);</b>
+<i>689</i>&nbsp;            return this.myName;
+<i>690</i>&nbsp;        } else {
+<i>691</i>&nbsp;            if(DEBUG) {
+<i>692</i>&nbsp;                System.out.println(&quot;The underlying mechansim context has not been initialized&quot;);
+<b class="nc"><i>693</i>&nbsp;            }</b>
+<i>694</i>&nbsp;
+<b class="nc"><i>695</i>&nbsp;            return null;</b>
+<b class="nc"><i>696</i>&nbsp;        }</b>
+<i>697</i>&nbsp;    }
+<i>698</i>&nbsp;
+<b class="nc"><i>699</i>&nbsp;    public final GSSCredentialSpi getDelegCred() throws GSSException {</b>
+<b class="nc"><i>700</i>&nbsp;        if(this.state != 2 &amp;&amp; this.state != 3) {</b>
+<i>701</i>&nbsp;            throw new GSSException(12);
+<b class="nc"><i>702</i>&nbsp;        } else if(this.mechContext != null) {</b>
+<b class="nc"><i>703</i>&nbsp;            GSSCredentialImpl var1 = (GSSCredentialImpl)this.mechContext.getDelegCred();</b>
+<i>704</i>&nbsp;            boolean var2 = false;
+<b class="nc"><i>705</i>&nbsp;            if(var1.getUsage() == 1) {</b>
+<b class="nc"><i>706</i>&nbsp;                var2 = true;</b>
+<i>707</i>&nbsp;            }
+<b class="nc"><i>708</i>&nbsp;</b>
+<b class="nc"><i>709</i>&nbsp;            GSSCredentialSpi var3 = var1.getElement(this.internal_mech, var2);</b>
+<i>710</i>&nbsp;            SpNegoCredElement var4 = new SpNegoCredElement(var3);
+<b class="nc"><i>711</i>&nbsp;            return var4.getInternalCred();</b>
+<b class="nc"><i>712</i>&nbsp;        } else {</b>
+<i>713</i>&nbsp;            throw new GSSException(12, -1, &quot;getDelegCred called in invalid state!&quot;);
+<i>714</i>&nbsp;        }
+<i>715</i>&nbsp;    }
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;    public final int getWrapSizeLimit(int var1, boolean var2, int var3) throws GSSException {
+<i>718</i>&nbsp;        if(this.mechContext != null) {
+<i>719</i>&nbsp;            return this.mechContext.getWrapSizeLimit(var1, var2, var3);
+<i>720</i>&nbsp;        } else {
+<i>721</i>&nbsp;            throw new GSSException(12, -1, &quot;getWrapSizeLimit called in invalid state!&quot;);
+<i>722</i>&nbsp;        }
+<i>723</i>&nbsp;    }
+<b class="nc"><i>724</i>&nbsp;</b>
+<b class="nc"><i>725</i>&nbsp;    public final byte[] wrap(byte[] var1, int var2, int var3, MessageProp var4) throws GSSException {</b>
+<b class="nc"><i>726</i>&nbsp;        if(this.mechContext != null) {</b>
+<i>727</i>&nbsp;            return this.mechContext.wrap(var1, var2, var3, var4);
+<b class="nc"><i>728</i>&nbsp;        } else {</b>
+<i>729</i>&nbsp;            throw new GSSException(12, -1, &quot;Wrap called in invalid state!&quot;);
+<i>730</i>&nbsp;        }
+<i>731</i>&nbsp;    }
+<b class="nc"><i>732</i>&nbsp;</b>
+<b class="nc"><i>733</i>&nbsp;    public final void wrap(InputStream var1, OutputStream var2, MessageProp var3) throws GSSException {</b>
+<b class="nc"><i>734</i>&nbsp;        if(this.mechContext != null) {</b>
+<i>735</i>&nbsp;            this.mechContext.wrap(var1, var2, var3);
+<i>736</i>&nbsp;        } else {
+<b class="nc"><i>737</i>&nbsp;            throw new GSSException(12, -1, &quot;Wrap called in invalid state!&quot;);</b>
+<i>738</i>&nbsp;        }
+<i>739</i>&nbsp;    }
+<i>740</i>&nbsp;
+<b class="nc"><i>741</i>&nbsp;    public final byte[] unwrap(byte[] var1, int var2, int var3, MessageProp var4) throws GSSException {</b>
+<i>742</i>&nbsp;        if(this.mechContext != null) {
+<b class="nc"><i>743</i>&nbsp;            return this.mechContext.unwrap(var1, var2, var3, var4);</b>
+<b class="nc"><i>744</i>&nbsp;        } else {</b>
+<b class="nc"><i>745</i>&nbsp;            throw new GSSException(12, -1, &quot;UnWrap called in invalid state!&quot;);</b>
+<b class="nc"><i>746</i>&nbsp;        }</b>
+<i>747</i>&nbsp;    }
+<i>748</i>&nbsp;
+<b class="nc"><i>749</i>&nbsp;    public final void unwrap(InputStream var1, OutputStream var2, MessageProp var3) throws GSSException {</b>
+<b class="nc"><i>750</i>&nbsp;        if(this.mechContext != null) {</b>
+<b class="nc"><i>751</i>&nbsp;            this.mechContext.unwrap(var1, var2, var3);</b>
+<b class="nc"><i>752</i>&nbsp;        } else {</b>
+<i>753</i>&nbsp;            throw new GSSException(12, -1, &quot;UnWrap called in invalid state!&quot;);
+<i>754</i>&nbsp;        }
+<b class="nc"><i>755</i>&nbsp;    }</b>
+<b class="nc"><i>756</i>&nbsp;</b>
+<i>757</i>&nbsp;    public final byte[] getMIC(byte[] var1, int var2, int var3, MessageProp var4) throws GSSException {
+<i>758</i>&nbsp;        if(this.mechContext != null) {
+<i>759</i>&nbsp;            return this.mechContext.getMIC(var1, var2, var3, var4);
+<i>760</i>&nbsp;        } else {
+<i>761</i>&nbsp;            throw new GSSException(12, -1, &quot;getMIC called in invalid state!&quot;);
+<i>762</i>&nbsp;        }
+<i>763</i>&nbsp;    }
+<i>764</i>&nbsp;
+<i>765</i>&nbsp;    public final void getMIC(InputStream var1, OutputStream var2, MessageProp var3) throws GSSException {
+<b class="nc"><i>766</i>&nbsp;        if(this.mechContext != null) {</b>
+<b class="nc"><i>767</i>&nbsp;            this.mechContext.getMIC(var1, var2, var3);</b>
+<b class="nc"><i>768</i>&nbsp;        } else {</b>
+<i>769</i>&nbsp;            throw new GSSException(12, -1, &quot;getMIC called in invalid state!&quot;);
+<b class="nc"><i>770</i>&nbsp;        }</b>
+<i>771</i>&nbsp;    }
+<i>772</i>&nbsp;
+<i>773</i>&nbsp;    public final void verifyMIC(byte[] var1, int var2, int var3, byte[] var4, int var5, int var6, MessageProp var7) throws GSSException {
+<b class="nc"><i>774</i>&nbsp;        if(this.mechContext != null) {</b>
+<b class="nc"><i>775</i>&nbsp;            this.mechContext.verifyMIC(var1, var2, var3, var4, var5, var6, var7);</b>
+<b class="nc"><i>776</i>&nbsp;        } else {</b>
+<i>777</i>&nbsp;            throw new GSSException(12, -1, &quot;verifyMIC called in invalid state!&quot;);
+<i>778</i>&nbsp;        }
+<b class="nc"><i>779</i>&nbsp;    }</b>
+<i>780</i>&nbsp;
+<i>781</i>&nbsp;    public final void verifyMIC(InputStream var1, InputStream var2, MessageProp var3) throws GSSException {
+<i>782</i>&nbsp;        if(this.mechContext != null) {
+<b class="nc"><i>783</i>&nbsp;            this.mechContext.verifyMIC(var1, var2, var3);</b>
+<i>784</i>&nbsp;        } else {
+<b class="nc"><i>785</i>&nbsp;            throw new GSSException(12, -1, &quot;verifyMIC called in invalid state!&quot;);</b>
+<b class="nc"><i>786</i>&nbsp;        }</b>
+<i>787</i>&nbsp;    }
+<b class="nc"><i>788</i>&nbsp;</b>
+<b class="nc"><i>789</i>&nbsp;    private static String printState(int var0) {</b>
+<b class="nc"><i>790</i>&nbsp;        switch(var0) {</b>
+<b class="nc"><i>791</i>&nbsp;        case 1:</b>
+<b class="nc"><i>792</i>&nbsp;            return &quot;STATE_NEW&quot;;</b>
+<i>793</i>&nbsp;        case 2:
+<i>794</i>&nbsp;            return &quot;STATE_IN_PROCESS&quot;;
+<b class="nc"><i>795</i>&nbsp;        case 3:</b>
+<b class="nc"><i>796</i>&nbsp;            return &quot;STATE_DONE&quot;;</b>
+<i>797</i>&nbsp;        case 4:
+<i>798</i>&nbsp;            return &quot;STATE_DELETED&quot;;
+<i>799</i>&nbsp;        default:
+<i>800</i>&nbsp;            return &quot;Unknown state &quot; + var0;
+<i>801</i>&nbsp;        }
+<i>802</i>&nbsp;    }
+<b class="nc"><i>803</i>&nbsp;</b>
+<i>804</i>&nbsp;    public Object inquireSecContext(InquireType var1) throws GSSException {
+<b class="nc"><i>805</i>&nbsp;        if(this.mechContext == null) {</b>
+<i>806</i>&nbsp;            throw new GSSException(12, -1, &quot;Underlying mech not established.&quot;);
+<b class="nc"><i>807</i>&nbsp;        } else if(this.mechContext instanceof ExtendedGSSContext) {</b>
+<i>808</i>&nbsp;            return ((ExtendedGSSContext)this.mechContext).inquireSecContext(var1);
+<i>809</i>&nbsp;        } else {
+<b class="nc"><i>810</i>&nbsp;            throw new GSSException(2, -1, &quot;inquireSecContext not supported by underlying mech.&quot;);</b>
+<b class="nc"><i>811</i>&nbsp;        }</b>
+<i>812</i>&nbsp;    }
+<b class="nc"><i>813</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

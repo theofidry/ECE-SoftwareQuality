@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ModelChecker</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.xjc.reader</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ModelChecker (com.sun.tools.internal.xjc.reader)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ModelChecker</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.xjc.reader;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.internal.xjc.ErrorReceiver;
+<i>9</i>&nbsp;import com.sun.tools.internal.xjc.model.CClassInfo;
+<i>10</i>&nbsp;import com.sun.tools.internal.xjc.model.CPropertyInfo;
+<i>11</i>&nbsp;import com.sun.tools.internal.xjc.model.Model;
+<i>12</i>&nbsp;import com.sun.tools.internal.xjc.reader.Messages;
+<i>13</i>&nbsp;import com.sun.tools.internal.xjc.reader.Ring;
+<i>14</i>&nbsp;import java.util.HashMap;
+<i>15</i>&nbsp;import java.util.Iterator;
+<i>16</i>&nbsp;import java.util.List;
+<i>17</i>&nbsp;import javax.xml.namespace.QName;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;public final class ModelChecker {
+<i>20</i>&nbsp;    private final Model model = (Model)Ring.get(Model.class);
+<i>21</i>&nbsp;    private final ErrorReceiver errorReceiver = (ErrorReceiver)Ring.get(ErrorReceiver.class);
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public ModelChecker() {
+<i>24</i>&nbsp;    }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public void check() {
+<i>27</i>&nbsp;        Iterator i$ = this.model.beans().values().iterator();
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;        while(i$.hasNext()) {
+<i>30</i>&nbsp;            CClassInfo ci = (CClassInfo)i$.next();
+<i>31</i>&nbsp;            this.check(ci);
+<i>32</i>&nbsp;        }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    private void check(CClassInfo ci) {
+<i>37</i>&nbsp;        List props = ci.getProperties();
+<i>38</i>&nbsp;        HashMap collisionTable = new HashMap();
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;        label55:
+<i>41</i>&nbsp;        for(int i = 0; i &lt; props.size(); ++i) {
+<i>42</i>&nbsp;            CPropertyInfo p1 = (CPropertyInfo)props.get(i);
+<i>43</i>&nbsp;            if(p1.getName(true).equals(&quot;Class&quot;)) {
+<i>44</i>&nbsp;                this.errorReceiver.error(p1.locator, Messages.PROPERTY_CLASS_IS_RESERVED.format(new Object[0]));
+<i>45</i>&nbsp;            } else {
+<i>46</i>&nbsp;                QName n = p1.collectElementNames(collisionTable);
+<i>47</i>&nbsp;                if(n != null) {
+<b class="nc"><i>48</i>&nbsp;                    CPropertyInfo c = (CPropertyInfo)collisionTable.get(n);</b>
+<b class="nc"><i>49</i>&nbsp;                    if(c.getName(true).equals(n.toString()) || c.getName(false).equals(n.toString())) {</b>
+<i>50</i>&nbsp;                        this.errorReceiver.error(p1.locator, Messages.DUPLICATE_ELEMENT.format(new Object[]{n}));
+<b class="nc"><i>51</i>&nbsp;                        this.errorReceiver.error(c.locator, Messages.ERR_RELEVANT_LOCATION.format(new Object[0]));</b>
+<i>52</i>&nbsp;                    }
+<i>53</i>&nbsp;                }
+<i>54</i>&nbsp;
+<b class="nc"><i>55</i>&nbsp;                for(int var10 = i + 1; var10 &lt; props.size(); ++var10) {</b>
+<b class="nc"><i>56</i>&nbsp;                    if(this.checkPropertyCollision(p1, (CPropertyInfo)props.get(var10))) {</b>
+<i>57</i>&nbsp;                        continue label55;
+<i>58</i>&nbsp;                    }
+<i>59</i>&nbsp;                }
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;                for(CClassInfo var11 = ci.getBaseClass(); var11 != null; var11 = var11.getBaseClass()) {</b>
+<i>62</i>&nbsp;                    Iterator i$ = var11.getProperties().iterator();
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;                    while(i$.hasNext()) {</b>
+<b class="nc"><i>65</i>&nbsp;                        CPropertyInfo p2 = (CPropertyInfo)i$.next();</b>
+<i>66</i>&nbsp;                        if(this.checkPropertyCollision(p1, p2)) {
+<b class="nc"><i>67</i>&nbsp;                            continue label55;</b>
+<b class="nc"><i>68</i>&nbsp;                        }</b>
+<b class="nc"><i>69</i>&nbsp;                    }</b>
+<i>70</i>&nbsp;                }
+<i>71</i>&nbsp;            }
+<b class="nc"><i>72</i>&nbsp;        }</b>
+<b class="nc"><i>73</i>&nbsp;</b>
+<b class="nc"><i>74</i>&nbsp;    }</b>
+<b class="nc"><i>75</i>&nbsp;</b>
+<b class="nc"><i>76</i>&nbsp;    private boolean checkPropertyCollision(CPropertyInfo p1, CPropertyInfo p2) {</b>
+<i>77</i>&nbsp;        if(!p1.getName(true).equals(p2.getName(true))) {
+<i>78</i>&nbsp;            return false;
+<b class="nc"><i>79</i>&nbsp;        } else {</b>
+<b class="nc"><i>80</i>&nbsp;            this.errorReceiver.error(p1.locator, Messages.DUPLICATE_PROPERTY.format(new Object[]{p1.getName(true)}));</b>
+<b class="nc"><i>81</i>&nbsp;            this.errorReceiver.error(p2.locator, Messages.ERR_RELEVANT_LOCATION.format(new Object[0]));</b>
+<i>82</i>&nbsp;            return true;
+<b class="nc"><i>83</i>&nbsp;        }</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<b class="nc"><i>85</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

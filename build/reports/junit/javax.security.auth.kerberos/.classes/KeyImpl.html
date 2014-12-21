@@ -1,0 +1,257 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KeyImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.security.auth.kerberos</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KeyImpl (javax.security.auth.kerberos)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeyImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 65)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.security.auth.kerberos;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectInputStream;
+<i>10</i>&nbsp;import java.io.ObjectOutputStream;
+<i>11</i>&nbsp;import java.io.Serializable;
+<i>12</i>&nbsp;import java.util.Arrays;
+<i>13</i>&nbsp;import javax.crypto.SecretKey;
+<i>14</i>&nbsp;import javax.security.auth.DestroyFailedException;
+<i>15</i>&nbsp;import javax.security.auth.Destroyable;
+<i>16</i>&nbsp;import javax.security.auth.kerberos.KerberosPrincipal;
+<i>17</i>&nbsp;import sun.misc.HexDumpEncoder;
+<i>18</i>&nbsp;import sun.security.krb5.Asn1Exception;
+<i>19</i>&nbsp;import sun.security.krb5.EncryptionKey;
+<i>20</i>&nbsp;import sun.security.krb5.KrbException;
+<i>21</i>&nbsp;import sun.security.krb5.PrincipalName;
+<i>22</i>&nbsp;import sun.security.util.DerValue;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;class KeyImpl implements SecretKey, Destroyable, Serializable {
+<i>25</i>&nbsp;    private static final long serialVersionUID = -7889313790214321193L;
+<i>26</i>&nbsp;    private transient byte[] keyBytes;
+<i>27</i>&nbsp;    private transient int keyType;
+<i>28</i>&nbsp;    private transient volatile boolean destroyed = false;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public KeyImpl(byte[] var1, int var2) {
+<i>31</i>&nbsp;        this.keyBytes = (byte[])var1.clone();
+<i>32</i>&nbsp;        this.keyType = var2;
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public KeyImpl(KerberosPrincipal var1, char[] var2, String var3) {
+<i>36</i>&nbsp;        try {
+<i>37</i>&nbsp;            PrincipalName var4 = new PrincipalName(var1.getName());
+<i>38</i>&nbsp;            EncryptionKey var5 = new EncryptionKey(var2, var4.getSalt(), var3);
+<i>39</i>&nbsp;            this.keyBytes = var5.getBytes();
+<b class="nc"><i>40</i>&nbsp;            this.keyType = var5.getEType();</b>
+<i>41</i>&nbsp;        } catch (KrbException var6) {
+<i>42</i>&nbsp;            throw new IllegalArgumentException(var6.getMessage());
+<i>43</i>&nbsp;        }
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public final int getKeyType() {
+<i>47</i>&nbsp;        if(this.destroyed) {
+<i>48</i>&nbsp;            throw new IllegalStateException(&quot;This key is no longer valid&quot;);
+<i>49</i>&nbsp;        } else {
+<i>50</i>&nbsp;            return this.keyType;
+<b class="nc"><i>51</i>&nbsp;        }</b>
+<b class="nc"><i>52</i>&nbsp;    }</b>
+<b class="nc"><i>53</i>&nbsp;</b>
+<i>54</i>&nbsp;    public final String getAlgorithm() {
+<i>55</i>&nbsp;        return this.getAlgorithmName(this.keyType);
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private String getAlgorithmName(int var1) {
+<i>59</i>&nbsp;        if(this.destroyed) {
+<i>60</i>&nbsp;            throw new IllegalStateException(&quot;This key is no longer valid&quot;);
+<i>61</i>&nbsp;        } else {
+<i>62</i>&nbsp;            switch(var1) {
+<i>63</i>&nbsp;            case 0:
+<i>64</i>&nbsp;                return &quot;NULL&quot;;
+<i>65</i>&nbsp;            case 1:
+<i>66</i>&nbsp;            case 3:
+<i>67</i>&nbsp;                return &quot;DES&quot;;
+<b class="nc"><i>68</i>&nbsp;            case 2:</b>
+<i>69</i>&nbsp;            case 4:
+<i>70</i>&nbsp;            case 5:
+<b class="nc"><i>71</i>&nbsp;            case 6:</b>
+<b class="nc"><i>72</i>&nbsp;            case 7:</b>
+<i>73</i>&nbsp;            case 8:
+<b class="nc"><i>74</i>&nbsp;            case 9:</b>
+<b class="nc"><i>75</i>&nbsp;            case 10:</b>
+<b class="nc"><i>76</i>&nbsp;            case 11:</b>
+<b class="nc"><i>77</i>&nbsp;            case 12:</b>
+<b class="nc"><i>78</i>&nbsp;            case 13:</b>
+<i>79</i>&nbsp;            case 14:
+<i>80</i>&nbsp;            case 15:
+<i>81</i>&nbsp;            case 19:
+<i>82</i>&nbsp;            case 20:
+<i>83</i>&nbsp;            case 21:
+<i>84</i>&nbsp;            case 22:
+<b class="nc"><i>85</i>&nbsp;            default:</b>
+<b class="nc"><i>86</i>&nbsp;                throw new IllegalArgumentException(&quot;Unsupported encryption type: &quot; + var1);</b>
+<b class="nc"><i>87</i>&nbsp;            case 16:</b>
+<i>88</i>&nbsp;                return &quot;DESede&quot;;
+<i>89</i>&nbsp;            case 17:
+<i>90</i>&nbsp;                return &quot;AES128&quot;;
+<i>91</i>&nbsp;            case 18:
+<i>92</i>&nbsp;                return &quot;AES256&quot;;
+<i>93</i>&nbsp;            case 23:
+<i>94</i>&nbsp;                return &quot;ArcFourHmac&quot;;
+<b class="nc"><i>95</i>&nbsp;            }</b>
+<i>96</i>&nbsp;        }
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;    public final String getFormat() {</b>
+<b class="nc"><i>100</i>&nbsp;        if(this.destroyed) {</b>
+<i>101</i>&nbsp;            throw new IllegalStateException(&quot;This key is no longer valid&quot;);
+<b class="nc"><i>102</i>&nbsp;        } else {</b>
+<i>103</i>&nbsp;            return &quot;RAW&quot;;
+<i>104</i>&nbsp;        }
+<b class="nc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public final byte[] getEncoded() {
+<b class="nc"><i>108</i>&nbsp;        if(this.destroyed) {</b>
+<i>109</i>&nbsp;            throw new IllegalStateException(&quot;This key is no longer valid&quot;);
+<i>110</i>&nbsp;        } else {
+<b class="nc"><i>111</i>&nbsp;            return (byte[])this.keyBytes.clone();</b>
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;    }
+<b class="nc"><i>114</i>&nbsp;</b>
+<i>115</i>&nbsp;    public void destroy() throws DestroyFailedException {
+<i>116</i>&nbsp;        if(!this.destroyed) {
+<b class="nc"><i>117</i>&nbsp;            this.destroyed = true;</b>
+<i>118</i>&nbsp;            Arrays.fill(this.keyBytes, (byte)0);
+<i>119</i>&nbsp;        }
+<b class="nc"><i>120</i>&nbsp;</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;    public boolean isDestroyed() {</b>
+<i>124</i>&nbsp;        return this.destroyed;
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    private void writeObject(ObjectOutputStream var1) throws IOException {
+<i>128</i>&nbsp;        if(this.destroyed) {
+<b class="nc"><i>129</i>&nbsp;            throw new IOException(&quot;This key is no longer valid&quot;);</b>
+<b class="nc"><i>130</i>&nbsp;        } else {</b>
+<b class="nc"><i>131</i>&nbsp;            try {</b>
+<i>132</i>&nbsp;                var1.writeObject((new EncryptionKey(this.keyType, this.keyBytes)).asn1Encode());
+<i>133</i>&nbsp;            } catch (Asn1Exception var3) {
+<i>134</i>&nbsp;                throw new IOException(var3.getMessage());
+<b class="nc"><i>135</i>&nbsp;            }</b>
+<b class="nc"><i>136</i>&nbsp;        }</b>
+<b class="nc"><i>137</i>&nbsp;    }</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<i>140</i>&nbsp;        try {
+<b class="nc"><i>141</i>&nbsp;            EncryptionKey var2 = new EncryptionKey(new DerValue((byte[])((byte[])var1.readObject())));</b>
+<b class="nc"><i>142</i>&nbsp;            this.keyType = var2.getEType();</b>
+<b class="nc"><i>143</i>&nbsp;            this.keyBytes = var2.getBytes();</b>
+<i>144</i>&nbsp;        } catch (Asn1Exception var3) {
+<i>145</i>&nbsp;            throw new IOException(var3.getMessage());
+<i>146</i>&nbsp;        }
+<i>147</i>&nbsp;    }
+<b class="nc"><i>148</i>&nbsp;</b>
+<i>149</i>&nbsp;    public String toString() {
+<i>150</i>&nbsp;        HexDumpEncoder var1 = new HexDumpEncoder();
+<i>151</i>&nbsp;        return &quot;EncryptionKey: keyType=&quot; + this.keyType + &quot; keyBytes (hex dump)=&quot; + (this.keyBytes != null &amp;&amp; this.keyBytes.length != 0?&#39;\n&#39; + var1.encodeBuffer(this.keyBytes) + &#39;\n&#39;:&quot; Empty Key&quot;);
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public int hashCode() {
+<i>155</i>&nbsp;        byte var1 = 17;
+<i>156</i>&nbsp;        if(this.isDestroyed()) {
+<i>157</i>&nbsp;            return var1;
+<i>158</i>&nbsp;        } else {
+<i>159</i>&nbsp;            int var2 = 37 * var1 + Arrays.hashCode(this.keyBytes);
+<i>160</i>&nbsp;            return 37 * var2 + this.keyType;
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;    }
+<b class="nc"><i>163</i>&nbsp;</b>
+<b class="nc"><i>164</i>&nbsp;    public boolean equals(Object var1) {</b>
+<i>165</i>&nbsp;        if(var1 == this) {
+<i>166</i>&nbsp;            return true;
+<i>167</i>&nbsp;        } else if(!(var1 instanceof KeyImpl)) {
+<b class="nc"><i>168</i>&nbsp;            return false;</b>
+<b class="nc"><i>169</i>&nbsp;        } else {</b>
+<b class="nc"><i>170</i>&nbsp;            KeyImpl var2 = (KeyImpl)var1;</b>
+<b class="nc"><i>171</i>&nbsp;            return !this.isDestroyed() &amp;&amp; !var2.isDestroyed()?this.keyType == var2.getKeyType() &amp;&amp; Arrays.equals(this.keyBytes, var2.getEncoded()):false;</b>
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

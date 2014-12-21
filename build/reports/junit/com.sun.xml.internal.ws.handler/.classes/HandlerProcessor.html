@@ -1,0 +1,408 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HandlerProcessor</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.handler</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HandlerProcessor (com.sun.xml.internal.ws.handler)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HandlerProcessor</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 123)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HandlerProcessor$Direction</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">HandlerProcessor$RequestOrResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 127)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.handler;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.ws.api.WSBinding;
+<i>9</i>&nbsp;import com.sun.xml.internal.ws.handler.HandlerTube;
+<i>10</i>&nbsp;import com.sun.xml.internal.ws.handler.MessageUpdatableContext;
+<i>11</i>&nbsp;import java.util.ArrayList;
+<i>12</i>&nbsp;import java.util.List;
+<i>13</i>&nbsp;import java.util.logging.Level;
+<i>14</i>&nbsp;import java.util.logging.Logger;
+<i>15</i>&nbsp;import javax.xml.ws.ProtocolException;
+<i>16</i>&nbsp;import javax.xml.ws.handler.Handler;
+<i>17</i>&nbsp;import javax.xml.ws.handler.MessageContext;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;abstract class HandlerProcessor&lt;C extends MessageUpdatableContext&gt; {
+<i>20</i>&nbsp;    boolean isClient;
+<i>21</i>&nbsp;    static final Logger logger = Logger.getLogger(&quot;com.sun.xml.internal.ws.handler&quot;);
+<i>22</i>&nbsp;    private List&lt;? extends Handler&gt; handlers;
+<i>23</i>&nbsp;    WSBinding binding;
+<i>24</i>&nbsp;    private int index = -1;
+<i>25</i>&nbsp;    private HandlerTube owner;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    protected HandlerProcessor(HandlerTube owner, WSBinding binding, List&lt;? extends Handler&gt; chain) {
+<i>28</i>&nbsp;        this.owner = owner;
+<i>29</i>&nbsp;        if(chain == null) {
+<i>30</i>&nbsp;            chain = new ArrayList();
+<i>31</i>&nbsp;        }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;        this.handlers = (List)chain;
+<i>34</i>&nbsp;        this.binding = binding;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    int getIndex() {
+<i>38</i>&nbsp;        return this.index;
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    void setIndex(int i) {
+<i>42</i>&nbsp;        this.index = i;
+<b class="nc"><i>43</i>&nbsp;    }</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public boolean callHandlersRequest(HandlerProcessor.Direction direction, C context, boolean responseExpected) {
+<i>46</i>&nbsp;        this.setDirection(direction, context);
+<b class="nc"><i>47</i>&nbsp;</b>
+<b class="nc"><i>48</i>&nbsp;        boolean result;</b>
+<i>49</i>&nbsp;        try {
+<b class="nc"><i>50</i>&nbsp;            if(direction == HandlerProcessor.Direction.OUTBOUND) {</b>
+<b class="nc"><i>51</i>&nbsp;                result = this.callHandleMessage(context, 0, this.handlers.size() - 1);</b>
+<i>52</i>&nbsp;            } else {
+<i>53</i>&nbsp;                result = this.callHandleMessage(context, this.handlers.size() - 1, 0);
+<i>54</i>&nbsp;            }
+<i>55</i>&nbsp;        } catch (ProtocolException var6) {
+<b class="nc"><i>56</i>&nbsp;            logger.log(Level.FINER, &quot;exception in handler chain&quot;, var6);</b>
+<i>57</i>&nbsp;            if(responseExpected) {
+<i>58</i>&nbsp;                this.insertFaultMessage(context, var6);
+<i>59</i>&nbsp;                this.reverseDirection(direction, context);
+<i>60</i>&nbsp;                this.setHandleFaultProperty();
+<i>61</i>&nbsp;                if(direction == HandlerProcessor.Direction.OUTBOUND) {
+<i>62</i>&nbsp;                    this.callHandleFault(context, this.getIndex() - 1, 0);
+<i>63</i>&nbsp;                } else {
+<i>64</i>&nbsp;                    this.callHandleFault(context, this.getIndex() + 1, this.handlers.size() - 1);
+<i>65</i>&nbsp;                }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;                return false;
+<b class="nc"><i>68</i>&nbsp;            }</b>
+<b class="nc"><i>69</i>&nbsp;</b>
+<b class="nc"><i>70</i>&nbsp;            throw var6;</b>
+<b class="nc"><i>71</i>&nbsp;        } catch (RuntimeException var7) {</b>
+<i>72</i>&nbsp;            logger.log(Level.FINER, &quot;exception in handler chain&quot;, var7);
+<b class="nc"><i>73</i>&nbsp;            throw var7;</b>
+<b class="nc"><i>74</i>&nbsp;        }</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;        if(!result) {
+<i>77</i>&nbsp;            if(responseExpected) {
+<i>78</i>&nbsp;                this.reverseDirection(direction, context);
+<i>79</i>&nbsp;                if(direction == HandlerProcessor.Direction.OUTBOUND) {
+<i>80</i>&nbsp;                    this.callHandleMessageReverse(context, this.getIndex() - 1, 0);
+<i>81</i>&nbsp;                } else {
+<b class="nc"><i>82</i>&nbsp;                    this.callHandleMessageReverse(context, this.getIndex() + 1, this.handlers.size() - 1);</b>
+<i>83</i>&nbsp;                }
+<i>84</i>&nbsp;            } else {
+<i>85</i>&nbsp;                this.setHandleFalseProperty();
+<i>86</i>&nbsp;            }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;            return false;
+<b class="nc"><i>89</i>&nbsp;        } else {</b>
+<i>90</i>&nbsp;            return result;
+<i>91</i>&nbsp;        }
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public void callHandlersResponse(HandlerProcessor.Direction direction, C context, boolean isFault) {
+<i>95</i>&nbsp;        this.setDirection(direction, context);
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;        try {
+<i>98</i>&nbsp;            if(isFault) {
+<i>99</i>&nbsp;                if(direction == HandlerProcessor.Direction.OUTBOUND) {
+<i>100</i>&nbsp;                    this.callHandleFault(context, 0, this.handlers.size() - 1);
+<i>101</i>&nbsp;                } else {
+<i>102</i>&nbsp;                    this.callHandleFault(context, this.handlers.size() - 1, 0);
+<i>103</i>&nbsp;                }
+<i>104</i>&nbsp;            } else if(direction == HandlerProcessor.Direction.OUTBOUND) {
+<i>105</i>&nbsp;                this.callHandleMessageReverse(context, 0, this.handlers.size() - 1);
+<i>106</i>&nbsp;            } else {
+<i>107</i>&nbsp;                this.callHandleMessageReverse(context, this.handlers.size() - 1, 0);
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        } catch (RuntimeException var5) {
+<i>111</i>&nbsp;            logger.log(Level.FINER, &quot;exception in handler chain&quot;, var5);
+<i>112</i>&nbsp;            throw var5;
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    private void reverseDirection(HandlerProcessor.Direction origDirection, C context) {
+<b class="nc"><i>117</i>&nbsp;        if(origDirection == HandlerProcessor.Direction.OUTBOUND) {</b>
+<i>118</i>&nbsp;            context.put(&quot;javax.xml.ws.handler.message.outbound&quot;, Boolean.valueOf(false));
+<i>119</i>&nbsp;        } else {
+<i>120</i>&nbsp;            context.put(&quot;javax.xml.ws.handler.message.outbound&quot;, Boolean.valueOf(true));
+<b class="nc"><i>121</i>&nbsp;        }</b>
+<b class="nc"><i>122</i>&nbsp;</b>
+<i>123</i>&nbsp;    }
+<b class="nc"><i>124</i>&nbsp;</b>
+<i>125</i>&nbsp;    private void setDirection(HandlerProcessor.Direction direction, C context) {
+<b class="nc"><i>126</i>&nbsp;        if(direction == HandlerProcessor.Direction.OUTBOUND) {</b>
+<b class="nc"><i>127</i>&nbsp;            context.put(&quot;javax.xml.ws.handler.message.outbound&quot;, Boolean.valueOf(true));</b>
+<b class="nc"><i>128</i>&nbsp;        } else {</b>
+<i>129</i>&nbsp;            context.put(&quot;javax.xml.ws.handler.message.outbound&quot;, Boolean.valueOf(false));
+<b class="nc"><i>130</i>&nbsp;        }</b>
+<i>131</i>&nbsp;
+<b class="nc"><i>132</i>&nbsp;    }</b>
+<i>133</i>&nbsp;
+<b class="nc"><i>134</i>&nbsp;    private void setHandleFaultProperty() {</b>
+<i>135</i>&nbsp;        this.owner.setHandleFault();
+<b class="nc"><i>136</i>&nbsp;    }</b>
+<b class="nc"><i>137</i>&nbsp;</b>
+<i>138</i>&nbsp;    private void setHandleFalseProperty() {
+<b class="nc"><i>139</i>&nbsp;        this.owner.setHandleFalse();</b>
+<i>140</i>&nbsp;    }
+<b class="nc"><i>141</i>&nbsp;</b>
+<i>142</i>&nbsp;    abstract void insertFaultMessage(C var1, ProtocolException var2);
+<b class="nc"><i>143</i>&nbsp;</b>
+<b class="nc"><i>144</i>&nbsp;    private boolean callHandleMessage(C context, int start, int end) {</b>
+<b class="nc"><i>145</i>&nbsp;        int i = start;</b>
+<b class="nc"><i>146</i>&nbsp;</b>
+<b class="nc"><i>147</i>&nbsp;        try {</b>
+<i>148</i>&nbsp;            if(start &gt; end) {
+<b class="nc"><i>149</i>&nbsp;                while(i &gt;= end) {</b>
+<b class="nc"><i>150</i>&nbsp;                    if(!((Handler)this.handlers.get(i)).handleMessage(context)) {</b>
+<i>151</i>&nbsp;                        this.setIndex(i);
+<b class="nc"><i>152</i>&nbsp;                        return false;</b>
+<i>153</i>&nbsp;                    }
+<b class="nc"><i>154</i>&nbsp;</b>
+<b class="nc"><i>155</i>&nbsp;                    --i;</b>
+<i>156</i>&nbsp;                }
+<b class="nc"><i>157</i>&nbsp;            } else {</b>
+<i>158</i>&nbsp;                while(i &lt;= end) {
+<i>159</i>&nbsp;                    if(!((Handler)this.handlers.get(i)).handleMessage(context)) {
+<i>160</i>&nbsp;                        this.setIndex(i);
+<i>161</i>&nbsp;                        return false;
+<i>162</i>&nbsp;                    }
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;                    ++i;
+<b class="nc"><i>165</i>&nbsp;                }</b>
+<i>166</i>&nbsp;            }
+<i>167</i>&nbsp;
+<b class="nc"><i>168</i>&nbsp;            return true;</b>
+<i>169</i>&nbsp;        } catch (RuntimeException var6) {
+<i>170</i>&nbsp;            this.setIndex(start);
+<i>171</i>&nbsp;            throw var6;
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    private boolean callHandleMessageReverse(C context, int start, int end) {
+<i>176</i>&nbsp;        if(!this.handlers.isEmpty() &amp;&amp; start != -1 &amp;&amp; start != this.handlers.size()) {
+<i>177</i>&nbsp;            int i = start;
+<i>178</i>&nbsp;            if(start &gt; end) {
+<i>179</i>&nbsp;                while(i &gt;= end) {
+<i>180</i>&nbsp;                    if(!((Handler)this.handlers.get(i)).handleMessage(context)) {
+<i>181</i>&nbsp;                        this.setHandleFalseProperty();
+<i>182</i>&nbsp;                        return false;
+<i>183</i>&nbsp;                    }
+<b class="nc"><i>184</i>&nbsp;</b>
+<i>185</i>&nbsp;                    --i;
+<b class="nc"><i>186</i>&nbsp;                }</b>
+<i>187</i>&nbsp;            } else {
+<b class="nc"><i>188</i>&nbsp;                while(i &lt;= end) {</b>
+<b class="nc"><i>189</i>&nbsp;                    if(!((Handler)this.handlers.get(i)).handleMessage(context)) {</b>
+<i>190</i>&nbsp;                        this.setHandleFalseProperty();
+<b class="nc"><i>191</i>&nbsp;                        return false;</b>
+<i>192</i>&nbsp;                    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;                    ++i;
+<b class="nc"><i>195</i>&nbsp;                }</b>
+<b class="nc"><i>196</i>&nbsp;            }</b>
+<i>197</i>&nbsp;
+<b class="nc"><i>198</i>&nbsp;            return true;</b>
+<i>199</i>&nbsp;        } else {
+<i>200</i>&nbsp;            return false;
+<b class="nc"><i>201</i>&nbsp;        }</b>
+<b class="nc"><i>202</i>&nbsp;    }</b>
+<b class="nc"><i>203</i>&nbsp;</b>
+<b class="nc"><i>204</i>&nbsp;    private boolean callHandleFault(C context, int start, int end) {</b>
+<i>205</i>&nbsp;        if(!this.handlers.isEmpty() &amp;&amp; start != -1 &amp;&amp; start != this.handlers.size()) {
+<i>206</i>&nbsp;            int i = start;
+<i>207</i>&nbsp;            if(start &gt; end) {
+<i>208</i>&nbsp;                try {
+<i>209</i>&nbsp;                    while(i &gt;= end) {
+<i>210</i>&nbsp;                        if(!((Handler)this.handlers.get(i)).handleFault(context)) {
+<i>211</i>&nbsp;                            return false;
+<i>212</i>&nbsp;                        }
+<b class="nc"><i>213</i>&nbsp;</b>
+<b class="nc"><i>214</i>&nbsp;                        --i;</b>
+<i>215</i>&nbsp;                    }
+<b class="nc"><i>216</i>&nbsp;                } catch (RuntimeException var7) {</b>
+<i>217</i>&nbsp;                    logger.log(Level.FINER, &quot;exception in handler chain&quot;, var7);
+<i>218</i>&nbsp;                    throw var7;
+<i>219</i>&nbsp;                }
+<i>220</i>&nbsp;            } else {
+<i>221</i>&nbsp;                try {
+<i>222</i>&nbsp;                    while(i &lt;= end) {
+<i>223</i>&nbsp;                        if(!((Handler)this.handlers.get(i)).handleFault(context)) {
+<i>224</i>&nbsp;                            return false;
+<b class="nc"><i>225</i>&nbsp;                        }</b>
+<b class="nc"><i>226</i>&nbsp;</b>
+<i>227</i>&nbsp;                        ++i;
+<b class="nc"><i>228</i>&nbsp;                    }</b>
+<i>229</i>&nbsp;                } catch (RuntimeException var6) {
+<i>230</i>&nbsp;                    logger.log(Level.FINER, &quot;exception in handler chain&quot;, var6);
+<i>231</i>&nbsp;                    throw var6;
+<i>232</i>&nbsp;                }
+<i>233</i>&nbsp;            }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;            return true;
+<i>236</i>&nbsp;        } else {
+<b class="nc"><i>237</i>&nbsp;            return false;</b>
+<i>238</i>&nbsp;        }
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    void closeHandlers(MessageContext context, int start, int end) {
+<i>242</i>&nbsp;        if(!this.handlers.isEmpty() &amp;&amp; start != -1) {
+<i>243</i>&nbsp;            int i;
+<i>244</i>&nbsp;            if(start &gt; end) {
+<b class="nc"><i>245</i>&nbsp;                for(i = start; i &gt;= end; --i) {</b>
+<i>246</i>&nbsp;                    try {
+<i>247</i>&nbsp;                        ((Handler)this.handlers.get(i)).close(context);
+<i>248</i>&nbsp;                    } catch (RuntimeException var7) {
+<i>249</i>&nbsp;                        logger.log(Level.INFO, &quot;Exception ignored during close&quot;, var7);
+<i>250</i>&nbsp;                    }
+<i>251</i>&nbsp;                }
+<i>252</i>&nbsp;            } else {
+<i>253</i>&nbsp;                for(i = start; i &lt;= end; ++i) {
+<i>254</i>&nbsp;                    try {
+<i>255</i>&nbsp;                        ((Handler)this.handlers.get(i)).close(context);
+<i>256</i>&nbsp;                    } catch (RuntimeException var6) {
+<i>257</i>&nbsp;                        logger.log(Level.INFO, &quot;Exception ignored during close&quot;, var6);
+<i>258</i>&nbsp;                    }
+<i>259</i>&nbsp;                }
+<i>260</i>&nbsp;            }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;        }
+<i>263</i>&nbsp;    }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    public static enum Direction {
+<i>266</i>&nbsp;        OUTBOUND,
+<i>267</i>&nbsp;        INBOUND;
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;        private Direction() {</b>
+<i>270</i>&nbsp;        }
+<b class="nc"><i>271</i>&nbsp;    }</b>
+<b class="nc"><i>272</i>&nbsp;</b>
+<b class="nc"><i>273</i>&nbsp;    public static enum RequestOrResponse {</b>
+<b class="nc"><i>274</i>&nbsp;        REQUEST,</b>
+<b class="nc"><i>275</i>&nbsp;        RESPONSE;</b>
+<i>276</i>&nbsp;
+<b class="nc"><i>277</i>&nbsp;        private RequestOrResponse() {</b>
+<i>278</i>&nbsp;        }
+<i>279</i>&nbsp;    }
+<b class="nc"><i>280</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

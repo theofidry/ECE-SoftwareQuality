@@ -1,0 +1,148 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CustomizationContextChecker</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.xjc.reader.xmlschema.parser</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CustomizationContextChecker (com.sun.tools.internal.xjc.reader.xmlschema.parser)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CustomizationContextChecker</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.xjc.reader.xmlschema.parser;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.internal.xjc.reader.xmlschema.parser.Messages;
+<i>9</i>&nbsp;import java.util.HashSet;
+<i>10</i>&nbsp;import java.util.Set;
+<i>11</i>&nbsp;import java.util.Stack;
+<i>12</i>&nbsp;import javax.xml.namespace.QName;
+<i>13</i>&nbsp;import org.xml.sax.Attributes;
+<i>14</i>&nbsp;import org.xml.sax.ErrorHandler;
+<i>15</i>&nbsp;import org.xml.sax.Locator;
+<i>16</i>&nbsp;import org.xml.sax.SAXException;
+<i>17</i>&nbsp;import org.xml.sax.SAXParseException;
+<i>18</i>&nbsp;import org.xml.sax.helpers.XMLFilterImpl;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class CustomizationContextChecker extends XMLFilterImpl {
+<i>21</i>&nbsp;    private final Stack&lt;QName&gt; elementNames = new Stack();
+<i>22</i>&nbsp;    private final ErrorHandler errorHandler;
+<i>23</i>&nbsp;    private Locator locator;
+<i>24</i>&nbsp;    private static final Set&lt;String&gt; prohibitedSchemaElementNames = new HashSet();
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public CustomizationContextChecker(ErrorHandler _errorHandler) {
+<i>27</i>&nbsp;        this.errorHandler = _errorHandler;
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    private QName top() {
+<i>31</i>&nbsp;        return (QName)this.elementNames.peek();
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+<i>35</i>&nbsp;        QName newElement = new QName(namespaceURI, localName);
+<i>36</i>&nbsp;        if(newElement.getNamespaceURI().equals(&quot;http://java.sun.com/xml/ns/jaxb&quot;) &amp;&amp; this.top().getNamespaceURI().equals(&quot;http://www.w3.org/2001/XMLSchema&quot;) &amp;&amp; this.elementNames.size() &gt;= 3) {
+<i>37</i>&nbsp;            QName schemaElement = (QName)this.elementNames.get(this.elementNames.size() - 3);
+<i>38</i>&nbsp;            if(prohibitedSchemaElementNames.contains(schemaElement.getLocalPart())) {
+<i>39</i>&nbsp;                this.errorHandler.error(new SAXParseException(Messages.format(&quot;CustomizationContextChecker.UnacknolwedgedCustomization&quot;, new Object[]{localName}), this.locator));
+<i>40</i>&nbsp;            }
+<i>41</i>&nbsp;        }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;        this.elementNames.push(newElement);
+<i>44</i>&nbsp;        super.startElement(namespaceURI, localName, qName, atts);
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
+<i>48</i>&nbsp;        super.endElement(namespaceURI, localName, qName);
+<i>49</i>&nbsp;        this.elementNames.pop();
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public void setDocumentLocator(Locator locator) {
+<i>53</i>&nbsp;        super.setDocumentLocator(locator);
+<i>54</i>&nbsp;        this.locator = locator;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    static {
+<i>58</i>&nbsp;        prohibitedSchemaElementNames.add(&quot;restriction&quot;);
+<i>59</i>&nbsp;        prohibitedSchemaElementNames.add(&quot;extension&quot;);
+<i>60</i>&nbsp;        prohibitedSchemaElementNames.add(&quot;simpleContent&quot;);
+<i>61</i>&nbsp;        prohibitedSchemaElementNames.add(&quot;complexContent&quot;);
+<i>62</i>&nbsp;        prohibitedSchemaElementNames.add(&quot;list&quot;);
+<i>63</i>&nbsp;        prohibitedSchemaElementNames.add(&quot;union&quot;);
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

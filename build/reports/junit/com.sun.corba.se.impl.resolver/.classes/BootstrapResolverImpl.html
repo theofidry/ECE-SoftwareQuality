@@ -1,0 +1,182 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BootstrapResolverImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.corba.se.impl.resolver</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BootstrapResolverImpl (com.sun.corba.se.impl.resolver)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BootstrapResolverImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.corba.se.impl.resolver;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.corba.se.impl.logging.ORBUtilSystemException;
+<i>9</i>&nbsp;import com.sun.corba.se.impl.orbutil.ORBUtility;
+<i>10</i>&nbsp;import com.sun.corba.se.spi.ior.IOR;
+<i>11</i>&nbsp;import com.sun.corba.se.spi.ior.IORFactories;
+<i>12</i>&nbsp;import com.sun.corba.se.spi.ior.IORTemplate;
+<i>13</i>&nbsp;import com.sun.corba.se.spi.ior.ObjectKey;
+<i>14</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.GIOPVersion;
+<i>15</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.IIOPAddress;
+<i>16</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.IIOPFactories;
+<i>17</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.IIOPProfileTemplate;
+<i>18</i>&nbsp;import com.sun.corba.se.spi.orb.ORB;
+<i>19</i>&nbsp;import com.sun.corba.se.spi.resolver.Resolver;
+<i>20</i>&nbsp;import java.util.HashSet;
+<i>21</i>&nbsp;import java.util.Set;
+<i>22</i>&nbsp;import org.omg.CORBA.portable.ApplicationException;
+<i>23</i>&nbsp;import org.omg.CORBA.portable.Delegate;
+<i>24</i>&nbsp;import org.omg.CORBA.portable.InputStream;
+<i>25</i>&nbsp;import org.omg.CORBA.portable.OutputStream;
+<i>26</i>&nbsp;import org.omg.CORBA.portable.RemarshalException;
+<i>27</i>&nbsp;
+<b class="nc"><i>28</i>&nbsp;public class BootstrapResolverImpl implements Resolver {</b>
+<b class="nc"><i>29</i>&nbsp;    private Delegate bootstrapDelegate;</b>
+<i>30</i>&nbsp;    private ORBUtilSystemException wrapper;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public BootstrapResolverImpl(ORB var1, String var2, int var3) {
+<b class="nc"><i>33</i>&nbsp;        this.wrapper = ORBUtilSystemException.get(var1, &quot;orb.resolver&quot;);</b>
+<b class="nc"><i>34</i>&nbsp;        byte[] var4 = &quot;INIT&quot;.getBytes();</b>
+<i>35</i>&nbsp;        ObjectKey var5 = var1.getObjectKeyFactory().create(var4);
+<b class="nc"><i>36</i>&nbsp;        IIOPAddress var6 = IIOPFactories.makeIIOPAddress(var1, var2, var3);</b>
+<b class="nc"><i>37</i>&nbsp;        IIOPProfileTemplate var7 = IIOPFactories.makeIIOPProfileTemplate(var1, GIOPVersion.V1_0, var6);</b>
+<i>38</i>&nbsp;        IORTemplate var8 = IORFactories.makeIORTemplate(var5.getTemplate());
+<i>39</i>&nbsp;        var8.add(var7);
+<b class="nc"><i>40</i>&nbsp;        IOR var9 = var8.makeIOR(var1, &quot;&quot;, var5.getId());</b>
+<b class="nc"><i>41</i>&nbsp;        this.bootstrapDelegate = ORBUtility.makeClientDelegate(var9);</b>
+<i>42</i>&nbsp;    }
+<b class="nc"><i>43</i>&nbsp;</b>
+<i>44</i>&nbsp;    private InputStream invoke(String var1, String var2) {
+<i>45</i>&nbsp;        boolean var3 = true;
+<b class="nc"><i>46</i>&nbsp;        InputStream var4 = null;</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;        while(var3) {
+<i>49</i>&nbsp;            Object var5 = null;
+<i>50</i>&nbsp;            var3 = false;
+<i>51</i>&nbsp;            OutputStream var6 = this.bootstrapDelegate.request((org.omg.CORBA.Object)var5, var1, true);
+<i>52</i>&nbsp;            if(var2 != null) {
+<i>53</i>&nbsp;                var6.write_string(var2);
+<i>54</i>&nbsp;            }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;            try {
+<i>57</i>&nbsp;                var4 = this.bootstrapDelegate.invoke((org.omg.CORBA.Object)var5, var6);
+<i>58</i>&nbsp;            } catch (ApplicationException var8) {
+<b class="nc"><i>59</i>&nbsp;                throw this.wrapper.bootstrapApplicationException(var8);</b>
+<i>60</i>&nbsp;            } catch (RemarshalException var9) {
+<i>61</i>&nbsp;                var3 = true;
+<i>62</i>&nbsp;            }
+<b class="nc"><i>63</i>&nbsp;        }</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;        return var4;
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public org.omg.CORBA.Object resolve(String var1) {
+<i>69</i>&nbsp;        InputStream var2 = null;
+<b class="nc"><i>70</i>&nbsp;        org.omg.CORBA.Object var3 = null;</b>
+<b class="nc"><i>71</i>&nbsp;</b>
+<b class="nc"><i>72</i>&nbsp;        try {</b>
+<i>73</i>&nbsp;            var2 = this.invoke(&quot;get&quot;, var1);
+<b class="nc"><i>74</i>&nbsp;            var3 = var2.read_Object();</b>
+<i>75</i>&nbsp;        } finally {
+<i>76</i>&nbsp;            this.bootstrapDelegate.releaseReply((org.omg.CORBA.Object)null, var2);
+<b class="nc"><i>77</i>&nbsp;        }</b>
+<b class="nc"><i>78</i>&nbsp;</b>
+<i>79</i>&nbsp;        return var3;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public Set list() {
+<i>83</i>&nbsp;        InputStream var1 = null;
+<i>84</i>&nbsp;        HashSet var2 = new HashSet();
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;        try {
+<i>87</i>&nbsp;            var1 = this.invoke(&quot;list&quot;, (String)null);
+<i>88</i>&nbsp;            int var3 = var1.read_long();
+<b class="nc"><i>89</i>&nbsp;</b>
+<b class="nc"><i>90</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {</b>
+<b class="nc"><i>91</i>&nbsp;                var2.add(var1.read_string());</b>
+<b class="nc"><i>92</i>&nbsp;            }</b>
+<i>93</i>&nbsp;        } finally {
+<b class="nc"><i>94</i>&nbsp;            this.bootstrapDelegate.releaseReply((org.omg.CORBA.Object)null, var1);</b>
+<b class="nc"><i>95</i>&nbsp;        }</b>
+<b class="nc"><i>96</i>&nbsp;</b>
+<i>97</i>&nbsp;        return var2;
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

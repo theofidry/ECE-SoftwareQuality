@@ -1,0 +1,816 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: X509CertInfo</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.x509</a> ]
+</div>
+
+<h1>Coverage Summary for Class: X509CertInfo (sun.security.x509)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">X509CertInfo</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 376)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.x509;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.OutputStream;
+<i>10</i>&nbsp;import java.security.cert.CertificateEncodingException;
+<i>11</i>&nbsp;import java.security.cert.CertificateException;
+<i>12</i>&nbsp;import java.security.cert.CertificateParsingException;
+<i>13</i>&nbsp;import java.util.Collection;
+<i>14</i>&nbsp;import java.util.Enumeration;
+<i>15</i>&nbsp;import java.util.HashMap;
+<i>16</i>&nbsp;import java.util.Iterator;
+<i>17</i>&nbsp;import java.util.Map;
+<i>18</i>&nbsp;import sun.misc.HexDumpEncoder;
+<i>19</i>&nbsp;import sun.security.util.DerInputStream;
+<i>20</i>&nbsp;import sun.security.util.DerOutputStream;
+<i>21</i>&nbsp;import sun.security.util.DerValue;
+<i>22</i>&nbsp;import sun.security.x509.AttributeNameEnumeration;
+<i>23</i>&nbsp;import sun.security.x509.CertAttrSet;
+<i>24</i>&nbsp;import sun.security.x509.CertificateAlgorithmId;
+<i>25</i>&nbsp;import sun.security.x509.CertificateExtensions;
+<i>26</i>&nbsp;import sun.security.x509.CertificateIssuerName;
+<i>27</i>&nbsp;import sun.security.x509.CertificateIssuerUniqueIdentity;
+<i>28</i>&nbsp;import sun.security.x509.CertificateSerialNumber;
+<i>29</i>&nbsp;import sun.security.x509.CertificateSubjectName;
+<i>30</i>&nbsp;import sun.security.x509.CertificateSubjectUniqueIdentity;
+<i>31</i>&nbsp;import sun.security.x509.CertificateValidity;
+<i>32</i>&nbsp;import sun.security.x509.CertificateVersion;
+<i>33</i>&nbsp;import sun.security.x509.CertificateX509Key;
+<i>34</i>&nbsp;import sun.security.x509.Extension;
+<i>35</i>&nbsp;import sun.security.x509.GeneralNames;
+<i>36</i>&nbsp;import sun.security.x509.OIDMap;
+<i>37</i>&nbsp;import sun.security.x509.SubjectAlternativeNameExtension;
+<i>38</i>&nbsp;import sun.security.x509.X500Name;
+<i>39</i>&nbsp;import sun.security.x509.X509AttributeName;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;public class X509CertInfo implements CertAttrSet&lt;String&gt; {
+<i>42</i>&nbsp;    public static final String IDENT = &quot;x509.info&quot;;
+<i>43</i>&nbsp;    public static final String NAME = &quot;info&quot;;
+<i>44</i>&nbsp;    public static final String VERSION = &quot;version&quot;;
+<i>45</i>&nbsp;    public static final String SERIAL_NUMBER = &quot;serialNumber&quot;;
+<i>46</i>&nbsp;    public static final String ALGORITHM_ID = &quot;algorithmID&quot;;
+<i>47</i>&nbsp;    public static final String ISSUER = &quot;issuer&quot;;
+<i>48</i>&nbsp;    public static final String VALIDITY = &quot;validity&quot;;
+<i>49</i>&nbsp;    public static final String SUBJECT = &quot;subject&quot;;
+<i>50</i>&nbsp;    public static final String KEY = &quot;key&quot;;
+<i>51</i>&nbsp;    public static final String ISSUER_ID = &quot;issuerID&quot;;
+<i>52</i>&nbsp;    public static final String SUBJECT_ID = &quot;subjectID&quot;;
+<i>53</i>&nbsp;    public static final String EXTENSIONS = &quot;extensions&quot;;
+<i>54</i>&nbsp;    protected CertificateVersion version = new CertificateVersion();
+<i>55</i>&nbsp;    protected CertificateSerialNumber serialNum = null;
+<i>56</i>&nbsp;    protected CertificateAlgorithmId algId = null;
+<i>57</i>&nbsp;    protected CertificateIssuerName issuer = null;
+<i>58</i>&nbsp;    protected CertificateValidity interval = null;
+<i>59</i>&nbsp;    protected CertificateSubjectName subject = null;
+<i>60</i>&nbsp;    protected CertificateX509Key pubKey = null;
+<i>61</i>&nbsp;    protected CertificateIssuerUniqueIdentity issuerUniqueId = null;
+<i>62</i>&nbsp;    protected CertificateSubjectUniqueIdentity subjectUniqueId = null;
+<i>63</i>&nbsp;    protected CertificateExtensions extensions = null;
+<i>64</i>&nbsp;    private static final int ATTR_VERSION = 1;
+<i>65</i>&nbsp;    private static final int ATTR_SERIAL = 2;
+<b class="nc"><i>66</i>&nbsp;    private static final int ATTR_ALGORITHM = 3;</b>
+<b class="nc"><i>67</i>&nbsp;    private static final int ATTR_ISSUER = 4;</b>
+<b class="nc"><i>68</i>&nbsp;    private static final int ATTR_VALIDITY = 5;</b>
+<b class="nc"><i>69</i>&nbsp;    private static final int ATTR_SUBJECT = 6;</b>
+<b class="nc"><i>70</i>&nbsp;    private static final int ATTR_KEY = 7;</b>
+<b class="nc"><i>71</i>&nbsp;    private static final int ATTR_ISSUER_ID = 8;</b>
+<b class="nc"><i>72</i>&nbsp;    private static final int ATTR_SUBJECT_ID = 9;</b>
+<i>73</i>&nbsp;    private static final int ATTR_EXTENSIONS = 10;
+<i>74</i>&nbsp;    private byte[] rawCertInfo = null;
+<b class="nc"><i>75</i>&nbsp;    private static final Map&lt;String, Integer&gt; map = new HashMap();</b>
+<b class="nc"><i>76</i>&nbsp;</b>
+<i>77</i>&nbsp;    public X509CertInfo() {
+<i>78</i>&nbsp;    }
+<b class="nc"><i>79</i>&nbsp;</b>
+<i>80</i>&nbsp;    public X509CertInfo(byte[] var1) throws CertificateParsingException {
+<i>81</i>&nbsp;        try {
+<i>82</i>&nbsp;            DerValue var2 = new DerValue(var1);
+<i>83</i>&nbsp;            this.parse(var2);
+<i>84</i>&nbsp;        } catch (IOException var4) {
+<i>85</i>&nbsp;            CertificateParsingException var3 = new CertificateParsingException(var4.toString());
+<i>86</i>&nbsp;            var3.initCause(var4);
+<i>87</i>&nbsp;            throw var3;
+<i>88</i>&nbsp;        }
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public X509CertInfo(DerValue var1) throws CertificateParsingException {
+<i>92</i>&nbsp;        try {
+<i>93</i>&nbsp;            this.parse(var1);
+<b class="nc"><i>94</i>&nbsp;        } catch (IOException var4) {</b>
+<i>95</i>&nbsp;            CertificateParsingException var3 = new CertificateParsingException(var4.toString());
+<i>96</i>&nbsp;            var3.initCause(var4);
+<b class="nc"><i>97</i>&nbsp;            throw var3;</b>
+<i>98</i>&nbsp;        }
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<b class="nc"><i>100</i>&nbsp;</b>
+<b class="nc"><i>101</i>&nbsp;    public void encode(OutputStream var1) throws CertificateException, IOException {</b>
+<b class="nc"><i>102</i>&nbsp;        if(this.rawCertInfo == null) {</b>
+<b class="nc"><i>103</i>&nbsp;            DerOutputStream var2 = new DerOutputStream();</b>
+<b class="nc"><i>104</i>&nbsp;            this.emit(var2);</b>
+<b class="nc"><i>105</i>&nbsp;            this.rawCertInfo = var2.toByteArray();</b>
+<b class="nc"><i>106</i>&nbsp;        }</b>
+<b class="nc"><i>107</i>&nbsp;</b>
+<b class="nc"><i>108</i>&nbsp;        var1.write((byte[])this.rawCertInfo.clone());</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public Enumeration&lt;String&gt; getElements() {
+<i>112</i>&nbsp;        AttributeNameEnumeration var1 = new AttributeNameEnumeration();
+<i>113</i>&nbsp;        var1.addElement(&quot;version&quot;);
+<i>114</i>&nbsp;        var1.addElement(&quot;serialNumber&quot;);
+<i>115</i>&nbsp;        var1.addElement(&quot;algorithmID&quot;);
+<i>116</i>&nbsp;        var1.addElement(&quot;issuer&quot;);
+<i>117</i>&nbsp;        var1.addElement(&quot;validity&quot;);
+<i>118</i>&nbsp;        var1.addElement(&quot;subject&quot;);
+<i>119</i>&nbsp;        var1.addElement(&quot;key&quot;);
+<i>120</i>&nbsp;        var1.addElement(&quot;issuerID&quot;);
+<i>121</i>&nbsp;        var1.addElement(&quot;subjectID&quot;);
+<i>122</i>&nbsp;        var1.addElement(&quot;extensions&quot;);
+<i>123</i>&nbsp;        return var1.elements();
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public String getName() {
+<i>127</i>&nbsp;        return &quot;info&quot;;
+<i>128</i>&nbsp;    }
+<b class="nc"><i>129</i>&nbsp;</b>
+<i>130</i>&nbsp;    public byte[] getEncodedInfo() throws CertificateEncodingException {
+<b class="nc"><i>131</i>&nbsp;        try {</b>
+<i>132</i>&nbsp;            if(this.rawCertInfo == null) {
+<b class="nc"><i>133</i>&nbsp;                DerOutputStream var1 = new DerOutputStream();</b>
+<b class="nc"><i>134</i>&nbsp;                this.emit(var1);</b>
+<b class="nc"><i>135</i>&nbsp;                this.rawCertInfo = var1.toByteArray();</b>
+<i>136</i>&nbsp;            }
+<b class="nc"><i>137</i>&nbsp;</b>
+<b class="nc"><i>138</i>&nbsp;            return (byte[])this.rawCertInfo.clone();</b>
+<b class="nc"><i>139</i>&nbsp;        } catch (IOException var2) {</b>
+<i>140</i>&nbsp;            throw new CertificateEncodingException(var2.toString());
+<i>141</i>&nbsp;        } catch (CertificateException var3) {
+<i>142</i>&nbsp;            throw new CertificateEncodingException(var3.toString());
+<i>143</i>&nbsp;        }
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    public boolean equals(Object var1) {
+<i>147</i>&nbsp;        return var1 instanceof X509CertInfo?this.equals((X509CertInfo)((X509CertInfo)var1)):false;
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<b class="nc"><i>150</i>&nbsp;    public boolean equals(X509CertInfo var1) {</b>
+<i>151</i>&nbsp;        if(this == var1) {
+<b class="nc"><i>152</i>&nbsp;            return true;</b>
+<b class="nc"><i>153</i>&nbsp;        } else if(this.rawCertInfo != null &amp;&amp; var1.rawCertInfo != null) {</b>
+<b class="nc"><i>154</i>&nbsp;            if(this.rawCertInfo.length != var1.rawCertInfo.length) {</b>
+<i>155</i>&nbsp;                return false;
+<b class="nc"><i>156</i>&nbsp;            } else {</b>
+<b class="nc"><i>157</i>&nbsp;                for(int var2 = 0; var2 &lt; this.rawCertInfo.length; ++var2) {</b>
+<b class="nc"><i>158</i>&nbsp;                    if(this.rawCertInfo[var2] != var1.rawCertInfo[var2]) {</b>
+<i>159</i>&nbsp;                        return false;
+<i>160</i>&nbsp;                    }
+<i>161</i>&nbsp;                }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;                return true;
+<i>164</i>&nbsp;            }
+<i>165</i>&nbsp;        } else {
+<i>166</i>&nbsp;            return false;
+<i>167</i>&nbsp;        }
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<b class="nc"><i>170</i>&nbsp;    public int hashCode() {</b>
+<b class="nc"><i>171</i>&nbsp;        int var1 = 0;</b>
+<b class="nc"><i>172</i>&nbsp;</b>
+<b class="nc"><i>173</i>&nbsp;        for(int var2 = 1; var2 &lt; this.rawCertInfo.length; ++var2) {</b>
+<i>174</i>&nbsp;            var1 += this.rawCertInfo[var2] * var2;
+<b class="nc"><i>175</i>&nbsp;        }</b>
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;        return var1;
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    public String toString() {
+<i>181</i>&nbsp;        if(this.subject != null &amp;&amp; this.pubKey != null &amp;&amp; this.interval != null &amp;&amp; this.issuer != null &amp;&amp; this.algId != null &amp;&amp; this.serialNum != null) {
+<i>182</i>&nbsp;            StringBuilder var1 = new StringBuilder();
+<b class="nc"><i>183</i>&nbsp;            var1.append(&quot;[\n&quot;);</b>
+<b class="nc"><i>184</i>&nbsp;            var1.append(&quot;  &quot; + this.version.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>185</i>&nbsp;            var1.append(&quot;  Subject: &quot; + this.subject.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>186</i>&nbsp;            var1.append(&quot;  Signature Algorithm: &quot; + this.algId.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>187</i>&nbsp;            var1.append(&quot;  Key:  &quot; + this.pubKey.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>188</i>&nbsp;            var1.append(&quot;  &quot; + this.interval.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>189</i>&nbsp;            var1.append(&quot;  Issuer: &quot; + this.issuer.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>190</i>&nbsp;            var1.append(&quot;  &quot; + this.serialNum.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>191</i>&nbsp;            if(this.issuerUniqueId != null) {</b>
+<b class="nc"><i>192</i>&nbsp;                var1.append(&quot;  Issuer Id:\n&quot; + this.issuerUniqueId.toString() + &quot;\n&quot;);</b>
+<b class="nc"><i>193</i>&nbsp;            }</b>
+<i>194</i>&nbsp;
+<b class="nc"><i>195</i>&nbsp;            if(this.subjectUniqueId != null) {</b>
+<i>196</i>&nbsp;                var1.append(&quot;  Subject Id:\n&quot; + this.subjectUniqueId.toString() + &quot;\n&quot;);
+<i>197</i>&nbsp;            }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;            if(this.extensions != null) {
+<i>200</i>&nbsp;                Collection var2 = this.extensions.getAllExtensions();
+<i>201</i>&nbsp;                Object[] var3 = var2.toArray();
+<b class="nc"><i>202</i>&nbsp;                var1.append(&quot;\nCertificate Extensions: &quot; + var3.length);</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;                for(int var4 = 0; var4 &lt; var3.length; ++var4) {
+<i>205</i>&nbsp;                    var1.append(&quot;\n[&quot; + (var4 + 1) + &quot;]: &quot;);
+<i>206</i>&nbsp;                    Extension var5 = (Extension)var3[var4];
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;                    try {
+<i>209</i>&nbsp;                        if(OIDMap.getClass(var5.getExtensionId()) == null) {
+<i>210</i>&nbsp;                            var1.append(var5.toString());
+<i>211</i>&nbsp;                            byte[] var6 = var5.getExtensionValue();
+<b class="nc"><i>212</i>&nbsp;                            if(var6 != null) {</b>
+<b class="nc"><i>213</i>&nbsp;                                DerOutputStream var7 = new DerOutputStream();</b>
+<b class="nc"><i>214</i>&nbsp;                                var7.putOctetString(var6);</b>
+<b class="nc"><i>215</i>&nbsp;                                var6 = var7.toByteArray();</b>
+<i>216</i>&nbsp;                                HexDumpEncoder var8 = new HexDumpEncoder();
+<b class="nc"><i>217</i>&nbsp;                                var1.append(&quot;Extension unknown: DER encoded OCTET string =\n&quot; + var8.encodeBuffer(var6) + &quot;\n&quot;);</b>
+<b class="nc"><i>218</i>&nbsp;                            }</b>
+<b class="nc"><i>219</i>&nbsp;                        } else {</b>
+<b class="nc"><i>220</i>&nbsp;                            var1.append(var5.toString());</b>
+<b class="nc"><i>221</i>&nbsp;                        }</b>
+<i>222</i>&nbsp;                    } catch (Exception var9) {
+<i>223</i>&nbsp;                        var1.append(&quot;, Error parsing this extension&quot;);
+<i>224</i>&nbsp;                    }
+<i>225</i>&nbsp;                }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;                Map var10 = this.extensions.getUnparseableExtensions();
+<i>228</i>&nbsp;                if(!var10.isEmpty()) {
+<i>229</i>&nbsp;                    var1.append(&quot;\nUnparseable certificate extensions: &quot; + var10.size());
+<i>230</i>&nbsp;                    int var11 = 1;
+<i>231</i>&nbsp;                    Iterator var12 = var10.values().iterator();
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;                    while(var12.hasNext()) {
+<b class="nc"><i>234</i>&nbsp;                        Extension var13 = (Extension)var12.next();</b>
+<b class="nc"><i>235</i>&nbsp;                        var1.append(&quot;\n[&quot; + var11++ + &quot;]: &quot;);</b>
+<i>236</i>&nbsp;                        var1.append(var13);
+<b class="nc"><i>237</i>&nbsp;                    }</b>
+<i>238</i>&nbsp;                }
+<i>239</i>&nbsp;            }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;            var1.append(&quot;\n]&quot;);
+<i>242</i>&nbsp;            return var1.toString();
+<i>243</i>&nbsp;        } else {
+<i>244</i>&nbsp;            throw new NullPointerException(&quot;X.509 cert is incomplete&quot;);
+<i>245</i>&nbsp;        }
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    public void set(String var1, Object var2) throws CertificateException, IOException {
+<b class="nc"><i>249</i>&nbsp;        X509AttributeName var3 = new X509AttributeName(var1);</b>
+<b class="nc"><i>250</i>&nbsp;        int var4 = this.attributeMap(var3.getPrefix());</b>
+<b class="nc"><i>251</i>&nbsp;        if(var4 == 0) {</b>
+<b class="nc"><i>252</i>&nbsp;            throw new CertificateException(&quot;Attribute name not recognized: &quot; + var1);</b>
+<b class="nc"><i>253</i>&nbsp;        } else {</b>
+<b class="nc"><i>254</i>&nbsp;            this.rawCertInfo = null;</b>
+<i>255</i>&nbsp;            String var5 = var3.getSuffix();
+<b class="nc"><i>256</i>&nbsp;            switch(var4) {</b>
+<b class="nc"><i>257</i>&nbsp;            case 1:</b>
+<b class="nc"><i>258</i>&nbsp;                if(var5 == null) {</b>
+<i>259</i>&nbsp;                    this.setVersion(var2);
+<i>260</i>&nbsp;                } else {
+<b class="nc"><i>261</i>&nbsp;                    this.version.set(var5, var2);</b>
+<i>262</i>&nbsp;                }
+<i>263</i>&nbsp;                break;
+<i>264</i>&nbsp;            case 2:
+<i>265</i>&nbsp;                if(var5 == null) {
+<i>266</i>&nbsp;                    this.setSerialNumber(var2);
+<i>267</i>&nbsp;                } else {
+<i>268</i>&nbsp;                    this.serialNum.set(var5, var2);
+<b class="nc"><i>269</i>&nbsp;                }</b>
+<i>270</i>&nbsp;                break;
+<b class="nc"><i>271</i>&nbsp;            case 3:</b>
+<b class="nc"><i>272</i>&nbsp;                if(var5 == null) {</b>
+<i>273</i>&nbsp;                    this.setAlgorithmId(var2);
+<b class="nc"><i>274</i>&nbsp;                } else {</b>
+<i>275</i>&nbsp;                    this.algId.set(var5, var2);
+<i>276</i>&nbsp;                }
+<i>277</i>&nbsp;                break;
+<i>278</i>&nbsp;            case 4:
+<i>279</i>&nbsp;                if(var5 == null) {
+<i>280</i>&nbsp;                    this.setIssuer(var2);
+<i>281</i>&nbsp;                } else {
+<b class="nc"><i>282</i>&nbsp;                    this.issuer.set(var5, var2);</b>
+<i>283</i>&nbsp;                }
+<b class="nc"><i>284</i>&nbsp;                break;</b>
+<i>285</i>&nbsp;            case 5:
+<b class="nc"><i>286</i>&nbsp;                if(var5 == null) {</b>
+<i>287</i>&nbsp;                    this.setValidity(var2);
+<b class="nc"><i>288</i>&nbsp;                } else {</b>
+<b class="nc"><i>289</i>&nbsp;                    this.interval.set(var5, var2);</b>
+<b class="nc"><i>290</i>&nbsp;                }</b>
+<b class="nc"><i>291</i>&nbsp;                break;</b>
+<b class="nc"><i>292</i>&nbsp;            case 6:</b>
+<b class="nc"><i>293</i>&nbsp;                if(var5 == null) {</b>
+<b class="nc"><i>294</i>&nbsp;                    this.setSubject(var2);</b>
+<b class="nc"><i>295</i>&nbsp;                } else {</b>
+<i>296</i>&nbsp;                    this.subject.set(var5, var2);
+<i>297</i>&nbsp;                }
+<b class="nc"><i>298</i>&nbsp;                break;</b>
+<b class="nc"><i>299</i>&nbsp;            case 7:</b>
+<i>300</i>&nbsp;                if(var5 == null) {
+<b class="nc"><i>301</i>&nbsp;                    this.setKey(var2);</b>
+<b class="nc"><i>302</i>&nbsp;                } else {</b>
+<i>303</i>&nbsp;                    this.pubKey.set(var5, var2);
+<b class="nc"><i>304</i>&nbsp;                }</b>
+<b class="nc"><i>305</i>&nbsp;                break;</b>
+<b class="nc"><i>306</i>&nbsp;            case 8:</b>
+<b class="nc"><i>307</i>&nbsp;                if(var5 == null) {</b>
+<b class="nc"><i>308</i>&nbsp;                    this.setIssuerUniqueId(var2);</b>
+<b class="nc"><i>309</i>&nbsp;                } else {</b>
+<b class="nc"><i>310</i>&nbsp;                    this.issuerUniqueId.set(var5, var2);</b>
+<i>311</i>&nbsp;                }
+<b class="nc"><i>312</i>&nbsp;                break;</b>
+<b class="nc"><i>313</i>&nbsp;            case 9:</b>
+<b class="nc"><i>314</i>&nbsp;                if(var5 == null) {</b>
+<b class="nc"><i>315</i>&nbsp;                    this.setSubjectUniqueId(var2);</b>
+<b class="nc"><i>316</i>&nbsp;                } else {</b>
+<b class="nc"><i>317</i>&nbsp;                    this.subjectUniqueId.set(var5, var2);</b>
+<b class="nc"><i>318</i>&nbsp;                }</b>
+<b class="nc"><i>319</i>&nbsp;                break;</b>
+<b class="nc"><i>320</i>&nbsp;            case 10:</b>
+<i>321</i>&nbsp;                if(var5 == null) {
+<i>322</i>&nbsp;                    this.setExtensions(var2);
+<i>323</i>&nbsp;                } else {
+<b class="nc"><i>324</i>&nbsp;                    if(this.extensions == null) {</b>
+<b class="nc"><i>325</i>&nbsp;                        this.extensions = new CertificateExtensions();</b>
+<b class="nc"><i>326</i>&nbsp;                    }</b>
+<b class="nc"><i>327</i>&nbsp;</b>
+<b class="nc"><i>328</i>&nbsp;                    this.extensions.set(var5, var2);</b>
+<i>329</i>&nbsp;                }
+<b class="nc"><i>330</i>&nbsp;            }</b>
+<b class="nc"><i>331</i>&nbsp;</b>
+<b class="nc"><i>332</i>&nbsp;        }</b>
+<b class="nc"><i>333</i>&nbsp;    }</b>
+<b class="nc"><i>334</i>&nbsp;</b>
+<b class="nc"><i>335</i>&nbsp;    public void delete(String var1) throws CertificateException, IOException {</b>
+<b class="nc"><i>336</i>&nbsp;        X509AttributeName var2 = new X509AttributeName(var1);</b>
+<i>337</i>&nbsp;        int var3 = this.attributeMap(var2.getPrefix());
+<i>338</i>&nbsp;        if(var3 == 0) {
+<i>339</i>&nbsp;            throw new CertificateException(&quot;Attribute name not recognized: &quot; + var1);
+<b class="nc"><i>340</i>&nbsp;        } else {</b>
+<b class="nc"><i>341</i>&nbsp;            this.rawCertInfo = null;</b>
+<i>342</i>&nbsp;            String var4 = var2.getSuffix();
+<i>343</i>&nbsp;            switch(var3) {
+<i>344</i>&nbsp;            case 1:
+<i>345</i>&nbsp;                if(var4 == null) {
+<i>346</i>&nbsp;                    this.version = null;
+<i>347</i>&nbsp;                } else {
+<i>348</i>&nbsp;                    this.version.delete(var4);
+<i>349</i>&nbsp;                }
+<i>350</i>&nbsp;                break;
+<i>351</i>&nbsp;            case 2:
+<i>352</i>&nbsp;                if(var4 == null) {
+<i>353</i>&nbsp;                    this.serialNum = null;
+<b class="nc"><i>354</i>&nbsp;                } else {</b>
+<i>355</i>&nbsp;                    this.serialNum.delete(var4);
+<b class="nc"><i>356</i>&nbsp;                }</b>
+<b class="nc"><i>357</i>&nbsp;                break;</b>
+<b class="nc"><i>358</i>&nbsp;            case 3:</b>
+<i>359</i>&nbsp;                if(var4 == null) {
+<i>360</i>&nbsp;                    this.algId = null;
+<i>361</i>&nbsp;                } else {
+<b class="nc"><i>362</i>&nbsp;                    this.algId.delete(var4);</b>
+<b class="nc"><i>363</i>&nbsp;                }</b>
+<i>364</i>&nbsp;                break;
+<b class="nc"><i>365</i>&nbsp;            case 4:</b>
+<i>366</i>&nbsp;                if(var4 == null) {
+<b class="nc"><i>367</i>&nbsp;                    this.issuer = null;</b>
+<b class="nc"><i>368</i>&nbsp;                } else {</b>
+<i>369</i>&nbsp;                    this.issuer.delete(var4);
+<b class="nc"><i>370</i>&nbsp;                }</b>
+<i>371</i>&nbsp;                break;
+<b class="nc"><i>372</i>&nbsp;            case 5:</b>
+<i>373</i>&nbsp;                if(var4 == null) {
+<i>374</i>&nbsp;                    this.interval = null;
+<b class="nc"><i>375</i>&nbsp;                } else {</b>
+<b class="nc"><i>376</i>&nbsp;                    this.interval.delete(var4);</b>
+<i>377</i>&nbsp;                }
+<b class="nc"><i>378</i>&nbsp;                break;</b>
+<i>379</i>&nbsp;            case 6:
+<b class="nc"><i>380</i>&nbsp;                if(var4 == null) {</b>
+<i>381</i>&nbsp;                    this.subject = null;
+<i>382</i>&nbsp;                } else {
+<b class="nc"><i>383</i>&nbsp;                    this.subject.delete(var4);</b>
+<b class="nc"><i>384</i>&nbsp;                }</b>
+<i>385</i>&nbsp;                break;
+<b class="nc"><i>386</i>&nbsp;            case 7:</b>
+<i>387</i>&nbsp;                if(var4 == null) {
+<b class="nc"><i>388</i>&nbsp;                    this.pubKey = null;</b>
+<i>389</i>&nbsp;                } else {
+<i>390</i>&nbsp;                    this.pubKey.delete(var4);
+<b class="nc"><i>391</i>&nbsp;                }</b>
+<b class="nc"><i>392</i>&nbsp;                break;</b>
+<i>393</i>&nbsp;            case 8:
+<b class="nc"><i>394</i>&nbsp;                if(var4 == null) {</b>
+<i>395</i>&nbsp;                    this.issuerUniqueId = null;
+<b class="nc"><i>396</i>&nbsp;                } else {</b>
+<i>397</i>&nbsp;                    this.issuerUniqueId.delete(var4);
+<i>398</i>&nbsp;                }
+<b class="nc"><i>399</i>&nbsp;                break;</b>
+<b class="nc"><i>400</i>&nbsp;            case 9:</b>
+<i>401</i>&nbsp;                if(var4 == null) {
+<b class="nc"><i>402</i>&nbsp;                    this.subjectUniqueId = null;</b>
+<i>403</i>&nbsp;                } else {
+<b class="nc"><i>404</i>&nbsp;                    this.subjectUniqueId.delete(var4);</b>
+<i>405</i>&nbsp;                }
+<i>406</i>&nbsp;                break;
+<b class="nc"><i>407</i>&nbsp;            case 10:</b>
+<b class="nc"><i>408</i>&nbsp;                if(var4 == null) {</b>
+<i>409</i>&nbsp;                    this.extensions = null;
+<b class="nc"><i>410</i>&nbsp;                } else if(this.extensions != null) {</b>
+<i>411</i>&nbsp;                    this.extensions.delete(var4);
+<b class="nc"><i>412</i>&nbsp;                }</b>
+<i>413</i>&nbsp;            }
+<i>414</i>&nbsp;
+<b class="nc"><i>415</i>&nbsp;        }</b>
+<b class="nc"><i>416</i>&nbsp;    }</b>
+<i>417</i>&nbsp;
+<b class="nc"><i>418</i>&nbsp;    public Object get(String var1) throws CertificateException, IOException {</b>
+<i>419</i>&nbsp;        X509AttributeName var2 = new X509AttributeName(var1);
+<b class="nc"><i>420</i>&nbsp;        int var3 = this.attributeMap(var2.getPrefix());</b>
+<i>421</i>&nbsp;        if(var3 == 0) {
+<i>422</i>&nbsp;            throw new CertificateParsingException(&quot;Attribute name not recognized: &quot; + var1);
+<b class="nc"><i>423</i>&nbsp;        } else {</b>
+<b class="nc"><i>424</i>&nbsp;            String var4 = var2.getSuffix();</b>
+<i>425</i>&nbsp;            switch(var3) {
+<b class="nc"><i>426</i>&nbsp;            case 1:</b>
+<i>427</i>&nbsp;                if(var4 == null) {
+<b class="nc"><i>428</i>&nbsp;                    return this.version;</b>
+<i>429</i>&nbsp;                }
+<i>430</i>&nbsp;
+<b class="nc"><i>431</i>&nbsp;                return this.version.get(var4);</b>
+<b class="nc"><i>432</i>&nbsp;            case 2:</b>
+<i>433</i>&nbsp;                if(var4 == null) {
+<b class="nc"><i>434</i>&nbsp;                    return this.serialNum;</b>
+<i>435</i>&nbsp;                }
+<b class="nc"><i>436</i>&nbsp;</b>
+<i>437</i>&nbsp;                return this.serialNum.get(var4);
+<i>438</i>&nbsp;            case 3:
+<b class="nc"><i>439</i>&nbsp;                if(var4 == null) {</b>
+<b class="nc"><i>440</i>&nbsp;                    return this.algId;</b>
+<i>441</i>&nbsp;                }
+<b class="nc"><i>442</i>&nbsp;</b>
+<b class="nc"><i>443</i>&nbsp;                return this.algId.get(var4);</b>
+<b class="nc"><i>444</i>&nbsp;            case 4:</b>
+<i>445</i>&nbsp;                if(var4 == null) {
+<i>446</i>&nbsp;                    return this.issuer;
+<i>447</i>&nbsp;                }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;                return this.issuer.get(var4);
+<i>450</i>&nbsp;            case 5:
+<i>451</i>&nbsp;                if(var4 == null) {
+<i>452</i>&nbsp;                    return this.interval;
+<i>453</i>&nbsp;                }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;                return this.interval.get(var4);
+<i>456</i>&nbsp;            case 6:
+<i>457</i>&nbsp;                if(var4 == null) {
+<i>458</i>&nbsp;                    return this.subject;
+<b class="nc"><i>459</i>&nbsp;                }</b>
+<i>460</i>&nbsp;
+<b class="nc"><i>461</i>&nbsp;                return this.subject.get(var4);</b>
+<b class="nc"><i>462</i>&nbsp;            case 7:</b>
+<b class="nc"><i>463</i>&nbsp;                if(var4 == null) {</b>
+<i>464</i>&nbsp;                    return this.pubKey;
+<i>465</i>&nbsp;                }
+<i>466</i>&nbsp;
+<b class="nc"><i>467</i>&nbsp;                return this.pubKey.get(var4);</b>
+<b class="nc"><i>468</i>&nbsp;            case 8:</b>
+<i>469</i>&nbsp;                if(var4 == null) {
+<b class="nc"><i>470</i>&nbsp;                    return this.issuerUniqueId;</b>
+<i>471</i>&nbsp;                } else {
+<b class="nc"><i>472</i>&nbsp;                    if(this.issuerUniqueId == null) {</b>
+<b class="nc"><i>473</i>&nbsp;                        return null;</b>
+<i>474</i>&nbsp;                    }
+<b class="nc"><i>475</i>&nbsp;</b>
+<i>476</i>&nbsp;                    return this.issuerUniqueId.get(var4);
+<b class="nc"><i>477</i>&nbsp;                }</b>
+<i>478</i>&nbsp;            case 9:
+<b class="nc"><i>479</i>&nbsp;                if(var4 == null) {</b>
+<b class="nc"><i>480</i>&nbsp;                    return this.subjectUniqueId;</b>
+<i>481</i>&nbsp;                } else {
+<b class="nc"><i>482</i>&nbsp;                    if(this.subjectUniqueId == null) {</b>
+<i>483</i>&nbsp;                        return null;
+<b class="nc"><i>484</i>&nbsp;                    }</b>
+<i>485</i>&nbsp;
+<b class="nc"><i>486</i>&nbsp;                    return this.subjectUniqueId.get(var4);</b>
+<b class="nc"><i>487</i>&nbsp;                }</b>
+<i>488</i>&nbsp;            case 10:
+<b class="nc"><i>489</i>&nbsp;                if(var4 == null) {</b>
+<i>490</i>&nbsp;                    return this.extensions;
+<b class="nc"><i>491</i>&nbsp;                } else {</b>
+<i>492</i>&nbsp;                    if(this.extensions == null) {
+<b class="nc"><i>493</i>&nbsp;                        return null;</b>
+<b class="nc"><i>494</i>&nbsp;                    }</b>
+<i>495</i>&nbsp;
+<b class="nc"><i>496</i>&nbsp;                    return this.extensions.get(var4);</b>
+<i>497</i>&nbsp;                }
+<b class="nc"><i>498</i>&nbsp;            default:</b>
+<i>499</i>&nbsp;                return null;
+<b class="nc"><i>500</i>&nbsp;            }</b>
+<b class="nc"><i>501</i>&nbsp;        }</b>
+<i>502</i>&nbsp;    }
+<b class="nc"><i>503</i>&nbsp;</b>
+<i>504</i>&nbsp;    private void parse(DerValue var1) throws CertificateParsingException, IOException {
+<b class="nc"><i>505</i>&nbsp;        if(var1.tag != 48) {</b>
+<i>506</i>&nbsp;            throw new CertificateParsingException(&quot;signed fields invalid&quot;);
+<b class="nc"><i>507</i>&nbsp;        } else {</b>
+<b class="nc"><i>508</i>&nbsp;            this.rawCertInfo = var1.toByteArray();</b>
+<i>509</i>&nbsp;            DerInputStream var2 = var1.data;
+<b class="nc"><i>510</i>&nbsp;            DerValue var3 = var2.getDerValue();</b>
+<i>511</i>&nbsp;            if(var3.isContextSpecific((byte)0)) {
+<b class="nc"><i>512</i>&nbsp;                this.version = new CertificateVersion(var3);</b>
+<i>513</i>&nbsp;                var3 = var2.getDerValue();
+<b class="nc"><i>514</i>&nbsp;            }</b>
+<b class="nc"><i>515</i>&nbsp;</b>
+<i>516</i>&nbsp;            this.serialNum = new CertificateSerialNumber(var3);
+<b class="nc"><i>517</i>&nbsp;            this.algId = new CertificateAlgorithmId(var2);</b>
+<i>518</i>&nbsp;            this.issuer = new CertificateIssuerName(var2);
+<b class="nc"><i>519</i>&nbsp;            X500Name var4 = (X500Name)this.issuer.get(&quot;dname&quot;);</b>
+<i>520</i>&nbsp;            if(var4.isEmpty()) {
+<b class="nc"><i>521</i>&nbsp;                throw new CertificateParsingException(&quot;Empty issuer DN not allowed in X509Certificates&quot;);</b>
+<b class="nc"><i>522</i>&nbsp;            } else {</b>
+<i>523</i>&nbsp;                this.interval = new CertificateValidity(var2);
+<b class="nc"><i>524</i>&nbsp;                this.subject = new CertificateSubjectName(var2);</b>
+<i>525</i>&nbsp;                X500Name var5 = (X500Name)this.subject.get(&quot;dname&quot;);
+<b class="nc"><i>526</i>&nbsp;                if(this.version.compare(0) == 0 &amp;&amp; var5.isEmpty()) {</b>
+<i>527</i>&nbsp;                    throw new CertificateParsingException(&quot;Empty subject DN not allowed in v1 certificate&quot;);
+<b class="nc"><i>528</i>&nbsp;                } else {</b>
+<b class="nc"><i>529</i>&nbsp;                    this.pubKey = new CertificateX509Key(var2);</b>
+<i>530</i>&nbsp;                    if(var2.available() != 0) {
+<b class="nc"><i>531</i>&nbsp;                        if(this.version.compare(0) == 0) {</b>
+<i>532</i>&nbsp;                            throw new CertificateParsingException(&quot;no more data allowed for version 1 certificate&quot;);
+<b class="nc"><i>533</i>&nbsp;                        } else {</b>
+<i>534</i>&nbsp;                            var3 = var2.getDerValue();
+<b class="nc"><i>535</i>&nbsp;                            if(var3.isContextSpecific((byte)1)) {</b>
+<b class="nc"><i>536</i>&nbsp;                                this.issuerUniqueId = new CertificateIssuerUniqueIdentity(var3);</b>
+<i>537</i>&nbsp;                                if(var2.available() == 0) {
+<b class="nc"><i>538</i>&nbsp;                                    return;</b>
+<b class="nc"><i>539</i>&nbsp;                                }</b>
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;                                var3 = var2.getDerValue();
+<i>542</i>&nbsp;                            }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;                            if(var3.isContextSpecific((byte)2)) {
+<i>545</i>&nbsp;                                this.subjectUniqueId = new CertificateSubjectUniqueIdentity(var3);
+<i>546</i>&nbsp;                                if(var2.available() == 0) {
+<i>547</i>&nbsp;                                    return;
+<i>548</i>&nbsp;                                }
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;                                var3 = var2.getDerValue();
+<i>551</i>&nbsp;                            }
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;                            if(this.version.compare(2) != 0) {
+<i>554</i>&nbsp;                                throw new CertificateParsingException(&quot;Extensions not allowed in v2 certificate&quot;);
+<b class="nc"><i>555</i>&nbsp;                            } else {</b>
+<i>556</i>&nbsp;                                if(var3.isConstructed() &amp;&amp; var3.isContextSpecific((byte)3)) {
+<b class="nc"><i>557</i>&nbsp;                                    this.extensions = new CertificateExtensions(var3.data);</b>
+<b class="nc"><i>558</i>&nbsp;                                }</b>
+<b class="nc"><i>559</i>&nbsp;</b>
+<i>560</i>&nbsp;                                this.verifyCert(this.subject, this.extensions);
+<i>561</i>&nbsp;                            }
+<b class="nc"><i>562</i>&nbsp;                        }</b>
+<i>563</i>&nbsp;                    }
+<b class="nc"><i>564</i>&nbsp;                }</b>
+<i>565</i>&nbsp;            }
+<b class="nc"><i>566</i>&nbsp;        }</b>
+<b class="nc"><i>567</i>&nbsp;    }</b>
+<i>568</i>&nbsp;
+<b class="nc"><i>569</i>&nbsp;    private void verifyCert(CertificateSubjectName var1, CertificateExtensions var2) throws CertificateParsingException, IOException {</b>
+<b class="nc"><i>570</i>&nbsp;        X500Name var3 = (X500Name)var1.get(&quot;dname&quot;);</b>
+<i>571</i>&nbsp;        if(var3.isEmpty()) {
+<b class="nc"><i>572</i>&nbsp;            if(var2 == null) {</b>
+<i>573</i>&nbsp;                throw new CertificateParsingException(&quot;X.509 Certificate is incomplete: subject field is empty, and certificate has no extensions&quot;);
+<i>574</i>&nbsp;            }
+<i>575</i>&nbsp;
+<b class="nc"><i>576</i>&nbsp;            SubjectAlternativeNameExtension var4 = null;</b>
+<b class="nc"><i>577</i>&nbsp;            Object var5 = null;</b>
+<i>578</i>&nbsp;            GeneralNames var6 = null;
+<b class="nc"><i>579</i>&nbsp;</b>
+<i>580</i>&nbsp;            try {
+<i>581</i>&nbsp;                var4 = (SubjectAlternativeNameExtension)var2.get(&quot;SubjectAlternativeName&quot;);
+<b class="nc"><i>582</i>&nbsp;                var6 = (GeneralNames)var4.get(&quot;subject_name&quot;);</b>
+<b class="nc"><i>583</i>&nbsp;            } catch (IOException var8) {</b>
+<i>584</i>&nbsp;                throw new CertificateParsingException(&quot;X.509 Certificate is incomplete: subject field is empty, and SubjectAlternativeName extension is absent&quot;);
+<b class="nc"><i>585</i>&nbsp;            }</b>
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;            if(var6 == null || var6.isEmpty()) {
+<b class="nc"><i>588</i>&nbsp;                throw new CertificateParsingException(&quot;X.509 Certificate is incomplete: subject field is empty, and SubjectAlternativeName extension is empty&quot;);</b>
+<b class="nc"><i>589</i>&nbsp;            }</b>
+<i>590</i>&nbsp;
+<b class="nc"><i>591</i>&nbsp;            if(!var4.isCritical()) {</b>
+<i>592</i>&nbsp;                throw new CertificateParsingException(&quot;X.509 Certificate is incomplete: SubjectAlternativeName extension MUST be marked critical when subject field is empty&quot;);
+<i>593</i>&nbsp;            }
+<b class="nc"><i>594</i>&nbsp;        }</b>
+<b class="nc"><i>595</i>&nbsp;</b>
+<i>596</i>&nbsp;    }
+<b class="nc"><i>597</i>&nbsp;</b>
+<i>598</i>&nbsp;    private void emit(DerOutputStream var1) throws CertificateException, IOException {
+<i>599</i>&nbsp;        DerOutputStream var2 = new DerOutputStream();
+<b class="nc"><i>600</i>&nbsp;        this.version.encode(var2);</b>
+<b class="nc"><i>601</i>&nbsp;        this.serialNum.encode(var2);</b>
+<i>602</i>&nbsp;        this.algId.encode(var2);
+<b class="nc"><i>603</i>&nbsp;        if(this.version.compare(0) == 0 &amp;&amp; this.issuer.toString() == null) {</b>
+<i>604</i>&nbsp;            throw new CertificateParsingException(&quot;Null issuer DN not allowed in v1 certificate&quot;);
+<i>605</i>&nbsp;        } else {
+<b class="nc"><i>606</i>&nbsp;            this.issuer.encode(var2);</b>
+<b class="nc"><i>607</i>&nbsp;            this.interval.encode(var2);</b>
+<i>608</i>&nbsp;            if(this.version.compare(0) == 0 &amp;&amp; this.subject.toString() == null) {
+<b class="nc"><i>609</i>&nbsp;                throw new CertificateParsingException(&quot;Null subject DN not allowed in v1 certificate&quot;);</b>
+<i>610</i>&nbsp;            } else {
+<i>611</i>&nbsp;                this.subject.encode(var2);
+<b class="nc"><i>612</i>&nbsp;                this.pubKey.encode(var2);</b>
+<b class="nc"><i>613</i>&nbsp;                if(this.issuerUniqueId != null) {</b>
+<i>614</i>&nbsp;                    this.issuerUniqueId.encode(var2);
+<b class="nc"><i>615</i>&nbsp;                }</b>
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;                if(this.subjectUniqueId != null) {
+<b class="nc"><i>618</i>&nbsp;                    this.subjectUniqueId.encode(var2);</b>
+<b class="nc"><i>619</i>&nbsp;                }</b>
+<i>620</i>&nbsp;
+<b class="nc"><i>621</i>&nbsp;                if(this.extensions != null) {</b>
+<b class="nc"><i>622</i>&nbsp;                    this.extensions.encode(var2);</b>
+<i>623</i>&nbsp;                }
+<b class="nc"><i>624</i>&nbsp;</b>
+<i>625</i>&nbsp;                var1.write((byte)48, var2);
+<i>626</i>&nbsp;            }
+<b class="nc"><i>627</i>&nbsp;        }</b>
+<b class="nc"><i>628</i>&nbsp;    }</b>
+<i>629</i>&nbsp;
+<b class="nc"><i>630</i>&nbsp;    private int attributeMap(String var1) {</b>
+<b class="nc"><i>631</i>&nbsp;        Integer var2 = (Integer)map.get(var1);</b>
+<i>632</i>&nbsp;        return var2 == null?0:var2.intValue();
+<b class="nc"><i>633</i>&nbsp;    }</b>
+<i>634</i>&nbsp;
+<i>635</i>&nbsp;    private void setVersion(Object var1) throws CertificateException {
+<b class="nc"><i>636</i>&nbsp;        if(!(var1 instanceof CertificateVersion)) {</b>
+<i>637</i>&nbsp;            throw new CertificateException(&quot;Version class type invalid.&quot;);
+<i>638</i>&nbsp;        } else {
+<i>639</i>&nbsp;            this.version = (CertificateVersion)var1;
+<i>640</i>&nbsp;        }
+<i>641</i>&nbsp;    }
+<i>642</i>&nbsp;
+<i>643</i>&nbsp;    private void setSerialNumber(Object var1) throws CertificateException {
+<i>644</i>&nbsp;        if(!(var1 instanceof CertificateSerialNumber)) {
+<i>645</i>&nbsp;            throw new CertificateException(&quot;SerialNumber class type invalid.&quot;);
+<i>646</i>&nbsp;        } else {
+<b class="nc"><i>647</i>&nbsp;            this.serialNum = (CertificateSerialNumber)var1;</b>
+<b class="nc"><i>648</i>&nbsp;        }</b>
+<i>649</i>&nbsp;    }
+<b class="nc"><i>650</i>&nbsp;</b>
+<i>651</i>&nbsp;    private void setAlgorithmId(Object var1) throws CertificateException {
+<b class="nc"><i>652</i>&nbsp;        if(!(var1 instanceof CertificateAlgorithmId)) {</b>
+<i>653</i>&nbsp;            throw new CertificateException(&quot;AlgorithmId class type invalid.&quot;);
+<i>654</i>&nbsp;        } else {
+<b class="nc"><i>655</i>&nbsp;            this.algId = (CertificateAlgorithmId)var1;</b>
+<b class="nc"><i>656</i>&nbsp;        }</b>
+<b class="nc"><i>657</i>&nbsp;    }</b>
+<b class="nc"><i>658</i>&nbsp;</b>
+<i>659</i>&nbsp;    private void setIssuer(Object var1) throws CertificateException {
+<i>660</i>&nbsp;        if(!(var1 instanceof CertificateIssuerName)) {
+<i>661</i>&nbsp;            throw new CertificateException(&quot;Issuer class type invalid.&quot;);
+<b class="nc"><i>662</i>&nbsp;        } else {</b>
+<i>663</i>&nbsp;            this.issuer = (CertificateIssuerName)var1;
+<i>664</i>&nbsp;        }
+<b class="nc"><i>665</i>&nbsp;    }</b>
+<i>666</i>&nbsp;
+<i>667</i>&nbsp;    private void setValidity(Object var1) throws CertificateException {
+<b class="nc"><i>668</i>&nbsp;        if(!(var1 instanceof CertificateValidity)) {</b>
+<b class="nc"><i>669</i>&nbsp;            throw new CertificateException(&quot;CertificateValidity class type invalid.&quot;);</b>
+<b class="nc"><i>670</i>&nbsp;        } else {</b>
+<b class="nc"><i>671</i>&nbsp;            this.interval = (CertificateValidity)var1;</b>
+<i>672</i>&nbsp;        }
+<i>673</i>&nbsp;    }
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;    private void setSubject(Object var1) throws CertificateException {
+<b class="nc"><i>676</i>&nbsp;        if(!(var1 instanceof CertificateSubjectName)) {</b>
+<i>677</i>&nbsp;            throw new CertificateException(&quot;Subject class type invalid.&quot;);
+<i>678</i>&nbsp;        } else {
+<b class="nc"><i>679</i>&nbsp;            this.subject = (CertificateSubjectName)var1;</b>
+<b class="nc"><i>680</i>&nbsp;        }</b>
+<b class="nc"><i>681</i>&nbsp;    }</b>
+<i>682</i>&nbsp;
+<b class="nc"><i>683</i>&nbsp;    private void setKey(Object var1) throws CertificateException {</b>
+<i>684</i>&nbsp;        if(!(var1 instanceof CertificateX509Key)) {
+<i>685</i>&nbsp;            throw new CertificateException(&quot;Key class type invalid.&quot;);
+<i>686</i>&nbsp;        } else {
+<i>687</i>&nbsp;            this.pubKey = (CertificateX509Key)var1;
+<b class="nc"><i>688</i>&nbsp;        }</b>
+<i>689</i>&nbsp;    }
+<i>690</i>&nbsp;
+<b class="nc"><i>691</i>&nbsp;    private void setIssuerUniqueId(Object var1) throws CertificateException {</b>
+<b class="nc"><i>692</i>&nbsp;        if(this.version.compare(1) &lt; 0) {</b>
+<b class="nc"><i>693</i>&nbsp;            throw new CertificateException(&quot;Invalid version&quot;);</b>
+<i>694</i>&nbsp;        } else if(!(var1 instanceof CertificateIssuerUniqueIdentity)) {
+<i>695</i>&nbsp;            throw new CertificateException(&quot;IssuerUniqueId class type invalid.&quot;);
+<i>696</i>&nbsp;        } else {
+<i>697</i>&nbsp;            this.issuerUniqueId = (CertificateIssuerUniqueIdentity)var1;
+<i>698</i>&nbsp;        }
+<i>699</i>&nbsp;    }
+<i>700</i>&nbsp;
+<b class="nc"><i>701</i>&nbsp;    private void setSubjectUniqueId(Object var1) throws CertificateException {</b>
+<b class="nc"><i>702</i>&nbsp;        if(this.version.compare(1) &lt; 0) {</b>
+<b class="nc"><i>703</i>&nbsp;            throw new CertificateException(&quot;Invalid version&quot;);</b>
+<b class="nc"><i>704</i>&nbsp;        } else if(!(var1 instanceof CertificateSubjectUniqueIdentity)) {</b>
+<i>705</i>&nbsp;            throw new CertificateException(&quot;SubjectUniqueId class type invalid.&quot;);
+<b class="nc"><i>706</i>&nbsp;        } else {</b>
+<i>707</i>&nbsp;            this.subjectUniqueId = (CertificateSubjectUniqueIdentity)var1;
+<i>708</i>&nbsp;        }
+<i>709</i>&nbsp;    }
+<b class="nc"><i>710</i>&nbsp;</b>
+<b class="nc"><i>711</i>&nbsp;    private void setExtensions(Object var1) throws CertificateException {</b>
+<b class="nc"><i>712</i>&nbsp;        if(this.version.compare(2) &lt; 0) {</b>
+<i>713</i>&nbsp;            throw new CertificateException(&quot;Invalid version&quot;);
+<b class="nc"><i>714</i>&nbsp;        } else if(!(var1 instanceof CertificateExtensions)) {</b>
+<i>715</i>&nbsp;            throw new CertificateException(&quot;Extensions class type invalid.&quot;);
+<i>716</i>&nbsp;        } else {
+<i>717</i>&nbsp;            this.extensions = (CertificateExtensions)var1;
+<b class="nc"><i>718</i>&nbsp;        }</b>
+<b class="nc"><i>719</i>&nbsp;    }</b>
+<i>720</i>&nbsp;
+<i>721</i>&nbsp;    static {
+<b class="nc"><i>722</i>&nbsp;        map.put(&quot;version&quot;, Integer.valueOf(1));</b>
+<b class="nc"><i>723</i>&nbsp;        map.put(&quot;serialNumber&quot;, Integer.valueOf(2));</b>
+<i>724</i>&nbsp;        map.put(&quot;algorithmID&quot;, Integer.valueOf(3));
+<i>725</i>&nbsp;        map.put(&quot;issuer&quot;, Integer.valueOf(4));
+<i>726</i>&nbsp;        map.put(&quot;validity&quot;, Integer.valueOf(5));
+<b class="nc"><i>727</i>&nbsp;        map.put(&quot;subject&quot;, Integer.valueOf(6));</b>
+<i>728</i>&nbsp;        map.put(&quot;key&quot;, Integer.valueOf(7));
+<i>729</i>&nbsp;        map.put(&quot;issuerID&quot;, Integer.valueOf(8));
+<i>730</i>&nbsp;        map.put(&quot;subjectID&quot;, Integer.valueOf(9));
+<i>731</i>&nbsp;        map.put(&quot;extensions&quot;, Integer.valueOf(10));
+<i>732</i>&nbsp;    }
+<i>733</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:54</div>
+</div>
+</body>
+</html>

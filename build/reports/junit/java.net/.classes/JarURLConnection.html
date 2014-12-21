@@ -1,0 +1,161 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JarURLConnection</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.net</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JarURLConnection (java.net)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JarURLConnection</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.net;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.net.MalformedURLException;
+<i>10</i>&nbsp;import java.net.URL;
+<i>11</i>&nbsp;import java.net.URLConnection;
+<i>12</i>&nbsp;import java.security.cert.Certificate;
+<i>13</i>&nbsp;import java.util.jar.Attributes;
+<i>14</i>&nbsp;import java.util.jar.JarEntry;
+<i>15</i>&nbsp;import java.util.jar.JarFile;
+<i>16</i>&nbsp;import java.util.jar.Manifest;
+<i>17</i>&nbsp;import sun.net.www.ParseUtil;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;public abstract class JarURLConnection extends URLConnection {
+<i>20</i>&nbsp;    private URL jarFileURL;
+<i>21</i>&nbsp;    private String entryName;
+<i>22</i>&nbsp;    protected URLConnection jarFileURLConnection;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    protected JarURLConnection(URL var1) throws MalformedURLException {
+<i>25</i>&nbsp;        super(var1);
+<i>26</i>&nbsp;        this.parseSpecs(var1);
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    private void parseSpecs(URL var1) throws MalformedURLException {
+<i>30</i>&nbsp;        String var2 = var1.getFile();
+<i>31</i>&nbsp;        int var3 = var2.indexOf(&quot;!/&quot;);
+<i>32</i>&nbsp;        if(var3 == -1) {
+<i>33</i>&nbsp;            throw new MalformedURLException(&quot;no !/ found in url spec:&quot; + var2);
+<i>34</i>&nbsp;        } else {
+<i>35</i>&nbsp;            this.jarFileURL = new URL(var2.substring(0, var3++));
+<i>36</i>&nbsp;            this.entryName = null;
+<i>37</i>&nbsp;            ++var3;
+<i>38</i>&nbsp;            if(var3 != var2.length()) {
+<i>39</i>&nbsp;                this.entryName = var2.substring(var3, var2.length());
+<i>40</i>&nbsp;                this.entryName = ParseUtil.decode(this.entryName);
+<i>41</i>&nbsp;            }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;        }
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public URL getJarFileURL() {
+<i>47</i>&nbsp;        return this.jarFileURL;
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public String getEntryName() {
+<i>51</i>&nbsp;        return this.entryName;
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public abstract JarFile getJarFile() throws IOException;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public Manifest getManifest() throws IOException {
+<i>57</i>&nbsp;        return this.getJarFile().getManifest();
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public JarEntry getJarEntry() throws IOException {
+<i>61</i>&nbsp;        return this.getJarFile().getJarEntry(this.entryName);
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public Attributes getAttributes() throws IOException {
+<i>65</i>&nbsp;        JarEntry var1 = this.getJarEntry();
+<i>66</i>&nbsp;        return var1 != null?var1.getAttributes():null;
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public Attributes getMainAttributes() throws IOException {
+<i>70</i>&nbsp;        Manifest var1 = this.getManifest();
+<i>71</i>&nbsp;        return var1 != null?var1.getMainAttributes():null;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public Certificate[] getCertificates() throws IOException {
+<i>75</i>&nbsp;        JarEntry var1 = this.getJarEntry();
+<i>76</i>&nbsp;        return var1 != null?var1.getCertificates():null;
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

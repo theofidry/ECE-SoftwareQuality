@@ -1,0 +1,262 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Transport</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.rmi.transport</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Transport (sun.rmi.transport)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Transport</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 56)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Transport$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 60)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.rmi.transport;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectOutput;
+<i>10</i>&nbsp;import java.rmi.MarshalException;
+<i>11</i>&nbsp;import java.rmi.NoSuchObjectException;
+<i>12</i>&nbsp;import java.rmi.Remote;
+<i>13</i>&nbsp;import java.rmi.RemoteException;
+<i>14</i>&nbsp;import java.rmi.server.LogStream;
+<i>15</i>&nbsp;import java.rmi.server.ObjID;
+<i>16</i>&nbsp;import java.rmi.server.RemoteCall;
+<i>17</i>&nbsp;import java.rmi.server.RemoteServer;
+<i>18</i>&nbsp;import java.rmi.server.ServerNotActiveException;
+<i>19</i>&nbsp;import java.security.AccessControlContext;
+<i>20</i>&nbsp;import java.security.AccessController;
+<i>21</i>&nbsp;import java.security.PrivilegedActionException;
+<i>22</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>23</i>&nbsp;import sun.rmi.runtime.Log;
+<i>24</i>&nbsp;import sun.rmi.server.Dispatcher;
+<i>25</i>&nbsp;import sun.rmi.server.UnicastServerRef;
+<i>26</i>&nbsp;import sun.rmi.transport.Channel;
+<i>27</i>&nbsp;import sun.rmi.transport.Endpoint;
+<i>28</i>&nbsp;import sun.rmi.transport.ObjectEndpoint;
+<i>29</i>&nbsp;import sun.rmi.transport.ObjectTable;
+<i>30</i>&nbsp;import sun.rmi.transport.Target;
+<i>31</i>&nbsp;import sun.security.action.GetPropertyAction;
+<b class="nc"><i>32</i>&nbsp;</b>
+<i>33</i>&nbsp;public abstract class Transport {
+<i>34</i>&nbsp;    static final int logLevel = LogStream.parseLevel(getLogLevel());
+<b class="nc"><i>35</i>&nbsp;    static final Log transportLog;</b>
+<i>36</i>&nbsp;    private static final ThreadLocal&lt;Transport&gt; currentTransport;
+<i>37</i>&nbsp;    private static final ObjID dgcID;
+<b class="nc"><i>38</i>&nbsp;</b>
+<i>39</i>&nbsp;    public Transport() {
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private static String getLogLevel() {
+<b class="nc"><i>43</i>&nbsp;        return (String)AccessController.doPrivileged(new GetPropertyAction(&quot;sun.rmi.transport.logLevel&quot;));</b>
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public abstract Channel getChannel(Endpoint var1);
+<b class="nc"><i>47</i>&nbsp;</b>
+<i>48</i>&nbsp;    public abstract void free(Endpoint var1);
+<i>49</i>&nbsp;
+<b class="nc"><i>50</i>&nbsp;    public void exportObject(Target var1) throws RemoteException {</b>
+<i>51</i>&nbsp;        var1.setExportedTransport(this);
+<i>52</i>&nbsp;        ObjectTable.putTarget(var1);
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    protected void targetUnexported() {
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    static Transport currentTransport() {
+<i>59</i>&nbsp;        return (Transport)currentTransport.get();
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    protected abstract void checkAcceptPermission(AccessControlContext var1);
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public boolean serviceCall(final RemoteCall var1) {
+<i>65</i>&nbsp;        try {
+<i>66</i>&nbsp;            ObjID var41;
+<i>67</i>&nbsp;            try {
+<i>68</i>&nbsp;                var41 = ObjID.read(var1.getInputStream());
+<i>69</i>&nbsp;            } catch (IOException var34) {
+<i>70</i>&nbsp;                throw new MarshalException(&quot;unable to read objID&quot;, var34);
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;
+<b class="nc"><i>73</i>&nbsp;            Transport var40 = var41.equals(dgcID)?null:this;</b>
+<b class="nc"><i>74</i>&nbsp;            Target var5 = ObjectTable.getTarget(new ObjectEndpoint(var41, var40));</b>
+<i>75</i>&nbsp;            final Remote var38;
+<i>76</i>&nbsp;            if(var5 == null || (var38 = var5.getImpl()) == null) {
+<i>77</i>&nbsp;                throw new NoSuchObjectException(&quot;no such object in table&quot;);
+<i>78</i>&nbsp;            }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;            final Dispatcher var6 = var5.getDispatcher();
+<i>81</i>&nbsp;            var5.incrementCallCount();
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;            boolean var8;
+<i>84</i>&nbsp;            try {
+<i>85</i>&nbsp;                transportLog.log(Log.VERBOSE, &quot;call dispatcher&quot;);
+<i>86</i>&nbsp;                final AccessControlContext var7 = var5.getAccessControlContext();
+<i>87</i>&nbsp;                ClassLoader var42 = var5.getContextClassLoader();
+<i>88</i>&nbsp;                Thread var9 = Thread.currentThread();
+<b class="nc"><i>89</i>&nbsp;                ClassLoader var10 = var9.getContextClassLoader();</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;                try {
+<i>92</i>&nbsp;                    var9.setContextClassLoader(var42);
+<i>93</i>&nbsp;                    currentTransport.set(this);
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;                    try {
+<i>96</i>&nbsp;                        AccessController.doPrivileged(new PrivilegedExceptionAction() {
+<i>97</i>&nbsp;                            public Void run() throws IOException {
+<i>98</i>&nbsp;                                Transport.this.checkAcceptPermission(var7);
+<i>99</i>&nbsp;                                var6.dispatch(var38, var1);
+<i>100</i>&nbsp;                                return null;
+<i>101</i>&nbsp;                            }
+<i>102</i>&nbsp;                        }, var7);
+<i>103</i>&nbsp;                        return true;
+<i>104</i>&nbsp;                    } catch (PrivilegedActionException var32) {
+<i>105</i>&nbsp;                        throw (IOException)var32.getException();
+<i>106</i>&nbsp;                    }
+<i>107</i>&nbsp;                } finally {
+<i>108</i>&nbsp;                    var9.setContextClassLoader(var10);
+<i>109</i>&nbsp;                    currentTransport.set((Object)null);
+<i>110</i>&nbsp;                }
+<i>111</i>&nbsp;            } catch (IOException var35) {
+<i>112</i>&nbsp;                transportLog.log(Log.BRIEF, &quot;exception thrown by dispatcher: &quot;, var35);
+<i>113</i>&nbsp;                var8 = false;
+<i>114</i>&nbsp;            } finally {
+<i>115</i>&nbsp;                var5.decrementCallCount();
+<i>116</i>&nbsp;            }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;            return var8;
+<i>119</i>&nbsp;        } catch (RemoteException var37) {
+<i>120</i>&nbsp;            RemoteException var2 = var37;
+<i>121</i>&nbsp;            if(UnicastServerRef.callLog.isLoggable(Log.BRIEF)) {
+<i>122</i>&nbsp;                String var3 = &quot;&quot;;
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;                try {</b>
+<b class="nc"><i>125</i>&nbsp;                    var3 = &quot;[&quot; + RemoteServer.getClientHost() + &quot;] &quot;;</b>
+<b class="nc"><i>126</i>&nbsp;                } catch (ServerNotActiveException var31) {</b>
+<b class="nc"><i>127</i>&nbsp;                    ;</b>
+<i>128</i>&nbsp;                }
+<i>129</i>&nbsp;
+<b class="nc"><i>130</i>&nbsp;                String var4 = var3 + &quot;exception: &quot;;</b>
+<b class="nc"><i>131</i>&nbsp;                UnicastServerRef.callLog.log(Log.BRIEF, var4, var37);</b>
+<i>132</i>&nbsp;            }
+<i>133</i>&nbsp;
+<b class="nc"><i>134</i>&nbsp;            try {</b>
+<b class="nc"><i>135</i>&nbsp;                ObjectOutput var39 = var1.getResultStream(false);</b>
+<i>136</i>&nbsp;                UnicastServerRef.clearStackTraces(var2);
+<i>137</i>&nbsp;                var39.writeObject(var2);
+<b class="nc"><i>138</i>&nbsp;                var1.releaseOutputStream();</b>
+<b class="nc"><i>139</i>&nbsp;            } catch (IOException var30) {</b>
+<i>140</i>&nbsp;                transportLog.log(Log.BRIEF, &quot;exception thrown marshalling exception: &quot;, var30);
+<i>141</i>&nbsp;                return false;
+<b class="nc"><i>142</i>&nbsp;            }</b>
+<i>143</i>&nbsp;        }
+<b class="nc"><i>144</i>&nbsp;</b>
+<i>145</i>&nbsp;        return true;
+<b class="nc"><i>146</i>&nbsp;    }</b>
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;    static {</b>
+<b class="nc"><i>149</i>&nbsp;        transportLog = Log.getLog(&quot;sun.rmi.transport.misc&quot;, &quot;transport&quot;, logLevel);</b>
+<i>150</i>&nbsp;        currentTransport = new ThreadLocal();
+<i>151</i>&nbsp;        dgcID = new ObjID(2);
+<b class="nc"><i>152</i>&nbsp;    }</b>
+<b class="nc"><i>153</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

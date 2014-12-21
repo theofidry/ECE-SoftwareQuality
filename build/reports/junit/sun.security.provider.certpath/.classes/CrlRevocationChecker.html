@@ -1,0 +1,652 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CrlRevocationChecker</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.provider.certpath</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CrlRevocationChecker (sun.security.provider.certpath)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CrlRevocationChecker</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 256)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CrlRevocationChecker$RejectKeySelector</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 273)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.provider.certpath;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.math.BigInteger;
+<i>9</i>&nbsp;import java.security.InvalidAlgorithmParameterException;
+<i>10</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>11</i>&nbsp;import java.security.PublicKey;
+<i>12</i>&nbsp;import java.security.cert.CRL;
+<i>13</i>&nbsp;import java.security.cert.CRLException;
+<i>14</i>&nbsp;import java.security.cert.CRLReason;
+<i>15</i>&nbsp;import java.security.cert.CertPath;
+<i>16</i>&nbsp;import java.security.cert.CertPathBuilder;
+<i>17</i>&nbsp;import java.security.cert.CertPathBuilderException;
+<i>18</i>&nbsp;import java.security.cert.CertPathValidatorException;
+<i>19</i>&nbsp;import java.security.cert.CertStore;
+<i>20</i>&nbsp;import java.security.cert.Certificate;
+<i>21</i>&nbsp;import java.security.cert.CertificateException;
+<i>22</i>&nbsp;import java.security.cert.CertificateRevokedException;
+<i>23</i>&nbsp;import java.security.cert.CollectionCertStoreParameters;
+<i>24</i>&nbsp;import java.security.cert.PKIXBuilderParameters;
+<i>25</i>&nbsp;import java.security.cert.PKIXCertPathBuilderResult;
+<i>26</i>&nbsp;import java.security.cert.PKIXCertPathChecker;
+<i>27</i>&nbsp;import java.security.cert.PKIXParameters;
+<i>28</i>&nbsp;import java.security.cert.TrustAnchor;
+<i>29</i>&nbsp;import java.security.cert.X509CRL;
+<i>30</i>&nbsp;import java.security.cert.X509CRLEntry;
+<i>31</i>&nbsp;import java.security.cert.X509CRLSelector;
+<i>32</i>&nbsp;import java.security.cert.X509CertSelector;
+<i>33</i>&nbsp;import java.security.cert.X509Certificate;
+<i>34</i>&nbsp;import java.security.cert.CertPathValidatorException.BasicReason;
+<i>35</i>&nbsp;import java.security.interfaces.DSAPublicKey;
+<i>36</i>&nbsp;import java.util.ArrayList;
+<i>37</i>&nbsp;import java.util.Arrays;
+<i>38</i>&nbsp;import java.util.Collection;
+<i>39</i>&nbsp;import java.util.Collections;
+<i>40</i>&nbsp;import java.util.Date;
+<i>41</i>&nbsp;import java.util.HashSet;
+<i>42</i>&nbsp;import java.util.Iterator;
+<i>43</i>&nbsp;import java.util.List;
+<i>44</i>&nbsp;import java.util.Set;
+<i>45</i>&nbsp;import sun.security.provider.certpath.BasicChecker;
+<i>46</i>&nbsp;import sun.security.provider.certpath.Builder;
+<i>47</i>&nbsp;import sun.security.provider.certpath.CertPathHelper;
+<i>48</i>&nbsp;import sun.security.provider.certpath.DistributionPointFetcher;
+<i>49</i>&nbsp;import sun.security.provider.certpath.URICertStore;
+<i>50</i>&nbsp;import sun.security.util.Debug;
+<i>51</i>&nbsp;import sun.security.x509.AccessDescription;
+<i>52</i>&nbsp;import sun.security.x509.AuthorityInfoAccessExtension;
+<i>53</i>&nbsp;import sun.security.x509.CRLDistributionPointsExtension;
+<i>54</i>&nbsp;import sun.security.x509.DistributionPoint;
+<i>55</i>&nbsp;import sun.security.x509.GeneralName;
+<i>56</i>&nbsp;import sun.security.x509.GeneralNames;
+<i>57</i>&nbsp;import sun.security.x509.PKIXExtensions;
+<i>58</i>&nbsp;import sun.security.x509.X500Name;
+<i>59</i>&nbsp;import sun.security.x509.X509CRLEntryImpl;
+<i>60</i>&nbsp;import sun.security.x509.X509CertImpl;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;class CrlRevocationChecker extends PKIXCertPathChecker {
+<i>63</i>&nbsp;    private static final Debug debug = Debug.getInstance(&quot;certpath&quot;);
+<i>64</i>&nbsp;    private final TrustAnchor mAnchor;
+<i>65</i>&nbsp;    private final List&lt;CertStore&gt; mStores;
+<i>66</i>&nbsp;    private final String mSigProvider;
+<i>67</i>&nbsp;    private final Date mCurrentTime;
+<b class="nc"><i>68</i>&nbsp;    private PublicKey mPrevPubKey;</b>
+<i>69</i>&nbsp;    private boolean mCRLSignFlag;
+<b class="nc"><i>70</i>&nbsp;    private HashSet&lt;X509CRL&gt; mPossibleCRLs;</b>
+<i>71</i>&nbsp;    private HashSet&lt;X509CRL&gt; mApprovedCRLs;
+<i>72</i>&nbsp;    private final PKIXParameters mParams;
+<i>73</i>&nbsp;    private static final boolean[] mCrlSignUsage = new boolean[]{false, false, false, false, false, false, true};
+<i>74</i>&nbsp;    private static final boolean[] ALL_REASONS = new boolean[]{true, true, true, true, true, true, true, true, true};
+<i>75</i>&nbsp;    private boolean mOnlyEECert;
+<i>76</i>&nbsp;    private static final long MAX_CLOCK_SKEW = 900000L;
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    CrlRevocationChecker(TrustAnchor var1, PKIXParameters var2) throws CertPathValidatorException {
+<i>79</i>&nbsp;        this(var1, var2, (Collection)null);
+<i>80</i>&nbsp;    }
+<b class="nc"><i>81</i>&nbsp;</b>
+<i>82</i>&nbsp;    CrlRevocationChecker(TrustAnchor var1, PKIXParameters var2, Collection&lt;X509Certificate&gt; var3) throws CertPathValidatorException {
+<b class="nc"><i>83</i>&nbsp;        this(var1, var2, var3, false);</b>
+<i>84</i>&nbsp;    }
+<b class="nc"><i>85</i>&nbsp;</b>
+<i>86</i>&nbsp;    CrlRevocationChecker(TrustAnchor var1, PKIXParameters var2, Collection&lt;X509Certificate&gt; var3, boolean var4) throws CertPathValidatorException {
+<i>87</i>&nbsp;        this.mOnlyEECert = false;
+<i>88</i>&nbsp;        this.mAnchor = var1;
+<i>89</i>&nbsp;        this.mParams = var2;
+<i>90</i>&nbsp;        this.mStores = new ArrayList(var2.getCertStores());
+<i>91</i>&nbsp;        this.mSigProvider = var2.getSigProvider();
+<i>92</i>&nbsp;        if(var3 != null) {
+<i>93</i>&nbsp;            try {
+<i>94</i>&nbsp;                this.mStores.add(CertStore.getInstance(&quot;Collection&quot;, new CollectionCertStoreParameters(var3)));
+<i>95</i>&nbsp;            } catch (Exception var6) {
+<i>96</i>&nbsp;                if(debug != null) {
+<i>97</i>&nbsp;                    debug.println(&quot;CrlRevocationChecker: error creating Collection CertStore: &quot; + var6);
+<i>98</i>&nbsp;                }
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;        }
+<b class="nc"><i>101</i>&nbsp;</b>
+<i>102</i>&nbsp;        Date var5 = var2.getDate();
+<i>103</i>&nbsp;        this.mCurrentTime = var5 != null?var5:new Date();
+<i>104</i>&nbsp;        this.mOnlyEECert = var4;
+<i>105</i>&nbsp;        this.init(false);
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public void init(boolean var1) throws CertPathValidatorException {
+<i>109</i>&nbsp;        if(!var1) {
+<i>110</i>&nbsp;            if(this.mAnchor != null) {
+<i>111</i>&nbsp;                if(this.mAnchor.getCAPublicKey() != null) {
+<i>112</i>&nbsp;                    this.mPrevPubKey = this.mAnchor.getCAPublicKey();
+<i>113</i>&nbsp;                } else {
+<i>114</i>&nbsp;                    this.mPrevPubKey = this.mAnchor.getTrustedCert().getPublicKey();
+<i>115</i>&nbsp;                }
+<i>116</i>&nbsp;            } else {
+<i>117</i>&nbsp;                this.mPrevPubKey = null;
+<i>118</i>&nbsp;            }
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;            this.mCRLSignFlag = true;</b>
+<i>121</i>&nbsp;        } else {
+<i>122</i>&nbsp;            throw new CertPathValidatorException(&quot;forward checking not supported&quot;);
+<i>123</i>&nbsp;        }
+<i>124</i>&nbsp;    }
+<b class="nc"><i>125</i>&nbsp;</b>
+<b class="nc"><i>126</i>&nbsp;    public boolean isForwardCheckingSupported() {</b>
+<b class="nc"><i>127</i>&nbsp;        return false;</b>
+<b class="nc"><i>128</i>&nbsp;    }</b>
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;    public Set&lt;String&gt; getSupportedExtensions() {</b>
+<b class="nc"><i>131</i>&nbsp;        return null;</b>
+<b class="nc"><i>132</i>&nbsp;    }</b>
+<b class="nc"><i>133</i>&nbsp;</b>
+<b class="nc"><i>134</i>&nbsp;    public void check(Certificate var1, Collection&lt;String&gt; var2) throws CertPathValidatorException {</b>
+<i>135</i>&nbsp;        X509Certificate var3 = (X509Certificate)var1;
+<i>136</i>&nbsp;        this.verifyRevocationStatus(var3, this.mPrevPubKey, this.mCRLSignFlag, true);
+<i>137</i>&nbsp;        PublicKey var4 = var3.getPublicKey();
+<i>138</i>&nbsp;        if(var4 instanceof DSAPublicKey &amp;&amp; ((DSAPublicKey)var4).getParams() == null) {
+<i>139</i>&nbsp;            var4 = BasicChecker.makeInheritedParamsKey(var4, this.mPrevPubKey);
+<i>140</i>&nbsp;        }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;        this.mPrevPubKey = var4;
+<b class="nc"><i>143</i>&nbsp;        this.mCRLSignFlag = certCanSignCrl(var3);</b>
+<b class="nc"><i>144</i>&nbsp;    }</b>
+<b class="nc"><i>145</i>&nbsp;</b>
+<i>146</i>&nbsp;    public boolean check(X509Certificate var1, PublicKey var2, boolean var3) throws CertPathValidatorException {
+<b class="nc"><i>147</i>&nbsp;        this.verifyRevocationStatus(var1, var2, var3, true);</b>
+<i>148</i>&nbsp;        return certCanSignCrl(var1);
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    static boolean certCanSignCrl(X509Certificate var0) {
+<i>152</i>&nbsp;        boolean[] var1 = var0.getKeyUsage();
+<b class="nc"><i>153</i>&nbsp;        return var1 != null?var1[6]:false;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    private void verifyRevocationStatus(X509Certificate var1, PublicKey var2, boolean var3, boolean var4) throws CertPathValidatorException {
+<b class="nc"><i>157</i>&nbsp;        this.verifyRevocationStatus(var1, var2, var3, var4, (Set)null, this.mParams.getTrustAnchors());</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    private void verifyRevocationStatus(X509Certificate var1, PublicKey var2, boolean var3, boolean var4, Set&lt;X509Certificate&gt; var5, Set&lt;TrustAnchor&gt; var6) throws CertPathValidatorException {
+<i>161</i>&nbsp;        String var7 = &quot;revocation status&quot;;
+<i>162</i>&nbsp;        if(debug != null) {
+<i>163</i>&nbsp;            debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus() ---checking &quot; + var7 + &quot;...&quot;);
+<i>164</i>&nbsp;        }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;        if(this.mOnlyEECert &amp;&amp; var1.getBasicConstraints() != -1) {
+<i>167</i>&nbsp;            if(debug != null) {
+<i>168</i>&nbsp;                debug.println(&quot;Skipping revocation check, not end entity cert&quot;);
+<i>169</i>&nbsp;            }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;        } else if(var5 != null &amp;&amp; var5.contains(var1)) {
+<i>172</i>&nbsp;            if(debug != null) {
+<b class="nc"><i>173</i>&nbsp;                debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus() circular dependency&quot;);</b>
+<b class="nc"><i>174</i>&nbsp;            }</b>
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;            throw new CertPathValidatorException(&quot;Could not determine revocation status&quot;, (Throwable)null, (CertPath)null, -1, BasicReason.UNDETERMINED_REVOCATION_STATUS);
+<b class="nc"><i>177</i>&nbsp;        } else {</b>
+<b class="nc"><i>178</i>&nbsp;            this.mPossibleCRLs = new HashSet();</b>
+<i>179</i>&nbsp;            this.mApprovedCRLs = new HashSet();
+<i>180</i>&nbsp;            boolean[] var8 = new boolean[9];
+<b class="nc"><i>181</i>&nbsp;</b>
+<i>182</i>&nbsp;            Iterator var10;
+<b class="nc"><i>183</i>&nbsp;            try {</b>
+<b class="nc"><i>184</i>&nbsp;                X509CRLSelector var9 = new X509CRLSelector();</b>
+<i>185</i>&nbsp;                var9.setCertificateChecking(var1);
+<i>186</i>&nbsp;                CertPathHelper.setDateAndTime(var9, this.mCurrentTime, 900000L);
+<i>187</i>&nbsp;                var10 = this.mStores.iterator();
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;                label111:
+<i>190</i>&nbsp;                while(true) {
+<i>191</i>&nbsp;                    if(var10.hasNext()) {
+<i>192</i>&nbsp;                        CertStore var20 = (CertStore)var10.next();
+<i>193</i>&nbsp;                        Iterator var22 = var20.getCRLs(var9).iterator();
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;                        while(true) {
+<i>196</i>&nbsp;                            if(!var22.hasNext()) {
+<i>197</i>&nbsp;                                continue label111;
+<i>198</i>&nbsp;                            }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;                            CRL var23 = (CRL)var22.next();
+<i>201</i>&nbsp;                            this.mPossibleCRLs.add((X509CRL)var23);
+<i>202</i>&nbsp;                        }
+<i>203</i>&nbsp;                    }
+<b class="nc"><i>204</i>&nbsp;</b>
+<b class="nc"><i>205</i>&nbsp;                    this.mApprovedCRLs.addAll(DistributionPointFetcher.getCRLs(var9, var3, var2, this.mSigProvider, this.mStores, var8, var6, this.mParams.getDate()));</b>
+<i>206</i>&nbsp;                    break;
+<i>207</i>&nbsp;                }
+<i>208</i>&nbsp;            } catch (Exception var17) {
+<i>209</i>&nbsp;                if(debug != null) {
+<i>210</i>&nbsp;                    debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus() unexpected exception: &quot; + var17.getMessage());
+<i>211</i>&nbsp;                }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;                throw new CertPathValidatorException(var17);
+<i>214</i>&nbsp;            }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;            if(debug != null) {
+<i>217</i>&nbsp;                debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus() crls.size() = &quot; + this.mPossibleCRLs.size());
+<i>218</i>&nbsp;            }
+<i>219</i>&nbsp;
+<b class="nc"><i>220</i>&nbsp;            if(!this.mPossibleCRLs.isEmpty()) {</b>
+<i>221</i>&nbsp;                this.mApprovedCRLs.addAll(this.verifyPossibleCRLs(this.mPossibleCRLs, var1, var3, var2, var8, var6));
+<b class="nc"><i>222</i>&nbsp;            }</b>
+<b class="nc"><i>223</i>&nbsp;</b>
+<b class="nc"><i>224</i>&nbsp;            if(debug != null) {</b>
+<b class="nc"><i>225</i>&nbsp;                debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus() approved crls.size() = &quot; + this.mApprovedCRLs.size());</b>
+<i>226</i>&nbsp;            }
+<b class="nc"><i>227</i>&nbsp;</b>
+<i>228</i>&nbsp;            if(!this.mApprovedCRLs.isEmpty() &amp;&amp; Arrays.equals(var8, ALL_REASONS)) {
+<b class="nc"><i>229</i>&nbsp;                if(debug != null) {</b>
+<b class="nc"><i>230</i>&nbsp;                    BigInteger var18 = var1.getSerialNumber();</b>
+<b class="nc"><i>231</i>&nbsp;                    debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus() starting the final sweep...&quot;);</b>
+<i>232</i>&nbsp;                    debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus cert SN: &quot; + var18.toString());
+<i>233</i>&nbsp;                }
+<b class="nc"><i>234</i>&nbsp;</b>
+<i>235</i>&nbsp;                CRLReason var19 = CRLReason.UNSPECIFIED;
+<i>236</i>&nbsp;                var10 = null;
+<i>237</i>&nbsp;                Iterator var11 = this.mApprovedCRLs.iterator();
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;                X509CRL var12;
+<i>240</i>&nbsp;                X509CRLEntry var13;
+<i>241</i>&nbsp;                do {
+<i>242</i>&nbsp;                    if(!var11.hasNext()) {
+<i>243</i>&nbsp;                        return;
+<i>244</i>&nbsp;                    }
+<b class="nc"><i>245</i>&nbsp;</b>
+<i>246</i>&nbsp;                    var12 = (X509CRL)var11.next();
+<i>247</i>&nbsp;                    var13 = var12.getRevokedCertificate(var1);
+<i>248</i>&nbsp;                } while(var13 == null);
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;                X509CRLEntryImpl var21;
+<i>251</i>&nbsp;                try {
+<i>252</i>&nbsp;                    var21 = X509CRLEntryImpl.toImpl(var13);
+<i>253</i>&nbsp;                } catch (CRLException var16) {
+<i>254</i>&nbsp;                    throw new CertPathValidatorException(var16);
+<i>255</i>&nbsp;                }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;                if(debug != null) {
+<i>258</i>&nbsp;                    debug.println(&quot;CrlRevocationChecker.verifyRevocationStatus CRL entry: &quot; + var21.toString());
+<i>259</i>&nbsp;                }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;                Set var14 = var21.getCriticalExtensionOIDs();
+<i>262</i>&nbsp;                if(var14 != null &amp;&amp; !var14.isEmpty()) {
+<i>263</i>&nbsp;                    var14.remove(PKIXExtensions.ReasonCode_Id.toString());
+<b class="nc"><i>264</i>&nbsp;                    var14.remove(PKIXExtensions.CertificateIssuer_Id.toString());</b>
+<b class="nc"><i>265</i>&nbsp;                    if(!var14.isEmpty()) {</b>
+<b class="nc"><i>266</i>&nbsp;                        if(debug != null) {</b>
+<i>267</i>&nbsp;                            debug.println(&quot;Unrecognized critical extension(s) in revoked CRL entry: &quot; + var14);
+<i>268</i>&nbsp;                        }
+<i>269</i>&nbsp;
+<b class="nc"><i>270</i>&nbsp;                        throw new CertPathValidatorException(&quot;Could not determine revocation status&quot;, (Throwable)null, (CertPath)null, -1, BasicReason.UNDETERMINED_REVOCATION_STATUS);</b>
+<b class="nc"><i>271</i>&nbsp;                    }</b>
+<b class="nc"><i>272</i>&nbsp;                }</b>
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;                var19 = var21.getRevocationReason();
+<i>275</i>&nbsp;                if(var19 == null) {
+<i>276</i>&nbsp;                    var19 = CRLReason.UNSPECIFIED;
+<i>277</i>&nbsp;                }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;                CertificateRevokedException var15 = new CertificateRevokedException(var21.getRevocationDate(), var19, var12.getIssuerX500Principal(), var21.getExtensions());
+<b class="nc"><i>280</i>&nbsp;                throw new CertPathValidatorException(var15.getMessage(), var15, (CertPath)null, -1, BasicReason.REVOKED);</b>
+<b class="nc"><i>281</i>&nbsp;            } else if(var4) {</b>
+<i>282</i>&nbsp;                this.verifyWithSeparateSigningKey(var1, var2, var3, var5);
+<i>283</i>&nbsp;            } else {
+<i>284</i>&nbsp;                throw new CertPathValidatorException(&quot;Could not determine revocation status&quot;, (Throwable)null, (CertPath)null, -1, BasicReason.UNDETERMINED_REVOCATION_STATUS);
+<b class="nc"><i>285</i>&nbsp;            }</b>
+<b class="nc"><i>286</i>&nbsp;        }</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    private void verifyWithSeparateSigningKey(X509Certificate var1, PublicKey var2, boolean var3, Set&lt;X509Certificate&gt; var4) throws CertPathValidatorException {
+<i>290</i>&nbsp;        String var5 = &quot;revocation status&quot;;
+<b class="nc"><i>291</i>&nbsp;        if(debug != null) {</b>
+<i>292</i>&nbsp;            debug.println(&quot;CrlRevocationChecker.verifyWithSeparateSigningKey() ---checking &quot; + var5 + &quot;...&quot;);
+<i>293</i>&nbsp;        }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;        if(var4 != null &amp;&amp; var4.contains(var1)) {
+<i>296</i>&nbsp;            if(debug != null) {
+<b class="nc"><i>297</i>&nbsp;                debug.println(&quot;CrlRevocationChecker.verifyWithSeparateSigningKey() circular dependency&quot;);</b>
+<b class="nc"><i>298</i>&nbsp;            }</b>
+<b class="nc"><i>299</i>&nbsp;</b>
+<i>300</i>&nbsp;            throw new CertPathValidatorException(&quot;Could not determine revocation status&quot;, (Throwable)null, (CertPath)null, -1, BasicReason.UNDETERMINED_REVOCATION_STATUS);
+<i>301</i>&nbsp;        } else {
+<b class="nc"><i>302</i>&nbsp;            if(!var3) {</b>
+<b class="nc"><i>303</i>&nbsp;                var2 = null;</b>
+<b class="nc"><i>304</i>&nbsp;            }</b>
+<i>305</i>&nbsp;
+<b class="nc"><i>306</i>&nbsp;            this.buildToNewKey(var1, var2, var4);</b>
+<b class="nc"><i>307</i>&nbsp;        }</b>
+<i>308</i>&nbsp;    }
+<b class="nc"><i>309</i>&nbsp;</b>
+<i>310</i>&nbsp;    private void buildToNewKey(X509Certificate var1, PublicKey var2, Set&lt;X509Certificate&gt; var3) throws CertPathValidatorException {
+<i>311</i>&nbsp;        if(debug != null) {
+<b class="nc"><i>312</i>&nbsp;            debug.println(&quot;CrlRevocationChecker.buildToNewKey() starting work&quot;);</b>
+<i>313</i>&nbsp;        }
+<b class="nc"><i>314</i>&nbsp;</b>
+<b class="nc"><i>315</i>&nbsp;        HashSet var4 = new HashSet();</b>
+<b class="nc"><i>316</i>&nbsp;        if(var2 != null) {</b>
+<i>317</i>&nbsp;            var4.add(var2);
+<i>318</i>&nbsp;        }
+<b class="nc"><i>319</i>&nbsp;</b>
+<b class="nc"><i>320</i>&nbsp;        CrlRevocationChecker.RejectKeySelector var5 = new CrlRevocationChecker.RejectKeySelector(var4);</b>
+<i>321</i>&nbsp;        var5.setSubject(var1.getIssuerX500Principal());
+<b class="nc"><i>322</i>&nbsp;        var5.setKeyUsage(mCrlSignUsage);</b>
+<b class="nc"><i>323</i>&nbsp;        Set var6 = this.mAnchor == null?this.mParams.getTrustAnchors():Collections.singleton(this.mAnchor);</b>
+<i>324</i>&nbsp;        PKIXBuilderParameters var7;
+<i>325</i>&nbsp;        if(this.mParams instanceof PKIXBuilderParameters) {
+<i>326</i>&nbsp;            var7 = (PKIXBuilderParameters)this.mParams.clone();
+<i>327</i>&nbsp;            var7.setTargetCertConstraints(var5);
+<i>328</i>&nbsp;            var7.setPolicyQualifiersRejected(true);
+<i>329</i>&nbsp;
+<b class="nc"><i>330</i>&nbsp;            try {</b>
+<i>331</i>&nbsp;                var7.setTrustAnchors(var6);
+<i>332</i>&nbsp;            } catch (InvalidAlgorithmParameterException var18) {
+<i>333</i>&nbsp;                throw new RuntimeException(var18);
+<i>334</i>&nbsp;            }
+<b class="nc"><i>335</i>&nbsp;        } else {</b>
+<b class="nc"><i>336</i>&nbsp;            try {</b>
+<i>337</i>&nbsp;                var7 = new PKIXBuilderParameters(var6, var5);
+<i>338</i>&nbsp;            } catch (InvalidAlgorithmParameterException var17) {
+<i>339</i>&nbsp;                throw new RuntimeException(var17);
+<i>340</i>&nbsp;            }
+<b class="nc"><i>341</i>&nbsp;</b>
+<i>342</i>&nbsp;            var7.setInitialPolicies(this.mParams.getInitialPolicies());
+<b class="nc"><i>343</i>&nbsp;            var7.setCertStores(this.mStores);</b>
+<b class="nc"><i>344</i>&nbsp;            var7.setExplicitPolicyRequired(this.mParams.isExplicitPolicyRequired());</b>
+<i>345</i>&nbsp;            var7.setPolicyMappingInhibited(this.mParams.isPolicyMappingInhibited());
+<i>346</i>&nbsp;            var7.setAnyPolicyInhibited(this.mParams.isAnyPolicyInhibited());
+<i>347</i>&nbsp;            var7.setDate(this.mParams.getDate());
+<i>348</i>&nbsp;            var7.setCertPathCheckers(this.mParams.getCertPathCheckers());
+<i>349</i>&nbsp;            var7.setSigProvider(this.mParams.getSigProvider());
+<b class="nc"><i>350</i>&nbsp;        }</b>
+<i>351</i>&nbsp;
+<b class="nc"><i>352</i>&nbsp;        var7.setRevocationEnabled(false);</b>
+<i>353</i>&nbsp;        X509CertImpl var8;
+<i>354</i>&nbsp;        if(Builder.USE_AIA) {
+<i>355</i>&nbsp;            var8 = null;
+<i>356</i>&nbsp;
+<b class="nc"><i>357</i>&nbsp;            try {</b>
+<i>358</i>&nbsp;                var8 = X509CertImpl.toImpl(var1);
+<i>359</i>&nbsp;            } catch (CertificateException var23) {
+<i>360</i>&nbsp;                if(debug != null) {
+<i>361</i>&nbsp;                    debug.println(&quot;CrlRevocationChecker.buildToNewKey: error decoding cert: &quot; + var23);
+<i>362</i>&nbsp;                }
+<i>363</i>&nbsp;            }
+<i>364</i>&nbsp;
+<b class="nc"><i>365</i>&nbsp;            AuthorityInfoAccessExtension var9 = null;</b>
+<b class="nc"><i>366</i>&nbsp;            if(var8 != null) {</b>
+<b class="nc"><i>367</i>&nbsp;                var9 = var8.getAuthorityInfoAccessExtension();</b>
+<b class="nc"><i>368</i>&nbsp;            }</b>
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;            if(var9 != null) {
+<i>371</i>&nbsp;                List var10 = var9.getAccessDescriptions();
+<b class="nc"><i>372</i>&nbsp;                if(var10 != null) {</b>
+<b class="nc"><i>373</i>&nbsp;                    Iterator var11 = var10.iterator();</b>
+<b class="nc"><i>374</i>&nbsp;</b>
+<i>375</i>&nbsp;                    while(var11.hasNext()) {
+<b class="nc"><i>376</i>&nbsp;                        AccessDescription var12 = (AccessDescription)var11.next();</b>
+<b class="nc"><i>377</i>&nbsp;                        CertStore var13 = URICertStore.getInstance(var12);</b>
+<b class="nc"><i>378</i>&nbsp;                        if(var13 != null) {</b>
+<i>379</i>&nbsp;                            if(debug != null) {
+<i>380</i>&nbsp;                                debug.println(&quot;adding AIAext CertStore&quot;);
+<i>381</i>&nbsp;                            }
+<b class="nc"><i>382</i>&nbsp;</b>
+<i>383</i>&nbsp;                            var7.addCertStore(var13);
+<b class="nc"><i>384</i>&nbsp;                        }</b>
+<b class="nc"><i>385</i>&nbsp;                    }</b>
+<i>386</i>&nbsp;                }
+<i>387</i>&nbsp;            }
+<b class="nc"><i>388</i>&nbsp;        }</b>
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;        var8 = null;
+<b class="nc"><i>391</i>&nbsp;</b>
+<b class="nc"><i>392</i>&nbsp;        CertPathBuilder var24;</b>
+<b class="nc"><i>393</i>&nbsp;        try {</b>
+<i>394</i>&nbsp;            var24 = CertPathBuilder.getInstance(&quot;PKIX&quot;);
+<i>395</i>&nbsp;        } catch (NoSuchAlgorithmException var16) {
+<i>396</i>&nbsp;            throw new CertPathValidatorException(var16);
+<i>397</i>&nbsp;        }
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;        while(true) {
+<b class="nc"><i>400</i>&nbsp;            while(true) {</b>
+<i>401</i>&nbsp;                try {
+<i>402</i>&nbsp;                    if(debug != null) {
+<i>403</i>&nbsp;                        debug.println(&quot;CrlRevocationChecker.buildToNewKey() about to try build ...&quot;);
+<i>404</i>&nbsp;                    }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;                    PKIXCertPathBuilderResult var25 = (PKIXCertPathBuilderResult)var24.build(var7);
+<i>407</i>&nbsp;                    if(debug != null) {
+<b class="nc"><i>408</i>&nbsp;                        debug.println(&quot;CrlRevocationChecker.buildToNewKey() about to check revocation ...&quot;);</b>
+<i>409</i>&nbsp;                    }
+<i>410</i>&nbsp;
+<b class="nc"><i>411</i>&nbsp;                    if(var3 == null) {</b>
+<i>412</i>&nbsp;                        var3 = new HashSet();
+<i>413</i>&nbsp;                    }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;                    ((Set)var3).add(var1);
+<i>416</i>&nbsp;                    TrustAnchor var27 = var25.getTrustAnchor();
+<i>417</i>&nbsp;                    PublicKey var26 = var27.getCAPublicKey();
+<i>418</i>&nbsp;                    if(var26 == null) {
+<b class="nc"><i>419</i>&nbsp;                        var26 = var27.getTrustedCert().getPublicKey();</b>
+<b class="nc"><i>420</i>&nbsp;                    }</b>
+<i>421</i>&nbsp;
+<b class="nc"><i>422</i>&nbsp;                    boolean var28 = true;</b>
+<i>423</i>&nbsp;                    List var29 = var25.getCertPath().getCertificates();
+<b class="nc"><i>424</i>&nbsp;</b>
+<b class="nc"><i>425</i>&nbsp;                    try {</b>
+<i>426</i>&nbsp;                        for(int var14 = var29.size() - 1; var14 &gt;= 0; --var14) {
+<i>427</i>&nbsp;                            X509Certificate var15 = (X509Certificate)var29.get(var14);
+<i>428</i>&nbsp;                            if(debug != null) {
+<i>429</i>&nbsp;                                debug.println(&quot;CrlRevocationChecker.buildToNewKey() index &quot; + var14 + &quot; checking &quot; + var15);
+<i>430</i>&nbsp;                            }
+<b class="nc"><i>431</i>&nbsp;</b>
+<i>432</i>&nbsp;                            this.verifyRevocationStatus(var15, var26, var28, true, (Set)var3, var6);
+<b class="nc"><i>433</i>&nbsp;                            var28 = certCanSignCrl(var15);</b>
+<b class="nc"><i>434</i>&nbsp;                            var26 = var15.getPublicKey();</b>
+<i>435</i>&nbsp;                        }
+<i>436</i>&nbsp;                    } catch (CertPathValidatorException var19) {
+<i>437</i>&nbsp;                        var4.add(var25.getPublicKey());
+<i>438</i>&nbsp;                        continue;
+<i>439</i>&nbsp;                    }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;                    if(debug != null) {
+<i>442</i>&nbsp;                        debug.println(&quot;CrlRevocationChecker.buildToNewKey() got key &quot; + var25.getPublicKey());
+<i>443</i>&nbsp;                    }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;                    PublicKey var30 = var25.getPublicKey();
+<i>446</i>&nbsp;
+<i>447</i>&nbsp;                    try {
+<i>448</i>&nbsp;                        this.verifyRevocationStatus(var1, var30, true, false);
+<i>449</i>&nbsp;                        return;
+<i>450</i>&nbsp;                    } catch (CertPathValidatorException var20) {
+<i>451</i>&nbsp;                        if(var20.getReason() == BasicReason.REVOKED) {
+<i>452</i>&nbsp;                            throw var20;
+<i>453</i>&nbsp;                        }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;                        var4.add(var30);
+<i>456</i>&nbsp;                    }
+<i>457</i>&nbsp;                } catch (InvalidAlgorithmParameterException var21) {
+<i>458</i>&nbsp;                    throw new CertPathValidatorException(var21);
+<i>459</i>&nbsp;                } catch (CertPathBuilderException var22) {
+<i>460</i>&nbsp;                    throw new CertPathValidatorException(&quot;Could not determine revocation status&quot;, (Throwable)null, (CertPath)null, -1, BasicReason.UNDETERMINED_REVOCATION_STATUS);
+<i>461</i>&nbsp;                }
+<i>462</i>&nbsp;            }
+<b class="nc"><i>463</i>&nbsp;        }</b>
+<b class="nc"><i>464</i>&nbsp;    }</b>
+<b class="nc"><i>465</i>&nbsp;</b>
+<i>466</i>&nbsp;    private Collection&lt;X509CRL&gt; verifyPossibleCRLs(Set&lt;X509CRL&gt; var1, X509Certificate var2, boolean var3, PublicKey var4, boolean[] var5, Set&lt;TrustAnchor&gt; var6) throws CertPathValidatorException {
+<i>467</i>&nbsp;        try {
+<i>468</i>&nbsp;            X509CertImpl var7 = X509CertImpl.toImpl(var2);
+<i>469</i>&nbsp;            if(debug != null) {
+<i>470</i>&nbsp;                debug.println(&quot;CRLRevocationChecker.verifyPossibleCRLs: Checking CRLDPs for &quot; + var7.getSubjectX500Principal());
+<i>471</i>&nbsp;            }
+<i>472</i>&nbsp;
+<b class="nc"><i>473</i>&nbsp;            CRLDistributionPointsExtension var8 = var7.getCRLDistributionPointsExtension();</b>
+<b class="nc"><i>474</i>&nbsp;            List var9 = null;</b>
+<i>475</i>&nbsp;            if(var8 == null) {
+<i>476</i>&nbsp;                X500Name var10 = (X500Name)var7.getIssuerDN();
+<i>477</i>&nbsp;                DistributionPoint var11 = new DistributionPoint((new GeneralNames()).add(new GeneralName(var10)), (boolean[])null, (GeneralNames)null);
+<i>478</i>&nbsp;                var9 = Collections.singletonList(var11);
+<b class="nc"><i>479</i>&nbsp;            } else {</b>
+<b class="nc"><i>480</i>&nbsp;                var9 = (List)var8.get(&quot;points&quot;);</b>
+<i>481</i>&nbsp;            }
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;            HashSet var17 = new HashSet();
+<i>484</i>&nbsp;            Iterator var16 = var9.iterator();
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;            while(var16.hasNext() &amp;&amp; !Arrays.equals(var5, ALL_REASONS)) {
+<i>487</i>&nbsp;                DistributionPoint var12 = (DistributionPoint)var16.next();
+<i>488</i>&nbsp;                Iterator var13 = var1.iterator();
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;                while(var13.hasNext()) {
+<i>491</i>&nbsp;                    X509CRL var14 = (X509CRL)var13.next();
+<i>492</i>&nbsp;                    if(DistributionPointFetcher.verifyCRL(var7, var12, var14, var5, var3, var4, this.mSigProvider, var6, this.mStores, this.mParams.getDate())) {
+<b class="nc"><i>493</i>&nbsp;                        var17.add(var14);</b>
+<b class="nc"><i>494</i>&nbsp;                    }</b>
+<b class="nc"><i>495</i>&nbsp;                }</b>
+<i>496</i>&nbsp;            }
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;            return var17;
+<i>499</i>&nbsp;        } catch (Exception var15) {
+<i>500</i>&nbsp;            if(debug != null) {
+<b class="nc"><i>501</i>&nbsp;                debug.println(&quot;Exception while verifying CRL: &quot; + var15.getMessage());</b>
+<i>502</i>&nbsp;                var15.printStackTrace();
+<i>503</i>&nbsp;            }
+<b class="nc"><i>504</i>&nbsp;</b>
+<i>505</i>&nbsp;            return Collections.emptySet();
+<b class="nc"><i>506</i>&nbsp;        }</b>
+<b class="nc"><i>507</i>&nbsp;    }</b>
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    private static class RejectKeySelector extends X509CertSelector {
+<i>510</i>&nbsp;        private final Set&lt;PublicKey&gt; badKeySet;
+<b class="nc"><i>511</i>&nbsp;</b>
+<b class="nc"><i>512</i>&nbsp;        RejectKeySelector(Set&lt;PublicKey&gt; var1) {</b>
+<b class="nc"><i>513</i>&nbsp;            this.badKeySet = var1;</b>
+<i>514</i>&nbsp;        }
+<i>515</i>&nbsp;
+<b class="nc"><i>516</i>&nbsp;        public boolean match(Certificate var1) {</b>
+<b class="nc"><i>517</i>&nbsp;            if(!super.match(var1)) {</b>
+<i>518</i>&nbsp;                return false;
+<i>519</i>&nbsp;            } else if(this.badKeySet.contains(var1.getPublicKey())) {
+<i>520</i>&nbsp;                if(CrlRevocationChecker.debug != null) {
+<i>521</i>&nbsp;                    CrlRevocationChecker.debug.println(&quot;RejectCertSelector.match: bad key&quot;);
+<i>522</i>&nbsp;                }
+<b class="nc"><i>523</i>&nbsp;</b>
+<i>524</i>&nbsp;                return false;
+<i>525</i>&nbsp;            } else {
+<i>526</i>&nbsp;                if(CrlRevocationChecker.debug != null) {
+<i>527</i>&nbsp;                    CrlRevocationChecker.debug.println(&quot;RejectCertSelector.match: returning true&quot;);
+<i>528</i>&nbsp;                }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;                return true;
+<i>531</i>&nbsp;            }
+<i>532</i>&nbsp;        }
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;        public String toString() {
+<i>535</i>&nbsp;            StringBuilder var1 = new StringBuilder();
+<i>536</i>&nbsp;            var1.append(&quot;RejectCertSelector: [\n&quot;);
+<i>537</i>&nbsp;            var1.append(super.toString());
+<i>538</i>&nbsp;            var1.append(this.badKeySet);
+<i>539</i>&nbsp;            var1.append(&quot;]&quot;);
+<i>540</i>&nbsp;            return var1.toString();
+<i>541</i>&nbsp;        }
+<i>542</i>&nbsp;    }
+<i>543</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

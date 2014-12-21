@@ -1,0 +1,283 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HotSpotVirtualMachine</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.tools.attach</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HotSpotVirtualMachine (sun.tools.attach)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HotSpotVirtualMachine</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 74)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.tools.attach;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.attach.AgentInitializationException;
+<i>9</i>&nbsp;import com.sun.tools.attach.AgentLoadException;
+<i>10</i>&nbsp;import com.sun.tools.attach.VirtualMachine;
+<i>11</i>&nbsp;import com.sun.tools.attach.spi.AttachProvider;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.io.InputStream;
+<i>14</i>&nbsp;import java.util.Properties;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;public abstract class HotSpotVirtualMachine extends VirtualMachine {
+<i>17</i>&nbsp;    private static final int JNI_ENOMEM = -4;
+<i>18</i>&nbsp;    private static final int ATTACH_ERROR_BADJAR = 100;
+<i>19</i>&nbsp;    private static final int ATTACH_ERROR_NOTONCP = 101;
+<i>20</i>&nbsp;    private static final int ATTACH_ERROR_STARTFAIL = 102;
+<i>21</i>&nbsp;    private static long defaultAttachTimeout = 5000L;
+<i>22</i>&nbsp;    private volatile long attachTimeout;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    HotSpotVirtualMachine(AttachProvider var1, String var2) {
+<i>25</i>&nbsp;        super(var1, var2);
+<i>26</i>&nbsp;    }
+<b class="nc"><i>27</i>&nbsp;</b>
+<i>28</i>&nbsp;    private void loadAgentLibrary(String var1, boolean var2, String var3) throws AgentLoadException, AgentInitializationException, IOException {
+<i>29</i>&nbsp;        InputStream var4 = this.execute(&quot;load&quot;, new Object[]{var1, var2?&quot;true&quot;:&quot;false&quot;, var3});
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;        try {
+<i>32</i>&nbsp;            int var5 = this.readInt(var4);
+<i>33</i>&nbsp;            if(var5 != 0) {
+<i>34</i>&nbsp;                throw new AgentInitializationException(&quot;Agent_OnAttach failed&quot;, var5);
+<i>35</i>&nbsp;            }
+<i>36</i>&nbsp;        } finally {
+<i>37</i>&nbsp;            var4.close();
+<i>38</i>&nbsp;        }
+<i>39</i>&nbsp;
+<b class="nc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public void loadAgentLibrary(String var1, String var2) throws AgentLoadException, AgentInitializationException, IOException {
+<i>43</i>&nbsp;        this.loadAgentLibrary(var1, false, var2);
+<i>44</i>&nbsp;    }
+<b class="nc"><i>45</i>&nbsp;</b>
+<b class="nc"><i>46</i>&nbsp;    public void loadAgentPath(String var1, String var2) throws AgentLoadException, AgentInitializationException, IOException {</b>
+<b class="nc"><i>47</i>&nbsp;        this.loadAgentLibrary(var1, true, var2);</b>
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<b class="nc"><i>50</i>&nbsp;    public void loadAgent(String var1, String var2) throws AgentLoadException, AgentInitializationException, IOException {</b>
+<i>51</i>&nbsp;        String var3 = var1;
+<b class="nc"><i>52</i>&nbsp;        if(var2 != null) {</b>
+<i>53</i>&nbsp;            var3 = var1 + &quot;=&quot; + var2;
+<i>54</i>&nbsp;        }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;        try {
+<i>57</i>&nbsp;            this.loadAgentLibrary(&quot;instrument&quot;, var3);
+<i>58</i>&nbsp;        } catch (AgentLoadException var6) {
+<i>59</i>&nbsp;            throw new InternalError(&quot;instrument library is missing in target VM&quot;);
+<i>60</i>&nbsp;        } catch (AgentInitializationException var7) {
+<b class="nc"><i>61</i>&nbsp;            int var5 = var7.returnValue();</b>
+<i>62</i>&nbsp;            switch(var5) {
+<i>63</i>&nbsp;            case -4:
+<i>64</i>&nbsp;                throw new AgentLoadException(&quot;Insuffient memory&quot;);
+<i>65</i>&nbsp;            case 100:
+<i>66</i>&nbsp;                throw new AgentLoadException(&quot;Agent JAR not found or no Agent-Class attribute&quot;);
+<i>67</i>&nbsp;            case 101:
+<i>68</i>&nbsp;                throw new AgentLoadException(&quot;Unable to add JAR file to system class path&quot;);
+<i>69</i>&nbsp;            case 102:
+<b class="nc"><i>70</i>&nbsp;                throw new AgentInitializationException(&quot;Agent JAR loaded but agent failed to initialize&quot;);</b>
+<i>71</i>&nbsp;            default:
+<i>72</i>&nbsp;                throw new AgentLoadException(&quot;Failed to load agent - unknown reason: &quot; + var5);
+<i>73</i>&nbsp;            }
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public Properties getSystemProperties() throws IOException {
+<i>78</i>&nbsp;        InputStream var1 = null;
+<i>79</i>&nbsp;        Properties var2 = new Properties();
+<b class="nc"><i>80</i>&nbsp;</b>
+<b class="nc"><i>81</i>&nbsp;        try {</b>
+<b class="nc"><i>82</i>&nbsp;            var1 = this.executeCommand(&quot;properties&quot;, new Object[0]);</b>
+<i>83</i>&nbsp;            var2.load(var1);
+<i>84</i>&nbsp;        } finally {
+<b class="nc"><i>85</i>&nbsp;            if(var1 != null) {</b>
+<b class="nc"><i>86</i>&nbsp;                var1.close();</b>
+<b class="nc"><i>87</i>&nbsp;            }</b>
+<b class="nc"><i>88</i>&nbsp;</b>
+<i>89</i>&nbsp;        }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        return var2;
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;    public Properties getAgentProperties() throws IOException {</b>
+<b class="nc"><i>95</i>&nbsp;        InputStream var1 = null;</b>
+<i>96</i>&nbsp;        Properties var2 = new Properties();
+<b class="nc"><i>97</i>&nbsp;</b>
+<i>98</i>&nbsp;        try {
+<b class="nc"><i>99</i>&nbsp;            var1 = this.executeCommand(&quot;agentProperties&quot;, new Object[0]);</b>
+<i>100</i>&nbsp;            var2.load(var1);
+<b class="nc"><i>101</i>&nbsp;        } finally {</b>
+<i>102</i>&nbsp;            if(var1 != null) {
+<b class="nc"><i>103</i>&nbsp;                var1.close();</b>
+<i>104</i>&nbsp;            }
+<b class="nc"><i>105</i>&nbsp;</b>
+<i>106</i>&nbsp;        }
+<b class="nc"><i>107</i>&nbsp;</b>
+<i>108</i>&nbsp;        return var2;
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public void localDataDump() throws IOException {
+<i>112</i>&nbsp;        this.executeCommand(&quot;datadump&quot;, new Object[0]).close();
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public InputStream remoteDataDump(Object... var1) throws IOException {
+<i>116</i>&nbsp;        return this.executeCommand(&quot;threaddump&quot;, var1);
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public InputStream dumpHeap(Object... var1) throws IOException {
+<i>120</i>&nbsp;        return this.executeCommand(&quot;dumpheap&quot;, var1);
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;    public InputStream heapHisto(Object... var1) throws IOException {</b>
+<b class="nc"><i>124</i>&nbsp;        return this.executeCommand(&quot;inspectheap&quot;, var1);</b>
+<i>125</i>&nbsp;    }
+<b class="nc"><i>126</i>&nbsp;</b>
+<b class="nc"><i>127</i>&nbsp;    public InputStream setFlag(String var1, String var2) throws IOException {</b>
+<i>128</i>&nbsp;        return this.executeCommand(&quot;setflag&quot;, new Object[]{var1, var2});
+<b class="nc"><i>129</i>&nbsp;    }</b>
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;    public InputStream printFlag(String var1) throws IOException {</b>
+<i>132</i>&nbsp;        return this.executeCommand(&quot;printflag&quot;, new Object[]{var1});
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;    public InputStream executeJCmd(String var1) throws IOException {</b>
+<b class="nc"><i>136</i>&nbsp;        return this.executeCommand(&quot;jcmd&quot;, new Object[]{var1});</b>
+<i>137</i>&nbsp;    }
+<b class="nc"><i>138</i>&nbsp;</b>
+<b class="nc"><i>139</i>&nbsp;    abstract InputStream execute(String var1, Object... var2) throws AgentLoadException, IOException;</b>
+<i>140</i>&nbsp;
+<b class="nc"><i>141</i>&nbsp;    private InputStream executeCommand(String var1, Object... var2) throws IOException {</b>
+<i>142</i>&nbsp;        try {
+<b class="nc"><i>143</i>&nbsp;            return this.execute(var1, var2);</b>
+<i>144</i>&nbsp;        } catch (AgentLoadException var4) {
+<i>145</i>&nbsp;            throw new InternalError(&quot;Should not get here&quot;);
+<i>146</i>&nbsp;        }
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    int readInt(InputStream var1) throws IOException {
+<b class="nc"><i>150</i>&nbsp;        StringBuilder var2 = new StringBuilder();</b>
+<i>151</i>&nbsp;        byte[] var4 = new byte[1];
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;        int var3;
+<i>154</i>&nbsp;        do {
+<i>155</i>&nbsp;            var3 = var1.read(var4, 0, 1);
+<b class="nc"><i>156</i>&nbsp;            if(var3 &gt; 0) {</b>
+<i>157</i>&nbsp;                char var5 = (char)var4[0];
+<i>158</i>&nbsp;                if(var5 == 10) {
+<i>159</i>&nbsp;                    break;
+<i>160</i>&nbsp;                }
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;                var2.append(var5);</b>
+<i>163</i>&nbsp;            }
+<i>164</i>&nbsp;        } while(var3 &gt; 0);
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;        if(var2.length() == 0) {
+<b class="nc"><i>167</i>&nbsp;            throw new IOException(&quot;Premature EOF&quot;);</b>
+<i>168</i>&nbsp;        } else {
+<i>169</i>&nbsp;            try {
+<i>170</i>&nbsp;                int var8 = Integer.parseInt(var2.toString());
+<i>171</i>&nbsp;                return var8;
+<b class="nc"><i>172</i>&nbsp;            } catch (NumberFormatException var7) {</b>
+<i>173</i>&nbsp;                throw new IOException(&quot;Non-numeric value found - int expected&quot;);
+<i>174</i>&nbsp;            }
+<i>175</i>&nbsp;        }
+<i>176</i>&nbsp;    }
+<b class="nc"><i>177</i>&nbsp;</b>
+<i>178</i>&nbsp;    long attachTimeout() {
+<i>179</i>&nbsp;        if(this.attachTimeout == 0L) {
+<i>180</i>&nbsp;            synchronized(this) {
+<i>181</i>&nbsp;                if(this.attachTimeout == 0L) {
+<i>182</i>&nbsp;                    try {
+<i>183</i>&nbsp;                        String var2 = System.getProperty(&quot;sun.tools.attach.attachTimeout&quot;);
+<i>184</i>&nbsp;                        this.attachTimeout = Long.parseLong(var2);
+<i>185</i>&nbsp;                    } catch (SecurityException var4) {
+<i>186</i>&nbsp;                        ;
+<i>187</i>&nbsp;                    } catch (NumberFormatException var5) {
+<i>188</i>&nbsp;                        ;
+<i>189</i>&nbsp;                    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;                    if(this.attachTimeout &lt;= 0L) {
+<i>192</i>&nbsp;                        this.attachTimeout = defaultAttachTimeout;
+<i>193</i>&nbsp;                    }
+<i>194</i>&nbsp;                }
+<b class="nc"><i>195</i>&nbsp;            }</b>
+<b class="nc"><i>196</i>&nbsp;        }</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<i>198</i>&nbsp;        return this.attachTimeout;
+<i>199</i>&nbsp;    }
+<i>200</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

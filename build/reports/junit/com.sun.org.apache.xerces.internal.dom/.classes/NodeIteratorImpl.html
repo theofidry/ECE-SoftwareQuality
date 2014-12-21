@@ -1,0 +1,291 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NodeIteratorImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.dom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NodeIteratorImpl (com.sun.org.apache.xerces.internal.dom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NodeIteratorImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 92)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.dom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.DOMMessageFormatter;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
+<i>10</i>&nbsp;import org.w3c.dom.DOMException;
+<i>11</i>&nbsp;import org.w3c.dom.Node;
+<i>12</i>&nbsp;import org.w3c.dom.traversal.NodeFilter;
+<i>13</i>&nbsp;import org.w3c.dom.traversal.NodeIterator;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;public class NodeIteratorImpl implements NodeIterator {
+<i>16</i>&nbsp;    private DocumentImpl fDocument;
+<i>17</i>&nbsp;    private Node fRoot;
+<i>18</i>&nbsp;    private int fWhatToShow = -1;
+<i>19</i>&nbsp;    private NodeFilter fNodeFilter;
+<i>20</i>&nbsp;    private boolean fDetach = false;
+<i>21</i>&nbsp;    private Node fCurrentNode;
+<i>22</i>&nbsp;    private boolean fForward = true;
+<i>23</i>&nbsp;    private boolean fEntityReferenceExpansion;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public NodeIteratorImpl(DocumentImpl document, Node root, int whatToShow, NodeFilter nodeFilter, boolean entityReferenceExpansion) {
+<i>26</i>&nbsp;        this.fDocument = document;
+<i>27</i>&nbsp;        this.fRoot = root;
+<i>28</i>&nbsp;        this.fCurrentNode = null;
+<i>29</i>&nbsp;        this.fWhatToShow = whatToShow;
+<i>30</i>&nbsp;        this.fNodeFilter = nodeFilter;
+<i>31</i>&nbsp;        this.fEntityReferenceExpansion = entityReferenceExpansion;
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public Node getRoot() {
+<i>35</i>&nbsp;        return this.fRoot;
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    public int getWhatToShow() {
+<i>39</i>&nbsp;        return this.fWhatToShow;
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public NodeFilter getFilter() {
+<i>43</i>&nbsp;        return this.fNodeFilter;
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public boolean getExpandEntityReferences() {
+<i>47</i>&nbsp;        return this.fEntityReferenceExpansion;
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<b class="nc"><i>50</i>&nbsp;    public Node nextNode() {</b>
+<i>51</i>&nbsp;        if(this.fDetach) {
+<i>52</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>53</i>&nbsp;        } else if(this.fRoot == null) {
+<b class="nc"><i>54</i>&nbsp;            return null;</b>
+<i>55</i>&nbsp;        } else {
+<i>56</i>&nbsp;            Node nextNode = this.fCurrentNode;
+<i>57</i>&nbsp;            boolean accepted = false;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;            do {
+<i>60</i>&nbsp;                if(accepted) {
+<i>61</i>&nbsp;                    return null;
+<i>62</i>&nbsp;                }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;                if(!this.fForward &amp;&amp; nextNode != null) {
+<i>65</i>&nbsp;                    nextNode = this.fCurrentNode;
+<i>66</i>&nbsp;                } else if(!this.fEntityReferenceExpansion &amp;&amp; nextNode != null &amp;&amp; nextNode.getNodeType() == 5) {
+<i>67</i>&nbsp;                    nextNode = this.nextNode(nextNode, false);
+<i>68</i>&nbsp;                } else {
+<i>69</i>&nbsp;                    nextNode = this.nextNode(nextNode, true);
+<i>70</i>&nbsp;                }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;                this.fForward = true;
+<i>73</i>&nbsp;                if(nextNode == null) {
+<i>74</i>&nbsp;                    return null;
+<i>75</i>&nbsp;                }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;                accepted = this.acceptNode(nextNode);
+<b class="nc"><i>78</i>&nbsp;            } while(!accepted);</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;            this.fCurrentNode = nextNode;
+<i>81</i>&nbsp;            return this.fCurrentNode;
+<i>82</i>&nbsp;        }
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public Node previousNode() {
+<i>86</i>&nbsp;        if(this.fDetach) {
+<i>87</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>88</i>&nbsp;        } else if(this.fRoot != null &amp;&amp; this.fCurrentNode != null) {
+<i>89</i>&nbsp;            Node previousNode = this.fCurrentNode;
+<i>90</i>&nbsp;            boolean accepted = false;
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;            do {</b>
+<b class="nc"><i>93</i>&nbsp;                if(accepted) {</b>
+<b class="nc"><i>94</i>&nbsp;                    return null;</b>
+<b class="nc"><i>95</i>&nbsp;                }</b>
+<b class="nc"><i>96</i>&nbsp;</b>
+<b class="nc"><i>97</i>&nbsp;                if(this.fForward &amp;&amp; previousNode != null) {</b>
+<b class="nc"><i>98</i>&nbsp;                    previousNode = this.fCurrentNode;</b>
+<i>99</i>&nbsp;                } else {
+<i>100</i>&nbsp;                    previousNode = this.previousNode(previousNode);
+<i>101</i>&nbsp;                }
+<b class="nc"><i>102</i>&nbsp;</b>
+<i>103</i>&nbsp;                this.fForward = false;
+<i>104</i>&nbsp;                if(previousNode == null) {
+<i>105</i>&nbsp;                    return null;
+<i>106</i>&nbsp;                }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;                accepted = this.acceptNode(previousNode);
+<i>109</i>&nbsp;            } while(!accepted);
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;            this.fCurrentNode = previousNode;</b>
+<i>112</i>&nbsp;            return this.fCurrentNode;
+<i>113</i>&nbsp;        } else {
+<i>114</i>&nbsp;            return null;
+<i>115</i>&nbsp;        }
+<b class="nc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    boolean acceptNode(Node node) {
+<i>119</i>&nbsp;        return this.fNodeFilter == null?(this.fWhatToShow &amp; 1 &lt;&lt; node.getNodeType() - 1) != 0:(this.fWhatToShow &amp; 1 &lt;&lt; node.getNodeType() - 1) != 0 &amp;&amp; this.fNodeFilter.acceptNode(node) == 1;
+<i>120</i>&nbsp;    }
+<b class="nc"><i>121</i>&nbsp;</b>
+<i>122</i>&nbsp;    Node matchNodeOrParent(Node node) {
+<i>123</i>&nbsp;        if(this.fCurrentNode == null) {
+<i>124</i>&nbsp;            return null;
+<i>125</i>&nbsp;        } else {
+<i>126</i>&nbsp;            for(Node n = this.fCurrentNode; n != this.fRoot; n = n.getParentNode()) {
+<i>127</i>&nbsp;                if(node == n) {
+<i>128</i>&nbsp;                    return n;
+<i>129</i>&nbsp;                }
+<b class="nc"><i>130</i>&nbsp;            }</b>
+<b class="nc"><i>131</i>&nbsp;</b>
+<i>132</i>&nbsp;            return null;
+<i>133</i>&nbsp;        }
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    Node nextNode(Node node, boolean visitChildren) {
+<b class="nc"><i>137</i>&nbsp;        if(node == null) {</b>
+<i>138</i>&nbsp;            return this.fRoot;
+<b class="nc"><i>139</i>&nbsp;        } else {</b>
+<b class="nc"><i>140</i>&nbsp;            Node result;</b>
+<i>141</i>&nbsp;            if(visitChildren &amp;&amp; node.hasChildNodes()) {
+<i>142</i>&nbsp;                result = node.getFirstChild();
+<b class="nc"><i>143</i>&nbsp;                return result;</b>
+<i>144</i>&nbsp;            } else if(node == this.fRoot) {
+<i>145</i>&nbsp;                return null;
+<b class="nc"><i>146</i>&nbsp;            } else {</b>
+<i>147</i>&nbsp;                result = node.getNextSibling();
+<b class="nc"><i>148</i>&nbsp;                if(result != null) {</b>
+<i>149</i>&nbsp;                    return result;
+<i>150</i>&nbsp;                } else {
+<b class="nc"><i>151</i>&nbsp;                    for(Node parent = node.getParentNode(); parent != null &amp;&amp; parent != this.fRoot; parent = parent.getParentNode()) {</b>
+<i>152</i>&nbsp;                        result = parent.getNextSibling();
+<i>153</i>&nbsp;                        if(result != null) {
+<b class="nc"><i>154</i>&nbsp;                            return result;</b>
+<i>155</i>&nbsp;                        }
+<b class="nc"><i>156</i>&nbsp;                    }</b>
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;                    return null;
+<i>159</i>&nbsp;                }
+<b class="nc"><i>160</i>&nbsp;            }</b>
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;    }
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;    Node previousNode(Node node) {
+<i>165</i>&nbsp;        if(node == this.fRoot) {
+<b class="nc"><i>166</i>&nbsp;            return null;</b>
+<b class="nc"><i>167</i>&nbsp;        } else {</b>
+<i>168</i>&nbsp;            Node result = node.getPreviousSibling();
+<b class="nc"><i>169</i>&nbsp;            if(result == null) {</b>
+<b class="nc"><i>170</i>&nbsp;                result = node.getParentNode();</b>
+<i>171</i>&nbsp;                return result;
+<i>172</i>&nbsp;            } else {
+<i>173</i>&nbsp;                if(result.hasChildNodes() &amp;&amp; (this.fEntityReferenceExpansion || result == null || result.getNodeType() != 5)) {
+<i>174</i>&nbsp;                    while(result.hasChildNodes()) {
+<i>175</i>&nbsp;                        result = result.getLastChild();
+<i>176</i>&nbsp;                    }
+<b class="nc"><i>177</i>&nbsp;                }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;                return result;
+<i>180</i>&nbsp;            }
+<i>181</i>&nbsp;        }
+<i>182</i>&nbsp;    }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    public void removeNode(Node node) {
+<i>185</i>&nbsp;        if(node != null) {
+<b class="nc"><i>186</i>&nbsp;            Node deleted = this.matchNodeOrParent(node);</b>
+<b class="nc"><i>187</i>&nbsp;            if(deleted != null) {</b>
+<i>188</i>&nbsp;                if(this.fForward) {
+<i>189</i>&nbsp;                    this.fCurrentNode = this.previousNode(deleted);
+<i>190</i>&nbsp;                } else {
+<i>191</i>&nbsp;                    Node next = this.nextNode(deleted, false);
+<i>192</i>&nbsp;                    if(next != null) {
+<b class="nc"><i>193</i>&nbsp;                        this.fCurrentNode = next;</b>
+<i>194</i>&nbsp;                    } else {
+<b class="nc"><i>195</i>&nbsp;                        this.fCurrentNode = this.previousNode(deleted);</b>
+<b class="nc"><i>196</i>&nbsp;                        this.fForward = true;</b>
+<i>197</i>&nbsp;                    }
+<i>198</i>&nbsp;                }
+<b class="nc"><i>199</i>&nbsp;</b>
+<i>200</i>&nbsp;            }
+<b class="nc"><i>201</i>&nbsp;        }</b>
+<i>202</i>&nbsp;    }
+<b class="nc"><i>203</i>&nbsp;</b>
+<i>204</i>&nbsp;    public void detach() {
+<i>205</i>&nbsp;        this.fDetach = true;
+<b class="nc"><i>206</i>&nbsp;        this.fDocument.removeNodeIterator(this);</b>
+<i>207</i>&nbsp;    }
+<i>208</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

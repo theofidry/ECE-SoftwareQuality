@@ -1,0 +1,653 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RMIMasterSocketFactory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.rmi.transport.proxy</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RMIMasterSocketFactory (sun.rmi.transport.proxy)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RMIMasterSocketFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 127)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">RMIMasterSocketFactory$AsyncConnector</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 39)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 166)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.rmi.transport.proxy;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InputStream;
+<i>10</i>&nbsp;import java.io.InterruptedIOException;
+<i>11</i>&nbsp;import java.net.NoRouteToHostException;
+<i>12</i>&nbsp;import java.net.ServerSocket;
+<i>13</i>&nbsp;import java.net.Socket;
+<i>14</i>&nbsp;import java.net.SocketException;
+<i>15</i>&nbsp;import java.net.UnknownHostException;
+<i>16</i>&nbsp;import java.rmi.server.LogStream;
+<i>17</i>&nbsp;import java.rmi.server.RMISocketFactory;
+<i>18</i>&nbsp;import java.security.AccessControlContext;
+<i>19</i>&nbsp;import java.security.AccessController;
+<i>20</i>&nbsp;import java.util.Hashtable;
+<i>21</i>&nbsp;import java.util.Vector;
+<i>22</i>&nbsp;import sun.rmi.runtime.Log;
+<i>23</i>&nbsp;import sun.rmi.runtime.NewThreadAction;
+<i>24</i>&nbsp;import sun.rmi.transport.proxy.RMIDirectSocketFactory;
+<i>25</i>&nbsp;import sun.rmi.transport.proxy.RMIHttpToCGISocketFactory;
+<i>26</i>&nbsp;import sun.rmi.transport.proxy.RMIHttpToPortSocketFactory;
+<i>27</i>&nbsp;import sun.security.action.GetBooleanAction;
+<i>28</i>&nbsp;import sun.security.action.GetLongAction;
+<i>29</i>&nbsp;import sun.security.action.GetPropertyAction;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;public class RMIMasterSocketFactory extends RMISocketFactory {
+<b class="nc"><i>32</i>&nbsp;    static int logLevel = LogStream.parseLevel(getLogLevel());</b>
+<i>33</i>&nbsp;    static final Log proxyLog;
+<i>34</i>&nbsp;    private static long connectTimeout;
+<b class="nc"><i>35</i>&nbsp;    private static final boolean eagerHttpFallback;</b>
+<i>36</i>&nbsp;    private Hashtable&lt;String, RMISocketFactory&gt; successTable = new Hashtable();
+<i>37</i>&nbsp;    private static final int MaxRememberedHosts = 64;
+<i>38</i>&nbsp;    private Vector&lt;String&gt; hostList = new Vector(64);
+<i>39</i>&nbsp;    protected RMISocketFactory initialFactory = new RMIDirectSocketFactory();
+<b class="nc"><i>40</i>&nbsp;    protected Vector&lt;RMISocketFactory&gt; altFactoryList = new Vector(2);</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private static String getLogLevel() {
+<i>43</i>&nbsp;        return (String)AccessController.doPrivileged(new GetPropertyAction(&quot;sun.rmi.transport.proxy.logLevel&quot;));
+<i>44</i>&nbsp;    }
+<b class="nc"><i>45</i>&nbsp;</b>
+<i>46</i>&nbsp;    private static long getConnectTimeout() {
+<i>47</i>&nbsp;        return ((Long)AccessController.doPrivileged(new GetLongAction(&quot;sun.rmi.transport.proxy.connectTimeout&quot;, 15000L))).longValue();
+<b class="nc"><i>48</i>&nbsp;    }</b>
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public RMIMasterSocketFactory() {
+<i>51</i>&nbsp;        boolean var1 = false;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;        try {
+<b class="nc"><i>54</i>&nbsp;            String var2 = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;http.proxyHost&quot;));</b>
+<i>55</i>&nbsp;            if(var2 == null) {
+<i>56</i>&nbsp;                var2 = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;proxyHost&quot;));
+<i>57</i>&nbsp;            }
+<i>58</i>&nbsp;
+<b class="nc"><i>59</i>&nbsp;            Boolean var3 = (Boolean)AccessController.doPrivileged(new GetBooleanAction(&quot;java.rmi.server.disableHttp&quot;));</b>
+<i>60</i>&nbsp;            if(!var3.booleanValue() &amp;&amp; var2 != null &amp;&amp; var2.length() &gt; 0) {
+<i>61</i>&nbsp;                var1 = true;
+<i>62</i>&nbsp;            }
+<i>63</i>&nbsp;        } catch (Exception var4) {
+<i>64</i>&nbsp;            var1 = true;
+<b class="nc"><i>65</i>&nbsp;        }</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;        if(var1) {
+<b class="nc"><i>68</i>&nbsp;            this.altFactoryList.addElement(new RMIHttpToPortSocketFactory());</b>
+<i>69</i>&nbsp;            this.altFactoryList.addElement(new RMIHttpToCGISocketFactory());
+<i>70</i>&nbsp;        }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public Socket createSocket(String var1, int var2) throws IOException {
+<i>75</i>&nbsp;        if(proxyLog.isLoggable(Log.BRIEF)) {
+<i>76</i>&nbsp;            proxyLog.log(Log.BRIEF, &quot;host: &quot; + var1 + &quot;, port: &quot; + var2);
+<i>77</i>&nbsp;        }
+<i>78</i>&nbsp;
+<b class="nc"><i>79</i>&nbsp;        if(this.altFactoryList.size() == 0) {</b>
+<b class="nc"><i>80</i>&nbsp;            return this.initialFactory.createSocket(var1, var2);</b>
+<b class="nc"><i>81</i>&nbsp;        } else {</b>
+<i>82</i>&nbsp;            RMISocketFactory var3 = (RMISocketFactory)this.successTable.get(var1);
+<i>83</i>&nbsp;            if(var3 != null) {
+<i>84</i>&nbsp;                if(proxyLog.isLoggable(Log.BRIEF)) {
+<b class="nc"><i>85</i>&nbsp;                    proxyLog.log(Log.BRIEF, &quot;previously successful factory found: &quot; + var3);</b>
+<i>86</i>&nbsp;                }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;                return var3.createSocket(var1, var2);</b>
+<b class="nc"><i>89</i>&nbsp;            } else {</b>
+<i>90</i>&nbsp;                Socket var4 = null;
+<i>91</i>&nbsp;                Socket var5 = null;
+<b class="nc"><i>92</i>&nbsp;                RMIMasterSocketFactory.AsyncConnector var6 = new RMIMasterSocketFactory.AsyncConnector(this.initialFactory, var1, var2, AccessController.getContext());</b>
+<i>93</i>&nbsp;                Object var7 = null;
+<i>94</i>&nbsp;                boolean var186 = false;
+<b class="nc"><i>95</i>&nbsp;</b>
+<i>96</i>&nbsp;                Socket var8;
+<b class="nc"><i>97</i>&nbsp;                label2129: {</b>
+<i>98</i>&nbsp;                    label2119: {
+<b class="nc"><i>99</i>&nbsp;                        InputStream var11;</b>
+<i>100</i>&nbsp;                        Throwable var220;
+<b class="nc"><i>101</i>&nbsp;                        int var221;</b>
+<b class="nc"><i>102</i>&nbsp;                        int var216;</b>
+<i>103</i>&nbsp;                        Socket var217;
+<b class="nc"><i>104</i>&nbsp;                        label2118: {</b>
+<b class="nc"><i>105</i>&nbsp;                            try {</b>
+<b class="nc"><i>106</i>&nbsp;                                var186 = true;</b>
+<i>107</i>&nbsp;                                synchronized(var6) {
+<i>108</i>&nbsp;                                    Thread var9 = (Thread)AccessController.doPrivileged(new NewThreadAction(var6, &quot;AsyncConnector&quot;, true));
+<i>109</i>&nbsp;                                    var9.start();
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;                                    try {
+<i>112</i>&nbsp;                                        long var10 = System.currentTimeMillis();
+<i>113</i>&nbsp;                                        long var12 = var10 + connectTimeout;
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;                                        do {
+<i>116</i>&nbsp;                                            var6.wait(var12 - var10);
+<i>117</i>&nbsp;                                            var4 = this.checkConnector(var6);
+<i>118</i>&nbsp;                                            if(var4 != null) {
+<b class="nc"><i>119</i>&nbsp;                                                break;</b>
+<b class="nc"><i>120</i>&nbsp;                                            }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;                                            var10 = System.currentTimeMillis();
+<i>123</i>&nbsp;                                        } while(var10 &lt; var12);
+<i>124</i>&nbsp;                                    } catch (InterruptedException var211) {
+<i>125</i>&nbsp;                                        throw new InterruptedIOException(&quot;interrupted while waiting for connector&quot;);
+<i>126</i>&nbsp;                                    }
+<b class="nc"><i>127</i>&nbsp;                                }</b>
+<b class="nc"><i>128</i>&nbsp;</b>
+<i>129</i>&nbsp;                                if(var4 == null) {
+<i>130</i>&nbsp;                                    throw new NoRouteToHostException(&quot;connect timed out: &quot; + var1);
+<i>131</i>&nbsp;                                }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;                                proxyLog.log(Log.BRIEF, &quot;direct socket connection successful&quot;);
+<i>134</i>&nbsp;                                var8 = var4;
+<i>135</i>&nbsp;                                var186 = false;
+<i>136</i>&nbsp;                                break label2129;
+<b class="nc"><i>137</i>&nbsp;                            } catch (NoRouteToHostException | UnknownHostException var213) {</b>
+<b class="nc"><i>138</i>&nbsp;                                var7 = var213;</b>
+<b class="nc"><i>139</i>&nbsp;                                var186 = false;</b>
+<b class="nc"><i>140</i>&nbsp;                            } catch (SocketException var214) {</b>
+<i>141</i>&nbsp;                                if(!eagerHttpFallback) {
+<i>142</i>&nbsp;                                    throw var214;
+<b class="nc"><i>143</i>&nbsp;                                }</b>
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;                                var7 = var214;
+<i>146</i>&nbsp;                                var186 = false;
+<i>147</i>&nbsp;                                break label2118;
+<i>148</i>&nbsp;                            } finally {
+<i>149</i>&nbsp;                                if(var186) {
+<i>150</i>&nbsp;                                    if(var7 != null) {
+<b class="nc"><i>151</i>&nbsp;                                        if(proxyLog.isLoggable(Log.BRIEF)) {</b>
+<b class="nc"><i>152</i>&nbsp;                                            proxyLog.log(Log.BRIEF, &quot;direct socket connection failed: &quot;, (Throwable)var7);</b>
+<b class="nc"><i>153</i>&nbsp;                                        }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;                                        int var22 = 0;
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;                                        while(var22 &lt; this.altFactoryList.size()) {
+<b class="nc"><i>158</i>&nbsp;                                            var3 = (RMISocketFactory)this.altFactoryList.elementAt(var22);</b>
+<i>159</i>&nbsp;                                            if(proxyLog.isLoggable(Log.BRIEF)) {
+<i>160</i>&nbsp;                                                proxyLog.log(Log.BRIEF, &quot;trying with factory: &quot; + var3);
+<b class="nc"><i>161</i>&nbsp;                                            }</b>
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;                                            try {</b>
+<i>164</i>&nbsp;                                                Socket var23 = var3.createSocket(var1, var2);
+<i>165</i>&nbsp;                                                Throwable var24 = null;
+<i>166</i>&nbsp;
+<b class="nc"><i>167</i>&nbsp;                                                try {</b>
+<i>168</i>&nbsp;                                                    InputStream var25 = var23.getInputStream();
+<i>169</i>&nbsp;                                                    int var26 = var25.read();
+<b class="nc"><i>170</i>&nbsp;                                                } catch (Throwable var189) {</b>
+<b class="nc"><i>171</i>&nbsp;                                                    var24 = var189;</b>
+<i>172</i>&nbsp;                                                    throw var189;
+<b class="nc"><i>173</i>&nbsp;                                                } finally {</b>
+<b class="nc"><i>174</i>&nbsp;                                                    if(var23 != null) {</b>
+<b class="nc"><i>175</i>&nbsp;                                                        if(var24 != null) {</b>
+<b class="nc"><i>176</i>&nbsp;                                                            try {</b>
+<b class="nc"><i>177</i>&nbsp;                                                                var23.close();</b>
+<b class="nc"><i>178</i>&nbsp;                                                            } catch (Throwable var188) {</b>
+<b class="nc"><i>179</i>&nbsp;                                                                var24.addSuppressed(var188);</b>
+<b class="nc"><i>180</i>&nbsp;                                                            }</b>
+<i>181</i>&nbsp;                                                        } else {
+<b class="nc"><i>182</i>&nbsp;                                                            var23.close();</b>
+<b class="nc"><i>183</i>&nbsp;                                                        }</b>
+<i>184</i>&nbsp;                                                    }
+<i>185</i>&nbsp;
+<b class="nc"><i>186</i>&nbsp;                                                }</b>
+<b class="nc"><i>187</i>&nbsp;                                            } catch (IOException var201) {</b>
+<i>188</i>&nbsp;                                                if(proxyLog.isLoggable(Log.BRIEF)) {
+<i>189</i>&nbsp;                                                    proxyLog.log(Log.BRIEF, &quot;factory failed: &quot;, var201);
+<b class="nc"><i>190</i>&nbsp;                                                }</b>
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;                                                ++var22;</b>
+<i>193</i>&nbsp;                                                continue;
+<b class="nc"><i>194</i>&nbsp;                                            }</b>
+<b class="nc"><i>195</i>&nbsp;</b>
+<b class="nc"><i>196</i>&nbsp;                                            proxyLog.log(Log.BRIEF, &quot;factory succeeded&quot;);</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<b class="nc"><i>198</i>&nbsp;                                            try {</b>
+<b class="nc"><i>199</i>&nbsp;                                                var3.createSocket(var1, var2);</b>
+<b class="nc"><i>200</i>&nbsp;                                            } catch (IOException var187) {</b>
+<i>201</i>&nbsp;                                                ;
+<b class="nc"><i>202</i>&nbsp;                                            }</b>
+<i>203</i>&nbsp;                                            break;
+<b class="nc"><i>204</i>&nbsp;                                        }</b>
+<b class="nc"><i>205</i>&nbsp;                                    }</b>
+<i>206</i>&nbsp;
+<b class="nc"><i>207</i>&nbsp;                                }</b>
+<b class="nc"><i>208</i>&nbsp;                            }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;                            if(var7 != null) {
+<i>211</i>&nbsp;                                if(proxyLog.isLoggable(Log.BRIEF)) {
+<i>212</i>&nbsp;                                    proxyLog.log(Log.BRIEF, &quot;direct socket connection failed: &quot;, (Throwable)var7);
+<b class="nc"><i>213</i>&nbsp;                                }</b>
+<b class="nc"><i>214</i>&nbsp;</b>
+<i>215</i>&nbsp;                                var216 = 0;
+<b class="nc"><i>216</i>&nbsp;</b>
+<b class="nc"><i>217</i>&nbsp;                                while(var216 &lt; this.altFactoryList.size()) {</b>
+<i>218</i>&nbsp;                                    var3 = (RMISocketFactory)this.altFactoryList.elementAt(var216);
+<i>219</i>&nbsp;                                    if(proxyLog.isLoggable(Log.BRIEF)) {
+<i>220</i>&nbsp;                                        proxyLog.log(Log.BRIEF, &quot;trying with factory: &quot; + var3);
+<i>221</i>&nbsp;                                    }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;                                    try {
+<i>224</i>&nbsp;                                        var217 = var3.createSocket(var1, var2);
+<i>225</i>&nbsp;                                        var220 = null;
+<b class="nc"><i>226</i>&nbsp;</b>
+<b class="nc"><i>227</i>&nbsp;                                        try {</b>
+<b class="nc"><i>228</i>&nbsp;                                            var11 = var217.getInputStream();</b>
+<b class="nc"><i>229</i>&nbsp;                                            var221 = var11.read();</b>
+<b class="nc"><i>230</i>&nbsp;                                        } catch (Throwable var194) {</b>
+<b class="nc"><i>231</i>&nbsp;                                            var220 = var194;</b>
+<b class="nc"><i>232</i>&nbsp;                                            throw var194;</b>
+<i>233</i>&nbsp;                                        } finally {
+<i>234</i>&nbsp;                                            if(var217 != null) {
+<b class="nc"><i>235</i>&nbsp;                                                if(var220 != null) {</b>
+<b class="nc"><i>236</i>&nbsp;                                                    try {</b>
+<b class="nc"><i>237</i>&nbsp;                                                        var217.close();</b>
+<i>238</i>&nbsp;                                                    } catch (Throwable var193) {
+<i>239</i>&nbsp;                                                        var220.addSuppressed(var193);
+<i>240</i>&nbsp;                                                    }
+<b class="nc"><i>241</i>&nbsp;                                                } else {</b>
+<b class="nc"><i>242</i>&nbsp;                                                    var217.close();</b>
+<b class="nc"><i>243</i>&nbsp;                                                }</b>
+<b class="nc"><i>244</i>&nbsp;                                            }</b>
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;                                        }
+<b class="nc"><i>247</i>&nbsp;                                    } catch (IOException var208) {</b>
+<i>248</i>&nbsp;                                        if(proxyLog.isLoggable(Log.BRIEF)) {
+<b class="nc"><i>249</i>&nbsp;                                            proxyLog.log(Log.BRIEF, &quot;factory failed: &quot;, var208);</b>
+<i>250</i>&nbsp;                                        }
+<i>251</i>&nbsp;
+<b class="nc"><i>252</i>&nbsp;                                        ++var216;</b>
+<b class="nc"><i>253</i>&nbsp;                                        continue;</b>
+<b class="nc"><i>254</i>&nbsp;                                    }</b>
+<b class="nc"><i>255</i>&nbsp;</b>
+<i>256</i>&nbsp;                                    proxyLog.log(Log.BRIEF, &quot;factory succeeded&quot;);
+<b class="nc"><i>257</i>&nbsp;</b>
+<b class="nc"><i>258</i>&nbsp;                                    try {</b>
+<b class="nc"><i>259</i>&nbsp;                                        var5 = var3.createSocket(var1, var2);</b>
+<i>260</i>&nbsp;                                    } catch (IOException var192) {
+<i>261</i>&nbsp;                                        ;
+<b class="nc"><i>262</i>&nbsp;                                    }</b>
+<b class="nc"><i>263</i>&nbsp;                                    break label2119;</b>
+<b class="nc"><i>264</i>&nbsp;                                }</b>
+<b class="nc"><i>265</i>&nbsp;                            }</b>
+<b class="nc"><i>266</i>&nbsp;                            break label2119;</b>
+<b class="nc"><i>267</i>&nbsp;                        }</b>
+<b class="nc"><i>268</i>&nbsp;</b>
+<b class="nc"><i>269</i>&nbsp;                        if(var7 != null) {</b>
+<i>270</i>&nbsp;                            if(proxyLog.isLoggable(Log.BRIEF)) {
+<b class="nc"><i>271</i>&nbsp;                                proxyLog.log(Log.BRIEF, &quot;direct socket connection failed: &quot;, (Throwable)var7);</b>
+<i>272</i>&nbsp;                            }
+<b class="nc"><i>273</i>&nbsp;</b>
+<i>274</i>&nbsp;                            var216 = 0;
+<b class="nc"><i>275</i>&nbsp;</b>
+<i>276</i>&nbsp;                            while(var216 &lt; this.altFactoryList.size()) {
+<b class="nc"><i>277</i>&nbsp;                                var3 = (RMISocketFactory)this.altFactoryList.elementAt(var216);</b>
+<b class="nc"><i>278</i>&nbsp;                                if(proxyLog.isLoggable(Log.BRIEF)) {</b>
+<i>279</i>&nbsp;                                    proxyLog.log(Log.BRIEF, &quot;trying with factory: &quot; + var3);
+<b class="nc"><i>280</i>&nbsp;                                }</b>
+<b class="nc"><i>281</i>&nbsp;</b>
+<i>282</i>&nbsp;                                try {
+<i>283</i>&nbsp;                                    var217 = var3.createSocket(var1, var2);
+<i>284</i>&nbsp;                                    var220 = null;
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;                                    try {
+<i>287</i>&nbsp;                                        var11 = var217.getInputStream();
+<i>288</i>&nbsp;                                        var221 = var11.read();
+<i>289</i>&nbsp;                                    } catch (Throwable var195) {
+<b class="nc"><i>290</i>&nbsp;                                        var220 = var195;</b>
+<b class="nc"><i>291</i>&nbsp;                                        throw var195;</b>
+<b class="nc"><i>292</i>&nbsp;                                    } finally {</b>
+<b class="nc"><i>293</i>&nbsp;                                        if(var217 != null) {</b>
+<i>294</i>&nbsp;                                            if(var220 != null) {
+<b class="nc"><i>295</i>&nbsp;                                                try {</b>
+<b class="nc"><i>296</i>&nbsp;                                                    var217.close();</b>
+<b class="nc"><i>297</i>&nbsp;                                                } catch (Throwable var196) {</b>
+<i>298</i>&nbsp;                                                    var220.addSuppressed(var196);
+<i>299</i>&nbsp;                                                }
+<i>300</i>&nbsp;                                            } else {
+<i>301</i>&nbsp;                                                var217.close();
+<i>302</i>&nbsp;                                            }
+<i>303</i>&nbsp;                                        }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;                                    }
+<i>306</i>&nbsp;                                } catch (IOException var206) {
+<b class="nc"><i>307</i>&nbsp;                                    if(proxyLog.isLoggable(Log.BRIEF)) {</b>
+<b class="nc"><i>308</i>&nbsp;                                        proxyLog.log(Log.BRIEF, &quot;factory failed: &quot;, var206);</b>
+<b class="nc"><i>309</i>&nbsp;                                    }</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;                                    ++var216;
+<i>312</i>&nbsp;                                    continue;
+<i>313</i>&nbsp;                                }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;                                proxyLog.log(Log.BRIEF, &quot;factory succeeded&quot;);
+<b class="nc"><i>316</i>&nbsp;</b>
+<b class="nc"><i>317</i>&nbsp;                                try {</b>
+<b class="nc"><i>318</i>&nbsp;                                    var5 = var3.createSocket(var1, var2);</b>
+<b class="nc"><i>319</i>&nbsp;                                } catch (IOException var191) {</b>
+<i>320</i>&nbsp;                                    ;
+<b class="nc"><i>321</i>&nbsp;                                }</b>
+<i>322</i>&nbsp;                                break;
+<i>323</i>&nbsp;                            }
+<i>324</i>&nbsp;                        }
+<b class="nc"><i>325</i>&nbsp;                    }</b>
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;                    Hashtable var219 = this.successTable;
+<i>328</i>&nbsp;                    synchronized(this.successTable) {
+<i>329</i>&nbsp;                        label2027: {
+<i>330</i>&nbsp;                            Socket var10000;
+<i>331</i>&nbsp;                            try {
+<i>332</i>&nbsp;                                synchronized(var6) {
+<b class="nc"><i>333</i>&nbsp;                                    var4 = this.checkConnector(var6);</b>
+<i>334</i>&nbsp;                                }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;                                if(var4 == null) {
+<i>337</i>&nbsp;                                    var6.notUsed();
+<i>338</i>&nbsp;                                    break label2027;
+<i>339</i>&nbsp;                                }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;                                if(var5 != null) {
+<b class="nc"><i>342</i>&nbsp;                                    var5.close();</b>
+<i>343</i>&nbsp;                                }
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;                                var10000 = var4;
+<i>346</i>&nbsp;                            } catch (NoRouteToHostException | UnknownHostException var202) {
+<i>347</i>&nbsp;                                var7 = var202;
+<i>348</i>&nbsp;                                break label2027;
+<i>349</i>&nbsp;                            } catch (SocketException var203) {
+<i>350</i>&nbsp;                                if(!eagerHttpFallback) {
+<i>351</i>&nbsp;                                    throw var203;
+<i>352</i>&nbsp;                                }
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;                                var7 = var203;
+<i>355</i>&nbsp;                                break label2027;
+<i>356</i>&nbsp;                            }
+<b class="nc"><i>357</i>&nbsp;</b>
+<i>358</i>&nbsp;                            return var10000;
+<i>359</i>&nbsp;                        }
+<b class="nc"><i>360</i>&nbsp;</b>
+<i>361</i>&nbsp;                        if(var5 != null) {
+<i>362</i>&nbsp;                            this.rememberFactory(var1, var3);
+<b class="nc"><i>363</i>&nbsp;                            return var5;</b>
+<i>364</i>&nbsp;                        }
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;                        throw var7;
+<i>367</i>&nbsp;                    }
+<i>368</i>&nbsp;                }
+<i>369</i>&nbsp;
+<b class="nc"><i>370</i>&nbsp;                if(var7 != null) {</b>
+<b class="nc"><i>371</i>&nbsp;                    if(proxyLog.isLoggable(Log.BRIEF)) {</b>
+<b class="nc"><i>372</i>&nbsp;                        proxyLog.log(Log.BRIEF, &quot;direct socket connection failed: &quot;, (Throwable)var7);</b>
+<b class="nc"><i>373</i>&nbsp;                    }</b>
+<b class="nc"><i>374</i>&nbsp;</b>
+<b class="nc"><i>375</i>&nbsp;                    int var218 = 0;</b>
+<b class="nc"><i>376</i>&nbsp;</b>
+<b class="nc"><i>377</i>&nbsp;                    while(var218 &lt; this.altFactoryList.size()) {</b>
+<i>378</i>&nbsp;                        var3 = (RMISocketFactory)this.altFactoryList.elementAt(var218);
+<i>379</i>&nbsp;                        if(proxyLog.isLoggable(Log.BRIEF)) {
+<i>380</i>&nbsp;                            proxyLog.log(Log.BRIEF, &quot;trying with factory: &quot; + var3);
+<i>381</i>&nbsp;                        }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;                        try {
+<i>384</i>&nbsp;                            Socket var222 = var3.createSocket(var1, var2);
+<i>385</i>&nbsp;                            Throwable var223 = null;
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;                            try {
+<i>388</i>&nbsp;                                InputStream var224 = var222.getInputStream();
+<i>389</i>&nbsp;                                int var13 = var224.read();
+<i>390</i>&nbsp;                            } catch (Throwable var199) {
+<i>391</i>&nbsp;                                var223 = var199;
+<i>392</i>&nbsp;                                throw var199;
+<i>393</i>&nbsp;                            } finally {
+<i>394</i>&nbsp;                                if(var222 != null) {
+<i>395</i>&nbsp;                                    if(var223 != null) {
+<i>396</i>&nbsp;                                        try {
+<b class="nc"><i>397</i>&nbsp;                                            var222.close();</b>
+<b class="nc"><i>398</i>&nbsp;                                        } catch (Throwable var198) {</b>
+<b class="nc"><i>399</i>&nbsp;                                            var223.addSuppressed(var198);</b>
+<b class="nc"><i>400</i>&nbsp;                                        }</b>
+<b class="nc"><i>401</i>&nbsp;                                    } else {</b>
+<b class="nc"><i>402</i>&nbsp;                                        var222.close();</b>
+<b class="nc"><i>403</i>&nbsp;                                    }</b>
+<b class="nc"><i>404</i>&nbsp;                                }</b>
+<i>405</i>&nbsp;
+<b class="nc"><i>406</i>&nbsp;                            }</b>
+<b class="nc"><i>407</i>&nbsp;                        } catch (IOException var210) {</b>
+<b class="nc"><i>408</i>&nbsp;                            if(proxyLog.isLoggable(Log.BRIEF)) {</b>
+<b class="nc"><i>409</i>&nbsp;                                proxyLog.log(Log.BRIEF, &quot;factory failed: &quot;, var210);</b>
+<b class="nc"><i>410</i>&nbsp;                            }</b>
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;                            ++var218;
+<i>413</i>&nbsp;                            continue;
+<i>414</i>&nbsp;                        }
+<b class="nc"><i>415</i>&nbsp;</b>
+<b class="nc"><i>416</i>&nbsp;                        proxyLog.log(Log.BRIEF, &quot;factory succeeded&quot;);</b>
+<b class="nc"><i>417</i>&nbsp;</b>
+<b class="nc"><i>418</i>&nbsp;                        try {</b>
+<b class="nc"><i>419</i>&nbsp;                            var3.createSocket(var1, var2);</b>
+<b class="nc"><i>420</i>&nbsp;                        } catch (IOException var197) {</b>
+<i>421</i>&nbsp;                            ;
+<i>422</i>&nbsp;                        }
+<i>423</i>&nbsp;                        break;
+<i>424</i>&nbsp;                    }
+<i>425</i>&nbsp;                }
+<i>426</i>&nbsp;
+<b class="nc"><i>427</i>&nbsp;                return var8;</b>
+<i>428</i>&nbsp;            }
+<i>429</i>&nbsp;        }
+<i>430</i>&nbsp;    }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    void rememberFactory(String var1, RMISocketFactory var2) {
+<i>433</i>&nbsp;        Hashtable var3 = this.successTable;
+<i>434</i>&nbsp;        synchronized(this.successTable) {
+<i>435</i>&nbsp;            while(this.hostList.size() &gt;= 64) {
+<b class="nc"><i>436</i>&nbsp;                this.successTable.remove(this.hostList.elementAt(0));</b>
+<i>437</i>&nbsp;                this.hostList.removeElementAt(0);
+<i>438</i>&nbsp;            }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;            this.hostList.addElement(var1);
+<i>441</i>&nbsp;            this.successTable.put(var1, var2);
+<i>442</i>&nbsp;        }
+<b class="nc"><i>443</i>&nbsp;    }</b>
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;    Socket checkConnector(RMIMasterSocketFactory.AsyncConnector var1) throws IOException {
+<i>446</i>&nbsp;        Exception var2 = var1.getException();
+<i>447</i>&nbsp;        if(var2 != null) {
+<i>448</i>&nbsp;            var2.fillInStackTrace();
+<i>449</i>&nbsp;            if(var2 instanceof IOException) {
+<i>450</i>&nbsp;                throw (IOException)var2;
+<b class="nc"><i>451</i>&nbsp;            } else if(var2 instanceof RuntimeException) {</b>
+<i>452</i>&nbsp;                throw (RuntimeException)var2;
+<b class="nc"><i>453</i>&nbsp;            } else {</b>
+<b class="nc"><i>454</i>&nbsp;                throw new Error(&quot;internal error: unexpected checked exception: &quot; + var2.toString());</b>
+<b class="nc"><i>455</i>&nbsp;            }</b>
+<i>456</i>&nbsp;        } else {
+<b class="nc"><i>457</i>&nbsp;            return var1.getSocket();</b>
+<i>458</i>&nbsp;        }
+<i>459</i>&nbsp;    }
+<i>460</i>&nbsp;
+<i>461</i>&nbsp;    public ServerSocket createServerSocket(int var1) throws IOException {
+<i>462</i>&nbsp;        return this.initialFactory.createServerSocket(var1);
+<i>463</i>&nbsp;    }
+<i>464</i>&nbsp;
+<i>465</i>&nbsp;    static {
+<i>466</i>&nbsp;        proxyLog = Log.getLog(&quot;sun.rmi.transport.tcp.proxy&quot;, &quot;transport&quot;, logLevel);
+<i>467</i>&nbsp;        connectTimeout = getConnectTimeout();
+<i>468</i>&nbsp;        eagerHttpFallback = ((Boolean)AccessController.doPrivileged(new GetBooleanAction(&quot;sun.rmi.transport.proxy.eagerHttpFallback&quot;))).booleanValue();
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    private class AsyncConnector implements Runnable {
+<i>472</i>&nbsp;        private RMISocketFactory factory;
+<i>473</i>&nbsp;        private String host;
+<i>474</i>&nbsp;        private int port;
+<i>475</i>&nbsp;        private AccessControlContext acc;
+<i>476</i>&nbsp;        private Exception exception = null;
+<i>477</i>&nbsp;        private Socket socket = null;
+<i>478</i>&nbsp;        private boolean cleanUp = false;
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;        AsyncConnector(RMISocketFactory var2, String var3, int var4, AccessControlContext var5) {
+<i>481</i>&nbsp;            this.factory = var2;
+<i>482</i>&nbsp;            this.host = var3;
+<i>483</i>&nbsp;            this.port = var4;
+<i>484</i>&nbsp;            this.acc = var5;
+<i>485</i>&nbsp;            SecurityManager var6 = System.getSecurityManager();
+<i>486</i>&nbsp;            if(var6 != null) {
+<i>487</i>&nbsp;                var6.checkConnect(var3, var4);
+<i>488</i>&nbsp;            }
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;        }
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;        public void run() {
+<i>493</i>&nbsp;            try {
+<i>494</i>&nbsp;                try {
+<i>495</i>&nbsp;                    Socket var19 = this.factory.createSocket(this.host, this.port);
+<i>496</i>&nbsp;                    synchronized(this) {
+<i>497</i>&nbsp;                        this.socket = var19;
+<i>498</i>&nbsp;                        this.notify();
+<i>499</i>&nbsp;                    }
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;                    RMIMasterSocketFactory.this.rememberFactory(this.host, this.factory);
+<i>502</i>&nbsp;                    synchronized(this) {
+<i>503</i>&nbsp;                        if(this.cleanUp) {
+<i>504</i>&nbsp;                            try {
+<i>505</i>&nbsp;                                this.socket.close();
+<i>506</i>&nbsp;                            } catch (IOException var14) {
+<i>507</i>&nbsp;                                ;
+<i>508</i>&nbsp;                            }
+<i>509</i>&nbsp;                        }
+<i>510</i>&nbsp;                    }
+<i>511</i>&nbsp;                } catch (Exception var17) {
+<i>512</i>&nbsp;                    Exception var1 = var17;
+<i>513</i>&nbsp;                    synchronized(this) {
+<i>514</i>&nbsp;                        this.exception = var1;
+<i>515</i>&nbsp;                        this.notify();
+<i>516</i>&nbsp;                    }
+<i>517</i>&nbsp;                }
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;            } finally {
+<i>520</i>&nbsp;                ;
+<i>521</i>&nbsp;            }
+<i>522</i>&nbsp;        }
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;        private synchronized Exception getException() {
+<i>525</i>&nbsp;            return this.exception;
+<i>526</i>&nbsp;        }
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;        private synchronized Socket getSocket() {
+<i>529</i>&nbsp;            return this.socket;
+<i>530</i>&nbsp;        }
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;        synchronized void notUsed() {
+<i>533</i>&nbsp;            if(this.socket != null) {
+<i>534</i>&nbsp;                try {
+<i>535</i>&nbsp;                    this.socket.close();
+<i>536</i>&nbsp;                } catch (IOException var2) {
+<i>537</i>&nbsp;                    ;
+<i>538</i>&nbsp;                }
+<i>539</i>&nbsp;            }
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;            this.cleanUp = true;
+<i>542</i>&nbsp;        }
+<i>543</i>&nbsp;    }
+<i>544</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

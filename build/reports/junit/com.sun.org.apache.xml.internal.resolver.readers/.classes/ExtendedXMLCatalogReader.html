@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ExtendedXMLCatalogReader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xml.internal.resolver.readers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ExtendedXMLCatalogReader (com.sun.org.apache.xml.internal.resolver.readers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ExtendedXMLCatalogReader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 65)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xml.internal.resolver.readers;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.Catalog;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.CatalogEntry;
+<i>10</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.CatalogException;
+<i>11</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.Resolver;
+<i>12</i>&nbsp;import com.sun.org.apache.xml.internal.resolver.readers.OASISXMLCatalogReader;
+<i>13</i>&nbsp;import java.util.Vector;
+<i>14</i>&nbsp;import org.xml.sax.Attributes;
+<i>15</i>&nbsp;import org.xml.sax.SAXException;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;public class ExtendedXMLCatalogReader extends OASISXMLCatalogReader {
+<i>18</i>&nbsp;    public static final String extendedNamespaceName = &quot;http://nwalsh.com/xcatalog/1.0&quot;;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    public ExtendedXMLCatalogReader() {
+<i>21</i>&nbsp;    }
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+<i>24</i>&nbsp;        boolean inExtension = this.inExtensionNamespace();
+<i>25</i>&nbsp;        super.startElement(namespaceURI, localName, qName, atts);
+<i>26</i>&nbsp;        int entryType = -1;
+<i>27</i>&nbsp;        Vector entryArgs = new Vector();
+<i>28</i>&nbsp;        if(namespaceURI != null &amp;&amp; &quot;http://nwalsh.com/xcatalog/1.0&quot;.equals(namespaceURI) &amp;&amp; !inExtension) {
+<i>29</i>&nbsp;            if(atts.getValue(&quot;xml:base&quot;) != null) {
+<i>30</i>&nbsp;                String cex = atts.getValue(&quot;xml:base&quot;);
+<i>31</i>&nbsp;                entryType = Catalog.BASE;
+<i>32</i>&nbsp;                entryArgs.add(cex);
+<i>33</i>&nbsp;                this.baseURIStack.push(cex);
+<i>34</i>&nbsp;                this.debug.message(4, &quot;xml:base&quot;, cex);
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;                try {
+<i>37</i>&nbsp;                    CatalogEntry cex1 = new CatalogEntry(entryType, entryArgs);
+<i>38</i>&nbsp;                    this.catalog.addEntry(cex1);
+<i>39</i>&nbsp;                } catch (CatalogException var11) {
+<i>40</i>&nbsp;                    if(var11.getExceptionType() == 3) {
+<i>41</i>&nbsp;                        this.debug.message(1, &quot;Invalid catalog entry type&quot;, localName);
+<b class="nc"><i>42</i>&nbsp;                    } else if(var11.getExceptionType() == 2) {</b>
+<i>43</i>&nbsp;                        this.debug.message(1, &quot;Invalid catalog entry (base)&quot;, localName);
+<i>44</i>&nbsp;                    }
+<i>45</i>&nbsp;                }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;                entryType = -1;
+<i>48</i>&nbsp;                entryArgs = new Vector();
+<i>49</i>&nbsp;            } else {
+<i>50</i>&nbsp;                this.baseURIStack.push(this.baseURIStack.peek());
+<i>51</i>&nbsp;            }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;            if(localName.equals(&quot;uriSuffix&quot;)) {
+<i>54</i>&nbsp;                if(this.checkAttributes(atts, &quot;suffix&quot;, &quot;uri&quot;)) {
+<i>55</i>&nbsp;                    entryType = Resolver.URISUFFIX;
+<i>56</i>&nbsp;                    entryArgs.add(atts.getValue(&quot;suffix&quot;));
+<i>57</i>&nbsp;                    entryArgs.add(atts.getValue(&quot;uri&quot;));
+<i>58</i>&nbsp;                    this.debug.message(4, &quot;uriSuffix&quot;, atts.getValue(&quot;suffix&quot;), atts.getValue(&quot;uri&quot;));
+<i>59</i>&nbsp;                }
+<i>60</i>&nbsp;            } else if(localName.equals(&quot;systemSuffix&quot;)) {
+<i>61</i>&nbsp;                if(this.checkAttributes(atts, &quot;suffix&quot;, &quot;uri&quot;)) {
+<i>62</i>&nbsp;                    entryType = Resolver.SYSTEMSUFFIX;
+<i>63</i>&nbsp;                    entryArgs.add(atts.getValue(&quot;suffix&quot;));
+<i>64</i>&nbsp;                    entryArgs.add(atts.getValue(&quot;uri&quot;));
+<i>65</i>&nbsp;                    this.debug.message(4, &quot;systemSuffix&quot;, atts.getValue(&quot;suffix&quot;), atts.getValue(&quot;uri&quot;));
+<i>66</i>&nbsp;                }
+<b class="nc"><i>67</i>&nbsp;            } else {</b>
+<i>68</i>&nbsp;                this.debug.message(1, &quot;Invalid catalog entry type&quot;, localName);
+<b class="nc"><i>69</i>&nbsp;            }</b>
+<i>70</i>&nbsp;
+<b class="nc"><i>71</i>&nbsp;            if(entryType &gt;= 0) {</b>
+<b class="nc"><i>72</i>&nbsp;                try {</b>
+<i>73</i>&nbsp;                    CatalogEntry cex2 = new CatalogEntry(entryType, entryArgs);
+<b class="nc"><i>74</i>&nbsp;                    this.catalog.addEntry(cex2);</b>
+<i>75</i>&nbsp;                } catch (CatalogException var10) {
+<i>76</i>&nbsp;                    if(var10.getExceptionType() == 3) {
+<i>77</i>&nbsp;                        this.debug.message(1, &quot;Invalid catalog entry type&quot;, localName);
+<b class="nc"><i>78</i>&nbsp;                    } else if(var10.getExceptionType() == 2) {</b>
+<b class="nc"><i>79</i>&nbsp;                        this.debug.message(1, &quot;Invalid catalog entry&quot;, localName);</b>
+<b class="nc"><i>80</i>&nbsp;                    }</b>
+<b class="nc"><i>81</i>&nbsp;                }</b>
+<b class="nc"><i>82</i>&nbsp;            }</b>
+<i>83</i>&nbsp;        }
+<b class="nc"><i>84</i>&nbsp;</b>
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<b class="nc"><i>87</i>&nbsp;    public void endElement(String namespaceURI, String localName, String qName) throws SAXException {</b>
+<b class="nc"><i>88</i>&nbsp;        super.endElement(namespaceURI, localName, qName);</b>
+<b class="nc"><i>89</i>&nbsp;        boolean inExtension = this.inExtensionNamespace();</b>
+<b class="nc"><i>90</i>&nbsp;        boolean entryType = true;</b>
+<b class="nc"><i>91</i>&nbsp;        Vector entryArgs = new Vector();</b>
+<b class="nc"><i>92</i>&nbsp;        if(namespaceURI != null &amp;&amp; &quot;http://nwalsh.com/xcatalog/1.0&quot;.equals(namespaceURI) &amp;&amp; !inExtension) {</b>
+<b class="nc"><i>93</i>&nbsp;            String popURI = (String)this.baseURIStack.pop();</b>
+<i>94</i>&nbsp;            String baseURI = (String)this.baseURIStack.peek();
+<b class="nc"><i>95</i>&nbsp;            if(!baseURI.equals(popURI)) {</b>
+<i>96</i>&nbsp;                Catalog var10000 = this.catalog;
+<b class="nc"><i>97</i>&nbsp;                int entryType1 = Catalog.BASE;</b>
+<b class="nc"><i>98</i>&nbsp;                entryArgs.add(baseURI);</b>
+<b class="nc"><i>99</i>&nbsp;                this.debug.message(4, &quot;(reset) xml:base&quot;, baseURI);</b>
+<b class="nc"><i>100</i>&nbsp;</b>
+<i>101</i>&nbsp;                try {
+<i>102</i>&nbsp;                    CatalogEntry cex = new CatalogEntry(entryType1, entryArgs);
+<b class="nc"><i>103</i>&nbsp;                    this.catalog.addEntry(cex);</b>
+<b class="nc"><i>104</i>&nbsp;                } catch (CatalogException var10) {</b>
+<b class="nc"><i>105</i>&nbsp;                    if(var10.getExceptionType() == 3) {</b>
+<b class="nc"><i>106</i>&nbsp;                        this.debug.message(1, &quot;Invalid catalog entry type&quot;, localName);</b>
+<b class="nc"><i>107</i>&nbsp;                    } else if(var10.getExceptionType() == 2) {</b>
+<i>108</i>&nbsp;                        this.debug.message(1, &quot;Invalid catalog entry (rbase)&quot;, localName);
+<b class="nc"><i>109</i>&nbsp;                    }</b>
+<i>110</i>&nbsp;                }
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;        }
+<b class="nc"><i>113</i>&nbsp;</b>
+<b class="nc"><i>114</i>&nbsp;    }</b>
+<b class="nc"><i>115</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

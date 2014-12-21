@@ -1,0 +1,232 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: URLImageSource</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.awt.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: URLImageSource (sun.awt.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">URLImageSource</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 74)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.awt.image;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.FilePermission;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.InputStream;
+<i>11</i>&nbsp;import java.net.HttpURLConnection;
+<i>12</i>&nbsp;import java.net.MalformedURLException;
+<i>13</i>&nbsp;import java.net.SocketPermission;
+<i>14</i>&nbsp;import java.net.URL;
+<i>15</i>&nbsp;import java.net.URLConnection;
+<i>16</i>&nbsp;import java.security.Permission;
+<i>17</i>&nbsp;import sun.awt.image.ImageDecoder;
+<i>18</i>&nbsp;import sun.awt.image.InputStreamImageSource;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class URLImageSource extends InputStreamImageSource {
+<i>21</i>&nbsp;    URL url;
+<i>22</i>&nbsp;    URLConnection conn;
+<b class="nc"><i>23</i>&nbsp;    String actualHost;</b>
+<i>24</i>&nbsp;    int actualPort;
+<b class="nc"><i>25</i>&nbsp;</b>
+<b class="nc"><i>26</i>&nbsp;    public URLImageSource(URL var1) {</b>
+<b class="nc"><i>27</i>&nbsp;        SecurityManager var2 = System.getSecurityManager();</b>
+<i>28</i>&nbsp;        if(var2 != null) {
+<b class="nc"><i>29</i>&nbsp;            try {</b>
+<i>30</i>&nbsp;                Permission var3 = var1.openConnection().getPermission();
+<b class="nc"><i>31</i>&nbsp;                if(var3 != null) {</b>
+<i>32</i>&nbsp;                    try {
+<b class="nc"><i>33</i>&nbsp;                        var2.checkPermission(var3);</b>
+<b class="nc"><i>34</i>&nbsp;                    } catch (SecurityException var5) {</b>
+<i>35</i>&nbsp;                        if(var3 instanceof FilePermission &amp;&amp; var3.getActions().indexOf(&quot;read&quot;) != -1) {
+<i>36</i>&nbsp;                            var2.checkRead(var3.getName());
+<b class="nc"><i>37</i>&nbsp;                        } else {</b>
+<i>38</i>&nbsp;                            if(!(var3 instanceof SocketPermission) || var3.getActions().indexOf(&quot;connect&quot;) == -1) {
+<b class="nc"><i>39</i>&nbsp;                                throw var5;</b>
+<b class="nc"><i>40</i>&nbsp;                            }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;                            var2.checkConnect(var1.getHost(), var1.getPort());
+<b class="nc"><i>43</i>&nbsp;                        }</b>
+<i>44</i>&nbsp;                    }
+<b class="nc"><i>45</i>&nbsp;                }</b>
+<i>46</i>&nbsp;            } catch (IOException var6) {
+<b class="nc"><i>47</i>&nbsp;                var2.checkConnect(var1.getHost(), var1.getPort());</b>
+<i>48</i>&nbsp;            }
+<b class="nc"><i>49</i>&nbsp;        }</b>
+<b class="nc"><i>50</i>&nbsp;</b>
+<b class="nc"><i>51</i>&nbsp;        this.url = var1;</b>
+<i>52</i>&nbsp;    }
+<b class="nc"><i>53</i>&nbsp;</b>
+<i>54</i>&nbsp;    public URLImageSource(String var1) throws MalformedURLException {
+<i>55</i>&nbsp;        this((URL)(new URL((URL)null, var1)));
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;    public URLImageSource(URL var1, URLConnection var2) {</b>
+<i>59</i>&nbsp;        this((URL)var1);
+<i>60</i>&nbsp;        this.conn = var2;
+<i>61</i>&nbsp;    }
+<b class="nc"><i>62</i>&nbsp;</b>
+<b class="nc"><i>63</i>&nbsp;    public URLImageSource(URLConnection var1) {</b>
+<i>64</i>&nbsp;        this(var1.getURL(), var1);
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<b class="nc"><i>67</i>&nbsp;    final boolean checkSecurity(Object var1, boolean var2) {</b>
+<i>68</i>&nbsp;        if(this.actualHost != null) {
+<i>69</i>&nbsp;            try {
+<i>70</i>&nbsp;                SecurityManager var3 = System.getSecurityManager();
+<i>71</i>&nbsp;                if(var3 != null) {
+<i>72</i>&nbsp;                    var3.checkConnect(this.actualHost, this.actualPort, var1);
+<i>73</i>&nbsp;                }
+<i>74</i>&nbsp;            } catch (SecurityException var4) {
+<i>75</i>&nbsp;                if(!var2) {
+<i>76</i>&nbsp;                    throw var4;
+<b class="nc"><i>77</i>&nbsp;                }</b>
+<i>78</i>&nbsp;
+<b class="nc"><i>79</i>&nbsp;                return false;</b>
+<b class="nc"><i>80</i>&nbsp;            }</b>
+<b class="nc"><i>81</i>&nbsp;        }</b>
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;        return true;</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<i>86</i>&nbsp;    private synchronized URLConnection getConnection() throws IOException {
+<b class="nc"><i>87</i>&nbsp;        URLConnection var1;</b>
+<b class="nc"><i>88</i>&nbsp;        if(this.conn != null) {</b>
+<i>89</i>&nbsp;            var1 = this.conn;
+<b class="nc"><i>90</i>&nbsp;            this.conn = null;</b>
+<i>91</i>&nbsp;        } else {
+<i>92</i>&nbsp;            var1 = this.url.openConnection();
+<i>93</i>&nbsp;        }
+<i>94</i>&nbsp;
+<b class="nc"><i>95</i>&nbsp;        return var1;</b>
+<b class="nc"><i>96</i>&nbsp;    }</b>
+<b class="nc"><i>97</i>&nbsp;</b>
+<i>98</i>&nbsp;    protected ImageDecoder getDecoder() {
+<b class="nc"><i>99</i>&nbsp;        InputStream var1 = null;</b>
+<b class="nc"><i>100</i>&nbsp;        String var2 = null;</b>
+<b class="nc"><i>101</i>&nbsp;        URLConnection var3 = null;</b>
+<b class="nc"><i>102</i>&nbsp;</b>
+<i>103</i>&nbsp;        try {
+<i>104</i>&nbsp;            var3 = this.getConnection();
+<b class="nc"><i>105</i>&nbsp;            var1 = var3.getInputStream();</b>
+<i>106</i>&nbsp;            var2 = var3.getContentType();
+<i>107</i>&nbsp;            URL var4 = var3.getURL();
+<i>108</i>&nbsp;            if(var4 != this.url &amp;&amp; (!var4.getHost().equals(this.url.getHost()) || var4.getPort() != this.url.getPort())) {
+<b class="nc"><i>109</i>&nbsp;                if(this.actualHost != null &amp;&amp; (!this.actualHost.equals(var4.getHost()) || this.actualPort != var4.getPort())) {</b>
+<b class="nc"><i>110</i>&nbsp;                    throw new SecurityException(&quot;image moved!&quot;);</b>
+<b class="nc"><i>111</i>&nbsp;                }</b>
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;                this.actualHost = var4.getHost();</b>
+<b class="nc"><i>114</i>&nbsp;                this.actualPort = var4.getPort();</b>
+<b class="nc"><i>115</i>&nbsp;            }</b>
+<b class="nc"><i>116</i>&nbsp;        } catch (IOException var8) {</b>
+<b class="nc"><i>117</i>&nbsp;            if(var1 != null) {</b>
+<i>118</i>&nbsp;                try {
+<i>119</i>&nbsp;                    var1.close();
+<i>120</i>&nbsp;                } catch (IOException var6) {
+<i>121</i>&nbsp;                    ;
+<i>122</i>&nbsp;                }
+<i>123</i>&nbsp;            } else if(var3 instanceof HttpURLConnection) {
+<b class="nc"><i>124</i>&nbsp;                ((HttpURLConnection)var3).disconnect();</b>
+<i>125</i>&nbsp;            }
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;            return null;</b>
+<i>128</i>&nbsp;        }
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;        ImageDecoder var9 = this.decoderForType(var1, var2);</b>
+<i>131</i>&nbsp;        if(var9 == null) {
+<b class="nc"><i>132</i>&nbsp;            var9 = this.getDecoder(var1);</b>
+<b class="nc"><i>133</i>&nbsp;        }</b>
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;        if(var9 == null) {</b>
+<b class="nc"><i>136</i>&nbsp;            if(var1 != null) {</b>
+<b class="nc"><i>137</i>&nbsp;                try {</b>
+<b class="nc"><i>138</i>&nbsp;                    var1.close();</b>
+<b class="nc"><i>139</i>&nbsp;                } catch (IOException var7) {</b>
+<i>140</i>&nbsp;                    ;
+<b class="nc"><i>141</i>&nbsp;                }</b>
+<b class="nc"><i>142</i>&nbsp;            } else if(var3 instanceof HttpURLConnection) {</b>
+<i>143</i>&nbsp;                ((HttpURLConnection)var3).disconnect();
+<b class="nc"><i>144</i>&nbsp;            }</b>
+<b class="nc"><i>145</i>&nbsp;        }</b>
+<b class="nc"><i>146</i>&nbsp;</b>
+<i>147</i>&nbsp;        return var9;
+<i>148</i>&nbsp;    }
+<b class="nc"><i>149</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,366 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XIncludeTextReader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.xinclude</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XIncludeTextReader (com.sun.org.apache.xerces.internal.xinclude)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XIncludeTextReader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 159)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.xinclude;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.XMLEntityManager;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.XMLErrorReporter;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.io.ASCIIReader;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.io.UTF8Reader;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.util.EncodingMap;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
+<i>14</i>&nbsp;import com.sun.org.apache.xerces.internal.util.MessageFormatter;
+<i>15</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLChar;
+<i>16</i>&nbsp;import com.sun.org.apache.xerces.internal.xinclude.XIncludeHandler;
+<i>17</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.Augmentations;
+<i>18</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLString;
+<i>19</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLInputSource;
+<i>20</i>&nbsp;import java.io.BufferedInputStream;
+<i>21</i>&nbsp;import java.io.IOException;
+<i>22</i>&nbsp;import java.io.InputStream;
+<i>23</i>&nbsp;import java.io.InputStreamReader;
+<i>24</i>&nbsp;import java.io.Reader;
+<i>25</i>&nbsp;import java.net.HttpURLConnection;
+<i>26</i>&nbsp;import java.net.URL;
+<i>27</i>&nbsp;import java.net.URLConnection;
+<i>28</i>&nbsp;import java.util.Iterator;
+<i>29</i>&nbsp;import java.util.Locale;
+<i>30</i>&nbsp;import java.util.Map.Entry;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public class XIncludeTextReader {
+<i>33</i>&nbsp;    private Reader fReader;
+<i>34</i>&nbsp;    private XIncludeHandler fHandler;
+<i>35</i>&nbsp;    private XMLInputSource fSource;
+<i>36</i>&nbsp;    private XMLErrorReporter fErrorReporter;
+<i>37</i>&nbsp;    private XMLString fTempString = new XMLString();
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public XIncludeTextReader(XMLInputSource source, XIncludeHandler handler, int bufferSize) throws IOException {
+<i>40</i>&nbsp;        this.fHandler = handler;
+<i>41</i>&nbsp;        this.fSource = source;
+<i>42</i>&nbsp;        this.fTempString = new XMLString(new char[bufferSize + 1], 0, 0);
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public void setErrorReporter(XMLErrorReporter errorReporter) {
+<i>46</i>&nbsp;        this.fErrorReporter = errorReporter;
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    protected Reader getReader(XMLInputSource source) throws IOException {
+<i>50</i>&nbsp;        if(source.getCharacterStream() != null) {
+<i>51</i>&nbsp;            return source.getCharacterStream();
+<i>52</i>&nbsp;        } else {
+<i>53</i>&nbsp;            Object stream = null;
+<i>54</i>&nbsp;            String encoding = source.getEncoding();
+<i>55</i>&nbsp;            if(encoding == null) {
+<i>56</i>&nbsp;                encoding = &quot;UTF-8&quot;;
+<i>57</i>&nbsp;            }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;            String javaEncoding;
+<i>60</i>&nbsp;            if(source.getByteStream() != null) {
+<i>61</i>&nbsp;                stream = source.getByteStream();
+<i>62</i>&nbsp;                if(!(stream instanceof BufferedInputStream)) {
+<i>63</i>&nbsp;                    stream = new BufferedInputStream((InputStream)stream, this.fTempString.ch.length);
+<i>64</i>&nbsp;                }
+<i>65</i>&nbsp;            } else {
+<i>66</i>&nbsp;                javaEncoding = XMLEntityManager.expandSystemId(source.getSystemId(), source.getBaseSystemId(), false);
+<i>67</i>&nbsp;                URL aFormatter = new URL(javaEncoding);
+<i>68</i>&nbsp;                URLConnection aLocale = aFormatter.openConnection();
+<b class="nc"><i>69</i>&nbsp;                Iterator contentType;</b>
+<i>70</i>&nbsp;                if(aLocale instanceof HttpURLConnection &amp;&amp; source instanceof HTTPInputSource) {
+<i>71</i>&nbsp;                    HttpURLConnection rawContentType = (HttpURLConnection)aLocale;
+<i>72</i>&nbsp;                    HTTPInputSource index = (HTTPInputSource)source;
+<i>73</i>&nbsp;                    contentType = index.getHTTPRequestProperties();
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;                    while(contentType.hasNext()) {
+<i>76</i>&nbsp;                        Entry charset = (Entry)contentType.next();
+<i>77</i>&nbsp;                        rawContentType.setRequestProperty((String)charset.getKey(), (String)charset.getValue());
+<i>78</i>&nbsp;                    }
+<b class="nc"><i>79</i>&nbsp;</b>
+<b class="nc"><i>80</i>&nbsp;                    boolean charset1 = index.getFollowHTTPRedirects();</b>
+<b class="nc"><i>81</i>&nbsp;                    if(!charset1) {</b>
+<b class="nc"><i>82</i>&nbsp;                        XMLEntityManager.setInstanceFollowRedirects(rawContentType, charset1);</b>
+<i>83</i>&nbsp;                    }
+<i>84</i>&nbsp;                }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;                stream = new BufferedInputStream(aLocale.getInputStream());
+<i>87</i>&nbsp;                String rawContentType1 = aLocale.getContentType();
+<i>88</i>&nbsp;                int index1 = rawContentType1 != null?rawContentType1.indexOf(59):-1;
+<i>89</i>&nbsp;                contentType = null;
+<i>90</i>&nbsp;                String charset2 = null;
+<i>91</i>&nbsp;                String contentType1;
+<i>92</i>&nbsp;                if(index1 != -1) {
+<b class="nc"><i>93</i>&nbsp;                    contentType1 = rawContentType1.substring(0, index1).trim();</b>
+<i>94</i>&nbsp;                    charset2 = rawContentType1.substring(index1 + 1).trim();
+<i>95</i>&nbsp;                    if(charset2.startsWith(&quot;charset=&quot;)) {
+<i>96</i>&nbsp;                        charset2 = charset2.substring(8).trim();
+<i>97</i>&nbsp;                        if(charset2.charAt(0) == 34 &amp;&amp; charset2.charAt(charset2.length() - 1) == 34 || charset2.charAt(0) == 39 &amp;&amp; charset2.charAt(charset2.length() - 1) == 39) {
+<i>98</i>&nbsp;                            charset2 = charset2.substring(1, charset2.length() - 1);
+<i>99</i>&nbsp;                        }
+<i>100</i>&nbsp;                    } else {
+<i>101</i>&nbsp;                        charset2 = null;
+<b class="nc"><i>102</i>&nbsp;                    }</b>
+<b class="nc"><i>103</i>&nbsp;                } else {</b>
+<i>104</i>&nbsp;                    contentType1 = rawContentType1.trim();
+<i>105</i>&nbsp;                }
+<b class="nc"><i>106</i>&nbsp;</b>
+<i>107</i>&nbsp;                String detectedEncoding = null;
+<b class="nc"><i>108</i>&nbsp;                if(contentType1.equals(&quot;text/xml&quot;)) {</b>
+<b class="nc"><i>109</i>&nbsp;                    if(charset2 != null) {</b>
+<b class="nc"><i>110</i>&nbsp;                        detectedEncoding = charset2;</b>
+<i>111</i>&nbsp;                    } else {
+<b class="nc"><i>112</i>&nbsp;                        detectedEncoding = &quot;US-ASCII&quot;;</b>
+<b class="nc"><i>113</i>&nbsp;                    }</b>
+<i>114</i>&nbsp;                } else if(contentType1.equals(&quot;application/xml&quot;)) {
+<b class="nc"><i>115</i>&nbsp;                    if(charset2 != null) {</b>
+<b class="nc"><i>116</i>&nbsp;                        detectedEncoding = charset2;</b>
+<i>117</i>&nbsp;                    } else {
+<i>118</i>&nbsp;                        detectedEncoding = this.getEncodingName((InputStream)stream);
+<i>119</i>&nbsp;                    }
+<b class="nc"><i>120</i>&nbsp;                } else if(contentType1.endsWith(&quot;+xml&quot;)) {</b>
+<i>121</i>&nbsp;                    detectedEncoding = this.getEncodingName((InputStream)stream);
+<b class="nc"><i>122</i>&nbsp;                }</b>
+<b class="nc"><i>123</i>&nbsp;</b>
+<i>124</i>&nbsp;                if(detectedEncoding != null) {
+<i>125</i>&nbsp;                    encoding = detectedEncoding;
+<b class="nc"><i>126</i>&nbsp;                }</b>
+<b class="nc"><i>127</i>&nbsp;            }</b>
+<b class="nc"><i>128</i>&nbsp;</b>
+<i>129</i>&nbsp;            encoding = encoding.toUpperCase(Locale.ENGLISH);
+<i>130</i>&nbsp;            encoding = this.consumeBOM((InputStream)stream, encoding);
+<b class="nc"><i>131</i>&nbsp;            if(encoding.equals(&quot;UTF-8&quot;)) {</b>
+<b class="nc"><i>132</i>&nbsp;                return new UTF8Reader((InputStream)stream, this.fTempString.ch.length, this.fErrorReporter.getMessageFormatter(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;), this.fErrorReporter.getLocale());</b>
+<b class="nc"><i>133</i>&nbsp;            } else {</b>
+<b class="nc"><i>134</i>&nbsp;                javaEncoding = EncodingMap.getIANA2JavaMapping(encoding);</b>
+<b class="nc"><i>135</i>&nbsp;                if(javaEncoding == null) {</b>
+<i>136</i>&nbsp;                    MessageFormatter aFormatter1 = this.fErrorReporter.getMessageFormatter(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;);
+<i>137</i>&nbsp;                    Locale aLocale1 = this.fErrorReporter.getLocale();
+<b class="nc"><i>138</i>&nbsp;                    throw new IOException(aFormatter1.formatMessage(aLocale1, &quot;EncodingDeclInvalid&quot;, new Object[]{encoding}));</b>
+<b class="nc"><i>139</i>&nbsp;                } else {</b>
+<b class="nc"><i>140</i>&nbsp;                    return (Reader)(javaEncoding.equals(&quot;ASCII&quot;)?new ASCIIReader((InputStream)stream, this.fTempString.ch.length, this.fErrorReporter.getMessageFormatter(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;), this.fErrorReporter.getLocale()):new InputStreamReader((InputStream)stream, javaEncoding));</b>
+<i>141</i>&nbsp;                }
+<i>142</i>&nbsp;            }
+<i>143</i>&nbsp;        }
+<i>144</i>&nbsp;    }
+<b class="nc"><i>145</i>&nbsp;</b>
+<i>146</i>&nbsp;    protected String getEncodingName(InputStream stream) throws IOException {
+<i>147</i>&nbsp;        byte[] b4 = new byte[4];
+<b class="nc"><i>148</i>&nbsp;        String encoding = null;</b>
+<i>149</i>&nbsp;        stream.mark(4);
+<i>150</i>&nbsp;        int count = stream.read(b4, 0, 4);
+<b class="nc"><i>151</i>&nbsp;        stream.reset();</b>
+<i>152</i>&nbsp;        if(count == 4) {
+<b class="nc"><i>153</i>&nbsp;            encoding = this.getEncodingName((byte[])b4);</b>
+<b class="nc"><i>154</i>&nbsp;        }</b>
+<b class="nc"><i>155</i>&nbsp;</b>
+<i>156</i>&nbsp;        return encoding;
+<b class="nc"><i>157</i>&nbsp;    }</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    protected String consumeBOM(InputStream stream, String encoding) throws IOException {
+<i>160</i>&nbsp;        byte[] b = new byte[3];
+<b class="nc"><i>161</i>&nbsp;        boolean count = false;</b>
+<b class="nc"><i>162</i>&nbsp;        stream.mark(3);</b>
+<i>163</i>&nbsp;        int b0;
+<b class="nc"><i>164</i>&nbsp;        int b1;</b>
+<i>165</i>&nbsp;        int count1;
+<b class="nc"><i>166</i>&nbsp;        if(encoding.equals(&quot;UTF-8&quot;)) {</b>
+<i>167</i>&nbsp;            count1 = stream.read(b, 0, 3);
+<i>168</i>&nbsp;            if(count1 == 3) {
+<i>169</i>&nbsp;                b0 = b[0] &amp; 255;
+<i>170</i>&nbsp;                b1 = b[1] &amp; 255;
+<b class="nc"><i>171</i>&nbsp;                int b2 = b[2] &amp; 255;</b>
+<i>172</i>&nbsp;                if(b0 != 239 || b1 != 187 || b2 != 191) {
+<i>173</i>&nbsp;                    stream.reset();
+<i>174</i>&nbsp;                }
+<i>175</i>&nbsp;            } else {
+<b class="nc"><i>176</i>&nbsp;                stream.reset();</b>
+<i>177</i>&nbsp;            }
+<i>178</i>&nbsp;        } else if(encoding.startsWith(&quot;UTF-16&quot;)) {
+<i>179</i>&nbsp;            count1 = stream.read(b, 0, 2);
+<b class="nc"><i>180</i>&nbsp;            if(count1 == 2) {</b>
+<i>181</i>&nbsp;                b0 = b[0] &amp; 255;
+<i>182</i>&nbsp;                b1 = b[1] &amp; 255;
+<b class="nc"><i>183</i>&nbsp;                if(b0 == 254 &amp;&amp; b1 == 255) {</b>
+<i>184</i>&nbsp;                    return &quot;UTF-16BE&quot;;
+<i>185</i>&nbsp;                }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;                if(b0 == 255 &amp;&amp; b1 == 254) {
+<i>188</i>&nbsp;                    return &quot;UTF-16LE&quot;;
+<i>189</i>&nbsp;                }
+<i>190</i>&nbsp;            }
+<b class="nc"><i>191</i>&nbsp;</b>
+<b class="nc"><i>192</i>&nbsp;            stream.reset();</b>
+<b class="nc"><i>193</i>&nbsp;        }</b>
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;        return encoding;
+<i>196</i>&nbsp;    }
+<b class="nc"><i>197</i>&nbsp;</b>
+<i>198</i>&nbsp;    protected String getEncodingName(byte[] b4) {
+<i>199</i>&nbsp;        int b0 = b4[0] &amp; 255;
+<b class="nc"><i>200</i>&nbsp;        int b1 = b4[1] &amp; 255;</b>
+<b class="nc"><i>201</i>&nbsp;        if(b0 == 254 &amp;&amp; b1 == 255) {</b>
+<b class="nc"><i>202</i>&nbsp;            return &quot;UTF-16BE&quot;;</b>
+<i>203</i>&nbsp;        } else if(b0 == 255 &amp;&amp; b1 == 254) {
+<i>204</i>&nbsp;            return &quot;UTF-16LE&quot;;
+<i>205</i>&nbsp;        } else {
+<b class="nc"><i>206</i>&nbsp;            int b2 = b4[2] &amp; 255;</b>
+<i>207</i>&nbsp;            if(b0 == 239 &amp;&amp; b1 == 187 &amp;&amp; b2 == 191) {
+<i>208</i>&nbsp;                return &quot;UTF-8&quot;;
+<b class="nc"><i>209</i>&nbsp;            } else {</b>
+<b class="nc"><i>210</i>&nbsp;                int b3 = b4[3] &amp; 255;</b>
+<i>211</i>&nbsp;                return b0 == 0 &amp;&amp; b1 == 0 &amp;&amp; b2 == 0 &amp;&amp; b3 == 60?&quot;ISO-10646-UCS-4&quot;:(b0 == 60 &amp;&amp; b1 == 0 &amp;&amp; b2 == 0 &amp;&amp; b3 == 0?&quot;ISO-10646-UCS-4&quot;:(b0 == 0 &amp;&amp; b1 == 0 &amp;&amp; b2 == 60 &amp;&amp; b3 == 0?&quot;ISO-10646-UCS-4&quot;:(b0 == 0 &amp;&amp; b1 == 60 &amp;&amp; b2 == 0 &amp;&amp; b3 == 0?&quot;ISO-10646-UCS-4&quot;:(b0 == 0 &amp;&amp; b1 == 60 &amp;&amp; b2 == 0 &amp;&amp; b3 == 63?&quot;UTF-16BE&quot;:(b0 == 60 &amp;&amp; b1 == 0 &amp;&amp; b2 == 63 &amp;&amp; b3 == 0?&quot;UTF-16LE&quot;:(b0 == 76 &amp;&amp; b1 == 111 &amp;&amp; b2 == 167 &amp;&amp; b3 == 148?&quot;CP037&quot;:null))))));
+<i>212</i>&nbsp;            }
+<b class="nc"><i>213</i>&nbsp;        }</b>
+<b class="nc"><i>214</i>&nbsp;    }</b>
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    public void parse() throws IOException {
+<i>217</i>&nbsp;        this.fReader = this.getReader(this.fSource);
+<i>218</i>&nbsp;        this.fSource = null;
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;        for(int readSize = this.fReader.read(this.fTempString.ch, 0, this.fTempString.ch.length - 1); readSize != -1; readSize = this.fReader.read(this.fTempString.ch, 0, this.fTempString.ch.length - 1)) {
+<i>221</i>&nbsp;            for(int i = 0; i &lt; readSize; ++i) {
+<b class="nc"><i>222</i>&nbsp;                char ch = this.fTempString.ch[i];</b>
+<i>223</i>&nbsp;                if(!this.isValid(ch)) {
+<i>224</i>&nbsp;                    if(XMLChar.isHighSurrogate(ch)) {
+<i>225</i>&nbsp;                        ++i;
+<i>226</i>&nbsp;                        int ch2;
+<i>227</i>&nbsp;                        if(i &lt; readSize) {
+<b class="nc"><i>228</i>&nbsp;                            ch2 = this.fTempString.ch[i];</b>
+<b class="nc"><i>229</i>&nbsp;                        } else {</b>
+<i>230</i>&nbsp;                            ch2 = this.fReader.read();
+<i>231</i>&nbsp;                            if(ch2 != -1) {
+<i>232</i>&nbsp;                                this.fTempString.ch[readSize++] = (char)ch2;
+<i>233</i>&nbsp;                            }
+<i>234</i>&nbsp;                        }
+<i>235</i>&nbsp;
+<b class="nc"><i>236</i>&nbsp;                        if(XMLChar.isLowSurrogate(ch2)) {</b>
+<i>237</i>&nbsp;                            int sup = XMLChar.supplemental(ch, (char)ch2);
+<i>238</i>&nbsp;                            if(!this.isValid(sup)) {
+<i>239</i>&nbsp;                                this.fErrorReporter.reportError(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, &quot;InvalidCharInContent&quot;, new Object[]{Integer.toString(sup, 16)}, (short)2);
+<i>240</i>&nbsp;                            }
+<b class="nc"><i>241</i>&nbsp;                        } else {</b>
+<b class="nc"><i>242</i>&nbsp;                            this.fErrorReporter.reportError(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, &quot;InvalidCharInContent&quot;, new Object[]{Integer.toString(ch2, 16)}, (short)2);</b>
+<i>243</i>&nbsp;                        }
+<b class="nc"><i>244</i>&nbsp;                    } else {</b>
+<b class="nc"><i>245</i>&nbsp;                        this.fErrorReporter.reportError(&quot;http://www.w3.org/TR/1998/REC-xml-19980210&quot;, &quot;InvalidCharInContent&quot;, new Object[]{Integer.toString(ch, 16)}, (short)2);</b>
+<i>246</i>&nbsp;                    }
+<i>247</i>&nbsp;                }
+<i>248</i>&nbsp;            }
+<b class="nc"><i>249</i>&nbsp;</b>
+<b class="nc"><i>250</i>&nbsp;            if(this.fHandler != null &amp;&amp; readSize &gt; 0) {</b>
+<i>251</i>&nbsp;                this.fTempString.offset = 0;
+<i>252</i>&nbsp;                this.fTempString.length = readSize;
+<i>253</i>&nbsp;                this.fHandler.characters(this.fTempString, this.fHandler.modifyAugmentations((Augmentations)null, true));
+<i>254</i>&nbsp;            }
+<i>255</i>&nbsp;        }
+<b class="nc"><i>256</i>&nbsp;</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    public void setInputSource(XMLInputSource source) {
+<i>260</i>&nbsp;        this.fSource = source;
+<i>261</i>&nbsp;    }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    public void close() throws IOException {
+<i>264</i>&nbsp;        if(this.fReader != null) {
+<i>265</i>&nbsp;            this.fReader.close();
+<i>266</i>&nbsp;            this.fReader = null;
+<b class="nc"><i>267</i>&nbsp;        }</b>
+<b class="nc"><i>268</i>&nbsp;</b>
+<i>269</i>&nbsp;    }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;    protected boolean isValid(int ch) {
+<b class="nc"><i>272</i>&nbsp;        return XMLChar.isValid(ch);</b>
+<b class="nc"><i>273</i>&nbsp;    }</b>
+<b class="nc"><i>274</i>&nbsp;</b>
+<b class="nc"><i>275</i>&nbsp;    protected void setBufferSize(int bufferSize) {</b>
+<b class="nc"><i>276</i>&nbsp;        int var10000 = this.fTempString.ch.length;</b>
+<i>277</i>&nbsp;        ++bufferSize;
+<i>278</i>&nbsp;        if(var10000 != bufferSize) {
+<b class="nc"><i>279</i>&nbsp;            this.fTempString.ch = new char[bufferSize];</b>
+<i>280</i>&nbsp;        }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    }
+<i>283</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:46</div>
+</div>
+</body>
+</html>

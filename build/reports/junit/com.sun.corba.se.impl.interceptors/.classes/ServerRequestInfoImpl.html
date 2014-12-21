@@ -1,0 +1,569 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ServerRequestInfoImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.corba.se.impl.interceptors</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ServerRequestInfoImpl (com.sun.corba.se.impl.interceptors)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ServerRequestInfoImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 186)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ServerRequestInfoImpl$AddReplyServiceContextCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 187)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.corba.se.impl.interceptors;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.corba.se.impl.interceptors.RequestInfoImpl;
+<i>9</i>&nbsp;import com.sun.corba.se.impl.protocol.giopmsgheaders.ReplyMessage;
+<i>10</i>&nbsp;import com.sun.corba.se.spi.ior.ObjectAdapterId;
+<i>11</i>&nbsp;import com.sun.corba.se.spi.ior.ObjectKeyTemplate;
+<i>12</i>&nbsp;import com.sun.corba.se.spi.legacy.connection.Connection;
+<i>13</i>&nbsp;import com.sun.corba.se.spi.oa.ObjectAdapter;
+<i>14</i>&nbsp;import com.sun.corba.se.spi.orb.ORB;
+<i>15</i>&nbsp;import com.sun.corba.se.spi.presentation.rmi.StubAdapter;
+<i>16</i>&nbsp;import com.sun.corba.se.spi.protocol.CorbaMessageMediator;
+<i>17</i>&nbsp;import com.sun.corba.se.spi.servicecontext.ServiceContexts;
+<i>18</i>&nbsp;import java.util.ArrayList;
+<i>19</i>&nbsp;import java.util.HashMap;
+<i>20</i>&nbsp;import org.omg.CORBA.Any;
+<i>21</i>&nbsp;import org.omg.CORBA.BAD_INV_ORDER;
+<i>22</i>&nbsp;import org.omg.CORBA.NVList;
+<i>23</i>&nbsp;import org.omg.CORBA.Policy;
+<i>24</i>&nbsp;import org.omg.CORBA.TypeCode;
+<i>25</i>&nbsp;import org.omg.Dynamic.Parameter;
+<i>26</i>&nbsp;import org.omg.IOP.ServiceContext;
+<i>27</i>&nbsp;import org.omg.PortableInterceptor.InvalidSlot;
+<i>28</i>&nbsp;import org.omg.PortableInterceptor.ServerRequestInfo;
+<i>29</i>&nbsp;import org.omg.PortableServer.DynamicImplementation;
+<i>30</i>&nbsp;import org.omg.PortableServer.Servant;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public final class ServerRequestInfoImpl extends RequestInfoImpl implements ServerRequestInfo {
+<i>33</i>&nbsp;    static final int CALL_RECEIVE_REQUEST_SERVICE_CONTEXT = 0;
+<i>34</i>&nbsp;    static final int CALL_RECEIVE_REQUEST = 0;
+<i>35</i>&nbsp;    static final int CALL_INTERMEDIATE_NONE = 1;
+<i>36</i>&nbsp;    static final int CALL_SEND_REPLY = 0;
+<i>37</i>&nbsp;    static final int CALL_SEND_EXCEPTION = 1;
+<i>38</i>&nbsp;    static final int CALL_SEND_OTHER = 2;
+<i>39</i>&nbsp;    private boolean forwardRequestRaisedInEnding;
+<i>40</i>&nbsp;    private CorbaMessageMediator request;
+<i>41</i>&nbsp;    private Object servant;
+<i>42</i>&nbsp;    private byte[] objectId;
+<i>43</i>&nbsp;    private ObjectKeyTemplate oktemp;
+<i>44</i>&nbsp;    private byte[] adapterId;
+<i>45</i>&nbsp;    private String[] adapterName;
+<i>46</i>&nbsp;    private ArrayList addReplyServiceContextQueue;
+<i>47</i>&nbsp;    private ReplyMessage replyMessage;
+<i>48</i>&nbsp;    private String targetMostDerivedInterface;
+<i>49</i>&nbsp;    private NVList dsiArguments;
+<i>50</i>&nbsp;    private Any dsiResult;
+<i>51</i>&nbsp;    private Any dsiException;
+<i>52</i>&nbsp;    private boolean isDynamic;
+<i>53</i>&nbsp;    private ObjectAdapter objectAdapter;
+<i>54</i>&nbsp;    private int serverRequestId;
+<i>55</i>&nbsp;    private Parameter[] cachedArguments;
+<i>56</i>&nbsp;    private Any cachedSendingException;
+<i>57</i>&nbsp;    private HashMap cachedRequestServiceContexts;
+<i>58</i>&nbsp;    private HashMap cachedReplyServiceContexts;
+<i>59</i>&nbsp;    protected static final int MID_SENDING_EXCEPTION = 14;
+<i>60</i>&nbsp;    protected static final int MID_OBJECT_ID = 15;
+<i>61</i>&nbsp;    protected static final int MID_ADAPTER_ID = 16;
+<i>62</i>&nbsp;    protected static final int MID_TARGET_MOST_DERIVED_INTERFACE = 17;
+<i>63</i>&nbsp;    protected static final int MID_GET_SERVER_POLICY = 18;
+<i>64</i>&nbsp;    protected static final int MID_SET_SLOT = 19;
+<i>65</i>&nbsp;    protected static final int MID_TARGET_IS_A = 20;
+<i>66</i>&nbsp;    protected static final int MID_ADD_REPLY_SERVICE_CONTEXT = 21;
+<i>67</i>&nbsp;    protected static final int MID_SERVER_ID = 22;
+<i>68</i>&nbsp;    protected static final int MID_ORB_ID = 23;
+<i>69</i>&nbsp;    protected static final int MID_ADAPTER_NAME = 24;
+<i>70</i>&nbsp;    private static final boolean[][] validCall = new boolean[][]{{true, true, true, true, true}, {true, true, true, true, true}, {false, true, true, false, false}, {false, true, true, true, true}, {false, true, true, true, true}, {false, true, true, false, false}, {false, false, true, false, false}, {true, true, true, true, true}, {true, true, true, true, true}, {false, false, true, true, true}, {false, false, false, false, true}, {true, true, true, true, true}, {true, true, true, true, true}, {false, false, true, true, true}, {false, false, false, true, false}, {false, true, true, true, true}, {false, true, true, true, true}, {false, true, false, false, false}, {true, true, true, true, true}, {true, true, true, true, true}, {false, true, false, false, false}, {true, true, true, true, true}, {false, true, true, true, true}, {false, true, true, true, true}, {false, true, true, true, true}};
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    void reset() {
+<i>73</i>&nbsp;        super.reset();
+<i>74</i>&nbsp;        this.forwardRequestRaisedInEnding = false;
+<i>75</i>&nbsp;        this.request = null;
+<i>76</i>&nbsp;        this.servant = null;
+<i>77</i>&nbsp;        this.objectId = null;
+<i>78</i>&nbsp;        this.oktemp = null;
+<i>79</i>&nbsp;        this.adapterId = null;
+<i>80</i>&nbsp;        this.adapterName = null;
+<i>81</i>&nbsp;        this.addReplyServiceContextQueue = null;
+<i>82</i>&nbsp;        this.replyMessage = null;
+<i>83</i>&nbsp;        this.targetMostDerivedInterface = null;
+<i>84</i>&nbsp;        this.dsiArguments = null;
+<i>85</i>&nbsp;        this.dsiResult = null;
+<i>86</i>&nbsp;        this.dsiException = null;
+<i>87</i>&nbsp;        this.isDynamic = false;
+<i>88</i>&nbsp;        this.objectAdapter = null;
+<i>89</i>&nbsp;        this.serverRequestId = this.myORB.getPIHandler().allocateServerRequestId();
+<i>90</i>&nbsp;        this.cachedArguments = null;
+<i>91</i>&nbsp;        this.cachedSendingException = null;
+<i>92</i>&nbsp;        this.cachedRequestServiceContexts = null;
+<i>93</i>&nbsp;        this.cachedReplyServiceContexts = null;
+<i>94</i>&nbsp;        this.startingPointCall = 0;
+<i>95</i>&nbsp;        this.intermediatePointCall = 0;
+<i>96</i>&nbsp;        this.endingPointCall = 0;
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    ServerRequestInfoImpl(ORB var1) {
+<i>100</i>&nbsp;        super(var1);
+<i>101</i>&nbsp;        this.startingPointCall = 0;
+<i>102</i>&nbsp;        this.intermediatePointCall = 0;
+<i>103</i>&nbsp;        this.endingPointCall = 0;
+<i>104</i>&nbsp;        this.serverRequestId = var1.getPIHandler().allocateServerRequestId();
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public Any sending_exception() {
+<i>108</i>&nbsp;        this.checkAccess(14);
+<i>109</i>&nbsp;        if(this.cachedSendingException == null) {
+<i>110</i>&nbsp;            Any var1 = null;
+<i>111</i>&nbsp;            if(this.dsiException != null) {
+<i>112</i>&nbsp;                var1 = this.dsiException;
+<i>113</i>&nbsp;            } else {
+<i>114</i>&nbsp;                if(this.exception == null) {
+<i>115</i>&nbsp;                    throw this.wrapper.exceptionUnavailable();
+<i>116</i>&nbsp;                }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;                var1 = this.exceptionToAny(this.exception);
+<i>119</i>&nbsp;            }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;            this.cachedSendingException = var1;
+<b class="nc"><i>122</i>&nbsp;        }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;        return this.cachedSendingException;
+<i>125</i>&nbsp;    }
+<b class="nc"><i>126</i>&nbsp;</b>
+<i>127</i>&nbsp;    public byte[] object_id() {
+<b class="nc"><i>128</i>&nbsp;        this.checkAccess(15);</b>
+<b class="nc"><i>129</i>&nbsp;        if(this.objectId == null) {</b>
+<b class="nc"><i>130</i>&nbsp;            throw this.stdWrapper.piOperationNotSupported6();</b>
+<b class="nc"><i>131</i>&nbsp;        } else {</b>
+<i>132</i>&nbsp;            return this.objectId;
+<b class="nc"><i>133</i>&nbsp;        }</b>
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<b class="nc"><i>136</i>&nbsp;    private void checkForNullTemplate() {</b>
+<b class="nc"><i>137</i>&nbsp;        if(this.oktemp == null) {</b>
+<b class="nc"><i>138</i>&nbsp;            throw this.stdWrapper.piOperationNotSupported7();</b>
+<b class="nc"><i>139</i>&nbsp;        }</b>
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<b class="nc"><i>141</i>&nbsp;</b>
+<b class="nc"><i>142</i>&nbsp;    public String server_id() {</b>
+<b class="nc"><i>143</i>&nbsp;        this.checkAccess(22);</b>
+<b class="nc"><i>144</i>&nbsp;        this.checkForNullTemplate();</b>
+<i>145</i>&nbsp;        return Integer.toString(this.oktemp.getServerId());
+<i>146</i>&nbsp;    }
+<b class="nc"><i>147</i>&nbsp;</b>
+<b class="nc"><i>148</i>&nbsp;    public String orb_id() {</b>
+<b class="nc"><i>149</i>&nbsp;        this.checkAccess(23);</b>
+<b class="nc"><i>150</i>&nbsp;        return this.myORB.getORBData().getORBId();</b>
+<i>151</i>&nbsp;    }
+<b class="nc"><i>152</i>&nbsp;</b>
+<b class="nc"><i>153</i>&nbsp;    public synchronized String[] adapter_name() {</b>
+<b class="nc"><i>154</i>&nbsp;        this.checkAccess(24);</b>
+<i>155</i>&nbsp;        if(this.adapterName == null) {
+<i>156</i>&nbsp;            this.checkForNullTemplate();
+<i>157</i>&nbsp;            ObjectAdapterId var1 = this.oktemp.getObjectAdapterId();
+<i>158</i>&nbsp;            this.adapterName = var1.getAdapterName();
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;        return this.adapterName;
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    public synchronized byte[] adapter_id() {
+<i>165</i>&nbsp;        this.checkAccess(16);
+<i>166</i>&nbsp;        if(this.adapterId == null) {
+<i>167</i>&nbsp;            this.checkForNullTemplate();
+<i>168</i>&nbsp;            this.adapterId = this.oktemp.getAdapterId();
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;        return this.adapterId;
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    public String target_most_derived_interface() {
+<i>175</i>&nbsp;        this.checkAccess(17);
+<i>176</i>&nbsp;        return this.targetMostDerivedInterface;
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public Policy get_server_policy(int var1) {
+<b class="nc"><i>180</i>&nbsp;        Policy var2 = null;</b>
+<i>181</i>&nbsp;        if(this.objectAdapter != null) {
+<i>182</i>&nbsp;            var2 = this.objectAdapter.getEffectivePolicy(var1);
+<i>183</i>&nbsp;        }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;        return var2;
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    public void set_slot(int var1, Any var2) throws InvalidSlot {
+<i>189</i>&nbsp;        this.slotTable.set_slot(var1, var2);
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public boolean target_is_a(String var1) {
+<i>193</i>&nbsp;        this.checkAccess(20);
+<i>194</i>&nbsp;        boolean var2 = false;
+<i>195</i>&nbsp;        if(this.servant instanceof Servant) {
+<i>196</i>&nbsp;            var2 = ((Servant)this.servant)._is_a(var1);
+<i>197</i>&nbsp;        } else {
+<i>198</i>&nbsp;            if(!StubAdapter.isStub(this.servant)) {
+<i>199</i>&nbsp;                throw this.wrapper.servantInvalid();
+<i>200</i>&nbsp;            }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;            var2 = ((org.omg.CORBA.Object)this.servant)._is_a(var1);
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;        return var2;
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    public void add_reply_service_context(ServiceContext var1, boolean var2) {
+<i>209</i>&nbsp;        if(this.currentExecutionPoint == 2) {
+<i>210</i>&nbsp;            ServiceContexts var3 = this.replyMessage.getServiceContexts();
+<i>211</i>&nbsp;            if(var3 == null) {
+<i>212</i>&nbsp;                var3 = new ServiceContexts(this.myORB);
+<i>213</i>&nbsp;                this.replyMessage.setServiceContexts(var3);
+<i>214</i>&nbsp;            }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;            if(this.cachedReplyServiceContexts == null) {
+<i>217</i>&nbsp;                this.cachedReplyServiceContexts = new HashMap();
+<i>218</i>&nbsp;            }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;            this.addServiceContext(this.cachedReplyServiceContexts, var3, var1, var2);
+<i>221</i>&nbsp;        }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;        ServerRequestInfoImpl.AddReplyServiceContextCommand var4 = new ServerRequestInfoImpl.AddReplyServiceContextCommand();
+<i>224</i>&nbsp;        var4.service_context = var1;
+<i>225</i>&nbsp;        var4.replace = var2;
+<i>226</i>&nbsp;        if(this.addReplyServiceContextQueue == null) {
+<i>227</i>&nbsp;            this.addReplyServiceContextQueue = new ArrayList();
+<i>228</i>&nbsp;        }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;        this.enqueue(var4);
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    public int request_id() {
+<i>234</i>&nbsp;        return this.serverRequestId;
+<i>235</i>&nbsp;    }
+<b class="nc"><i>236</i>&nbsp;</b>
+<b class="nc"><i>237</i>&nbsp;    public String operation() {</b>
+<b class="nc"><i>238</i>&nbsp;        return this.request.getOperationName();</b>
+<b class="nc"><i>239</i>&nbsp;    }</b>
+<b class="nc"><i>240</i>&nbsp;</b>
+<i>241</i>&nbsp;    public Parameter[] arguments() {
+<i>242</i>&nbsp;        this.checkAccess(2);
+<i>243</i>&nbsp;        if(this.cachedArguments == null) {
+<i>244</i>&nbsp;            if(!this.isDynamic) {
+<i>245</i>&nbsp;                throw this.stdWrapper.piOperationNotSupported1();
+<i>246</i>&nbsp;            }
+<b class="nc"><i>247</i>&nbsp;</b>
+<i>248</i>&nbsp;            if(this.dsiArguments == null) {
+<b class="nc"><i>249</i>&nbsp;                throw this.stdWrapper.piOperationNotSupported8();</b>
+<b class="nc"><i>250</i>&nbsp;            }</b>
+<i>251</i>&nbsp;
+<b class="nc"><i>252</i>&nbsp;            this.cachedArguments = this.nvListToParameterArray(this.dsiArguments);</b>
+<b class="nc"><i>253</i>&nbsp;        }</b>
+<b class="nc"><i>254</i>&nbsp;</b>
+<b class="nc"><i>255</i>&nbsp;        return this.cachedArguments;</b>
+<i>256</i>&nbsp;    }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    public TypeCode[] exceptions() {
+<b class="nc"><i>259</i>&nbsp;        this.checkAccess(3);</b>
+<i>260</i>&nbsp;        throw this.stdWrapper.piOperationNotSupported2();
+<i>261</i>&nbsp;    }
+<b class="nc"><i>262</i>&nbsp;</b>
+<i>263</i>&nbsp;    public String[] contexts() {
+<i>264</i>&nbsp;        this.checkAccess(4);
+<b class="nc"><i>265</i>&nbsp;        throw this.stdWrapper.piOperationNotSupported3();</b>
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    public String[] operation_context() {
+<i>269</i>&nbsp;        this.checkAccess(5);
+<i>270</i>&nbsp;        throw this.stdWrapper.piOperationNotSupported4();
+<i>271</i>&nbsp;    }
+<b class="nc"><i>272</i>&nbsp;</b>
+<i>273</i>&nbsp;    public Any result() {
+<b class="nc"><i>274</i>&nbsp;        this.checkAccess(6);</b>
+<i>275</i>&nbsp;        if(!this.isDynamic) {
+<i>276</i>&nbsp;            throw this.stdWrapper.piOperationNotSupported5();
+<i>277</i>&nbsp;        } else if(this.dsiResult == null) {
+<i>278</i>&nbsp;            throw this.wrapper.piDsiResultIsNull();
+<b class="nc"><i>279</i>&nbsp;        } else {</b>
+<i>280</i>&nbsp;            return this.dsiResult;
+<i>281</i>&nbsp;        }
+<i>282</i>&nbsp;    }
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;    public boolean response_expected() {
+<i>285</i>&nbsp;        return !this.request.isOneWay();
+<b class="nc"><i>286</i>&nbsp;    }</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    public org.omg.CORBA.Object forward_reference() {
+<i>289</i>&nbsp;        this.checkAccess(10);
+<i>290</i>&nbsp;        if(this.replyStatus != 3) {
+<b class="nc"><i>291</i>&nbsp;            throw this.stdWrapper.invalidPiCall1();</b>
+<i>292</i>&nbsp;        } else {
+<i>293</i>&nbsp;            return this.getForwardRequestException().forward;
+<i>294</i>&nbsp;        }
+<i>295</i>&nbsp;    }
+<b class="nc"><i>296</i>&nbsp;</b>
+<i>297</i>&nbsp;    public ServiceContext get_request_service_context(int var1) {
+<i>298</i>&nbsp;        this.checkAccess(12);
+<i>299</i>&nbsp;        if(this.cachedRequestServiceContexts == null) {
+<i>300</i>&nbsp;            this.cachedRequestServiceContexts = new HashMap();
+<i>301</i>&nbsp;        }
+<b class="nc"><i>302</i>&nbsp;</b>
+<b class="nc"><i>303</i>&nbsp;        return this.getServiceContext(this.cachedRequestServiceContexts, this.request.getRequestServiceContexts(), var1);</b>
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    public ServiceContext get_reply_service_context(int var1) {
+<i>307</i>&nbsp;        this.checkAccess(13);
+<i>308</i>&nbsp;        if(this.cachedReplyServiceContexts == null) {
+<b class="nc"><i>309</i>&nbsp;            this.cachedReplyServiceContexts = new HashMap();</b>
+<i>310</i>&nbsp;        }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;        return this.getServiceContext(this.cachedReplyServiceContexts, this.replyMessage.getServiceContexts(), var1);
+<i>313</i>&nbsp;    }
+<b class="nc"><i>314</i>&nbsp;</b>
+<i>315</i>&nbsp;    private void enqueue(ServerRequestInfoImpl.AddReplyServiceContextCommand var1) {
+<b class="nc"><i>316</i>&nbsp;        int var2 = this.addReplyServiceContextQueue.size();</b>
+<i>317</i>&nbsp;        boolean var3 = false;
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;        for(int var4 = 0; var4 &lt; var2; ++var4) {
+<i>320</i>&nbsp;            ServerRequestInfoImpl.AddReplyServiceContextCommand var5 = (ServerRequestInfoImpl.AddReplyServiceContextCommand)this.addReplyServiceContextQueue.get(var4);
+<b class="nc"><i>321</i>&nbsp;            if(var5.service_context.context_id == var1.service_context.context_id) {</b>
+<i>322</i>&nbsp;                var3 = true;
+<b class="nc"><i>323</i>&nbsp;                if(!var1.replace) {</b>
+<b class="nc"><i>324</i>&nbsp;                    throw this.stdWrapper.serviceContextAddFailed(new Integer(var5.service_context.context_id));</b>
+<i>325</i>&nbsp;                }
+<b class="nc"><i>326</i>&nbsp;</b>
+<b class="nc"><i>327</i>&nbsp;                this.addReplyServiceContextQueue.set(var4, var1);</b>
+<i>328</i>&nbsp;                break;
+<i>329</i>&nbsp;            }
+<b class="nc"><i>330</i>&nbsp;        }</b>
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;        if(!var3) {
+<i>333</i>&nbsp;            this.addReplyServiceContextQueue.add(var1);
+<i>334</i>&nbsp;        }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<b class="nc"><i>338</i>&nbsp;    protected void setCurrentExecutionPoint(int var1) {</b>
+<i>339</i>&nbsp;        super.setCurrentExecutionPoint(var1);
+<b class="nc"><i>340</i>&nbsp;        if(var1 == 2 &amp;&amp; this.addReplyServiceContextQueue != null) {</b>
+<b class="nc"><i>341</i>&nbsp;            int var2 = this.addReplyServiceContextQueue.size();</b>
+<b class="nc"><i>342</i>&nbsp;</b>
+<i>343</i>&nbsp;            for(int var3 = 0; var3 &lt; var2; ++var3) {
+<i>344</i>&nbsp;                ServerRequestInfoImpl.AddReplyServiceContextCommand var4 = (ServerRequestInfoImpl.AddReplyServiceContextCommand)this.addReplyServiceContextQueue.get(var3);
+<b class="nc"><i>345</i>&nbsp;</b>
+<i>346</i>&nbsp;                try {
+<i>347</i>&nbsp;                    this.add_reply_service_context(var4.service_context, var4.replace);
+<i>348</i>&nbsp;                } catch (BAD_INV_ORDER var6) {
+<i>349</i>&nbsp;                    ;
+<i>350</i>&nbsp;                }
+<i>351</i>&nbsp;            }
+<b class="nc"><i>352</i>&nbsp;        }</b>
+<b class="nc"><i>353</i>&nbsp;</b>
+<i>354</i>&nbsp;    }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    protected void setInfo(CorbaMessageMediator var1, ObjectAdapter var2, byte[] var3, ObjectKeyTemplate var4) {
+<i>357</i>&nbsp;        this.request = var1;
+<i>358</i>&nbsp;        this.objectId = var3;
+<i>359</i>&nbsp;        this.oktemp = var4;
+<i>360</i>&nbsp;        this.objectAdapter = var2;
+<i>361</i>&nbsp;        this.connection = (Connection)var1.getConnection();
+<i>362</i>&nbsp;    }
+<i>363</i>&nbsp;
+<b class="nc"><i>364</i>&nbsp;    protected void setDSIArguments(NVList var1) {</b>
+<i>365</i>&nbsp;        this.dsiArguments = var1;
+<b class="nc"><i>366</i>&nbsp;    }</b>
+<b class="nc"><i>367</i>&nbsp;</b>
+<i>368</i>&nbsp;    protected void setDSIException(Any var1) {
+<i>369</i>&nbsp;        this.dsiException = var1;
+<i>370</i>&nbsp;        this.cachedSendingException = null;
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<b class="nc"><i>373</i>&nbsp;    protected void setDSIResult(Any var1) {</b>
+<i>374</i>&nbsp;        this.dsiResult = var1;
+<i>375</i>&nbsp;    }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    protected void setException(Exception var1) {
+<i>378</i>&nbsp;        super.setException(var1);
+<i>379</i>&nbsp;        this.dsiException = null;
+<i>380</i>&nbsp;        this.cachedSendingException = null;
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    protected void setInfo(Object var1, String var2) {
+<i>384</i>&nbsp;        this.servant = var1;
+<i>385</i>&nbsp;        this.targetMostDerivedInterface = var2;
+<b class="nc"><i>386</i>&nbsp;        this.isDynamic = var1 instanceof DynamicImplementation || var1 instanceof org.omg.CORBA.DynamicImplementation;</b>
+<i>387</i>&nbsp;    }
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;    void setReplyMessage(ReplyMessage var1) {
+<i>390</i>&nbsp;        this.replyMessage = var1;
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    protected void setReplyStatus(short var1) {
+<b class="nc"><i>394</i>&nbsp;        super.setReplyStatus(var1);</b>
+<i>395</i>&nbsp;        switch(var1) {
+<b class="nc"><i>396</i>&nbsp;        case 0:</b>
+<b class="nc"><i>397</i>&nbsp;            this.endingPointCall = 0;</b>
+<b class="nc"><i>398</i>&nbsp;            break;</b>
+<b class="nc"><i>399</i>&nbsp;        case 1:</b>
+<b class="nc"><i>400</i>&nbsp;        case 2:</b>
+<i>401</i>&nbsp;            this.endingPointCall = 1;
+<b class="nc"><i>402</i>&nbsp;            break;</b>
+<i>403</i>&nbsp;        case 3:
+<i>404</i>&nbsp;        case 4:
+<b class="nc"><i>405</i>&nbsp;            this.endingPointCall = 2;</b>
+<i>406</i>&nbsp;        }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;    }
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;    void releaseServant() {
+<i>411</i>&nbsp;        this.servant = null;
+<i>412</i>&nbsp;    }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;    void setForwardRequestRaisedInEnding() {
+<i>415</i>&nbsp;        this.forwardRequestRaisedInEnding = true;
+<i>416</i>&nbsp;    }
+<b class="nc"><i>417</i>&nbsp;</b>
+<b class="nc"><i>418</i>&nbsp;    boolean isForwardRequestRaisedInEnding() {</b>
+<i>419</i>&nbsp;        return this.forwardRequestRaisedInEnding;
+<i>420</i>&nbsp;    }
+<b class="nc"><i>421</i>&nbsp;</b>
+<b class="nc"><i>422</i>&nbsp;    boolean isDynamic() {</b>
+<b class="nc"><i>423</i>&nbsp;        return this.isDynamic;</b>
+<i>424</i>&nbsp;    }
+<i>425</i>&nbsp;
+<b class="nc"><i>426</i>&nbsp;    protected void checkAccess(int var1) {</b>
+<b class="nc"><i>427</i>&nbsp;        byte var2 = 0;</b>
+<i>428</i>&nbsp;        switch(this.currentExecutionPoint) {
+<i>429</i>&nbsp;        case 0:
+<i>430</i>&nbsp;            var2 = 0;
+<i>431</i>&nbsp;            break;
+<b class="nc"><i>432</i>&nbsp;        case 1:</b>
+<i>433</i>&nbsp;            var2 = 1;
+<i>434</i>&nbsp;            break;
+<i>435</i>&nbsp;        case 2:
+<i>436</i>&nbsp;            switch(this.endingPointCall) {
+<i>437</i>&nbsp;            case 0:
+<i>438</i>&nbsp;                var2 = 2;
+<i>439</i>&nbsp;                break;
+<i>440</i>&nbsp;            case 1:
+<i>441</i>&nbsp;                var2 = 3;
+<i>442</i>&nbsp;                break;
+<i>443</i>&nbsp;            case 2:
+<i>444</i>&nbsp;                var2 = 4;
+<i>445</i>&nbsp;            }
+<i>446</i>&nbsp;        }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;        if(!validCall[var1][var2]) {
+<i>449</i>&nbsp;            throw this.stdWrapper.invalidPiCall2();
+<i>450</i>&nbsp;        }
+<i>451</i>&nbsp;    }
+<b class="nc"><i>452</i>&nbsp;</b>
+<i>453</i>&nbsp;    private class AddReplyServiceContextCommand {
+<b class="nc"><i>454</i>&nbsp;        ServiceContext service_context;</b>
+<b class="nc"><i>455</i>&nbsp;        boolean replace;</b>
+<i>456</i>&nbsp;
+<b class="nc"><i>457</i>&nbsp;        private AddReplyServiceContextCommand() {</b>
+<b class="nc"><i>458</i>&nbsp;        }</b>
+<i>459</i>&nbsp;    }
+<i>460</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

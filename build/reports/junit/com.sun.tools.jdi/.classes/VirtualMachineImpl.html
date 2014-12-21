@@ -1,0 +1,1465 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VirtualMachineImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.jdi</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VirtualMachineImpl (com.sun.tools.jdi)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VirtualMachineImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 114)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 559)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">VirtualMachineImpl$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">VirtualMachineImpl$SoftObjectReference</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 121)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 568)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.jdi;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jdi.BooleanType;
+<i>9</i>&nbsp;import com.sun.jdi.BooleanValue;
+<i>10</i>&nbsp;import com.sun.jdi.ByteType;
+<i>11</i>&nbsp;import com.sun.jdi.ByteValue;
+<i>12</i>&nbsp;import com.sun.jdi.CharType;
+<i>13</i>&nbsp;import com.sun.jdi.CharValue;
+<i>14</i>&nbsp;import com.sun.jdi.ClassNotLoadedException;
+<i>15</i>&nbsp;import com.sun.jdi.DoubleType;
+<i>16</i>&nbsp;import com.sun.jdi.DoubleValue;
+<i>17</i>&nbsp;import com.sun.jdi.FloatType;
+<i>18</i>&nbsp;import com.sun.jdi.FloatValue;
+<i>19</i>&nbsp;import com.sun.jdi.IntegerType;
+<i>20</i>&nbsp;import com.sun.jdi.IntegerValue;
+<i>21</i>&nbsp;import com.sun.jdi.InternalException;
+<i>22</i>&nbsp;import com.sun.jdi.LongType;
+<i>23</i>&nbsp;import com.sun.jdi.LongValue;
+<i>24</i>&nbsp;import com.sun.jdi.PathSearchingVirtualMachine;
+<i>25</i>&nbsp;import com.sun.jdi.PrimitiveType;
+<i>26</i>&nbsp;import com.sun.jdi.ReferenceType;
+<i>27</i>&nbsp;import com.sun.jdi.ShortType;
+<i>28</i>&nbsp;import com.sun.jdi.ShortValue;
+<i>29</i>&nbsp;import com.sun.jdi.StringReference;
+<i>30</i>&nbsp;import com.sun.jdi.ThreadGroupReference;
+<i>31</i>&nbsp;import com.sun.jdi.ThreadReference;
+<i>32</i>&nbsp;import com.sun.jdi.Type;
+<i>33</i>&nbsp;import com.sun.jdi.VMDisconnectedException;
+<i>34</i>&nbsp;import com.sun.jdi.VirtualMachine;
+<i>35</i>&nbsp;import com.sun.jdi.VirtualMachineManager;
+<i>36</i>&nbsp;import com.sun.jdi.VoidType;
+<i>37</i>&nbsp;import com.sun.jdi.VoidValue;
+<i>38</i>&nbsp;import com.sun.jdi.connect.spi.Connection;
+<i>39</i>&nbsp;import com.sun.jdi.event.EventQueue;
+<i>40</i>&nbsp;import com.sun.jdi.request.BreakpointRequest;
+<i>41</i>&nbsp;import com.sun.jdi.request.ClassPrepareRequest;
+<i>42</i>&nbsp;import com.sun.jdi.request.ClassUnloadRequest;
+<i>43</i>&nbsp;import com.sun.jdi.request.EventRequestManager;
+<i>44</i>&nbsp;import com.sun.tools.jdi.ArrayReferenceImpl;
+<b class="nc"><i>45</i>&nbsp;import com.sun.tools.jdi.ArrayTypeImpl;</b>
+<i>46</i>&nbsp;import com.sun.tools.jdi.BooleanTypeImpl;
+<b class="nc"><i>47</i>&nbsp;import com.sun.tools.jdi.BooleanValueImpl;</b>
+<b class="nc"><i>48</i>&nbsp;import com.sun.tools.jdi.ByteTypeImpl;</b>
+<i>49</i>&nbsp;import com.sun.tools.jdi.ByteValueImpl;
+<b class="nc"><i>50</i>&nbsp;import com.sun.tools.jdi.CharTypeImpl;</b>
+<i>51</i>&nbsp;import com.sun.tools.jdi.CharValueImpl;
+<i>52</i>&nbsp;import com.sun.tools.jdi.ClassLoaderReferenceImpl;
+<i>53</i>&nbsp;import com.sun.tools.jdi.ClassObjectReferenceImpl;
+<i>54</i>&nbsp;import com.sun.tools.jdi.ClassTypeImpl;
+<i>55</i>&nbsp;import com.sun.tools.jdi.CommandSender;
+<i>56</i>&nbsp;import com.sun.tools.jdi.DoubleTypeImpl;
+<i>57</i>&nbsp;import com.sun.tools.jdi.DoubleValueImpl;
+<b class="nc"><i>58</i>&nbsp;import com.sun.tools.jdi.EventQueueImpl;</b>
+<i>59</i>&nbsp;import com.sun.tools.jdi.EventRequestManagerImpl;
+<i>60</i>&nbsp;import com.sun.tools.jdi.FloatTypeImpl;
+<b class="nc"><i>61</i>&nbsp;import com.sun.tools.jdi.FloatValueImpl;</b>
+<i>62</i>&nbsp;import com.sun.tools.jdi.IntegerTypeImpl;
+<i>63</i>&nbsp;import com.sun.tools.jdi.IntegerValueImpl;
+<i>64</i>&nbsp;import com.sun.tools.jdi.InterfaceTypeImpl;
+<b class="nc"><i>65</i>&nbsp;import com.sun.tools.jdi.InternalEventHandler;</b>
+<b class="nc"><i>66</i>&nbsp;import com.sun.tools.jdi.JDWPException;</b>
+<i>67</i>&nbsp;import com.sun.tools.jdi.JNITypeParser;
+<b class="nc"><i>68</i>&nbsp;import com.sun.tools.jdi.LongTypeImpl;</b>
+<i>69</i>&nbsp;import com.sun.tools.jdi.LongValueImpl;
+<i>70</i>&nbsp;import com.sun.tools.jdi.MirrorImpl;
+<i>71</i>&nbsp;import com.sun.tools.jdi.ObjectReferenceImpl;
+<i>72</i>&nbsp;import com.sun.tools.jdi.Packet;
+<i>73</i>&nbsp;import com.sun.tools.jdi.PacketStream;
+<b class="nc"><i>74</i>&nbsp;import com.sun.tools.jdi.ReferenceTypeImpl;</b>
+<b class="nc"><i>75</i>&nbsp;import com.sun.tools.jdi.ShortTypeImpl;</b>
+<i>76</i>&nbsp;import com.sun.tools.jdi.ShortValueImpl;
+<i>77</i>&nbsp;import com.sun.tools.jdi.StringReferenceImpl;
+<i>78</i>&nbsp;import com.sun.tools.jdi.TargetVM;
+<i>79</i>&nbsp;import com.sun.tools.jdi.ThreadAction;
+<i>80</i>&nbsp;import com.sun.tools.jdi.ThreadGroupReferenceImpl;
+<i>81</i>&nbsp;import com.sun.tools.jdi.ThreadListener;
+<i>82</i>&nbsp;import com.sun.tools.jdi.ThreadReferenceImpl;
+<i>83</i>&nbsp;import com.sun.tools.jdi.VMState;
+<i>84</i>&nbsp;import com.sun.tools.jdi.VirtualMachineManagerImpl;
+<i>85</i>&nbsp;import com.sun.tools.jdi.VoidTypeImpl;
+<i>86</i>&nbsp;import com.sun.tools.jdi.VoidValueImpl;
+<i>87</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.AllClasses;
+<i>88</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.AllClassesWithGeneric;
+<i>89</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.Capabilities;
+<i>90</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.CapabilitiesNew;
+<i>91</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.ClassPaths;
+<i>92</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.ClassesBySignature;
+<i>93</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.CreateString;
+<i>94</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.Dispose;
+<i>95</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.DisposeObjects;
+<b class="nc"><i>96</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.Exit;</b>
+<i>97</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.IDSizes;
+<b class="nc"><i>98</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.InstanceCounts;</b>
+<b class="nc"><i>99</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.RedefineClasses;</b>
+<b class="nc"><i>100</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.Resume;</b>
+<i>101</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.SetDefaultStratum;
+<i>102</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.Suspend;
+<b class="nc"><i>103</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.Version;</b>
+<b class="nc"><i>104</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.ClassesBySignature.ClassInfo;</b>
+<b class="nc"><i>105</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.DisposeObjects.Request;</b>
+<b class="nc"><i>106</i>&nbsp;import com.sun.tools.jdi.JDWP.VirtualMachine.RedefineClasses.ClassDef;</b>
+<i>107</i>&nbsp;import java.lang.ref.Reference;
+<i>108</i>&nbsp;import java.lang.ref.ReferenceQueue;
+<i>109</i>&nbsp;import java.lang.ref.SoftReference;
+<b class="nc"><i>110</i>&nbsp;import java.text.MessageFormat;</b>
+<b class="nc"><i>111</i>&nbsp;import java.util.ArrayList;</b>
+<i>112</i>&nbsp;import java.util.Arrays;
+<b class="nc"><i>113</i>&nbsp;import java.util.Collections;</b>
+<b class="nc"><i>114</i>&nbsp;import java.util.HashMap;</b>
+<i>115</i>&nbsp;import java.util.Iterator;
+<b class="nc"><i>116</i>&nbsp;import java.util.List;</b>
+<i>117</i>&nbsp;import java.util.Map;
+<b class="nc"><i>118</i>&nbsp;import java.util.TreeSet;</b>
+<i>119</i>&nbsp;import java.util.Map.Entry;
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;class VirtualMachineImpl extends MirrorImpl implements PathSearchingVirtualMachine, ThreadListener {
+<b class="nc"><i>122</i>&nbsp;    public final int sizeofFieldRef;</b>
+<i>123</i>&nbsp;    public final int sizeofMethodRef;
+<i>124</i>&nbsp;    public final int sizeofObjectRef;
+<i>125</i>&nbsp;    public final int sizeofClassRef;
+<i>126</i>&nbsp;    public final int sizeofFrameRef;
+<i>127</i>&nbsp;    final int sequenceNumber;
+<i>128</i>&nbsp;    private final TargetVM target;
+<i>129</i>&nbsp;    private final EventQueueImpl eventQueue;
+<i>130</i>&nbsp;    private final EventRequestManagerImpl internalEventRequestManager;
+<i>131</i>&nbsp;    private final EventRequestManagerImpl eventRequestManager;
+<b class="nc"><i>132</i>&nbsp;    final VirtualMachineManagerImpl vmManager;</b>
+<b class="nc"><i>133</i>&nbsp;    private final ThreadGroup threadGroupForJDI;</b>
+<i>134</i>&nbsp;    int traceFlags = 0;
+<i>135</i>&nbsp;    static int TRACE_RAW_SENDS = 16777216;
+<i>136</i>&nbsp;    static int TRACE_RAW_RECEIVES = 33554432;
+<i>137</i>&nbsp;    boolean traceReceives = false;
+<i>138</i>&nbsp;    private Map&lt;Long, ReferenceType&gt; typesByID;
+<b class="nc"><i>139</i>&nbsp;    private TreeSet&lt;ReferenceType&gt; typesBySignature;</b>
+<b class="nc"><i>140</i>&nbsp;    private boolean retrievedAllTypes = false;</b>
+<i>141</i>&nbsp;    private String defaultStratum = null;
+<b class="nc"><i>142</i>&nbsp;    private final Map&lt;Long, VirtualMachineImpl.SoftObjectReference&gt; objectsByID = new HashMap();</b>
+<b class="nc"><i>143</i>&nbsp;    private final ReferenceQueue&lt;ObjectReferenceImpl&gt; referenceQueue = new ReferenceQueue();</b>
+<b class="nc"><i>144</i>&nbsp;    private static final int DISPOSE_THRESHOLD = 50;</b>
+<i>145</i>&nbsp;    private final List&lt;VirtualMachineImpl.SoftObjectReference&gt; batchedDisposeRequests = Collections.synchronizedList(new ArrayList(60));
+<i>146</i>&nbsp;    private Version versionInfo;
+<i>147</i>&nbsp;    private ClassPaths pathInfo;
+<i>148</i>&nbsp;    private Capabilities capabilities = null;
+<b class="nc"><i>149</i>&nbsp;    private CapabilitiesNew capabilitiesNew = null;</b>
+<i>150</i>&nbsp;    private BooleanType theBooleanType;
+<i>151</i>&nbsp;    private ByteType theByteType;
+<i>152</i>&nbsp;    private CharType theCharType;
+<i>153</i>&nbsp;    private ShortType theShortType;
+<i>154</i>&nbsp;    private IntegerType theIntegerType;
+<i>155</i>&nbsp;    private LongType theLongType;
+<i>156</i>&nbsp;    private FloatType theFloatType;
+<b class="nc"><i>157</i>&nbsp;    private DoubleType theDoubleType;</b>
+<i>158</i>&nbsp;    private VoidType theVoidType;
+<i>159</i>&nbsp;    private VoidValue voidVal;
+<i>160</i>&nbsp;    private Process process;
+<i>161</i>&nbsp;    private VMState state = new VMState(this);
+<i>162</i>&nbsp;    private Object initMonitor = new Object();
+<b class="nc"><i>163</i>&nbsp;    private boolean initComplete = false;</b>
+<b class="nc"><i>164</i>&nbsp;    private boolean shutdown = false;</b>
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    private void notifyInitCompletion() {
+<i>167</i>&nbsp;        Object var1 = this.initMonitor;
+<b class="nc"><i>168</i>&nbsp;        synchronized(this.initMonitor) {</b>
+<b class="nc"><i>169</i>&nbsp;            this.initComplete = true;</b>
+<i>170</i>&nbsp;            this.initMonitor.notifyAll();
+<b class="nc"><i>171</i>&nbsp;        }</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    void waitInitCompletion() {
+<i>175</i>&nbsp;        Object var1 = this.initMonitor;
+<i>176</i>&nbsp;        synchronized(this.initMonitor) {
+<i>177</i>&nbsp;            while(!this.initComplete) {
+<i>178</i>&nbsp;                try {
+<b class="nc"><i>179</i>&nbsp;                    this.initMonitor.wait();</b>
+<b class="nc"><i>180</i>&nbsp;                } catch (InterruptedException var4) {</b>
+<b class="nc"><i>181</i>&nbsp;                    ;</b>
+<b class="nc"><i>182</i>&nbsp;                }</b>
+<b class="nc"><i>183</i>&nbsp;            }</b>
+<b class="nc"><i>184</i>&nbsp;</b>
+<b class="nc"><i>185</i>&nbsp;        }</b>
+<b class="nc"><i>186</i>&nbsp;    }</b>
+<b class="nc"><i>187</i>&nbsp;</b>
+<i>188</i>&nbsp;    VMState state() {
+<i>189</i>&nbsp;        return this.state;
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public boolean threadResumable(ThreadAction var1) {
+<i>193</i>&nbsp;        this.state.thaw(var1.thread());
+<i>194</i>&nbsp;        return true;
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    VirtualMachineImpl(VirtualMachineManager var1, Connection var2, Process var3, int var4) {
+<i>198</i>&nbsp;        super((VirtualMachine)null);
+<i>199</i>&nbsp;        this.vm = this;
+<i>200</i>&nbsp;        this.vmManager = (VirtualMachineManagerImpl)var1;
+<b class="nc"><i>201</i>&nbsp;        this.process = var3;</b>
+<b class="nc"><i>202</i>&nbsp;        this.sequenceNumber = var4;</b>
+<b class="nc"><i>203</i>&nbsp;        this.threadGroupForJDI = new ThreadGroup(this.vmManager.mainGroupForJDI(), &quot;JDI [&quot; + this.hashCode() + &quot;]&quot;);</b>
+<b class="nc"><i>204</i>&nbsp;        this.target = new TargetVM(this, var2);</b>
+<b class="nc"><i>205</i>&nbsp;        EventQueueImpl var5 = new EventQueueImpl(this, this.target);</b>
+<b class="nc"><i>206</i>&nbsp;        new InternalEventHandler(this, var5);</b>
+<b class="nc"><i>207</i>&nbsp;        this.eventQueue = new EventQueueImpl(this, this.target);</b>
+<i>208</i>&nbsp;        this.eventRequestManager = new EventRequestManagerImpl(this);
+<i>209</i>&nbsp;        this.target.start();
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;        IDSizes var6;
+<i>212</i>&nbsp;        try {
+<b class="nc"><i>213</i>&nbsp;            var6 = IDSizes.process(this.vm);</b>
+<i>214</i>&nbsp;        } catch (JDWPException var8) {
+<i>215</i>&nbsp;            throw var8.toJDIException();
+<i>216</i>&nbsp;        }
+<b class="nc"><i>217</i>&nbsp;</b>
+<i>218</i>&nbsp;        this.sizeofFieldRef = var6.fieldIDSize;
+<i>219</i>&nbsp;        this.sizeofMethodRef = var6.methodIDSize;
+<i>220</i>&nbsp;        this.sizeofObjectRef = var6.objectIDSize;
+<i>221</i>&nbsp;        this.sizeofClassRef = var6.referenceTypeIDSize;
+<i>222</i>&nbsp;        this.sizeofFrameRef = var6.frameIDSize;
+<i>223</i>&nbsp;        this.internalEventRequestManager = new EventRequestManagerImpl(this);
+<i>224</i>&nbsp;        ClassPrepareRequest var7 = this.internalEventRequestManager.createClassPrepareRequest();
+<i>225</i>&nbsp;        var7.setSuspendPolicy(0);
+<i>226</i>&nbsp;        var7.enable();
+<i>227</i>&nbsp;        ClassUnloadRequest var9 = this.internalEventRequestManager.createClassUnloadRequest();
+<i>228</i>&nbsp;        var9.setSuspendPolicy(0);
+<i>229</i>&nbsp;        var9.enable();
+<i>230</i>&nbsp;        this.notifyInitCompletion();
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    EventRequestManagerImpl getInternalEventRequestManager() {
+<i>234</i>&nbsp;        return this.internalEventRequestManager;
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    void validateVM() {
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    public boolean equals(Object var1) {
+<i>241</i>&nbsp;        return this == var1;
+<b class="nc"><i>242</i>&nbsp;    }</b>
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    public int hashCode() {
+<i>245</i>&nbsp;        return System.identityHashCode(this);
+<b class="nc"><i>246</i>&nbsp;    }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    public List&lt;ReferenceType&gt; classesByName(String var1) {
+<i>249</i>&nbsp;        this.validateVM();
+<b class="nc"><i>250</i>&nbsp;        String var2 = JNITypeParser.typeNameToSignature(var1);</b>
+<b class="nc"><i>251</i>&nbsp;        List var3;</b>
+<i>252</i>&nbsp;        if(this.retrievedAllTypes) {
+<b class="nc"><i>253</i>&nbsp;            var3 = this.findReferenceTypes(var2);</b>
+<b class="nc"><i>254</i>&nbsp;        } else {</b>
+<i>255</i>&nbsp;            var3 = this.retrieveClassesBySignature(var2);
+<b class="nc"><i>256</i>&nbsp;        }</b>
+<i>257</i>&nbsp;
+<b class="nc"><i>258</i>&nbsp;        return Collections.unmodifiableList(var3);</b>
+<i>259</i>&nbsp;    }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    public List&lt;ReferenceType&gt; allClasses() {
+<b class="nc"><i>262</i>&nbsp;        this.validateVM();</b>
+<i>263</i>&nbsp;        if(!this.retrievedAllTypes) {
+<b class="nc"><i>264</i>&nbsp;            this.retrieveAllClasses();</b>
+<b class="nc"><i>265</i>&nbsp;        }</b>
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;        ArrayList var1;
+<b class="nc"><i>268</i>&nbsp;        synchronized(this) {</b>
+<b class="nc"><i>269</i>&nbsp;            var1 = new ArrayList(this.typesBySignature);</b>
+<b class="nc"><i>270</i>&nbsp;        }</b>
+<b class="nc"><i>271</i>&nbsp;</b>
+<i>272</i>&nbsp;        return Collections.unmodifiableList(var1);
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    public void redefineClasses(Map&lt;? extends ReferenceType, byte[]&gt; var1) {
+<i>276</i>&nbsp;        int var2 = var1.size();
+<b class="nc"><i>277</i>&nbsp;        ClassDef[] var3 = new ClassDef[var2];</b>
+<b class="nc"><i>278</i>&nbsp;        this.validateVM();</b>
+<i>279</i>&nbsp;        if(!this.canRedefineClasses()) {
+<b class="nc"><i>280</i>&nbsp;            throw new UnsupportedOperationException();</b>
+<b class="nc"><i>281</i>&nbsp;        } else {</b>
+<b class="nc"><i>282</i>&nbsp;            Iterator var4 = var1.entrySet().iterator();</b>
+<i>283</i>&nbsp;
+<b class="nc"><i>284</i>&nbsp;            ReferenceTypeImpl var7;</b>
+<b class="nc"><i>285</i>&nbsp;            for(int var5 = 0; var4.hasNext(); ++var5) {</b>
+<b class="nc"><i>286</i>&nbsp;                Entry var6 = (Entry)var4.next();</b>
+<b class="nc"><i>287</i>&nbsp;                var7 = (ReferenceTypeImpl)var6.getKey();</b>
+<i>288</i>&nbsp;                this.validateMirror(var7);
+<i>289</i>&nbsp;                var3[var5] = new ClassDef(var7, (byte[])((byte[])var6.getValue()));
+<i>290</i>&nbsp;            }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;            this.vm.state().thaw();
+<b class="nc"><i>293</i>&nbsp;</b>
+<i>294</i>&nbsp;            try {
+<i>295</i>&nbsp;                RedefineClasses.process(this.vm, var3);
+<b class="nc"><i>296</i>&nbsp;            } catch (JDWPException var8) {</b>
+<i>297</i>&nbsp;                switch(var8.errorCode()) {
+<b class="nc"><i>298</i>&nbsp;                case 60:</b>
+<b class="nc"><i>299</i>&nbsp;                    throw new ClassFormatError(&quot;class not in class file format&quot;);</b>
+<i>300</i>&nbsp;                case 61:
+<b class="nc"><i>301</i>&nbsp;                    throw new ClassCircularityError(&quot;circularity has been detected while initializing a class&quot;);</b>
+<i>302</i>&nbsp;                case 62:
+<i>303</i>&nbsp;                    throw new VerifyError(&quot;verifier detected internal inconsistency or security problem&quot;);
+<b class="nc"><i>304</i>&nbsp;                case 63:</b>
+<i>305</i>&nbsp;                    throw new UnsupportedOperationException(&quot;add method not implemented&quot;);
+<i>306</i>&nbsp;                case 64:
+<b class="nc"><i>307</i>&nbsp;                    throw new UnsupportedOperationException(&quot;schema change not implemented&quot;);</b>
+<i>308</i>&nbsp;                case 65:
+<i>309</i>&nbsp;                default:
+<b class="nc"><i>310</i>&nbsp;                    throw var8.toJDIException();</b>
+<i>311</i>&nbsp;                case 66:
+<i>312</i>&nbsp;                    throw new UnsupportedOperationException(&quot;hierarchy change not implemented&quot;);
+<b class="nc"><i>313</i>&nbsp;                case 67:</b>
+<i>314</i>&nbsp;                    throw new UnsupportedOperationException(&quot;delete method not implemented&quot;);
+<i>315</i>&nbsp;                case 68:
+<b class="nc"><i>316</i>&nbsp;                    throw new UnsupportedClassVersionError(&quot;version numbers of class are not supported&quot;);</b>
+<i>317</i>&nbsp;                case 69:
+<i>318</i>&nbsp;                    throw new NoClassDefFoundError(&quot;class names do not match&quot;);
+<b class="nc"><i>319</i>&nbsp;                case 70:</b>
+<i>320</i>&nbsp;                    throw new UnsupportedOperationException(&quot;changes to class modifiers not implemented&quot;);
+<i>321</i>&nbsp;                case 71:
+<b class="nc"><i>322</i>&nbsp;                    throw new UnsupportedOperationException(&quot;changes to method modifiers not implemented&quot;);</b>
+<i>323</i>&nbsp;                }
+<i>324</i>&nbsp;            }
+<b class="nc"><i>325</i>&nbsp;</b>
+<i>326</i>&nbsp;            ArrayList var9 = new ArrayList();
+<i>327</i>&nbsp;            EventRequestManager var10 = this.eventRequestManager();
+<b class="nc"><i>328</i>&nbsp;            var4 = var10.breakpointRequests().iterator();</b>
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;            while(var4.hasNext()) {
+<b class="nc"><i>331</i>&nbsp;                BreakpointRequest var11 = (BreakpointRequest)var4.next();</b>
+<i>332</i>&nbsp;                if(var1.containsKey(var11.location().declaringType())) {
+<i>333</i>&nbsp;                    var9.add(var11);
+<b class="nc"><i>334</i>&nbsp;                }</b>
+<i>335</i>&nbsp;            }
+<b class="nc"><i>336</i>&nbsp;</b>
+<i>337</i>&nbsp;            var10.deleteEventRequests(var9);
+<i>338</i>&nbsp;            var4 = var1.keySet().iterator();
+<b class="nc"><i>339</i>&nbsp;</b>
+<b class="nc"><i>340</i>&nbsp;            while(var4.hasNext()) {</b>
+<b class="nc"><i>341</i>&nbsp;                var7 = (ReferenceTypeImpl)var4.next();</b>
+<b class="nc"><i>342</i>&nbsp;                var7.noticeRedefineClass();</b>
+<b class="nc"><i>343</i>&nbsp;            }</b>
+<b class="nc"><i>344</i>&nbsp;</b>
+<b class="nc"><i>345</i>&nbsp;        }</b>
+<i>346</i>&nbsp;    }
+<b class="nc"><i>347</i>&nbsp;</b>
+<b class="nc"><i>348</i>&nbsp;    public List&lt;ThreadReference&gt; allThreads() {</b>
+<i>349</i>&nbsp;        this.validateVM();
+<i>350</i>&nbsp;        return this.state.allThreads();
+<b class="nc"><i>351</i>&nbsp;    }</b>
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;    public List&lt;ThreadGroupReference&gt; topLevelThreadGroups() {</b>
+<b class="nc"><i>354</i>&nbsp;        this.validateVM();</b>
+<b class="nc"><i>355</i>&nbsp;        return this.state.topLevelThreadGroups();</b>
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    PacketStream sendResumingCommand(CommandSender var1) {
+<b class="nc"><i>359</i>&nbsp;        return this.state.thawCommand(var1);</b>
+<b class="nc"><i>360</i>&nbsp;    }</b>
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;    void notifySuspend() {
+<i>363</i>&nbsp;        this.state.freeze();
+<b class="nc"><i>364</i>&nbsp;    }</b>
+<b class="nc"><i>365</i>&nbsp;</b>
+<i>366</i>&nbsp;    public void suspend() {
+<i>367</i>&nbsp;        this.validateVM();
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;        try {
+<i>370</i>&nbsp;            Suspend.process(this.vm);
+<i>371</i>&nbsp;        } catch (JDWPException var2) {
+<i>372</i>&nbsp;            throw var2.toJDIException();
+<i>373</i>&nbsp;        }
+<b class="nc"><i>374</i>&nbsp;</b>
+<i>375</i>&nbsp;        this.notifySuspend();
+<i>376</i>&nbsp;    }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;    public void resume() {
+<i>379</i>&nbsp;        this.validateVM();
+<i>380</i>&nbsp;        CommandSender var1 = new CommandSender() {
+<i>381</i>&nbsp;            public PacketStream send() {
+<b class="nc"><i>382</i>&nbsp;                return Resume.enqueueCommand(VirtualMachineImpl.this.vm);</b>
+<i>383</i>&nbsp;            }
+<i>384</i>&nbsp;        };
+<i>385</i>&nbsp;
+<b class="nc"><i>386</i>&nbsp;        try {</b>
+<i>387</i>&nbsp;            PacketStream var2 = this.state.thawCommand(var1);
+<b class="nc"><i>388</i>&nbsp;            Resume.waitForReply(this.vm, var2);</b>
+<b class="nc"><i>389</i>&nbsp;        } catch (VMDisconnectedException var3) {</b>
+<b class="nc"><i>390</i>&nbsp;            ;</b>
+<b class="nc"><i>391</i>&nbsp;        } catch (JDWPException var4) {</b>
+<b class="nc"><i>392</i>&nbsp;            switch(var4.errorCode()) {</b>
+<i>393</i>&nbsp;            case 112:
+<i>394</i>&nbsp;                return;
+<i>395</i>&nbsp;            default:
+<b class="nc"><i>396</i>&nbsp;                throw var4.toJDIException();</b>
+<b class="nc"><i>397</i>&nbsp;            }</b>
+<b class="nc"><i>398</i>&nbsp;        }</b>
+<i>399</i>&nbsp;
+<b class="nc"><i>400</i>&nbsp;    }</b>
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    public EventQueue eventQueue() {
+<i>403</i>&nbsp;        return this.eventQueue;
+<b class="nc"><i>404</i>&nbsp;    }</b>
+<b class="nc"><i>405</i>&nbsp;</b>
+<b class="nc"><i>406</i>&nbsp;    public EventRequestManager eventRequestManager() {</b>
+<i>407</i>&nbsp;        this.validateVM();
+<i>408</i>&nbsp;        return this.eventRequestManager;
+<i>409</i>&nbsp;    }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    EventRequestManagerImpl eventRequestManagerImpl() {
+<i>412</i>&nbsp;        return this.eventRequestManager;
+<i>413</i>&nbsp;    }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;    public BooleanValue mirrorOf(boolean var1) {
+<i>416</i>&nbsp;        this.validateVM();
+<i>417</i>&nbsp;        return new BooleanValueImpl(this, var1);
+<i>418</i>&nbsp;    }
+<i>419</i>&nbsp;
+<i>420</i>&nbsp;    public ByteValue mirrorOf(byte var1) {
+<i>421</i>&nbsp;        this.validateVM();
+<i>422</i>&nbsp;        return new ByteValueImpl(this, var1);
+<i>423</i>&nbsp;    }
+<b class="nc"><i>424</i>&nbsp;</b>
+<b class="nc"><i>425</i>&nbsp;    public CharValue mirrorOf(char var1) {</b>
+<i>426</i>&nbsp;        this.validateVM();
+<i>427</i>&nbsp;        return new CharValueImpl(this, var1);
+<i>428</i>&nbsp;    }
+<b class="nc"><i>429</i>&nbsp;</b>
+<i>430</i>&nbsp;    public ShortValue mirrorOf(short var1) {
+<b class="nc"><i>431</i>&nbsp;        this.validateVM();</b>
+<i>432</i>&nbsp;        return new ShortValueImpl(this, var1);
+<i>433</i>&nbsp;    }
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;    public IntegerValue mirrorOf(int var1) {
+<i>436</i>&nbsp;        this.validateVM();
+<i>437</i>&nbsp;        return new IntegerValueImpl(this, var1);
+<i>438</i>&nbsp;    }
+<i>439</i>&nbsp;
+<b class="nc"><i>440</i>&nbsp;    public LongValue mirrorOf(long var1) {</b>
+<i>441</i>&nbsp;        this.validateVM();
+<i>442</i>&nbsp;        return new LongValueImpl(this, var1);
+<i>443</i>&nbsp;    }
+<b class="nc"><i>444</i>&nbsp;</b>
+<b class="nc"><i>445</i>&nbsp;    public FloatValue mirrorOf(float var1) {</b>
+<i>446</i>&nbsp;        this.validateVM();
+<i>447</i>&nbsp;        return new FloatValueImpl(this, var1);
+<i>448</i>&nbsp;    }
+<b class="nc"><i>449</i>&nbsp;</b>
+<i>450</i>&nbsp;    public DoubleValue mirrorOf(double var1) {
+<i>451</i>&nbsp;        this.validateVM();
+<i>452</i>&nbsp;        return new DoubleValueImpl(this, var1);
+<b class="nc"><i>453</i>&nbsp;    }</b>
+<b class="nc"><i>454</i>&nbsp;</b>
+<i>455</i>&nbsp;    public StringReference mirrorOf(String var1) {
+<i>456</i>&nbsp;        this.validateVM();
+<i>457</i>&nbsp;
+<b class="nc"><i>458</i>&nbsp;        try {</b>
+<b class="nc"><i>459</i>&nbsp;            return CreateString.process(this.vm, var1).stringObject;</b>
+<i>460</i>&nbsp;        } catch (JDWPException var3) {
+<i>461</i>&nbsp;            throw var3.toJDIException();
+<i>462</i>&nbsp;        }
+<b class="nc"><i>463</i>&nbsp;    }</b>
+<b class="nc"><i>464</i>&nbsp;</b>
+<i>465</i>&nbsp;    public VoidValue mirrorOfVoid() {
+<i>466</i>&nbsp;        if(this.voidVal == null) {
+<i>467</i>&nbsp;            this.voidVal = new VoidValueImpl(this);
+<b class="nc"><i>468</i>&nbsp;        }</b>
+<b class="nc"><i>469</i>&nbsp;</b>
+<i>470</i>&nbsp;        return this.voidVal;
+<i>471</i>&nbsp;    }
+<i>472</i>&nbsp;
+<b class="nc"><i>473</i>&nbsp;    public long[] instanceCounts(List&lt;? extends ReferenceType&gt; var1) {</b>
+<b class="nc"><i>474</i>&nbsp;        if(!this.canGetInstanceInfo()) {</b>
+<i>475</i>&nbsp;            throw new UnsupportedOperationException(&quot;target does not support getting instances&quot;);
+<i>476</i>&nbsp;        } else {
+<i>477</i>&nbsp;            ReferenceTypeImpl[] var3 = new ReferenceTypeImpl[var1.size()];
+<b class="nc"><i>478</i>&nbsp;            int var4 = 0;</b>
+<b class="nc"><i>479</i>&nbsp;</b>
+<i>480</i>&nbsp;            ReferenceType var6;
+<i>481</i>&nbsp;            for(Iterator var5 = var1.iterator(); var5.hasNext(); var3[var4++] = (ReferenceTypeImpl)var6) {
+<i>482</i>&nbsp;                var6 = (ReferenceType)var5.next();
+<b class="nc"><i>483</i>&nbsp;                this.validateMirror(var6);</b>
+<b class="nc"><i>484</i>&nbsp;            }</b>
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;            try {
+<i>487</i>&nbsp;                long[] var2 = InstanceCounts.process(this.vm, var3).counts;
+<b class="nc"><i>488</i>&nbsp;                return var2;</b>
+<b class="nc"><i>489</i>&nbsp;            } catch (JDWPException var7) {</b>
+<i>490</i>&nbsp;                throw var7.toJDIException();
+<i>491</i>&nbsp;            }
+<i>492</i>&nbsp;        }
+<b class="nc"><i>493</i>&nbsp;    }</b>
+<i>494</i>&nbsp;
+<b class="nc"><i>495</i>&nbsp;    public void dispose() {</b>
+<i>496</i>&nbsp;        this.validateVM();
+<b class="nc"><i>497</i>&nbsp;        this.shutdown = true;</b>
+<b class="nc"><i>498</i>&nbsp;</b>
+<i>499</i>&nbsp;        try {
+<i>500</i>&nbsp;            Dispose.process(this.vm);
+<i>501</i>&nbsp;        } catch (JDWPException var2) {
+<i>502</i>&nbsp;            throw var2.toJDIException();
+<b class="nc"><i>503</i>&nbsp;        }</b>
+<b class="nc"><i>504</i>&nbsp;</b>
+<i>505</i>&nbsp;        this.target.stopListening();
+<b class="nc"><i>506</i>&nbsp;    }</b>
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    public void exit(int var1) {
+<i>509</i>&nbsp;        this.validateVM();
+<b class="nc"><i>510</i>&nbsp;        this.shutdown = true;</b>
+<b class="nc"><i>511</i>&nbsp;</b>
+<i>512</i>&nbsp;        try {
+<i>513</i>&nbsp;            Exit.process(this.vm, var1);
+<i>514</i>&nbsp;        } catch (JDWPException var3) {
+<b class="nc"><i>515</i>&nbsp;            throw var3.toJDIException();</b>
+<b class="nc"><i>516</i>&nbsp;        }</b>
+<b class="nc"><i>517</i>&nbsp;</b>
+<b class="nc"><i>518</i>&nbsp;        this.target.stopListening();</b>
+<i>519</i>&nbsp;    }
+<i>520</i>&nbsp;
+<b class="nc"><i>521</i>&nbsp;    public Process process() {</b>
+<i>522</i>&nbsp;        this.validateVM();
+<b class="nc"><i>523</i>&nbsp;        return this.process;</b>
+<b class="nc"><i>524</i>&nbsp;    }</b>
+<b class="nc"><i>525</i>&nbsp;</b>
+<i>526</i>&nbsp;    private Version versionInfo() {
+<b class="nc"><i>527</i>&nbsp;        try {</b>
+<i>528</i>&nbsp;            if(this.versionInfo == null) {
+<i>529</i>&nbsp;                this.versionInfo = Version.process(this.vm);
+<i>530</i>&nbsp;            }
+<b class="nc"><i>531</i>&nbsp;</b>
+<b class="nc"><i>532</i>&nbsp;            return this.versionInfo;</b>
+<i>533</i>&nbsp;        } catch (JDWPException var2) {
+<b class="nc"><i>534</i>&nbsp;            throw var2.toJDIException();</b>
+<b class="nc"><i>535</i>&nbsp;        }</b>
+<b class="nc"><i>536</i>&nbsp;    }</b>
+<b class="nc"><i>537</i>&nbsp;</b>
+<b class="nc"><i>538</i>&nbsp;    public String description() {</b>
+<i>539</i>&nbsp;        this.validateVM();
+<i>540</i>&nbsp;        return MessageFormat.format(this.vmManager.getString(&quot;version_format&quot;), new Object[]{&quot;&quot; + this.vmManager.majorInterfaceVersion(), &quot;&quot; + this.vmManager.minorInterfaceVersion(), this.versionInfo().description});
+<i>541</i>&nbsp;    }
+<b class="nc"><i>542</i>&nbsp;</b>
+<b class="nc"><i>543</i>&nbsp;    public String version() {</b>
+<i>544</i>&nbsp;        this.validateVM();
+<b class="nc"><i>545</i>&nbsp;        return this.versionInfo().vmVersion;</b>
+<b class="nc"><i>546</i>&nbsp;    }</b>
+<b class="nc"><i>547</i>&nbsp;</b>
+<b class="nc"><i>548</i>&nbsp;    public String name() {</b>
+<b class="nc"><i>549</i>&nbsp;        this.validateVM();</b>
+<i>550</i>&nbsp;        return this.versionInfo().vmName;
+<i>551</i>&nbsp;    }
+<i>552</i>&nbsp;
+<b class="nc"><i>553</i>&nbsp;    public boolean canWatchFieldModification() {</b>
+<b class="nc"><i>554</i>&nbsp;        this.validateVM();</b>
+<i>555</i>&nbsp;        return this.capabilities().canWatchFieldModification;
+<i>556</i>&nbsp;    }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;    public boolean canWatchFieldAccess() {
+<b class="nc"><i>559</i>&nbsp;        this.validateVM();</b>
+<i>560</i>&nbsp;        return this.capabilities().canWatchFieldAccess;
+<b class="nc"><i>561</i>&nbsp;    }</b>
+<i>562</i>&nbsp;
+<b class="nc"><i>563</i>&nbsp;    public boolean canGetBytecodes() {</b>
+<b class="nc"><i>564</i>&nbsp;        this.validateVM();</b>
+<b class="nc"><i>565</i>&nbsp;        return this.capabilities().canGetBytecodes;</b>
+<i>566</i>&nbsp;    }
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;    public boolean canGetSyntheticAttribute() {
+<b class="nc"><i>569</i>&nbsp;        this.validateVM();</b>
+<i>570</i>&nbsp;        return this.capabilities().canGetSyntheticAttribute;
+<b class="nc"><i>571</i>&nbsp;    }</b>
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    public boolean canGetOwnedMonitorInfo() {
+<i>574</i>&nbsp;        this.validateVM();
+<i>575</i>&nbsp;        return this.capabilities().canGetOwnedMonitorInfo;
+<i>576</i>&nbsp;    }
+<i>577</i>&nbsp;
+<b class="nc"><i>578</i>&nbsp;    public boolean canGetCurrentContendedMonitor() {</b>
+<b class="nc"><i>579</i>&nbsp;        this.validateVM();</b>
+<i>580</i>&nbsp;        return this.capabilities().canGetCurrentContendedMonitor;
+<i>581</i>&nbsp;    }
+<i>582</i>&nbsp;
+<b class="nc"><i>583</i>&nbsp;    public boolean canGetMonitorInfo() {</b>
+<b class="nc"><i>584</i>&nbsp;        this.validateVM();</b>
+<i>585</i>&nbsp;        return this.capabilities().canGetMonitorInfo;
+<i>586</i>&nbsp;    }
+<i>587</i>&nbsp;
+<b class="nc"><i>588</i>&nbsp;    private boolean hasNewCapabilities() {</b>
+<b class="nc"><i>589</i>&nbsp;        return this.versionInfo().jdwpMajor &gt; 1 || this.versionInfo().jdwpMinor &gt;= 4;</b>
+<i>590</i>&nbsp;    }
+<i>591</i>&nbsp;
+<b class="nc"><i>592</i>&nbsp;    boolean canGet1_5LanguageFeatures() {</b>
+<b class="nc"><i>593</i>&nbsp;        return this.versionInfo().jdwpMajor &gt; 1 || this.versionInfo().jdwpMinor &gt;= 5;</b>
+<i>594</i>&nbsp;    }
+<i>595</i>&nbsp;
+<b class="nc"><i>596</i>&nbsp;    public boolean canUseInstanceFilters() {</b>
+<b class="nc"><i>597</i>&nbsp;        this.validateVM();</b>
+<i>598</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canUseInstanceFilters;
+<i>599</i>&nbsp;    }
+<b class="nc"><i>600</i>&nbsp;</b>
+<b class="nc"><i>601</i>&nbsp;    public boolean canRedefineClasses() {</b>
+<i>602</i>&nbsp;        this.validateVM();
+<i>603</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canRedefineClasses;
+<b class="nc"><i>604</i>&nbsp;    }</b>
+<b class="nc"><i>605</i>&nbsp;</b>
+<i>606</i>&nbsp;    public boolean canAddMethod() {
+<i>607</i>&nbsp;        this.validateVM();
+<b class="nc"><i>608</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canAddMethod;</b>
+<b class="nc"><i>609</i>&nbsp;    }</b>
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;    public boolean canUnrestrictedlyRedefineClasses() {
+<b class="nc"><i>612</i>&nbsp;        this.validateVM();</b>
+<b class="nc"><i>613</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canUnrestrictedlyRedefineClasses;</b>
+<i>614</i>&nbsp;    }
+<i>615</i>&nbsp;
+<i>616</i>&nbsp;    public boolean canPopFrames() {
+<b class="nc"><i>617</i>&nbsp;        this.validateVM();</b>
+<i>618</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canPopFrames;
+<i>619</i>&nbsp;    }
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;    public boolean canGetMethodReturnValues() {
+<b class="nc"><i>622</i>&nbsp;        return this.versionInfo().jdwpMajor &gt; 1 || this.versionInfo().jdwpMinor &gt;= 6;</b>
+<i>623</i>&nbsp;    }
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    public boolean canGetInstanceInfo() {
+<i>626</i>&nbsp;        if(this.versionInfo().jdwpMajor &gt;= 1 &amp;&amp; this.versionInfo().jdwpMinor &gt;= 6) {
+<b class="nc"><i>627</i>&nbsp;            this.validateVM();</b>
+<b class="nc"><i>628</i>&nbsp;            return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canGetInstanceInfo;</b>
+<i>629</i>&nbsp;        } else {
+<i>630</i>&nbsp;            return false;
+<i>631</i>&nbsp;        }
+<b class="nc"><i>632</i>&nbsp;    }</b>
+<b class="nc"><i>633</i>&nbsp;</b>
+<i>634</i>&nbsp;    public boolean canUseSourceNameFilters() {
+<i>635</i>&nbsp;        return this.versionInfo().jdwpMajor &gt;= 1 &amp;&amp; this.versionInfo().jdwpMinor &gt;= 6;
+<i>636</i>&nbsp;    }
+<b class="nc"><i>637</i>&nbsp;</b>
+<b class="nc"><i>638</i>&nbsp;    public boolean canForceEarlyReturn() {</b>
+<i>639</i>&nbsp;        this.validateVM();
+<i>640</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canForceEarlyReturn;
+<i>641</i>&nbsp;    }
+<b class="nc"><i>642</i>&nbsp;</b>
+<b class="nc"><i>643</i>&nbsp;    public boolean canBeModified() {</b>
+<i>644</i>&nbsp;        return true;
+<i>645</i>&nbsp;    }
+<i>646</i>&nbsp;
+<b class="nc"><i>647</i>&nbsp;    public boolean canGetSourceDebugExtension() {</b>
+<b class="nc"><i>648</i>&nbsp;        this.validateVM();</b>
+<i>649</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canGetSourceDebugExtension;
+<i>650</i>&nbsp;    }
+<i>651</i>&nbsp;
+<b class="nc"><i>652</i>&nbsp;    public boolean canGetClassFileVersion() {</b>
+<i>653</i>&nbsp;        return this.versionInfo().jdwpMajor &gt;= 1 || this.versionInfo().jdwpMinor &gt;= 6;
+<i>654</i>&nbsp;    }
+<i>655</i>&nbsp;
+<b class="nc"><i>656</i>&nbsp;    public boolean canGetConstantPool() {</b>
+<i>657</i>&nbsp;        this.validateVM();
+<b class="nc"><i>658</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canGetConstantPool;</b>
+<i>659</i>&nbsp;    }
+<b class="nc"><i>660</i>&nbsp;</b>
+<b class="nc"><i>661</i>&nbsp;    public boolean canRequestVMDeathEvent() {</b>
+<i>662</i>&nbsp;        this.validateVM();
+<i>663</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canRequestVMDeathEvent;
+<i>664</i>&nbsp;    }
+<b class="nc"><i>665</i>&nbsp;</b>
+<i>666</i>&nbsp;    public boolean canRequestMonitorEvents() {
+<b class="nc"><i>667</i>&nbsp;        this.validateVM();</b>
+<i>668</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canRequestMonitorEvents;
+<b class="nc"><i>669</i>&nbsp;    }</b>
+<i>670</i>&nbsp;
+<i>671</i>&nbsp;    public boolean canGetMonitorFrameInfo() {
+<b class="nc"><i>672</i>&nbsp;        this.validateVM();</b>
+<b class="nc"><i>673</i>&nbsp;        return this.hasNewCapabilities() &amp;&amp; this.capabilitiesNew().canGetMonitorFrameInfo;</b>
+<i>674</i>&nbsp;    }
+<i>675</i>&nbsp;
+<i>676</i>&nbsp;    public void setDebugTraceMode(int var1) {
+<b class="nc"><i>677</i>&nbsp;        this.validateVM();</b>
+<i>678</i>&nbsp;        this.traceFlags = var1;
+<i>679</i>&nbsp;        this.traceReceives = (var1 &amp; 2) != 0;
+<b class="nc"><i>680</i>&nbsp;    }</b>
+<b class="nc"><i>681</i>&nbsp;</b>
+<i>682</i>&nbsp;    void printTrace(String var1) {
+<i>683</i>&nbsp;        System.err.println(&quot;[JDI: &quot; + var1 + &quot;]&quot;);
+<i>684</i>&nbsp;    }
+<b class="nc"><i>685</i>&nbsp;</b>
+<i>686</i>&nbsp;    void printReceiveTrace(int var1, String var2) {
+<b class="nc"><i>687</i>&nbsp;        StringBuffer var3 = new StringBuffer(&quot;Receiving:&quot;);</b>
+<i>688</i>&nbsp;
+<b class="nc"><i>689</i>&nbsp;        for(int var4 = var1; var4 &gt; 0; --var4) {</b>
+<i>690</i>&nbsp;            var3.append(&quot;    &quot;);
+<i>691</i>&nbsp;        }
+<i>692</i>&nbsp;
+<b class="nc"><i>693</i>&nbsp;        var3.append(var2);</b>
+<b class="nc"><i>694</i>&nbsp;        this.printTrace(var3.toString());</b>
+<i>695</i>&nbsp;    }
+<i>696</i>&nbsp;
+<i>697</i>&nbsp;    private synchronized ReferenceTypeImpl addReferenceType(long var1, int var3, String var4) {
+<b class="nc"><i>698</i>&nbsp;        if(this.typesByID == null) {</b>
+<b class="nc"><i>699</i>&nbsp;            this.initReferenceTypes();</b>
+<i>700</i>&nbsp;        }
+<i>701</i>&nbsp;
+<i>702</i>&nbsp;        Object var5 = null;
+<b class="nc"><i>703</i>&nbsp;        switch(var3) {</b>
+<b class="nc"><i>704</i>&nbsp;        case 1:</b>
+<i>705</i>&nbsp;            var5 = new ClassTypeImpl(this.vm, var1);
+<i>706</i>&nbsp;            break;
+<i>707</i>&nbsp;        case 2:
+<b class="nc"><i>708</i>&nbsp;            var5 = new InterfaceTypeImpl(this.vm, var1);</b>
+<b class="nc"><i>709</i>&nbsp;            break;</b>
+<i>710</i>&nbsp;        case 3:
+<i>711</i>&nbsp;            var5 = new ArrayTypeImpl(this.vm, var1);
+<i>712</i>&nbsp;            break;
+<i>713</i>&nbsp;        default:
+<b class="nc"><i>714</i>&nbsp;            throw new InternalException(&quot;Invalid reference type tag&quot;);</b>
+<b class="nc"><i>715</i>&nbsp;        }</b>
+<b class="nc"><i>716</i>&nbsp;</b>
+<i>717</i>&nbsp;        if(var4 != null) {
+<i>718</i>&nbsp;            ((ReferenceTypeImpl)var5).setSignature(var4);
+<i>719</i>&nbsp;        }
+<b class="nc"><i>720</i>&nbsp;</b>
+<i>721</i>&nbsp;        this.typesByID.put(new Long(var1), var5);
+<i>722</i>&nbsp;        this.typesBySignature.add(var5);
+<i>723</i>&nbsp;        if((this.vm.traceFlags &amp; 8) != 0) {
+<b class="nc"><i>724</i>&nbsp;            this.vm.printTrace(&quot;Caching new ReferenceType, sig=&quot; + var4 + &quot;, id=&quot; + var1);</b>
+<b class="nc"><i>725</i>&nbsp;        }</b>
+<b class="nc"><i>726</i>&nbsp;</b>
+<i>727</i>&nbsp;        return (ReferenceTypeImpl)var5;
+<b class="nc"><i>728</i>&nbsp;    }</b>
+<b class="nc"><i>729</i>&nbsp;</b>
+<i>730</i>&nbsp;    synchronized void removeReferenceType(String var1) {
+<i>731</i>&nbsp;        if(this.typesByID != null) {
+<i>732</i>&nbsp;            Iterator var2 = this.typesBySignature.iterator();
+<i>733</i>&nbsp;            int var3 = 0;
+<i>734</i>&nbsp;
+<b class="nc"><i>735</i>&nbsp;            while(var2.hasNext()) {</b>
+<b class="nc"><i>736</i>&nbsp;                ReferenceTypeImpl var4 = (ReferenceTypeImpl)var2.next();</b>
+<i>737</i>&nbsp;                int var5 = var1.compareTo(var4.signature());
+<b class="nc"><i>738</i>&nbsp;                if(var5 == 0) {</b>
+<b class="nc"><i>739</i>&nbsp;                    ++var3;</b>
+<i>740</i>&nbsp;                    var2.remove();
+<b class="nc"><i>741</i>&nbsp;                    this.typesByID.remove(new Long(var4.ref()));</b>
+<b class="nc"><i>742</i>&nbsp;                    if((this.vm.traceFlags &amp; 8) != 0) {</b>
+<i>743</i>&nbsp;                        this.vm.printTrace(&quot;Uncaching ReferenceType, sig=&quot; + var1 + &quot;, id=&quot; + var4.ref());
+<b class="nc"><i>744</i>&nbsp;                    }</b>
+<b class="nc"><i>745</i>&nbsp;                }</b>
+<i>746</i>&nbsp;            }
+<b class="nc"><i>747</i>&nbsp;</b>
+<b class="nc"><i>748</i>&nbsp;            if(var3 &gt; 1) {</b>
+<i>749</i>&nbsp;                this.retrieveClassesBySignature(var1);
+<b class="nc"><i>750</i>&nbsp;            }</b>
+<i>751</i>&nbsp;
+<i>752</i>&nbsp;        }
+<i>753</i>&nbsp;    }
+<i>754</i>&nbsp;
+<i>755</i>&nbsp;    private synchronized List&lt;ReferenceType&gt; findReferenceTypes(String var1) {
+<i>756</i>&nbsp;        if(this.typesByID == null) {
+<i>757</i>&nbsp;            return new ArrayList(0);
+<i>758</i>&nbsp;        } else {
+<b class="nc"><i>759</i>&nbsp;            Iterator var2 = this.typesBySignature.iterator();</b>
+<b class="nc"><i>760</i>&nbsp;            ArrayList var3 = new ArrayList();</b>
+<i>761</i>&nbsp;
+<i>762</i>&nbsp;            while(var2.hasNext()) {
+<b class="nc"><i>763</i>&nbsp;                ReferenceTypeImpl var4 = (ReferenceTypeImpl)var2.next();</b>
+<b class="nc"><i>764</i>&nbsp;                int var5 = var1.compareTo(var4.signature());</b>
+<i>765</i>&nbsp;                if(var5 == 0) {
+<b class="nc"><i>766</i>&nbsp;                    var3.add(var4);</b>
+<b class="nc"><i>767</i>&nbsp;                }</b>
+<i>768</i>&nbsp;            }
+<i>769</i>&nbsp;
+<i>770</i>&nbsp;            return var3;
+<b class="nc"><i>771</i>&nbsp;        }</b>
+<i>772</i>&nbsp;    }
+<i>773</i>&nbsp;
+<i>774</i>&nbsp;    private void initReferenceTypes() {
+<b class="nc"><i>775</i>&nbsp;        this.typesByID = new HashMap(300);</b>
+<i>776</i>&nbsp;        this.typesBySignature = new TreeSet();
+<i>777</i>&nbsp;    }
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;    ReferenceTypeImpl referenceType(long var1, byte var3) {
+<i>780</i>&nbsp;        return this.referenceType(var1, var3, (String)null);
+<i>781</i>&nbsp;    }
+<i>782</i>&nbsp;
+<b class="nc"><i>783</i>&nbsp;    ClassTypeImpl classType(long var1) {</b>
+<b class="nc"><i>784</i>&nbsp;        return (ClassTypeImpl)this.referenceType(var1, 1, (String)null);</b>
+<b class="nc"><i>785</i>&nbsp;    }</b>
+<b class="nc"><i>786</i>&nbsp;</b>
+<b class="nc"><i>787</i>&nbsp;    InterfaceTypeImpl interfaceType(long var1) {</b>
+<b class="nc"><i>788</i>&nbsp;        return (InterfaceTypeImpl)this.referenceType(var1, 2, (String)null);</b>
+<b class="nc"><i>789</i>&nbsp;    }</b>
+<b class="nc"><i>790</i>&nbsp;</b>
+<b class="nc"><i>791</i>&nbsp;    ArrayTypeImpl arrayType(long var1) {</b>
+<b class="nc"><i>792</i>&nbsp;        return (ArrayTypeImpl)this.referenceType(var1, 3, (String)null);</b>
+<b class="nc"><i>793</i>&nbsp;    }</b>
+<i>794</i>&nbsp;
+<i>795</i>&nbsp;    ReferenceTypeImpl referenceType(long var1, int var3, String var4) {
+<i>796</i>&nbsp;        if((this.vm.traceFlags &amp; 8) != 0) {
+<i>797</i>&nbsp;            StringBuffer var5 = new StringBuffer();
+<i>798</i>&nbsp;            var5.append(&quot;Looking up &quot;);
+<i>799</i>&nbsp;            if(var3 == 1) {
+<b class="nc"><i>800</i>&nbsp;                var5.append(&quot;Class&quot;);</b>
+<i>801</i>&nbsp;            } else if(var3 == 2) {
+<i>802</i>&nbsp;                var5.append(&quot;Interface&quot;);
+<i>803</i>&nbsp;            } else if(var3 == 3) {
+<i>804</i>&nbsp;                var5.append(&quot;ArrayType&quot;);
+<i>805</i>&nbsp;            } else {
+<b class="nc"><i>806</i>&nbsp;                var5.append(&quot;UNKNOWN TAG: &quot; + var3);</b>
+<b class="nc"><i>807</i>&nbsp;            }</b>
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;            if(var4 != null) {
+<i>810</i>&nbsp;                var5.append(&quot;, signature=\&#39;&quot; + var4 + &quot;\&#39;&quot;);
+<i>811</i>&nbsp;            }
+<b class="nc"><i>812</i>&nbsp;</b>
+<b class="nc"><i>813</i>&nbsp;            var5.append(&quot;, id=&quot; + var1);</b>
+<i>814</i>&nbsp;            this.vm.printTrace(var5.toString());
+<b class="nc"><i>815</i>&nbsp;        }</b>
+<b class="nc"><i>816</i>&nbsp;</b>
+<b class="nc"><i>817</i>&nbsp;        if(var1 == 0L) {</b>
+<b class="nc"><i>818</i>&nbsp;            return null;</b>
+<b class="nc"><i>819</i>&nbsp;        } else {</b>
+<b class="nc"><i>820</i>&nbsp;            ReferenceTypeImpl var9 = null;</b>
+<b class="nc"><i>821</i>&nbsp;            synchronized(this) {</b>
+<i>822</i>&nbsp;                if(this.typesByID != null) {
+<i>823</i>&nbsp;                    var9 = (ReferenceTypeImpl)this.typesByID.get(new Long(var1));
+<i>824</i>&nbsp;                }
+<i>825</i>&nbsp;
+<b class="nc"><i>826</i>&nbsp;                if(var9 == null) {</b>
+<b class="nc"><i>827</i>&nbsp;                    var9 = this.addReferenceType(var1, var3, var4);</b>
+<i>828</i>&nbsp;                }
+<i>829</i>&nbsp;
+<i>830</i>&nbsp;                return var9;
+<b class="nc"><i>831</i>&nbsp;            }</b>
+<b class="nc"><i>832</i>&nbsp;        }</b>
+<i>833</i>&nbsp;    }
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;    private Capabilities capabilities() {
+<b class="nc"><i>836</i>&nbsp;        if(this.capabilities == null) {</b>
+<i>837</i>&nbsp;            try {
+<i>838</i>&nbsp;                this.capabilities = Capabilities.process(this.vm);
+<i>839</i>&nbsp;            } catch (JDWPException var2) {
+<b class="nc"><i>840</i>&nbsp;                throw var2.toJDIException();</b>
+<i>841</i>&nbsp;            }
+<i>842</i>&nbsp;        }
+<i>843</i>&nbsp;
+<b class="nc"><i>844</i>&nbsp;        return this.capabilities;</b>
+<i>845</i>&nbsp;    }
+<i>846</i>&nbsp;
+<i>847</i>&nbsp;    private CapabilitiesNew capabilitiesNew() {
+<b class="nc"><i>848</i>&nbsp;        if(this.capabilitiesNew == null) {</b>
+<i>849</i>&nbsp;            try {
+<i>850</i>&nbsp;                this.capabilitiesNew = CapabilitiesNew.process(this.vm);
+<i>851</i>&nbsp;            } catch (JDWPException var2) {
+<i>852</i>&nbsp;                throw var2.toJDIException();
+<b class="nc"><i>853</i>&nbsp;            }</b>
+<b class="nc"><i>854</i>&nbsp;        }</b>
+<b class="nc"><i>855</i>&nbsp;</b>
+<b class="nc"><i>856</i>&nbsp;        return this.capabilitiesNew;</b>
+<b class="nc"><i>857</i>&nbsp;    }</b>
+<b class="nc"><i>858</i>&nbsp;</b>
+<b class="nc"><i>859</i>&nbsp;    private List&lt;ReferenceType&gt; retrieveClassesBySignature(String var1) {</b>
+<b class="nc"><i>860</i>&nbsp;        if((this.vm.traceFlags &amp; 8) != 0) {</b>
+<b class="nc"><i>861</i>&nbsp;            this.vm.printTrace(&quot;Retrieving matching ReferenceTypes, sig=&quot; + var1);</b>
+<i>862</i>&nbsp;        }
+<b class="nc"><i>863</i>&nbsp;</b>
+<i>864</i>&nbsp;        ClassInfo[] var2;
+<b class="nc"><i>865</i>&nbsp;        try {</b>
+<b class="nc"><i>866</i>&nbsp;            var2 = ClassesBySignature.process(this.vm, var1).classes;</b>
+<i>867</i>&nbsp;        } catch (JDWPException var10) {
+<b class="nc"><i>868</i>&nbsp;            throw var10.toJDIException();</b>
+<b class="nc"><i>869</i>&nbsp;        }</b>
+<i>870</i>&nbsp;
+<b class="nc"><i>871</i>&nbsp;        int var3 = var2.length;</b>
+<b class="nc"><i>872</i>&nbsp;        ArrayList var4 = new ArrayList(var3);</b>
+<i>873</i>&nbsp;        synchronized(this) {
+<b class="nc"><i>874</i>&nbsp;            for(int var6 = 0; var6 &lt; var3; ++var6) {</b>
+<b class="nc"><i>875</i>&nbsp;                ClassInfo var7 = var2[var6];</b>
+<b class="nc"><i>876</i>&nbsp;                ReferenceTypeImpl var8 = this.referenceType(var7.typeID, var7.refTypeTag, var1);</b>
+<b class="nc"><i>877</i>&nbsp;                var8.setStatus(var7.status);</b>
+<i>878</i>&nbsp;                var4.add(var8);
+<b class="nc"><i>879</i>&nbsp;            }</b>
+<b class="nc"><i>880</i>&nbsp;</b>
+<i>881</i>&nbsp;            return var4;
+<b class="nc"><i>882</i>&nbsp;        }</b>
+<b class="nc"><i>883</i>&nbsp;    }</b>
+<i>884</i>&nbsp;
+<i>885</i>&nbsp;    private void retrieveAllClasses1_4() {
+<i>886</i>&nbsp;        com.sun.tools.jdi.JDWP.VirtualMachine.AllClasses.ClassInfo[] var1;
+<i>887</i>&nbsp;        try {
+<b class="nc"><i>888</i>&nbsp;            var1 = AllClasses.process(this.vm).classes;</b>
+<i>889</i>&nbsp;        } catch (JDWPException var8) {
+<b class="nc"><i>890</i>&nbsp;            throw var8.toJDIException();</b>
+<i>891</i>&nbsp;        }
+<b class="nc"><i>892</i>&nbsp;</b>
+<b class="nc"><i>893</i>&nbsp;        synchronized(this) {</b>
+<b class="nc"><i>894</i>&nbsp;            if(!this.retrievedAllTypes) {</b>
+<i>895</i>&nbsp;                int var3 = var1.length;
+<b class="nc"><i>896</i>&nbsp;</b>
+<i>897</i>&nbsp;                for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>898</i>&nbsp;                    com.sun.tools.jdi.JDWP.VirtualMachine.AllClasses.ClassInfo var5 = var1[var4];
+<i>899</i>&nbsp;                    ReferenceTypeImpl var6 = this.referenceType(var5.typeID, var5.refTypeTag, var5.signature);
+<b class="nc"><i>900</i>&nbsp;                    var6.setStatus(var5.status);</b>
+<i>901</i>&nbsp;                }
+<b class="nc"><i>902</i>&nbsp;</b>
+<i>903</i>&nbsp;                this.retrievedAllTypes = true;
+<b class="nc"><i>904</i>&nbsp;            }</b>
+<b class="nc"><i>905</i>&nbsp;</b>
+<b class="nc"><i>906</i>&nbsp;        }</b>
+<i>907</i>&nbsp;    }
+<b class="nc"><i>908</i>&nbsp;</b>
+<i>909</i>&nbsp;    private void retrieveAllClasses() {
+<i>910</i>&nbsp;        if((this.vm.traceFlags &amp; 8) != 0) {
+<i>911</i>&nbsp;            this.vm.printTrace(&quot;Retrieving all ReferenceTypes&quot;);
+<b class="nc"><i>912</i>&nbsp;        }</b>
+<b class="nc"><i>913</i>&nbsp;</b>
+<i>914</i>&nbsp;        if(!this.vm.canGet1_5LanguageFeatures()) {
+<i>915</i>&nbsp;            this.retrieveAllClasses1_4();
+<i>916</i>&nbsp;        } else {
+<b class="nc"><i>917</i>&nbsp;            com.sun.tools.jdi.JDWP.VirtualMachine.AllClassesWithGeneric.ClassInfo[] var1;</b>
+<i>918</i>&nbsp;            try {
+<b class="nc"><i>919</i>&nbsp;                var1 = AllClassesWithGeneric.process(this.vm).classes;</b>
+<b class="nc"><i>920</i>&nbsp;            } catch (JDWPException var8) {</b>
+<b class="nc"><i>921</i>&nbsp;                throw var8.toJDIException();</b>
+<i>922</i>&nbsp;            }
+<b class="nc"><i>923</i>&nbsp;</b>
+<b class="nc"><i>924</i>&nbsp;            synchronized(this) {</b>
+<i>925</i>&nbsp;                if(!this.retrievedAllTypes) {
+<i>926</i>&nbsp;                    int var3 = var1.length;
+<b class="nc"><i>927</i>&nbsp;</b>
+<b class="nc"><i>928</i>&nbsp;                    for(int var4 = 0; var4 &lt; var3; ++var4) {</b>
+<b class="nc"><i>929</i>&nbsp;                        com.sun.tools.jdi.JDWP.VirtualMachine.AllClassesWithGeneric.ClassInfo var5 = var1[var4];</b>
+<i>930</i>&nbsp;                        ReferenceTypeImpl var6 = this.referenceType(var5.typeID, var5.refTypeTag, var5.signature);
+<b class="nc"><i>931</i>&nbsp;                        var6.setGenericSignature(var5.genericSignature);</b>
+<i>932</i>&nbsp;                        var6.setStatus(var5.status);
+<i>933</i>&nbsp;                    }
+<b class="nc"><i>934</i>&nbsp;</b>
+<b class="nc"><i>935</i>&nbsp;                    this.retrievedAllTypes = true;</b>
+<i>936</i>&nbsp;                }
+<b class="nc"><i>937</i>&nbsp;</b>
+<b class="nc"><i>938</i>&nbsp;            }</b>
+<i>939</i>&nbsp;        }
+<i>940</i>&nbsp;    }
+<i>941</i>&nbsp;
+<i>942</i>&nbsp;    void sendToTarget(Packet var1) {
+<i>943</i>&nbsp;        this.target.send(var1);
+<b class="nc"><i>944</i>&nbsp;    }</b>
+<b class="nc"><i>945</i>&nbsp;</b>
+<b class="nc"><i>946</i>&nbsp;    void waitForTargetReply(Packet var1) {</b>
+<b class="nc"><i>947</i>&nbsp;        this.target.waitForReply(var1);</b>
+<i>948</i>&nbsp;        this.processBatchedDisposes();
+<i>949</i>&nbsp;    }
+<i>950</i>&nbsp;
+<b class="nc"><i>951</i>&nbsp;    Type findBootType(String var1) throws ClassNotLoadedException {</b>
+<b class="nc"><i>952</i>&nbsp;        List var2 = this.allClasses();</b>
+<i>953</i>&nbsp;        Iterator var3 = var2.iterator();
+<b class="nc"><i>954</i>&nbsp;</b>
+<b class="nc"><i>955</i>&nbsp;        ReferenceType var4;</b>
+<b class="nc"><i>956</i>&nbsp;        do {</b>
+<i>957</i>&nbsp;            if(!var3.hasNext()) {
+<b class="nc"><i>958</i>&nbsp;                JNITypeParser var5 = new JNITypeParser(var1);</b>
+<i>959</i>&nbsp;                throw new ClassNotLoadedException(var5.typeName(), &quot;Type &quot; + var5.typeName() + &quot; not loaded&quot;);
+<i>960</i>&nbsp;            }
+<b class="nc"><i>961</i>&nbsp;</b>
+<i>962</i>&nbsp;            var4 = (ReferenceType)var3.next();
+<b class="nc"><i>963</i>&nbsp;        } while(var4.classLoader() != null || !var4.signature().equals(var1));</b>
+<i>964</i>&nbsp;
+<b class="nc"><i>965</i>&nbsp;        return var4;</b>
+<i>966</i>&nbsp;    }
+<i>967</i>&nbsp;
+<i>968</i>&nbsp;    BooleanType theBooleanType() {
+<b class="nc"><i>969</i>&nbsp;        if(this.theBooleanType == null) {</b>
+<b class="nc"><i>970</i>&nbsp;            synchronized(this) {</b>
+<i>971</i>&nbsp;                if(this.theBooleanType == null) {
+<i>972</i>&nbsp;                    this.theBooleanType = new BooleanTypeImpl(this);
+<b class="nc"><i>973</i>&nbsp;                }</b>
+<b class="nc"><i>974</i>&nbsp;            }</b>
+<i>975</i>&nbsp;        }
+<i>976</i>&nbsp;
+<i>977</i>&nbsp;        return this.theBooleanType;
+<i>978</i>&nbsp;    }
+<i>979</i>&nbsp;
+<i>980</i>&nbsp;    ByteType theByteType() {
+<i>981</i>&nbsp;        if(this.theByteType == null) {
+<i>982</i>&nbsp;            synchronized(this) {
+<i>983</i>&nbsp;                if(this.theByteType == null) {
+<i>984</i>&nbsp;                    this.theByteType = new ByteTypeImpl(this);
+<b class="nc"><i>985</i>&nbsp;                }</b>
+<b class="nc"><i>986</i>&nbsp;            }</b>
+<b class="nc"><i>987</i>&nbsp;        }</b>
+<b class="nc"><i>988</i>&nbsp;</b>
+<i>989</i>&nbsp;        return this.theByteType;
+<i>990</i>&nbsp;    }
+<i>991</i>&nbsp;
+<b class="nc"><i>992</i>&nbsp;    CharType theCharType() {</b>
+<b class="nc"><i>993</i>&nbsp;        if(this.theCharType == null) {</b>
+<i>994</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>995</i>&nbsp;                if(this.theCharType == null) {</b>
+<b class="nc"><i>996</i>&nbsp;                    this.theCharType = new CharTypeImpl(this);</b>
+<b class="nc"><i>997</i>&nbsp;                }</b>
+<i>998</i>&nbsp;            }
+<b class="nc"><i>999</i>&nbsp;        }</b>
+<i>1000</i>&nbsp;
+<i>1001</i>&nbsp;        return this.theCharType;
+<b class="nc"><i>1002</i>&nbsp;    }</b>
+<b class="nc"><i>1003</i>&nbsp;</b>
+<i>1004</i>&nbsp;    ShortType theShortType() {
+<b class="nc"><i>1005</i>&nbsp;        if(this.theShortType == null) {</b>
+<i>1006</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>1007</i>&nbsp;                if(this.theShortType == null) {</b>
+<i>1008</i>&nbsp;                    this.theShortType = new ShortTypeImpl(this);
+<i>1009</i>&nbsp;                }
+<i>1010</i>&nbsp;            }
+<b class="nc"><i>1011</i>&nbsp;        }</b>
+<i>1012</i>&nbsp;
+<i>1013</i>&nbsp;        return this.theShortType;
+<i>1014</i>&nbsp;    }
+<b class="nc"><i>1015</i>&nbsp;</b>
+<i>1016</i>&nbsp;    IntegerType theIntegerType() {
+<i>1017</i>&nbsp;        if(this.theIntegerType == null) {
+<i>1018</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>1019</i>&nbsp;                if(this.theIntegerType == null) {</b>
+<i>1020</i>&nbsp;                    this.theIntegerType = new IntegerTypeImpl(this);
+<i>1021</i>&nbsp;                }
+<i>1022</i>&nbsp;            }
+<b class="nc"><i>1023</i>&nbsp;        }</b>
+<b class="nc"><i>1024</i>&nbsp;</b>
+<b class="nc"><i>1025</i>&nbsp;        return this.theIntegerType;</b>
+<b class="nc"><i>1026</i>&nbsp;    }</b>
+<b class="nc"><i>1027</i>&nbsp;</b>
+<i>1028</i>&nbsp;    LongType theLongType() {
+<b class="nc"><i>1029</i>&nbsp;        if(this.theLongType == null) {</b>
+<i>1030</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>1031</i>&nbsp;                if(this.theLongType == null) {</b>
+<b class="nc"><i>1032</i>&nbsp;                    this.theLongType = new LongTypeImpl(this);</b>
+<b class="nc"><i>1033</i>&nbsp;                }</b>
+<i>1034</i>&nbsp;            }
+<i>1035</i>&nbsp;        }
+<i>1036</i>&nbsp;
+<i>1037</i>&nbsp;        return this.theLongType;
+<b class="nc"><i>1038</i>&nbsp;    }</b>
+<b class="nc"><i>1039</i>&nbsp;</b>
+<b class="nc"><i>1040</i>&nbsp;    FloatType theFloatType() {</b>
+<b class="nc"><i>1041</i>&nbsp;        if(this.theFloatType == null) {</b>
+<i>1042</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>1043</i>&nbsp;                if(this.theFloatType == null) {</b>
+<i>1044</i>&nbsp;                    this.theFloatType = new FloatTypeImpl(this);
+<b class="nc"><i>1045</i>&nbsp;                }</b>
+<i>1046</i>&nbsp;            }
+<i>1047</i>&nbsp;        }
+<i>1048</i>&nbsp;
+<b class="nc"><i>1049</i>&nbsp;        return this.theFloatType;</b>
+<b class="nc"><i>1050</i>&nbsp;    }</b>
+<b class="nc"><i>1051</i>&nbsp;</b>
+<b class="nc"><i>1052</i>&nbsp;    DoubleType theDoubleType() {</b>
+<i>1053</i>&nbsp;        if(this.theDoubleType == null) {
+<b class="nc"><i>1054</i>&nbsp;            synchronized(this) {</b>
+<i>1055</i>&nbsp;                if(this.theDoubleType == null) {
+<b class="nc"><i>1056</i>&nbsp;                    this.theDoubleType = new DoubleTypeImpl(this);</b>
+<i>1057</i>&nbsp;                }
+<i>1058</i>&nbsp;            }
+<i>1059</i>&nbsp;        }
+<b class="nc"><i>1060</i>&nbsp;</b>
+<b class="nc"><i>1061</i>&nbsp;        return this.theDoubleType;</b>
+<b class="nc"><i>1062</i>&nbsp;    }</b>
+<b class="nc"><i>1063</i>&nbsp;</b>
+<i>1064</i>&nbsp;    VoidType theVoidType() {
+<b class="nc"><i>1065</i>&nbsp;        if(this.theVoidType == null) {</b>
+<i>1066</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>1067</i>&nbsp;                if(this.theVoidType == null) {</b>
+<i>1068</i>&nbsp;                    this.theVoidType = new VoidTypeImpl(this);
+<i>1069</i>&nbsp;                }
+<i>1070</i>&nbsp;            }
+<b class="nc"><i>1071</i>&nbsp;        }</b>
+<b class="nc"><i>1072</i>&nbsp;</b>
+<b class="nc"><i>1073</i>&nbsp;        return this.theVoidType;</b>
+<b class="nc"><i>1074</i>&nbsp;    }</b>
+<i>1075</i>&nbsp;
+<b class="nc"><i>1076</i>&nbsp;    PrimitiveType primitiveTypeMirror(byte var1) {</b>
+<i>1077</i>&nbsp;        switch(var1) {
+<b class="nc"><i>1078</i>&nbsp;        case 66:</b>
+<i>1079</i>&nbsp;            return this.theByteType();
+<i>1080</i>&nbsp;        case 67:
+<i>1081</i>&nbsp;            return this.theCharType();
+<b class="nc"><i>1082</i>&nbsp;        case 68:</b>
+<b class="nc"><i>1083</i>&nbsp;            return this.theDoubleType();</b>
+<b class="nc"><i>1084</i>&nbsp;        case 69:</b>
+<b class="nc"><i>1085</i>&nbsp;        case 71:</b>
+<i>1086</i>&nbsp;        case 72:
+<b class="nc"><i>1087</i>&nbsp;        case 75:</b>
+<i>1088</i>&nbsp;        case 76:
+<b class="nc"><i>1089</i>&nbsp;        case 77:</b>
+<i>1090</i>&nbsp;        case 78:
+<i>1091</i>&nbsp;        case 79:
+<i>1092</i>&nbsp;        case 80:
+<b class="nc"><i>1093</i>&nbsp;        case 81:</b>
+<b class="nc"><i>1094</i>&nbsp;        case 82:</b>
+<b class="nc"><i>1095</i>&nbsp;        case 84:</b>
+<b class="nc"><i>1096</i>&nbsp;        case 85:</b>
+<i>1097</i>&nbsp;        case 86:
+<b class="nc"><i>1098</i>&nbsp;        case 87:</b>
+<i>1099</i>&nbsp;        case 88:
+<b class="nc"><i>1100</i>&nbsp;        case 89:</b>
+<i>1101</i>&nbsp;        default:
+<i>1102</i>&nbsp;            throw new IllegalArgumentException(&quot;Unrecognized primitive tag &quot; + var1);
+<i>1103</i>&nbsp;        case 70:
+<b class="nc"><i>1104</i>&nbsp;            return this.theFloatType();</b>
+<b class="nc"><i>1105</i>&nbsp;        case 73:</b>
+<b class="nc"><i>1106</i>&nbsp;            return this.theIntegerType();</b>
+<b class="nc"><i>1107</i>&nbsp;        case 74:</b>
+<i>1108</i>&nbsp;            return this.theLongType();
+<b class="nc"><i>1109</i>&nbsp;        case 83:</b>
+<i>1110</i>&nbsp;            return this.theShortType();
+<b class="nc"><i>1111</i>&nbsp;        case 90:</b>
+<i>1112</i>&nbsp;            return this.theBooleanType();
+<i>1113</i>&nbsp;        }
+<i>1114</i>&nbsp;    }
+<b class="nc"><i>1115</i>&nbsp;</b>
+<b class="nc"><i>1116</i>&nbsp;    private void processBatchedDisposes() {</b>
+<b class="nc"><i>1117</i>&nbsp;        if(!this.shutdown) {</b>
+<b class="nc"><i>1118</i>&nbsp;            Request[] var1 = null;</b>
+<i>1119</i>&nbsp;            List var2 = this.batchedDisposeRequests;
+<b class="nc"><i>1120</i>&nbsp;            synchronized(this.batchedDisposeRequests) {</b>
+<i>1121</i>&nbsp;                int var3 = this.batchedDisposeRequests.size();
+<b class="nc"><i>1122</i>&nbsp;                if(var3 &gt;= 50) {</b>
+<i>1123</i>&nbsp;                    if((this.traceFlags &amp; 16) != 0) {
+<i>1124</i>&nbsp;                        this.printTrace(&quot;Dispose threashold reached. Will dispose &quot; + var3 + &quot; object references...&quot;);
+<i>1125</i>&nbsp;                    }
+<b class="nc"><i>1126</i>&nbsp;</b>
+<b class="nc"><i>1127</i>&nbsp;                    var1 = new Request[var3];</b>
+<b class="nc"><i>1128</i>&nbsp;</b>
+<b class="nc"><i>1129</i>&nbsp;                    for(int var4 = 0; var4 &lt; var1.length; ++var4) {</b>
+<i>1130</i>&nbsp;                        VirtualMachineImpl.SoftObjectReference var5 = (VirtualMachineImpl.SoftObjectReference)this.batchedDisposeRequests.get(var4);
+<b class="nc"><i>1131</i>&nbsp;                        if((this.traceFlags &amp; 16) != 0) {</b>
+<i>1132</i>&nbsp;                            this.printTrace(&quot;Disposing object &quot; + var5.key().longValue() + &quot; (ref count = &quot; + var5.count() + &quot;)&quot;);
+<b class="nc"><i>1133</i>&nbsp;                        }</b>
+<i>1134</i>&nbsp;
+<i>1135</i>&nbsp;                        var1[var4] = new Request(new ObjectReferenceImpl(this, var5.key().longValue()), var5.count());
+<i>1136</i>&nbsp;                    }
+<b class="nc"><i>1137</i>&nbsp;</b>
+<i>1138</i>&nbsp;                    this.batchedDisposeRequests.clear();
+<b class="nc"><i>1139</i>&nbsp;                }</b>
+<i>1140</i>&nbsp;            }
+<b class="nc"><i>1141</i>&nbsp;</b>
+<i>1142</i>&nbsp;            if(var1 != null) {
+<b class="nc"><i>1143</i>&nbsp;                try {</b>
+<i>1144</i>&nbsp;                    DisposeObjects.process(this.vm, var1);
+<b class="nc"><i>1145</i>&nbsp;                } catch (JDWPException var7) {</b>
+<i>1146</i>&nbsp;                    throw var7.toJDIException();
+<b class="nc"><i>1147</i>&nbsp;                }</b>
+<i>1148</i>&nbsp;            }
+<b class="nc"><i>1149</i>&nbsp;</b>
+<i>1150</i>&nbsp;        }
+<b class="nc"><i>1151</i>&nbsp;    }</b>
+<i>1152</i>&nbsp;
+<b class="nc"><i>1153</i>&nbsp;    private void batchForDispose(VirtualMachineImpl.SoftObjectReference var1) {</b>
+<i>1154</i>&nbsp;        if((this.traceFlags &amp; 16) != 0) {
+<b class="nc"><i>1155</i>&nbsp;            this.printTrace(&quot;Batching object &quot; + var1.key().longValue() + &quot; for dispose (ref count = &quot; + var1.count() + &quot;)&quot;);</b>
+<i>1156</i>&nbsp;        }
+<i>1157</i>&nbsp;
+<i>1158</i>&nbsp;        this.batchedDisposeRequests.add(var1);
+<i>1159</i>&nbsp;    }
+<b class="nc"><i>1160</i>&nbsp;</b>
+<i>1161</i>&nbsp;    private void processQueue() {
+<i>1162</i>&nbsp;        Reference var1;
+<i>1163</i>&nbsp;        while((var1 = this.referenceQueue.poll()) != null) {
+<b class="nc"><i>1164</i>&nbsp;            VirtualMachineImpl.SoftObjectReference var2 = (VirtualMachineImpl.SoftObjectReference)var1;</b>
+<b class="nc"><i>1165</i>&nbsp;            this.removeObjectMirror((VirtualMachineImpl.SoftObjectReference)var2);</b>
+<b class="nc"><i>1166</i>&nbsp;            this.batchForDispose(var2);</b>
+<b class="nc"><i>1167</i>&nbsp;        }</b>
+<b class="nc"><i>1168</i>&nbsp;</b>
+<b class="nc"><i>1169</i>&nbsp;    }</b>
+<i>1170</i>&nbsp;
+<i>1171</i>&nbsp;    synchronized ObjectReferenceImpl objectMirror(long var1, int var3) {
+<b class="nc"><i>1172</i>&nbsp;        this.processQueue();</b>
+<b class="nc"><i>1173</i>&nbsp;        if(var1 == 0L) {</b>
+<b class="nc"><i>1174</i>&nbsp;            return null;</b>
+<i>1175</i>&nbsp;        } else {
+<b class="nc"><i>1176</i>&nbsp;            Object var4 = null;</b>
+<b class="nc"><i>1177</i>&nbsp;            Long var5 = new Long(var1);</b>
+<i>1178</i>&nbsp;            VirtualMachineImpl.SoftObjectReference var6 = (VirtualMachineImpl.SoftObjectReference)this.objectsByID.get(var5);
+<i>1179</i>&nbsp;            if(var6 != null) {
+<i>1180</i>&nbsp;                var4 = var6.object();
+<i>1181</i>&nbsp;            }
+<i>1182</i>&nbsp;
+<i>1183</i>&nbsp;            if(var4 == null) {
+<b class="nc"><i>1184</i>&nbsp;                switch(var3) {</b>
+<i>1185</i>&nbsp;                case 76:
+<i>1186</i>&nbsp;                    var4 = new ObjectReferenceImpl(this.vm, var1);
+<i>1187</i>&nbsp;                    break;
+<i>1188</i>&nbsp;                case 91:
+<b class="nc"><i>1189</i>&nbsp;                    var4 = new ArrayReferenceImpl(this.vm, var1);</b>
+<i>1190</i>&nbsp;                    break;
+<b class="nc"><i>1191</i>&nbsp;                case 99:</b>
+<b class="nc"><i>1192</i>&nbsp;                    var4 = new ClassObjectReferenceImpl(this.vm, var1);</b>
+<i>1193</i>&nbsp;                    break;
+<b class="nc"><i>1194</i>&nbsp;                case 103:</b>
+<b class="nc"><i>1195</i>&nbsp;                    var4 = new ThreadGroupReferenceImpl(this.vm, var1);</b>
+<b class="nc"><i>1196</i>&nbsp;                    break;</b>
+<b class="nc"><i>1197</i>&nbsp;                case 108:</b>
+<i>1198</i>&nbsp;                    var4 = new ClassLoaderReferenceImpl(this.vm, var1);
+<i>1199</i>&nbsp;                    break;
+<i>1200</i>&nbsp;                case 115:
+<i>1201</i>&nbsp;                    var4 = new StringReferenceImpl(this.vm, var1);
+<b class="nc"><i>1202</i>&nbsp;                    break;</b>
+<b class="nc"><i>1203</i>&nbsp;                case 116:</b>
+<i>1204</i>&nbsp;                    ThreadReferenceImpl var7 = new ThreadReferenceImpl(this.vm, var1);
+<i>1205</i>&nbsp;                    var7.addListener(this);
+<b class="nc"><i>1206</i>&nbsp;                    var4 = var7;</b>
+<i>1207</i>&nbsp;                    break;
+<i>1208</i>&nbsp;                default:
+<i>1209</i>&nbsp;                    throw new IllegalArgumentException(&quot;Invalid object tag: &quot; + var3);
+<i>1210</i>&nbsp;                }
+<i>1211</i>&nbsp;
+<i>1212</i>&nbsp;                var6 = new VirtualMachineImpl.SoftObjectReference(var5, (ObjectReferenceImpl)var4, this.referenceQueue);
+<i>1213</i>&nbsp;                this.objectsByID.put(var5, var6);
+<b class="nc"><i>1214</i>&nbsp;                if((this.traceFlags &amp; 16) != 0) {</b>
+<b class="nc"><i>1215</i>&nbsp;                    this.printTrace(&quot;Creating new &quot; + var4.getClass().getName() + &quot; (id = &quot; + var1 + &quot;)&quot;);</b>
+<b class="nc"><i>1216</i>&nbsp;                }</b>
+<b class="nc"><i>1217</i>&nbsp;            } else {</b>
+<b class="nc"><i>1218</i>&nbsp;                var6.incrementCount();</b>
+<i>1219</i>&nbsp;            }
+<i>1220</i>&nbsp;
+<i>1221</i>&nbsp;            return (ObjectReferenceImpl)var4;
+<i>1222</i>&nbsp;        }
+<i>1223</i>&nbsp;    }
+<b class="nc"><i>1224</i>&nbsp;</b>
+<i>1225</i>&nbsp;    synchronized void removeObjectMirror(ObjectReferenceImpl var1) {
+<b class="nc"><i>1226</i>&nbsp;        this.processQueue();</b>
+<b class="nc"><i>1227</i>&nbsp;        VirtualMachineImpl.SoftObjectReference var2 = (VirtualMachineImpl.SoftObjectReference)this.objectsByID.remove(new Long(var1.ref()));</b>
+<i>1228</i>&nbsp;        if(var2 != null) {
+<b class="nc"><i>1229</i>&nbsp;            this.batchForDispose(var2);</b>
+<b class="nc"><i>1230</i>&nbsp;        } else {</b>
+<i>1231</i>&nbsp;            throw new InternalException(&quot;ObjectReference &quot; + var1.ref() + &quot; not found in object cache&quot;);
+<i>1232</i>&nbsp;        }
+<i>1233</i>&nbsp;    }
+<i>1234</i>&nbsp;
+<b class="nc"><i>1235</i>&nbsp;    synchronized void removeObjectMirror(VirtualMachineImpl.SoftObjectReference var1) {</b>
+<b class="nc"><i>1236</i>&nbsp;        this.objectsByID.remove(var1.key());</b>
+<b class="nc"><i>1237</i>&nbsp;    }</b>
+<i>1238</i>&nbsp;
+<i>1239</i>&nbsp;    ObjectReferenceImpl objectMirror(long var1) {
+<i>1240</i>&nbsp;        return this.objectMirror(var1, 76);
+<i>1241</i>&nbsp;    }
+<i>1242</i>&nbsp;
+<i>1243</i>&nbsp;    StringReferenceImpl stringMirror(long var1) {
+<b class="nc"><i>1244</i>&nbsp;        return (StringReferenceImpl)this.objectMirror(var1, 115);</b>
+<b class="nc"><i>1245</i>&nbsp;    }</b>
+<i>1246</i>&nbsp;
+<b class="nc"><i>1247</i>&nbsp;    ArrayReferenceImpl arrayMirror(long var1) {</b>
+<b class="nc"><i>1248</i>&nbsp;        return (ArrayReferenceImpl)this.objectMirror(var1, 91);</b>
+<i>1249</i>&nbsp;    }
+<b class="nc"><i>1250</i>&nbsp;</b>
+<b class="nc"><i>1251</i>&nbsp;    ThreadReferenceImpl threadMirror(long var1) {</b>
+<i>1252</i>&nbsp;        return (ThreadReferenceImpl)this.objectMirror(var1, 116);
+<b class="nc"><i>1253</i>&nbsp;    }</b>
+<b class="nc"><i>1254</i>&nbsp;</b>
+<i>1255</i>&nbsp;    ThreadGroupReferenceImpl threadGroupMirror(long var1) {
+<b class="nc"><i>1256</i>&nbsp;        return (ThreadGroupReferenceImpl)this.objectMirror(var1, 103);</b>
+<i>1257</i>&nbsp;    }
+<b class="nc"><i>1258</i>&nbsp;</b>
+<b class="nc"><i>1259</i>&nbsp;    ClassLoaderReferenceImpl classLoaderMirror(long var1) {</b>
+<b class="nc"><i>1260</i>&nbsp;        return (ClassLoaderReferenceImpl)this.objectMirror(var1, 108);</b>
+<i>1261</i>&nbsp;    }
+<b class="nc"><i>1262</i>&nbsp;</b>
+<b class="nc"><i>1263</i>&nbsp;    ClassObjectReferenceImpl classObjectMirror(long var1) {</b>
+<i>1264</i>&nbsp;        return (ClassObjectReferenceImpl)this.objectMirror(var1, 99);
+<b class="nc"><i>1265</i>&nbsp;    }</b>
+<b class="nc"><i>1266</i>&nbsp;</b>
+<i>1267</i>&nbsp;    private ClassPaths getClasspath() {
+<b class="nc"><i>1268</i>&nbsp;        if(this.pathInfo == null) {</b>
+<b class="nc"><i>1269</i>&nbsp;            try {</b>
+<i>1270</i>&nbsp;                this.pathInfo = ClassPaths.process(this.vm);
+<b class="nc"><i>1271</i>&nbsp;            } catch (JDWPException var2) {</b>
+<i>1272</i>&nbsp;                throw var2.toJDIException();
+<b class="nc"><i>1273</i>&nbsp;            }</b>
+<i>1274</i>&nbsp;        }
+<i>1275</i>&nbsp;
+<i>1276</i>&nbsp;        return this.pathInfo;
+<i>1277</i>&nbsp;    }
+<i>1278</i>&nbsp;
+<b class="nc"><i>1279</i>&nbsp;    public List&lt;String&gt; classPath() {</b>
+<b class="nc"><i>1280</i>&nbsp;        return Arrays.asList(this.getClasspath().classpaths);</b>
+<b class="nc"><i>1281</i>&nbsp;    }</b>
+<i>1282</i>&nbsp;
+<i>1283</i>&nbsp;    public List&lt;String&gt; bootClassPath() {
+<i>1284</i>&nbsp;        return Arrays.asList(this.getClasspath().bootclasspaths);
+<b class="nc"><i>1285</i>&nbsp;    }</b>
+<i>1286</i>&nbsp;
+<i>1287</i>&nbsp;    public String baseDirectory() {
+<b class="nc"><i>1288</i>&nbsp;        return this.getClasspath().baseDir;</b>
+<i>1289</i>&nbsp;    }
+<i>1290</i>&nbsp;
+<i>1291</i>&nbsp;    public void setDefaultStratum(String var1) {
+<i>1292</i>&nbsp;        this.defaultStratum = var1;
+<i>1293</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>1294</i>&nbsp;            var1 = &quot;&quot;;</b>
+<i>1295</i>&nbsp;        }
+<b class="nc"><i>1296</i>&nbsp;</b>
+<i>1297</i>&nbsp;        try {
+<b class="nc"><i>1298</i>&nbsp;            SetDefaultStratum.process(this.vm, var1);</b>
+<b class="nc"><i>1299</i>&nbsp;        } catch (JDWPException var3) {</b>
+<i>1300</i>&nbsp;            throw var3.toJDIException();
+<i>1301</i>&nbsp;        }
+<i>1302</i>&nbsp;    }
+<i>1303</i>&nbsp;
+<i>1304</i>&nbsp;    public String getDefaultStratum() {
+<b class="nc"><i>1305</i>&nbsp;        return this.defaultStratum;</b>
+<i>1306</i>&nbsp;    }
+<i>1307</i>&nbsp;
+<i>1308</i>&nbsp;    ThreadGroup threadGroupForJDI() {
+<i>1309</i>&nbsp;        return this.threadGroupForJDI;
+<i>1310</i>&nbsp;    }
+<i>1311</i>&nbsp;
+<i>1312</i>&nbsp;    private static class SoftObjectReference extends SoftReference&lt;ObjectReferenceImpl&gt; {
+<i>1313</i>&nbsp;        int count = 1;
+<i>1314</i>&nbsp;        Long key;
+<b class="nc"><i>1315</i>&nbsp;</b>
+<i>1316</i>&nbsp;        SoftObjectReference(Long var1, ObjectReferenceImpl var2, ReferenceQueue&lt;ObjectReferenceImpl&gt; var3) {
+<i>1317</i>&nbsp;            super(var2, var3);
+<i>1318</i>&nbsp;            this.key = var1;
+<b class="nc"><i>1319</i>&nbsp;        }</b>
+<i>1320</i>&nbsp;
+<i>1321</i>&nbsp;        int count() {
+<i>1322</i>&nbsp;            return this.count;
+<b class="nc"><i>1323</i>&nbsp;        }</b>
+<i>1324</i>&nbsp;
+<i>1325</i>&nbsp;        void incrementCount() {
+<i>1326</i>&nbsp;            ++this.count;
+<b class="nc"><i>1327</i>&nbsp;        }</b>
+<i>1328</i>&nbsp;
+<i>1329</i>&nbsp;        Long key() {
+<i>1330</i>&nbsp;            return this.key;
+<b class="nc"><i>1331</i>&nbsp;        }</b>
+<i>1332</i>&nbsp;
+<i>1333</i>&nbsp;        ObjectReferenceImpl object() {
+<i>1334</i>&nbsp;            return (ObjectReferenceImpl)this.get();
+<b class="nc"><i>1335</i>&nbsp;        }</b>
+<i>1336</i>&nbsp;    }
+<i>1337</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

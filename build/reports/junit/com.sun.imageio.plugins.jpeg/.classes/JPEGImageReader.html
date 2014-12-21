@@ -1,0 +1,1412 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JPEGImageReader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.imageio.plugins.jpeg</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JPEGImageReader (com.sun.imageio.plugins.jpeg)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JPEGImageReader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 609)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">JPEGImageReader$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">JPEGImageReader$CallBackLock</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">JPEGImageReader$CallBackLock$State</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">JPEGImageReader$JPEGReaderDisposerRecord</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 60)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 626)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.imageio.plugins.jpeg;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.imageio.plugins.jpeg.ImageTypeIterator;
+<i>9</i>&nbsp;import com.sun.imageio.plugins.jpeg.ImageTypeProducer;
+<i>10</i>&nbsp;import com.sun.imageio.plugins.jpeg.JFIFMarkerSegment;
+<i>11</i>&nbsp;import com.sun.imageio.plugins.jpeg.JPEG;
+<i>12</i>&nbsp;import com.sun.imageio.plugins.jpeg.JPEGBuffer;
+<i>13</i>&nbsp;import com.sun.imageio.plugins.jpeg.JPEGMetadata;
+<i>14</i>&nbsp;import com.sun.imageio.plugins.jpeg.SOSMarkerSegment;
+<i>15</i>&nbsp;import com.sun.imageio.plugins.jpeg.JPEG.JCS;
+<i>16</i>&nbsp;import java.awt.Point;
+<i>17</i>&nbsp;import java.awt.Rectangle;
+<i>18</i>&nbsp;import java.awt.RenderingHints;
+<i>19</i>&nbsp;import java.awt.color.CMMException;
+<i>20</i>&nbsp;import java.awt.color.ColorSpace;
+<i>21</i>&nbsp;import java.awt.color.ICC_ColorSpace;
+<i>22</i>&nbsp;import java.awt.color.ICC_Profile;
+<i>23</i>&nbsp;import java.awt.image.BufferedImage;
+<i>24</i>&nbsp;import java.awt.image.ColorConvertOp;
+<i>25</i>&nbsp;import java.awt.image.ColorModel;
+<i>26</i>&nbsp;import java.awt.image.DataBufferByte;
+<i>27</i>&nbsp;import java.awt.image.IndexColorModel;
+<i>28</i>&nbsp;import java.awt.image.Raster;
+<i>29</i>&nbsp;import java.awt.image.WritableRaster;
+<i>30</i>&nbsp;import java.io.IOException;
+<i>31</i>&nbsp;import java.security.AccessController;
+<i>32</i>&nbsp;import java.util.ArrayList;
+<i>33</i>&nbsp;import java.util.Arrays;
+<i>34</i>&nbsp;import java.util.Iterator;
+<i>35</i>&nbsp;import java.util.List;
+<i>36</i>&nbsp;import javax.imageio.IIOException;
+<i>37</i>&nbsp;import javax.imageio.ImageReadParam;
+<i>38</i>&nbsp;import javax.imageio.ImageReader;
+<i>39</i>&nbsp;import javax.imageio.ImageTypeSpecifier;
+<i>40</i>&nbsp;import javax.imageio.metadata.IIOMetadata;
+<i>41</i>&nbsp;import javax.imageio.plugins.jpeg.JPEGHuffmanTable;
+<b class="nc"><i>42</i>&nbsp;import javax.imageio.plugins.jpeg.JPEGImageReadParam;</b>
+<i>43</i>&nbsp;import javax.imageio.plugins.jpeg.JPEGQTable;
+<b class="nc"><i>44</i>&nbsp;import javax.imageio.spi.ImageReaderSpi;</b>
+<i>45</i>&nbsp;import javax.imageio.stream.ImageInputStream;
+<i>46</i>&nbsp;import sun.java2d.Disposer;
+<i>47</i>&nbsp;import sun.java2d.DisposerRecord;
+<i>48</i>&nbsp;import sun.security.action.LoadLibraryAction;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;public class JPEGImageReader extends ImageReader {
+<i>51</i>&nbsp;    private boolean debug = false;
+<b class="nc"><i>52</i>&nbsp;    private long structPointer = 0L;</b>
+<i>53</i>&nbsp;    private ImageInputStream iis = null;
+<i>54</i>&nbsp;    private List imagePositions = null;
+<b class="nc"><i>55</i>&nbsp;    private int numImages = 0;</b>
+<i>56</i>&nbsp;    protected static final int WARNING_NO_EOI = 0;
+<i>57</i>&nbsp;    protected static final int WARNING_NO_JFIF_IN_THUMB = 1;
+<i>58</i>&nbsp;    protected static final int WARNING_IGNORE_INVALID_ICC = 2;
+<i>59</i>&nbsp;    private static final int MAX_WARNING = 2;
+<i>60</i>&nbsp;    private int currentImage = -1;
+<b class="nc"><i>61</i>&nbsp;    private int width;</b>
+<i>62</i>&nbsp;    private int height;
+<i>63</i>&nbsp;    private int colorSpaceCode;
+<i>64</i>&nbsp;    private int outColorSpaceCode;
+<i>65</i>&nbsp;    private int numComponents;
+<b class="nc"><i>66</i>&nbsp;    private ColorSpace iccCS = null;</b>
+<i>67</i>&nbsp;    private ColorConvertOp convert = null;
+<i>68</i>&nbsp;    private BufferedImage image = null;
+<b class="nc"><i>69</i>&nbsp;    private WritableRaster raster = null;</b>
+<i>70</i>&nbsp;    private WritableRaster target = null;
+<b class="nc"><i>71</i>&nbsp;    private DataBufferByte buffer = null;</b>
+<i>72</i>&nbsp;    private Rectangle destROI = null;
+<i>73</i>&nbsp;    private int[] destinationBands = null;
+<i>74</i>&nbsp;    private JPEGMetadata streamMetadata = null;
+<i>75</i>&nbsp;    private JPEGMetadata imageMetadata = null;
+<i>76</i>&nbsp;    private int imageMetadataIndex = -1;
+<i>77</i>&nbsp;    private boolean haveSeeked = false;
+<i>78</i>&nbsp;    private JPEGQTable[] abbrevQTables = null;
+<i>79</i>&nbsp;    private JPEGHuffmanTable[] abbrevDCHuffmanTables = null;
+<i>80</i>&nbsp;    private JPEGHuffmanTable[] abbrevACHuffmanTables = null;
+<i>81</i>&nbsp;    private int minProgressivePass = 0;
+<i>82</i>&nbsp;    private int maxProgressivePass = 2147483647;
+<i>83</i>&nbsp;    private static final int UNKNOWN = -1;
+<i>84</i>&nbsp;    private static final int MIN_ESTIMATED_PASSES = 10;
+<i>85</i>&nbsp;    private int knownPassCount = -1;
+<i>86</i>&nbsp;    private int pass = 0;
+<i>87</i>&nbsp;    private float percentToDate = 0.0F;
+<i>88</i>&nbsp;    private float previousPassPercentage = 0.0F;
+<i>89</i>&nbsp;    private int progInterval = 0;
+<i>90</i>&nbsp;    private boolean tablesOnlyChecked = false;
+<i>91</i>&nbsp;    private Object disposerReferent = new Object();
+<i>92</i>&nbsp;    private DisposerRecord disposerRecord;
+<i>93</i>&nbsp;    private Thread theThread = null;
+<i>94</i>&nbsp;    private int theLockCount = 0;
+<i>95</i>&nbsp;    private JPEGImageReader.CallBackLock cbLock = new JPEGImageReader.CallBackLock();
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    private static native void initReaderIDs(Class var0, Class var1, Class var2);
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    public JPEGImageReader(ImageReaderSpi var1) {
+<i>100</i>&nbsp;        super(var1);
+<i>101</i>&nbsp;        this.structPointer = this.initJPEGImageReader();
+<i>102</i>&nbsp;        this.disposerRecord = new JPEGImageReader.JPEGReaderDisposerRecord(this.structPointer);
+<i>103</i>&nbsp;        Disposer.addRecord(this.disposerReferent, this.disposerRecord);
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    private native long initJPEGImageReader();
+<b class="nc"><i>107</i>&nbsp;</b>
+<i>108</i>&nbsp;    protected void warningOccurred(int var1) {
+<i>109</i>&nbsp;        this.cbLock.lock();
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;        try {
+<i>112</i>&nbsp;            if(var1 &lt; 0 || var1 &gt; 2) {
+<i>113</i>&nbsp;                throw new InternalError(&quot;Invalid warning index&quot;);
+<i>114</i>&nbsp;            }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;            this.processWarningOccurred(&quot;com.sun.imageio.plugins.jpeg.JPEGImageReaderResources&quot;, Integer.toString(var1));
+<i>117</i>&nbsp;        } finally {
+<i>118</i>&nbsp;            this.cbLock.unlock();
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    protected void warningWithMessage(String var1) {
+<i>124</i>&nbsp;        this.cbLock.lock();
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        try {
+<i>127</i>&nbsp;            this.processWarningOccurred(var1);
+<i>128</i>&nbsp;        } finally {
+<i>129</i>&nbsp;            this.cbLock.unlock();
+<b class="nc"><i>130</i>&nbsp;        }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<b class="nc"><i>134</i>&nbsp;    public void setInput(Object var1, boolean var2, boolean var3) {</b>
+<i>135</i>&nbsp;        this.setThreadLock();
+<i>136</i>&nbsp;
+<b class="nc"><i>137</i>&nbsp;        try {</b>
+<i>138</i>&nbsp;            this.cbLock.check();
+<i>139</i>&nbsp;            super.setInput(var1, var2, var3);
+<b class="nc"><i>140</i>&nbsp;            this.ignoreMetadata = var3;</b>
+<i>141</i>&nbsp;            this.resetInternalState();
+<i>142</i>&nbsp;            this.iis = (ImageInputStream)var1;
+<b class="nc"><i>143</i>&nbsp;            this.setSource(this.structPointer);</b>
+<i>144</i>&nbsp;        } finally {
+<i>145</i>&nbsp;            this.clearThreadLock();
+<b class="nc"><i>146</i>&nbsp;        }</b>
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    }
+<b class="nc"><i>149</i>&nbsp;</b>
+<i>150</i>&nbsp;    private int readInputData(byte[] var1, int var2, int var3) throws IOException {
+<i>151</i>&nbsp;        this.cbLock.lock();
+<b class="nc"><i>152</i>&nbsp;</b>
+<i>153</i>&nbsp;        int var4;
+<i>154</i>&nbsp;        try {
+<b class="nc"><i>155</i>&nbsp;            var4 = this.iis.read(var1, var2, var3);</b>
+<i>156</i>&nbsp;        } finally {
+<i>157</i>&nbsp;            this.cbLock.unlock();
+<b class="nc"><i>158</i>&nbsp;        }</b>
+<b class="nc"><i>159</i>&nbsp;</b>
+<i>160</i>&nbsp;        return var4;
+<i>161</i>&nbsp;    }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    private long skipInputBytes(long var1) throws IOException {
+<i>164</i>&nbsp;        this.cbLock.lock();
+<b class="nc"><i>165</i>&nbsp;</b>
+<i>166</i>&nbsp;        long var3;
+<i>167</i>&nbsp;        try {
+<i>168</i>&nbsp;            var3 = this.iis.skipBytes(var1);
+<i>169</i>&nbsp;        } finally {
+<i>170</i>&nbsp;            this.cbLock.unlock();
+<b class="nc"><i>171</i>&nbsp;        }</b>
+<b class="nc"><i>172</i>&nbsp;</b>
+<b class="nc"><i>173</i>&nbsp;        return var3;</b>
+<i>174</i>&nbsp;    }
+<b class="nc"><i>175</i>&nbsp;</b>
+<b class="nc"><i>176</i>&nbsp;    private native void setSource(long var1);</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    private void checkTablesOnly() throws IOException {
+<i>179</i>&nbsp;        if(this.debug) {
+<i>180</i>&nbsp;            System.out.println(&quot;Checking for tables-only image&quot;);
+<i>181</i>&nbsp;        }
+<i>182</i>&nbsp;
+<b class="nc"><i>183</i>&nbsp;        long var1 = this.iis.getStreamPosition();</b>
+<b class="nc"><i>184</i>&nbsp;        if(this.debug) {</b>
+<b class="nc"><i>185</i>&nbsp;            System.out.println(&quot;saved pos is &quot; + var1);</b>
+<b class="nc"><i>186</i>&nbsp;            System.out.println(&quot;length is &quot; + this.iis.length());</b>
+<b class="nc"><i>187</i>&nbsp;        }</b>
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;        boolean var3 = this.readNativeHeader(true);
+<i>190</i>&nbsp;        if(var3) {
+<i>191</i>&nbsp;            long var4;
+<b class="nc"><i>192</i>&nbsp;            if(this.debug) {</b>
+<i>193</i>&nbsp;                System.out.println(&quot;tables-only image found&quot;);
+<i>194</i>&nbsp;                var4 = this.iis.getStreamPosition();
+<b class="nc"><i>195</i>&nbsp;                System.out.println(&quot;pos after return from native is &quot; + var4);</b>
+<i>196</i>&nbsp;            }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;            if(!this.ignoreMetadata) {
+<i>199</i>&nbsp;                this.iis.seek(var1);
+<i>200</i>&nbsp;                this.haveSeeked = true;
+<i>201</i>&nbsp;                this.streamMetadata = new JPEGMetadata(true, false, this.iis, this);
+<i>202</i>&nbsp;                var4 = this.iis.getStreamPosition();
+<i>203</i>&nbsp;                if(this.debug) {
+<i>204</i>&nbsp;                    System.out.println(&quot;pos after constructing stream metadata is &quot; + var4);
+<i>205</i>&nbsp;                }
+<b class="nc"><i>206</i>&nbsp;            }</b>
+<b class="nc"><i>207</i>&nbsp;</b>
+<b class="nc"><i>208</i>&nbsp;            if(this.hasNextImage()) {</b>
+<b class="nc"><i>209</i>&nbsp;                this.imagePositions.add(new Long(this.iis.getStreamPosition()));</b>
+<i>210</i>&nbsp;            }
+<i>211</i>&nbsp;        } else {
+<i>212</i>&nbsp;            this.imagePositions.add(new Long(var1));
+<i>213</i>&nbsp;            this.currentImage = 0;
+<i>214</i>&nbsp;        }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        if(this.seekForwardOnly) {
+<i>217</i>&nbsp;            Long var6 = (Long)this.imagePositions.get(this.imagePositions.size() - 1);
+<i>218</i>&nbsp;            this.iis.flushBefore(var6.longValue());
+<i>219</i>&nbsp;        }
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;        this.tablesOnlyChecked = true;</b>
+<i>222</i>&nbsp;    }
+<b class="nc"><i>223</i>&nbsp;</b>
+<b class="nc"><i>224</i>&nbsp;    public int getNumImages(boolean var1) throws IOException {</b>
+<i>225</i>&nbsp;        this.setThreadLock();
+<b class="nc"><i>226</i>&nbsp;</b>
+<i>227</i>&nbsp;        int var2;
+<i>228</i>&nbsp;        try {
+<b class="nc"><i>229</i>&nbsp;            this.cbLock.check();</b>
+<b class="nc"><i>230</i>&nbsp;            var2 = this.getNumImagesOnThread(var1);</b>
+<b class="nc"><i>231</i>&nbsp;        } finally {</b>
+<i>232</i>&nbsp;            this.clearThreadLock();
+<i>233</i>&nbsp;        }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;        return var2;
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    private int getNumImagesOnThread(boolean var1) throws IOException {
+<i>239</i>&nbsp;        if(this.numImages != 0) {
+<i>240</i>&nbsp;            return this.numImages;
+<i>241</i>&nbsp;        } else if(this.iis == null) {
+<i>242</i>&nbsp;            throw new IllegalStateException(&quot;Input not set&quot;);
+<i>243</i>&nbsp;        } else if(var1) {
+<i>244</i>&nbsp;            if(this.seekForwardOnly) {
+<i>245</i>&nbsp;                throw new IllegalStateException(&quot;seekForwardOnly and allowSearch can\&#39;t both be true!&quot;);
+<i>246</i>&nbsp;            } else {
+<i>247</i>&nbsp;                if(!this.tablesOnlyChecked) {
+<b class="nc"><i>248</i>&nbsp;                    this.checkTablesOnly();</b>
+<i>249</i>&nbsp;                }
+<b class="nc"><i>250</i>&nbsp;</b>
+<b class="nc"><i>251</i>&nbsp;                this.iis.mark();</b>
+<b class="nc"><i>252</i>&nbsp;                this.gotoImage(0);</b>
+<b class="nc"><i>253</i>&nbsp;                JPEGBuffer var2 = new JPEGBuffer(this.iis);</b>
+<i>254</i>&nbsp;                var2.loadBuf(0);
+<i>255</i>&nbsp;                boolean var3 = false;
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;                while(!var3) {
+<i>258</i>&nbsp;                    var3 = var2.scanForFF(this);
+<i>259</i>&nbsp;                    switch(var2.buf[var2.bufPtr] &amp; 255) {
+<b class="nc"><i>260</i>&nbsp;                    case 216:</b>
+<i>261</i>&nbsp;                        ++this.numImages;
+<b class="nc"><i>262</i>&nbsp;                    case 0:</b>
+<i>263</i>&nbsp;                    case 208:
+<b class="nc"><i>264</i>&nbsp;                    case 209:</b>
+<b class="nc"><i>265</i>&nbsp;                    case 210:</b>
+<b class="nc"><i>266</i>&nbsp;                    case 211:</b>
+<b class="nc"><i>267</i>&nbsp;                    case 212:</b>
+<b class="nc"><i>268</i>&nbsp;                    case 213:</b>
+<b class="nc"><i>269</i>&nbsp;                    case 214:</b>
+<b class="nc"><i>270</i>&nbsp;                    case 215:</b>
+<b class="nc"><i>271</i>&nbsp;                    case 217:</b>
+<i>272</i>&nbsp;                        --var2.bufAvail;
+<i>273</i>&nbsp;                        ++var2.bufPtr;
+<i>274</i>&nbsp;                        break;
+<i>275</i>&nbsp;                    default:
+<i>276</i>&nbsp;                        --var2.bufAvail;
+<i>277</i>&nbsp;                        ++var2.bufPtr;
+<i>278</i>&nbsp;                        var2.loadBuf(2);
+<i>279</i>&nbsp;                        int var4 = (var2.buf[var2.bufPtr++] &amp; 255) &lt;&lt; 8 | var2.buf[var2.bufPtr++] &amp; 255;
+<i>280</i>&nbsp;                        var2.bufAvail -= 2;
+<i>281</i>&nbsp;                        var4 -= 2;
+<i>282</i>&nbsp;                        var2.skipData(var4);
+<i>283</i>&nbsp;                    }
+<i>284</i>&nbsp;                }
+<b class="nc"><i>285</i>&nbsp;</b>
+<i>286</i>&nbsp;                this.iis.reset();
+<b class="nc"><i>287</i>&nbsp;                return this.numImages;</b>
+<i>288</i>&nbsp;            }
+<b class="nc"><i>289</i>&nbsp;        } else {</b>
+<i>290</i>&nbsp;            return -1;
+<i>291</i>&nbsp;        }
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    private void gotoImage(int var1) throws IOException {
+<i>295</i>&nbsp;        if(this.iis == null) {
+<i>296</i>&nbsp;            throw new IllegalStateException(&quot;Input not set&quot;);
+<i>297</i>&nbsp;        } else if(var1 &lt; this.minIndex) {
+<i>298</i>&nbsp;            throw new IndexOutOfBoundsException();
+<i>299</i>&nbsp;        } else {
+<i>300</i>&nbsp;            if(!this.tablesOnlyChecked) {
+<i>301</i>&nbsp;                this.checkTablesOnly();
+<b class="nc"><i>302</i>&nbsp;            }</b>
+<i>303</i>&nbsp;
+<b class="nc"><i>304</i>&nbsp;            if(var1 &lt; this.imagePositions.size()) {</b>
+<i>305</i>&nbsp;                this.iis.seek(((Long)((Long)this.imagePositions.get(var1))).longValue());
+<b class="nc"><i>306</i>&nbsp;            } else {</b>
+<i>307</i>&nbsp;                Long var2 = (Long)this.imagePositions.get(this.imagePositions.size() - 1);
+<i>308</i>&nbsp;                this.iis.seek(var2.longValue());
+<i>309</i>&nbsp;                this.skipImage();
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;                for(int var3 = this.imagePositions.size(); var3 &lt;= var1; ++var3) {
+<i>312</i>&nbsp;                    if(!this.hasNextImage()) {
+<b class="nc"><i>313</i>&nbsp;                        throw new IndexOutOfBoundsException();</b>
+<b class="nc"><i>314</i>&nbsp;                    }</b>
+<i>315</i>&nbsp;
+<b class="nc"><i>316</i>&nbsp;                    var2 = new Long(this.iis.getStreamPosition());</b>
+<b class="nc"><i>317</i>&nbsp;                    this.imagePositions.add(var2);</b>
+<b class="nc"><i>318</i>&nbsp;                    if(this.seekForwardOnly) {</b>
+<b class="nc"><i>319</i>&nbsp;                        this.iis.flushBefore(var2.longValue());</b>
+<i>320</i>&nbsp;                    }
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;                    if(var3 &lt; var1) {</b>
+<b class="nc"><i>323</i>&nbsp;                        this.skipImage();</b>
+<b class="nc"><i>324</i>&nbsp;                    }</b>
+<b class="nc"><i>325</i>&nbsp;                }</b>
+<b class="nc"><i>326</i>&nbsp;            }</b>
+<b class="nc"><i>327</i>&nbsp;</b>
+<i>328</i>&nbsp;            if(this.seekForwardOnly) {
+<i>329</i>&nbsp;                this.minIndex = var1;
+<i>330</i>&nbsp;            }
+<b class="nc"><i>331</i>&nbsp;</b>
+<b class="nc"><i>332</i>&nbsp;            this.haveSeeked = true;</b>
+<b class="nc"><i>333</i>&nbsp;        }</b>
+<b class="nc"><i>334</i>&nbsp;    }</b>
+<i>335</i>&nbsp;
+<b class="nc"><i>336</i>&nbsp;    private void skipImage() throws IOException {</b>
+<b class="nc"><i>337</i>&nbsp;        if(this.debug) {</b>
+<b class="nc"><i>338</i>&nbsp;            System.out.println(&quot;skipImage called&quot;);</b>
+<i>339</i>&nbsp;        }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;        boolean var1 = false;
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;        for(int var2 = this.iis.read(); var2 != -1; var2 = this.iis.read()) {
+<b class="nc"><i>344</i>&nbsp;            if(var1 &amp;&amp; var2 == 217) {</b>
+<b class="nc"><i>345</i>&nbsp;                return;</b>
+<i>346</i>&nbsp;            }
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;            var1 = var2 == 255;</b>
+<i>349</i>&nbsp;        }
+<b class="nc"><i>350</i>&nbsp;</b>
+<i>351</i>&nbsp;        throw new IndexOutOfBoundsException();
+<b class="nc"><i>352</i>&nbsp;    }</b>
+<b class="nc"><i>353</i>&nbsp;</b>
+<b class="nc"><i>354</i>&nbsp;    private boolean hasNextImage() throws IOException {</b>
+<i>355</i>&nbsp;        if(this.debug) {
+<b class="nc"><i>356</i>&nbsp;            System.out.print(&quot;hasNextImage called; returning &quot;);</b>
+<i>357</i>&nbsp;        }
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;        this.iis.mark();
+<b class="nc"><i>360</i>&nbsp;        boolean var1 = false;</b>
+<i>361</i>&nbsp;
+<b class="nc"><i>362</i>&nbsp;        for(int var2 = this.iis.read(); var2 != -1; var2 = this.iis.read()) {</b>
+<i>363</i>&nbsp;            if(var1 &amp;&amp; var2 == 216) {
+<b class="nc"><i>364</i>&nbsp;                this.iis.reset();</b>
+<i>365</i>&nbsp;                if(this.debug) {
+<b class="nc"><i>366</i>&nbsp;                    System.out.println(&quot;true&quot;);</b>
+<i>367</i>&nbsp;                }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;                return true;
+<i>370</i>&nbsp;            }
+<i>371</i>&nbsp;
+<b class="nc"><i>372</i>&nbsp;            var1 = var2 == 255;</b>
+<b class="nc"><i>373</i>&nbsp;        }</b>
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;        this.iis.reset();</b>
+<b class="nc"><i>376</i>&nbsp;        if(this.debug) {</b>
+<i>377</i>&nbsp;            System.out.println(&quot;false&quot;);
+<b class="nc"><i>378</i>&nbsp;        }</b>
+<b class="nc"><i>379</i>&nbsp;</b>
+<b class="nc"><i>380</i>&nbsp;        return false;</b>
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    private void pushBack(int var1) throws IOException {
+<i>384</i>&nbsp;        if(this.debug) {
+<b class="nc"><i>385</i>&nbsp;            System.out.println(&quot;pushing back &quot; + var1 + &quot; bytes&quot;);</b>
+<b class="nc"><i>386</i>&nbsp;        }</b>
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;        this.cbLock.lock();
+<b class="nc"><i>389</i>&nbsp;</b>
+<i>390</i>&nbsp;        try {
+<b class="nc"><i>391</i>&nbsp;            this.iis.seek(this.iis.getStreamPosition() - (long)var1);</b>
+<i>392</i>&nbsp;        } finally {
+<b class="nc"><i>393</i>&nbsp;            this.cbLock.unlock();</b>
+<b class="nc"><i>394</i>&nbsp;        }</b>
+<i>395</i>&nbsp;
+<b class="nc"><i>396</i>&nbsp;    }</b>
+<b class="nc"><i>397</i>&nbsp;</b>
+<b class="nc"><i>398</i>&nbsp;    private void readHeader(int var1, boolean var2) throws IOException {</b>
+<b class="nc"><i>399</i>&nbsp;        this.gotoImage(var1);</b>
+<i>400</i>&nbsp;        this.readNativeHeader(var2);
+<b class="nc"><i>401</i>&nbsp;        this.currentImage = var1;</b>
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    private boolean readNativeHeader(boolean var1) throws IOException {
+<i>405</i>&nbsp;        boolean var2 = false;
+<i>406</i>&nbsp;        var2 = this.readImageHeader(this.structPointer, this.haveSeeked, var1);
+<i>407</i>&nbsp;        this.haveSeeked = false;
+<i>408</i>&nbsp;        return var2;
+<i>409</i>&nbsp;    }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    private native boolean readImageHeader(long var1, boolean var3, boolean var4) throws IOException;
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;    private void setImageData(int var1, int var2, int var3, int var4, int var5, byte[] var6) {
+<b class="nc"><i>414</i>&nbsp;        this.width = var1;</b>
+<b class="nc"><i>415</i>&nbsp;        this.height = var2;</b>
+<b class="nc"><i>416</i>&nbsp;        this.colorSpaceCode = var3;</b>
+<i>417</i>&nbsp;        this.outColorSpaceCode = var4;
+<i>418</i>&nbsp;        this.numComponents = var5;
+<b class="nc"><i>419</i>&nbsp;        if(var6 == null) {</b>
+<b class="nc"><i>420</i>&nbsp;            this.iccCS = null;</b>
+<b class="nc"><i>421</i>&nbsp;        } else {</b>
+<b class="nc"><i>422</i>&nbsp;            ICC_Profile var7 = null;</b>
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;            try {</b>
+<b class="nc"><i>425</i>&nbsp;                var7 = ICC_Profile.getInstance(var6);</b>
+<b class="nc"><i>426</i>&nbsp;            } catch (IllegalArgumentException var18) {</b>
+<i>427</i>&nbsp;                this.iccCS = null;
+<i>428</i>&nbsp;                this.warningOccurred(2);
+<i>429</i>&nbsp;                return;
+<i>430</i>&nbsp;            }
+<b class="nc"><i>431</i>&nbsp;</b>
+<i>432</i>&nbsp;            byte[] var8 = var7.getData();
+<b class="nc"><i>433</i>&nbsp;            ICC_Profile var9 = null;</b>
+<i>434</i>&nbsp;            if(this.iccCS instanceof ICC_ColorSpace) {
+<i>435</i>&nbsp;                var9 = ((ICC_ColorSpace)this.iccCS).getProfile();
+<b class="nc"><i>436</i>&nbsp;            }</b>
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;            byte[] var10 = null;
+<i>439</i>&nbsp;            if(var9 != null) {
+<i>440</i>&nbsp;                var10 = var9.getData();
+<i>441</i>&nbsp;            }
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;            if(var10 == null || !Arrays.equals(var10, var8)) {
+<i>444</i>&nbsp;                this.iccCS = new ICC_ColorSpace(var7);
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;                try {
+<i>447</i>&nbsp;                    this.iccCS.fromRGB(new float[]{1.0F, 0.0F, 0.0F});
+<i>448</i>&nbsp;                } catch (CMMException var17) {
+<b class="nc"><i>449</i>&nbsp;                    this.iccCS = null;</b>
+<b class="nc"><i>450</i>&nbsp;                    this.cbLock.lock();</b>
+<i>451</i>&nbsp;
+<b class="nc"><i>452</i>&nbsp;                    try {</b>
+<b class="nc"><i>453</i>&nbsp;                        this.warningOccurred(2);</b>
+<i>454</i>&nbsp;                    } finally {
+<b class="nc"><i>455</i>&nbsp;                        this.cbLock.unlock();</b>
+<b class="nc"><i>456</i>&nbsp;                    }</b>
+<i>457</i>&nbsp;                }
+<b class="nc"><i>458</i>&nbsp;            }</b>
+<b class="nc"><i>459</i>&nbsp;</b>
+<i>460</i>&nbsp;        }
+<i>461</i>&nbsp;    }
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    public int getWidth(int var1) throws IOException {
+<b class="nc"><i>464</i>&nbsp;        this.setThreadLock();</b>
+<b class="nc"><i>465</i>&nbsp;</b>
+<b class="nc"><i>466</i>&nbsp;        int var2;</b>
+<i>467</i>&nbsp;        try {
+<b class="nc"><i>468</i>&nbsp;            if(this.currentImage != var1) {</b>
+<b class="nc"><i>469</i>&nbsp;                this.cbLock.check();</b>
+<b class="nc"><i>470</i>&nbsp;                this.readHeader(var1, true);</b>
+<i>471</i>&nbsp;            }
+<b class="nc"><i>472</i>&nbsp;</b>
+<b class="nc"><i>473</i>&nbsp;            var2 = this.width;</b>
+<i>474</i>&nbsp;        } finally {
+<b class="nc"><i>475</i>&nbsp;            this.clearThreadLock();</b>
+<b class="nc"><i>476</i>&nbsp;        }</b>
+<b class="nc"><i>477</i>&nbsp;</b>
+<b class="nc"><i>478</i>&nbsp;        return var2;</b>
+<i>479</i>&nbsp;    }
+<b class="nc"><i>480</i>&nbsp;</b>
+<b class="nc"><i>481</i>&nbsp;    public int getHeight(int var1) throws IOException {</b>
+<i>482</i>&nbsp;        this.setThreadLock();
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;        int var2;
+<i>485</i>&nbsp;        try {
+<b class="nc"><i>486</i>&nbsp;            if(this.currentImage != var1) {</b>
+<b class="nc"><i>487</i>&nbsp;                this.cbLock.check();</b>
+<i>488</i>&nbsp;                this.readHeader(var1, true);
+<i>489</i>&nbsp;            }
+<b class="nc"><i>490</i>&nbsp;</b>
+<i>491</i>&nbsp;            var2 = this.height;
+<i>492</i>&nbsp;        } finally {
+<i>493</i>&nbsp;            this.clearThreadLock();
+<i>494</i>&nbsp;        }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;        return var2;
+<i>497</i>&nbsp;    }
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;    private ImageTypeProducer getImageType(int var1) {
+<i>500</i>&nbsp;        ImageTypeProducer var2 = null;
+<i>501</i>&nbsp;        if(var1 &gt; 0 &amp;&amp; var1 &lt; 12) {
+<b class="nc"><i>502</i>&nbsp;            var2 = ImageTypeProducer.getTypeProducer(var1);</b>
+<b class="nc"><i>503</i>&nbsp;        }</b>
+<i>504</i>&nbsp;
+<b class="nc"><i>505</i>&nbsp;        return var2;</b>
+<b class="nc"><i>506</i>&nbsp;    }</b>
+<b class="nc"><i>507</i>&nbsp;</b>
+<b class="nc"><i>508</i>&nbsp;    public ImageTypeSpecifier getRawImageType(int var1) throws IOException {</b>
+<i>509</i>&nbsp;        this.setThreadLock();
+<b class="nc"><i>510</i>&nbsp;</b>
+<b class="nc"><i>511</i>&nbsp;        ImageTypeSpecifier var2;</b>
+<i>512</i>&nbsp;        try {
+<i>513</i>&nbsp;            if(this.currentImage != var1) {
+<i>514</i>&nbsp;                this.cbLock.check();
+<b class="nc"><i>515</i>&nbsp;                this.readHeader(var1, true);</b>
+<i>516</i>&nbsp;            }
+<b class="nc"><i>517</i>&nbsp;</b>
+<i>518</i>&nbsp;            var2 = this.getImageType(this.colorSpaceCode).getType();
+<i>519</i>&nbsp;        } finally {
+<i>520</i>&nbsp;            this.clearThreadLock();
+<i>521</i>&nbsp;        }
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;        return var2;
+<i>524</i>&nbsp;    }
+<i>525</i>&nbsp;
+<b class="nc"><i>526</i>&nbsp;    public Iterator getImageTypes(int var1) throws IOException {</b>
+<b class="nc"><i>527</i>&nbsp;        this.setThreadLock();</b>
+<i>528</i>&nbsp;
+<b class="nc"><i>529</i>&nbsp;        Iterator var2;</b>
+<b class="nc"><i>530</i>&nbsp;        try {</b>
+<b class="nc"><i>531</i>&nbsp;            var2 = this.getImageTypesOnThread(var1);</b>
+<b class="nc"><i>532</i>&nbsp;        } finally {</b>
+<b class="nc"><i>533</i>&nbsp;            this.clearThreadLock();</b>
+<i>534</i>&nbsp;        }
+<b class="nc"><i>535</i>&nbsp;</b>
+<b class="nc"><i>536</i>&nbsp;        return var2;</b>
+<b class="nc"><i>537</i>&nbsp;    }</b>
+<b class="nc"><i>538</i>&nbsp;</b>
+<b class="nc"><i>539</i>&nbsp;    private Iterator getImageTypesOnThread(int var1) throws IOException {</b>
+<i>540</i>&nbsp;        if(this.currentImage != var1) {
+<b class="nc"><i>541</i>&nbsp;            this.cbLock.check();</b>
+<i>542</i>&nbsp;            this.readHeader(var1, true);
+<i>543</i>&nbsp;        }
+<b class="nc"><i>544</i>&nbsp;</b>
+<i>545</i>&nbsp;        ImageTypeProducer var2 = this.getImageType(this.colorSpaceCode);
+<i>546</i>&nbsp;        ArrayList var3 = new ArrayList(1);
+<b class="nc"><i>547</i>&nbsp;        switch(this.colorSpaceCode) {</b>
+<b class="nc"><i>548</i>&nbsp;        case 1:</b>
+<b class="nc"><i>549</i>&nbsp;            var3.add(var2);</b>
+<i>550</i>&nbsp;            var3.add(this.getImageType(2));
+<b class="nc"><i>551</i>&nbsp;            break;</b>
+<i>552</i>&nbsp;        case 2:
+<i>553</i>&nbsp;            var3.add(var2);
+<i>554</i>&nbsp;            var3.add(this.getImageType(1));
+<i>555</i>&nbsp;            var3.add(this.getImageType(5));
+<i>556</i>&nbsp;            break;
+<i>557</i>&nbsp;        case 3:
+<i>558</i>&nbsp;            var3.add(this.getImageType(2));
+<i>559</i>&nbsp;            if(this.iccCS != null) {
+<b class="nc"><i>560</i>&nbsp;                var3.add(new ImageTypeProducer() {</b>
+<b class="nc"><i>561</i>&nbsp;                    protected ImageTypeSpecifier produce() {</b>
+<i>562</i>&nbsp;                        return ImageTypeSpecifier.createInterleaved(JPEGImageReader.this.iccCS, JPEG.bOffsRGB, 0, false, false);
+<b class="nc"><i>563</i>&nbsp;                    }</b>
+<i>564</i>&nbsp;                });
+<b class="nc"><i>565</i>&nbsp;            }</b>
+<i>566</i>&nbsp;
+<b class="nc"><i>567</i>&nbsp;            var3.add(this.getImageType(1));</b>
+<b class="nc"><i>568</i>&nbsp;            var3.add(this.getImageType(5));</b>
+<b class="nc"><i>569</i>&nbsp;        case 4:</b>
+<i>570</i>&nbsp;        case 8:
+<i>571</i>&nbsp;        case 9:
+<i>572</i>&nbsp;        default:
+<i>573</i>&nbsp;            break;
+<i>574</i>&nbsp;        case 5:
+<i>575</i>&nbsp;            if(var2 != null) {
+<i>576</i>&nbsp;                var3.add(var2);
+<b class="nc"><i>577</i>&nbsp;                var3.add(this.getImageType(2));</b>
+<b class="nc"><i>578</i>&nbsp;            }</b>
+<b class="nc"><i>579</i>&nbsp;            break;</b>
+<i>580</i>&nbsp;        case 6:
+<i>581</i>&nbsp;            var3.add(var2);
+<i>582</i>&nbsp;            break;
+<b class="nc"><i>583</i>&nbsp;        case 7:</b>
+<b class="nc"><i>584</i>&nbsp;            var3.add(this.getImageType(6));</b>
+<b class="nc"><i>585</i>&nbsp;            break;</b>
+<b class="nc"><i>586</i>&nbsp;        case 10:</b>
+<i>587</i>&nbsp;            if(var2 != null) {
+<i>588</i>&nbsp;                var3.add(var2);
+<i>589</i>&nbsp;            }
+<i>590</i>&nbsp;        }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;        return new ImageTypeIterator(var3.iterator());
+<i>593</i>&nbsp;    }
+<i>594</i>&nbsp;
+<i>595</i>&nbsp;    private void checkColorConversion(BufferedImage var1, ImageReadParam var2) throws IIOException {
+<i>596</i>&nbsp;        if(var2 == null || var2.getSourceBands() == null &amp;&amp; var2.getDestinationBands() == null) {
+<i>597</i>&nbsp;            ColorModel var3 = var1.getColorModel();
+<i>598</i>&nbsp;            if(var3 instanceof IndexColorModel) {
+<i>599</i>&nbsp;                throw new IIOException(&quot;IndexColorModel not supported&quot;);
+<i>600</i>&nbsp;            } else {
+<i>601</i>&nbsp;                ColorSpace var4 = var3.getColorSpace();
+<i>602</i>&nbsp;                int var5 = var4.getType();
+<i>603</i>&nbsp;                this.convert = null;
+<i>604</i>&nbsp;                ColorSpace var6;
+<i>605</i>&nbsp;                switch(this.outColorSpaceCode) {
+<i>606</i>&nbsp;                case 1:
+<i>607</i>&nbsp;                    if(var5 == 5) {
+<i>608</i>&nbsp;                        this.setOutColorSpace(this.structPointer, 2);
+<i>609</i>&nbsp;                        this.outColorSpaceCode = 2;
+<i>610</i>&nbsp;                        this.numComponents = 3;
+<i>611</i>&nbsp;                    } else if(var5 != 6) {
+<i>612</i>&nbsp;                        throw new IIOException(&quot;Incompatible color conversion&quot;);
+<i>613</i>&nbsp;                    }
+<i>614</i>&nbsp;                    break;
+<i>615</i>&nbsp;                case 2:
+<i>616</i>&nbsp;                    if(var5 == 6) {
+<i>617</i>&nbsp;                        if(this.colorSpaceCode == 3) {
+<i>618</i>&nbsp;                            this.setOutColorSpace(this.structPointer, 1);
+<b class="nc"><i>619</i>&nbsp;                            this.outColorSpaceCode = 1;</b>
+<b class="nc"><i>620</i>&nbsp;                            this.numComponents = 1;</b>
+<b class="nc"><i>621</i>&nbsp;                        }</b>
+<b class="nc"><i>622</i>&nbsp;                    } else if(this.iccCS != null &amp;&amp; var3.getNumComponents() == this.numComponents &amp;&amp; var4 != this.iccCS) {</b>
+<b class="nc"><i>623</i>&nbsp;                        this.convert = new ColorConvertOp(this.iccCS, var4, (RenderingHints)null);</b>
+<i>624</i>&nbsp;                    } else if(this.iccCS == null &amp;&amp; !var4.isCS_sRGB() &amp;&amp; var3.getNumComponents() == this.numComponents) {
+<b class="nc"><i>625</i>&nbsp;                        this.convert = new ColorConvertOp(JCS.sRGB, var4, (RenderingHints)null);</b>
+<b class="nc"><i>626</i>&nbsp;                    } else if(var5 != 5) {</b>
+<i>627</i>&nbsp;                        throw new IIOException(&quot;Incompatible color conversion&quot;);
+<i>628</i>&nbsp;                    }
+<i>629</i>&nbsp;                    break;
+<b class="nc"><i>630</i>&nbsp;                case 3:</b>
+<i>631</i>&nbsp;                case 4:
+<b class="nc"><i>632</i>&nbsp;                case 7:</b>
+<b class="nc"><i>633</i>&nbsp;                case 8:</b>
+<i>634</i>&nbsp;                case 9:
+<i>635</i>&nbsp;                default:
+<i>636</i>&nbsp;                    throw new IIOException(&quot;Incompatible color conversion&quot;);
+<i>637</i>&nbsp;                case 5:
+<b class="nc"><i>638</i>&nbsp;                    var6 = JCS.getYCC();</b>
+<b class="nc"><i>639</i>&nbsp;                    if(var6 == null) {</b>
+<i>640</i>&nbsp;                        throw new IIOException(&quot;Incompatible color conversion&quot;);
+<i>641</i>&nbsp;                    }
+<b class="nc"><i>642</i>&nbsp;</b>
+<b class="nc"><i>643</i>&nbsp;                    if(var4 != var6 &amp;&amp; var3.getNumComponents() == this.numComponents) {</b>
+<i>644</i>&nbsp;                        this.convert = new ColorConvertOp(var6, var4, (RenderingHints)null);
+<b class="nc"><i>645</i>&nbsp;                    }</b>
+<b class="nc"><i>646</i>&nbsp;                    break;</b>
+<b class="nc"><i>647</i>&nbsp;                case 6:</b>
+<i>648</i>&nbsp;                    if(var5 != 5 || var3.getNumComponents() != this.numComponents) {
+<b class="nc"><i>649</i>&nbsp;                        throw new IIOException(&quot;Incompatible color conversion&quot;);</b>
+<b class="nc"><i>650</i>&nbsp;                    }</b>
+<b class="nc"><i>651</i>&nbsp;                    break;</b>
+<i>652</i>&nbsp;                case 10:
+<i>653</i>&nbsp;                    var6 = JCS.getYCC();
+<i>654</i>&nbsp;                    if(var6 == null || var4 != var6 || var3.getNumComponents() != this.numComponents) {
+<i>655</i>&nbsp;                        throw new IIOException(&quot;Incompatible color conversion&quot;);
+<i>656</i>&nbsp;                    }
+<i>657</i>&nbsp;                }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;            }
+<i>660</i>&nbsp;        }
+<i>661</i>&nbsp;    }
+<i>662</i>&nbsp;
+<b class="nc"><i>663</i>&nbsp;    private native void setOutColorSpace(long var1, int var3);</b>
+<i>664</i>&nbsp;
+<i>665</i>&nbsp;    public ImageReadParam getDefaultReadParam() {
+<b class="nc"><i>666</i>&nbsp;        return new JPEGImageReadParam();</b>
+<i>667</i>&nbsp;    }
+<i>668</i>&nbsp;
+<b class="nc"><i>669</i>&nbsp;    public IIOMetadata getStreamMetadata() throws IOException {</b>
+<b class="nc"><i>670</i>&nbsp;        this.setThreadLock();</b>
+<i>671</i>&nbsp;
+<i>672</i>&nbsp;        JPEGMetadata var1;
+<i>673</i>&nbsp;        try {
+<i>674</i>&nbsp;            if(!this.tablesOnlyChecked) {
+<b class="nc"><i>675</i>&nbsp;                this.cbLock.check();</b>
+<b class="nc"><i>676</i>&nbsp;                this.checkTablesOnly();</b>
+<i>677</i>&nbsp;            }
+<b class="nc"><i>678</i>&nbsp;</b>
+<b class="nc"><i>679</i>&nbsp;            var1 = this.streamMetadata;</b>
+<b class="nc"><i>680</i>&nbsp;        } finally {</b>
+<b class="nc"><i>681</i>&nbsp;            this.clearThreadLock();</b>
+<b class="nc"><i>682</i>&nbsp;        }</b>
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;        return var1;
+<i>685</i>&nbsp;    }
+<i>686</i>&nbsp;
+<b class="nc"><i>687</i>&nbsp;    public IIOMetadata getImageMetadata(int var1) throws IOException {</b>
+<i>688</i>&nbsp;        this.setThreadLock();
+<b class="nc"><i>689</i>&nbsp;</b>
+<b class="nc"><i>690</i>&nbsp;        JPEGMetadata var2;</b>
+<b class="nc"><i>691</i>&nbsp;        try {</b>
+<i>692</i>&nbsp;            if(this.imageMetadataIndex != var1 || this.imageMetadata == null) {
+<b class="nc"><i>693</i>&nbsp;                this.cbLock.check();</b>
+<i>694</i>&nbsp;                this.gotoImage(var1);
+<b class="nc"><i>695</i>&nbsp;                this.imageMetadata = new JPEGMetadata(false, false, this.iis, this);</b>
+<i>696</i>&nbsp;                this.imageMetadataIndex = var1;
+<i>697</i>&nbsp;                var2 = this.imageMetadata;
+<i>698</i>&nbsp;                return var2;
+<i>699</i>&nbsp;            }
+<b class="nc"><i>700</i>&nbsp;</b>
+<i>701</i>&nbsp;            var2 = this.imageMetadata;
+<b class="nc"><i>702</i>&nbsp;        } finally {</b>
+<b class="nc"><i>703</i>&nbsp;            this.clearThreadLock();</b>
+<b class="nc"><i>704</i>&nbsp;        }</b>
+<i>705</i>&nbsp;
+<b class="nc"><i>706</i>&nbsp;        return var2;</b>
+<i>707</i>&nbsp;    }
+<b class="nc"><i>708</i>&nbsp;</b>
+<i>709</i>&nbsp;    public BufferedImage read(int var1, ImageReadParam var2) throws IOException {
+<i>710</i>&nbsp;        this.setThreadLock();
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;        BufferedImage var4;
+<i>713</i>&nbsp;        try {
+<i>714</i>&nbsp;            this.cbLock.check();
+<i>715</i>&nbsp;
+<i>716</i>&nbsp;            try {
+<i>717</i>&nbsp;                this.readInternal(var1, var2, false);
+<i>718</i>&nbsp;            } catch (RuntimeException var9) {
+<b class="nc"><i>719</i>&nbsp;                this.resetLibraryState(this.structPointer);</b>
+<i>720</i>&nbsp;                throw var9;
+<b class="nc"><i>721</i>&nbsp;            } catch (IOException var10) {</b>
+<b class="nc"><i>722</i>&nbsp;                this.resetLibraryState(this.structPointer);</b>
+<i>723</i>&nbsp;                throw var10;
+<b class="nc"><i>724</i>&nbsp;            }</b>
+<i>725</i>&nbsp;
+<i>726</i>&nbsp;            BufferedImage var3 = this.image;
+<i>727</i>&nbsp;            this.image = null;
+<i>728</i>&nbsp;            var4 = var3;
+<b class="nc"><i>729</i>&nbsp;        } finally {</b>
+<i>730</i>&nbsp;            this.clearThreadLock();
+<b class="nc"><i>731</i>&nbsp;        }</b>
+<b class="nc"><i>732</i>&nbsp;</b>
+<i>733</i>&nbsp;        return var4;
+<b class="nc"><i>734</i>&nbsp;    }</b>
+<i>735</i>&nbsp;
+<i>736</i>&nbsp;    private Raster readInternal(int var1, ImageReadParam var2, boolean var3) throws IOException {
+<i>737</i>&nbsp;        this.readHeader(var1, false);
+<b class="nc"><i>738</i>&nbsp;        WritableRaster var4 = null;</b>
+<i>739</i>&nbsp;        int var5 = 0;
+<b class="nc"><i>740</i>&nbsp;        if(!var3) {</b>
+<i>741</i>&nbsp;            Iterator var6 = this.getImageTypes(var1);
+<i>742</i>&nbsp;            if(!var6.hasNext()) {
+<i>743</i>&nbsp;                throw new IIOException(&quot;Unsupported Image Type&quot;);
+<i>744</i>&nbsp;            }
+<i>745</i>&nbsp;
+<b class="nc"><i>746</i>&nbsp;            this.image = getDestination(var2, var6, this.width, this.height);</b>
+<i>747</i>&nbsp;            var4 = this.image.getRaster();
+<b class="nc"><i>748</i>&nbsp;            var5 = this.image.getSampleModel().getNumBands();</b>
+<i>749</i>&nbsp;            this.checkColorConversion(this.image, var2);
+<b class="nc"><i>750</i>&nbsp;            checkReadParamBandSettings(var2, this.numComponents, var5);</b>
+<i>751</i>&nbsp;        } else {
+<i>752</i>&nbsp;            this.setOutColorSpace(this.structPointer, this.colorSpaceCode);
+<i>753</i>&nbsp;            this.image = null;
+<i>754</i>&nbsp;        }
+<i>755</i>&nbsp;
+<b class="nc"><i>756</i>&nbsp;        int[] var16 = JPEG.bandOffsets[this.numComponents - 1];</b>
+<b class="nc"><i>757</i>&nbsp;        int var7 = var3?this.numComponents:var5;</b>
+<b class="nc"><i>758</i>&nbsp;        this.destinationBands = null;</b>
+<i>759</i>&nbsp;        Rectangle var8 = new Rectangle(0, 0, 0, 0);
+<i>760</i>&nbsp;        this.destROI = new Rectangle(0, 0, 0, 0);
+<i>761</i>&nbsp;        computeRegions(var2, this.width, this.height, this.image, var8, this.destROI);
+<i>762</i>&nbsp;        int var9 = 1;
+<i>763</i>&nbsp;        int var10 = 1;
+<i>764</i>&nbsp;        this.minProgressivePass = 0;
+<i>765</i>&nbsp;        this.maxProgressivePass = 2147483647;
+<i>766</i>&nbsp;        if(var2 != null) {
+<i>767</i>&nbsp;            var9 = var2.getSourceXSubsampling();
+<i>768</i>&nbsp;            var10 = var2.getSourceYSubsampling();
+<i>769</i>&nbsp;            int[] var11 = var2.getSourceBands();
+<i>770</i>&nbsp;            if(var11 != null) {
+<i>771</i>&nbsp;                var16 = var11;
+<i>772</i>&nbsp;                var7 = var11.length;
+<b class="nc"><i>773</i>&nbsp;            }</b>
+<i>774</i>&nbsp;
+<i>775</i>&nbsp;            if(!var3) {
+<i>776</i>&nbsp;                this.destinationBands = var2.getDestinationBands();
+<i>777</i>&nbsp;            }
+<i>778</i>&nbsp;
+<b class="nc"><i>779</i>&nbsp;            this.minProgressivePass = var2.getSourceMinProgressivePass();</b>
+<i>780</i>&nbsp;            this.maxProgressivePass = var2.getSourceMaxProgressivePass();
+<b class="nc"><i>781</i>&nbsp;            if(var2 instanceof JPEGImageReadParam) {</b>
+<i>782</i>&nbsp;                JPEGImageReadParam var12 = (JPEGImageReadParam)var2;
+<b class="nc"><i>783</i>&nbsp;                if(var12.areTablesSet()) {</b>
+<b class="nc"><i>784</i>&nbsp;                    this.abbrevQTables = var12.getQTables();</b>
+<b class="nc"><i>785</i>&nbsp;                    this.abbrevDCHuffmanTables = var12.getDCHuffmanTables();</b>
+<i>786</i>&nbsp;                    this.abbrevACHuffmanTables = var12.getACHuffmanTables();
+<b class="nc"><i>787</i>&nbsp;                }</b>
+<b class="nc"><i>788</i>&nbsp;            }</b>
+<b class="nc"><i>789</i>&nbsp;        }</b>
+<b class="nc"><i>790</i>&nbsp;</b>
+<i>791</i>&nbsp;        int var17 = this.destROI.width * var7;
+<b class="nc"><i>792</i>&nbsp;        this.buffer = new DataBufferByte(var17);</b>
+<b class="nc"><i>793</i>&nbsp;        int[] var18 = JPEG.bandOffsets[var7 - 1];</b>
+<i>794</i>&nbsp;        this.raster = Raster.createInterleavedRaster(this.buffer, this.destROI.width, 1, var17, var7, var18, (Point)null);
+<b class="nc"><i>795</i>&nbsp;        if(var3) {</b>
+<b class="nc"><i>796</i>&nbsp;            this.target = Raster.createInterleavedRaster(0, this.destROI.width, this.destROI.height, var17, var7, var18, (Point)null);</b>
+<b class="nc"><i>797</i>&nbsp;        } else {</b>
+<i>798</i>&nbsp;            this.target = var4;
+<i>799</i>&nbsp;        }
+<i>800</i>&nbsp;
+<b class="nc"><i>801</i>&nbsp;        int[] var13 = this.target.getSampleModel().getSampleSize();</b>
+<b class="nc"><i>802</i>&nbsp;</b>
+<i>803</i>&nbsp;        for(int var14 = 0; var14 &lt; var13.length; ++var14) {
+<i>804</i>&nbsp;            if(var13[var14] &lt;= 0 || var13[var14] &gt; 8) {
+<i>805</i>&nbsp;                throw new IIOException(&quot;Illegal band size: should be 0 &lt; size &lt;= 8&quot;);
+<i>806</i>&nbsp;            }
+<i>807</i>&nbsp;        }
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;        boolean var20 = this.updateListeners != null || this.progressListeners != null;
+<i>810</i>&nbsp;        this.initProgressData();
+<b class="nc"><i>811</i>&nbsp;        if(var1 == this.imageMetadataIndex) {</b>
+<i>812</i>&nbsp;            this.knownPassCount = 0;
+<b class="nc"><i>813</i>&nbsp;            Iterator var15 = this.imageMetadata.markerSequence.iterator();</b>
+<b class="nc"><i>814</i>&nbsp;</b>
+<i>815</i>&nbsp;            while(var15.hasNext()) {
+<b class="nc"><i>816</i>&nbsp;                if(var15.next() instanceof SOSMarkerSegment) {</b>
+<i>817</i>&nbsp;                    ++this.knownPassCount;
+<i>818</i>&nbsp;                }
+<i>819</i>&nbsp;            }
+<i>820</i>&nbsp;        }
+<i>821</i>&nbsp;
+<i>822</i>&nbsp;        this.progInterval = Math.max((this.target.getHeight() - 1) / 20, 1);
+<i>823</i>&nbsp;        if(this.knownPassCount &gt; 0) {
+<i>824</i>&nbsp;            this.progInterval *= this.knownPassCount;
+<i>825</i>&nbsp;        } else if(this.maxProgressivePass != 2147483647) {
+<i>826</i>&nbsp;            this.progInterval *= this.maxProgressivePass - this.minProgressivePass + 1;
+<b class="nc"><i>827</i>&nbsp;        }</b>
+<b class="nc"><i>828</i>&nbsp;</b>
+<b class="nc"><i>829</i>&nbsp;        if(this.debug) {</b>
+<i>830</i>&nbsp;            System.out.println(&quot;**** Read Data *****&quot;);
+<i>831</i>&nbsp;            System.out.println(&quot;numRasterBands is &quot; + var7);
+<i>832</i>&nbsp;            System.out.print(&quot;srcBands:&quot;);
+<b class="nc"><i>833</i>&nbsp;</b>
+<i>834</i>&nbsp;            int var19;
+<i>835</i>&nbsp;            for(var19 = 0; var19 &lt; var16.length; ++var19) {
+<i>836</i>&nbsp;                System.out.print(&quot; &quot; + var16[var19]);
+<b class="nc"><i>837</i>&nbsp;            }</b>
+<i>838</i>&nbsp;
+<i>839</i>&nbsp;            System.out.println();
+<i>840</i>&nbsp;            System.out.println(&quot;destination bands is &quot; + this.destinationBands);
+<i>841</i>&nbsp;            if(this.destinationBands != null) {
+<i>842</i>&nbsp;                for(var19 = 0; var19 &lt; this.destinationBands.length; ++var19) {
+<i>843</i>&nbsp;                    System.out.print(&quot; &quot; + this.destinationBands[var19]);
+<i>844</i>&nbsp;                }
+<i>845</i>&nbsp;
+<i>846</i>&nbsp;                System.out.println();
+<i>847</i>&nbsp;            }
+<i>848</i>&nbsp;
+<i>849</i>&nbsp;            System.out.println(&quot;sourceROI is &quot; + var8);
+<i>850</i>&nbsp;            System.out.println(&quot;destROI is &quot; + this.destROI);
+<i>851</i>&nbsp;            System.out.println(&quot;periodX is &quot; + var9);
+<i>852</i>&nbsp;            System.out.println(&quot;periodY is &quot; + var10);
+<i>853</i>&nbsp;            System.out.println(&quot;minProgressivePass is &quot; + this.minProgressivePass);
+<i>854</i>&nbsp;            System.out.println(&quot;maxProgressivePass is &quot; + this.maxProgressivePass);
+<i>855</i>&nbsp;            System.out.println(&quot;callbackUpdates is &quot; + var20);
+<i>856</i>&nbsp;        }
+<i>857</i>&nbsp;
+<b class="nc"><i>858</i>&nbsp;        this.processImageStarted(this.currentImage);</b>
+<b class="nc"><i>859</i>&nbsp;        boolean var21 = false;</b>
+<i>860</i>&nbsp;        var21 = this.readImage(this.structPointer, this.buffer.getData(), var7, var16, var13, var8.x, var8.y, var8.width, var8.height, var9, var10, this.abbrevQTables, this.abbrevDCHuffmanTables, this.abbrevACHuffmanTables, this.minProgressivePass, this.maxProgressivePass, var20);
+<i>861</i>&nbsp;        if(var21) {
+<i>862</i>&nbsp;            this.processReadAborted();
+<i>863</i>&nbsp;        } else {
+<i>864</i>&nbsp;            this.processImageComplete();
+<i>865</i>&nbsp;        }
+<i>866</i>&nbsp;
+<i>867</i>&nbsp;        return this.target;
+<i>868</i>&nbsp;    }
+<i>869</i>&nbsp;
+<i>870</i>&nbsp;    private void acceptPixels(int var1, boolean var2) {
+<b class="nc"><i>871</i>&nbsp;        if(this.convert != null) {</b>
+<i>872</i>&nbsp;            this.convert.filter(this.raster, this.raster);
+<b class="nc"><i>873</i>&nbsp;        }</b>
+<b class="nc"><i>874</i>&nbsp;</b>
+<i>875</i>&nbsp;        this.target.setRect(this.destROI.x, this.destROI.y + var1, this.raster);
+<i>876</i>&nbsp;        this.cbLock.lock();
+<i>877</i>&nbsp;
+<i>878</i>&nbsp;        try {
+<b class="nc"><i>879</i>&nbsp;            this.processImageUpdate(this.image, this.destROI.x, this.destROI.y + var1, this.raster.getWidth(), 1, 1, 1, this.destinationBands);</b>
+<b class="nc"><i>880</i>&nbsp;            if(var1 &gt; 0 &amp;&amp; var1 % this.progInterval == 0) {</b>
+<b class="nc"><i>881</i>&nbsp;                int var3 = this.target.getHeight() - 1;</b>
+<b class="nc"><i>882</i>&nbsp;                float var4 = (float)var1 / (float)var3;</b>
+<i>883</i>&nbsp;                if(var2) {
+<b class="nc"><i>884</i>&nbsp;                    if(this.knownPassCount != -1) {</b>
+<i>885</i>&nbsp;                        this.processImageProgress(((float)this.pass + var4) * 100.0F / (float)this.knownPassCount);
+<b class="nc"><i>886</i>&nbsp;                    } else if(this.maxProgressivePass != 2147483647) {</b>
+<i>887</i>&nbsp;                        this.processImageProgress(((float)this.pass + var4) * 100.0F / (float)(this.maxProgressivePass - this.minProgressivePass + 1));
+<i>888</i>&nbsp;                    } else {
+<b class="nc"><i>889</i>&nbsp;                        int var5 = Math.max(2, 10 - this.pass);</b>
+<b class="nc"><i>890</i>&nbsp;                        int var6 = this.pass + var5 - 1;</b>
+<b class="nc"><i>891</i>&nbsp;                        this.progInterval = Math.max(var3 / 20 * var6, var6);</b>
+<b class="nc"><i>892</i>&nbsp;                        if(var1 % this.progInterval == 0) {</b>
+<i>893</i>&nbsp;                            this.percentToDate = this.previousPassPercentage + (1.0F - this.previousPassPercentage) * var4 / (float)var5;
+<i>894</i>&nbsp;                            if(this.debug) {
+<i>895</i>&nbsp;                                System.out.print(&quot;pass= &quot; + this.pass);
+<b class="nc"><i>896</i>&nbsp;                                System.out.print(&quot;, y= &quot; + var1);</b>
+<b class="nc"><i>897</i>&nbsp;                                System.out.print(&quot;, progInt= &quot; + this.progInterval);</b>
+<i>898</i>&nbsp;                                System.out.print(&quot;, % of pass: &quot; + var4);
+<b class="nc"><i>899</i>&nbsp;                                System.out.print(&quot;, rem. passes: &quot; + var5);</b>
+<i>900</i>&nbsp;                                System.out.print(&quot;, prev%: &quot; + this.previousPassPercentage);
+<i>901</i>&nbsp;                                System.out.print(&quot;, %ToDate: &quot; + this.percentToDate);
+<b class="nc"><i>902</i>&nbsp;                                System.out.print(&quot; &quot;);</b>
+<b class="nc"><i>903</i>&nbsp;                            }</b>
+<i>904</i>&nbsp;
+<b class="nc"><i>905</i>&nbsp;                            this.processImageProgress(this.percentToDate * 100.0F);</b>
+<i>906</i>&nbsp;                        }
+<i>907</i>&nbsp;                    }
+<i>908</i>&nbsp;                } else {
+<i>909</i>&nbsp;                    this.processImageProgress(var4 * 100.0F);
+<b class="nc"><i>910</i>&nbsp;                }</b>
+<i>911</i>&nbsp;            }
+<b class="nc"><i>912</i>&nbsp;        } finally {</b>
+<i>913</i>&nbsp;            this.cbLock.unlock();
+<i>914</i>&nbsp;        }
+<i>915</i>&nbsp;
+<b class="nc"><i>916</i>&nbsp;    }</b>
+<b class="nc"><i>917</i>&nbsp;</b>
+<b class="nc"><i>918</i>&nbsp;    private void initProgressData() {</b>
+<i>919</i>&nbsp;        this.knownPassCount = -1;
+<i>920</i>&nbsp;        this.pass = 0;
+<i>921</i>&nbsp;        this.percentToDate = 0.0F;
+<i>922</i>&nbsp;        this.previousPassPercentage = 0.0F;
+<b class="nc"><i>923</i>&nbsp;        this.progInterval = 0;</b>
+<i>924</i>&nbsp;    }
+<b class="nc"><i>925</i>&nbsp;</b>
+<i>926</i>&nbsp;    private void passStarted(int var1) {
+<i>927</i>&nbsp;        this.cbLock.lock();
+<i>928</i>&nbsp;
+<i>929</i>&nbsp;        try {
+<b class="nc"><i>930</i>&nbsp;            this.pass = var1;</b>
+<b class="nc"><i>931</i>&nbsp;            this.previousPassPercentage = this.percentToDate;</b>
+<b class="nc"><i>932</i>&nbsp;            this.processPassStarted(this.image, var1, this.minProgressivePass, this.maxProgressivePass, 0, 0, 1, 1, this.destinationBands);</b>
+<i>933</i>&nbsp;        } finally {
+<b class="nc"><i>934</i>&nbsp;            this.cbLock.unlock();</b>
+<i>935</i>&nbsp;        }
+<b class="nc"><i>936</i>&nbsp;</b>
+<i>937</i>&nbsp;    }
+<i>938</i>&nbsp;
+<b class="nc"><i>939</i>&nbsp;    private void passComplete() {</b>
+<i>940</i>&nbsp;        this.cbLock.lock();
+<i>941</i>&nbsp;
+<b class="nc"><i>942</i>&nbsp;        try {</b>
+<i>943</i>&nbsp;            this.processPassComplete(this.image);
+<b class="nc"><i>944</i>&nbsp;        } finally {</b>
+<i>945</i>&nbsp;            this.cbLock.unlock();
+<i>946</i>&nbsp;        }
+<b class="nc"><i>947</i>&nbsp;</b>
+<i>948</i>&nbsp;    }
+<i>949</i>&nbsp;
+<b class="nc"><i>950</i>&nbsp;    void thumbnailStarted(int var1) {</b>
+<i>951</i>&nbsp;        this.cbLock.lock();
+<i>952</i>&nbsp;
+<b class="nc"><i>953</i>&nbsp;        try {</b>
+<i>954</i>&nbsp;            this.processThumbnailStarted(this.currentImage, var1);
+<i>955</i>&nbsp;        } finally {
+<i>956</i>&nbsp;            this.cbLock.unlock();
+<i>957</i>&nbsp;        }
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;    }
+<i>960</i>&nbsp;
+<i>961</i>&nbsp;    void thumbnailProgress(float var1) {
+<i>962</i>&nbsp;        this.cbLock.lock();
+<i>963</i>&nbsp;
+<i>964</i>&nbsp;        try {
+<i>965</i>&nbsp;            this.processThumbnailProgress(var1);
+<b class="nc"><i>966</i>&nbsp;        } finally {</b>
+<i>967</i>&nbsp;            this.cbLock.unlock();
+<i>968</i>&nbsp;        }
+<i>969</i>&nbsp;
+<b class="nc"><i>970</i>&nbsp;    }</b>
+<i>971</i>&nbsp;
+<b class="nc"><i>972</i>&nbsp;    void thumbnailComplete() {</b>
+<b class="nc"><i>973</i>&nbsp;        this.cbLock.lock();</b>
+<b class="nc"><i>974</i>&nbsp;</b>
+<i>975</i>&nbsp;        try {
+<b class="nc"><i>976</i>&nbsp;            this.processThumbnailComplete();</b>
+<i>977</i>&nbsp;        } finally {
+<b class="nc"><i>978</i>&nbsp;            this.cbLock.unlock();</b>
+<i>979</i>&nbsp;        }
+<i>980</i>&nbsp;
+<i>981</i>&nbsp;    }
+<i>982</i>&nbsp;
+<i>983</i>&nbsp;    private native boolean readImage(long var1, byte[] var3, int var4, int[] var5, int[] var6, int var7, int var8, int var9, int var10, int var11, int var12, JPEGQTable[] var13, JPEGHuffmanTable[] var14, JPEGHuffmanTable[] var15, int var16, int var17, boolean var18);
+<b class="nc"><i>984</i>&nbsp;</b>
+<i>985</i>&nbsp;    public void abort() {
+<i>986</i>&nbsp;        this.setThreadLock();
+<i>987</i>&nbsp;
+<i>988</i>&nbsp;        try {
+<b class="nc"><i>989</i>&nbsp;            super.abort();</b>
+<i>990</i>&nbsp;            this.abortRead(this.structPointer);
+<b class="nc"><i>991</i>&nbsp;        } finally {</b>
+<i>992</i>&nbsp;            this.clearThreadLock();
+<i>993</i>&nbsp;        }
+<b class="nc"><i>994</i>&nbsp;</b>
+<i>995</i>&nbsp;    }
+<b class="nc"><i>996</i>&nbsp;</b>
+<i>997</i>&nbsp;    private native void abortRead(long var1);
+<b class="nc"><i>998</i>&nbsp;</b>
+<i>999</i>&nbsp;    private native void resetLibraryState(long var1);
+<b class="nc"><i>1000</i>&nbsp;</b>
+<i>1001</i>&nbsp;    public boolean canReadRaster() {
+<b class="nc"><i>1002</i>&nbsp;        return true;</b>
+<i>1003</i>&nbsp;    }
+<b class="nc"><i>1004</i>&nbsp;</b>
+<i>1005</i>&nbsp;    public Raster readRaster(int var1, ImageReadParam var2) throws IOException {
+<i>1006</i>&nbsp;        this.setThreadLock();
+<i>1007</i>&nbsp;        Raster var3 = null;
+<i>1008</i>&nbsp;
+<i>1009</i>&nbsp;        try {
+<b class="nc"><i>1010</i>&nbsp;            this.cbLock.check();</b>
+<i>1011</i>&nbsp;            Point var4 = null;
+<b class="nc"><i>1012</i>&nbsp;            if(var2 != null) {</b>
+<i>1013</i>&nbsp;                var4 = var2.getDestinationOffset();
+<b class="nc"><i>1014</i>&nbsp;                var2.setDestinationOffset(new Point(0, 0));</b>
+<b class="nc"><i>1015</i>&nbsp;            }</b>
+<b class="nc"><i>1016</i>&nbsp;</b>
+<b class="nc"><i>1017</i>&nbsp;            var3 = this.readInternal(var1, var2, true);</b>
+<b class="nc"><i>1018</i>&nbsp;            if(var4 != null) {</b>
+<b class="nc"><i>1019</i>&nbsp;                this.target = this.target.createWritableTranslatedChild(var4.x, var4.y);</b>
+<b class="nc"><i>1020</i>&nbsp;            }</b>
+<b class="nc"><i>1021</i>&nbsp;        } catch (RuntimeException var9) {</b>
+<i>1022</i>&nbsp;            this.resetLibraryState(this.structPointer);
+<b class="nc"><i>1023</i>&nbsp;            throw var9;</b>
+<b class="nc"><i>1024</i>&nbsp;        } catch (IOException var10) {</b>
+<b class="nc"><i>1025</i>&nbsp;            this.resetLibraryState(this.structPointer);</b>
+<i>1026</i>&nbsp;            throw var10;
+<b class="nc"><i>1027</i>&nbsp;        } finally {</b>
+<i>1028</i>&nbsp;            this.clearThreadLock();
+<i>1029</i>&nbsp;        }
+<i>1030</i>&nbsp;
+<i>1031</i>&nbsp;        return var3;
+<i>1032</i>&nbsp;    }
+<i>1033</i>&nbsp;
+<b class="nc"><i>1034</i>&nbsp;    public boolean readerSupportsThumbnails() {</b>
+<i>1035</i>&nbsp;        return true;
+<b class="nc"><i>1036</i>&nbsp;    }</b>
+<b class="nc"><i>1037</i>&nbsp;</b>
+<i>1038</i>&nbsp;    public int getNumThumbnails(int var1) throws IOException {
+<b class="nc"><i>1039</i>&nbsp;        this.setThreadLock();</b>
+<i>1040</i>&nbsp;
+<b class="nc"><i>1041</i>&nbsp;        int var4;</b>
+<b class="nc"><i>1042</i>&nbsp;        try {</b>
+<b class="nc"><i>1043</i>&nbsp;            this.cbLock.check();</b>
+<i>1044</i>&nbsp;            this.getImageMetadata(var1);
+<i>1045</i>&nbsp;            JFIFMarkerSegment var2 = (JFIFMarkerSegment)this.imageMetadata.findMarkerSegment(JFIFMarkerSegment.class, true);
+<b class="nc"><i>1046</i>&nbsp;            int var3 = 0;</b>
+<b class="nc"><i>1047</i>&nbsp;            if(var2 != null) {</b>
+<i>1048</i>&nbsp;                var3 = var2.thumb == null?0:1;
+<i>1049</i>&nbsp;                var3 += var2.extSegments.size();
+<i>1050</i>&nbsp;            }
+<b class="nc"><i>1051</i>&nbsp;</b>
+<i>1052</i>&nbsp;            var4 = var3;
+<i>1053</i>&nbsp;        } finally {
+<i>1054</i>&nbsp;            this.clearThreadLock();
+<i>1055</i>&nbsp;        }
+<i>1056</i>&nbsp;
+<i>1057</i>&nbsp;        return var4;
+<b class="nc"><i>1058</i>&nbsp;    }</b>
+<i>1059</i>&nbsp;
+<i>1060</i>&nbsp;    public int getThumbnailWidth(int var1, int var2) throws IOException {
+<b class="nc"><i>1061</i>&nbsp;        this.setThreadLock();</b>
+<b class="nc"><i>1062</i>&nbsp;</b>
+<i>1063</i>&nbsp;        int var4;
+<i>1064</i>&nbsp;        try {
+<b class="nc"><i>1065</i>&nbsp;            this.cbLock.check();</b>
+<b class="nc"><i>1066</i>&nbsp;            if(var2 &lt; 0 || var2 &gt;= this.getNumThumbnails(var1)) {</b>
+<i>1067</i>&nbsp;                throw new IndexOutOfBoundsException(&quot;No such thumbnail&quot;);
+<i>1068</i>&nbsp;            }
+<i>1069</i>&nbsp;
+<i>1070</i>&nbsp;            JFIFMarkerSegment var3 = (JFIFMarkerSegment)this.imageMetadata.findMarkerSegment(JFIFMarkerSegment.class, true);
+<i>1071</i>&nbsp;            var4 = var3.getThumbnailWidth(var2);
+<i>1072</i>&nbsp;        } finally {
+<i>1073</i>&nbsp;            this.clearThreadLock();
+<i>1074</i>&nbsp;        }
+<i>1075</i>&nbsp;
+<b class="nc"><i>1076</i>&nbsp;        return var4;</b>
+<b class="nc"><i>1077</i>&nbsp;    }</b>
+<b class="nc"><i>1078</i>&nbsp;</b>
+<i>1079</i>&nbsp;    public int getThumbnailHeight(int var1, int var2) throws IOException {
+<b class="nc"><i>1080</i>&nbsp;        this.setThreadLock();</b>
+<b class="nc"><i>1081</i>&nbsp;</b>
+<b class="nc"><i>1082</i>&nbsp;        int var4;</b>
+<i>1083</i>&nbsp;        try {
+<b class="nc"><i>1084</i>&nbsp;            this.cbLock.check();</b>
+<b class="nc"><i>1085</i>&nbsp;            if(var2 &lt; 0 || var2 &gt;= this.getNumThumbnails(var1)) {</b>
+<i>1086</i>&nbsp;                throw new IndexOutOfBoundsException(&quot;No such thumbnail&quot;);
+<b class="nc"><i>1087</i>&nbsp;            }</b>
+<b class="nc"><i>1088</i>&nbsp;</b>
+<i>1089</i>&nbsp;            JFIFMarkerSegment var3 = (JFIFMarkerSegment)this.imageMetadata.findMarkerSegment(JFIFMarkerSegment.class, true);
+<b class="nc"><i>1090</i>&nbsp;            var4 = var3.getThumbnailHeight(var2);</b>
+<b class="nc"><i>1091</i>&nbsp;        } finally {</b>
+<b class="nc"><i>1092</i>&nbsp;            this.clearThreadLock();</b>
+<i>1093</i>&nbsp;        }
+<b class="nc"><i>1094</i>&nbsp;</b>
+<b class="nc"><i>1095</i>&nbsp;        return var4;</b>
+<b class="nc"><i>1096</i>&nbsp;    }</b>
+<b class="nc"><i>1097</i>&nbsp;</b>
+<i>1098</i>&nbsp;    public BufferedImage readThumbnail(int var1, int var2) throws IOException {
+<b class="nc"><i>1099</i>&nbsp;        this.setThreadLock();</b>
+<b class="nc"><i>1100</i>&nbsp;</b>
+<i>1101</i>&nbsp;        BufferedImage var4;
+<i>1102</i>&nbsp;        try {
+<b class="nc"><i>1103</i>&nbsp;            this.cbLock.check();</b>
+<b class="nc"><i>1104</i>&nbsp;            if(var2 &lt; 0 || var2 &gt;= this.getNumThumbnails(var1)) {</b>
+<i>1105</i>&nbsp;                throw new IndexOutOfBoundsException(&quot;No such thumbnail&quot;);
+<b class="nc"><i>1106</i>&nbsp;            }</b>
+<b class="nc"><i>1107</i>&nbsp;</b>
+<b class="nc"><i>1108</i>&nbsp;            JFIFMarkerSegment var3 = (JFIFMarkerSegment)this.imageMetadata.findMarkerSegment(JFIFMarkerSegment.class, true);</b>
+<b class="nc"><i>1109</i>&nbsp;            var4 = var3.getThumbnail(this.iis, var2, this);</b>
+<b class="nc"><i>1110</i>&nbsp;        } finally {</b>
+<b class="nc"><i>1111</i>&nbsp;            this.clearThreadLock();</b>
+<i>1112</i>&nbsp;        }
+<i>1113</i>&nbsp;
+<i>1114</i>&nbsp;        return var4;
+<i>1115</i>&nbsp;    }
+<b class="nc"><i>1116</i>&nbsp;</b>
+<i>1117</i>&nbsp;    private void resetInternalState() {
+<b class="nc"><i>1118</i>&nbsp;        this.resetReader(this.structPointer);</b>
+<i>1119</i>&nbsp;        this.numImages = 0;
+<b class="nc"><i>1120</i>&nbsp;        this.imagePositions = new ArrayList();</b>
+<i>1121</i>&nbsp;        this.currentImage = -1;
+<b class="nc"><i>1122</i>&nbsp;        this.image = null;</b>
+<i>1123</i>&nbsp;        this.raster = null;
+<i>1124</i>&nbsp;        this.target = null;
+<i>1125</i>&nbsp;        this.buffer = null;
+<i>1126</i>&nbsp;        this.destROI = null;
+<i>1127</i>&nbsp;        this.destinationBands = null;
+<i>1128</i>&nbsp;        this.streamMetadata = null;
+<i>1129</i>&nbsp;        this.imageMetadata = null;
+<i>1130</i>&nbsp;        this.imageMetadataIndex = -1;
+<b class="nc"><i>1131</i>&nbsp;        this.haveSeeked = false;</b>
+<b class="nc"><i>1132</i>&nbsp;        this.tablesOnlyChecked = false;</b>
+<i>1133</i>&nbsp;        this.iccCS = null;
+<i>1134</i>&nbsp;        this.initProgressData();
+<i>1135</i>&nbsp;    }
+<i>1136</i>&nbsp;
+<i>1137</i>&nbsp;    public void reset() {
+<i>1138</i>&nbsp;        this.setThreadLock();
+<i>1139</i>&nbsp;
+<b class="nc"><i>1140</i>&nbsp;        try {</b>
+<i>1141</i>&nbsp;            this.cbLock.check();
+<b class="nc"><i>1142</i>&nbsp;            super.reset();</b>
+<b class="nc"><i>1143</i>&nbsp;        } finally {</b>
+<b class="nc"><i>1144</i>&nbsp;            this.clearThreadLock();</b>
+<b class="nc"><i>1145</i>&nbsp;        }</b>
+<i>1146</i>&nbsp;
+<i>1147</i>&nbsp;    }
+<i>1148</i>&nbsp;
+<i>1149</i>&nbsp;    private native void resetReader(long var1);
+<i>1150</i>&nbsp;
+<i>1151</i>&nbsp;    public void dispose() {
+<i>1152</i>&nbsp;        this.setThreadLock();
+<i>1153</i>&nbsp;
+<i>1154</i>&nbsp;        try {
+<i>1155</i>&nbsp;            this.cbLock.check();
+<b class="nc"><i>1156</i>&nbsp;            if(this.structPointer != 0L) {</b>
+<i>1157</i>&nbsp;                this.disposerRecord.dispose();
+<i>1158</i>&nbsp;                this.structPointer = 0L;
+<i>1159</i>&nbsp;            }
+<b class="nc"><i>1160</i>&nbsp;        } finally {</b>
+<i>1161</i>&nbsp;            this.clearThreadLock();
+<i>1162</i>&nbsp;        }
+<b class="nc"><i>1163</i>&nbsp;</b>
+<b class="nc"><i>1164</i>&nbsp;    }</b>
+<b class="nc"><i>1165</i>&nbsp;</b>
+<b class="nc"><i>1166</i>&nbsp;    private static native void disposeReader(long var0);</b>
+<b class="nc"><i>1167</i>&nbsp;</b>
+<b class="nc"><i>1168</i>&nbsp;    private synchronized void setThreadLock() {</b>
+<i>1169</i>&nbsp;        Thread var1 = Thread.currentThread();
+<i>1170</i>&nbsp;        if(this.theThread != null) {
+<i>1171</i>&nbsp;            if(this.theThread != var1) {
+<b class="nc"><i>1172</i>&nbsp;                throw new IllegalStateException(&quot;Attempt to use instance of &quot; + this + &quot; locked on thread &quot; + this.theThread + &quot; from thread &quot; + var1);</b>
+<b class="nc"><i>1173</i>&nbsp;            }</b>
+<b class="nc"><i>1174</i>&nbsp;</b>
+<b class="nc"><i>1175</i>&nbsp;            ++this.theLockCount;</b>
+<b class="nc"><i>1176</i>&nbsp;        } else {</b>
+<i>1177</i>&nbsp;            this.theThread = var1;
+<i>1178</i>&nbsp;            this.theLockCount = 1;
+<b class="nc"><i>1179</i>&nbsp;        }</b>
+<b class="nc"><i>1180</i>&nbsp;</b>
+<b class="nc"><i>1181</i>&nbsp;    }</b>
+<b class="nc"><i>1182</i>&nbsp;</b>
+<b class="nc"><i>1183</i>&nbsp;    private synchronized void clearThreadLock() {</b>
+<b class="nc"><i>1184</i>&nbsp;        Thread var1 = Thread.currentThread();</b>
+<b class="nc"><i>1185</i>&nbsp;        if(this.theThread != null &amp;&amp; this.theThread == var1) {</b>
+<b class="nc"><i>1186</i>&nbsp;            --this.theLockCount;</b>
+<b class="nc"><i>1187</i>&nbsp;            if(this.theLockCount == 0) {</b>
+<b class="nc"><i>1188</i>&nbsp;                this.theThread = null;</b>
+<b class="nc"><i>1189</i>&nbsp;            }</b>
+<i>1190</i>&nbsp;
+<b class="nc"><i>1191</i>&nbsp;        } else {</b>
+<i>1192</i>&nbsp;            throw new IllegalStateException(&quot;Attempt to clear thread lock  form wrong thread. Locked thread: &quot; + this.theThread + &quot;; current thread: &quot; + var1);
+<b class="nc"><i>1193</i>&nbsp;        }</b>
+<b class="nc"><i>1194</i>&nbsp;    }</b>
+<b class="nc"><i>1195</i>&nbsp;</b>
+<b class="nc"><i>1196</i>&nbsp;    static {</b>
+<b class="nc"><i>1197</i>&nbsp;        AccessController.doPrivileged(new LoadLibraryAction(&quot;jpeg&quot;));</b>
+<b class="nc"><i>1198</i>&nbsp;        initReaderIDs(ImageInputStream.class, JPEGQTable.class, JPEGHuffmanTable.class);</b>
+<b class="nc"><i>1199</i>&nbsp;    }</b>
+<i>1200</i>&nbsp;
+<i>1201</i>&nbsp;    private static class CallBackLock {
+<i>1202</i>&nbsp;        private JPEGImageReader.CallBackLock.State lockState;
+<i>1203</i>&nbsp;
+<b class="nc"><i>1204</i>&nbsp;        CallBackLock() {</b>
+<i>1205</i>&nbsp;            this.lockState = JPEGImageReader.CallBackLock.State.Unlocked;
+<b class="nc"><i>1206</i>&nbsp;        }</b>
+<i>1207</i>&nbsp;
+<b class="nc"><i>1208</i>&nbsp;        void check() {</b>
+<i>1209</i>&nbsp;            if(this.lockState != JPEGImageReader.CallBackLock.State.Unlocked) {
+<i>1210</i>&nbsp;                throw new IllegalStateException(&quot;Access to the reader is not allowed&quot;);
+<i>1211</i>&nbsp;            }
+<i>1212</i>&nbsp;        }
+<i>1213</i>&nbsp;
+<i>1214</i>&nbsp;        private void lock() {
+<i>1215</i>&nbsp;            this.lockState = JPEGImageReader.CallBackLock.State.Locked;
+<i>1216</i>&nbsp;        }
+<i>1217</i>&nbsp;
+<i>1218</i>&nbsp;        private void unlock() {
+<i>1219</i>&nbsp;            this.lockState = JPEGImageReader.CallBackLock.State.Unlocked;
+<i>1220</i>&nbsp;        }
+<i>1221</i>&nbsp;
+<b class="nc"><i>1222</i>&nbsp;        private static enum State {</b>
+<b class="nc"><i>1223</i>&nbsp;            Unlocked,</b>
+<i>1224</i>&nbsp;            Locked;
+<b class="nc"><i>1225</i>&nbsp;</b>
+<i>1226</i>&nbsp;            private State() {
+<i>1227</i>&nbsp;            }
+<b class="nc"><i>1228</i>&nbsp;        }</b>
+<i>1229</i>&nbsp;    }
+<i>1230</i>&nbsp;
+<i>1231</i>&nbsp;    private static class JPEGReaderDisposerRecord implements DisposerRecord {
+<i>1232</i>&nbsp;        private long pData;
+<i>1233</i>&nbsp;
+<i>1234</i>&nbsp;        public JPEGReaderDisposerRecord(long var1) {
+<i>1235</i>&nbsp;            this.pData = var1;
+<i>1236</i>&nbsp;        }
+<i>1237</i>&nbsp;
+<i>1238</i>&nbsp;        public synchronized void dispose() {
+<b class="nc"><i>1239</i>&nbsp;            if(this.pData != 0L) {</b>
+<b class="nc"><i>1240</i>&nbsp;                JPEGImageReader.disposeReader(this.pData);</b>
+<i>1241</i>&nbsp;                this.pData = 0L;
+<b class="nc"><i>1242</i>&nbsp;            }</b>
+<i>1243</i>&nbsp;
+<b class="nc"><i>1244</i>&nbsp;        }</b>
+<i>1245</i>&nbsp;    }
+<b class="nc"><i>1246</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

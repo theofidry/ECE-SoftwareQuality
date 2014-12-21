@@ -1,0 +1,512 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MinimalHTMLWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.swing.text.html</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MinimalHTMLWriter (javax.swing.text.html)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MinimalHTMLWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 211)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.swing.text.html;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Color;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.Writer;
+<i>11</i>&nbsp;import java.util.Enumeration;
+<i>12</i>&nbsp;import java.util.Hashtable;
+<i>13</i>&nbsp;import javax.swing.text.AbstractWriter;
+<i>14</i>&nbsp;import javax.swing.text.AttributeSet;
+<i>15</i>&nbsp;import javax.swing.text.BadLocationException;
+<i>16</i>&nbsp;import javax.swing.text.DefaultStyledDocument;
+<i>17</i>&nbsp;import javax.swing.text.Element;
+<i>18</i>&nbsp;import javax.swing.text.ElementIterator;
+<i>19</i>&nbsp;import javax.swing.text.Style;
+<i>20</i>&nbsp;import javax.swing.text.StyleConstants;
+<i>21</i>&nbsp;import javax.swing.text.StyledDocument;
+<i>22</i>&nbsp;import javax.swing.text.AbstractDocument.BranchElement;
+<i>23</i>&nbsp;import javax.swing.text.StyleConstants.CharacterConstants;
+<i>24</i>&nbsp;import javax.swing.text.StyleConstants.ColorConstants;
+<i>25</i>&nbsp;import javax.swing.text.StyleConstants.FontConstants;
+<i>26</i>&nbsp;import javax.swing.text.StyleConstants.ParagraphConstants;
+<i>27</i>&nbsp;import javax.swing.text.StyleContext.NamedStyle;
+<i>28</i>&nbsp;import javax.swing.text.html.CSS;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public class MinimalHTMLWriter extends AbstractWriter {
+<i>31</i>&nbsp;    private static final int BOLD = 1;
+<i>32</i>&nbsp;    private static final int ITALIC = 2;
+<i>33</i>&nbsp;    private static final int UNDERLINE = 4;
+<i>34</i>&nbsp;    private static final CSS css = new CSS();
+<i>35</i>&nbsp;    private int fontMask = 0;
+<i>36</i>&nbsp;    int startOffset = 0;
+<i>37</i>&nbsp;    int endOffset = 0;
+<i>38</i>&nbsp;    private AttributeSet fontAttributes;
+<i>39</i>&nbsp;    private Hashtable&lt;String, String&gt; styleNameMapping;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public MinimalHTMLWriter(Writer var1, StyledDocument var2) {
+<i>42</i>&nbsp;        super(var1, var2);
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public MinimalHTMLWriter(Writer var1, StyledDocument var2, int var3, int var4) {
+<i>46</i>&nbsp;        super(var1, var2, var3, var4);
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public void write() throws IOException, BadLocationException {
+<i>50</i>&nbsp;        this.styleNameMapping = new Hashtable();
+<i>51</i>&nbsp;        this.writeStartTag(&quot;&lt;html&gt;&quot;);
+<i>52</i>&nbsp;        this.writeHeader();
+<i>53</i>&nbsp;        this.writeBody();
+<i>54</i>&nbsp;        this.writeEndTag(&quot;&lt;/html&gt;&quot;);
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    protected void writeAttributes(AttributeSet var1) throws IOException {
+<i>58</i>&nbsp;        Enumeration var2 = var1.getAttributeNames();
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;        while(var2.hasMoreElements()) {
+<i>61</i>&nbsp;            Object var3 = var2.nextElement();
+<i>62</i>&nbsp;            if(var3 instanceof ParagraphConstants || var3 instanceof CharacterConstants || var3 instanceof FontConstants || var3 instanceof ColorConstants) {
+<i>63</i>&nbsp;                this.indent();
+<b class="nc"><i>64</i>&nbsp;                this.write(var3.toString());</b>
+<i>65</i>&nbsp;                this.write(&#39;:&#39;);
+<b class="nc"><i>66</i>&nbsp;                this.write(css.styleConstantsValueToCSSValue((StyleConstants)var3, var1.getAttribute(var3)).toString());</b>
+<i>67</i>&nbsp;                this.write(&#39;;&#39;);
+<b class="nc"><i>68</i>&nbsp;                this.write(&#39;\n&#39;);</b>
+<b class="nc"><i>69</i>&nbsp;            }</b>
+<i>70</i>&nbsp;        }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    protected void text(Element var1) throws IOException, BadLocationException {
+<i>75</i>&nbsp;        String var2 = this.getText(var1);
+<i>76</i>&nbsp;        if(var2.length() &gt; 0 &amp;&amp; var2.charAt(var2.length() - 1) == 10) {
+<i>77</i>&nbsp;            var2 = var2.substring(0, var2.length() - 1);
+<i>78</i>&nbsp;        }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;        if(var2.length() &gt; 0) {
+<i>81</i>&nbsp;            this.write(var2);
+<i>82</i>&nbsp;        }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    protected void writeStartTag(String var1) throws IOException {
+<i>87</i>&nbsp;        this.indent();
+<i>88</i>&nbsp;        this.write(var1);
+<i>89</i>&nbsp;        this.write(&#39;\n&#39;);
+<i>90</i>&nbsp;        this.incrIndent();
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<b class="nc"><i>93</i>&nbsp;    protected void writeEndTag(String var1) throws IOException {</b>
+<i>94</i>&nbsp;        this.decrIndent();
+<i>95</i>&nbsp;        this.indent();
+<i>96</i>&nbsp;        this.write(var1);
+<i>97</i>&nbsp;        this.write(&#39;\n&#39;);
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    protected void writeHeader() throws IOException {
+<i>101</i>&nbsp;        this.writeStartTag(&quot;&lt;head&gt;&quot;);
+<i>102</i>&nbsp;        this.writeStartTag(&quot;&lt;style&gt;&quot;);
+<i>103</i>&nbsp;        this.writeStartTag(&quot;&lt;!--&quot;);
+<i>104</i>&nbsp;        this.writeStyles();
+<i>105</i>&nbsp;        this.writeEndTag(&quot;--&gt;&quot;);
+<i>106</i>&nbsp;        this.writeEndTag(&quot;&lt;/style&gt;&quot;);
+<b class="nc"><i>107</i>&nbsp;        this.writeEndTag(&quot;&lt;/head&gt;&quot;);</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    protected void writeStyles() throws IOException {
+<i>111</i>&nbsp;        DefaultStyledDocument var1 = (DefaultStyledDocument)this.getDocument();
+<i>112</i>&nbsp;        Enumeration var2 = var1.getStyleNames();
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;        while(var2.hasMoreElements()) {
+<i>115</i>&nbsp;            Style var3 = var1.getStyle((String)var2.nextElement());
+<i>116</i>&nbsp;            if(var3.getAttributeCount() != 1 || !var3.isDefined(StyleConstants.NameAttribute)) {
+<i>117</i>&nbsp;                this.indent();
+<i>118</i>&nbsp;                this.write(&quot;p.&quot; + this.addStyleName(var3.getName()));
+<i>119</i>&nbsp;                this.write(&quot; {\n&quot;);
+<b class="nc"><i>120</i>&nbsp;                this.incrIndent();</b>
+<b class="nc"><i>121</i>&nbsp;                this.writeAttributes(var3);</b>
+<b class="nc"><i>122</i>&nbsp;                this.decrIndent();</b>
+<b class="nc"><i>123</i>&nbsp;                this.indent();</b>
+<b class="nc"><i>124</i>&nbsp;                this.write(&quot;}\n&quot;);</b>
+<i>125</i>&nbsp;            }
+<i>126</i>&nbsp;        }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    protected void writeBody() throws IOException, BadLocationException {
+<i>131</i>&nbsp;        ElementIterator var1 = this.getElementIterator();
+<i>132</i>&nbsp;        var1.current();
+<i>133</i>&nbsp;        this.writeStartTag(&quot;&lt;body&gt;&quot;);
+<i>134</i>&nbsp;        boolean var3 = false;
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;        Element var2;
+<i>137</i>&nbsp;        while((var2 = var1.next()) != null) {
+<i>138</i>&nbsp;            if(this.inRange(var2)) {
+<i>139</i>&nbsp;                if(var2 instanceof BranchElement) {
+<i>140</i>&nbsp;                    if(var3) {
+<b class="nc"><i>141</i>&nbsp;                        this.writeEndParagraph();</b>
+<b class="nc"><i>142</i>&nbsp;                        var3 = false;</b>
+<b class="nc"><i>143</i>&nbsp;                        this.fontMask = 0;</b>
+<b class="nc"><i>144</i>&nbsp;                    }</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;                    this.writeStartParagraph(var2);
+<i>147</i>&nbsp;                } else if(this.isText(var2)) {
+<b class="nc"><i>148</i>&nbsp;                    this.writeContent(var2, !var3);</b>
+<b class="nc"><i>149</i>&nbsp;                    var3 = true;</b>
+<b class="nc"><i>150</i>&nbsp;                } else {</b>
+<b class="nc"><i>151</i>&nbsp;                    this.writeLeaf(var2);</b>
+<i>152</i>&nbsp;                    var3 = true;
+<i>153</i>&nbsp;                }
+<b class="nc"><i>154</i>&nbsp;            }</b>
+<b class="nc"><i>155</i>&nbsp;        }</b>
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;        if(var3) {</b>
+<i>158</i>&nbsp;            this.writeEndParagraph();
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;        this.writeEndTag(&quot;&lt;/body&gt;&quot;);
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    protected void writeEndParagraph() throws IOException {
+<i>165</i>&nbsp;        this.writeEndMask(this.fontMask);
+<i>166</i>&nbsp;        if(this.inFontTag()) {
+<b class="nc"><i>167</i>&nbsp;            this.endSpanTag();</b>
+<b class="nc"><i>168</i>&nbsp;        } else {</b>
+<i>169</i>&nbsp;            this.write(&#39;\n&#39;);
+<b class="nc"><i>170</i>&nbsp;        }</b>
+<i>171</i>&nbsp;
+<b class="nc"><i>172</i>&nbsp;        this.writeEndTag(&quot;&lt;/p&gt;&quot;);</b>
+<b class="nc"><i>173</i>&nbsp;    }</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    protected void writeStartParagraph(Element var1) throws IOException {
+<i>176</i>&nbsp;        AttributeSet var2 = var1.getAttributes();
+<i>177</i>&nbsp;        Object var3 = var2.getAttribute(StyleConstants.ResolveAttribute);
+<i>178</i>&nbsp;        if(var3 instanceof NamedStyle) {
+<i>179</i>&nbsp;            this.writeStartTag(&quot;&lt;p class=&quot; + this.mapStyleName(((NamedStyle)var3).getName()) + &quot;&gt;&quot;);
+<i>180</i>&nbsp;        } else {
+<i>181</i>&nbsp;            this.writeStartTag(&quot;&lt;p&gt;&quot;);
+<i>182</i>&nbsp;        }
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;    }</b>
+<b class="nc"><i>185</i>&nbsp;</b>
+<b class="nc"><i>186</i>&nbsp;    protected void writeLeaf(Element var1) throws IOException {</b>
+<b class="nc"><i>187</i>&nbsp;        this.indent();</b>
+<i>188</i>&nbsp;        if(var1.getName() == &quot;icon&quot;) {
+<i>189</i>&nbsp;            this.writeImage(var1);
+<i>190</i>&nbsp;        } else if(var1.getName() == &quot;component&quot;) {
+<i>191</i>&nbsp;            this.writeComponent(var1);
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    protected void writeImage(Element var1) throws IOException {
+<i>197</i>&nbsp;    }
+<b class="nc"><i>198</i>&nbsp;</b>
+<b class="nc"><i>199</i>&nbsp;    protected void writeComponent(Element var1) throws IOException {</b>
+<b class="nc"><i>200</i>&nbsp;    }</b>
+<b class="nc"><i>201</i>&nbsp;</b>
+<i>202</i>&nbsp;    protected boolean isText(Element var1) {
+<i>203</i>&nbsp;        return var1.getName() == &quot;content&quot;;
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    protected void writeContent(Element var1, boolean var2) throws IOException, BadLocationException {
+<i>207</i>&nbsp;        AttributeSet var3 = var1.getAttributes();
+<i>208</i>&nbsp;        this.writeNonHTMLAttributes(var3);
+<i>209</i>&nbsp;        if(var2) {
+<i>210</i>&nbsp;            this.indent();
+<i>211</i>&nbsp;        }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;        this.writeHTMLTags(var3);
+<i>214</i>&nbsp;        this.text(var1);
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<b class="nc"><i>217</i>&nbsp;    protected void writeHTMLTags(AttributeSet var1) throws IOException {</b>
+<b class="nc"><i>218</i>&nbsp;        int var2 = this.fontMask;</b>
+<b class="nc"><i>219</i>&nbsp;        this.setFontMask(var1);</b>
+<b class="nc"><i>220</i>&nbsp;        int var3 = 0;</b>
+<b class="nc"><i>221</i>&nbsp;        int var4 = 0;</b>
+<b class="nc"><i>222</i>&nbsp;        if((var2 &amp; 1) != 0) {</b>
+<b class="nc"><i>223</i>&nbsp;            if((this.fontMask &amp; 1) == 0) {</b>
+<i>224</i>&nbsp;                var3 |= 1;
+<i>225</i>&nbsp;            }
+<i>226</i>&nbsp;        } else if((this.fontMask &amp; 1) != 0) {
+<i>227</i>&nbsp;            var4 |= 1;
+<i>228</i>&nbsp;        }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;        if((var2 &amp; 2) != 0) {
+<i>231</i>&nbsp;            if((this.fontMask &amp; 2) == 0) {
+<i>232</i>&nbsp;                var3 |= 2;
+<i>233</i>&nbsp;            }
+<i>234</i>&nbsp;        } else if((this.fontMask &amp; 2) != 0) {
+<i>235</i>&nbsp;            var4 |= 2;
+<i>236</i>&nbsp;        }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;        if((var2 &amp; 4) != 0) {
+<i>239</i>&nbsp;            if((this.fontMask &amp; 4) == 0) {
+<b class="nc"><i>240</i>&nbsp;                var3 |= 4;</b>
+<b class="nc"><i>241</i>&nbsp;            }</b>
+<i>242</i>&nbsp;        } else if((this.fontMask &amp; 4) != 0) {
+<b class="nc"><i>243</i>&nbsp;            var4 |= 4;</b>
+<b class="nc"><i>244</i>&nbsp;        }</b>
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;        this.writeEndMask(var3);
+<i>247</i>&nbsp;        this.writeStartMask(var4);
+<b class="nc"><i>248</i>&nbsp;    }</b>
+<i>249</i>&nbsp;
+<b class="nc"><i>250</i>&nbsp;    private void setFontMask(AttributeSet var1) {</b>
+<i>251</i>&nbsp;        if(StyleConstants.isBold(var1)) {
+<b class="nc"><i>252</i>&nbsp;            this.fontMask |= 1;</b>
+<b class="nc"><i>253</i>&nbsp;        }</b>
+<b class="nc"><i>254</i>&nbsp;</b>
+<b class="nc"><i>255</i>&nbsp;        if(StyleConstants.isItalic(var1)) {</b>
+<b class="nc"><i>256</i>&nbsp;            this.fontMask |= 2;</b>
+<b class="nc"><i>257</i>&nbsp;        }</b>
+<b class="nc"><i>258</i>&nbsp;</b>
+<b class="nc"><i>259</i>&nbsp;        if(StyleConstants.isUnderline(var1)) {</b>
+<b class="nc"><i>260</i>&nbsp;            this.fontMask |= 4;</b>
+<i>261</i>&nbsp;        }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    private void writeStartMask(int var1) throws IOException {
+<i>266</i>&nbsp;        if(var1 != 0) {
+<i>267</i>&nbsp;            if((var1 &amp; 4) != 0) {
+<i>268</i>&nbsp;                this.write(&quot;&lt;u&gt;&quot;);
+<i>269</i>&nbsp;            }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;            if((var1 &amp; 2) != 0) {
+<i>272</i>&nbsp;                this.write(&quot;&lt;i&gt;&quot;);
+<b class="nc"><i>273</i>&nbsp;            }</b>
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;            if((var1 &amp; 1) != 0) {
+<i>276</i>&nbsp;                this.write(&quot;&lt;b&gt;&quot;);
+<i>277</i>&nbsp;            }
+<i>278</i>&nbsp;        }
+<i>279</i>&nbsp;
+<b class="nc"><i>280</i>&nbsp;    }</b>
+<i>281</i>&nbsp;
+<b class="nc"><i>282</i>&nbsp;    private void writeEndMask(int var1) throws IOException {</b>
+<i>283</i>&nbsp;        if(var1 != 0) {
+<b class="nc"><i>284</i>&nbsp;            if((var1 &amp; 1) != 0) {</b>
+<i>285</i>&nbsp;                this.write(&quot;&lt;/b&gt;&quot;);
+<b class="nc"><i>286</i>&nbsp;            }</b>
+<i>287</i>&nbsp;
+<b class="nc"><i>288</i>&nbsp;            if((var1 &amp; 2) != 0) {</b>
+<b class="nc"><i>289</i>&nbsp;                this.write(&quot;&lt;/i&gt;&quot;);</b>
+<b class="nc"><i>290</i>&nbsp;            }</b>
+<i>291</i>&nbsp;
+<b class="nc"><i>292</i>&nbsp;            if((var1 &amp; 4) != 0) {</b>
+<b class="nc"><i>293</i>&nbsp;                this.write(&quot;&lt;/u&gt;&quot;);</b>
+<b class="nc"><i>294</i>&nbsp;            }</b>
+<b class="nc"><i>295</i>&nbsp;        }</b>
+<b class="nc"><i>296</i>&nbsp;</b>
+<i>297</i>&nbsp;    }
+<b class="nc"><i>298</i>&nbsp;</b>
+<b class="nc"><i>299</i>&nbsp;    protected void writeNonHTMLAttributes(AttributeSet var1) throws IOException {</b>
+<b class="nc"><i>300</i>&nbsp;        String var2 = &quot;&quot;;</b>
+<b class="nc"><i>301</i>&nbsp;        String var3 = &quot;; &quot;;</b>
+<i>302</i>&nbsp;        if(!this.inFontTag() || !this.fontAttributes.isEqual(var1)) {
+<b class="nc"><i>303</i>&nbsp;            boolean var4 = true;</b>
+<b class="nc"><i>304</i>&nbsp;            Color var5 = (Color)var1.getAttribute(StyleConstants.Foreground);</b>
+<i>305</i>&nbsp;            if(var5 != null) {
+<i>306</i>&nbsp;                var2 = var2 + &quot;color: &quot; + css.styleConstantsValueToCSSValue((StyleConstants)StyleConstants.Foreground, var5);
+<b class="nc"><i>307</i>&nbsp;                var4 = false;</b>
+<b class="nc"><i>308</i>&nbsp;            }</b>
+<i>309</i>&nbsp;
+<b class="nc"><i>310</i>&nbsp;            Integer var6 = (Integer)var1.getAttribute(StyleConstants.FontSize);</b>
+<i>311</i>&nbsp;            if(var6 != null) {
+<i>312</i>&nbsp;                if(!var4) {
+<i>313</i>&nbsp;                    var2 = var2 + var3;
+<i>314</i>&nbsp;                }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;                var2 = var2 + &quot;font-size: &quot; + var6.intValue() + &quot;pt&quot;;
+<i>317</i>&nbsp;                var4 = false;
+<i>318</i>&nbsp;            }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;            String var7 = (String)var1.getAttribute(StyleConstants.FontFamily);
+<i>321</i>&nbsp;            if(var7 != null) {
+<i>322</i>&nbsp;                if(!var4) {
+<b class="nc"><i>323</i>&nbsp;                    var2 = var2 + var3;</b>
+<b class="nc"><i>324</i>&nbsp;                }</b>
+<b class="nc"><i>325</i>&nbsp;</b>
+<i>326</i>&nbsp;                var2 = var2 + &quot;font-family: &quot; + var7;
+<b class="nc"><i>327</i>&nbsp;                var4 = false;</b>
+<i>328</i>&nbsp;            }
+<b class="nc"><i>329</i>&nbsp;</b>
+<i>330</i>&nbsp;            if(var2.length() &gt; 0) {
+<i>331</i>&nbsp;                if(this.fontMask != 0) {
+<i>332</i>&nbsp;                    this.writeEndMask(this.fontMask);
+<i>333</i>&nbsp;                    this.fontMask = 0;
+<i>334</i>&nbsp;                }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;                this.startSpanTag(var2);
+<i>337</i>&nbsp;                this.fontAttributes = var1;
+<i>338</i>&nbsp;            } else if(this.fontAttributes != null) {
+<i>339</i>&nbsp;                this.writeEndMask(this.fontMask);
+<i>340</i>&nbsp;                this.fontMask = 0;
+<i>341</i>&nbsp;                this.endSpanTag();
+<i>342</i>&nbsp;            }
+<b class="nc"><i>343</i>&nbsp;</b>
+<b class="nc"><i>344</i>&nbsp;        }</b>
+<b class="nc"><i>345</i>&nbsp;    }</b>
+<b class="nc"><i>346</i>&nbsp;</b>
+<i>347</i>&nbsp;    protected boolean inFontTag() {
+<b class="nc"><i>348</i>&nbsp;        return this.fontAttributes != null;</b>
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    protected void endFontTag() throws IOException {
+<i>352</i>&nbsp;        this.write(&#39;\n&#39;);
+<i>353</i>&nbsp;        this.writeEndTag(&quot;&lt;/font&gt;&quot;);
+<i>354</i>&nbsp;        this.fontAttributes = null;
+<i>355</i>&nbsp;    }
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    protected void startFontTag(String var1) throws IOException {
+<i>358</i>&nbsp;        boolean var2 = false;
+<i>359</i>&nbsp;        if(this.inFontTag()) {
+<b class="nc"><i>360</i>&nbsp;            this.endFontTag();</b>
+<b class="nc"><i>361</i>&nbsp;            var2 = true;</b>
+<b class="nc"><i>362</i>&nbsp;        }</b>
+<b class="nc"><i>363</i>&nbsp;</b>
+<b class="nc"><i>364</i>&nbsp;        this.writeStartTag(&quot;&lt;font style=\&quot;&quot; + var1 + &quot;\&quot;&gt;&quot;);</b>
+<i>365</i>&nbsp;        if(var2) {
+<i>366</i>&nbsp;            this.indent();
+<i>367</i>&nbsp;        }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    private void startSpanTag(String var1) throws IOException {
+<i>372</i>&nbsp;        boolean var2 = false;
+<i>373</i>&nbsp;        if(this.inFontTag()) {
+<i>374</i>&nbsp;            this.endSpanTag();
+<i>375</i>&nbsp;            var2 = true;
+<i>376</i>&nbsp;        }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;        this.writeStartTag(&quot;&lt;span style=\&quot;&quot; + var1 + &quot;\&quot;&gt;&quot;);
+<i>379</i>&nbsp;        if(var2) {
+<i>380</i>&nbsp;            this.indent();
+<i>381</i>&nbsp;        }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;    private void endSpanTag() throws IOException {
+<i>386</i>&nbsp;        this.write(&#39;\n&#39;);
+<i>387</i>&nbsp;        this.writeEndTag(&quot;&lt;/span&gt;&quot;);
+<i>388</i>&nbsp;        this.fontAttributes = null;
+<i>389</i>&nbsp;    }
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    private String addStyleName(String var1) {
+<i>392</i>&nbsp;        if(this.styleNameMapping == null) {
+<i>393</i>&nbsp;            return var1;
+<i>394</i>&nbsp;        } else {
+<i>395</i>&nbsp;            StringBuilder var2 = null;
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;            for(int var3 = var1.length() - 1; var3 &gt;= 0; --var3) {
+<b class="nc"><i>398</i>&nbsp;                if(!this.isValidCharacter(var1.charAt(var3))) {</b>
+<i>399</i>&nbsp;                    if(var2 == null) {
+<i>400</i>&nbsp;                        var2 = new StringBuilder(var1);
+<i>401</i>&nbsp;                    }
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;                    var2.setCharAt(var3, &#39;a&#39;);
+<i>404</i>&nbsp;                }
+<i>405</i>&nbsp;            }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;            String var4;
+<i>408</i>&nbsp;            for(var4 = var2 != null?var2.toString():var1; this.styleNameMapping.get(var4) != null; var4 = var4 + &#39;x&#39;) {
+<i>409</i>&nbsp;                ;
+<i>410</i>&nbsp;            }
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;            this.styleNameMapping.put(var1, var4);
+<b class="nc"><i>413</i>&nbsp;            return var4;</b>
+<b class="nc"><i>414</i>&nbsp;        }</b>
+<b class="nc"><i>415</i>&nbsp;    }</b>
+<b class="nc"><i>416</i>&nbsp;</b>
+<i>417</i>&nbsp;    private String mapStyleName(String var1) {
+<b class="nc"><i>418</i>&nbsp;        if(this.styleNameMapping == null) {</b>
+<b class="nc"><i>419</i>&nbsp;            return var1;</b>
+<i>420</i>&nbsp;        } else {
+<i>421</i>&nbsp;            String var2 = (String)this.styleNameMapping.get(var1);
+<i>422</i>&nbsp;            return var2 == null?var1:var2;
+<i>423</i>&nbsp;        }
+<i>424</i>&nbsp;    }
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;    private boolean isValidCharacter(char var1) {
+<i>427</i>&nbsp;        return var1 &gt;= 97 &amp;&amp; var1 &lt;= 122 || var1 &gt;= 65 &amp;&amp; var1 &lt;= 90;
+<i>428</i>&nbsp;    }
+<i>429</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,898 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InputContext</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.awt.im</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InputContext (sun.awt.im)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InputContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 371)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InputContext$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InputContext$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 45)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 380)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.awt.im;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.AWTEvent;
+<i>9</i>&nbsp;import java.awt.AWTKeyStroke;
+<i>10</i>&nbsp;import java.awt.Component;
+<i>11</i>&nbsp;import java.awt.EventQueue;
+<i>12</i>&nbsp;import java.awt.Frame;
+<i>13</i>&nbsp;import java.awt.Rectangle;
+<i>14</i>&nbsp;import java.awt.Toolkit;
+<i>15</i>&nbsp;import java.awt.Window;
+<i>16</i>&nbsp;import java.awt.event.ComponentEvent;
+<i>17</i>&nbsp;import java.awt.event.ComponentListener;
+<i>18</i>&nbsp;import java.awt.event.FocusEvent;
+<i>19</i>&nbsp;import java.awt.event.InputEvent;
+<i>20</i>&nbsp;import java.awt.event.InputMethodEvent;
+<i>21</i>&nbsp;import java.awt.event.KeyEvent;
+<i>22</i>&nbsp;import java.awt.event.WindowEvent;
+<i>23</i>&nbsp;import java.awt.event.WindowListener;
+<i>24</i>&nbsp;import java.awt.im.InputMethodRequests;
+<i>25</i>&nbsp;import java.awt.im.spi.InputMethod;
+<i>26</i>&nbsp;import java.lang.Character.Subset;
+<i>27</i>&nbsp;import java.security.AccessController;
+<i>28</i>&nbsp;import java.security.PrivilegedAction;
+<i>29</i>&nbsp;import java.text.MessageFormat;
+<i>30</i>&nbsp;import java.util.HashMap;
+<i>31</i>&nbsp;import java.util.Iterator;
+<i>32</i>&nbsp;import java.util.Locale;
+<i>33</i>&nbsp;import java.util.prefs.BackingStoreException;
+<i>34</i>&nbsp;import java.util.prefs.Preferences;
+<i>35</i>&nbsp;import sun.awt.SunToolkit;
+<i>36</i>&nbsp;import sun.awt.im.InputMethodAdapter;
+<i>37</i>&nbsp;import sun.awt.im.InputMethodContext;
+<i>38</i>&nbsp;import sun.awt.im.InputMethodLocator;
+<i>39</i>&nbsp;import sun.awt.im.InputMethodManager;
+<i>40</i>&nbsp;import sun.awt.im.InputMethodWindow;
+<i>41</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;public class InputContext extends java.awt.im.InputContext implements ComponentListener, WindowListener {
+<i>44</i>&nbsp;    private static final PlatformLogger log = PlatformLogger.getLogger(&quot;sun.awt.im.InputContext&quot;);
+<i>45</i>&nbsp;    private InputMethodLocator inputMethodLocator;
+<i>46</i>&nbsp;    private InputMethod inputMethod;
+<i>47</i>&nbsp;    private boolean inputMethodCreationFailed;
+<i>48</i>&nbsp;    private HashMap usedInputMethods;
+<b class="nc"><i>49</i>&nbsp;    private Component currentClientComponent;</b>
+<i>50</i>&nbsp;    private Component awtFocussedComponent;
+<b class="nc"><i>51</i>&nbsp;    private boolean isInputMethodActive;</b>
+<i>52</i>&nbsp;    private Subset[] characterSubsets = null;
+<i>53</i>&nbsp;    private boolean compositionAreaHidden = false;
+<i>54</i>&nbsp;    private static InputContext inputMethodWindowContext;
+<i>55</i>&nbsp;    private static InputMethod previousInputMethod = null;
+<i>56</i>&nbsp;    private boolean clientWindowNotificationEnabled = false;
+<i>57</i>&nbsp;    private Window clientWindowListened;
+<i>58</i>&nbsp;    private Rectangle clientWindowLocation = null;
+<i>59</i>&nbsp;    private HashMap perInputMethodState;
+<i>60</i>&nbsp;    private static AWTKeyStroke inputMethodSelectionKey;
+<i>61</i>&nbsp;    private static boolean inputMethodSelectionKeyInitialized = false;
+<i>62</i>&nbsp;    private static final String inputMethodSelectionKeyPath = &quot;/java/awt/im/selectionKey&quot;;
+<i>63</i>&nbsp;    private static final String inputMethodSelectionKeyCodeName = &quot;keyCode&quot;;
+<i>64</i>&nbsp;    private static final String inputMethodSelectionKeyModifiersName = &quot;modifiers&quot;;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    protected InputContext() {
+<i>67</i>&nbsp;        InputMethodManager var1 = InputMethodManager.getInstance();
+<i>68</i>&nbsp;        Class var2 = InputContext.class;
+<i>69</i>&nbsp;        synchronized(InputContext.class) {
+<i>70</i>&nbsp;            if(!inputMethodSelectionKeyInitialized) {
+<b class="nc"><i>71</i>&nbsp;                inputMethodSelectionKeyInitialized = true;</b>
+<i>72</i>&nbsp;                if(var1.hasMultipleInputMethods()) {
+<i>73</i>&nbsp;                    this.initializeInputMethodSelectionKey();
+<b class="nc"><i>74</i>&nbsp;                }</b>
+<i>75</i>&nbsp;            }
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        this.selectInputMethod(var1.getDefaultKeyboardLocale());
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;    public synchronized boolean selectInputMethod(Locale var1) {</b>
+<i>82</i>&nbsp;        if(var1 == null) {
+<i>83</i>&nbsp;            throw new NullPointerException();
+<b class="nc"><i>84</i>&nbsp;        } else {</b>
+<i>85</i>&nbsp;            if(this.inputMethod != null) {
+<i>86</i>&nbsp;                if(this.inputMethod.setLocale(var1)) {
+<i>87</i>&nbsp;                    return true;
+<b class="nc"><i>88</i>&nbsp;                }</b>
+<i>89</i>&nbsp;            } else if(this.inputMethodLocator != null &amp;&amp; this.inputMethodLocator.isLocaleAvailable(var1)) {
+<i>90</i>&nbsp;                this.inputMethodLocator = this.inputMethodLocator.deriveLocator(var1);
+<i>91</i>&nbsp;                return true;
+<i>92</i>&nbsp;            }
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;            InputMethodLocator var2 = InputMethodManager.getInstance().findInputMethod(var1);</b>
+<i>95</i>&nbsp;            if(var2 != null) {
+<i>96</i>&nbsp;                this.changeInputMethod(var2);
+<i>97</i>&nbsp;                return true;
+<i>98</i>&nbsp;            } else {
+<i>99</i>&nbsp;                if(this.inputMethod == null &amp;&amp; this.inputMethodLocator != null) {
+<i>100</i>&nbsp;                    this.inputMethod = this.getInputMethod();
+<i>101</i>&nbsp;                    if(this.inputMethod != null) {
+<b class="nc"><i>102</i>&nbsp;                        return this.inputMethod.setLocale(var1);</b>
+<b class="nc"><i>103</i>&nbsp;                    }</b>
+<b class="nc"><i>104</i>&nbsp;                }</b>
+<b class="nc"><i>105</i>&nbsp;</b>
+<b class="nc"><i>106</i>&nbsp;                return false;</b>
+<b class="nc"><i>107</i>&nbsp;            }</b>
+<b class="nc"><i>108</i>&nbsp;        }</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;    public Locale getLocale() {</b>
+<b class="nc"><i>112</i>&nbsp;        return this.inputMethod != null?this.inputMethod.getLocale():(this.inputMethodLocator != null?this.inputMethodLocator.getLocale():null);</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public void setCharacterSubsets(Subset[] var1) {
+<i>116</i>&nbsp;        if(var1 == null) {
+<i>117</i>&nbsp;            this.characterSubsets = null;
+<i>118</i>&nbsp;        } else {
+<i>119</i>&nbsp;            this.characterSubsets = new Subset[var1.length];
+<b class="nc"><i>120</i>&nbsp;            System.arraycopy(var1, 0, this.characterSubsets, 0, this.characterSubsets.length);</b>
+<b class="nc"><i>121</i>&nbsp;        }</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        if(this.inputMethod != null) {
+<i>124</i>&nbsp;            this.inputMethod.setCharacterSubsets(var1);
+<b class="nc"><i>125</i>&nbsp;        }</b>
+<b class="nc"><i>126</i>&nbsp;</b>
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<b class="nc"><i>129</i>&nbsp;    public synchronized void reconvert() {</b>
+<i>130</i>&nbsp;        InputMethod var1 = this.getInputMethod();
+<i>131</i>&nbsp;        if(var1 == null) {
+<i>132</i>&nbsp;            throw new UnsupportedOperationException();
+<i>133</i>&nbsp;        } else {
+<b class="nc"><i>134</i>&nbsp;            var1.reconvert();</b>
+<b class="nc"><i>135</i>&nbsp;        }</b>
+<b class="nc"><i>136</i>&nbsp;    }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public void dispatchEvent(AWTEvent var1) {
+<i>139</i>&nbsp;        if(!(var1 instanceof InputMethodEvent)) {
+<i>140</i>&nbsp;            if(var1 instanceof FocusEvent) {
+<b class="nc"><i>141</i>&nbsp;                Component var2 = ((FocusEvent)var1).getOppositeComponent();</b>
+<b class="nc"><i>142</i>&nbsp;                if(var2 != null &amp;&amp; getComponentWindow(var2) instanceof InputMethodWindow &amp;&amp; var2.getInputContext() == this) {</b>
+<b class="nc"><i>143</i>&nbsp;                    return;</b>
+<b class="nc"><i>144</i>&nbsp;                }</b>
+<i>145</i>&nbsp;            }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;            InputMethod var4 = this.getInputMethod();
+<i>148</i>&nbsp;            int var3 = var1.getID();
+<b class="nc"><i>149</i>&nbsp;            switch(var3) {</b>
+<b class="nc"><i>150</i>&nbsp;            case 401:</b>
+<b class="nc"><i>151</i>&nbsp;                if(this.checkInputMethodSelectionKey((KeyEvent)var1)) {</b>
+<b class="nc"><i>152</i>&nbsp;                    InputMethodManager.getInstance().notifyChangeRequestByHotKey((Component)var1.getSource());</b>
+<i>153</i>&nbsp;                    break;
+<i>154</i>&nbsp;                }
+<b class="nc"><i>155</i>&nbsp;            default:</b>
+<i>156</i>&nbsp;                if(var4 != null &amp;&amp; var1 instanceof InputEvent) {
+<i>157</i>&nbsp;                    var4.dispatchEvent(var1);
+<i>158</i>&nbsp;                }
+<i>159</i>&nbsp;                break;
+<i>160</i>&nbsp;            case 1004:
+<i>161</i>&nbsp;                this.focusGained((Component)var1.getSource());
+<b class="nc"><i>162</i>&nbsp;                break;</b>
+<b class="nc"><i>163</i>&nbsp;            case 1005:</b>
+<b class="nc"><i>164</i>&nbsp;                this.focusLost((Component)var1.getSource(), ((FocusEvent)var1).isTemporary());</b>
+<b class="nc"><i>165</i>&nbsp;            }</b>
+<i>166</i>&nbsp;
+<b class="nc"><i>167</i>&nbsp;        }</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    private void focusGained(Component var1) {
+<i>171</i>&nbsp;        synchronized(var1.getTreeLock()) {
+<i>172</i>&nbsp;            synchronized(this) {
+<i>173</i>&nbsp;                if(!&quot;sun.awt.im.CompositionArea&quot;.equals(var1.getClass().getName()) &amp;&amp; !(getComponentWindow(var1) instanceof InputMethodWindow)) {
+<i>174</i>&nbsp;                    if(!var1.isDisplayable()) {
+<b class="nc"><i>175</i>&nbsp;                        return;</b>
+<b class="nc"><i>176</i>&nbsp;                    }</b>
+<i>177</i>&nbsp;
+<b class="nc"><i>178</i>&nbsp;                    if(this.inputMethod != null &amp;&amp; this.currentClientComponent != null &amp;&amp; this.currentClientComponent != var1) {</b>
+<b class="nc"><i>179</i>&nbsp;                        if(!this.isInputMethodActive) {</b>
+<i>180</i>&nbsp;                            this.activateInputMethod(false);
+<i>181</i>&nbsp;                        }
+<b class="nc"><i>182</i>&nbsp;</b>
+<b class="nc"><i>183</i>&nbsp;                        this.endComposition();</b>
+<i>184</i>&nbsp;                        this.deactivateInputMethod(false);
+<i>185</i>&nbsp;                    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;                    this.currentClientComponent = var1;
+<i>188</i>&nbsp;                }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;                this.awtFocussedComponent = var1;
+<i>191</i>&nbsp;                if(this.inputMethod instanceof InputMethodAdapter) {
+<i>192</i>&nbsp;                    ((InputMethodAdapter)this.inputMethod).setAWTFocussedComponent(var1);
+<b class="nc"><i>193</i>&nbsp;                }</b>
+<b class="nc"><i>194</i>&nbsp;</b>
+<b class="nc"><i>195</i>&nbsp;                if(!this.isInputMethodActive) {</b>
+<i>196</i>&nbsp;                    this.activateInputMethod(true);
+<b class="nc"><i>197</i>&nbsp;                }</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;                InputMethodContext var4 = (InputMethodContext)this;
+<i>200</i>&nbsp;                if(!var4.isCompositionAreaVisible()) {
+<i>201</i>&nbsp;                    InputMethodRequests var5 = var1.getInputMethodRequests();
+<i>202</i>&nbsp;                    if(var5 != null &amp;&amp; var4.useBelowTheSpotInput()) {
+<i>203</i>&nbsp;                        var4.setCompositionAreaUndecorated(true);
+<i>204</i>&nbsp;                    } else {
+<b class="nc"><i>205</i>&nbsp;                        var4.setCompositionAreaUndecorated(false);</b>
+<i>206</i>&nbsp;                    }
+<i>207</i>&nbsp;                }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;                if(this.compositionAreaHidden) {
+<i>210</i>&nbsp;                    ((InputMethodContext)this).setCompositionAreaVisible(true);
+<b class="nc"><i>211</i>&nbsp;                    this.compositionAreaHidden = false;</b>
+<b class="nc"><i>212</i>&nbsp;                }</b>
+<b class="nc"><i>213</i>&nbsp;</b>
+<i>214</i>&nbsp;            }
+<i>215</i>&nbsp;        }
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    private void activateInputMethod(boolean var1) {
+<i>219</i>&nbsp;        if(inputMethodWindowContext != null &amp;&amp; inputMethodWindowContext != this &amp;&amp; inputMethodWindowContext.inputMethodLocator != null &amp;&amp; !inputMethodWindowContext.inputMethodLocator.sameInputMethod(this.inputMethodLocator) &amp;&amp; inputMethodWindowContext.inputMethod != null) {
+<b class="nc"><i>220</i>&nbsp;            inputMethodWindowContext.inputMethod.hideWindows();</b>
+<b class="nc"><i>221</i>&nbsp;        }</b>
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;        inputMethodWindowContext = this;</b>
+<i>224</i>&nbsp;        if(this.inputMethod != null) {
+<b class="nc"><i>225</i>&nbsp;            if(previousInputMethod != this.inputMethod &amp;&amp; previousInputMethod instanceof InputMethodAdapter) {</b>
+<b class="nc"><i>226</i>&nbsp;                ((InputMethodAdapter)previousInputMethod).stopListening();</b>
+<i>227</i>&nbsp;            }
+<i>228</i>&nbsp;
+<b class="nc"><i>229</i>&nbsp;            previousInputMethod = null;</b>
+<b class="nc"><i>230</i>&nbsp;            if(log.isLoggable(500)) {</b>
+<i>231</i>&nbsp;                log.fine(&quot;Current client component &quot; + this.currentClientComponent);
+<i>232</i>&nbsp;            }
+<b class="nc"><i>233</i>&nbsp;</b>
+<i>234</i>&nbsp;            if(this.inputMethod instanceof InputMethodAdapter) {
+<b class="nc"><i>235</i>&nbsp;                ((InputMethodAdapter)this.inputMethod).setClientComponent(this.currentClientComponent);</b>
+<b class="nc"><i>236</i>&nbsp;            }</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;            this.inputMethod.activate();
+<i>239</i>&nbsp;            this.isInputMethodActive = true;
+<i>240</i>&nbsp;            if(this.perInputMethodState != null) {
+<i>241</i>&nbsp;                Boolean var2 = (Boolean)this.perInputMethodState.remove(this.inputMethod);
+<b class="nc"><i>242</i>&nbsp;                if(var2 != null) {</b>
+<b class="nc"><i>243</i>&nbsp;                    this.clientWindowNotificationEnabled = var2.booleanValue();</b>
+<i>244</i>&nbsp;                }
+<i>245</i>&nbsp;            }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;            if(this.clientWindowNotificationEnabled) {
+<i>248</i>&nbsp;                if(!this.addedClientWindowListeners()) {
+<i>249</i>&nbsp;                    this.addClientWindowListeners();
+<i>250</i>&nbsp;                }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;                synchronized(this) {
+<i>253</i>&nbsp;                    if(this.clientWindowListened != null) {
+<i>254</i>&nbsp;                        this.notifyClientWindowChange(this.clientWindowListened);
+<i>255</i>&nbsp;                    }
+<i>256</i>&nbsp;                }
+<i>257</i>&nbsp;            } else if(this.addedClientWindowListeners()) {
+<i>258</i>&nbsp;                this.removeClientWindowListeners();
+<i>259</i>&nbsp;            }
+<i>260</i>&nbsp;        }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;        InputMethodManager.getInstance().setInputContext(this);
+<i>263</i>&nbsp;        ((InputMethodContext)this).grabCompositionArea(var1);
+<i>264</i>&nbsp;    }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    static Window getComponentWindow(Component var0) {
+<i>267</i>&nbsp;        while(var0 != null) {
+<i>268</i>&nbsp;            if(var0 instanceof Window) {
+<i>269</i>&nbsp;                return (Window)var0;
+<i>270</i>&nbsp;            }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;            var0 = ((Component)var0).getParent();
+<i>273</i>&nbsp;        }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;        return null;
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    private void focusLost(Component var1, boolean var2) {
+<b class="nc"><i>279</i>&nbsp;        synchronized(var1.getTreeLock()) {</b>
+<b class="nc"><i>280</i>&nbsp;            synchronized(this) {</b>
+<b class="nc"><i>281</i>&nbsp;                if(this.isInputMethodActive) {</b>
+<i>282</i>&nbsp;                    this.deactivateInputMethod(var2);
+<b class="nc"><i>283</i>&nbsp;                }</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;                this.awtFocussedComponent = null;
+<b class="nc"><i>286</i>&nbsp;                if(this.inputMethod instanceof InputMethodAdapter) {</b>
+<i>287</i>&nbsp;                    ((InputMethodAdapter)this.inputMethod).setAWTFocussedComponent((Component)null);
+<b class="nc"><i>288</i>&nbsp;                }</b>
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;                InputMethodContext var5 = (InputMethodContext)this;
+<i>291</i>&nbsp;                if(var5.isCompositionAreaVisible()) {
+<i>292</i>&nbsp;                    var5.setCompositionAreaVisible(false);
+<i>293</i>&nbsp;                    this.compositionAreaHidden = true;
+<i>294</i>&nbsp;                }
+<i>295</i>&nbsp;            }
+<b class="nc"><i>296</i>&nbsp;</b>
+<b class="nc"><i>297</i>&nbsp;        }</b>
+<b class="nc"><i>298</i>&nbsp;    }</b>
+<b class="nc"><i>299</i>&nbsp;</b>
+<i>300</i>&nbsp;    private boolean checkInputMethodSelectionKey(KeyEvent var1) {
+<b class="nc"><i>301</i>&nbsp;        if(inputMethodSelectionKey != null) {</b>
+<b class="nc"><i>302</i>&nbsp;            AWTKeyStroke var2 = AWTKeyStroke.getAWTKeyStrokeForEvent(var1);</b>
+<i>303</i>&nbsp;            return inputMethodSelectionKey.equals(var2);
+<i>304</i>&nbsp;        } else {
+<i>305</i>&nbsp;            return false;
+<b class="nc"><i>306</i>&nbsp;        }</b>
+<i>307</i>&nbsp;    }
+<i>308</i>&nbsp;
+<b class="nc"><i>309</i>&nbsp;    private void deactivateInputMethod(boolean var1) {</b>
+<b class="nc"><i>310</i>&nbsp;        InputMethodManager.getInstance().setInputContext((InputContext)null);</b>
+<b class="nc"><i>311</i>&nbsp;        if(this.inputMethod != null) {</b>
+<i>312</i>&nbsp;            this.isInputMethodActive = false;
+<i>313</i>&nbsp;            this.inputMethod.deactivate(var1);
+<i>314</i>&nbsp;            previousInputMethod = this.inputMethod;
+<i>315</i>&nbsp;        }
+<i>316</i>&nbsp;
+<b class="nc"><i>317</i>&nbsp;    }</b>
+<b class="nc"><i>318</i>&nbsp;</b>
+<i>319</i>&nbsp;    synchronized void changeInputMethod(InputMethodLocator var1) {
+<i>320</i>&nbsp;        if(this.inputMethodLocator == null) {
+<i>321</i>&nbsp;            this.inputMethodLocator = var1;
+<i>322</i>&nbsp;            this.inputMethodCreationFailed = false;
+<i>323</i>&nbsp;        } else {
+<b class="nc"><i>324</i>&nbsp;            Locale var2;</b>
+<b class="nc"><i>325</i>&nbsp;            if(this.inputMethodLocator.sameInputMethod(var1)) {</b>
+<b class="nc"><i>326</i>&nbsp;                var2 = var1.getLocale();</b>
+<b class="nc"><i>327</i>&nbsp;                if(var2 != null &amp;&amp; this.inputMethodLocator.getLocale() != var2) {</b>
+<b class="nc"><i>328</i>&nbsp;                    if(this.inputMethod != null) {</b>
+<i>329</i>&nbsp;                        this.inputMethod.setLocale(var2);
+<b class="nc"><i>330</i>&nbsp;                    }</b>
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;                    this.inputMethodLocator = var1;
+<i>333</i>&nbsp;                }
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;            } else {</b>
+<b class="nc"><i>336</i>&nbsp;                var2 = this.inputMethodLocator.getLocale();</b>
+<b class="nc"><i>337</i>&nbsp;                boolean var3 = this.isInputMethodActive;</b>
+<i>338</i>&nbsp;                boolean var4 = false;
+<b class="nc"><i>339</i>&nbsp;                boolean var5 = false;</b>
+<b class="nc"><i>340</i>&nbsp;                if(this.inputMethod != null) {</b>
+<i>341</i>&nbsp;                    try {
+<i>342</i>&nbsp;                        var5 = this.inputMethod.isCompositionEnabled();
+<i>343</i>&nbsp;                        var4 = true;
+<i>344</i>&nbsp;                    } catch (UnsupportedOperationException var8) {
+<i>345</i>&nbsp;                        ;
+<i>346</i>&nbsp;                    }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;                    if(this.currentClientComponent != null) {
+<i>349</i>&nbsp;                        if(!this.isInputMethodActive) {
+<i>350</i>&nbsp;                            this.activateInputMethod(false);
+<i>351</i>&nbsp;                        }
+<i>352</i>&nbsp;
+<b class="nc"><i>353</i>&nbsp;                        this.endComposition();</b>
+<i>354</i>&nbsp;                        this.deactivateInputMethod(false);
+<i>355</i>&nbsp;                        if(this.inputMethod instanceof InputMethodAdapter) {
+<i>356</i>&nbsp;                            ((InputMethodAdapter)this.inputMethod).setClientComponent((Component)null);
+<b class="nc"><i>357</i>&nbsp;                        }</b>
+<i>358</i>&nbsp;                    }
+<b class="nc"><i>359</i>&nbsp;</b>
+<i>360</i>&nbsp;                    var2 = this.inputMethod.getLocale();
+<b class="nc"><i>361</i>&nbsp;                    if(this.usedInputMethods == null) {</b>
+<b class="nc"><i>362</i>&nbsp;                        this.usedInputMethods = new HashMap(5);</b>
+<i>363</i>&nbsp;                    }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;                    if(this.perInputMethodState == null) {
+<b class="nc"><i>366</i>&nbsp;                        this.perInputMethodState = new HashMap(5);</b>
+<i>367</i>&nbsp;                    }
+<b class="nc"><i>368</i>&nbsp;</b>
+<i>369</i>&nbsp;                    this.usedInputMethods.put(this.inputMethodLocator.deriveLocator((Locale)null), this.inputMethod);
+<b class="nc"><i>370</i>&nbsp;                    this.perInputMethodState.put(this.inputMethod, Boolean.valueOf(this.clientWindowNotificationEnabled));</b>
+<b class="nc"><i>371</i>&nbsp;                    this.enableClientWindowNotification(this.inputMethod, false);</b>
+<b class="nc"><i>372</i>&nbsp;                    if(this == inputMethodWindowContext) {</b>
+<i>373</i>&nbsp;                        this.inputMethod.hideWindows();
+<b class="nc"><i>374</i>&nbsp;                        inputMethodWindowContext = null;</b>
+<b class="nc"><i>375</i>&nbsp;                    }</b>
+<i>376</i>&nbsp;
+<b class="nc"><i>377</i>&nbsp;                    this.inputMethodLocator = null;</b>
+<b class="nc"><i>378</i>&nbsp;                    this.inputMethod = null;</b>
+<b class="nc"><i>379</i>&nbsp;                    this.inputMethodCreationFailed = false;</b>
+<b class="nc"><i>380</i>&nbsp;                }</b>
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;                if(var1.getLocale() == null &amp;&amp; var2 != null &amp;&amp; var1.isLocaleAvailable(var2)) {
+<b class="nc"><i>383</i>&nbsp;                    var1 = var1.deriveLocator(var2);</b>
+<b class="nc"><i>384</i>&nbsp;                }</b>
+<b class="nc"><i>385</i>&nbsp;</b>
+<i>386</i>&nbsp;                this.inputMethodLocator = var1;
+<b class="nc"><i>387</i>&nbsp;                this.inputMethodCreationFailed = false;</b>
+<b class="nc"><i>388</i>&nbsp;                if(var3) {</b>
+<b class="nc"><i>389</i>&nbsp;                    this.inputMethod = this.getInputMethodInstance();</b>
+<i>390</i>&nbsp;                    if(this.inputMethod instanceof InputMethodAdapter) {
+<b class="nc"><i>391</i>&nbsp;                        ((InputMethodAdapter)this.inputMethod).setAWTFocussedComponent(this.awtFocussedComponent);</b>
+<i>392</i>&nbsp;                    }
+<b class="nc"><i>393</i>&nbsp;</b>
+<b class="nc"><i>394</i>&nbsp;                    this.activateInputMethod(true);</b>
+<i>395</i>&nbsp;                }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;                if(var4) {
+<b class="nc"><i>398</i>&nbsp;                    this.inputMethod = this.getInputMethod();</b>
+<i>399</i>&nbsp;                    if(this.inputMethod != null) {
+<b class="nc"><i>400</i>&nbsp;                        try {</b>
+<i>401</i>&nbsp;                            this.inputMethod.setCompositionEnabled(var5);
+<i>402</i>&nbsp;                        } catch (UnsupportedOperationException var7) {
+<i>403</i>&nbsp;                            ;
+<i>404</i>&nbsp;                        }
+<b class="nc"><i>405</i>&nbsp;                    }</b>
+<b class="nc"><i>406</i>&nbsp;                }</b>
+<b class="nc"><i>407</i>&nbsp;</b>
+<b class="nc"><i>408</i>&nbsp;            }</b>
+<i>409</i>&nbsp;        }
+<b class="nc"><i>410</i>&nbsp;    }</b>
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    Component getClientComponent() {
+<i>413</i>&nbsp;        return this.currentClientComponent;
+<i>414</i>&nbsp;    }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    public synchronized void removeNotify(Component var1) {
+<i>417</i>&nbsp;        if(var1 == null) {
+<i>418</i>&nbsp;            throw new NullPointerException();
+<i>419</i>&nbsp;        } else if(this.inputMethod == null) {
+<i>420</i>&nbsp;            if(var1 == this.currentClientComponent) {
+<i>421</i>&nbsp;                this.currentClientComponent = null;
+<i>422</i>&nbsp;            }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;        } else {
+<i>425</i>&nbsp;            if(var1 == this.awtFocussedComponent) {
+<i>426</i>&nbsp;                this.focusLost(var1, false);
+<i>427</i>&nbsp;            }
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;            if(var1 == this.currentClientComponent) {
+<b class="nc"><i>430</i>&nbsp;                if(this.isInputMethodActive) {</b>
+<b class="nc"><i>431</i>&nbsp;                    this.deactivateInputMethod(false);</b>
+<i>432</i>&nbsp;                }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;                this.inputMethod.removeNotify();
+<b class="nc"><i>435</i>&nbsp;                if(this.clientWindowNotificationEnabled &amp;&amp; this.addedClientWindowListeners()) {</b>
+<b class="nc"><i>436</i>&nbsp;                    this.removeClientWindowListeners();</b>
+<i>437</i>&nbsp;                }
+<i>438</i>&nbsp;
+<b class="nc"><i>439</i>&nbsp;                this.currentClientComponent = null;</b>
+<b class="nc"><i>440</i>&nbsp;                if(this.inputMethod instanceof InputMethodAdapter) {</b>
+<b class="nc"><i>441</i>&nbsp;                    ((InputMethodAdapter)this.inputMethod).setClientComponent((Component)null);</b>
+<i>442</i>&nbsp;                }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;                if(EventQueue.isDispatchThread()) {
+<b class="nc"><i>445</i>&nbsp;                    ((InputMethodContext)this).releaseCompositionArea();</b>
+<b class="nc"><i>446</i>&nbsp;                } else {</b>
+<b class="nc"><i>447</i>&nbsp;                    EventQueue.invokeLater(new Runnable() {</b>
+<b class="nc"><i>448</i>&nbsp;                        public void run() {</b>
+<i>449</i>&nbsp;                            ((InputMethodContext)InputContext.this).releaseCompositionArea();
+<b class="nc"><i>450</i>&nbsp;                        }</b>
+<b class="nc"><i>451</i>&nbsp;                    });</b>
+<i>452</i>&nbsp;                }
+<i>453</i>&nbsp;            }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;        }
+<i>456</i>&nbsp;    }
+<i>457</i>&nbsp;
+<b class="nc"><i>458</i>&nbsp;    public synchronized void dispose() {</b>
+<b class="nc"><i>459</i>&nbsp;        if(this.currentClientComponent != null) {</b>
+<b class="nc"><i>460</i>&nbsp;            throw new IllegalStateException(&quot;Can\&#39;t dispose InputContext while it\&#39;s active&quot;);</b>
+<i>461</i>&nbsp;        } else {
+<b class="nc"><i>462</i>&nbsp;            if(this.inputMethod != null) {</b>
+<i>463</i>&nbsp;                if(this == inputMethodWindowContext) {
+<i>464</i>&nbsp;                    this.inputMethod.hideWindows();
+<i>465</i>&nbsp;                    inputMethodWindowContext = null;
+<i>466</i>&nbsp;                }
+<b class="nc"><i>467</i>&nbsp;</b>
+<b class="nc"><i>468</i>&nbsp;                if(this.inputMethod == previousInputMethod) {</b>
+<b class="nc"><i>469</i>&nbsp;                    previousInputMethod = null;</b>
+<b class="nc"><i>470</i>&nbsp;                }</b>
+<b class="nc"><i>471</i>&nbsp;</b>
+<i>472</i>&nbsp;                if(this.clientWindowNotificationEnabled) {
+<i>473</i>&nbsp;                    if(this.addedClientWindowListeners()) {
+<i>474</i>&nbsp;                        this.removeClientWindowListeners();
+<i>475</i>&nbsp;                    }
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;                    this.clientWindowNotificationEnabled = false;
+<i>478</i>&nbsp;                }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;                this.inputMethod.dispose();
+<i>481</i>&nbsp;                if(this.clientWindowNotificationEnabled) {
+<i>482</i>&nbsp;                    this.enableClientWindowNotification(this.inputMethod, false);
+<i>483</i>&nbsp;                }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;                this.inputMethod = null;
+<i>486</i>&nbsp;            }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;            this.inputMethodLocator = null;
+<b class="nc"><i>489</i>&nbsp;            if(this.usedInputMethods != null &amp;&amp; !this.usedInputMethods.isEmpty()) {</b>
+<b class="nc"><i>490</i>&nbsp;                Iterator var1 = this.usedInputMethods.values().iterator();</b>
+<b class="nc"><i>491</i>&nbsp;                this.usedInputMethods = null;</b>
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;                while(var1.hasNext()) {
+<i>494</i>&nbsp;                    ((InputMethod)var1.next()).dispose();
+<i>495</i>&nbsp;                }
+<i>496</i>&nbsp;            }
+<b class="nc"><i>497</i>&nbsp;</b>
+<b class="nc"><i>498</i>&nbsp;            this.clientWindowNotificationEnabled = false;</b>
+<b class="nc"><i>499</i>&nbsp;            this.clientWindowListened = null;</b>
+<b class="nc"><i>500</i>&nbsp;            this.perInputMethodState = null;</b>
+<b class="nc"><i>501</i>&nbsp;        }</b>
+<i>502</i>&nbsp;    }
+<b class="nc"><i>503</i>&nbsp;</b>
+<i>504</i>&nbsp;    public synchronized Object getInputMethodControlObject() {
+<i>505</i>&nbsp;        InputMethod var1 = this.getInputMethod();
+<i>506</i>&nbsp;        return var1 != null?var1.getControlObject():null;
+<i>507</i>&nbsp;    }
+<i>508</i>&nbsp;
+<b class="nc"><i>509</i>&nbsp;    public void setCompositionEnabled(boolean var1) {</b>
+<b class="nc"><i>510</i>&nbsp;        InputMethod var2 = this.getInputMethod();</b>
+<b class="nc"><i>511</i>&nbsp;        if(var2 == null) {</b>
+<b class="nc"><i>512</i>&nbsp;            throw new UnsupportedOperationException();</b>
+<b class="nc"><i>513</i>&nbsp;        } else {</b>
+<i>514</i>&nbsp;            var2.setCompositionEnabled(var1);
+<b class="nc"><i>515</i>&nbsp;        }</b>
+<b class="nc"><i>516</i>&nbsp;    }</b>
+<b class="nc"><i>517</i>&nbsp;</b>
+<i>518</i>&nbsp;    public boolean isCompositionEnabled() {
+<b class="nc"><i>519</i>&nbsp;        InputMethod var1 = this.getInputMethod();</b>
+<b class="nc"><i>520</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>521</i>&nbsp;            throw new UnsupportedOperationException();</b>
+<i>522</i>&nbsp;        } else {
+<b class="nc"><i>523</i>&nbsp;            return var1.isCompositionEnabled();</b>
+<b class="nc"><i>524</i>&nbsp;        }</b>
+<b class="nc"><i>525</i>&nbsp;    }</b>
+<b class="nc"><i>526</i>&nbsp;</b>
+<i>527</i>&nbsp;    public String getInputMethodInfo() {
+<i>528</i>&nbsp;        InputMethod var1 = this.getInputMethod();
+<b class="nc"><i>529</i>&nbsp;        if(var1 == null) {</b>
+<i>530</i>&nbsp;            throw new UnsupportedOperationException(&quot;Null input method&quot;);
+<i>531</i>&nbsp;        } else {
+<b class="nc"><i>532</i>&nbsp;            String var2 = null;</b>
+<b class="nc"><i>533</i>&nbsp;            if(var1 instanceof InputMethodAdapter) {</b>
+<i>534</i>&nbsp;                var2 = ((InputMethodAdapter)var1).getNativeInputMethodInfo();
+<b class="nc"><i>535</i>&nbsp;            }</b>
+<b class="nc"><i>536</i>&nbsp;</b>
+<i>537</i>&nbsp;            if(var2 == null &amp;&amp; this.inputMethodLocator != null) {
+<b class="nc"><i>538</i>&nbsp;                var2 = this.inputMethodLocator.getDescriptor().getInputMethodDisplayName(this.getLocale(), SunToolkit.getStartupLocale());</b>
+<b class="nc"><i>539</i>&nbsp;            }</b>
+<i>540</i>&nbsp;
+<b class="nc"><i>541</i>&nbsp;            return var2 != null &amp;&amp; !var2.equals(&quot;&quot;)?var2:var1.toString() + &quot;-&quot; + var1.getLocale().toString();</b>
+<b class="nc"><i>542</i>&nbsp;        }</b>
+<b class="nc"><i>543</i>&nbsp;    }</b>
+<b class="nc"><i>544</i>&nbsp;</b>
+<i>545</i>&nbsp;    public void disableNativeIM() {
+<b class="nc"><i>546</i>&nbsp;        InputMethod var1 = this.getInputMethod();</b>
+<b class="nc"><i>547</i>&nbsp;        if(var1 != null &amp;&amp; var1 instanceof InputMethodAdapter) {</b>
+<b class="nc"><i>548</i>&nbsp;            ((InputMethodAdapter)var1).stopListening();</b>
+<i>549</i>&nbsp;        }
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;    }
+<b class="nc"><i>552</i>&nbsp;</b>
+<i>553</i>&nbsp;    private synchronized InputMethod getInputMethod() {
+<b class="nc"><i>554</i>&nbsp;        if(this.inputMethod != null) {</b>
+<i>555</i>&nbsp;            return this.inputMethod;
+<b class="nc"><i>556</i>&nbsp;        } else if(this.inputMethodCreationFailed) {</b>
+<b class="nc"><i>557</i>&nbsp;            return null;</b>
+<i>558</i>&nbsp;        } else {
+<i>559</i>&nbsp;            this.inputMethod = this.getInputMethodInstance();
+<b class="nc"><i>560</i>&nbsp;            return this.inputMethod;</b>
+<b class="nc"><i>561</i>&nbsp;        }</b>
+<b class="nc"><i>562</i>&nbsp;    }</b>
+<b class="nc"><i>563</i>&nbsp;</b>
+<i>564</i>&nbsp;    private InputMethod getInputMethodInstance() {
+<b class="nc"><i>565</i>&nbsp;        InputMethodLocator var1 = this.inputMethodLocator;</b>
+<i>566</i>&nbsp;        if(var1 == null) {
+<i>567</i>&nbsp;            this.inputMethodCreationFailed = true;
+<i>568</i>&nbsp;            return null;
+<b class="nc"><i>569</i>&nbsp;        } else {</b>
+<b class="nc"><i>570</i>&nbsp;            Locale var2 = var1.getLocale();</b>
+<b class="nc"><i>571</i>&nbsp;            InputMethod var3 = null;</b>
+<i>572</i>&nbsp;            if(this.usedInputMethods != null) {
+<b class="nc"><i>573</i>&nbsp;                var3 = (InputMethod)this.usedInputMethods.remove(var1.deriveLocator((Locale)null));</b>
+<b class="nc"><i>574</i>&nbsp;                if(var3 != null) {</b>
+<i>575</i>&nbsp;                    if(var2 != null) {
+<i>576</i>&nbsp;                        var3.setLocale(var2);
+<i>577</i>&nbsp;                    }
+<i>578</i>&nbsp;
+<i>579</i>&nbsp;                    var3.setCharacterSubsets(this.characterSubsets);
+<i>580</i>&nbsp;                    Boolean var4 = (Boolean)this.perInputMethodState.remove(var3);
+<i>581</i>&nbsp;                    if(var4 != null) {
+<i>582</i>&nbsp;                        this.enableClientWindowNotification(var3, var4.booleanValue());
+<b class="nc"><i>583</i>&nbsp;                    }</b>
+<i>584</i>&nbsp;
+<i>585</i>&nbsp;                    ((InputMethodContext)this).setInputMethodSupportsBelowTheSpot(!(var3 instanceof InputMethodAdapter) || ((InputMethodAdapter)var3).supportsBelowTheSpot());
+<i>586</i>&nbsp;                    return var3;
+<i>587</i>&nbsp;                }
+<i>588</i>&nbsp;            }
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;            try {
+<b class="nc"><i>591</i>&nbsp;                var3 = var1.getDescriptor().createInputMethod();</b>
+<b class="nc"><i>592</i>&nbsp;                if(var2 != null) {</b>
+<i>593</i>&nbsp;                    var3.setLocale(var2);
+<i>594</i>&nbsp;                }
+<b class="nc"><i>595</i>&nbsp;</b>
+<b class="nc"><i>596</i>&nbsp;                var3.setInputMethodContext((InputMethodContext)this);</b>
+<b class="nc"><i>597</i>&nbsp;                var3.setCharacterSubsets(this.characterSubsets);</b>
+<i>598</i>&nbsp;            } catch (Exception var5) {
+<i>599</i>&nbsp;                this.logCreationFailed(var5);
+<i>600</i>&nbsp;                this.inputMethodCreationFailed = true;
+<i>601</i>&nbsp;                if(var3 != null) {
+<i>602</i>&nbsp;                    var3 = null;
+<i>603</i>&nbsp;                }
+<b class="nc"><i>604</i>&nbsp;            } catch (LinkageError var6) {</b>
+<b class="nc"><i>605</i>&nbsp;                this.logCreationFailed(var6);</b>
+<i>606</i>&nbsp;                this.inputMethodCreationFailed = true;
+<i>607</i>&nbsp;            }
+<b class="nc"><i>608</i>&nbsp;</b>
+<b class="nc"><i>609</i>&nbsp;            ((InputMethodContext)this).setInputMethodSupportsBelowTheSpot(!(var3 instanceof InputMethodAdapter) || ((InputMethodAdapter)var3).supportsBelowTheSpot());</b>
+<i>610</i>&nbsp;            return var3;
+<b class="nc"><i>611</i>&nbsp;        }</b>
+<i>612</i>&nbsp;    }
+<b class="nc"><i>613</i>&nbsp;</b>
+<b class="nc"><i>614</i>&nbsp;    private void logCreationFailed(Throwable var1) {</b>
+<b class="nc"><i>615</i>&nbsp;        String var2 = Toolkit.getProperty(&quot;AWT.InputMethodCreationFailed&quot;, &quot;Could not create {0}. Reason: {1}&quot;);</b>
+<i>616</i>&nbsp;        Object[] var3 = new Object[]{this.inputMethodLocator.getDescriptor().getInputMethodDisplayName((Locale)null, Locale.getDefault()), var1.getLocalizedMessage()};
+<b class="nc"><i>617</i>&nbsp;        MessageFormat var4 = new MessageFormat(var2);</b>
+<b class="nc"><i>618</i>&nbsp;        PlatformLogger var5 = PlatformLogger.getLogger(&quot;sun.awt.im&quot;);</b>
+<b class="nc"><i>619</i>&nbsp;        var5.config(var4.format(var3));</b>
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    InputMethodLocator getInputMethodLocator() {
+<i>623</i>&nbsp;        return this.inputMethod != null?this.inputMethodLocator.deriveLocator(this.inputMethod.getLocale()):this.inputMethodLocator;
+<i>624</i>&nbsp;    }
+<i>625</i>&nbsp;
+<b class="nc"><i>626</i>&nbsp;    public synchronized void endComposition() {</b>
+<b class="nc"><i>627</i>&nbsp;        if(this.inputMethod != null) {</b>
+<i>628</i>&nbsp;            this.inputMethod.endComposition();
+<b class="nc"><i>629</i>&nbsp;        }</b>
+<i>630</i>&nbsp;
+<b class="nc"><i>631</i>&nbsp;    }</b>
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;    synchronized void enableClientWindowNotification(InputMethod var1, boolean var2) {
+<i>634</i>&nbsp;        if(var1 != this.inputMethod) {
+<i>635</i>&nbsp;            if(this.perInputMethodState == null) {
+<i>636</i>&nbsp;                this.perInputMethodState = new HashMap(5);
+<i>637</i>&nbsp;            }
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;            this.perInputMethodState.put(var1, Boolean.valueOf(var2));
+<i>640</i>&nbsp;        } else {
+<i>641</i>&nbsp;            if(this.clientWindowNotificationEnabled != var2) {
+<i>642</i>&nbsp;                this.clientWindowLocation = null;
+<b class="nc"><i>643</i>&nbsp;                this.clientWindowNotificationEnabled = var2;</b>
+<b class="nc"><i>644</i>&nbsp;            }</b>
+<i>645</i>&nbsp;
+<b class="nc"><i>646</i>&nbsp;            if(this.clientWindowNotificationEnabled) {</b>
+<b class="nc"><i>647</i>&nbsp;                if(!this.addedClientWindowListeners()) {</b>
+<b class="nc"><i>648</i>&nbsp;                    this.addClientWindowListeners();</b>
+<b class="nc"><i>649</i>&nbsp;                }</b>
+<i>650</i>&nbsp;
+<b class="nc"><i>651</i>&nbsp;                if(this.clientWindowListened != null) {</b>
+<b class="nc"><i>652</i>&nbsp;                    this.clientWindowLocation = null;</b>
+<i>653</i>&nbsp;                    this.notifyClientWindowChange(this.clientWindowListened);
+<b class="nc"><i>654</i>&nbsp;                }</b>
+<b class="nc"><i>655</i>&nbsp;            } else if(this.addedClientWindowListeners()) {</b>
+<b class="nc"><i>656</i>&nbsp;                this.removeClientWindowListeners();</b>
+<i>657</i>&nbsp;            }
+<b class="nc"><i>658</i>&nbsp;</b>
+<i>659</i>&nbsp;        }
+<b class="nc"><i>660</i>&nbsp;    }</b>
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;    private synchronized void notifyClientWindowChange(Window var1) {
+<i>663</i>&nbsp;        if(this.inputMethod != null) {
+<i>664</i>&nbsp;            if(var1.isVisible() &amp;&amp; (!(var1 instanceof Frame) || ((Frame)var1).getState() != 1)) {
+<b class="nc"><i>665</i>&nbsp;                Rectangle var2 = var1.getBounds();</b>
+<b class="nc"><i>666</i>&nbsp;                if(this.clientWindowLocation == null || !this.clientWindowLocation.equals(var2)) {</b>
+<i>667</i>&nbsp;                    this.clientWindowLocation = var2;
+<i>668</i>&nbsp;                    this.inputMethod.notifyClientWindowChange(this.clientWindowLocation);
+<b class="nc"><i>669</i>&nbsp;                }</b>
+<i>670</i>&nbsp;
+<b class="nc"><i>671</i>&nbsp;            } else {</b>
+<b class="nc"><i>672</i>&nbsp;                this.clientWindowLocation = null;</b>
+<b class="nc"><i>673</i>&nbsp;                this.inputMethod.notifyClientWindowChange((Rectangle)null);</b>
+<b class="nc"><i>674</i>&nbsp;            }</b>
+<b class="nc"><i>675</i>&nbsp;        }</b>
+<b class="nc"><i>676</i>&nbsp;    }</b>
+<i>677</i>&nbsp;
+<i>678</i>&nbsp;    private synchronized void addClientWindowListeners() {
+<i>679</i>&nbsp;        Component var1 = this.getClientComponent();
+<i>680</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>681</i>&nbsp;            Window var2 = getComponentWindow(var1);</b>
+<b class="nc"><i>682</i>&nbsp;            if(var2 != null) {</b>
+<b class="nc"><i>683</i>&nbsp;                var2.addComponentListener(this);</b>
+<i>684</i>&nbsp;                var2.addWindowListener(this);
+<i>685</i>&nbsp;                this.clientWindowListened = var2;
+<i>686</i>&nbsp;            }
+<i>687</i>&nbsp;        }
+<i>688</i>&nbsp;    }
+<i>689</i>&nbsp;
+<b class="nc"><i>690</i>&nbsp;    private synchronized void removeClientWindowListeners() {</b>
+<i>691</i>&nbsp;        this.clientWindowListened.removeComponentListener(this);
+<b class="nc"><i>692</i>&nbsp;        this.clientWindowListened.removeWindowListener(this);</b>
+<b class="nc"><i>693</i>&nbsp;        this.clientWindowListened = null;</b>
+<i>694</i>&nbsp;    }
+<b class="nc"><i>695</i>&nbsp;</b>
+<i>696</i>&nbsp;    private boolean addedClientWindowListeners() {
+<i>697</i>&nbsp;        return this.clientWindowListened != null;
+<i>698</i>&nbsp;    }
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;    public void componentResized(ComponentEvent var1) {
+<i>701</i>&nbsp;        this.notifyClientWindowChange((Window)var1.getComponent());
+<i>702</i>&nbsp;    }
+<i>703</i>&nbsp;
+<b class="nc"><i>704</i>&nbsp;    public void componentMoved(ComponentEvent var1) {</b>
+<i>705</i>&nbsp;        this.notifyClientWindowChange((Window)var1.getComponent());
+<b class="nc"><i>706</i>&nbsp;    }</b>
+<b class="nc"><i>707</i>&nbsp;</b>
+<i>708</i>&nbsp;    public void componentShown(ComponentEvent var1) {
+<b class="nc"><i>709</i>&nbsp;        this.notifyClientWindowChange((Window)var1.getComponent());</b>
+<i>710</i>&nbsp;    }
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;    public void componentHidden(ComponentEvent var1) {
+<i>713</i>&nbsp;        this.notifyClientWindowChange((Window)var1.getComponent());
+<i>714</i>&nbsp;    }
+<i>715</i>&nbsp;
+<i>716</i>&nbsp;    public void windowOpened(WindowEvent var1) {
+<b class="nc"><i>717</i>&nbsp;    }</b>
+<i>718</i>&nbsp;
+<b class="nc"><i>719</i>&nbsp;    public void windowClosing(WindowEvent var1) {</b>
+<b class="nc"><i>720</i>&nbsp;    }</b>
+<i>721</i>&nbsp;
+<b class="nc"><i>722</i>&nbsp;    public void windowClosed(WindowEvent var1) {</b>
+<i>723</i>&nbsp;    }
+<i>724</i>&nbsp;
+<i>725</i>&nbsp;    public void windowIconified(WindowEvent var1) {
+<i>726</i>&nbsp;        this.notifyClientWindowChange(var1.getWindow());
+<i>727</i>&nbsp;    }
+<i>728</i>&nbsp;
+<i>729</i>&nbsp;    public void windowDeiconified(WindowEvent var1) {
+<b class="nc"><i>730</i>&nbsp;        this.notifyClientWindowChange(var1.getWindow());</b>
+<i>731</i>&nbsp;    }
+<b class="nc"><i>732</i>&nbsp;</b>
+<b class="nc"><i>733</i>&nbsp;    public void windowActivated(WindowEvent var1) {</b>
+<i>734</i>&nbsp;    }
+<i>735</i>&nbsp;
+<b class="nc"><i>736</i>&nbsp;    public void windowDeactivated(WindowEvent var1) {</b>
+<b class="nc"><i>737</i>&nbsp;    }</b>
+<i>738</i>&nbsp;
+<b class="nc"><i>739</i>&nbsp;    private void initializeInputMethodSelectionKey() {</b>
+<i>740</i>&nbsp;        AccessController.doPrivileged(new PrivilegedAction() {
+<i>741</i>&nbsp;            public Object run() {
+<i>742</i>&nbsp;                Preferences var1 = Preferences.userRoot();
+<i>743</i>&nbsp;                InputContext.inputMethodSelectionKey = InputContext.this.getInputMethodSelectionKeyStroke(var1);
+<i>744</i>&nbsp;                if(InputContext.inputMethodSelectionKey == null) {
+<b class="nc"><i>745</i>&nbsp;                    var1 = Preferences.systemRoot();</b>
+<b class="nc"><i>746</i>&nbsp;                    InputContext.inputMethodSelectionKey = InputContext.this.getInputMethodSelectionKeyStroke(var1);</b>
+<i>747</i>&nbsp;                }
+<i>748</i>&nbsp;
+<i>749</i>&nbsp;                return null;
+<i>750</i>&nbsp;            }
+<b class="nc"><i>751</i>&nbsp;        });</b>
+<b class="nc"><i>752</i>&nbsp;    }</b>
+<i>753</i>&nbsp;
+<i>754</i>&nbsp;    private AWTKeyStroke getInputMethodSelectionKeyStroke(Preferences var1) {
+<i>755</i>&nbsp;        try {
+<b class="nc"><i>756</i>&nbsp;            if(var1.nodeExists(&quot;/java/awt/im/selectionKey&quot;)) {</b>
+<i>757</i>&nbsp;                Preferences var2 = var1.node(&quot;/java/awt/im/selectionKey&quot;);
+<i>758</i>&nbsp;                int var3 = var2.getInt(&quot;keyCode&quot;, 0);
+<i>759</i>&nbsp;                if(var3 != 0) {
+<i>760</i>&nbsp;                    int var4 = var2.getInt(&quot;modifiers&quot;, 0);
+<i>761</i>&nbsp;                    return AWTKeyStroke.getAWTKeyStroke(var3, var4);
+<i>762</i>&nbsp;                }
+<i>763</i>&nbsp;            }
+<i>764</i>&nbsp;        } catch (BackingStoreException var5) {
+<i>765</i>&nbsp;            ;
+<i>766</i>&nbsp;        }
+<b class="nc"><i>767</i>&nbsp;</b>
+<b class="nc"><i>768</i>&nbsp;        return null;</b>
+<b class="nc"><i>769</i>&nbsp;    }</b>
+<i>770</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

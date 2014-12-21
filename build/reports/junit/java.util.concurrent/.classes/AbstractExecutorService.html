@@ -1,0 +1,456 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AbstractExecutorService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.util.concurrent</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AbstractExecutorService (java.util.concurrent)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AbstractExecutorService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 122)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.util.concurrent;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.ArrayList;
+<i>9</i>&nbsp;import java.util.Collection;
+<i>10</i>&nbsp;import java.util.Iterator;
+<i>11</i>&nbsp;import java.util.List;
+<i>12</i>&nbsp;import java.util.concurrent.Callable;
+<i>13</i>&nbsp;import java.util.concurrent.CancellationException;
+<i>14</i>&nbsp;import java.util.concurrent.ExecutionException;
+<i>15</i>&nbsp;import java.util.concurrent.ExecutorCompletionService;
+<i>16</i>&nbsp;import java.util.concurrent.ExecutorService;
+<i>17</i>&nbsp;import java.util.concurrent.Future;
+<i>18</i>&nbsp;import java.util.concurrent.FutureTask;
+<i>19</i>&nbsp;import java.util.concurrent.RunnableFuture;
+<i>20</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>21</i>&nbsp;import java.util.concurrent.TimeoutException;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public abstract class AbstractExecutorService implements ExecutorService {
+<i>24</i>&nbsp;    public AbstractExecutorService() {
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    protected &lt;T&gt; RunnableFuture&lt;T&gt; newTaskFor(Runnable var1, T var2) {
+<i>28</i>&nbsp;        return new FutureTask(var1, var2);
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    protected &lt;T&gt; RunnableFuture&lt;T&gt; newTaskFor(Callable&lt;T&gt; var1) {
+<i>32</i>&nbsp;        return new FutureTask(var1);
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public Future&lt;?&gt; submit(Runnable var1) {
+<i>36</i>&nbsp;        if(var1 == null) {
+<i>37</i>&nbsp;            throw new NullPointerException();
+<i>38</i>&nbsp;        } else {
+<i>39</i>&nbsp;            RunnableFuture var2 = this.newTaskFor(var1, (Object)null);
+<i>40</i>&nbsp;            this.execute(var2);
+<i>41</i>&nbsp;            return var2;
+<i>42</i>&nbsp;        }
+<b class="nc"><i>43</i>&nbsp;    }</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public &lt;T&gt; Future&lt;T&gt; submit(Runnable var1, T var2) {
+<i>46</i>&nbsp;        if(var1 == null) {
+<i>47</i>&nbsp;            throw new NullPointerException();
+<i>48</i>&nbsp;        } else {
+<i>49</i>&nbsp;            RunnableFuture var3 = this.newTaskFor(var1, var2);
+<i>50</i>&nbsp;            this.execute(var3);
+<i>51</i>&nbsp;            return var3;
+<i>52</i>&nbsp;        }
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public &lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; var1) {
+<i>56</i>&nbsp;        if(var1 == null) {
+<i>57</i>&nbsp;            throw new NullPointerException();
+<b class="nc"><i>58</i>&nbsp;        } else {</b>
+<i>59</i>&nbsp;            RunnableFuture var2 = this.newTaskFor(var1);
+<i>60</i>&nbsp;            this.execute(var2);
+<i>61</i>&nbsp;            return var2;
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    private &lt;T&gt; T doInvokeAny(Collection&lt;? extends Callable&lt;T&gt;&gt; var1, boolean var2, long var3) throws InterruptedException, ExecutionException, TimeoutException {
+<i>66</i>&nbsp;        if(var1 == null) {
+<i>67</i>&nbsp;            throw new NullPointerException();
+<i>68</i>&nbsp;        } else {
+<i>69</i>&nbsp;            int var5 = var1.size();
+<i>70</i>&nbsp;            if(var5 == 0) {
+<i>71</i>&nbsp;                throw new IllegalArgumentException();
+<b class="nc"><i>72</i>&nbsp;            } else {</b>
+<i>73</i>&nbsp;                ArrayList var6 = new ArrayList(var5);
+<i>74</i>&nbsp;                ExecutorCompletionService var7 = new ExecutorCompletionService(this);
+<i>75</i>&nbsp;                boolean var23 = false;
+<b class="nc"><i>76</i>&nbsp;</b>
+<b class="nc"><i>77</i>&nbsp;                Object var27;</b>
+<b class="nc"><i>78</i>&nbsp;                try {</b>
+<b class="nc"><i>79</i>&nbsp;                    var23 = true;</b>
+<i>80</i>&nbsp;                    ExecutionException var8 = null;
+<i>81</i>&nbsp;                    long var9 = var2?System.nanoTime():0L;
+<i>82</i>&nbsp;                    Iterator var11 = var1.iterator();
+<b class="nc"><i>83</i>&nbsp;                    var6.add(var7.submit((Callable)var11.next()));</b>
+<b class="nc"><i>84</i>&nbsp;                    --var5;</b>
+<b class="nc"><i>85</i>&nbsp;                    int var12 = 1;</b>
+<b class="nc"><i>86</i>&nbsp;</b>
+<i>87</i>&nbsp;                    while(true) {
+<i>88</i>&nbsp;                        Future var13 = var7.poll();
+<i>89</i>&nbsp;                        if(var13 == null) {
+<b class="nc"><i>90</i>&nbsp;                            if(var5 &gt; 0) {</b>
+<b class="nc"><i>91</i>&nbsp;                                --var5;</b>
+<b class="nc"><i>92</i>&nbsp;                                var6.add(var7.submit((Callable)var11.next()));</b>
+<b class="nc"><i>93</i>&nbsp;                                ++var12;</b>
+<i>94</i>&nbsp;                            } else {
+<i>95</i>&nbsp;                                if(var12 == 0) {
+<i>96</i>&nbsp;                                    if(var8 == null) {
+<i>97</i>&nbsp;                                        var8 = new ExecutionException();
+<i>98</i>&nbsp;                                    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;                                    throw var8;
+<i>101</i>&nbsp;                                }
+<b class="nc"><i>102</i>&nbsp;</b>
+<b class="nc"><i>103</i>&nbsp;                                if(var2) {</b>
+<b class="nc"><i>104</i>&nbsp;                                    var13 = var7.poll(var3, TimeUnit.NANOSECONDS);</b>
+<b class="nc"><i>105</i>&nbsp;                                    if(var13 == null) {</b>
+<b class="nc"><i>106</i>&nbsp;                                        throw new TimeoutException();</b>
+<b class="nc"><i>107</i>&nbsp;                                    }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<i>109</i>&nbsp;                                    long var14 = System.nanoTime();
+<i>110</i>&nbsp;                                    var3 -= var14 - var9;
+<i>111</i>&nbsp;                                    var9 = var14;
+<i>112</i>&nbsp;                                } else {
+<i>113</i>&nbsp;                                    var13 = var7.take();
+<i>114</i>&nbsp;                                }
+<i>115</i>&nbsp;                            }
+<i>116</i>&nbsp;                        }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;                        if(var13 != null) {
+<i>119</i>&nbsp;                            --var12;
+<b class="nc"><i>120</i>&nbsp;</b>
+<b class="nc"><i>121</i>&nbsp;                            try {</b>
+<b class="nc"><i>122</i>&nbsp;                                var27 = var13.get();</b>
+<i>123</i>&nbsp;                                var23 = false;
+<i>124</i>&nbsp;                                break;
+<b class="nc"><i>125</i>&nbsp;                            } catch (ExecutionException var24) {</b>
+<b class="nc"><i>126</i>&nbsp;                                var8 = var24;</b>
+<b class="nc"><i>127</i>&nbsp;                            } catch (RuntimeException var25) {</b>
+<i>128</i>&nbsp;                                var8 = new ExecutionException(var25);
+<i>129</i>&nbsp;                            }
+<b class="nc"><i>130</i>&nbsp;                        }</b>
+<b class="nc"><i>131</i>&nbsp;                    }</b>
+<b class="nc"><i>132</i>&nbsp;                } finally {</b>
+<b class="nc"><i>133</i>&nbsp;                    if(var23) {</b>
+<b class="nc"><i>134</i>&nbsp;                        Iterator var18 = var6.iterator();</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<i>136</i>&nbsp;                        while(var18.hasNext()) {
+<b class="nc"><i>137</i>&nbsp;                            Future var19 = (Future)var18.next();</b>
+<b class="nc"><i>138</i>&nbsp;                            var19.cancel(true);</b>
+<b class="nc"><i>139</i>&nbsp;                        }</b>
+<b class="nc"><i>140</i>&nbsp;</b>
+<b class="nc"><i>141</i>&nbsp;                    }</b>
+<b class="nc"><i>142</i>&nbsp;                }</b>
+<b class="nc"><i>143</i>&nbsp;</b>
+<b class="nc"><i>144</i>&nbsp;                Iterator var15 = var6.iterator();</b>
+<b class="nc"><i>145</i>&nbsp;</b>
+<b class="nc"><i>146</i>&nbsp;                while(var15.hasNext()) {</b>
+<i>147</i>&nbsp;                    Future var16 = (Future)var15.next();
+<b class="nc"><i>148</i>&nbsp;                    var16.cancel(true);</b>
+<i>149</i>&nbsp;                }
+<b class="nc"><i>150</i>&nbsp;</b>
+<b class="nc"><i>151</i>&nbsp;                return var27;</b>
+<i>152</i>&nbsp;            }
+<b class="nc"><i>153</i>&nbsp;        }</b>
+<b class="nc"><i>154</i>&nbsp;    }</b>
+<b class="nc"><i>155</i>&nbsp;</b>
+<b class="nc"><i>156</i>&nbsp;    public &lt;T&gt; T invokeAny(Collection&lt;? extends Callable&lt;T&gt;&gt; var1) throws InterruptedException, ExecutionException {</b>
+<b class="nc"><i>157</i>&nbsp;        try {</b>
+<b class="nc"><i>158</i>&nbsp;            return this.doInvokeAny(var1, false, 0L);</b>
+<b class="nc"><i>159</i>&nbsp;        } catch (TimeoutException var3) {</b>
+<b class="nc"><i>160</i>&nbsp;            assert false;</b>
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;            return null;</b>
+<i>163</i>&nbsp;        }
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<b class="nc"><i>165</i>&nbsp;</b>
+<b class="nc"><i>166</i>&nbsp;    public &lt;T&gt; T invokeAny(Collection&lt;? extends Callable&lt;T&gt;&gt; var1, long var2, TimeUnit var4) throws InterruptedException, ExecutionException, TimeoutException {</b>
+<i>167</i>&nbsp;        return this.doInvokeAny(var1, true, var4.toNanos(var2));
+<i>168</i>&nbsp;    }
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;    public &lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; var1) throws InterruptedException {</b>
+<i>171</i>&nbsp;        if(var1 == null) {
+<i>172</i>&nbsp;            throw new NullPointerException();
+<i>173</i>&nbsp;        } else {
+<i>174</i>&nbsp;            ArrayList var2 = new ArrayList(var1.size());
+<i>175</i>&nbsp;            boolean var3 = false;
+<i>176</i>&nbsp;            boolean var13 = false;
+<b class="nc"><i>177</i>&nbsp;</b>
+<b class="nc"><i>178</i>&nbsp;            ArrayList var17;</b>
+<b class="nc"><i>179</i>&nbsp;            try {</b>
+<b class="nc"><i>180</i>&nbsp;                var13 = true;</b>
+<i>181</i>&nbsp;                Iterator var4 = var1.iterator();
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;                while(var4.hasNext()) {
+<i>184</i>&nbsp;                    Callable var5 = (Callable)var4.next();
+<i>185</i>&nbsp;                    RunnableFuture var6 = this.newTaskFor(var5);
+<i>186</i>&nbsp;                    var2.add(var6);
+<b class="nc"><i>187</i>&nbsp;                    this.execute(var6);</b>
+<i>188</i>&nbsp;                }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;                var4 = var2.iterator();
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>193</i>&nbsp;                    if(!var4.hasNext()) {</b>
+<b class="nc"><i>194</i>&nbsp;                        var3 = true;</b>
+<b class="nc"><i>195</i>&nbsp;                        var17 = var2;</b>
+<i>196</i>&nbsp;                        var13 = false;
+<b class="nc"><i>197</i>&nbsp;                        break;</b>
+<b class="nc"><i>198</i>&nbsp;                    }</b>
+<b class="nc"><i>199</i>&nbsp;</b>
+<b class="nc"><i>200</i>&nbsp;                    Future var18 = (Future)var4.next();</b>
+<b class="nc"><i>201</i>&nbsp;                    if(!var18.isDone()) {</b>
+<b class="nc"><i>202</i>&nbsp;                        try {</b>
+<b class="nc"><i>203</i>&nbsp;                            var18.get();</b>
+<i>204</i>&nbsp;                        } catch (CancellationException var14) {
+<b class="nc"><i>205</i>&nbsp;                            ;</b>
+<b class="nc"><i>206</i>&nbsp;                        } catch (ExecutionException var15) {</b>
+<b class="nc"><i>207</i>&nbsp;                            ;</b>
+<b class="nc"><i>208</i>&nbsp;                        }</b>
+<i>209</i>&nbsp;                    }
+<i>210</i>&nbsp;                }
+<b class="nc"><i>211</i>&nbsp;            } finally {</b>
+<b class="nc"><i>212</i>&nbsp;                if(var13) {</b>
+<i>213</i>&nbsp;                    if(!var3) {
+<b class="nc"><i>214</i>&nbsp;                        Iterator var8 = var2.iterator();</b>
+<b class="nc"><i>215</i>&nbsp;</b>
+<b class="nc"><i>216</i>&nbsp;                        while(var8.hasNext()) {</b>
+<i>217</i>&nbsp;                            Future var9 = (Future)var8.next();
+<i>218</i>&nbsp;                            var9.cancel(true);
+<i>219</i>&nbsp;                        }
+<i>220</i>&nbsp;                    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;                }
+<b class="nc"><i>223</i>&nbsp;            }</b>
+<b class="nc"><i>224</i>&nbsp;</b>
+<b class="nc"><i>225</i>&nbsp;            if(!var3) {</b>
+<b class="nc"><i>226</i>&nbsp;                Iterator var19 = var2.iterator();</b>
+<b class="nc"><i>227</i>&nbsp;</b>
+<i>228</i>&nbsp;                while(var19.hasNext()) {
+<b class="nc"><i>229</i>&nbsp;                    Future var20 = (Future)var19.next();</b>
+<b class="nc"><i>230</i>&nbsp;                    var20.cancel(true);</b>
+<i>231</i>&nbsp;                }
+<b class="nc"><i>232</i>&nbsp;            }</b>
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;            return var17;
+<i>235</i>&nbsp;        }
+<b class="nc"><i>236</i>&nbsp;    }</b>
+<b class="nc"><i>237</i>&nbsp;</b>
+<b class="nc"><i>238</i>&nbsp;    public &lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; var1, long var2, TimeUnit var4) throws InterruptedException {</b>
+<b class="nc"><i>239</i>&nbsp;        if(var1 != null &amp;&amp; var4 != null) {</b>
+<b class="nc"><i>240</i>&nbsp;            long var5 = var4.toNanos(var2);</b>
+<b class="nc"><i>241</i>&nbsp;            ArrayList var7 = new ArrayList(var1.size());</b>
+<b class="nc"><i>242</i>&nbsp;            boolean var8 = false;</b>
+<b class="nc"><i>243</i>&nbsp;            boolean var25 = false;</b>
+<b class="nc"><i>244</i>&nbsp;</b>
+<i>245</i>&nbsp;            ArrayList var14;
+<b class="nc"><i>246</i>&nbsp;            Iterator var35;</b>
+<b class="nc"><i>247</i>&nbsp;            Future var37;</b>
+<b class="nc"><i>248</i>&nbsp;            label269: {</b>
+<b class="nc"><i>249</i>&nbsp;                label270: {</b>
+<i>250</i>&nbsp;                    ArrayList var15;
+<b class="nc"><i>251</i>&nbsp;                    label271: {</b>
+<b class="nc"><i>252</i>&nbsp;                        ArrayList var32;</b>
+<b class="nc"><i>253</i>&nbsp;                        try {</b>
+<b class="nc"><i>254</i>&nbsp;                            var25 = true;</b>
+<b class="nc"><i>255</i>&nbsp;                            Iterator var9 = var1.iterator();</b>
+<b class="nc"><i>256</i>&nbsp;</b>
+<b class="nc"><i>257</i>&nbsp;                            while(var9.hasNext()) {</b>
+<b class="nc"><i>258</i>&nbsp;                                Callable var10 = (Callable)var9.next();</b>
+<b class="nc"><i>259</i>&nbsp;                                var7.add(this.newTaskFor(var10));</b>
+<b class="nc"><i>260</i>&nbsp;                            }</b>
+<i>261</i>&nbsp;
+<b class="nc"><i>262</i>&nbsp;                            long var30 = System.nanoTime();</b>
+<b class="nc"><i>263</i>&nbsp;                            Iterator var11 = var7.iterator();</b>
+<i>264</i>&nbsp;
+<b class="nc"><i>265</i>&nbsp;                            while(var11.hasNext()) {</b>
+<b class="nc"><i>266</i>&nbsp;                                this.execute((Runnable)((Runnable)var11.next()));</b>
+<b class="nc"><i>267</i>&nbsp;                                long var12 = System.nanoTime();</b>
+<i>268</i>&nbsp;                                var5 -= var12 - var30;
+<i>269</i>&nbsp;                                var30 = var12;
+<i>270</i>&nbsp;                                if(var5 &lt;= 0L) {
+<i>271</i>&nbsp;                                    var14 = var7;
+<i>272</i>&nbsp;                                    var25 = false;
+<i>273</i>&nbsp;                                    break label270;
+<i>274</i>&nbsp;                                }
+<i>275</i>&nbsp;                            }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;                            Iterator var31 = var7.iterator();
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;                            while(var31.hasNext()) {
+<i>280</i>&nbsp;                                Future var13 = (Future)var31.next();
+<i>281</i>&nbsp;                                if(!var13.isDone()) {
+<i>282</i>&nbsp;                                    if(var5 &lt;= 0L) {
+<i>283</i>&nbsp;                                        var14 = var7;
+<i>284</i>&nbsp;                                        var25 = false;
+<i>285</i>&nbsp;                                        break label269;
+<i>286</i>&nbsp;                                    }
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;                                    try {
+<i>289</i>&nbsp;                                        var13.get(var5, TimeUnit.NANOSECONDS);
+<i>290</i>&nbsp;                                    } catch (CancellationException var26) {
+<i>291</i>&nbsp;                                        ;
+<i>292</i>&nbsp;                                    } catch (ExecutionException var27) {
+<i>293</i>&nbsp;                                        ;
+<i>294</i>&nbsp;                                    } catch (TimeoutException var28) {
+<i>295</i>&nbsp;                                        var15 = var7;
+<i>296</i>&nbsp;                                        var25 = false;
+<i>297</i>&nbsp;                                        break label271;
+<i>298</i>&nbsp;                                    }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;                                    long var36 = System.nanoTime();
+<i>301</i>&nbsp;                                    var5 -= var36 - var30;
+<i>302</i>&nbsp;                                    var30 = var36;
+<i>303</i>&nbsp;                                }
+<i>304</i>&nbsp;                            }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;                            var8 = true;
+<i>307</i>&nbsp;                            var32 = var7;
+<i>308</i>&nbsp;                            var25 = false;
+<i>309</i>&nbsp;                        } finally {
+<i>310</i>&nbsp;                            if(var25) {
+<i>311</i>&nbsp;                                if(!var8) {
+<i>312</i>&nbsp;                                    Iterator var19 = var7.iterator();
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;                                    while(var19.hasNext()) {
+<i>315</i>&nbsp;                                        Future var20 = (Future)var19.next();
+<i>316</i>&nbsp;                                        var20.cancel(true);
+<i>317</i>&nbsp;                                    }
+<i>318</i>&nbsp;                                }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;                            }
+<i>321</i>&nbsp;                        }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;                        if(!var8) {
+<i>324</i>&nbsp;                            Iterator var33 = var7.iterator();
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;                            while(var33.hasNext()) {
+<i>327</i>&nbsp;                                Future var34 = (Future)var33.next();
+<i>328</i>&nbsp;                                var34.cancel(true);
+<i>329</i>&nbsp;                            }
+<i>330</i>&nbsp;                        }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;                        return var32;
+<i>333</i>&nbsp;                    }
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;                    if(!var8) {
+<i>336</i>&nbsp;                        Iterator var16 = var7.iterator();
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;                        while(var16.hasNext()) {
+<i>339</i>&nbsp;                            Future var17 = (Future)var16.next();
+<i>340</i>&nbsp;                            var17.cancel(true);
+<i>341</i>&nbsp;                        }
+<i>342</i>&nbsp;                    }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;                    return var15;
+<i>345</i>&nbsp;                }
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;                if(!var8) {
+<i>348</i>&nbsp;                    var35 = var7.iterator();
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;                    while(var35.hasNext()) {
+<i>351</i>&nbsp;                        var37 = (Future)var35.next();
+<i>352</i>&nbsp;                        var37.cancel(true);
+<i>353</i>&nbsp;                    }
+<i>354</i>&nbsp;                }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;                return var14;
+<i>357</i>&nbsp;            }
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;            if(!var8) {
+<i>360</i>&nbsp;                var35 = var7.iterator();
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;                while(var35.hasNext()) {
+<i>363</i>&nbsp;                    var37 = (Future)var35.next();
+<i>364</i>&nbsp;                    var37.cancel(true);
+<i>365</i>&nbsp;                }
+<i>366</i>&nbsp;            }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;            return var14;
+<i>369</i>&nbsp;        } else {
+<i>370</i>&nbsp;            throw new NullPointerException();
+<i>371</i>&nbsp;        }
+<i>372</i>&nbsp;    }
+<i>373</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

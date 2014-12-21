@@ -1,0 +1,716 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DTDGrammar</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.stream.dtd.nonvalidating</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DTDGrammar (com.sun.xml.internal.stream.dtd.nonvalidating)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DTDGrammar</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 298)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DTDGrammar$QNameHashtable</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 48)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 37)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 346)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.stream.dtd.nonvalidating;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.util.SymbolTable;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLSymbols;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.Augmentations;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.QName;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLLocator;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLResourceIdentifier;
+<i>14</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLString;
+<i>15</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XNIException;
+<i>16</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLDTDContentModelSource;
+<i>17</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLDTDSource;
+<i>18</i>&nbsp;import com.sun.xml.internal.stream.dtd.nonvalidating.XMLAttributeDecl;
+<i>19</i>&nbsp;import com.sun.xml.internal.stream.dtd.nonvalidating.XMLElementDecl;
+<i>20</i>&nbsp;import com.sun.xml.internal.stream.dtd.nonvalidating.XMLNotationDecl;
+<i>21</i>&nbsp;import com.sun.xml.internal.stream.dtd.nonvalidating.XMLSimpleType;
+<i>22</i>&nbsp;import java.util.ArrayList;
+<i>23</i>&nbsp;import java.util.Hashtable;
+<i>24</i>&nbsp;import java.util.List;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;public class DTDGrammar {
+<i>27</i>&nbsp;    public static final int TOP_LEVEL_SCOPE = -1;
+<i>28</i>&nbsp;    private static final int CHUNK_SHIFT = 8;
+<i>29</i>&nbsp;    private static final int CHUNK_SIZE = 256;
+<i>30</i>&nbsp;    private static final int CHUNK_MASK = 255;
+<i>31</i>&nbsp;    private static final int INITIAL_CHUNK_COUNT = 4;
+<i>32</i>&nbsp;    private static final short LIST_FLAG = 128;
+<i>33</i>&nbsp;    private static final short LIST_MASK = -129;
+<i>34</i>&nbsp;    private static final boolean DEBUG = false;
+<i>35</i>&nbsp;    protected XMLDTDSource fDTDSource = null;
+<i>36</i>&nbsp;    protected XMLDTDContentModelSource fDTDContentModelSource = null;
+<i>37</i>&nbsp;    protected int fCurrentElementIndex;
+<i>38</i>&nbsp;    protected int fCurrentAttributeIndex;
+<i>39</i>&nbsp;    protected boolean fReadingExternalDTD = false;
+<i>40</i>&nbsp;    private SymbolTable fSymbolTable;
+<i>41</i>&nbsp;    private ArrayList notationDecls = new ArrayList();
+<i>42</i>&nbsp;    private int fElementDeclCount = 0;
+<i>43</i>&nbsp;    private QName[][] fElementDeclName = new QName[4][];
+<i>44</i>&nbsp;    private short[][] fElementDeclType = new short[4][];
+<i>45</i>&nbsp;    private int[][] fElementDeclFirstAttributeDeclIndex = new int[4][];
+<i>46</i>&nbsp;    private int[][] fElementDeclLastAttributeDeclIndex = new int[4][];
+<i>47</i>&nbsp;    private int fAttributeDeclCount = 0;
+<i>48</i>&nbsp;    private QName[][] fAttributeDeclName = new QName[4][];
+<i>49</i>&nbsp;    private short[][] fAttributeDeclType = new short[4][];
+<i>50</i>&nbsp;    private String[][][] fAttributeDeclEnumeration = new String[4][][];
+<i>51</i>&nbsp;    private short[][] fAttributeDeclDefaultType = new short[4][];
+<i>52</i>&nbsp;    private String[][] fAttributeDeclDefaultValue = new String[4][];
+<i>53</i>&nbsp;    private String[][] fAttributeDeclNonNormalizedDefaultValue = new String[4][];
+<i>54</i>&nbsp;    private int[][] fAttributeDeclNextAttributeDeclIndex = new int[4][];
+<i>55</i>&nbsp;    private DTDGrammar.QNameHashtable fElementIndexMap = new DTDGrammar.QNameHashtable();
+<i>56</i>&nbsp;    private QName fQName = new QName();
+<i>57</i>&nbsp;    protected XMLAttributeDecl fAttributeDecl = new XMLAttributeDecl();
+<i>58</i>&nbsp;    private XMLElementDecl fElementDecl = new XMLElementDecl();
+<i>59</i>&nbsp;    private XMLSimpleType fSimpleType = new XMLSimpleType();
+<i>60</i>&nbsp;    Hashtable fElementDeclTab = new Hashtable();
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public DTDGrammar(SymbolTable symbolTable) {
+<i>63</i>&nbsp;        this.fSymbolTable = symbolTable;
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public int getAttributeDeclIndex(int elementDeclIndex, String attributeDeclName) {
+<i>67</i>&nbsp;        if(elementDeclIndex == -1) {
+<i>68</i>&nbsp;            return -1;
+<i>69</i>&nbsp;        } else {
+<i>70</i>&nbsp;            for(int attDefIndex = this.getFirstAttributeDeclIndex(elementDeclIndex); attDefIndex != -1; attDefIndex = this.getNextAttributeDeclIndex(attDefIndex)) {
+<i>71</i>&nbsp;                this.getAttributeDecl(attDefIndex, this.fAttributeDecl);
+<i>72</i>&nbsp;                if(this.fAttributeDecl.name.rawname == attributeDeclName || attributeDeclName.equals(this.fAttributeDecl.name.rawname)) {
+<i>73</i>&nbsp;                    return attDefIndex;
+<i>74</i>&nbsp;                }
+<i>75</i>&nbsp;            }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;            return -1;
+<i>78</i>&nbsp;        }
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public void startDTD(XMLLocator locator, Augmentations augs) throws XNIException {
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public void elementDecl(String name, String contentModel, Augmentations augs) throws XNIException {
+<i>85</i>&nbsp;        XMLElementDecl tmpElementDecl = (XMLElementDecl)this.fElementDeclTab.get(name);
+<i>86</i>&nbsp;        if(tmpElementDecl != null) {
+<i>87</i>&nbsp;            if(tmpElementDecl.type != -1) {
+<i>88</i>&nbsp;                return;
+<i>89</i>&nbsp;            }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;            this.fCurrentElementIndex = this.getElementDeclIndex((String)name);
+<i>92</i>&nbsp;        } else {
+<i>93</i>&nbsp;            this.fCurrentElementIndex = this.createElementDecl();
+<i>94</i>&nbsp;        }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;        XMLElementDecl elementDecl = new XMLElementDecl();
+<i>97</i>&nbsp;        QName elementName = new QName((String)null, name, name, (String)null);
+<i>98</i>&nbsp;        elementDecl.name.setValues(elementName);
+<i>99</i>&nbsp;        elementDecl.scope = -1;
+<i>100</i>&nbsp;        if(contentModel.equals(&quot;EMPTY&quot;)) {
+<i>101</i>&nbsp;            elementDecl.type = 1;
+<i>102</i>&nbsp;        } else if(contentModel.equals(&quot;ANY&quot;)) {
+<i>103</i>&nbsp;            elementDecl.type = 0;
+<i>104</i>&nbsp;        } else if(contentModel.startsWith(&quot;(&quot;)) {
+<i>105</i>&nbsp;            if(contentModel.indexOf(&quot;#PCDATA&quot;) &gt; 0) {
+<i>106</i>&nbsp;                elementDecl.type = 2;
+<i>107</i>&nbsp;            } else {
+<b class="nc"><i>108</i>&nbsp;                elementDecl.type = 3;</b>
+<b class="nc"><i>109</i>&nbsp;            }</b>
+<i>110</i>&nbsp;        }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;        this.fElementDeclTab.put(name, elementDecl);
+<i>113</i>&nbsp;        this.fElementDecl = elementDecl;
+<i>114</i>&nbsp;        this.setElementDecl(this.fCurrentElementIndex, this.fElementDecl);
+<i>115</i>&nbsp;        int chunk = this.fCurrentElementIndex &gt;&gt; 8;
+<i>116</i>&nbsp;        this.ensureElementDeclCapacity(chunk);
+<i>117</i>&nbsp;    }
+<b class="nc"><i>118</i>&nbsp;</b>
+<i>119</i>&nbsp;    public void attributeDecl(String elementName, String attributeName, String type, String[] enumeration, String defaultType, XMLString defaultValue, XMLString nonNormalizedDefaultValue, Augmentations augs) throws XNIException {
+<i>120</i>&nbsp;        if(type != XMLSymbols.fCDATASymbol &amp;&amp; defaultValue != null) {
+<i>121</i>&nbsp;            this.normalizeDefaultAttrValue(defaultValue);
+<b class="nc"><i>122</i>&nbsp;        }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;        if(!this.fElementDeclTab.containsKey(elementName)) {
+<i>125</i>&nbsp;            this.fCurrentElementIndex = this.createElementDecl();
+<i>126</i>&nbsp;            XMLElementDecl elementIndex = new XMLElementDecl();
+<b class="nc"><i>127</i>&nbsp;            elementIndex.name.setValues((String)null, elementName, elementName, (String)null);</b>
+<i>128</i>&nbsp;            elementIndex.scope = -1;
+<i>129</i>&nbsp;            this.fElementDeclTab.put(elementName, elementIndex);
+<b class="nc"><i>130</i>&nbsp;            this.setElementDecl(this.fCurrentElementIndex, elementIndex);</b>
+<i>131</i>&nbsp;        }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;        int elementIndex1 = this.getElementDeclIndex((String)elementName);
+<i>134</i>&nbsp;        if(this.getAttributeDeclIndex(elementIndex1, attributeName) == -1) {
+<i>135</i>&nbsp;            this.fCurrentAttributeIndex = this.createAttributeDecl();
+<b class="nc"><i>136</i>&nbsp;            this.fSimpleType.clear();</b>
+<i>137</i>&nbsp;            if(defaultType != null) {
+<i>138</i>&nbsp;                XMLSimpleType var10001;
+<i>139</i>&nbsp;                if(defaultType.equals(&quot;#FIXED&quot;)) {
+<b class="nc"><i>140</i>&nbsp;                    var10001 = this.fSimpleType;</b>
+<i>141</i>&nbsp;                    this.fSimpleType.defaultType = 1;
+<i>142</i>&nbsp;                } else if(defaultType.equals(&quot;#IMPLIED&quot;)) {
+<b class="nc"><i>143</i>&nbsp;                    var10001 = this.fSimpleType;</b>
+<i>144</i>&nbsp;                    this.fSimpleType.defaultType = 0;
+<i>145</i>&nbsp;                } else if(defaultType.equals(&quot;#REQUIRED&quot;)) {
+<i>146</i>&nbsp;                    var10001 = this.fSimpleType;
+<i>147</i>&nbsp;                    this.fSimpleType.defaultType = 2;
+<b class="nc"><i>148</i>&nbsp;                }</b>
+<i>149</i>&nbsp;            }
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;            this.fSimpleType.defaultValue = defaultValue != null?defaultValue.toString():null;</b>
+<i>152</i>&nbsp;            this.fSimpleType.nonNormalizedDefaultValue = nonNormalizedDefaultValue != null?nonNormalizedDefaultValue.toString():null;
+<i>153</i>&nbsp;            this.fSimpleType.enumeration = enumeration;
+<i>154</i>&nbsp;            if(type.equals(&quot;CDATA&quot;)) {
+<i>155</i>&nbsp;                this.fSimpleType.type = 0;
+<i>156</i>&nbsp;            } else if(type.equals(&quot;ID&quot;)) {
+<b class="nc"><i>157</i>&nbsp;                this.fSimpleType.type = 3;</b>
+<i>158</i>&nbsp;            } else if(type.startsWith(&quot;IDREF&quot;)) {
+<i>159</i>&nbsp;                this.fSimpleType.type = 4;
+<b class="nc"><i>160</i>&nbsp;                if(type.indexOf(&quot;S&quot;) &gt; 0) {</b>
+<b class="nc"><i>161</i>&nbsp;                    this.fSimpleType.list = true;</b>
+<b class="nc"><i>162</i>&nbsp;                }</b>
+<b class="nc"><i>163</i>&nbsp;            } else if(type.equals(&quot;ENTITIES&quot;)) {</b>
+<b class="nc"><i>164</i>&nbsp;                this.fSimpleType.type = 1;</b>
+<i>165</i>&nbsp;                this.fSimpleType.list = true;
+<i>166</i>&nbsp;            } else if(type.equals(&quot;ENTITY&quot;)) {
+<b class="nc"><i>167</i>&nbsp;                this.fSimpleType.type = 1;</b>
+<i>168</i>&nbsp;            } else if(type.equals(&quot;NMTOKENS&quot;)) {
+<i>169</i>&nbsp;                this.fSimpleType.type = 5;
+<b class="nc"><i>170</i>&nbsp;                this.fSimpleType.list = true;</b>
+<i>171</i>&nbsp;            } else if(type.equals(&quot;NMTOKEN&quot;)) {
+<i>172</i>&nbsp;                this.fSimpleType.type = 5;
+<b class="nc"><i>173</i>&nbsp;            } else if(type.startsWith(&quot;NOTATION&quot;)) {</b>
+<i>174</i>&nbsp;                this.fSimpleType.type = 6;
+<i>175</i>&nbsp;            } else if(type.startsWith(&quot;ENUMERATION&quot;)) {
+<b class="nc"><i>176</i>&nbsp;                this.fSimpleType.type = 2;</b>
+<i>177</i>&nbsp;            } else {
+<i>178</i>&nbsp;                System.err.println(&quot;!!! unknown attribute type &quot; + type);
+<b class="nc"><i>179</i>&nbsp;            }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;            this.fQName.setValues((String)null, attributeName, attributeName, (String)null);
+<i>182</i>&nbsp;            this.fAttributeDecl.setValues(this.fQName, this.fSimpleType, false);
+<b class="nc"><i>183</i>&nbsp;            this.setAttributeDecl(elementIndex1, this.fCurrentAttributeIndex, this.fAttributeDecl);</b>
+<i>184</i>&nbsp;            int chunk = this.fCurrentAttributeIndex &gt;&gt; 8;
+<i>185</i>&nbsp;            this.ensureAttributeDeclCapacity(chunk);
+<b class="nc"><i>186</i>&nbsp;        }</b>
+<b class="nc"><i>187</i>&nbsp;    }</b>
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    public SymbolTable getSymbolTable() {
+<i>190</i>&nbsp;        return this.fSymbolTable;
+<b class="nc"><i>191</i>&nbsp;    }</b>
+<b class="nc"><i>192</i>&nbsp;</b>
+<i>193</i>&nbsp;    public int getFirstElementDeclIndex() {
+<b class="nc"><i>194</i>&nbsp;        return this.fElementDeclCount &gt;= 0?0:-1;</b>
+<b class="nc"><i>195</i>&nbsp;    }</b>
+<b class="nc"><i>196</i>&nbsp;</b>
+<i>197</i>&nbsp;    public int getNextElementDeclIndex(int elementDeclIndex) {
+<b class="nc"><i>198</i>&nbsp;        return elementDeclIndex &lt; this.fElementDeclCount - 1?elementDeclIndex + 1:-1;</b>
+<i>199</i>&nbsp;    }
+<b class="nc"><i>200</i>&nbsp;</b>
+<i>201</i>&nbsp;    public int getElementDeclIndex(String elementDeclName) {
+<b class="nc"><i>202</i>&nbsp;        int mapping = this.fElementIndexMap.get(elementDeclName);</b>
+<i>203</i>&nbsp;        return mapping;
+<b class="nc"><i>204</i>&nbsp;    }</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public int getElementDeclIndex(QName elementDeclQName) {
+<i>207</i>&nbsp;        return this.getElementDeclIndex((String)elementDeclQName.rawname);
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public short getContentSpecType(int elementIndex) {
+<i>211</i>&nbsp;        if(elementIndex &gt;= 0 &amp;&amp; elementIndex &lt; this.fElementDeclCount) {
+<i>212</i>&nbsp;            int chunk = elementIndex &gt;&gt; 8;
+<i>213</i>&nbsp;            int index = elementIndex &amp; 255;
+<i>214</i>&nbsp;            return this.fElementDeclType[chunk][index] == -1?-1:(short)(this.fElementDeclType[chunk][index] &amp; -129);
+<i>215</i>&nbsp;        } else {
+<i>216</i>&nbsp;            return (short)-1;
+<i>217</i>&nbsp;        }
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    public boolean getElementDecl(int elementDeclIndex, XMLElementDecl elementDecl) {
+<i>221</i>&nbsp;        if(elementDeclIndex &gt;= 0 &amp;&amp; elementDeclIndex &lt; this.fElementDeclCount) {
+<i>222</i>&nbsp;            int chunk = elementDeclIndex &gt;&gt; 8;
+<i>223</i>&nbsp;            int index = elementDeclIndex &amp; 255;
+<i>224</i>&nbsp;            elementDecl.name.setValues(this.fElementDeclName[chunk][index]);
+<i>225</i>&nbsp;            if(this.fElementDeclType[chunk][index] == -1) {
+<i>226</i>&nbsp;                elementDecl.type = -1;
+<i>227</i>&nbsp;                elementDecl.simpleType.list = false;
+<i>228</i>&nbsp;            } else {
+<i>229</i>&nbsp;                elementDecl.type = (short)(this.fElementDeclType[chunk][index] &amp; -129);
+<i>230</i>&nbsp;                elementDecl.simpleType.list = (this.fElementDeclType[chunk][index] &amp; 128) != 0;
+<i>231</i>&nbsp;            }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;            elementDecl.simpleType.defaultType = -1;
+<i>234</i>&nbsp;            elementDecl.simpleType.defaultValue = null;
+<i>235</i>&nbsp;            return true;
+<i>236</i>&nbsp;        } else {
+<i>237</i>&nbsp;            return false;
+<i>238</i>&nbsp;        }
+<i>239</i>&nbsp;    }
+<b class="nc"><i>240</i>&nbsp;</b>
+<b class="nc"><i>241</i>&nbsp;    public int getFirstAttributeDeclIndex(int elementDeclIndex) {</b>
+<b class="nc"><i>242</i>&nbsp;        int chunk = elementDeclIndex &gt;&gt; 8;</b>
+<b class="nc"><i>243</i>&nbsp;        int index = elementDeclIndex &amp; 255;</b>
+<i>244</i>&nbsp;        return this.fElementDeclFirstAttributeDeclIndex[chunk][index];
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    public int getNextAttributeDeclIndex(int attributeDeclIndex) {
+<i>248</i>&nbsp;        int chunk = attributeDeclIndex &gt;&gt; 8;
+<i>249</i>&nbsp;        int index = attributeDeclIndex &amp; 255;
+<i>250</i>&nbsp;        return this.fAttributeDeclNextAttributeDeclIndex[chunk][index];
+<b class="nc"><i>251</i>&nbsp;    }</b>
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    public boolean getAttributeDecl(int attributeDeclIndex, XMLAttributeDecl attributeDecl) {
+<b class="nc"><i>254</i>&nbsp;        if(attributeDeclIndex &gt;= 0 &amp;&amp; attributeDeclIndex &lt; this.fAttributeDeclCount) {</b>
+<b class="nc"><i>255</i>&nbsp;            int chunk = attributeDeclIndex &gt;&gt; 8;</b>
+<i>256</i>&nbsp;            int index = attributeDeclIndex &amp; 255;
+<b class="nc"><i>257</i>&nbsp;            attributeDecl.name.setValues(this.fAttributeDeclName[chunk][index]);</b>
+<b class="nc"><i>258</i>&nbsp;            short attributeType;</b>
+<b class="nc"><i>259</i>&nbsp;            boolean isList;</b>
+<b class="nc"><i>260</i>&nbsp;            if(this.fAttributeDeclType[chunk][index] == -1) {</b>
+<i>261</i>&nbsp;                attributeType = -1;
+<b class="nc"><i>262</i>&nbsp;                isList = false;</b>
+<b class="nc"><i>263</i>&nbsp;            } else {</b>
+<i>264</i>&nbsp;                attributeType = (short)(this.fAttributeDeclType[chunk][index] &amp; -129);
+<b class="nc"><i>265</i>&nbsp;                isList = (this.fAttributeDeclType[chunk][index] &amp; 128) != 0;</b>
+<b class="nc"><i>266</i>&nbsp;            }</b>
+<b class="nc"><i>267</i>&nbsp;</b>
+<i>268</i>&nbsp;            attributeDecl.simpleType.setValues(attributeType, this.fAttributeDeclName[chunk][index].localpart, this.fAttributeDeclEnumeration[chunk][index], isList, this.fAttributeDeclDefaultType[chunk][index], this.fAttributeDeclDefaultValue[chunk][index], this.fAttributeDeclNonNormalizedDefaultValue[chunk][index]);
+<i>269</i>&nbsp;            return true;
+<b class="nc"><i>270</i>&nbsp;        } else {</b>
+<i>271</i>&nbsp;            return false;
+<i>272</i>&nbsp;        }
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    public boolean isCDATAAttribute(QName elName, QName atName) {
+<b class="nc"><i>276</i>&nbsp;        int elDeclIdx = this.getElementDeclIndex((QName)elName);</b>
+<i>277</i>&nbsp;        return !this.getAttributeDecl(elDeclIdx, this.fAttributeDecl) || this.fAttributeDecl.simpleType.type == 0;
+<b class="nc"><i>278</i>&nbsp;    }</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    public void printElements() {
+<i>281</i>&nbsp;        int elementDeclIndex = 0;
+<i>282</i>&nbsp;        XMLElementDecl elementDecl = new XMLElementDecl();
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;        while(this.getElementDecl(elementDeclIndex++, elementDecl)) {
+<i>285</i>&nbsp;            System.out.println(&quot;element decl: &quot; + elementDecl.name + &quot;, &quot; + elementDecl.name.rawname);
+<b class="nc"><i>286</i>&nbsp;        }</b>
+<i>287</i>&nbsp;
+<b class="nc"><i>288</i>&nbsp;    }</b>
+<b class="nc"><i>289</i>&nbsp;</b>
+<i>290</i>&nbsp;    public void printAttributes(int elementDeclIndex) {
+<i>291</i>&nbsp;        int attributeDeclIndex = this.getFirstAttributeDeclIndex(elementDeclIndex);
+<i>292</i>&nbsp;        System.out.print(elementDeclIndex);
+<i>293</i>&nbsp;        System.out.print(&quot; [&quot;);
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;        while(attributeDeclIndex != -1) {
+<i>296</i>&nbsp;            System.out.print(&#39; &#39;);
+<i>297</i>&nbsp;            System.out.print(attributeDeclIndex);
+<i>298</i>&nbsp;            this.printAttribute(attributeDeclIndex);
+<i>299</i>&nbsp;            attributeDeclIndex = this.getNextAttributeDeclIndex(attributeDeclIndex);
+<i>300</i>&nbsp;            if(attributeDeclIndex != -1) {
+<i>301</i>&nbsp;                System.out.print(&quot;,&quot;);
+<i>302</i>&nbsp;            }
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;        System.out.println(&quot; ]&quot;);
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    protected int createElementDecl() {
+<i>309</i>&nbsp;        int chunk = this.fElementDeclCount &gt;&gt; 8;
+<i>310</i>&nbsp;        int index = this.fElementDeclCount &amp; 255;
+<i>311</i>&nbsp;        this.ensureElementDeclCapacity(chunk);
+<i>312</i>&nbsp;        this.fElementDeclName[chunk][index] = new QName();
+<i>313</i>&nbsp;        this.fElementDeclType[chunk][index] = -1;
+<i>314</i>&nbsp;        this.fElementDeclFirstAttributeDeclIndex[chunk][index] = -1;
+<i>315</i>&nbsp;        this.fElementDeclLastAttributeDeclIndex[chunk][index] = -1;
+<i>316</i>&nbsp;        return this.fElementDeclCount++;
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    protected void setElementDecl(int elementDeclIndex, XMLElementDecl elementDecl) {
+<i>320</i>&nbsp;        if(elementDeclIndex &gt;= 0 &amp;&amp; elementDeclIndex &lt; this.fElementDeclCount) {
+<i>321</i>&nbsp;            int chunk = elementDeclIndex &gt;&gt; 8;
+<b class="nc"><i>322</i>&nbsp;            int index = elementDeclIndex &amp; 255;</b>
+<b class="nc"><i>323</i>&nbsp;            int scope = elementDecl.scope;</b>
+<i>324</i>&nbsp;            this.fElementDeclName[chunk][index].setValues(elementDecl.name);
+<i>325</i>&nbsp;            this.fElementDeclType[chunk][index] = elementDecl.type;
+<b class="nc"><i>326</i>&nbsp;            if(elementDecl.simpleType.list) {</b>
+<i>327</i>&nbsp;                this.fElementDeclType[chunk][index] = (short)(this.fElementDeclType[chunk][index] | 128);
+<i>328</i>&nbsp;            }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;            this.fElementIndexMap.put(elementDecl.name.rawname, elementDeclIndex);
+<i>331</i>&nbsp;        }
+<b class="nc"><i>332</i>&nbsp;    }</b>
+<i>333</i>&nbsp;
+<b class="nc"><i>334</i>&nbsp;    protected void setFirstAttributeDeclIndex(int elementDeclIndex, int newFirstAttrIndex) {</b>
+<b class="nc"><i>335</i>&nbsp;        if(elementDeclIndex &gt;= 0 &amp;&amp; elementDeclIndex &lt; this.fElementDeclCount) {</b>
+<i>336</i>&nbsp;            int chunk = elementDeclIndex &gt;&gt; 8;
+<b class="nc"><i>337</i>&nbsp;            int index = elementDeclIndex &amp; 255;</b>
+<i>338</i>&nbsp;            this.fElementDeclFirstAttributeDeclIndex[chunk][index] = newFirstAttrIndex;
+<i>339</i>&nbsp;        }
+<b class="nc"><i>340</i>&nbsp;    }</b>
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    protected int createAttributeDecl() {
+<b class="nc"><i>343</i>&nbsp;        int chunk = this.fAttributeDeclCount &gt;&gt; 8;</b>
+<i>344</i>&nbsp;        int index = this.fAttributeDeclCount &amp; 255;
+<i>345</i>&nbsp;        this.ensureAttributeDeclCapacity(chunk);
+<i>346</i>&nbsp;        this.fAttributeDeclName[chunk][index] = new QName();
+<b class="nc"><i>347</i>&nbsp;        this.fAttributeDeclType[chunk][index] = -1;</b>
+<i>348</i>&nbsp;        this.fAttributeDeclEnumeration[chunk][index] = null;
+<i>349</i>&nbsp;        this.fAttributeDeclDefaultType[chunk][index] = 0;
+<i>350</i>&nbsp;        this.fAttributeDeclDefaultValue[chunk][index] = null;
+<b class="nc"><i>351</i>&nbsp;        this.fAttributeDeclNonNormalizedDefaultValue[chunk][index] = null;</b>
+<i>352</i>&nbsp;        this.fAttributeDeclNextAttributeDeclIndex[chunk][index] = -1;
+<i>353</i>&nbsp;        return this.fAttributeDeclCount++;
+<i>354</i>&nbsp;    }
+<b class="nc"><i>355</i>&nbsp;</b>
+<i>356</i>&nbsp;    protected void setAttributeDecl(int elementDeclIndex, int attributeDeclIndex, XMLAttributeDecl attributeDecl) {
+<b class="nc"><i>357</i>&nbsp;        int attrChunk = attributeDeclIndex &gt;&gt; 8;</b>
+<b class="nc"><i>358</i>&nbsp;        int attrIndex = attributeDeclIndex &amp; 255;</b>
+<b class="nc"><i>359</i>&nbsp;        this.fAttributeDeclName[attrChunk][attrIndex].setValues(attributeDecl.name);</b>
+<b class="nc"><i>360</i>&nbsp;        this.fAttributeDeclType[attrChunk][attrIndex] = attributeDecl.simpleType.type;</b>
+<b class="nc"><i>361</i>&nbsp;        if(attributeDecl.simpleType.list) {</b>
+<b class="nc"><i>362</i>&nbsp;            this.fAttributeDeclType[attrChunk][attrIndex] = (short)(this.fAttributeDeclType[attrChunk][attrIndex] | 128);</b>
+<b class="nc"><i>363</i>&nbsp;        }</b>
+<b class="nc"><i>364</i>&nbsp;</b>
+<i>365</i>&nbsp;        this.fAttributeDeclEnumeration[attrChunk][attrIndex] = attributeDecl.simpleType.enumeration;
+<i>366</i>&nbsp;        this.fAttributeDeclDefaultType[attrChunk][attrIndex] = attributeDecl.simpleType.defaultType;
+<i>367</i>&nbsp;        this.fAttributeDeclDefaultValue[attrChunk][attrIndex] = attributeDecl.simpleType.defaultValue;
+<i>368</i>&nbsp;        this.fAttributeDeclNonNormalizedDefaultValue[attrChunk][attrIndex] = attributeDecl.simpleType.nonNormalizedDefaultValue;
+<i>369</i>&nbsp;        int elemChunk = elementDeclIndex &gt;&gt; 8;
+<b class="nc"><i>370</i>&nbsp;        int elemIndex = elementDeclIndex &amp; 255;</b>
+<b class="nc"><i>371</i>&nbsp;</b>
+<b class="nc"><i>372</i>&nbsp;        int index;</b>
+<i>373</i>&nbsp;        for(index = this.fElementDeclFirstAttributeDeclIndex[elemChunk][elemIndex]; index != -1 &amp;&amp; index != attributeDeclIndex; index = this.fAttributeDeclNextAttributeDeclIndex[attrChunk][attrIndex]) {
+<b class="nc"><i>374</i>&nbsp;            attrChunk = index &gt;&gt; 8;</b>
+<b class="nc"><i>375</i>&nbsp;            attrIndex = index &amp; 255;</b>
+<i>376</i>&nbsp;        }
+<b class="nc"><i>377</i>&nbsp;</b>
+<b class="nc"><i>378</i>&nbsp;        if(index == -1) {</b>
+<i>379</i>&nbsp;            if(this.fElementDeclFirstAttributeDeclIndex[elemChunk][elemIndex] == -1) {
+<b class="nc"><i>380</i>&nbsp;                this.fElementDeclFirstAttributeDeclIndex[elemChunk][elemIndex] = attributeDeclIndex;</b>
+<b class="nc"><i>381</i>&nbsp;            } else {</b>
+<b class="nc"><i>382</i>&nbsp;                index = this.fElementDeclLastAttributeDeclIndex[elemChunk][elemIndex];</b>
+<b class="nc"><i>383</i>&nbsp;                attrChunk = index &gt;&gt; 8;</b>
+<i>384</i>&nbsp;                attrIndex = index &amp; 255;
+<i>385</i>&nbsp;                this.fAttributeDeclNextAttributeDeclIndex[attrChunk][attrIndex] = attributeDeclIndex;
+<b class="nc"><i>386</i>&nbsp;            }</b>
+<b class="nc"><i>387</i>&nbsp;</b>
+<b class="nc"><i>388</i>&nbsp;            this.fElementDeclLastAttributeDeclIndex[elemChunk][elemIndex] = attributeDeclIndex;</b>
+<i>389</i>&nbsp;        }
+<b class="nc"><i>390</i>&nbsp;</b>
+<b class="nc"><i>391</i>&nbsp;    }</b>
+<i>392</i>&nbsp;
+<b class="nc"><i>393</i>&nbsp;    public void notationDecl(String name, XMLResourceIdentifier identifier, Augmentations augs) throws XNIException {</b>
+<b class="nc"><i>394</i>&nbsp;        XMLNotationDecl notationDecl = new XMLNotationDecl();</b>
+<b class="nc"><i>395</i>&nbsp;        notationDecl.setValues(name, identifier.getPublicId(), identifier.getLiteralSystemId(), identifier.getBaseSystemId());</b>
+<i>396</i>&nbsp;        this.notationDecls.add(notationDecl);
+<b class="nc"><i>397</i>&nbsp;    }</b>
+<b class="nc"><i>398</i>&nbsp;</b>
+<i>399</i>&nbsp;    public List getNotationDecls() {
+<b class="nc"><i>400</i>&nbsp;        return this.notationDecls;</b>
+<b class="nc"><i>401</i>&nbsp;    }</b>
+<i>402</i>&nbsp;
+<b class="nc"><i>403</i>&nbsp;    private void printAttribute(int attributeDeclIndex) {</b>
+<b class="nc"><i>404</i>&nbsp;        XMLAttributeDecl attributeDecl = new XMLAttributeDecl();</b>
+<i>405</i>&nbsp;        if(this.getAttributeDecl(attributeDeclIndex, attributeDecl)) {
+<i>406</i>&nbsp;            System.out.print(&quot; { &quot;);
+<i>407</i>&nbsp;            System.out.print(attributeDecl.name.localpart);
+<b class="nc"><i>408</i>&nbsp;            System.out.print(&quot; }&quot;);</b>
+<i>409</i>&nbsp;        }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    }
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;    private void ensureElementDeclCapacity(int chunk) {
+<b class="nc"><i>414</i>&nbsp;        if(chunk &gt;= this.fElementDeclName.length) {</b>
+<b class="nc"><i>415</i>&nbsp;            this.fElementDeclName = resize((QName[][])this.fElementDeclName, this.fElementDeclName.length * 2);</b>
+<i>416</i>&nbsp;            this.fElementDeclType = resize((short[][])this.fElementDeclType, this.fElementDeclType.length * 2);
+<b class="nc"><i>417</i>&nbsp;            this.fElementDeclFirstAttributeDeclIndex = resize((int[][])this.fElementDeclFirstAttributeDeclIndex, this.fElementDeclFirstAttributeDeclIndex.length * 2);</b>
+<i>418</i>&nbsp;            this.fElementDeclLastAttributeDeclIndex = resize((int[][])this.fElementDeclLastAttributeDeclIndex, this.fElementDeclLastAttributeDeclIndex.length * 2);
+<b class="nc"><i>419</i>&nbsp;        } else if(this.fElementDeclName[chunk] != null) {</b>
+<b class="nc"><i>420</i>&nbsp;            return;</b>
+<i>421</i>&nbsp;        }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;        this.fElementDeclName[chunk] = new QName[256];
+<i>424</i>&nbsp;        this.fElementDeclType[chunk] = new short[256];
+<b class="nc"><i>425</i>&nbsp;        this.fElementDeclFirstAttributeDeclIndex[chunk] = new int[256];</b>
+<i>426</i>&nbsp;        this.fElementDeclLastAttributeDeclIndex[chunk] = new int[256];
+<i>427</i>&nbsp;    }
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;    private void ensureAttributeDeclCapacity(int chunk) {
+<i>430</i>&nbsp;        if(chunk &gt;= this.fAttributeDeclName.length) {
+<i>431</i>&nbsp;            this.fAttributeDeclName = resize((QName[][])this.fAttributeDeclName, this.fAttributeDeclName.length * 2);
+<i>432</i>&nbsp;            this.fAttributeDeclType = resize((short[][])this.fAttributeDeclType, this.fAttributeDeclType.length * 2);
+<i>433</i>&nbsp;            this.fAttributeDeclEnumeration = resize((String[][][])this.fAttributeDeclEnumeration, this.fAttributeDeclEnumeration.length * 2);
+<i>434</i>&nbsp;            this.fAttributeDeclDefaultType = resize((short[][])this.fAttributeDeclDefaultType, this.fAttributeDeclDefaultType.length * 2);
+<i>435</i>&nbsp;            this.fAttributeDeclDefaultValue = resize((String[][])this.fAttributeDeclDefaultValue, this.fAttributeDeclDefaultValue.length * 2);
+<b class="nc"><i>436</i>&nbsp;            this.fAttributeDeclNonNormalizedDefaultValue = resize((String[][])this.fAttributeDeclNonNormalizedDefaultValue, this.fAttributeDeclNonNormalizedDefaultValue.length * 2);</b>
+<i>437</i>&nbsp;            this.fAttributeDeclNextAttributeDeclIndex = resize((int[][])this.fAttributeDeclNextAttributeDeclIndex, this.fAttributeDeclNextAttributeDeclIndex.length * 2);
+<i>438</i>&nbsp;        } else if(this.fAttributeDeclName[chunk] != null) {
+<i>439</i>&nbsp;            return;
+<i>440</i>&nbsp;        }
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;        this.fAttributeDeclName[chunk] = new QName[256];
+<i>443</i>&nbsp;        this.fAttributeDeclType[chunk] = new short[256];
+<i>444</i>&nbsp;        this.fAttributeDeclEnumeration[chunk] = new String[256][];
+<i>445</i>&nbsp;        this.fAttributeDeclDefaultType[chunk] = new short[256];
+<b class="nc"><i>446</i>&nbsp;        this.fAttributeDeclDefaultValue[chunk] = new String[256];</b>
+<i>447</i>&nbsp;        this.fAttributeDeclNonNormalizedDefaultValue[chunk] = new String[256];
+<i>448</i>&nbsp;        this.fAttributeDeclNextAttributeDeclIndex[chunk] = new int[256];
+<i>449</i>&nbsp;    }
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;    private static short[][] resize(short[][] array, int newsize) {
+<i>452</i>&nbsp;        short[][] newarray = new short[newsize][];
+<i>453</i>&nbsp;        System.arraycopy(array, 0, newarray, 0, array.length);
+<i>454</i>&nbsp;        return newarray;
+<i>455</i>&nbsp;    }
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;    private static int[][] resize(int[][] array, int newsize) {
+<b class="nc"><i>458</i>&nbsp;        int[][] newarray = new int[newsize][];</b>
+<i>459</i>&nbsp;        System.arraycopy(array, 0, newarray, 0, array.length);
+<b class="nc"><i>460</i>&nbsp;        return newarray;</b>
+<i>461</i>&nbsp;    }
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    private static QName[][] resize(QName[][] array, int newsize) {
+<i>464</i>&nbsp;        QName[][] newarray = new QName[newsize][];
+<i>465</i>&nbsp;        System.arraycopy(array, 0, newarray, 0, array.length);
+<i>466</i>&nbsp;        return newarray;
+<b class="nc"><i>467</i>&nbsp;    }</b>
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;    private static String[][] resize(String[][] array, int newsize) {
+<i>470</i>&nbsp;        String[][] newarray = new String[newsize][];
+<i>471</i>&nbsp;        System.arraycopy(array, 0, newarray, 0, array.length);
+<i>472</i>&nbsp;        return newarray;
+<i>473</i>&nbsp;    }
+<i>474</i>&nbsp;
+<b class="nc"><i>475</i>&nbsp;    private static String[][][] resize(String[][][] array, int newsize) {</b>
+<b class="nc"><i>476</i>&nbsp;        String[][][] newarray = new String[newsize][][];</b>
+<i>477</i>&nbsp;        System.arraycopy(array, 0, newarray, 0, array.length);
+<i>478</i>&nbsp;        return newarray;
+<b class="nc"><i>479</i>&nbsp;    }</b>
+<b class="nc"><i>480</i>&nbsp;</b>
+<i>481</i>&nbsp;    private boolean normalizeDefaultAttrValue(XMLString value) {
+<b class="nc"><i>482</i>&nbsp;        int oldLength = value.length;</b>
+<b class="nc"><i>483</i>&nbsp;        boolean skipSpace = true;</b>
+<i>484</i>&nbsp;        int current = value.offset;
+<i>485</i>&nbsp;        int end = value.offset + value.length;
+<b class="nc"><i>486</i>&nbsp;</b>
+<i>487</i>&nbsp;        for(int i = value.offset; i &lt; end; ++i) {
+<i>488</i>&nbsp;            if(value.ch[i] == 32) {
+<i>489</i>&nbsp;                if(!skipSpace) {
+<i>490</i>&nbsp;                    value.ch[current++] = 32;
+<i>491</i>&nbsp;                    skipSpace = true;
+<i>492</i>&nbsp;                }
+<i>493</i>&nbsp;            } else {
+<i>494</i>&nbsp;                if(current != i) {
+<i>495</i>&nbsp;                    value.ch[current] = value.ch[i];
+<i>496</i>&nbsp;                }
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;                ++current;
+<i>499</i>&nbsp;                skipSpace = false;
+<i>500</i>&nbsp;            }
+<b class="nc"><i>501</i>&nbsp;        }</b>
+<b class="nc"><i>502</i>&nbsp;</b>
+<i>503</i>&nbsp;        if(current != end) {
+<i>504</i>&nbsp;            if(skipSpace) {
+<b class="nc"><i>505</i>&nbsp;                --current;</b>
+<b class="nc"><i>506</i>&nbsp;            }</b>
+<i>507</i>&nbsp;
+<b class="nc"><i>508</i>&nbsp;            value.length = current - value.offset;</b>
+<i>509</i>&nbsp;            return true;
+<b class="nc"><i>510</i>&nbsp;        } else {</b>
+<b class="nc"><i>511</i>&nbsp;            return false;</b>
+<b class="nc"><i>512</i>&nbsp;        }</b>
+<i>513</i>&nbsp;    }
+<b class="nc"><i>514</i>&nbsp;</b>
+<b class="nc"><i>515</i>&nbsp;    public void endDTD(Augmentations augs) throws XNIException {</b>
+<i>516</i>&nbsp;    }
+<i>517</i>&nbsp;
+<b class="nc"><i>518</i>&nbsp;    protected static final class QNameHashtable {</b>
+<b class="nc"><i>519</i>&nbsp;        public static final boolean UNIQUE_STRINGS = true;</b>
+<b class="nc"><i>520</i>&nbsp;        private static final int INITIAL_BUCKET_SIZE = 4;</b>
+<i>521</i>&nbsp;        private static final int HASHTABLE_SIZE = 101;
+<i>522</i>&nbsp;        private Object[][] fHashTable = new Object[101][];
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;        protected QNameHashtable() {
+<i>525</i>&nbsp;        }
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;        public void put(String key, int value) {
+<i>528</i>&nbsp;            int hash = (this.hash(key) + 2) % 101;
+<i>529</i>&nbsp;            Object[] bucket = this.fHashTable[hash];
+<i>530</i>&nbsp;            if(bucket == null) {
+<i>531</i>&nbsp;                bucket = new Object[9];
+<i>532</i>&nbsp;                bucket[0] = new int[]{1};
+<i>533</i>&nbsp;                bucket[1] = key;
+<b class="nc"><i>534</i>&nbsp;                bucket[2] = new int[]{value};</b>
+<b class="nc"><i>535</i>&nbsp;                this.fHashTable[hash] = bucket;</b>
+<i>536</i>&nbsp;            } else {
+<b class="nc"><i>537</i>&nbsp;                int count = ((int[])((int[])bucket[0]))[0];</b>
+<i>538</i>&nbsp;                int offset = 1 + 2 * count;
+<i>539</i>&nbsp;                if(offset == bucket.length) {
+<i>540</i>&nbsp;                    int found = count + 4;
+<i>541</i>&nbsp;                    Object[] j = new Object[1 + 2 * found];
+<i>542</i>&nbsp;                    System.arraycopy(bucket, 0, j, 0, offset);
+<i>543</i>&nbsp;                    bucket = j;
+<i>544</i>&nbsp;                    this.fHashTable[hash] = j;
+<i>545</i>&nbsp;                }
+<i>546</i>&nbsp;
+<i>547</i>&nbsp;                boolean var10 = false;
+<b class="nc"><i>548</i>&nbsp;                int var11 = 1;</b>
+<b class="nc"><i>549</i>&nbsp;</b>
+<i>550</i>&nbsp;                for(int i = 0; i &lt; count; ++i) {
+<b class="nc"><i>551</i>&nbsp;                    if((String)bucket[var11] == key) {</b>
+<i>552</i>&nbsp;                        ((int[])((int[])bucket[var11 + 1]))[0] = value;
+<i>553</i>&nbsp;                        var10 = true;
+<i>554</i>&nbsp;                        break;
+<i>555</i>&nbsp;                    }
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;                    var11 += 2;
+<i>558</i>&nbsp;                }
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;                if(!var10) {
+<i>561</i>&nbsp;                    bucket[offset++] = key;
+<i>562</i>&nbsp;                    bucket[offset] = new int[]{value};
+<b class="nc"><i>563</i>&nbsp;                    int[] var10000 = (int[])((int[])bucket[0]);</b>
+<b class="nc"><i>564</i>&nbsp;                    ++count;</b>
+<i>565</i>&nbsp;                    var10000[0] = count;
+<b class="nc"><i>566</i>&nbsp;                }</b>
+<b class="nc"><i>567</i>&nbsp;            }</b>
+<i>568</i>&nbsp;
+<b class="nc"><i>569</i>&nbsp;        }</b>
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;        public int get(String key) {
+<i>572</i>&nbsp;            int hash = (this.hash(key) + 2) % 101;
+<i>573</i>&nbsp;            Object[] bucket = this.fHashTable[hash];
+<b class="nc"><i>574</i>&nbsp;            if(bucket == null) {</b>
+<i>575</i>&nbsp;                return -1;
+<b class="nc"><i>576</i>&nbsp;            } else {</b>
+<b class="nc"><i>577</i>&nbsp;                int count = ((int[])((int[])bucket[0]))[0];</b>
+<i>578</i>&nbsp;                int j = 1;
+<b class="nc"><i>579</i>&nbsp;</b>
+<b class="nc"><i>580</i>&nbsp;                for(int i = 0; i &lt; count; ++i) {</b>
+<i>581</i>&nbsp;                    if((String)bucket[j] == key) {
+<b class="nc"><i>582</i>&nbsp;                        return ((int[])((int[])bucket[j + 1]))[0];</b>
+<i>583</i>&nbsp;                    }
+<i>584</i>&nbsp;
+<i>585</i>&nbsp;                    j += 2;
+<i>586</i>&nbsp;                }
+<b class="nc"><i>587</i>&nbsp;</b>
+<i>588</i>&nbsp;                return -1;
+<i>589</i>&nbsp;            }
+<i>590</i>&nbsp;        }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;        protected int hash(String symbol) {
+<i>593</i>&nbsp;            if(symbol == null) {
+<i>594</i>&nbsp;                return 0;
+<i>595</i>&nbsp;            } else {
+<i>596</i>&nbsp;                int code = 0;
+<i>597</i>&nbsp;                int length = symbol.length();
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;                for(int i = 0; i &lt; length; ++i) {
+<i>600</i>&nbsp;                    code = code * 37 + symbol.charAt(i);
+<b class="nc"><i>601</i>&nbsp;                }</b>
+<b class="nc"><i>602</i>&nbsp;</b>
+<i>603</i>&nbsp;                return code &amp; 134217727;
+<b class="nc"><i>604</i>&nbsp;            }</b>
+<i>605</i>&nbsp;        }
+<b class="nc"><i>606</i>&nbsp;    }</b>
+<i>607</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

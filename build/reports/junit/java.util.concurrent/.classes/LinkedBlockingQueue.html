@@ -1,0 +1,828 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LinkedBlockingQueue</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.util.concurrent</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LinkedBlockingQueue (java.util.concurrent)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LinkedBlockingQueue</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 261)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LinkedBlockingQueue$Itr</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 39)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">LinkedBlockingQueue$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 37)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 301)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.util.concurrent;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectInputStream;
+<i>10</i>&nbsp;import java.io.ObjectOutputStream;
+<i>11</i>&nbsp;import java.io.Serializable;
+<i>12</i>&nbsp;import java.lang.reflect.Array;
+<i>13</i>&nbsp;import java.util.AbstractQueue;
+<i>14</i>&nbsp;import java.util.Collection;
+<i>15</i>&nbsp;import java.util.Iterator;
+<i>16</i>&nbsp;import java.util.NoSuchElementException;
+<i>17</i>&nbsp;import java.util.concurrent.BlockingQueue;
+<i>18</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>19</i>&nbsp;import java.util.concurrent.atomic.AtomicInteger;
+<i>20</i>&nbsp;import java.util.concurrent.locks.Condition;
+<i>21</i>&nbsp;import java.util.concurrent.locks.ReentrantLock;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public class LinkedBlockingQueue&lt;E&gt; extends AbstractQueue&lt;E&gt; implements BlockingQueue&lt;E&gt;, Serializable {
+<i>24</i>&nbsp;    private static final long serialVersionUID = -6903933977591709194L;
+<i>25</i>&nbsp;    private final int capacity;
+<i>26</i>&nbsp;    private final AtomicInteger count;
+<i>27</i>&nbsp;    private transient LinkedBlockingQueue.Node&lt;E&gt; head;
+<i>28</i>&nbsp;    private transient LinkedBlockingQueue.Node&lt;E&gt; last;
+<i>29</i>&nbsp;    private final ReentrantLock takeLock;
+<i>30</i>&nbsp;    private final Condition notEmpty;
+<i>31</i>&nbsp;    private final ReentrantLock putLock;
+<i>32</i>&nbsp;    private final Condition notFull;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    private void signalNotEmpty() {
+<i>35</i>&nbsp;        ReentrantLock var1 = this.takeLock;
+<i>36</i>&nbsp;        var1.lock();
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;        try {
+<i>39</i>&nbsp;            this.notEmpty.signal();
+<i>40</i>&nbsp;        } finally {
+<i>41</i>&nbsp;            var1.unlock();
+<i>42</i>&nbsp;        }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    }
+<b class="nc"><i>45</i>&nbsp;</b>
+<i>46</i>&nbsp;    private void signalNotFull() {
+<i>47</i>&nbsp;        ReentrantLock var1 = this.putLock;
+<i>48</i>&nbsp;        var1.lock();
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;        try {
+<i>51</i>&nbsp;            this.notFull.signal();
+<i>52</i>&nbsp;        } finally {
+<i>53</i>&nbsp;            var1.unlock();
+<i>54</i>&nbsp;        }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private void enqueue(LinkedBlockingQueue.Node&lt;E&gt; var1) {
+<i>59</i>&nbsp;        this.last = this.last.next = var1;
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    private E dequeue() {
+<i>63</i>&nbsp;        LinkedBlockingQueue.Node var1 = this.head;
+<i>64</i>&nbsp;        LinkedBlockingQueue.Node var2 = var1.next;
+<i>65</i>&nbsp;        var1.next = var1;
+<i>66</i>&nbsp;        this.head = var2;
+<i>67</i>&nbsp;        Object var3 = var2.item;
+<i>68</i>&nbsp;        var2.item = null;
+<i>69</i>&nbsp;        return var3;
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    void fullyLock() {
+<i>73</i>&nbsp;        this.putLock.lock();
+<i>74</i>&nbsp;        this.takeLock.lock();
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    void fullyUnlock() {
+<i>78</i>&nbsp;        this.takeLock.unlock();
+<i>79</i>&nbsp;        this.putLock.unlock();
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public LinkedBlockingQueue() {
+<i>83</i>&nbsp;        this(2147483647);
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public LinkedBlockingQueue(int var1) {
+<i>87</i>&nbsp;        this.count = new AtomicInteger(0);
+<i>88</i>&nbsp;        this.takeLock = new ReentrantLock();
+<i>89</i>&nbsp;        this.notEmpty = this.takeLock.newCondition();
+<i>90</i>&nbsp;        this.putLock = new ReentrantLock();
+<i>91</i>&nbsp;        this.notFull = this.putLock.newCondition();
+<i>92</i>&nbsp;        if(var1 &lt;= 0) {
+<i>93</i>&nbsp;            throw new IllegalArgumentException();
+<i>94</i>&nbsp;        } else {
+<i>95</i>&nbsp;            this.capacity = var1;
+<i>96</i>&nbsp;            this.last = this.head = new LinkedBlockingQueue.Node((Object)null);
+<b class="nc"><i>97</i>&nbsp;        }</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public LinkedBlockingQueue(Collection&lt;? extends E&gt; var1) {
+<i>101</i>&nbsp;        this(2147483647);
+<i>102</i>&nbsp;        ReentrantLock var2 = this.putLock;
+<i>103</i>&nbsp;        var2.lock();
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;        try {
+<i>106</i>&nbsp;            int var3 = 0;
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;            for(Iterator var4 = var1.iterator(); var4.hasNext(); ++var3) {
+<i>109</i>&nbsp;                Object var5 = var4.next();
+<i>110</i>&nbsp;                if(var5 == null) {
+<i>111</i>&nbsp;                    throw new NullPointerException();
+<i>112</i>&nbsp;                }
+<b class="nc"><i>113</i>&nbsp;</b>
+<i>114</i>&nbsp;                if(var3 == this.capacity) {
+<i>115</i>&nbsp;                    throw new IllegalStateException(&quot;Queue full&quot;);
+<b class="nc"><i>116</i>&nbsp;                }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;                this.enqueue(new LinkedBlockingQueue.Node(var5));
+<b class="nc"><i>119</i>&nbsp;            }</b>
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;            this.count.set(var3);
+<b class="nc"><i>122</i>&nbsp;        } finally {</b>
+<i>123</i>&nbsp;            var2.unlock();
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public int size() {
+<i>128</i>&nbsp;        return this.count.get();
+<b class="nc"><i>129</i>&nbsp;    }</b>
+<b class="nc"><i>130</i>&nbsp;</b>
+<i>131</i>&nbsp;    public int remainingCapacity() {
+<b class="nc"><i>132</i>&nbsp;        return this.capacity - this.count.get();</b>
+<b class="nc"><i>133</i>&nbsp;    }</b>
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;    public void put(E var1) throws InterruptedException {</b>
+<i>136</i>&nbsp;        if(var1 == null) {
+<i>137</i>&nbsp;            throw new NullPointerException();
+<i>138</i>&nbsp;        } else {
+<i>139</i>&nbsp;            boolean var2 = true;
+<i>140</i>&nbsp;            LinkedBlockingQueue.Node var3 = new LinkedBlockingQueue.Node(var1);
+<i>141</i>&nbsp;            ReentrantLock var4 = this.putLock;
+<b class="nc"><i>142</i>&nbsp;            AtomicInteger var5 = this.count;</b>
+<b class="nc"><i>143</i>&nbsp;            var4.lockInterruptibly();</b>
+<i>144</i>&nbsp;
+<b class="nc"><i>145</i>&nbsp;            int var9;</b>
+<b class="nc"><i>146</i>&nbsp;            try {</b>
+<b class="nc"><i>147</i>&nbsp;                while(var5.get() == this.capacity) {</b>
+<b class="nc"><i>148</i>&nbsp;                    this.notFull.await();</b>
+<i>149</i>&nbsp;                }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;                this.enqueue(var3);
+<i>152</i>&nbsp;                var9 = var5.getAndIncrement();
+<i>153</i>&nbsp;                if(var9 + 1 &lt; this.capacity) {
+<i>154</i>&nbsp;                    this.notFull.signal();
+<i>155</i>&nbsp;                }
+<i>156</i>&nbsp;            } finally {
+<b class="nc"><i>157</i>&nbsp;                var4.unlock();</b>
+<i>158</i>&nbsp;            }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;            if(var9 == 0) {
+<i>161</i>&nbsp;                this.signalNotEmpty();
+<i>162</i>&nbsp;            }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;        }
+<i>165</i>&nbsp;    }
+<b class="nc"><i>166</i>&nbsp;</b>
+<b class="nc"><i>167</i>&nbsp;    public boolean offer(E var1, long var2, TimeUnit var4) throws InterruptedException {</b>
+<b class="nc"><i>168</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>169</i>&nbsp;            throw new NullPointerException();</b>
+<b class="nc"><i>170</i>&nbsp;        } else {</b>
+<b class="nc"><i>171</i>&nbsp;            long var5 = var4.toNanos(var2);</b>
+<b class="nc"><i>172</i>&nbsp;            boolean var7 = true;</b>
+<i>173</i>&nbsp;            ReentrantLock var8 = this.putLock;
+<i>174</i>&nbsp;            AtomicInteger var9 = this.count;
+<i>175</i>&nbsp;            var8.lockInterruptibly();
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;            int var14;
+<i>178</i>&nbsp;            try {
+<b class="nc"><i>179</i>&nbsp;                while(var9.get() == this.capacity) {</b>
+<b class="nc"><i>180</i>&nbsp;                    if(var5 &lt;= 0L) {</b>
+<i>181</i>&nbsp;                        boolean var10 = false;
+<i>182</i>&nbsp;                        return var10;
+<i>183</i>&nbsp;                    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;                    var5 = this.notFull.awaitNanos(var5);
+<i>186</i>&nbsp;                }
+<b class="nc"><i>187</i>&nbsp;</b>
+<b class="nc"><i>188</i>&nbsp;                this.enqueue(new LinkedBlockingQueue.Node(var1));</b>
+<i>189</i>&nbsp;                var14 = var9.getAndIncrement();
+<i>190</i>&nbsp;                if(var14 + 1 &lt; this.capacity) {
+<i>191</i>&nbsp;                    this.notFull.signal();
+<i>192</i>&nbsp;                }
+<i>193</i>&nbsp;            } finally {
+<i>194</i>&nbsp;                var8.unlock();
+<b class="nc"><i>195</i>&nbsp;            }</b>
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;            if(var14 == 0) {
+<i>198</i>&nbsp;                this.signalNotEmpty();
+<i>199</i>&nbsp;            }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;            return true;
+<i>202</i>&nbsp;        }
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<b class="nc"><i>205</i>&nbsp;    public boolean offer(E var1) {</b>
+<i>206</i>&nbsp;        if(var1 == null) {
+<i>207</i>&nbsp;            throw new NullPointerException();
+<i>208</i>&nbsp;        } else {
+<i>209</i>&nbsp;            AtomicInteger var2 = this.count;
+<i>210</i>&nbsp;            if(var2.get() == this.capacity) {
+<i>211</i>&nbsp;                return false;
+<i>212</i>&nbsp;            } else {
+<i>213</i>&nbsp;                int var3 = -1;
+<i>214</i>&nbsp;                LinkedBlockingQueue.Node var4 = new LinkedBlockingQueue.Node(var1);
+<b class="nc"><i>215</i>&nbsp;                ReentrantLock var5 = this.putLock;</b>
+<b class="nc"><i>216</i>&nbsp;                var5.lock();</b>
+<b class="nc"><i>217</i>&nbsp;</b>
+<b class="nc"><i>218</i>&nbsp;                try {</b>
+<i>219</i>&nbsp;                    if(var2.get() &lt; this.capacity) {
+<i>220</i>&nbsp;                        this.enqueue(var4);
+<i>221</i>&nbsp;                        var3 = var2.getAndIncrement();
+<i>222</i>&nbsp;                        if(var3 + 1 &lt; this.capacity) {
+<i>223</i>&nbsp;                            this.notFull.signal();
+<i>224</i>&nbsp;                        }
+<i>225</i>&nbsp;                    }
+<i>226</i>&nbsp;                } finally {
+<i>227</i>&nbsp;                    var5.unlock();
+<i>228</i>&nbsp;                }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;                if(var3 == 0) {
+<i>231</i>&nbsp;                    this.signalNotEmpty();
+<b class="nc"><i>232</i>&nbsp;                }</b>
+<b class="nc"><i>233</i>&nbsp;</b>
+<b class="nc"><i>234</i>&nbsp;                return var3 &gt;= 0;</b>
+<i>235</i>&nbsp;            }
+<b class="nc"><i>236</i>&nbsp;        }</b>
+<b class="nc"><i>237</i>&nbsp;    }</b>
+<b class="nc"><i>238</i>&nbsp;</b>
+<b class="nc"><i>239</i>&nbsp;    public E take() throws InterruptedException {</b>
+<b class="nc"><i>240</i>&nbsp;        boolean var2 = true;</b>
+<b class="nc"><i>241</i>&nbsp;        AtomicInteger var3 = this.count;</b>
+<b class="nc"><i>242</i>&nbsp;        ReentrantLock var4 = this.takeLock;</b>
+<b class="nc"><i>243</i>&nbsp;        var4.lockInterruptibly();</b>
+<i>244</i>&nbsp;
+<b class="nc"><i>245</i>&nbsp;        Object var1;</b>
+<b class="nc"><i>246</i>&nbsp;        int var8;</b>
+<b class="nc"><i>247</i>&nbsp;        try {</b>
+<b class="nc"><i>248</i>&nbsp;            while(var3.get() == 0) {</b>
+<i>249</i>&nbsp;                this.notEmpty.await();
+<i>250</i>&nbsp;            }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;            var1 = this.dequeue();
+<i>253</i>&nbsp;            var8 = var3.getAndDecrement();
+<i>254</i>&nbsp;            if(var8 &gt; 1) {
+<i>255</i>&nbsp;                this.notEmpty.signal();
+<i>256</i>&nbsp;            }
+<i>257</i>&nbsp;        } finally {
+<i>258</i>&nbsp;            var4.unlock();
+<i>259</i>&nbsp;        }
+<b class="nc"><i>260</i>&nbsp;</b>
+<i>261</i>&nbsp;        if(var8 == this.capacity) {
+<i>262</i>&nbsp;            this.signalNotFull();
+<i>263</i>&nbsp;        }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;        return var1;
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    public E poll(long var1, TimeUnit var3) throws InterruptedException {
+<i>269</i>&nbsp;        Object var4 = null;
+<i>270</i>&nbsp;        boolean var5 = true;
+<i>271</i>&nbsp;        long var6 = var3.toNanos(var1);
+<i>272</i>&nbsp;        AtomicInteger var8 = this.count;
+<i>273</i>&nbsp;        ReentrantLock var9 = this.takeLock;
+<i>274</i>&nbsp;        var9.lockInterruptibly();
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;        int var14;
+<b class="nc"><i>277</i>&nbsp;        try {</b>
+<i>278</i>&nbsp;            while(var8.get() == 0) {
+<i>279</i>&nbsp;                if(var6 &lt;= 0L) {
+<i>280</i>&nbsp;                    Object var10 = null;
+<i>281</i>&nbsp;                    return var10;
+<i>282</i>&nbsp;                }
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;                var6 = this.notEmpty.awaitNanos(var6);
+<i>285</i>&nbsp;            }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;            var4 = this.dequeue();
+<b class="nc"><i>288</i>&nbsp;            var14 = var8.getAndDecrement();</b>
+<i>289</i>&nbsp;            if(var14 &gt; 1) {
+<i>290</i>&nbsp;                this.notEmpty.signal();
+<b class="nc"><i>291</i>&nbsp;            }</b>
+<b class="nc"><i>292</i>&nbsp;        } finally {</b>
+<b class="nc"><i>293</i>&nbsp;            var9.unlock();</b>
+<b class="nc"><i>294</i>&nbsp;        }</b>
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;        if(var14 == this.capacity) {
+<i>297</i>&nbsp;            this.signalNotFull();
+<i>298</i>&nbsp;        }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;        return var4;
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    public E poll() {
+<i>304</i>&nbsp;        AtomicInteger var1 = this.count;
+<b class="nc"><i>305</i>&nbsp;        if(var1.get() == 0) {</b>
+<b class="nc"><i>306</i>&nbsp;            return null;</b>
+<i>307</i>&nbsp;        } else {
+<b class="nc"><i>308</i>&nbsp;            Object var2 = null;</b>
+<b class="nc"><i>309</i>&nbsp;            int var3 = -1;</b>
+<b class="nc"><i>310</i>&nbsp;            ReentrantLock var4 = this.takeLock;</b>
+<b class="nc"><i>311</i>&nbsp;            var4.lock();</b>
+<b class="nc"><i>312</i>&nbsp;</b>
+<b class="nc"><i>313</i>&nbsp;            try {</b>
+<b class="nc"><i>314</i>&nbsp;                if(var1.get() &gt; 0) {</b>
+<b class="nc"><i>315</i>&nbsp;                    var2 = this.dequeue();</b>
+<b class="nc"><i>316</i>&nbsp;                    var3 = var1.getAndDecrement();</b>
+<i>317</i>&nbsp;                    if(var3 &gt; 1) {
+<i>318</i>&nbsp;                        this.notEmpty.signal();
+<i>319</i>&nbsp;                    }
+<i>320</i>&nbsp;                }
+<i>321</i>&nbsp;            } finally {
+<i>322</i>&nbsp;                var4.unlock();
+<i>323</i>&nbsp;            }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;            if(var3 == this.capacity) {
+<i>326</i>&nbsp;                this.signalNotFull();
+<i>327</i>&nbsp;            }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;            return var2;
+<i>330</i>&nbsp;        }
+<b class="nc"><i>331</i>&nbsp;    }</b>
+<b class="nc"><i>332</i>&nbsp;</b>
+<b class="nc"><i>333</i>&nbsp;    public E peek() {</b>
+<b class="nc"><i>334</i>&nbsp;        if(this.count.get() == 0) {</b>
+<b class="nc"><i>335</i>&nbsp;            return null;</b>
+<b class="nc"><i>336</i>&nbsp;        } else {</b>
+<i>337</i>&nbsp;            ReentrantLock var1 = this.takeLock;
+<b class="nc"><i>338</i>&nbsp;            var1.lock();</b>
+<i>339</i>&nbsp;
+<b class="nc"><i>340</i>&nbsp;            Object var3;</b>
+<b class="nc"><i>341</i>&nbsp;            try {</b>
+<b class="nc"><i>342</i>&nbsp;                LinkedBlockingQueue.Node var2 = this.head.next;</b>
+<i>343</i>&nbsp;                if(var2 != null) {
+<b class="nc"><i>344</i>&nbsp;                    var3 = var2.item;</b>
+<b class="nc"><i>345</i>&nbsp;                    return var3;</b>
+<b class="nc"><i>346</i>&nbsp;                }</b>
+<b class="nc"><i>347</i>&nbsp;</b>
+<b class="nc"><i>348</i>&nbsp;                var3 = null;</b>
+<b class="nc"><i>349</i>&nbsp;            } finally {</b>
+<b class="nc"><i>350</i>&nbsp;                var1.unlock();</b>
+<b class="nc"><i>351</i>&nbsp;            }</b>
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;            return var3;</b>
+<i>354</i>&nbsp;        }
+<i>355</i>&nbsp;    }
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    void unlink(LinkedBlockingQueue.Node&lt;E&gt; var1, LinkedBlockingQueue.Node&lt;E&gt; var2) {
+<i>358</i>&nbsp;        var1.item = null;
+<i>359</i>&nbsp;        var2.next = var1.next;
+<i>360</i>&nbsp;        if(this.last == var1) {
+<i>361</i>&nbsp;            this.last = var2;
+<i>362</i>&nbsp;        }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;        if(this.count.getAndDecrement() == this.capacity) {
+<i>365</i>&nbsp;            this.notFull.signal();
+<i>366</i>&nbsp;        }
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;    }</b>
+<b class="nc"><i>369</i>&nbsp;</b>
+<b class="nc"><i>370</i>&nbsp;    public boolean remove(Object var1) {</b>
+<b class="nc"><i>371</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>372</i>&nbsp;            return false;</b>
+<b class="nc"><i>373</i>&nbsp;        } else {</b>
+<b class="nc"><i>374</i>&nbsp;            this.fullyLock();</b>
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;            try {</b>
+<b class="nc"><i>377</i>&nbsp;                LinkedBlockingQueue.Node var2 = this.head;</b>
+<b class="nc"><i>378</i>&nbsp;</b>
+<b class="nc"><i>379</i>&nbsp;                for(LinkedBlockingQueue.Node var3 = var2.next; var3 != null; var3 = var3.next) {</b>
+<b class="nc"><i>380</i>&nbsp;                    if(var1.equals(var3.item)) {</b>
+<i>381</i>&nbsp;                        this.unlink(var3, var2);
+<b class="nc"><i>382</i>&nbsp;                        boolean var4 = true;</b>
+<b class="nc"><i>383</i>&nbsp;                        return var4;</b>
+<b class="nc"><i>384</i>&nbsp;                    }</b>
+<b class="nc"><i>385</i>&nbsp;</b>
+<b class="nc"><i>386</i>&nbsp;                    var2 = var3;</b>
+<b class="nc"><i>387</i>&nbsp;                }</b>
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;                boolean var8 = false;
+<i>390</i>&nbsp;                return var8;
+<i>391</i>&nbsp;            } finally {
+<i>392</i>&nbsp;                this.fullyUnlock();
+<b class="nc"><i>393</i>&nbsp;            }</b>
+<b class="nc"><i>394</i>&nbsp;        }</b>
+<b class="nc"><i>395</i>&nbsp;    }</b>
+<b class="nc"><i>396</i>&nbsp;</b>
+<i>397</i>&nbsp;    public boolean contains(Object var1) {
+<b class="nc"><i>398</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>399</i>&nbsp;            return false;</b>
+<i>400</i>&nbsp;        } else {
+<b class="nc"><i>401</i>&nbsp;            this.fullyLock();</b>
+<b class="nc"><i>402</i>&nbsp;</b>
+<b class="nc"><i>403</i>&nbsp;            try {</b>
+<b class="nc"><i>404</i>&nbsp;                for(LinkedBlockingQueue.Node var2 = this.head.next; var2 != null; var2 = var2.next) {</b>
+<b class="nc"><i>405</i>&nbsp;                    if(var1.equals(var2.item)) {</b>
+<b class="nc"><i>406</i>&nbsp;                        boolean var3 = true;</b>
+<b class="nc"><i>407</i>&nbsp;                        return var3;</b>
+<b class="nc"><i>408</i>&nbsp;                    }</b>
+<b class="nc"><i>409</i>&nbsp;                }</b>
+<b class="nc"><i>410</i>&nbsp;</b>
+<i>411</i>&nbsp;                boolean var7 = false;
+<i>412</i>&nbsp;                return var7;
+<i>413</i>&nbsp;            } finally {
+<b class="nc"><i>414</i>&nbsp;                this.fullyUnlock();</b>
+<b class="nc"><i>415</i>&nbsp;            }</b>
+<b class="nc"><i>416</i>&nbsp;        }</b>
+<b class="nc"><i>417</i>&nbsp;    }</b>
+<b class="nc"><i>418</i>&nbsp;</b>
+<b class="nc"><i>419</i>&nbsp;    public Object[] toArray() {</b>
+<i>420</i>&nbsp;        this.fullyLock();
+<b class="nc"><i>421</i>&nbsp;</b>
+<b class="nc"><i>422</i>&nbsp;        try {</b>
+<b class="nc"><i>423</i>&nbsp;            int var1 = this.count.get();</b>
+<b class="nc"><i>424</i>&nbsp;            Object[] var2 = new Object[var1];</b>
+<i>425</i>&nbsp;            int var3 = 0;
+<b class="nc"><i>426</i>&nbsp;</b>
+<b class="nc"><i>427</i>&nbsp;            for(LinkedBlockingQueue.Node var4 = this.head.next; var4 != null; var4 = var4.next) {</b>
+<b class="nc"><i>428</i>&nbsp;                var2[var3++] = var4.item;</b>
+<b class="nc"><i>429</i>&nbsp;            }</b>
+<b class="nc"><i>430</i>&nbsp;</b>
+<b class="nc"><i>431</i>&nbsp;            Object[] var8 = var2;</b>
+<b class="nc"><i>432</i>&nbsp;            return var8;</b>
+<b class="nc"><i>433</i>&nbsp;        } finally {</b>
+<b class="nc"><i>434</i>&nbsp;            this.fullyUnlock();</b>
+<b class="nc"><i>435</i>&nbsp;        }</b>
+<i>436</i>&nbsp;    }
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;    public &lt;T&gt; T[] toArray(T[] var1) {
+<b class="nc"><i>439</i>&nbsp;        this.fullyLock();</b>
+<b class="nc"><i>440</i>&nbsp;</b>
+<b class="nc"><i>441</i>&nbsp;        try {</b>
+<b class="nc"><i>442</i>&nbsp;            int var2 = this.count.get();</b>
+<b class="nc"><i>443</i>&nbsp;            if(var1.length &lt; var2) {</b>
+<b class="nc"><i>444</i>&nbsp;                var1 = (Object[])((Object[])Array.newInstance(var1.getClass().getComponentType(), var2));</b>
+<b class="nc"><i>445</i>&nbsp;            }</b>
+<i>446</i>&nbsp;
+<b class="nc"><i>447</i>&nbsp;            int var3 = 0;</b>
+<b class="nc"><i>448</i>&nbsp;</b>
+<b class="nc"><i>449</i>&nbsp;            for(LinkedBlockingQueue.Node var4 = this.head.next; var4 != null; var4 = var4.next) {</b>
+<b class="nc"><i>450</i>&nbsp;                var1[var3++] = var4.item;</b>
+<b class="nc"><i>451</i>&nbsp;            }</b>
+<i>452</i>&nbsp;
+<b class="nc"><i>453</i>&nbsp;            if(var1.length &gt; var3) {</b>
+<b class="nc"><i>454</i>&nbsp;                var1[var3] = null;</b>
+<b class="nc"><i>455</i>&nbsp;            }</b>
+<b class="nc"><i>456</i>&nbsp;</b>
+<b class="nc"><i>457</i>&nbsp;            Object[] var8 = var1;</b>
+<b class="nc"><i>458</i>&nbsp;            return var8;</b>
+<i>459</i>&nbsp;        } finally {
+<i>460</i>&nbsp;            this.fullyUnlock();
+<i>461</i>&nbsp;        }
+<i>462</i>&nbsp;    }
+<b class="nc"><i>463</i>&nbsp;</b>
+<b class="nc"><i>464</i>&nbsp;    public String toString() {</b>
+<b class="nc"><i>465</i>&nbsp;        this.fullyLock();</b>
+<b class="nc"><i>466</i>&nbsp;</b>
+<i>467</i>&nbsp;        String var2;
+<b class="nc"><i>468</i>&nbsp;        try {</b>
+<b class="nc"><i>469</i>&nbsp;            LinkedBlockingQueue.Node var1 = this.head.next;</b>
+<b class="nc"><i>470</i>&nbsp;            if(var1 != null) {</b>
+<i>471</i>&nbsp;                StringBuilder var8 = new StringBuilder();
+<b class="nc"><i>472</i>&nbsp;                var8.append(&#39;[&#39;);</b>
+<i>473</i>&nbsp;
+<b class="nc"><i>474</i>&nbsp;                while(true) {</b>
+<i>475</i>&nbsp;                    Object var3 = var1.item;
+<i>476</i>&nbsp;                    var8.append(var3 == this?&quot;(this Collection)&quot;:var3);
+<i>477</i>&nbsp;                    var1 = var1.next;
+<i>478</i>&nbsp;                    if(var1 == null) {
+<i>479</i>&nbsp;                        String var4 = var8.append(&#39;]&#39;).toString();
+<i>480</i>&nbsp;                        return var4;
+<i>481</i>&nbsp;                    }
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;                    var8.append(&#39;,&#39;).append(&#39; &#39;);
+<i>484</i>&nbsp;                }
+<b class="nc"><i>485</i>&nbsp;            }</b>
+<b class="nc"><i>486</i>&nbsp;</b>
+<b class="nc"><i>487</i>&nbsp;            var2 = &quot;[]&quot;;</b>
+<b class="nc"><i>488</i>&nbsp;        } finally {</b>
+<b class="nc"><i>489</i>&nbsp;            this.fullyUnlock();</b>
+<b class="nc"><i>490</i>&nbsp;        }</b>
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;        return var2;
+<i>493</i>&nbsp;    }
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;    public void clear() {
+<i>496</i>&nbsp;        this.fullyLock();
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;        try {
+<i>499</i>&nbsp;            LinkedBlockingQueue.Node var2 = this.head;
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;            while(true) {
+<i>502</i>&nbsp;                LinkedBlockingQueue.Node var1 = var2.next;
+<i>503</i>&nbsp;                if(var2.next == null) {
+<i>504</i>&nbsp;                    this.head = this.last;
+<b class="nc"><i>505</i>&nbsp;                    if(this.count.getAndSet(0) == this.capacity) {</b>
+<b class="nc"><i>506</i>&nbsp;                        this.notFull.signal();</b>
+<i>507</i>&nbsp;                    }
+<b class="nc"><i>508</i>&nbsp;                    break;</b>
+<b class="nc"><i>509</i>&nbsp;                }</b>
+<b class="nc"><i>510</i>&nbsp;</b>
+<b class="nc"><i>511</i>&nbsp;                var2.next = var2;</b>
+<b class="nc"><i>512</i>&nbsp;                var1.item = null;</b>
+<b class="nc"><i>513</i>&nbsp;                var2 = var1;</b>
+<i>514</i>&nbsp;            }
+<i>515</i>&nbsp;        } finally {
+<b class="nc"><i>516</i>&nbsp;            this.fullyUnlock();</b>
+<i>517</i>&nbsp;        }
+<b class="nc"><i>518</i>&nbsp;</b>
+<i>519</i>&nbsp;    }
+<i>520</i>&nbsp;
+<i>521</i>&nbsp;    public int drainTo(Collection&lt;? super E&gt; var1) {
+<i>522</i>&nbsp;        return this.drainTo(var1, 2147483647);
+<i>523</i>&nbsp;    }
+<i>524</i>&nbsp;
+<i>525</i>&nbsp;    public int drainTo(Collection&lt;? super E&gt; var1, int var2) {
+<i>526</i>&nbsp;        if(var1 == null) {
+<i>527</i>&nbsp;            throw new NullPointerException();
+<i>528</i>&nbsp;        } else if(var1 == this) {
+<i>529</i>&nbsp;            throw new IllegalArgumentException();
+<i>530</i>&nbsp;        } else {
+<i>531</i>&nbsp;            boolean var3 = false;
+<i>532</i>&nbsp;            ReentrantLock var4 = this.takeLock;
+<i>533</i>&nbsp;            var4.lock();
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;            int var17;
+<b class="nc"><i>536</i>&nbsp;            try {</b>
+<i>537</i>&nbsp;                int var5 = Math.min(var2, this.count.get());
+<b class="nc"><i>538</i>&nbsp;                LinkedBlockingQueue.Node var6 = this.head;</b>
+<b class="nc"><i>539</i>&nbsp;                int var7 = 0;</b>
+<b class="nc"><i>540</i>&nbsp;</b>
+<b class="nc"><i>541</i>&nbsp;                try {</b>
+<b class="nc"><i>542</i>&nbsp;                    while(var7 &lt; var5) {</b>
+<b class="nc"><i>543</i>&nbsp;                        LinkedBlockingQueue.Node var8 = var6.next;</b>
+<i>544</i>&nbsp;                        var1.add(var8.item);
+<b class="nc"><i>545</i>&nbsp;                        var8.item = null;</b>
+<i>546</i>&nbsp;                        var6.next = var6;
+<i>547</i>&nbsp;                        var6 = var8;
+<i>548</i>&nbsp;                        ++var7;
+<i>549</i>&nbsp;                    }
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;                    var17 = var5;
+<i>552</i>&nbsp;                } finally {
+<i>553</i>&nbsp;                    if(var7 &gt; 0) {
+<i>554</i>&nbsp;                        this.head = var6;
+<i>555</i>&nbsp;                        var3 = this.count.getAndAdd(-var7) == this.capacity;
+<i>556</i>&nbsp;                    }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;                }
+<i>559</i>&nbsp;            } finally {
+<i>560</i>&nbsp;                var4.unlock();
+<i>561</i>&nbsp;                if(var3) {
+<i>562</i>&nbsp;                    this.signalNotFull();
+<i>563</i>&nbsp;                }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;            }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;            return var17;
+<i>568</i>&nbsp;        }
+<i>569</i>&nbsp;    }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;    public Iterator&lt;E&gt; iterator() {
+<i>572</i>&nbsp;        return new LinkedBlockingQueue.Itr();
+<i>573</i>&nbsp;    }
+<i>574</i>&nbsp;
+<i>575</i>&nbsp;    private void writeObject(ObjectOutputStream var1) throws IOException {
+<i>576</i>&nbsp;        this.fullyLock();
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;        try {
+<i>579</i>&nbsp;            var1.defaultWriteObject();
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;            for(LinkedBlockingQueue.Node var2 = this.head.next; var2 != null; var2 = var2.next) {
+<i>582</i>&nbsp;                var1.writeObject(var2.item);
+<i>583</i>&nbsp;            }
+<i>584</i>&nbsp;
+<i>585</i>&nbsp;            var1.writeObject((Object)null);
+<i>586</i>&nbsp;        } finally {
+<b class="nc"><i>587</i>&nbsp;            this.fullyUnlock();</b>
+<i>588</i>&nbsp;        }
+<b class="nc"><i>589</i>&nbsp;    }</b>
+<b class="nc"><i>590</i>&nbsp;</b>
+<b class="nc"><i>591</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {</b>
+<i>592</i>&nbsp;        var1.defaultReadObject();
+<i>593</i>&nbsp;        this.count.set(0);
+<b class="nc"><i>594</i>&nbsp;        this.last = this.head = new LinkedBlockingQueue.Node((Object)null);</b>
+<b class="nc"><i>595</i>&nbsp;</b>
+<b class="nc"><i>596</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>597</i>&nbsp;            Object var2 = var1.readObject();</b>
+<b class="nc"><i>598</i>&nbsp;            if(var2 == null) {</b>
+<b class="nc"><i>599</i>&nbsp;                return;</b>
+<i>600</i>&nbsp;            }
+<b class="nc"><i>601</i>&nbsp;</b>
+<i>602</i>&nbsp;            this.add(var2);
+<i>603</i>&nbsp;        }
+<i>604</i>&nbsp;    }
+<i>605</i>&nbsp;
+<b class="nc"><i>606</i>&nbsp;    private class Itr implements Iterator&lt;E&gt; {</b>
+<i>607</i>&nbsp;        private LinkedBlockingQueue.Node&lt;E&gt; current;
+<b class="nc"><i>608</i>&nbsp;        private LinkedBlockingQueue.Node&lt;E&gt; lastRet;</b>
+<i>609</i>&nbsp;        private E currentElement;
+<b class="nc"><i>610</i>&nbsp;</b>
+<i>611</i>&nbsp;        Itr() {
+<i>612</i>&nbsp;            LinkedBlockingQueue.this.fullyLock();
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;            try {
+<i>615</i>&nbsp;                this.current = LinkedBlockingQueue.this.head.next;
+<i>616</i>&nbsp;                if(this.current != null) {
+<i>617</i>&nbsp;                    this.currentElement = this.current.item;
+<i>618</i>&nbsp;                }
+<b class="nc"><i>619</i>&nbsp;            } finally {</b>
+<i>620</i>&nbsp;                LinkedBlockingQueue.this.fullyUnlock();
+<b class="nc"><i>621</i>&nbsp;            }</b>
+<b class="nc"><i>622</i>&nbsp;</b>
+<b class="nc"><i>623</i>&nbsp;        }</b>
+<i>624</i>&nbsp;
+<b class="nc"><i>625</i>&nbsp;        public boolean hasNext() {</b>
+<i>626</i>&nbsp;            return this.current != null;
+<b class="nc"><i>627</i>&nbsp;        }</b>
+<b class="nc"><i>628</i>&nbsp;</b>
+<b class="nc"><i>629</i>&nbsp;        private LinkedBlockingQueue.Node&lt;E&gt; nextNode(LinkedBlockingQueue.Node&lt;E&gt; var1) {</b>
+<b class="nc"><i>630</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>631</i>&nbsp;                LinkedBlockingQueue.Node var2 = var1.next;</b>
+<i>632</i>&nbsp;                if(var2 == var1) {
+<i>633</i>&nbsp;                    return LinkedBlockingQueue.this.head.next;
+<i>634</i>&nbsp;                }
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;                if(var2 == null || var2.item != null) {
+<i>637</i>&nbsp;                    return var2;
+<i>638</i>&nbsp;                }
+<i>639</i>&nbsp;
+<i>640</i>&nbsp;                var1 = var2;
+<b class="nc"><i>641</i>&nbsp;            }</b>
+<i>642</i>&nbsp;        }
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;        public E next() {
+<i>645</i>&nbsp;            LinkedBlockingQueue.this.fullyLock();
+<i>646</i>&nbsp;
+<i>647</i>&nbsp;            Object var2;
+<i>648</i>&nbsp;            try {
+<i>649</i>&nbsp;                if(this.current == null) {
+<i>650</i>&nbsp;                    throw new NoSuchElementException();
+<i>651</i>&nbsp;                }
+<b class="nc"><i>652</i>&nbsp;</b>
+<b class="nc"><i>653</i>&nbsp;                Object var1 = this.currentElement;</b>
+<b class="nc"><i>654</i>&nbsp;                this.lastRet = this.current;</b>
+<b class="nc"><i>655</i>&nbsp;                this.current = this.nextNode(this.current);</b>
+<b class="nc"><i>656</i>&nbsp;                this.currentElement = this.current == null?null:this.current.item;</b>
+<b class="nc"><i>657</i>&nbsp;                var2 = var1;</b>
+<b class="nc"><i>658</i>&nbsp;            } finally {</b>
+<i>659</i>&nbsp;                LinkedBlockingQueue.this.fullyUnlock();
+<b class="nc"><i>660</i>&nbsp;            }</b>
+<b class="nc"><i>661</i>&nbsp;</b>
+<b class="nc"><i>662</i>&nbsp;            return var2;</b>
+<i>663</i>&nbsp;        }
+<b class="nc"><i>664</i>&nbsp;</b>
+<b class="nc"><i>665</i>&nbsp;        public void remove() {</b>
+<b class="nc"><i>666</i>&nbsp;            if(this.lastRet == null) {</b>
+<b class="nc"><i>667</i>&nbsp;                throw new IllegalStateException();</b>
+<b class="nc"><i>668</i>&nbsp;            } else {</b>
+<b class="nc"><i>669</i>&nbsp;                LinkedBlockingQueue.this.fullyLock();</b>
+<b class="nc"><i>670</i>&nbsp;</b>
+<b class="nc"><i>671</i>&nbsp;                try {</b>
+<b class="nc"><i>672</i>&nbsp;                    LinkedBlockingQueue.Node var1 = this.lastRet;</b>
+<i>673</i>&nbsp;                    this.lastRet = null;
+<i>674</i>&nbsp;                    LinkedBlockingQueue.Node var2 = LinkedBlockingQueue.this.head;
+<b class="nc"><i>675</i>&nbsp;</b>
+<i>676</i>&nbsp;                    for(LinkedBlockingQueue.Node var3 = var2.next; var3 != null; var3 = var3.next) {
+<b class="nc"><i>677</i>&nbsp;                        if(var3 == var1) {</b>
+<b class="nc"><i>678</i>&nbsp;                            LinkedBlockingQueue.this.unlink(var3, var2);</b>
+<i>679</i>&nbsp;                            break;
+<i>680</i>&nbsp;                        }
+<i>681</i>&nbsp;
+<b class="nc"><i>682</i>&nbsp;                        var2 = var3;</b>
+<b class="nc"><i>683</i>&nbsp;                    }</b>
+<b class="nc"><i>684</i>&nbsp;                } finally {</b>
+<i>685</i>&nbsp;                    LinkedBlockingQueue.this.fullyUnlock();
+<i>686</i>&nbsp;                }
+<i>687</i>&nbsp;
+<i>688</i>&nbsp;            }
+<i>689</i>&nbsp;        }
+<i>690</i>&nbsp;    }
+<i>691</i>&nbsp;
+<i>692</i>&nbsp;    static class Node&lt;E&gt; {
+<i>693</i>&nbsp;        E item;
+<i>694</i>&nbsp;        LinkedBlockingQueue.Node&lt;E&gt; next;
+<i>695</i>&nbsp;
+<i>696</i>&nbsp;        Node(E var1) {
+<i>697</i>&nbsp;            this.item = var1;
+<i>698</i>&nbsp;        }
+<b class="nc"><i>699</i>&nbsp;    }</b>
+<i>700</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VersionChecker</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.ws.wsdl.parser</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VersionChecker (com.sun.tools.internal.ws.wsdl.parser)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VersionChecker</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 35)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.ws.wsdl.parser;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.internal.ws.resources.WsdlMessages;
+<i>9</i>&nbsp;import java.util.Arrays;
+<i>10</i>&nbsp;import java.util.HashSet;
+<i>11</i>&nbsp;import java.util.Set;
+<i>12</i>&nbsp;import org.xml.sax.Attributes;
+<i>13</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>14</i>&nbsp;import org.xml.sax.EntityResolver;
+<i>15</i>&nbsp;import org.xml.sax.ErrorHandler;
+<i>16</i>&nbsp;import org.xml.sax.Locator;
+<i>17</i>&nbsp;import org.xml.sax.SAXException;
+<i>18</i>&nbsp;import org.xml.sax.SAXParseException;
+<i>19</i>&nbsp;import org.xml.sax.XMLReader;
+<i>20</i>&nbsp;import org.xml.sax.helpers.LocatorImpl;
+<i>21</i>&nbsp;import org.xml.sax.helpers.XMLFilterImpl;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public class VersionChecker extends XMLFilterImpl {
+<i>24</i>&nbsp;    private String version = null;
+<i>25</i>&nbsp;    private boolean seenRoot = false;
+<i>26</i>&nbsp;    private boolean seenBindings = false;
+<i>27</i>&nbsp;    private Locator locator;
+<i>28</i>&nbsp;    private Locator rootTagStart;
+<i>29</i>&nbsp;    private static final Set&lt;String&gt; VERSIONS = new HashSet(Arrays.asList(new String[]{&quot;2.0&quot;, &quot;2.1&quot;}));
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public VersionChecker(XMLReader parent) {
+<i>32</i>&nbsp;        this.setParent(parent);
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public VersionChecker(ContentHandler handler, ErrorHandler eh, EntityResolver er) {
+<i>36</i>&nbsp;        this.setContentHandler(handler);
+<i>37</i>&nbsp;        if(eh != null) {
+<i>38</i>&nbsp;            this.setErrorHandler(eh);
+<i>39</i>&nbsp;        }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;        if(er != null) {
+<i>42</i>&nbsp;            this.setEntityResolver(er);
+<i>43</i>&nbsp;        }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+<i>48</i>&nbsp;        super.startElement(namespaceURI, localName, qName, atts);
+<i>49</i>&nbsp;        if(!this.seenRoot) {
+<i>50</i>&nbsp;            this.seenRoot = true;
+<i>51</i>&nbsp;            this.rootTagStart = new LocatorImpl(this.locator);
+<i>52</i>&nbsp;            this.version = atts.getValue(&quot;http://java.sun.com/xml/ns/jaxws&quot;, &quot;version&quot;);
+<i>53</i>&nbsp;            if(namespaceURI.equals(&quot;http://java.sun.com/xml/ns/jaxws&quot;)) {
+<i>54</i>&nbsp;                String version2 = atts.getValue(&quot;&quot;, &quot;version&quot;);
+<b class="nc"><i>55</i>&nbsp;                if(this.version != null &amp;&amp; version2 != null) {</b>
+<i>56</i>&nbsp;                    SAXParseException e = new SAXParseException(WsdlMessages.INTERNALIZER_TWO_VERSION_ATTRIBUTES(), this.locator);
+<i>57</i>&nbsp;                    this.getErrorHandler().error(e);
+<b class="nc"><i>58</i>&nbsp;                }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;                if(this.version == null) {
+<b class="nc"><i>61</i>&nbsp;                    this.version = version2 != null?version2:&quot;2.0&quot;;</b>
+<i>62</i>&nbsp;                }
+<i>63</i>&nbsp;            }
+<i>64</i>&nbsp;        }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;        if(&quot;http://java.sun.com/xml/ns/jaxws&quot;.equals(namespaceURI)) {
+<i>67</i>&nbsp;            this.seenBindings = true;
+<i>68</i>&nbsp;            if(this.version == null) {
+<i>69</i>&nbsp;                this.version = &quot;2.0&quot;;
+<b class="nc"><i>70</i>&nbsp;            }</b>
+<b class="nc"><i>71</i>&nbsp;        }</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    }
+<b class="nc"><i>74</i>&nbsp;</b>
+<b class="nc"><i>75</i>&nbsp;    public void endDocument() throws SAXException {</b>
+<b class="nc"><i>76</i>&nbsp;        super.endDocument();</b>
+<b class="nc"><i>77</i>&nbsp;        SAXParseException e;</b>
+<i>78</i>&nbsp;        if(this.seenBindings &amp;&amp; this.version == null) {
+<i>79</i>&nbsp;            e = new SAXParseException(WsdlMessages.INTERNALIZER_VERSION_NOT_PRESENT(), this.rootTagStart);
+<i>80</i>&nbsp;            this.getErrorHandler().error(e);
+<i>81</i>&nbsp;        }
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;        if(this.version != null &amp;&amp; !VERSIONS.contains(this.version)) {</b>
+<i>84</i>&nbsp;            e = new SAXParseException(WsdlMessages.INTERNALIZER_INCORRECT_VERSION(), this.rootTagStart);
+<b class="nc"><i>85</i>&nbsp;            this.getErrorHandler().error(e);</b>
+<i>86</i>&nbsp;        }
+<b class="nc"><i>87</i>&nbsp;</b>
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<b class="nc"><i>90</i>&nbsp;    public void setDocumentLocator(Locator locator) {</b>
+<b class="nc"><i>91</i>&nbsp;        super.setDocumentLocator(locator);</b>
+<b class="nc"><i>92</i>&nbsp;        this.locator = locator;</b>
+<b class="nc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

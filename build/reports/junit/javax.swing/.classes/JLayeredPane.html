@@ -1,0 +1,489 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JLayeredPane</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.swing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JLayeredPane (javax.swing)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JLayeredPane</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 181)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">JLayeredPane$AccessibleJLayeredPane</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 183)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.swing;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Color;
+<i>9</i>&nbsp;import java.awt.Component;
+<i>10</i>&nbsp;import java.awt.Container;
+<i>11</i>&nbsp;import java.awt.Graphics;
+<i>12</i>&nbsp;import java.awt.LayoutManager;
+<i>13</i>&nbsp;import java.awt.Rectangle;
+<i>14</i>&nbsp;import java.util.ArrayList;
+<i>15</i>&nbsp;import java.util.Hashtable;
+<i>16</i>&nbsp;import javax.accessibility.Accessible;
+<i>17</i>&nbsp;import javax.accessibility.AccessibleContext;
+<i>18</i>&nbsp;import javax.accessibility.AccessibleRole;
+<i>19</i>&nbsp;import javax.swing.JComponent;
+<i>20</i>&nbsp;import javax.swing.JComponent.AccessibleJComponent;
+<i>21</i>&nbsp;import sun.awt.SunToolkit;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public class JLayeredPane extends JComponent implements Accessible {
+<i>24</i>&nbsp;    public static final Integer DEFAULT_LAYER = new Integer(0);
+<i>25</i>&nbsp;    public static final Integer PALETTE_LAYER = new Integer(100);
+<i>26</i>&nbsp;    public static final Integer MODAL_LAYER = new Integer(200);
+<i>27</i>&nbsp;    public static final Integer POPUP_LAYER = new Integer(300);
+<i>28</i>&nbsp;    public static final Integer DRAG_LAYER = new Integer(400);
+<i>29</i>&nbsp;    public static final Integer FRAME_CONTENT_LAYER = new Integer(-30000);
+<i>30</i>&nbsp;    public static final String LAYER_PROPERTY = &quot;layeredContainerLayer&quot;;
+<i>31</i>&nbsp;    private Hashtable&lt;Component, Integer&gt; componentToLayer;
+<i>32</i>&nbsp;    private boolean optimizedDrawingPossible = true;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public JLayeredPane() {
+<i>35</i>&nbsp;        this.setLayout((LayoutManager)null);
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    private void validateOptimizedDrawing() {
+<i>39</i>&nbsp;        boolean var1 = false;
+<i>40</i>&nbsp;        synchronized(this.getTreeLock()) {
+<i>41</i>&nbsp;            Component[] var4 = this.getComponents();
+<i>42</i>&nbsp;            int var5 = var4.length;
+<i>43</i>&nbsp;            int var6 = 0;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;            while(var6 &lt; var5) {
+<i>46</i>&nbsp;                Component var7 = var4[var6];
+<i>47</i>&nbsp;                Integer var3 = null;
+<i>48</i>&nbsp;                if(!SunToolkit.isInstanceOf(var7, &quot;javax.swing.JInternalFrame&quot;) &amp;&amp; (!(var7 instanceof JComponent) || (var3 = (Integer)((JComponent)var7).getClientProperty(&quot;layeredContainerLayer&quot;)) == null) || var3 != null &amp;&amp; var3.equals(FRAME_CONTENT_LAYER)) {
+<i>49</i>&nbsp;                    ++var6;
+<i>50</i>&nbsp;                } else {
+<i>51</i>&nbsp;                    var1 = true;
+<i>52</i>&nbsp;                    break;
+<i>53</i>&nbsp;                }
+<i>54</i>&nbsp;            }
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;        if(var1) {
+<i>58</i>&nbsp;            this.optimizedDrawingPossible = false;
+<i>59</i>&nbsp;        } else {
+<i>60</i>&nbsp;            this.optimizedDrawingPossible = true;
+<i>61</i>&nbsp;        }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    protected void addImpl(Component var1, Object var2, int var3) {
+<i>66</i>&nbsp;        int var4;
+<i>67</i>&nbsp;        if(var2 instanceof Integer) {
+<i>68</i>&nbsp;            var4 = ((Integer)var2).intValue();
+<i>69</i>&nbsp;            this.setLayer(var1, var4);
+<i>70</i>&nbsp;        } else {
+<i>71</i>&nbsp;            var4 = this.getLayer((Component)var1);
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;        int var5 = this.insertIndexForLayer(var4, var3);
+<i>75</i>&nbsp;        super.addImpl(var1, var2, var5);
+<i>76</i>&nbsp;        var1.validate();
+<i>77</i>&nbsp;        var1.repaint();
+<i>78</i>&nbsp;        this.validateOptimizedDrawing();
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public void remove(int var1) {
+<i>82</i>&nbsp;        Component var2 = this.getComponent(var1);
+<i>83</i>&nbsp;        super.remove(var1);
+<i>84</i>&nbsp;        if(var2 != null &amp;&amp; !(var2 instanceof JComponent)) {
+<i>85</i>&nbsp;            this.getComponentToLayer().remove(var2);
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;        this.validateOptimizedDrawing();
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public void removeAll() {
+<i>92</i>&nbsp;        Component[] var1 = this.getComponents();
+<i>93</i>&nbsp;        Hashtable var2 = this.getComponentToLayer();
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;        for(int var3 = var1.length - 1; var3 &gt;= 0; --var3) {
+<i>96</i>&nbsp;            Component var4 = var1[var3];
+<i>97</i>&nbsp;            if(var4 != null &amp;&amp; !(var4 instanceof JComponent)) {
+<i>98</i>&nbsp;                var2.remove(var4);
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;        super.removeAll();
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public boolean isOptimizedDrawingEnabled() {
+<i>106</i>&nbsp;        return this.optimizedDrawingPossible;
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    public static void putLayer(JComponent var0, int var1) {
+<i>110</i>&nbsp;        Integer var2 = new Integer(var1);
+<i>111</i>&nbsp;        var0.putClientProperty(&quot;layeredContainerLayer&quot;, var2);
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public static int getLayer(JComponent var0) {
+<i>115</i>&nbsp;        Integer var1;
+<i>116</i>&nbsp;        return (var1 = (Integer)var0.getClientProperty(&quot;layeredContainerLayer&quot;)) != null?var1.intValue():DEFAULT_LAYER.intValue();
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public static JLayeredPane getLayeredPaneAbove(Component var0) {
+<i>120</i>&nbsp;        if(var0 == null) {
+<i>121</i>&nbsp;            return null;
+<i>122</i>&nbsp;        } else {
+<i>123</i>&nbsp;            Container var1;
+<i>124</i>&nbsp;            for(var1 = var0.getParent(); var1 != null &amp;&amp; !(var1 instanceof JLayeredPane); var1 = var1.getParent()) {
+<i>125</i>&nbsp;                ;
+<i>126</i>&nbsp;            }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;            return (JLayeredPane)var1;
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public void setLayer(Component var1, int var2) {
+<i>133</i>&nbsp;        this.setLayer(var1, var2, -1);
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public void setLayer(Component var1, int var2, int var3) {
+<i>137</i>&nbsp;        Integer var4 = this.getObjectForLayer(var2);
+<i>138</i>&nbsp;        if(var2 == this.getLayer((Component)var1) &amp;&amp; var3 == this.getPosition(var1)) {
+<i>139</i>&nbsp;            this.repaint(var1.getBounds());
+<i>140</i>&nbsp;        } else {
+<i>141</i>&nbsp;            if(var1 instanceof JComponent) {
+<i>142</i>&nbsp;                ((JComponent)var1).putClientProperty(&quot;layeredContainerLayer&quot;, var4);
+<b class="nc"><i>143</i>&nbsp;            } else {</b>
+<i>144</i>&nbsp;                this.getComponentToLayer().put(var1, var4);
+<b class="nc"><i>145</i>&nbsp;            }</b>
+<i>146</i>&nbsp;
+<b class="nc"><i>147</i>&nbsp;            if(var1.getParent() != null &amp;&amp; var1.getParent() == this) {</b>
+<i>148</i>&nbsp;                int var5 = this.insertIndexForLayer(var1, var2, var3);
+<b class="nc"><i>149</i>&nbsp;                this.setComponentZOrder(var1, var5);</b>
+<i>150</i>&nbsp;                this.repaint(var1.getBounds());
+<b class="nc"><i>151</i>&nbsp;            } else {</b>
+<i>152</i>&nbsp;                this.repaint(var1.getBounds());
+<i>153</i>&nbsp;            }
+<i>154</i>&nbsp;        }
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    public int getLayer(Component var1) {
+<b class="nc"><i>158</i>&nbsp;        Integer var2;</b>
+<i>159</i>&nbsp;        if(var1 instanceof JComponent) {
+<i>160</i>&nbsp;            var2 = (Integer)((JComponent)var1).getClientProperty(&quot;layeredContainerLayer&quot;);
+<i>161</i>&nbsp;        } else {
+<i>162</i>&nbsp;            var2 = (Integer)this.getComponentToLayer().get(var1);
+<i>163</i>&nbsp;        }
+<b class="nc"><i>164</i>&nbsp;</b>
+<i>165</i>&nbsp;        return var2 == null?DEFAULT_LAYER.intValue():var2.intValue();
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    public int getIndexOf(Component var1) {
+<i>169</i>&nbsp;        int var3 = this.getComponentCount();
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;        for(int var2 = 0; var2 &lt; var3; ++var2) {</b>
+<b class="nc"><i>172</i>&nbsp;            if(var1 == this.getComponent(var2)) {</b>
+<i>173</i>&nbsp;                return var2;
+<i>174</i>&nbsp;            }
+<i>175</i>&nbsp;        }
+<b class="nc"><i>176</i>&nbsp;</b>
+<b class="nc"><i>177</i>&nbsp;        return -1;</b>
+<b class="nc"><i>178</i>&nbsp;    }</b>
+<i>179</i>&nbsp;
+<b class="nc"><i>180</i>&nbsp;    public void moveToFront(Component var1) {</b>
+<b class="nc"><i>181</i>&nbsp;        this.setPosition(var1, 0);</b>
+<b class="nc"><i>182</i>&nbsp;    }</b>
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    public void moveToBack(Component var1) {
+<i>185</i>&nbsp;        this.setPosition(var1, -1);
+<i>186</i>&nbsp;    }
+<b class="nc"><i>187</i>&nbsp;</b>
+<b class="nc"><i>188</i>&nbsp;    public void setPosition(Component var1, int var2) {</b>
+<b class="nc"><i>189</i>&nbsp;        this.setLayer(var1, this.getLayer((Component)var1), var2);</b>
+<b class="nc"><i>190</i>&nbsp;    }</b>
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public int getPosition(Component var1) {
+<b class="nc"><i>193</i>&nbsp;        int var6 = 0;</b>
+<i>194</i>&nbsp;        this.getComponentCount();
+<b class="nc"><i>195</i>&nbsp;        int var5 = this.getIndexOf(var1);</b>
+<b class="nc"><i>196</i>&nbsp;        if(var5 == -1) {</b>
+<i>197</i>&nbsp;            return -1;
+<b class="nc"><i>198</i>&nbsp;        } else {</b>
+<i>199</i>&nbsp;            int var3 = this.getLayer((Component)var1);
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;            for(int var2 = var5 - 1; var2 &gt;= 0; --var2) {
+<b class="nc"><i>202</i>&nbsp;                int var4 = this.getLayer((Component)this.getComponent(var2));</b>
+<i>203</i>&nbsp;                if(var4 != var3) {
+<i>204</i>&nbsp;                    return var6;
+<b class="nc"><i>205</i>&nbsp;                }</b>
+<b class="nc"><i>206</i>&nbsp;</b>
+<b class="nc"><i>207</i>&nbsp;                ++var6;</b>
+<i>208</i>&nbsp;            }
+<b class="nc"><i>209</i>&nbsp;</b>
+<i>210</i>&nbsp;            return var6;
+<b class="nc"><i>211</i>&nbsp;        }</b>
+<b class="nc"><i>212</i>&nbsp;    }</b>
+<b class="nc"><i>213</i>&nbsp;</b>
+<b class="nc"><i>214</i>&nbsp;    public int highestLayer() {</b>
+<b class="nc"><i>215</i>&nbsp;        return this.getComponentCount() &gt; 0?this.getLayer((Component)this.getComponent(0)):0;</b>
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    public int lowestLayer() {
+<i>219</i>&nbsp;        int var1 = this.getComponentCount();
+<i>220</i>&nbsp;        return var1 &gt; 0?this.getLayer((Component)this.getComponent(var1 - 1)):0;
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    public int getComponentCountInLayer(int var1) {
+<i>224</i>&nbsp;        int var5 = 0;
+<i>225</i>&nbsp;        int var3 = this.getComponentCount();
+<b class="nc"><i>226</i>&nbsp;</b>
+<b class="nc"><i>227</i>&nbsp;        for(int var2 = 0; var2 &lt; var3; ++var2) {</b>
+<b class="nc"><i>228</i>&nbsp;            int var4 = this.getLayer((Component)this.getComponent(var2));</b>
+<b class="nc"><i>229</i>&nbsp;            if(var4 == var1) {</b>
+<i>230</i>&nbsp;                ++var5;
+<b class="nc"><i>231</i>&nbsp;            } else if(var5 &gt; 0 || var4 &lt; var1) {</b>
+<i>232</i>&nbsp;                break;
+<i>233</i>&nbsp;            }
+<i>234</i>&nbsp;        }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;        return var5;
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    public Component[] getComponentsInLayer(int var1) {
+<b class="nc"><i>240</i>&nbsp;        int var5 = 0;</b>
+<b class="nc"><i>241</i>&nbsp;        Component[] var6 = new Component[this.getComponentCountInLayer(var1)];</b>
+<b class="nc"><i>242</i>&nbsp;        int var3 = this.getComponentCount();</b>
+<b class="nc"><i>243</i>&nbsp;</b>
+<b class="nc"><i>244</i>&nbsp;        for(int var2 = 0; var2 &lt; var3; ++var2) {</b>
+<b class="nc"><i>245</i>&nbsp;            int var4 = this.getLayer((Component)this.getComponent(var2));</b>
+<i>246</i>&nbsp;            if(var4 == var1) {
+<i>247</i>&nbsp;                var6[var5++] = this.getComponent(var2);
+<b class="nc"><i>248</i>&nbsp;            } else if(var5 &gt; 0 || var4 &lt; var1) {</b>
+<i>249</i>&nbsp;                break;
+<i>250</i>&nbsp;            }
+<i>251</i>&nbsp;        }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;        return var6;
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    public void paint(Graphics var1) {
+<i>257</i>&nbsp;        if(this.isOpaque()) {
+<i>258</i>&nbsp;            Rectangle var2 = var1.getClipBounds();
+<b class="nc"><i>259</i>&nbsp;            Color var3 = this.getBackground();</b>
+<i>260</i>&nbsp;            if(var3 == null) {
+<i>261</i>&nbsp;                var3 = Color.lightGray;
+<i>262</i>&nbsp;            }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;            var1.setColor(var3);
+<i>265</i>&nbsp;            if(var2 != null) {
+<i>266</i>&nbsp;                var1.fillRect(var2.x, var2.y, var2.width, var2.height);
+<i>267</i>&nbsp;            } else {
+<i>268</i>&nbsp;                var1.fillRect(0, 0, this.getWidth(), this.getHeight());
+<i>269</i>&nbsp;            }
+<i>270</i>&nbsp;        }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;        super.paint(var1);
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    protected Hashtable&lt;Component, Integer&gt; getComponentToLayer() {
+<i>276</i>&nbsp;        if(this.componentToLayer == null) {
+<i>277</i>&nbsp;            this.componentToLayer = new Hashtable(4);
+<i>278</i>&nbsp;        }
+<b class="nc"><i>279</i>&nbsp;</b>
+<b class="nc"><i>280</i>&nbsp;        return this.componentToLayer;</b>
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    protected Integer getObjectForLayer(int var1) {
+<i>284</i>&nbsp;        Integer var2;
+<i>285</i>&nbsp;        switch(var1) {
+<i>286</i>&nbsp;        case 0:
+<i>287</i>&nbsp;            var2 = DEFAULT_LAYER;
+<i>288</i>&nbsp;            break;
+<i>289</i>&nbsp;        case 100:
+<i>290</i>&nbsp;            var2 = PALETTE_LAYER;
+<i>291</i>&nbsp;            break;
+<b class="nc"><i>292</i>&nbsp;        case 200:</b>
+<b class="nc"><i>293</i>&nbsp;            var2 = MODAL_LAYER;</b>
+<b class="nc"><i>294</i>&nbsp;            break;</b>
+<i>295</i>&nbsp;        case 300:
+<i>296</i>&nbsp;            var2 = POPUP_LAYER;
+<i>297</i>&nbsp;            break;
+<i>298</i>&nbsp;        case 400:
+<i>299</i>&nbsp;            var2 = DRAG_LAYER;
+<i>300</i>&nbsp;            break;
+<i>301</i>&nbsp;        default:
+<i>302</i>&nbsp;            var2 = new Integer(var1);
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;        return var2;
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    protected int insertIndexForLayer(int var1, int var2) {
+<i>309</i>&nbsp;        return this.insertIndexForLayer((Component)null, var1, var2);
+<b class="nc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<b class="nc"><i>312</i>&nbsp;    private int insertIndexForLayer(Component var1, int var2, int var3) {</b>
+<b class="nc"><i>313</i>&nbsp;        int var7 = -1;</b>
+<b class="nc"><i>314</i>&nbsp;        int var8 = -1;</b>
+<b class="nc"><i>315</i>&nbsp;        int var9 = this.getComponentCount();</b>
+<i>316</i>&nbsp;        ArrayList var10 = new ArrayList(var9);
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;        for(int var11 = 0; var11 &lt; var9; ++var11) {
+<i>319</i>&nbsp;            if(this.getComponent(var11) != var1) {
+<i>320</i>&nbsp;                var10.add(this.getComponent(var11));
+<i>321</i>&nbsp;            }
+<i>322</i>&nbsp;        }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;        int var5 = var10.size();
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;        for(int var4 = 0; var4 &lt; var5; ++var4) {
+<b class="nc"><i>327</i>&nbsp;            int var6 = this.getLayer((Component)((Component)var10.get(var4)));</b>
+<i>328</i>&nbsp;            if(var7 == -1 &amp;&amp; var6 == var2) {
+<i>329</i>&nbsp;                var7 = var4;
+<i>330</i>&nbsp;            }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;            if(var6 &lt; var2) {
+<i>333</i>&nbsp;                if(var4 == 0) {
+<i>334</i>&nbsp;                    var7 = 0;
+<i>335</i>&nbsp;                    var8 = 0;
+<i>336</i>&nbsp;                } else {
+<i>337</i>&nbsp;                    var8 = var4;
+<i>338</i>&nbsp;                }
+<i>339</i>&nbsp;                break;
+<i>340</i>&nbsp;            }
+<i>341</i>&nbsp;        }
+<b class="nc"><i>342</i>&nbsp;</b>
+<i>343</i>&nbsp;        if(var7 == -1 &amp;&amp; var8 == -1) {
+<b class="nc"><i>344</i>&nbsp;            return var5;</b>
+<b class="nc"><i>345</i>&nbsp;        } else {</b>
+<i>346</i>&nbsp;            if(var7 != -1 &amp;&amp; var8 == -1) {
+<i>347</i>&nbsp;                var8 = var5;
+<i>348</i>&nbsp;            }
+<i>349</i>&nbsp;
+<b class="nc"><i>350</i>&nbsp;            if(var8 != -1 &amp;&amp; var7 == -1) {</b>
+<b class="nc"><i>351</i>&nbsp;                var7 = var8;</b>
+<i>352</i>&nbsp;            }
+<b class="nc"><i>353</i>&nbsp;</b>
+<i>354</i>&nbsp;            return var3 == -1?var8:(var3 &gt; -1 &amp;&amp; var7 + var3 &lt;= var8?var7 + var3:var8);
+<b class="nc"><i>355</i>&nbsp;        }</b>
+<b class="nc"><i>356</i>&nbsp;    }</b>
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    protected String paramString() {
+<i>359</i>&nbsp;        String var1 = this.optimizedDrawingPossible?&quot;true&quot;:&quot;false&quot;;
+<b class="nc"><i>360</i>&nbsp;        return super.paramString() + &quot;,optimizedDrawingPossible=&quot; + var1;</b>
+<i>361</i>&nbsp;    }
+<b class="nc"><i>362</i>&nbsp;</b>
+<b class="nc"><i>363</i>&nbsp;    public AccessibleContext getAccessibleContext() {</b>
+<i>364</i>&nbsp;        if(this.accessibleContext == null) {
+<i>365</i>&nbsp;            this.accessibleContext = new JLayeredPane.AccessibleJLayeredPane();
+<i>366</i>&nbsp;        }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;        return this.accessibleContext;
+<i>369</i>&nbsp;    }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    protected class AccessibleJLayeredPane extends AccessibleJComponent {
+<i>372</i>&nbsp;        protected AccessibleJLayeredPane() {
+<i>373</i>&nbsp;            super(JLayeredPane.this);
+<b class="nc"><i>374</i>&nbsp;        }</b>
+<b class="nc"><i>375</i>&nbsp;</b>
+<i>376</i>&nbsp;        public AccessibleRole getAccessibleRole() {
+<b class="nc"><i>377</i>&nbsp;            return AccessibleRole.LAYERED_PANE;</b>
+<i>378</i>&nbsp;        }
+<b class="nc"><i>379</i>&nbsp;    }</b>
+<b class="nc"><i>380</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

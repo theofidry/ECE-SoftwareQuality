@@ -1,0 +1,551 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PKCS9Attribute</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.pkcs</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PKCS9Attribute (sun.security.pkcs)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PKCS9Attribute</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 243)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.pkcs;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.OutputStream;
+<i>10</i>&nbsp;import java.security.cert.CertificateException;
+<i>11</i>&nbsp;import java.util.Date;
+<i>12</i>&nbsp;import java.util.Hashtable;
+<i>13</i>&nbsp;import java.util.Locale;
+<i>14</i>&nbsp;import sun.misc.HexDumpEncoder;
+<i>15</i>&nbsp;import sun.security.pkcs.SignerInfo;
+<i>16</i>&nbsp;import sun.security.pkcs.SigningCertificateInfo;
+<i>17</i>&nbsp;import sun.security.util.Debug;
+<i>18</i>&nbsp;import sun.security.util.DerEncoder;
+<i>19</i>&nbsp;import sun.security.util.DerInputStream;
+<i>20</i>&nbsp;import sun.security.util.DerOutputStream;
+<i>21</i>&nbsp;import sun.security.util.DerValue;
+<i>22</i>&nbsp;import sun.security.util.ObjectIdentifier;
+<i>23</i>&nbsp;import sun.security.x509.CertificateExtensions;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;public class PKCS9Attribute implements DerEncoder {
+<i>26</i>&nbsp;    private static final Debug debug = Debug.getInstance(&quot;jar&quot;);
+<i>27</i>&nbsp;    static final ObjectIdentifier[] PKCS9_OIDS = new ObjectIdentifier[18];
+<i>28</i>&nbsp;    private static final Class&lt;?&gt; BYTE_ARRAY_CLASS;
+<i>29</i>&nbsp;    public static final ObjectIdentifier EMAIL_ADDRESS_OID;
+<i>30</i>&nbsp;    public static final ObjectIdentifier UNSTRUCTURED_NAME_OID;
+<i>31</i>&nbsp;    public static final ObjectIdentifier CONTENT_TYPE_OID;
+<i>32</i>&nbsp;    public static final ObjectIdentifier MESSAGE_DIGEST_OID;
+<i>33</i>&nbsp;    public static final ObjectIdentifier SIGNING_TIME_OID;
+<i>34</i>&nbsp;    public static final ObjectIdentifier COUNTERSIGNATURE_OID;
+<i>35</i>&nbsp;    public static final ObjectIdentifier CHALLENGE_PASSWORD_OID;
+<i>36</i>&nbsp;    public static final ObjectIdentifier UNSTRUCTURED_ADDRESS_OID;
+<i>37</i>&nbsp;    public static final ObjectIdentifier EXTENDED_CERTIFICATE_ATTRIBUTES_OID;
+<i>38</i>&nbsp;    public static final ObjectIdentifier ISSUER_SERIALNUMBER_OID;
+<i>39</i>&nbsp;    public static final ObjectIdentifier EXTENSION_REQUEST_OID;
+<i>40</i>&nbsp;    public static final ObjectIdentifier SMIME_CAPABILITY_OID;
+<i>41</i>&nbsp;    public static final ObjectIdentifier SIGNING_CERTIFICATE_OID;
+<i>42</i>&nbsp;    public static final ObjectIdentifier SIGNATURE_TIMESTAMP_TOKEN_OID;
+<i>43</i>&nbsp;    public static final String EMAIL_ADDRESS_STR = &quot;EmailAddress&quot;;
+<i>44</i>&nbsp;    public static final String UNSTRUCTURED_NAME_STR = &quot;UnstructuredName&quot;;
+<i>45</i>&nbsp;    public static final String CONTENT_TYPE_STR = &quot;ContentType&quot;;
+<i>46</i>&nbsp;    public static final String MESSAGE_DIGEST_STR = &quot;MessageDigest&quot;;
+<i>47</i>&nbsp;    public static final String SIGNING_TIME_STR = &quot;SigningTime&quot;;
+<i>48</i>&nbsp;    public static final String COUNTERSIGNATURE_STR = &quot;Countersignature&quot;;
+<i>49</i>&nbsp;    public static final String CHALLENGE_PASSWORD_STR = &quot;ChallengePassword&quot;;
+<i>50</i>&nbsp;    public static final String UNSTRUCTURED_ADDRESS_STR = &quot;UnstructuredAddress&quot;;
+<i>51</i>&nbsp;    public static final String EXTENDED_CERTIFICATE_ATTRIBUTES_STR = &quot;ExtendedCertificateAttributes&quot;;
+<i>52</i>&nbsp;    public static final String ISSUER_SERIALNUMBER_STR = &quot;IssuerAndSerialNumber&quot;;
+<i>53</i>&nbsp;    private static final String RSA_PROPRIETARY_STR = &quot;RSAProprietary&quot;;
+<i>54</i>&nbsp;    private static final String SMIME_SIGNING_DESC_STR = &quot;SMIMESigningDesc&quot;;
+<i>55</i>&nbsp;    public static final String EXTENSION_REQUEST_STR = &quot;ExtensionRequest&quot;;
+<i>56</i>&nbsp;    public static final String SMIME_CAPABILITY_STR = &quot;SMIMECapability&quot;;
+<i>57</i>&nbsp;    public static final String SIGNING_CERTIFICATE_STR = &quot;SigningCertificate&quot;;
+<i>58</i>&nbsp;    public static final String SIGNATURE_TIMESTAMP_TOKEN_STR = &quot;SignatureTimestampToken&quot;;
+<i>59</i>&nbsp;    private static final Hashtable&lt;String, ObjectIdentifier&gt; NAME_OID_TABLE;
+<i>60</i>&nbsp;    private static final Hashtable&lt;ObjectIdentifier, String&gt; OID_NAME_TABLE;
+<i>61</i>&nbsp;    private static final Byte[][] PKCS9_VALUE_TAGS;
+<i>62</i>&nbsp;    private static final Class[] VALUE_CLASSES;
+<i>63</i>&nbsp;    private static final boolean[] SINGLE_VALUED;
+<i>64</i>&nbsp;    private ObjectIdentifier oid;
+<i>65</i>&nbsp;    private int index;
+<i>66</i>&nbsp;    private Object value;
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public PKCS9Attribute(ObjectIdentifier var1, Object var2) throws IllegalArgumentException {
+<i>69</i>&nbsp;        this.init(var1, var2);
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public PKCS9Attribute(String var1, Object var2) throws IllegalArgumentException {
+<i>73</i>&nbsp;        ObjectIdentifier var3 = getOID(var1);
+<i>74</i>&nbsp;        if(var3 == null) {
+<i>75</i>&nbsp;            throw new IllegalArgumentException(&quot;Unrecognized attribute name &quot; + var1 + &quot; constructing PKCS9Attribute.&quot;);
+<i>76</i>&nbsp;        } else {
+<i>77</i>&nbsp;            this.init(var3, var2);
+<i>78</i>&nbsp;        }
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    private void init(ObjectIdentifier var1, Object var2) throws IllegalArgumentException {
+<i>82</i>&nbsp;        this.oid = var1;
+<i>83</i>&nbsp;        this.index = indexOf(var1, PKCS9_OIDS, 1);
+<i>84</i>&nbsp;        Class var3 = this.index == -1?BYTE_ARRAY_CLASS:VALUE_CLASSES[this.index];
+<i>85</i>&nbsp;        if(!var3.isInstance(var2)) {
+<i>86</i>&nbsp;            throw new IllegalArgumentException(&quot;Wrong value class  for attribute &quot; + var1 + &quot; constructing PKCS9Attribute; was &quot; + var2.getClass().toString() + &quot;, should be &quot; + var3.toString());
+<i>87</i>&nbsp;        } else {
+<i>88</i>&nbsp;            this.value = var2;
+<i>89</i>&nbsp;        }
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public PKCS9Attribute(DerValue var1) throws IOException {
+<i>93</i>&nbsp;        DerInputStream var2 = new DerInputStream(var1.toByteArray());
+<i>94</i>&nbsp;        DerValue[] var3 = var2.getSequence(2);
+<i>95</i>&nbsp;        if(var2.available() != 0) {
+<i>96</i>&nbsp;            throw new IOException(&quot;Excess data parsing PKCS9Attribute&quot;);
+<i>97</i>&nbsp;        } else if(var3.length != 2) {
+<i>98</i>&nbsp;            throw new IOException(&quot;PKCS9Attribute doesn\&#39;t have two components&quot;);
+<i>99</i>&nbsp;        } else {
+<i>100</i>&nbsp;            this.oid = var3[0].getOID();
+<i>101</i>&nbsp;            byte[] var4 = var3[1].toByteArray();
+<i>102</i>&nbsp;            DerValue[] var5 = (new DerInputStream(var4)).getSet(1);
+<i>103</i>&nbsp;            this.index = indexOf(this.oid, PKCS9_OIDS, 1);
+<i>104</i>&nbsp;            if(this.index == -1) {
+<i>105</i>&nbsp;                if(debug != null) {
+<i>106</i>&nbsp;                    debug.println(&quot;Unsupported signer attribute: &quot; + this.oid);
+<i>107</i>&nbsp;                }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;                this.value = var4;
+<i>110</i>&nbsp;            } else {
+<i>111</i>&nbsp;                if(SINGLE_VALUED[this.index] &amp;&amp; var5.length &gt; 1) {
+<i>112</i>&nbsp;                    this.throwSingleValuedException();
+<i>113</i>&nbsp;                }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;                for(int var7 = 0; var7 &lt; var5.length; ++var7) {
+<i>116</i>&nbsp;                    Byte var6 = new Byte(var5[var7].tag);
+<i>117</i>&nbsp;                    if(indexOf(var6, PKCS9_VALUE_TAGS[this.index], 0) == -1) {
+<i>118</i>&nbsp;                        this.throwTagException(var6);
+<i>119</i>&nbsp;                    }
+<i>120</i>&nbsp;                }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;                int var8;
+<i>123</i>&nbsp;                switch(this.index) {
+<i>124</i>&nbsp;                case 1:
+<i>125</i>&nbsp;                case 2:
+<i>126</i>&nbsp;                case 8:
+<i>127</i>&nbsp;                    String[] var9 = new String[var5.length];
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;                    for(var8 = 0; var8 &lt; var5.length; ++var8) {
+<i>130</i>&nbsp;                        var9[var8] = var5[var8].getAsString();
+<i>131</i>&nbsp;                    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;                    this.value = var9;
+<i>134</i>&nbsp;                    break;
+<i>135</i>&nbsp;                case 3:
+<i>136</i>&nbsp;                    this.value = var5[0].getOID();
+<i>137</i>&nbsp;                    break;
+<i>138</i>&nbsp;                case 4:
+<i>139</i>&nbsp;                    this.value = var5[0].getOctetString();
+<i>140</i>&nbsp;                    break;
+<i>141</i>&nbsp;                case 5:
+<i>142</i>&nbsp;                    this.value = (new DerInputStream(var5[0].toByteArray())).getUTCTime();
+<i>143</i>&nbsp;                    break;
+<i>144</i>&nbsp;                case 6:
+<i>145</i>&nbsp;                    SignerInfo[] var10 = new SignerInfo[var5.length];
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;                    for(var8 = 0; var8 &lt; var5.length; ++var8) {
+<i>148</i>&nbsp;                        var10[var8] = new SignerInfo(var5[var8].toDerInputStream());
+<i>149</i>&nbsp;                    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;                    this.value = var10;
+<i>152</i>&nbsp;                    break;
+<i>153</i>&nbsp;                case 7:
+<i>154</i>&nbsp;                    this.value = var5[0].getAsString();
+<i>155</i>&nbsp;                    break;
+<i>156</i>&nbsp;                case 9:
+<i>157</i>&nbsp;                    throw new IOException(&quot;PKCS9 extended-certificate attribute not supported.&quot;);
+<i>158</i>&nbsp;                case 10:
+<i>159</i>&nbsp;                    throw new IOException(&quot;PKCS9 IssuerAndSerialNumberattribute not supported.&quot;);
+<i>160</i>&nbsp;                case 11:
+<i>161</i>&nbsp;                case 12:
+<i>162</i>&nbsp;                    throw new IOException(&quot;PKCS9 RSA DSI attributes11 and 12, not supported.&quot;);
+<b class="nc"><i>163</i>&nbsp;                case 13:</b>
+<i>164</i>&nbsp;                    throw new IOException(&quot;PKCS9 attribute #13 not supported.&quot;);
+<i>165</i>&nbsp;                case 14:
+<i>166</i>&nbsp;                    this.value = new CertificateExtensions(new DerInputStream(var5[0].toByteArray()));
+<i>167</i>&nbsp;                    break;
+<b class="nc"><i>168</i>&nbsp;                case 15:</b>
+<i>169</i>&nbsp;                    throw new IOException(&quot;PKCS9 SMIMECapability attribute not supported.&quot;);
+<i>170</i>&nbsp;                case 16:
+<b class="nc"><i>171</i>&nbsp;                    this.value = new SigningCertificateInfo(var5[0].toByteArray());</b>
+<b class="nc"><i>172</i>&nbsp;                    break;</b>
+<i>173</i>&nbsp;                case 17:
+<i>174</i>&nbsp;                    this.value = var5[0].toByteArray();
+<i>175</i>&nbsp;                }
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;            }</b>
+<i>178</i>&nbsp;        }
+<b class="nc"><i>179</i>&nbsp;    }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    public void derEncode(OutputStream var1) throws IOException {
+<i>182</i>&nbsp;        DerOutputStream var2 = new DerOutputStream();
+<i>183</i>&nbsp;        var2.putOID(this.oid);
+<b class="nc"><i>184</i>&nbsp;        DerOutputStream var3;</b>
+<b class="nc"><i>185</i>&nbsp;        int var5;</b>
+<b class="nc"><i>186</i>&nbsp;        String[] var7;</b>
+<b class="nc"><i>187</i>&nbsp;        DerOutputStream[] var8;</b>
+<b class="nc"><i>188</i>&nbsp;        switch(this.index) {</b>
+<b class="nc"><i>189</i>&nbsp;        case -1:</b>
+<b class="nc"><i>190</i>&nbsp;            var2.write((byte[])((byte[])this.value));</b>
+<b class="nc"><i>191</i>&nbsp;        case 0:</b>
+<b class="nc"><i>192</i>&nbsp;        default:</b>
+<i>193</i>&nbsp;            break;
+<b class="nc"><i>194</i>&nbsp;        case 1:</b>
+<i>195</i>&nbsp;        case 2:
+<i>196</i>&nbsp;            var7 = (String[])((String[])this.value);
+<b class="nc"><i>197</i>&nbsp;            var8 = new DerOutputStream[var7.length];</b>
+<b class="nc"><i>198</i>&nbsp;</b>
+<b class="nc"><i>199</i>&nbsp;            for(var5 = 0; var5 &lt; var7.length; ++var5) {</b>
+<b class="nc"><i>200</i>&nbsp;                var8[var5] = new DerOutputStream();</b>
+<i>201</i>&nbsp;                var8[var5].putIA5String(var7[var5]);
+<i>202</i>&nbsp;            }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;            var2.putOrderedSetOf((byte)49, var8);
+<i>205</i>&nbsp;            break;
+<i>206</i>&nbsp;        case 3:
+<i>207</i>&nbsp;            var3 = new DerOutputStream();
+<i>208</i>&nbsp;            var3.putOID((ObjectIdentifier)this.value);
+<i>209</i>&nbsp;            var2.write((byte)49, var3.toByteArray());
+<i>210</i>&nbsp;            break;
+<i>211</i>&nbsp;        case 4:
+<i>212</i>&nbsp;            var3 = new DerOutputStream();
+<i>213</i>&nbsp;            var3.putOctetString((byte[])((byte[])this.value));
+<i>214</i>&nbsp;            var2.write((byte)49, var3.toByteArray());
+<i>215</i>&nbsp;            break;
+<i>216</i>&nbsp;        case 5:
+<i>217</i>&nbsp;            var3 = new DerOutputStream();
+<i>218</i>&nbsp;            var3.putUTCTime((Date)this.value);
+<i>219</i>&nbsp;            var2.write((byte)49, var3.toByteArray());
+<i>220</i>&nbsp;            break;
+<i>221</i>&nbsp;        case 6:
+<i>222</i>&nbsp;            var2.putOrderedSetOf((byte)49, (DerEncoder[])((DerEncoder[])this.value));
+<i>223</i>&nbsp;            break;
+<i>224</i>&nbsp;        case 7:
+<i>225</i>&nbsp;            var3 = new DerOutputStream();
+<i>226</i>&nbsp;            var3.putPrintableString((String)this.value);
+<i>227</i>&nbsp;            var2.write((byte)49, var3.toByteArray());
+<b class="nc"><i>228</i>&nbsp;            break;</b>
+<i>229</i>&nbsp;        case 8:
+<i>230</i>&nbsp;            var7 = (String[])((String[])this.value);
+<b class="nc"><i>231</i>&nbsp;            var8 = new DerOutputStream[var7.length];</b>
+<b class="nc"><i>232</i>&nbsp;</b>
+<b class="nc"><i>233</i>&nbsp;            for(var5 = 0; var5 &lt; var7.length; ++var5) {</b>
+<b class="nc"><i>234</i>&nbsp;                var8[var5] = new DerOutputStream();</b>
+<b class="nc"><i>235</i>&nbsp;                var8[var5].putPrintableString(var7[var5]);</b>
+<b class="nc"><i>236</i>&nbsp;            }</b>
+<b class="nc"><i>237</i>&nbsp;</b>
+<b class="nc"><i>238</i>&nbsp;            var2.putOrderedSetOf((byte)49, var8);</b>
+<b class="nc"><i>239</i>&nbsp;            break;</b>
+<b class="nc"><i>240</i>&nbsp;        case 9:</b>
+<b class="nc"><i>241</i>&nbsp;            throw new IOException(&quot;PKCS9 extended-certificate attribute not supported.&quot;);</b>
+<b class="nc"><i>242</i>&nbsp;        case 10:</b>
+<b class="nc"><i>243</i>&nbsp;            throw new IOException(&quot;PKCS9 IssuerAndSerialNumberattribute not supported.&quot;);</b>
+<b class="nc"><i>244</i>&nbsp;        case 11:</b>
+<b class="nc"><i>245</i>&nbsp;        case 12:</b>
+<b class="nc"><i>246</i>&nbsp;            throw new IOException(&quot;PKCS9 RSA DSI attributes11 and 12, not supported.&quot;);</b>
+<b class="nc"><i>247</i>&nbsp;        case 13:</b>
+<i>248</i>&nbsp;            throw new IOException(&quot;PKCS9 attribute #13 not supported.&quot;);
+<i>249</i>&nbsp;        case 14:
+<i>250</i>&nbsp;            var3 = new DerOutputStream();
+<i>251</i>&nbsp;            CertificateExtensions var4 = (CertificateExtensions)this.value;
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;            try {
+<b class="nc"><i>254</i>&nbsp;                var4.encode(var3, true);</b>
+<i>255</i>&nbsp;            } catch (CertificateException var6) {
+<b class="nc"><i>256</i>&nbsp;                throw new IOException(var6.toString());</b>
+<b class="nc"><i>257</i>&nbsp;            }</b>
+<b class="nc"><i>258</i>&nbsp;</b>
+<b class="nc"><i>259</i>&nbsp;            var2.write((byte)49, var3.toByteArray());</b>
+<b class="nc"><i>260</i>&nbsp;            break;</b>
+<b class="nc"><i>261</i>&nbsp;        case 15:</b>
+<b class="nc"><i>262</i>&nbsp;            throw new IOException(&quot;PKCS9 attribute #15 not supported.&quot;);</b>
+<b class="nc"><i>263</i>&nbsp;        case 16:</b>
+<b class="nc"><i>264</i>&nbsp;            throw new IOException(&quot;PKCS9 SigningCertificate attribute not supported.&quot;);</b>
+<b class="nc"><i>265</i>&nbsp;        case 17:</b>
+<b class="nc"><i>266</i>&nbsp;            var2.write((byte)49, (byte[])((byte[])this.value));</b>
+<b class="nc"><i>267</i>&nbsp;        }</b>
+<b class="nc"><i>268</i>&nbsp;</b>
+<b class="nc"><i>269</i>&nbsp;        var3 = new DerOutputStream();</b>
+<b class="nc"><i>270</i>&nbsp;        var3.write((byte)48, var2.toByteArray());</b>
+<b class="nc"><i>271</i>&nbsp;        var1.write(var3.toByteArray());</b>
+<b class="nc"><i>272</i>&nbsp;    }</b>
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    public boolean isKnown() {
+<i>275</i>&nbsp;        return this.index != -1;
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    public Object getValue() {
+<i>279</i>&nbsp;        return this.value;
+<b class="nc"><i>280</i>&nbsp;    }</b>
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    public boolean isSingleValued() {
+<i>283</i>&nbsp;        return this.index == -1 || SINGLE_VALUED[this.index];
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    public ObjectIdentifier getOID() {
+<i>287</i>&nbsp;        return this.oid;
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    public String getName() {
+<i>291</i>&nbsp;        return this.index == -1?this.oid.toString():(String)OID_NAME_TABLE.get(PKCS9_OIDS[this.index]);
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    public static ObjectIdentifier getOID(String var0) {
+<i>295</i>&nbsp;        return (ObjectIdentifier)NAME_OID_TABLE.get(var0.toLowerCase(Locale.ENGLISH));
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    public static String getName(ObjectIdentifier var0) {
+<i>299</i>&nbsp;        return (String)OID_NAME_TABLE.get(var0);
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    public String toString() {
+<b class="nc"><i>303</i>&nbsp;        StringBuffer var1 = new StringBuffer(100);</b>
+<i>304</i>&nbsp;        var1.append(&quot;[&quot;);
+<i>305</i>&nbsp;        if(this.index == -1) {
+<i>306</i>&nbsp;            var1.append(this.oid.toString());
+<b class="nc"><i>307</i>&nbsp;        } else {</b>
+<i>308</i>&nbsp;            var1.append((String)OID_NAME_TABLE.get(PKCS9_OIDS[this.index]));
+<b class="nc"><i>309</i>&nbsp;        }</b>
+<b class="nc"><i>310</i>&nbsp;</b>
+<b class="nc"><i>311</i>&nbsp;        var1.append(&quot;: &quot;);</b>
+<b class="nc"><i>312</i>&nbsp;        if(this.index != -1 &amp;&amp; !SINGLE_VALUED[this.index]) {</b>
+<i>313</i>&nbsp;            boolean var5 = true;
+<b class="nc"><i>314</i>&nbsp;            Object[] var3 = (Object[])((Object[])this.value);</b>
+<b class="nc"><i>315</i>&nbsp;</b>
+<b class="nc"><i>316</i>&nbsp;            for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<i>317</i>&nbsp;                if(var5) {
+<b class="nc"><i>318</i>&nbsp;                    var5 = false;</b>
+<i>319</i>&nbsp;                } else {
+<b class="nc"><i>320</i>&nbsp;                    var1.append(&quot;, &quot;);</b>
+<b class="nc"><i>321</i>&nbsp;                }</b>
+<b class="nc"><i>322</i>&nbsp;</b>
+<b class="nc"><i>323</i>&nbsp;                var1.append(var3[var4].toString());</b>
+<b class="nc"><i>324</i>&nbsp;            }</b>
+<b class="nc"><i>325</i>&nbsp;</b>
+<b class="nc"><i>326</i>&nbsp;            return var1.toString();</b>
+<i>327</i>&nbsp;        } else {
+<b class="nc"><i>328</i>&nbsp;            if(this.value instanceof byte[]) {</b>
+<b class="nc"><i>329</i>&nbsp;                HexDumpEncoder var2 = new HexDumpEncoder();</b>
+<b class="nc"><i>330</i>&nbsp;                var1.append(var2.encodeBuffer((byte[])((byte[])this.value)));</b>
+<b class="nc"><i>331</i>&nbsp;            } else {</b>
+<b class="nc"><i>332</i>&nbsp;                var1.append(this.value.toString());</b>
+<b class="nc"><i>333</i>&nbsp;            }</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;            var1.append(&quot;]&quot;);
+<i>336</i>&nbsp;            return var1.toString();
+<i>337</i>&nbsp;        }
+<i>338</i>&nbsp;    }
+<i>339</i>&nbsp;
+<b class="nc"><i>340</i>&nbsp;    static int indexOf(Object var0, Object[] var1, int var2) {</b>
+<i>341</i>&nbsp;        for(int var3 = var2; var3 &lt; var1.length; ++var3) {
+<i>342</i>&nbsp;            if(var0.equals(var1[var3])) {
+<i>343</i>&nbsp;                return var3;
+<i>344</i>&nbsp;            }
+<i>345</i>&nbsp;        }
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;        return -1;
+<i>348</i>&nbsp;    }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    private void throwSingleValuedException() throws IOException {
+<i>351</i>&nbsp;        throw new IOException(&quot;Single-value attribute &quot; + this.oid + &quot; (&quot; + this.getName() + &quot;)&quot; + &quot; has multiple values.&quot;);
+<i>352</i>&nbsp;    }
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;    private void throwTagException(Byte var1) throws IOException {
+<i>355</i>&nbsp;        Byte[] var2 = PKCS9_VALUE_TAGS[this.index];
+<i>356</i>&nbsp;        StringBuffer var3 = new StringBuffer(100);
+<i>357</i>&nbsp;        var3.append(&quot;Value of attribute &quot;);
+<i>358</i>&nbsp;        var3.append(this.oid.toString());
+<i>359</i>&nbsp;        var3.append(&quot; (&quot;);
+<i>360</i>&nbsp;        var3.append(this.getName());
+<i>361</i>&nbsp;        var3.append(&quot;) has wrong tag: &quot;);
+<i>362</i>&nbsp;        var3.append(var1.toString());
+<i>363</i>&nbsp;        var3.append(&quot;.  Expected tags: &quot;);
+<i>364</i>&nbsp;        var3.append(var2[0].toString());
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;        for(int var4 = 1; var4 &lt; var2.length; ++var4) {
+<i>367</i>&nbsp;            var3.append(&quot;, &quot;);
+<i>368</i>&nbsp;            var3.append(var2[var4].toString());
+<i>369</i>&nbsp;        }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;        var3.append(&quot;.&quot;);
+<i>372</i>&nbsp;        throw new IOException(var3.toString());
+<i>373</i>&nbsp;    }
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;    static {
+<i>376</i>&nbsp;        for(int var0 = 1; var0 &lt; PKCS9_OIDS.length - 2; ++var0) {
+<i>377</i>&nbsp;            PKCS9_OIDS[var0] = ObjectIdentifier.newInternal(new int[]{1, 2, 840, 113549, 1, 9, var0});
+<i>378</i>&nbsp;        }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;        PKCS9_OIDS[PKCS9_OIDS.length - 2] = ObjectIdentifier.newInternal(new int[]{1, 2, 840, 113549, 1, 9, 16, 2, 12});
+<i>381</i>&nbsp;        PKCS9_OIDS[PKCS9_OIDS.length - 1] = ObjectIdentifier.newInternal(new int[]{1, 2, 840, 113549, 1, 9, 16, 2, 14});
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;        try {
+<i>384</i>&nbsp;            BYTE_ARRAY_CLASS = Class.forName(&quot;[B&quot;);
+<b class="nc"><i>385</i>&nbsp;        } catch (ClassNotFoundException var2) {</b>
+<b class="nc"><i>386</i>&nbsp;            throw new ExceptionInInitializerError(var2.toString());</b>
+<i>387</i>&nbsp;        }
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;        EMAIL_ADDRESS_OID = PKCS9_OIDS[1];
+<i>390</i>&nbsp;        UNSTRUCTURED_NAME_OID = PKCS9_OIDS[2];
+<i>391</i>&nbsp;        CONTENT_TYPE_OID = PKCS9_OIDS[3];
+<i>392</i>&nbsp;        MESSAGE_DIGEST_OID = PKCS9_OIDS[4];
+<i>393</i>&nbsp;        SIGNING_TIME_OID = PKCS9_OIDS[5];
+<i>394</i>&nbsp;        COUNTERSIGNATURE_OID = PKCS9_OIDS[6];
+<i>395</i>&nbsp;        CHALLENGE_PASSWORD_OID = PKCS9_OIDS[7];
+<i>396</i>&nbsp;        UNSTRUCTURED_ADDRESS_OID = PKCS9_OIDS[8];
+<i>397</i>&nbsp;        EXTENDED_CERTIFICATE_ATTRIBUTES_OID = PKCS9_OIDS[9];
+<i>398</i>&nbsp;        ISSUER_SERIALNUMBER_OID = PKCS9_OIDS[10];
+<i>399</i>&nbsp;        EXTENSION_REQUEST_OID = PKCS9_OIDS[14];
+<i>400</i>&nbsp;        SMIME_CAPABILITY_OID = PKCS9_OIDS[15];
+<i>401</i>&nbsp;        SIGNING_CERTIFICATE_OID = PKCS9_OIDS[16];
+<i>402</i>&nbsp;        SIGNATURE_TIMESTAMP_TOKEN_OID = PKCS9_OIDS[17];
+<i>403</i>&nbsp;        NAME_OID_TABLE = new Hashtable(18);
+<i>404</i>&nbsp;        NAME_OID_TABLE.put(&quot;emailaddress&quot;, PKCS9_OIDS[1]);
+<i>405</i>&nbsp;        NAME_OID_TABLE.put(&quot;unstructuredname&quot;, PKCS9_OIDS[2]);
+<b class="nc"><i>406</i>&nbsp;        NAME_OID_TABLE.put(&quot;contenttype&quot;, PKCS9_OIDS[3]);</b>
+<b class="nc"><i>407</i>&nbsp;        NAME_OID_TABLE.put(&quot;messagedigest&quot;, PKCS9_OIDS[4]);</b>
+<i>408</i>&nbsp;        NAME_OID_TABLE.put(&quot;signingtime&quot;, PKCS9_OIDS[5]);
+<b class="nc"><i>409</i>&nbsp;        NAME_OID_TABLE.put(&quot;countersignature&quot;, PKCS9_OIDS[6]);</b>
+<b class="nc"><i>410</i>&nbsp;        NAME_OID_TABLE.put(&quot;challengepassword&quot;, PKCS9_OIDS[7]);</b>
+<i>411</i>&nbsp;        NAME_OID_TABLE.put(&quot;unstructuredaddress&quot;, PKCS9_OIDS[8]);
+<i>412</i>&nbsp;        NAME_OID_TABLE.put(&quot;extendedcertificateattributes&quot;, PKCS9_OIDS[9]);
+<i>413</i>&nbsp;        NAME_OID_TABLE.put(&quot;issuerandserialnumber&quot;, PKCS9_OIDS[10]);
+<b class="nc"><i>414</i>&nbsp;        NAME_OID_TABLE.put(&quot;rsaproprietary&quot;, PKCS9_OIDS[11]);</b>
+<i>415</i>&nbsp;        NAME_OID_TABLE.put(&quot;rsaproprietary&quot;, PKCS9_OIDS[12]);
+<i>416</i>&nbsp;        NAME_OID_TABLE.put(&quot;signingdescription&quot;, PKCS9_OIDS[13]);
+<i>417</i>&nbsp;        NAME_OID_TABLE.put(&quot;extensionrequest&quot;, PKCS9_OIDS[14]);
+<i>418</i>&nbsp;        NAME_OID_TABLE.put(&quot;smimecapability&quot;, PKCS9_OIDS[15]);
+<i>419</i>&nbsp;        NAME_OID_TABLE.put(&quot;signingcertificate&quot;, PKCS9_OIDS[16]);
+<b class="nc"><i>420</i>&nbsp;        NAME_OID_TABLE.put(&quot;signaturetimestamptoken&quot;, PKCS9_OIDS[17]);</b>
+<i>421</i>&nbsp;        OID_NAME_TABLE = new Hashtable(16);
+<b class="nc"><i>422</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[1], &quot;EmailAddress&quot;);</b>
+<b class="nc"><i>423</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[2], &quot;UnstructuredName&quot;);</b>
+<i>424</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[3], &quot;ContentType&quot;);
+<i>425</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[4], &quot;MessageDigest&quot;);
+<i>426</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[5], &quot;SigningTime&quot;);
+<b class="nc"><i>427</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[6], &quot;Countersignature&quot;);</b>
+<b class="nc"><i>428</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[7], &quot;ChallengePassword&quot;);</b>
+<i>429</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[8], &quot;UnstructuredAddress&quot;);
+<i>430</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[9], &quot;ExtendedCertificateAttributes&quot;);
+<i>431</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[10], &quot;IssuerAndSerialNumber&quot;);
+<i>432</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[11], &quot;RSAProprietary&quot;);
+<i>433</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[12], &quot;RSAProprietary&quot;);
+<i>434</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[13], &quot;SMIMESigningDesc&quot;);
+<b class="nc"><i>435</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[14], &quot;ExtensionRequest&quot;);</b>
+<i>436</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[15], &quot;SMIMECapability&quot;);
+<i>437</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[16], &quot;SigningCertificate&quot;);
+<i>438</i>&nbsp;        OID_NAME_TABLE.put(PKCS9_OIDS[17], &quot;SignatureTimestampToken&quot;);
+<i>439</i>&nbsp;        PKCS9_VALUE_TAGS = new Byte[][]{null, {new Byte((byte)22)}, {new Byte((byte)22)}, {new Byte((byte)6)}, {new Byte((byte)4)}, {new Byte((byte)23)}, {new Byte((byte)48)}, {new Byte((byte)19), new Byte((byte)20)}, {new Byte((byte)19), new Byte((byte)20)}, {new Byte((byte)49)}, {new Byte((byte)48)}, null, null, null, {new Byte((byte)48)}, {new Byte((byte)48)}, {new Byte((byte)48)}, {new Byte((byte)48)}};
+<i>440</i>&nbsp;        VALUE_CLASSES = new Class[18];
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;        try {
+<i>443</i>&nbsp;            Class var3 = Class.forName(&quot;[Ljava.lang.String;&quot;);
+<i>444</i>&nbsp;            VALUE_CLASSES[0] = null;
+<i>445</i>&nbsp;            VALUE_CLASSES[1] = var3;
+<b class="nc"><i>446</i>&nbsp;            VALUE_CLASSES[2] = var3;</b>
+<i>447</i>&nbsp;            VALUE_CLASSES[3] = Class.forName(&quot;sun.security.util.ObjectIdentifier&quot;);
+<b class="nc"><i>448</i>&nbsp;            VALUE_CLASSES[4] = BYTE_ARRAY_CLASS;</b>
+<b class="nc"><i>449</i>&nbsp;            VALUE_CLASSES[5] = Class.forName(&quot;java.util.Date&quot;);</b>
+<i>450</i>&nbsp;            VALUE_CLASSES[6] = Class.forName(&quot;[Lsun.security.pkcs.SignerInfo;&quot;);
+<b class="nc"><i>451</i>&nbsp;            VALUE_CLASSES[7] = Class.forName(&quot;java.lang.String&quot;);</b>
+<b class="nc"><i>452</i>&nbsp;            VALUE_CLASSES[8] = var3;</b>
+<i>453</i>&nbsp;            VALUE_CLASSES[9] = null;
+<b class="nc"><i>454</i>&nbsp;            VALUE_CLASSES[10] = null;</b>
+<b class="nc"><i>455</i>&nbsp;            VALUE_CLASSES[11] = null;</b>
+<i>456</i>&nbsp;            VALUE_CLASSES[12] = null;
+<i>457</i>&nbsp;            VALUE_CLASSES[13] = null;
+<b class="nc"><i>458</i>&nbsp;            VALUE_CLASSES[14] = Class.forName(&quot;sun.security.x509.CertificateExtensions&quot;);</b>
+<b class="nc"><i>459</i>&nbsp;            VALUE_CLASSES[15] = null;</b>
+<b class="nc"><i>460</i>&nbsp;            VALUE_CLASSES[16] = null;</b>
+<b class="nc"><i>461</i>&nbsp;            VALUE_CLASSES[17] = BYTE_ARRAY_CLASS;</b>
+<b class="nc"><i>462</i>&nbsp;        } catch (ClassNotFoundException var1) {</b>
+<i>463</i>&nbsp;            throw new ExceptionInInitializerError(var1.toString());
+<b class="nc"><i>464</i>&nbsp;        }</b>
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;        SINGLE_VALUED = new boolean[]{false, false, false, true, true, true, false, true, false, false, true, false, false, false, true, true, true, true};
+<b class="nc"><i>467</i>&nbsp;    }</b>
+<i>468</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

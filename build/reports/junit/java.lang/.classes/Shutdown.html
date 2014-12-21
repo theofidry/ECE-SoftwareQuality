@@ -1,0 +1,270 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Shutdown</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.lang</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Shutdown (java.lang)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Shutdown</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 61)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Shutdown$Lock</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 62)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.lang;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;class Shutdown {
+<i>9</i>&nbsp;    private static final int RUNNING = 0;
+<i>10</i>&nbsp;    private static final int HOOKS = 1;
+<i>11</i>&nbsp;    private static final int FINALIZERS = 2;
+<i>12</i>&nbsp;    private static int state = 0;
+<i>13</i>&nbsp;    private static boolean runFinalizersOnExit = false;
+<i>14</i>&nbsp;    private static final int MAX_SYSTEM_HOOKS = 10;
+<i>15</i>&nbsp;    private static final Runnable[] hooks = new Runnable[10];
+<i>16</i>&nbsp;    private static int currentRunningHook = 0;
+<i>17</i>&nbsp;    private static Object lock = new Shutdown.Lock();
+<i>18</i>&nbsp;    private static Object haltLock = new Shutdown.Lock();
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    Shutdown() {
+<i>21</i>&nbsp;    }
+<b class="nc"><i>22</i>&nbsp;</b>
+<i>23</i>&nbsp;    static void setRunFinalizersOnExit(boolean var0) {
+<i>24</i>&nbsp;        Object var1 = lock;
+<i>25</i>&nbsp;        synchronized(lock) {
+<i>26</i>&nbsp;            runFinalizersOnExit = var0;
+<i>27</i>&nbsp;        }
+<b class="nc"><i>28</i>&nbsp;    }</b>
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    static void add(int var0, boolean var1, Runnable var2) {
+<b class="nc"><i>31</i>&nbsp;        Object var3 = lock;</b>
+<i>32</i>&nbsp;        synchronized(lock) {
+<i>33</i>&nbsp;            if(hooks[var0] != null) {
+<i>34</i>&nbsp;                throw new InternalError(&quot;Shutdown hook at slot &quot; + var0 + &quot; already registered&quot;);
+<i>35</i>&nbsp;            } else {
+<i>36</i>&nbsp;                if(!var1) {
+<i>37</i>&nbsp;                    if(state &gt; 0) {
+<i>38</i>&nbsp;                        throw new IllegalStateException(&quot;Shutdown in progress&quot;);
+<b class="nc"><i>39</i>&nbsp;                    }</b>
+<i>40</i>&nbsp;                } else if(state &gt; 1 || state == 1 &amp;&amp; var0 &lt;= currentRunningHook) {
+<i>41</i>&nbsp;                    throw new IllegalStateException(&quot;Shutdown in progress&quot;);
+<b class="nc"><i>42</i>&nbsp;                }</b>
+<b class="nc"><i>43</i>&nbsp;</b>
+<i>44</i>&nbsp;                hooks[var0] = var2;
+<i>45</i>&nbsp;            }
+<b class="nc"><i>46</i>&nbsp;        }</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    private static void runHooks() {
+<b class="nc"><i>50</i>&nbsp;        for(int var0 = 0; var0 &lt; 10; ++var0) {</b>
+<b class="nc"><i>51</i>&nbsp;            try {</b>
+<b class="nc"><i>52</i>&nbsp;                Object var6 = lock;</b>
+<i>53</i>&nbsp;                Runnable var1;
+<i>54</i>&nbsp;                synchronized(lock) {
+<i>55</i>&nbsp;                    currentRunningHook = var0;
+<i>56</i>&nbsp;                    var1 = hooks[var0];
+<i>57</i>&nbsp;                }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;                if(var1 != null) {
+<b class="nc"><i>60</i>&nbsp;                    var1.run();</b>
+<b class="nc"><i>61</i>&nbsp;                }</b>
+<b class="nc"><i>62</i>&nbsp;            } catch (Throwable var5) {</b>
+<i>63</i>&nbsp;                if(var5 instanceof ThreadDeath) {
+<b class="nc"><i>64</i>&nbsp;                    ThreadDeath var2 = (ThreadDeath)var5;</b>
+<b class="nc"><i>65</i>&nbsp;                    throw var2;</b>
+<i>66</i>&nbsp;                }
+<b class="nc"><i>67</i>&nbsp;            }</b>
+<b class="nc"><i>68</i>&nbsp;        }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    static void halt(int var0) {
+<i>73</i>&nbsp;        Object var1 = haltLock;
+<i>74</i>&nbsp;        synchronized(haltLock) {
+<i>75</i>&nbsp;            halt0(var0);
+<i>76</i>&nbsp;        }
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<b class="nc"><i>79</i>&nbsp;    static native void halt0(int var0);</b>
+<b class="nc"><i>80</i>&nbsp;</b>
+<b class="nc"><i>81</i>&nbsp;    private static native void runAllFinalizers();</b>
+<b class="nc"><i>82</i>&nbsp;</b>
+<b class="nc"><i>83</i>&nbsp;    private static void sequence() {</b>
+<i>84</i>&nbsp;        Object var0 = lock;
+<b class="nc"><i>85</i>&nbsp;        synchronized(lock) {</b>
+<i>86</i>&nbsp;            if(state != 1) {
+<i>87</i>&nbsp;                return;
+<i>88</i>&nbsp;            }
+<i>89</i>&nbsp;        }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        runHooks();
+<i>92</i>&nbsp;        Object var1 = lock;
+<i>93</i>&nbsp;        boolean var5;
+<b class="nc"><i>94</i>&nbsp;        synchronized(lock) {</b>
+<b class="nc"><i>95</i>&nbsp;            state = 2;</b>
+<b class="nc"><i>96</i>&nbsp;            var5 = runFinalizersOnExit;</b>
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        if(var5) {
+<i>100</i>&nbsp;            runAllFinalizers();
+<i>101</i>&nbsp;        }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    static void exit(int var0) {
+<i>106</i>&nbsp;        boolean var1 = false;
+<i>107</i>&nbsp;        Object var2 = lock;
+<i>108</i>&nbsp;        synchronized(lock) {
+<i>109</i>&nbsp;            if(var0 != 0) {
+<i>110</i>&nbsp;                runFinalizersOnExit = false;
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;            switch(state) {
+<i>114</i>&nbsp;            case 0:
+<i>115</i>&nbsp;                state = 1;
+<i>116</i>&nbsp;            case 1:
+<b class="nc"><i>117</i>&nbsp;            default:</b>
+<i>118</i>&nbsp;                break;
+<i>119</i>&nbsp;            case 2:
+<i>120</i>&nbsp;                if(var0 != 0) {
+<b class="nc"><i>121</i>&nbsp;                    halt(var0);</b>
+<b class="nc"><i>122</i>&nbsp;                } else {</b>
+<b class="nc"><i>123</i>&nbsp;                    var1 = runFinalizersOnExit;</b>
+<i>124</i>&nbsp;                }
+<b class="nc"><i>125</i>&nbsp;            }</b>
+<b class="nc"><i>126</i>&nbsp;        }</b>
+<b class="nc"><i>127</i>&nbsp;</b>
+<b class="nc"><i>128</i>&nbsp;        if(var1) {</b>
+<b class="nc"><i>129</i>&nbsp;            runAllFinalizers();</b>
+<i>130</i>&nbsp;            halt(var0);
+<i>131</i>&nbsp;        }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;        Class var7 = Shutdown.class;
+<i>134</i>&nbsp;        synchronized(Shutdown.class) {
+<i>135</i>&nbsp;            sequence();
+<i>136</i>&nbsp;            halt(var0);
+<i>137</i>&nbsp;        }
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;    static void shutdown() {</b>
+<b class="nc"><i>141</i>&nbsp;        Object var0 = lock;</b>
+<i>142</i>&nbsp;        synchronized(lock) {
+<b class="nc"><i>143</i>&nbsp;            switch(state) {</b>
+<b class="nc"><i>144</i>&nbsp;            case 0:</b>
+<i>145</i>&nbsp;                state = 1;
+<b class="nc"><i>146</i>&nbsp;            case 1:</b>
+<i>147</i>&nbsp;            case 2:
+<b class="nc"><i>148</i>&nbsp;            }</b>
+<i>149</i>&nbsp;        }
+<b class="nc"><i>150</i>&nbsp;</b>
+<i>151</i>&nbsp;        Class var5 = Shutdown.class;
+<i>152</i>&nbsp;        synchronized(Shutdown.class) {
+<i>153</i>&nbsp;            sequence();
+<i>154</i>&nbsp;        }
+<b class="nc"><i>155</i>&nbsp;    }</b>
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    private static class Lock {
+<i>158</i>&nbsp;        private Lock() {
+<b class="nc"><i>159</i>&nbsp;        }</b>
+<b class="nc"><i>160</i>&nbsp;    }</b>
+<b class="nc"><i>161</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

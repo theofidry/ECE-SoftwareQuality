@@ -1,0 +1,346 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PKIXCertPathValidator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.provider.certpath</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PKIXCertPathValidator (sun.security.provider.certpath)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PKIXCertPathValidator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 92)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PKIXCertPathValidator$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PKIXCertPathValidator$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 96)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.provider.certpath;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.security.AccessController;
+<i>9</i>&nbsp;import java.security.InvalidAlgorithmParameterException;
+<i>10</i>&nbsp;import java.security.cert.CertPath;
+<i>11</i>&nbsp;import java.security.cert.CertPathParameters;
+<i>12</i>&nbsp;import java.security.cert.CertPathValidatorException;
+<i>13</i>&nbsp;import java.security.cert.CertPathValidatorResult;
+<i>14</i>&nbsp;import java.security.cert.CertPathValidatorSpi;
+<i>15</i>&nbsp;import java.security.cert.PKIXCertPathChecker;
+<i>16</i>&nbsp;import java.security.cert.PKIXCertPathValidatorResult;
+<i>17</i>&nbsp;import java.security.cert.PKIXParameters;
+<i>18</i>&nbsp;import java.security.cert.PKIXReason;
+<i>19</i>&nbsp;import java.security.cert.PolicyNode;
+<i>20</i>&nbsp;import java.security.cert.TrustAnchor;
+<i>21</i>&nbsp;import java.security.cert.X509Certificate;
+<i>22</i>&nbsp;import java.util.ArrayList;
+<i>23</i>&nbsp;import java.util.Collections;
+<i>24</i>&nbsp;import java.util.Date;
+<i>25</i>&nbsp;import java.util.Iterator;
+<i>26</i>&nbsp;import java.util.List;
+<i>27</i>&nbsp;import java.util.Set;
+<i>28</i>&nbsp;import sun.security.action.GetBooleanSecurityPropertyAction;
+<i>29</i>&nbsp;import sun.security.provider.certpath.AdaptableX509CertSelector;
+<i>30</i>&nbsp;import sun.security.provider.certpath.AlgorithmChecker;
+<i>31</i>&nbsp;import sun.security.provider.certpath.BasicChecker;
+<i>32</i>&nbsp;import sun.security.provider.certpath.ConstraintsChecker;
+<i>33</i>&nbsp;import sun.security.provider.certpath.CrlRevocationChecker;
+<i>34</i>&nbsp;import sun.security.provider.certpath.KeyChecker;
+<i>35</i>&nbsp;import sun.security.provider.certpath.OCSPChecker;
+<i>36</i>&nbsp;import sun.security.provider.certpath.PKIXMasterCertPathValidator;
+<i>37</i>&nbsp;import sun.security.provider.certpath.PolicyChecker;
+<i>38</i>&nbsp;import sun.security.provider.certpath.PolicyNodeImpl;
+<i>39</i>&nbsp;import sun.security.provider.certpath.UntrustedChecker;
+<i>40</i>&nbsp;import sun.security.util.Debug;
+<i>41</i>&nbsp;import sun.security.x509.X509CertImpl;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;public class PKIXCertPathValidator extends CertPathValidatorSpi {
+<i>44</i>&nbsp;    private static final Debug debug = Debug.getInstance(&quot;certpath&quot;);
+<i>45</i>&nbsp;    private Date testDate;
+<i>46</i>&nbsp;    private List&lt;PKIXCertPathChecker&gt; userCheckers;
+<i>47</i>&nbsp;    private String sigProvider;
+<i>48</i>&nbsp;    private BasicChecker basicChecker;
+<b class="nc"><i>49</i>&nbsp;    private boolean ocspEnabled = false;</b>
+<i>50</i>&nbsp;    private boolean onlyEECert = false;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public PKIXCertPathValidator() {
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public CertPathValidatorResult engineValidate(CertPath var1, CertPathParameters var2) throws CertPathValidatorException, InvalidAlgorithmParameterException {
+<i>56</i>&nbsp;        if(debug != null) {
+<i>57</i>&nbsp;            debug.println(&quot;PKIXCertPathValidator.engineValidate()...&quot;);
+<b class="nc"><i>58</i>&nbsp;        }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;        if(!(var2 instanceof PKIXParameters)) {
+<i>61</i>&nbsp;            throw new InvalidAlgorithmParameterException(&quot;inappropriate parameters, must be an instance of PKIXParameters&quot;);
+<i>62</i>&nbsp;        } else if(!var1.getType().equals(&quot;X.509&quot;) &amp;&amp; !var1.getType().equals(&quot;X509&quot;)) {
+<i>63</i>&nbsp;            throw new InvalidAlgorithmParameterException(&quot;inappropriate certification path type specified, must be X.509 or X509&quot;);
+<i>64</i>&nbsp;        } else {
+<i>65</i>&nbsp;            PKIXParameters var3 = (PKIXParameters)var2;
+<i>66</i>&nbsp;            Set var4 = var3.getTrustAnchors();
+<i>67</i>&nbsp;            Iterator var5 = var4.iterator();
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;            while(var5.hasNext()) {
+<i>70</i>&nbsp;                TrustAnchor var6 = (TrustAnchor)var5.next();
+<i>71</i>&nbsp;                if(var6.getNameConstraints() != null) {
+<i>72</i>&nbsp;                    throw new InvalidAlgorithmParameterException(&quot;name constraints in trust anchor not supported&quot;);
+<i>73</i>&nbsp;                }
+<i>74</i>&nbsp;            }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;            ArrayList var14 = new ArrayList(var1.getCertificates());
+<i>77</i>&nbsp;            if(debug != null) {
+<b class="nc"><i>78</i>&nbsp;                if(var14.isEmpty()) {</b>
+<b class="nc"><i>79</i>&nbsp;                    debug.println(&quot;PKIXCertPathValidator.engineValidate() certList is empty&quot;);</b>
+<i>80</i>&nbsp;                }
+<b class="nc"><i>81</i>&nbsp;</b>
+<b class="nc"><i>82</i>&nbsp;                debug.println(&quot;PKIXCertPathValidator.engineValidate() reversing certpath...&quot;);</b>
+<i>83</i>&nbsp;            }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;            Collections.reverse(var14);
+<b class="nc"><i>86</i>&nbsp;            this.populateVariables(var3);</b>
+<b class="nc"><i>87</i>&nbsp;            X509Certificate var15 = null;</b>
+<i>88</i>&nbsp;            if(!var14.isEmpty()) {
+<i>89</i>&nbsp;                var15 = (X509Certificate)var14.get(0);
+<i>90</i>&nbsp;            }
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;            CertPathValidatorException var7 = null;
+<i>93</i>&nbsp;            Iterator var8 = var4.iterator();
+<i>94</i>&nbsp;
+<b class="nc"><i>95</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>96</i>&nbsp;                TrustAnchor var9;</b>
+<b class="nc"><i>97</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>98</i>&nbsp;                    if(!var8.hasNext()) {</b>
+<i>99</i>&nbsp;                        if(var7 != null) {
+<i>100</i>&nbsp;                            throw var7;
+<i>101</i>&nbsp;                        }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;                        throw new CertPathValidatorException(&quot;Path does not chain with any of the trust anchors&quot;, (Throwable)null, (CertPath)null, -1, PKIXReason.NO_TRUST_ANCHOR);
+<i>104</i>&nbsp;                    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;                    var9 = (TrustAnchor)var8.next();
+<i>107</i>&nbsp;                    X509Certificate var10 = var9.getTrustedCert();
+<i>108</i>&nbsp;                    if(var10 != null) {
+<i>109</i>&nbsp;                        if(debug != null) {
+<i>110</i>&nbsp;                            debug.println(&quot;PKIXCertPathValidator.engineValidate() anchor.getTrustedCert() != null&quot;);
+<i>111</i>&nbsp;                        }
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;                        if(!this.isWorthTrying(var10, var15)) {</b>
+<i>114</i>&nbsp;                            continue;
+<b class="nc"><i>115</i>&nbsp;                        }</b>
+<b class="nc"><i>116</i>&nbsp;</b>
+<b class="nc"><i>117</i>&nbsp;                        if(debug != null) {</b>
+<i>118</i>&nbsp;                            debug.println(&quot;anchor.getTrustedCert().getSubjectX500Principal() = &quot; + var10.getSubjectX500Principal());
+<i>119</i>&nbsp;                        }
+<b class="nc"><i>120</i>&nbsp;                        break;</b>
+<i>121</i>&nbsp;                    }
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;                    if(debug != null) {</b>
+<i>124</i>&nbsp;                        debug.println(&quot;PKIXCertPathValidator.engineValidate(): anchor.getTrustedCert() == null&quot;);
+<i>125</i>&nbsp;                    }
+<i>126</i>&nbsp;                    break;
+<i>127</i>&nbsp;                }
+<b class="nc"><i>128</i>&nbsp;</b>
+<i>129</i>&nbsp;                try {
+<i>130</i>&nbsp;                    PolicyNodeImpl var11 = new PolicyNodeImpl((PolicyNodeImpl)null, &quot;2.5.29.32.0&quot;, (Set)null, false, Collections.singleton(&quot;2.5.29.32.0&quot;), false);
+<i>131</i>&nbsp;                    PolicyNode var12 = this.doValidate(var9, var1, var14, var3, var11);
+<b class="nc"><i>132</i>&nbsp;                    return new PKIXCertPathValidatorResult(var9, var12, this.basicChecker.getPublicKey());</b>
+<b class="nc"><i>133</i>&nbsp;                } catch (CertPathValidatorException var13) {</b>
+<b class="nc"><i>134</i>&nbsp;                    var7 = var13;</b>
+<i>135</i>&nbsp;                }
+<i>136</i>&nbsp;            }
+<b class="nc"><i>137</i>&nbsp;        }</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    private boolean isWorthTrying(X509Certificate var1, X509Certificate var2) {
+<b class="nc"><i>141</i>&nbsp;        boolean var3 = false;</b>
+<b class="nc"><i>142</i>&nbsp;        if(debug != null) {</b>
+<i>143</i>&nbsp;            debug.println(&quot;PKIXCertPathValidator.isWorthTrying() checking if this trusted cert is worth trying ...&quot;);
+<i>144</i>&nbsp;        }
+<b class="nc"><i>145</i>&nbsp;</b>
+<b class="nc"><i>146</i>&nbsp;        if(var2 == null) {</b>
+<b class="nc"><i>147</i>&nbsp;            return true;</b>
+<i>148</i>&nbsp;        } else {
+<i>149</i>&nbsp;            AdaptableX509CertSelector var4 = new AdaptableX509CertSelector();
+<i>150</i>&nbsp;            var4.setSubject(var2.getIssuerX500Principal());
+<i>151</i>&nbsp;            var4.setValidityPeriod(var2.getNotBefore(), var2.getNotAfter());
+<b class="nc"><i>152</i>&nbsp;</b>
+<b class="nc"><i>153</i>&nbsp;            try {</b>
+<i>154</i>&nbsp;                X509CertImpl var5 = X509CertImpl.toImpl(var2);
+<i>155</i>&nbsp;                var4.parseAuthorityKeyIdentifierExtension(var5.getAuthorityKeyIdentifierExtension());
+<i>156</i>&nbsp;                var3 = var4.match(var1);
+<i>157</i>&nbsp;            } catch (Exception var6) {
+<i>158</i>&nbsp;                ;
+<b class="nc"><i>159</i>&nbsp;            }</b>
+<b class="nc"><i>160</i>&nbsp;</b>
+<b class="nc"><i>161</i>&nbsp;            if(debug != null) {</b>
+<b class="nc"><i>162</i>&nbsp;                if(var3) {</b>
+<i>163</i>&nbsp;                    debug.println(&quot;YES - try this trustedCert&quot;);
+<i>164</i>&nbsp;                } else {
+<i>165</i>&nbsp;                    debug.println(&quot;NO - don\&#39;t try this trustedCert&quot;);
+<b class="nc"><i>166</i>&nbsp;                }</b>
+<b class="nc"><i>167</i>&nbsp;            }</b>
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;            return var3;
+<b class="nc"><i>170</i>&nbsp;        }</b>
+<b class="nc"><i>171</i>&nbsp;    }</b>
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    private void populateVariables(PKIXParameters var1) {
+<i>174</i>&nbsp;        this.testDate = var1.getDate();
+<b class="nc"><i>175</i>&nbsp;        if(this.testDate == null) {</b>
+<i>176</i>&nbsp;            this.testDate = new Date(System.currentTimeMillis());
+<i>177</i>&nbsp;        }
+<b class="nc"><i>178</i>&nbsp;</b>
+<i>179</i>&nbsp;        this.userCheckers = var1.getCertPathCheckers();
+<i>180</i>&nbsp;        this.sigProvider = var1.getSigProvider();
+<b class="nc"><i>181</i>&nbsp;        if(var1.isRevocationEnabled()) {</b>
+<i>182</i>&nbsp;            this.ocspEnabled = ((Boolean)AccessController.doPrivileged(new GetBooleanSecurityPropertyAction(&quot;ocsp.enable&quot;))).booleanValue();
+<b class="nc"><i>183</i>&nbsp;            this.onlyEECert = ((Boolean)AccessController.doPrivileged(new GetBooleanSecurityPropertyAction(&quot;com.sun.security.onlyCheckRevocationOfEECert&quot;))).booleanValue();</b>
+<i>184</i>&nbsp;        }
+<b class="nc"><i>185</i>&nbsp;</b>
+<i>186</i>&nbsp;    }
+<b class="nc"><i>187</i>&nbsp;</b>
+<i>188</i>&nbsp;    private PolicyNode doValidate(TrustAnchor var1, CertPath var2, ArrayList&lt;X509Certificate&gt; var3, PKIXParameters var4, PolicyNodeImpl var5) throws CertPathValidatorException {
+<i>189</i>&nbsp;        int var6 = var3.size();
+<i>190</i>&nbsp;        this.basicChecker = new BasicChecker(var1, this.testDate, this.sigProvider, false);
+<b class="nc"><i>191</i>&nbsp;        AlgorithmChecker var7 = new AlgorithmChecker(var1);</b>
+<b class="nc"><i>192</i>&nbsp;        KeyChecker var8 = new KeyChecker(var6, var4.getTargetCertConstraints());</b>
+<i>193</i>&nbsp;        ConstraintsChecker var9 = new ConstraintsChecker(var6);
+<i>194</i>&nbsp;        PolicyChecker var10 = new PolicyChecker(var4.getInitialPolicies(), var6, var4.isExplicitPolicyRequired(), var4.isPolicyMappingInhibited(), var4.isAnyPolicyInhibited(), var4.getPolicyQualifiersRejected(), var5);
+<b class="nc"><i>195</i>&nbsp;        UntrustedChecker var11 = new UntrustedChecker();</b>
+<i>196</i>&nbsp;        ArrayList var12 = new ArrayList();
+<i>197</i>&nbsp;        var12.add(var11);
+<i>198</i>&nbsp;        var12.add(var7);
+<i>199</i>&nbsp;        var12.add(var8);
+<i>200</i>&nbsp;        var12.add(var9);
+<i>201</i>&nbsp;        var12.add(var10);
+<i>202</i>&nbsp;        var12.add(this.basicChecker);
+<i>203</i>&nbsp;        if(var4.isRevocationEnabled()) {
+<i>204</i>&nbsp;            if(this.ocspEnabled) {
+<i>205</i>&nbsp;                OCSPChecker var13 = new OCSPChecker(var2, var4, this.onlyEECert);
+<i>206</i>&nbsp;                var12.add(var13);
+<b class="nc"><i>207</i>&nbsp;            }</b>
+<b class="nc"><i>208</i>&nbsp;</b>
+<i>209</i>&nbsp;            CrlRevocationChecker var15 = new CrlRevocationChecker(var1, var4, var3, this.onlyEECert);
+<i>210</i>&nbsp;            var12.add(var15);
+<i>211</i>&nbsp;        }
+<b class="nc"><i>212</i>&nbsp;</b>
+<b class="nc"><i>213</i>&nbsp;        var12.addAll(this.userCheckers);</b>
+<i>214</i>&nbsp;        PKIXMasterCertPathValidator var14 = new PKIXMasterCertPathValidator(var12);
+<i>215</i>&nbsp;        var14.validate(var2, var3);
+<i>216</i>&nbsp;        return var10.getPolicyTree();
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

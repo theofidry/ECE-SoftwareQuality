@@ -1,0 +1,595 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XMLEncoder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.beans</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XMLEncoder (java.beans)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XMLEncoder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 198)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">XMLEncoder$ValueData</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 203)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.beans;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.beans.Encoder;
+<i>9</i>&nbsp;import java.beans.Expression;
+<i>10</i>&nbsp;import java.beans.Introspector;
+<i>11</i>&nbsp;import java.beans.NameGenerator;
+<i>12</i>&nbsp;import java.beans.Statement;
+<i>13</i>&nbsp;import java.beans.XMLDecoder;
+<i>14</i>&nbsp;import java.io.IOException;
+<i>15</i>&nbsp;import java.io.OutputStream;
+<i>16</i>&nbsp;import java.io.OutputStreamWriter;
+<i>17</i>&nbsp;import java.lang.reflect.Array;
+<i>18</i>&nbsp;import java.lang.reflect.Field;
+<i>19</i>&nbsp;import java.nio.charset.Charset;
+<i>20</i>&nbsp;import java.nio.charset.CharsetEncoder;
+<i>21</i>&nbsp;import java.util.ArrayList;
+<i>22</i>&nbsp;import java.util.IdentityHashMap;
+<i>23</i>&nbsp;import java.util.Iterator;
+<i>24</i>&nbsp;import java.util.List;
+<i>25</i>&nbsp;import java.util.Map;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;public class XMLEncoder extends Encoder implements AutoCloseable {
+<i>28</i>&nbsp;    private final CharsetEncoder encoder;
+<i>29</i>&nbsp;    private final String charset;
+<i>30</i>&nbsp;    private final boolean declaration;
+<i>31</i>&nbsp;    private OutputStreamWriter out;
+<i>32</i>&nbsp;    private Object owner;
+<i>33</i>&nbsp;    private int indentation;
+<i>34</i>&nbsp;    private boolean internal;
+<i>35</i>&nbsp;    private Map&lt;Object, XMLEncoder.ValueData&gt; valueToExpression;
+<i>36</i>&nbsp;    private Map&lt;Object, List&lt;Statement&gt;&gt; targetToStatementList;
+<i>37</i>&nbsp;    private boolean preambleWritten;
+<i>38</i>&nbsp;    private NameGenerator nameGenerator;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public XMLEncoder(OutputStream var1) {
+<i>41</i>&nbsp;        this(var1, &quot;UTF-8&quot;, true, 0);
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public XMLEncoder(OutputStream var1, String var2, boolean var3, int var4) {
+<i>45</i>&nbsp;        this.indentation = 0;
+<i>46</i>&nbsp;        this.internal = false;
+<i>47</i>&nbsp;        this.preambleWritten = false;
+<i>48</i>&nbsp;        if(var1 == null) {
+<i>49</i>&nbsp;            throw new IllegalArgumentException(&quot;the output stream cannot be null&quot;);
+<i>50</i>&nbsp;        } else if(var4 &lt; 0) {
+<i>51</i>&nbsp;            throw new IllegalArgumentException(&quot;the indentation must be &gt;= 0&quot;);
+<i>52</i>&nbsp;        } else {
+<i>53</i>&nbsp;            Charset var5 = Charset.forName(var2);
+<i>54</i>&nbsp;            this.encoder = var5.newEncoder();
+<i>55</i>&nbsp;            this.charset = var2;
+<i>56</i>&nbsp;            this.declaration = var3;
+<i>57</i>&nbsp;            this.indentation = var4;
+<i>58</i>&nbsp;            this.out = new OutputStreamWriter(var1, var5.newEncoder());
+<i>59</i>&nbsp;            this.valueToExpression = new IdentityHashMap();
+<i>60</i>&nbsp;            this.targetToStatementList = new IdentityHashMap();
+<i>61</i>&nbsp;            this.nameGenerator = new NameGenerator();
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public void setOwner(Object var1) {
+<i>66</i>&nbsp;        this.owner = var1;
+<i>67</i>&nbsp;        this.writeExpression(new Expression(this, &quot;getOwner&quot;, new Object[0]));
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public Object getOwner() {
+<i>71</i>&nbsp;        return this.owner;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public void writeObject(Object var1) {
+<i>75</i>&nbsp;        if(this.internal) {
+<i>76</i>&nbsp;            super.writeObject(var1);
+<i>77</i>&nbsp;        } else {
+<i>78</i>&nbsp;            this.writeStatement(new Statement(this, &quot;writeObject&quot;, new Object[]{var1}));
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    private List&lt;Statement&gt; statementList(Object var1) {
+<i>84</i>&nbsp;        Object var2 = (List)this.targetToStatementList.get(var1);
+<i>85</i>&nbsp;        if(var2 == null) {
+<i>86</i>&nbsp;            var2 = new ArrayList();
+<i>87</i>&nbsp;            this.targetToStatementList.put(var1, var2);
+<i>88</i>&nbsp;        }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;        return (List)var2;
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    private void mark(Object var1, boolean var2) {
+<i>94</i>&nbsp;        if(var1 != null &amp;&amp; var1 != this) {
+<i>95</i>&nbsp;            XMLEncoder.ValueData var3 = this.getValueData(var1);
+<i>96</i>&nbsp;            Expression var4 = var3.exp;
+<i>97</i>&nbsp;            if(var1.getClass() != String.class || var4 != null) {
+<i>98</i>&nbsp;                if(var2) {
+<i>99</i>&nbsp;                    ++var3.refs;
+<i>100</i>&nbsp;                }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;                if(!var3.marked) {
+<i>103</i>&nbsp;                    var3.marked = true;
+<i>104</i>&nbsp;                    Object var5 = var4.getTarget();
+<i>105</i>&nbsp;                    this.mark(var4);
+<i>106</i>&nbsp;                    if(!(var5 instanceof Class)) {
+<i>107</i>&nbsp;                        this.statementList(var5).add(var4);
+<i>108</i>&nbsp;                        ++var3.refs;
+<i>109</i>&nbsp;                    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;                }
+<i>112</i>&nbsp;            }
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    private void mark(Statement var1) {
+<i>117</i>&nbsp;        Object[] var2 = var1.getArguments();
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;        for(int var3 = 0; var3 &lt; var2.length; ++var3) {
+<i>120</i>&nbsp;            Object var4 = var2[var3];
+<i>121</i>&nbsp;            this.mark(var4, true);
+<i>122</i>&nbsp;        }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;        this.mark(var1.getTarget(), false);
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public void writeStatement(Statement var1) {
+<i>128</i>&nbsp;        boolean var2 = this.internal;
+<i>129</i>&nbsp;        this.internal = true;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;        try {
+<i>132</i>&nbsp;            super.writeStatement(var1);
+<i>133</i>&nbsp;            this.mark(var1);
+<i>134</i>&nbsp;            Object var3 = var1.getTarget();
+<i>135</i>&nbsp;            if(var3 instanceof Field) {
+<i>136</i>&nbsp;                String var4 = var1.getMethodName();
+<i>137</i>&nbsp;                Object[] var5 = var1.getArguments();
+<i>138</i>&nbsp;                if(var4 != null &amp;&amp; var5 != null) {
+<i>139</i>&nbsp;                    if(var4.equals(&quot;get&quot;) &amp;&amp; var5.length == 1) {
+<i>140</i>&nbsp;                        var3 = var5[0];
+<i>141</i>&nbsp;                    } else if(var4.equals(&quot;set&quot;) &amp;&amp; var5.length == 2) {
+<i>142</i>&nbsp;                        var3 = var5[0];
+<i>143</i>&nbsp;                    }
+<i>144</i>&nbsp;                }
+<i>145</i>&nbsp;            }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;            this.statementList(var3).add(var1);
+<i>148</i>&nbsp;        } catch (Exception var6) {
+<i>149</i>&nbsp;            this.getExceptionListener().exceptionThrown(new Exception(&quot;XMLEncoder: discarding statement &quot; + var1, var6));
+<i>150</i>&nbsp;        }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;        this.internal = var2;
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    public void writeExpression(Expression var1) {
+<i>156</i>&nbsp;        boolean var2 = this.internal;
+<i>157</i>&nbsp;        this.internal = true;
+<i>158</i>&nbsp;        Object var3 = this.getValue(var1);
+<i>159</i>&nbsp;        if(this.get(var3) == null || var3 instanceof String &amp;&amp; !var2) {
+<i>160</i>&nbsp;            this.getValueData(var3).exp = var1;
+<i>161</i>&nbsp;            super.writeExpression(var1);
+<i>162</i>&nbsp;        }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;        this.internal = var2;
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    public void flush() {
+<i>168</i>&nbsp;        if(!this.preambleWritten) {
+<i>169</i>&nbsp;            if(this.declaration) {
+<i>170</i>&nbsp;                this.writeln(&quot;&lt;?xml version=&quot; + this.quote(&quot;1.0&quot;) + &quot; encoding=&quot; + this.quote(this.charset) + &quot;?&gt;&quot;);
+<i>171</i>&nbsp;            }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;            this.writeln(&quot;&lt;java version=&quot; + this.quote(System.getProperty(&quot;java.version&quot;)) + &quot; class=&quot; + this.quote(XMLDecoder.class.getName()) + &quot;&gt;&quot;);
+<i>174</i>&nbsp;            this.preambleWritten = true;
+<i>175</i>&nbsp;        }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;        ++this.indentation;
+<i>178</i>&nbsp;        List var1 = this.statementList(this);
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;        Statement var2;
+<i>181</i>&nbsp;        while(!var1.isEmpty()) {
+<i>182</i>&nbsp;            var2 = (Statement)var1.remove(0);
+<i>183</i>&nbsp;            if(&quot;writeObject&quot;.equals(var2.getMethodName())) {
+<i>184</i>&nbsp;                this.outputValue(var2.getArguments()[0], this, true);
+<i>185</i>&nbsp;            } else {
+<i>186</i>&nbsp;                this.outputStatement(var2, this, false);
+<i>187</i>&nbsp;            }
+<i>188</i>&nbsp;        }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;        --this.indentation;
+<b class="nc"><i>191</i>&nbsp;</b>
+<i>192</i>&nbsp;        for(var2 = this.getMissedStatement(); var2 != null; var2 = this.getMissedStatement()) {
+<i>193</i>&nbsp;            this.outputStatement(var2, this, false);
+<i>194</i>&nbsp;        }
+<b class="nc"><i>195</i>&nbsp;</b>
+<b class="nc"><i>196</i>&nbsp;        try {</b>
+<i>197</i>&nbsp;            this.out.flush();
+<i>198</i>&nbsp;        } catch (IOException var4) {
+<b class="nc"><i>199</i>&nbsp;            this.getExceptionListener().exceptionThrown(var4);</b>
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;        this.clear();</b>
+<b class="nc"><i>203</i>&nbsp;    }</b>
+<b class="nc"><i>204</i>&nbsp;</b>
+<b class="nc"><i>205</i>&nbsp;    void clear() {</b>
+<b class="nc"><i>206</i>&nbsp;        super.clear();</b>
+<i>207</i>&nbsp;        this.nameGenerator.clear();
+<i>208</i>&nbsp;        this.valueToExpression.clear();
+<i>209</i>&nbsp;        this.targetToStatementList.clear();
+<i>210</i>&nbsp;    }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    Statement getMissedStatement() {
+<i>213</i>&nbsp;        Iterator var1 = this.targetToStatementList.values().iterator();
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;        while(var1.hasNext()) {
+<i>216</i>&nbsp;            List var2 = (List)var1.next();
+<i>217</i>&nbsp;
+<b class="nc"><i>218</i>&nbsp;            for(int var3 = 0; var3 &lt; var2.size(); ++var3) {</b>
+<b class="nc"><i>219</i>&nbsp;                if(Statement.class == ((Statement)var2.get(var3)).getClass()) {</b>
+<b class="nc"><i>220</i>&nbsp;                    return (Statement)var2.remove(var3);</b>
+<b class="nc"><i>221</i>&nbsp;                }</b>
+<b class="nc"><i>222</i>&nbsp;            }</b>
+<i>223</i>&nbsp;        }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;        return null;
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    public void close() {
+<i>229</i>&nbsp;        this.flush();
+<i>230</i>&nbsp;        this.writeln(&quot;&lt;/java&gt;&quot;);
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;        try {
+<b class="nc"><i>233</i>&nbsp;            this.out.close();</b>
+<b class="nc"><i>234</i>&nbsp;        } catch (IOException var2) {</b>
+<i>235</i>&nbsp;            this.getExceptionListener().exceptionThrown(var2);
+<i>236</i>&nbsp;        }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    private String quote(String var1) {
+<i>241</i>&nbsp;        return &quot;\&quot;&quot; + var1 + &quot;\&quot;&quot;;
+<i>242</i>&nbsp;    }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    private XMLEncoder.ValueData getValueData(Object var1) {
+<b class="nc"><i>245</i>&nbsp;        XMLEncoder.ValueData var2 = (XMLEncoder.ValueData)this.valueToExpression.get(var1);</b>
+<i>246</i>&nbsp;        if(var2 == null) {
+<i>247</i>&nbsp;            var2 = new XMLEncoder.ValueData();
+<i>248</i>&nbsp;            this.valueToExpression.put(var1, var2);
+<i>249</i>&nbsp;        }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;        return var2;
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    private static boolean isValidCharCode(int var0) {
+<i>255</i>&nbsp;        return 32 &lt;= var0 &amp;&amp; var0 &lt;= &#39;\ud7ff&#39; || 10 == var0 || 9 == var0 || 13 == var0 || &#39;\ue000&#39; &lt;= var0 &amp;&amp; var0 &lt;= &#39;�&#39; || 65536 &lt;= var0 &amp;&amp; var0 &lt;= 1114111;
+<b class="nc"><i>256</i>&nbsp;    }</b>
+<b class="nc"><i>257</i>&nbsp;</b>
+<i>258</i>&nbsp;    private void writeln(String var1) {
+<i>259</i>&nbsp;        try {
+<b class="nc"><i>260</i>&nbsp;            StringBuilder var2 = new StringBuilder();</b>
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;            for(int var3 = 0; var3 &lt; this.indentation; ++var3) {
+<i>263</i>&nbsp;                var2.append(&#39; &#39;);
+<i>264</i>&nbsp;            }
+<b class="nc"><i>265</i>&nbsp;</b>
+<b class="nc"><i>266</i>&nbsp;            var2.append(var1);</b>
+<b class="nc"><i>267</i>&nbsp;            var2.append(&#39;\n&#39;);</b>
+<i>268</i>&nbsp;            this.out.write(var2.toString());
+<b class="nc"><i>269</i>&nbsp;        } catch (IOException var4) {</b>
+<b class="nc"><i>270</i>&nbsp;            this.getExceptionListener().exceptionThrown(var4);</b>
+<b class="nc"><i>271</i>&nbsp;        }</b>
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    private void outputValue(Object var1, Object var2, boolean var3) {
+<b class="nc"><i>276</i>&nbsp;        if(var1 == null) {</b>
+<i>277</i>&nbsp;            this.writeln(&quot;&lt;null/&gt;&quot;);
+<i>278</i>&nbsp;        } else if(var1 instanceof Class) {
+<b class="nc"><i>279</i>&nbsp;            this.writeln(&quot;&lt;class&gt;&quot; + ((Class)var1).getName() + &quot;&lt;/class&gt;&quot;);</b>
+<b class="nc"><i>280</i>&nbsp;        } else {</b>
+<i>281</i>&nbsp;            XMLEncoder.ValueData var4 = this.getValueData(var1);
+<i>282</i>&nbsp;            if(var4.exp != null) {
+<b class="nc"><i>283</i>&nbsp;                Object var5 = var4.exp.getTarget();</b>
+<i>284</i>&nbsp;                String var6 = var4.exp.getMethodName();
+<i>285</i>&nbsp;                if(var5 == null || var6 == null) {
+<i>286</i>&nbsp;                    throw new NullPointerException((var5 == null?&quot;target&quot;:&quot;methodName&quot;) + &quot; should not be null&quot;);
+<i>287</i>&nbsp;                }
+<b class="nc"><i>288</i>&nbsp;</b>
+<b class="nc"><i>289</i>&nbsp;                if(var3 &amp;&amp; var5 instanceof Field &amp;&amp; var6.equals(&quot;get&quot;)) {</b>
+<i>290</i>&nbsp;                    Field var10 = (Field)var5;
+<b class="nc"><i>291</i>&nbsp;                    this.writeln(&quot;&lt;object class=&quot; + this.quote(var10.getDeclaringClass().getName()) + &quot; field=&quot; + this.quote(var10.getName()) + &quot;/&gt;&quot;);</b>
+<i>292</i>&nbsp;                    return;
+<i>293</i>&nbsp;                }
+<b class="nc"><i>294</i>&nbsp;</b>
+<b class="nc"><i>295</i>&nbsp;                Class var7 = primitiveTypeFor(var1.getClass());</b>
+<b class="nc"><i>296</i>&nbsp;                if(var7 != null &amp;&amp; var5 == var1.getClass() &amp;&amp; var6.equals(&quot;new&quot;)) {</b>
+<b class="nc"><i>297</i>&nbsp;                    String var8 = var7.getName();</b>
+<i>298</i>&nbsp;                    if(var7 == Character.TYPE) {
+<i>299</i>&nbsp;                        char var9 = ((Character)var1).charValue();
+<b class="nc"><i>300</i>&nbsp;                        if(!isValidCharCode(var9)) {</b>
+<i>301</i>&nbsp;                            this.writeln(createString(var9));
+<b class="nc"><i>302</i>&nbsp;                            return;</b>
+<i>303</i>&nbsp;                        }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;                        var1 = quoteCharCode(var9);
+<b class="nc"><i>306</i>&nbsp;                        if(var1 == null) {</b>
+<b class="nc"><i>307</i>&nbsp;                            var1 = Character.valueOf(var9);</b>
+<b class="nc"><i>308</i>&nbsp;                        }</b>
+<b class="nc"><i>309</i>&nbsp;                    }</b>
+<i>310</i>&nbsp;
+<b class="nc"><i>311</i>&nbsp;                    this.writeln(&quot;&lt;&quot; + var8 + &quot;&gt;&quot; + var1 + &quot;&lt;/&quot; + var8 + &quot;&gt;&quot;);</b>
+<i>312</i>&nbsp;                    return;
+<i>313</i>&nbsp;                }
+<i>314</i>&nbsp;            } else if(var1 instanceof String) {
+<i>315</i>&nbsp;                this.writeln(this.createString((String)var1));
+<i>316</i>&nbsp;                return;
+<i>317</i>&nbsp;            }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;            if(var4.name != null) {
+<i>320</i>&nbsp;                if(var3) {
+<i>321</i>&nbsp;                    this.writeln(&quot;&lt;object idref=&quot; + this.quote(var4.name) + &quot;/&gt;&quot;);
+<i>322</i>&nbsp;                } else {
+<i>323</i>&nbsp;                    this.outputXML(&quot;void&quot;, &quot; idref=&quot; + this.quote(var4.name), var1, new Object[0]);
+<i>324</i>&nbsp;                }
+<i>325</i>&nbsp;            } else if(var4.exp != null) {
+<i>326</i>&nbsp;                this.outputStatement(var4.exp, var2, var3);
+<i>327</i>&nbsp;            }
+<b class="nc"><i>328</i>&nbsp;</b>
+<b class="nc"><i>329</i>&nbsp;        }</b>
+<i>330</i>&nbsp;    }
+<b class="nc"><i>331</i>&nbsp;</b>
+<i>332</i>&nbsp;    private static String quoteCharCode(int var0) {
+<i>333</i>&nbsp;        switch(var0) {
+<i>334</i>&nbsp;        case 13:
+<i>335</i>&nbsp;            return &quot;&amp;#13;&quot;;
+<i>336</i>&nbsp;        case 34:
+<i>337</i>&nbsp;            return &quot;&amp;quot;&quot;;
+<i>338</i>&nbsp;        case 38:
+<i>339</i>&nbsp;            return &quot;&amp;amp;&quot;;
+<b class="nc"><i>340</i>&nbsp;        case 39:</b>
+<b class="nc"><i>341</i>&nbsp;            return &quot;&amp;apos;&quot;;</b>
+<i>342</i>&nbsp;        case 60:
+<b class="nc"><i>343</i>&nbsp;            return &quot;&amp;lt;&quot;;</b>
+<b class="nc"><i>344</i>&nbsp;        case 62:</b>
+<b class="nc"><i>345</i>&nbsp;            return &quot;&amp;gt;&quot;;</b>
+<b class="nc"><i>346</i>&nbsp;        default:</b>
+<i>347</i>&nbsp;            return null;
+<i>348</i>&nbsp;        }
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    private static String createString(int var0) {
+<i>352</i>&nbsp;        return &quot;&lt;char code=\&quot;#&quot; + Integer.toString(var0, 16) + &quot;\&quot;/&gt;&quot;;
+<i>353</i>&nbsp;    }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    private String createString(String var1) {
+<i>356</i>&nbsp;        StringBuilder var2 = new StringBuilder();
+<i>357</i>&nbsp;        var2.append(&quot;&lt;string&gt;&quot;);
+<i>358</i>&nbsp;        int var3 = 0;
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;        while(var3 &lt; var1.length()) {
+<i>361</i>&nbsp;            int var4 = var1.codePointAt(var3);
+<i>362</i>&nbsp;            int var5 = Character.charCount(var4);
+<i>363</i>&nbsp;            if(isValidCharCode(var4) &amp;&amp; this.encoder.canEncode(var1.substring(var3, var3 + var5))) {
+<i>364</i>&nbsp;                String var6 = quoteCharCode(var4);
+<i>365</i>&nbsp;                if(var6 != null) {
+<i>366</i>&nbsp;                    var2.append(var6);
+<b class="nc"><i>367</i>&nbsp;                } else {</b>
+<b class="nc"><i>368</i>&nbsp;                    var2.appendCodePoint(var4);</b>
+<b class="nc"><i>369</i>&nbsp;                }</b>
+<b class="nc"><i>370</i>&nbsp;</b>
+<b class="nc"><i>371</i>&nbsp;                var3 += var5;</b>
+<b class="nc"><i>372</i>&nbsp;            } else {</b>
+<i>373</i>&nbsp;                var2.append(createString(var1.charAt(var3)));
+<b class="nc"><i>374</i>&nbsp;                ++var3;</b>
+<i>375</i>&nbsp;            }
+<i>376</i>&nbsp;        }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;        var2.append(&quot;&lt;/string&gt;&quot;);
+<i>379</i>&nbsp;        return var2.toString();
+<i>380</i>&nbsp;    }
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;    private void outputStatement(Statement var1, Object var2, boolean var3) {
+<i>383</i>&nbsp;        Object var4 = var1.getTarget();
+<i>384</i>&nbsp;        String var5 = var1.getMethodName();
+<i>385</i>&nbsp;        if(var4 != null &amp;&amp; var5 != null) {
+<b class="nc"><i>386</i>&nbsp;            Object[] var6 = var1.getArguments();</b>
+<b class="nc"><i>387</i>&nbsp;            boolean var7 = var1.getClass() == Expression.class;</b>
+<i>388</i>&nbsp;            Object var8 = var7?this.getValue((Expression)var1):null;
+<b class="nc"><i>389</i>&nbsp;            String var9 = var7 &amp;&amp; var3?&quot;object&quot;:&quot;void&quot;;</b>
+<i>390</i>&nbsp;            String var10 = &quot;&quot;;
+<b class="nc"><i>391</i>&nbsp;            XMLEncoder.ValueData var11 = this.getValueData(var8);</b>
+<i>392</i>&nbsp;            if(var4 != var2) {
+<b class="nc"><i>393</i>&nbsp;                if(var4 == Array.class &amp;&amp; var5.equals(&quot;newInstance&quot;)) {</b>
+<b class="nc"><i>394</i>&nbsp;                    var9 = &quot;array&quot;;</b>
+<b class="nc"><i>395</i>&nbsp;                    var10 = var10 + &quot; class=&quot; + this.quote(((Class)var6[0]).getName());</b>
+<b class="nc"><i>396</i>&nbsp;                    var10 = var10 + &quot; length=&quot; + this.quote(var6[1].toString());</b>
+<b class="nc"><i>397</i>&nbsp;                    var6 = new Object[0];</b>
+<b class="nc"><i>398</i>&nbsp;                } else {</b>
+<i>399</i>&nbsp;                    if(var4.getClass() != Class.class) {
+<i>400</i>&nbsp;                        var11.refs = 2;
+<b class="nc"><i>401</i>&nbsp;                        if(var11.name == null) {</b>
+<i>402</i>&nbsp;                            ++this.getValueData(var4).refs;
+<i>403</i>&nbsp;                            List var12 = this.statementList(var4);
+<b class="nc"><i>404</i>&nbsp;                            if(!var12.contains(var1)) {</b>
+<i>405</i>&nbsp;                                var12.add(var1);
+<i>406</i>&nbsp;                            }
+<b class="nc"><i>407</i>&nbsp;</b>
+<i>408</i>&nbsp;                            this.outputValue(var4, var2, false);
+<b class="nc"><i>409</i>&nbsp;                        }</b>
+<b class="nc"><i>410</i>&nbsp;</b>
+<b class="nc"><i>411</i>&nbsp;                        if(var7) {</b>
+<b class="nc"><i>412</i>&nbsp;                            this.outputValue(var8, var2, var3);</b>
+<i>413</i>&nbsp;                        }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;                        return;
+<b class="nc"><i>416</i>&nbsp;                    }</b>
+<b class="nc"><i>417</i>&nbsp;</b>
+<b class="nc"><i>418</i>&nbsp;                    var10 = var10 + &quot; class=&quot; + this.quote(((Class)var4).getName());</b>
+<b class="nc"><i>419</i>&nbsp;                }</b>
+<i>420</i>&nbsp;            }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;            if(var7 &amp;&amp; var11.refs &gt; 1) {
+<i>423</i>&nbsp;                String var13 = this.nameGenerator.instanceName(var8);
+<i>424</i>&nbsp;                var11.name = var13;
+<i>425</i>&nbsp;                var10 = var10 + &quot; id=&quot; + this.quote(var13);
+<i>426</i>&nbsp;            }
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;            if((var7 || !var5.equals(&quot;set&quot;) || var6.length != 2 || !(var6[0] instanceof Integer)) &amp;&amp; (!var7 || !var5.equals(&quot;get&quot;) || var6.length != 1 || !(var6[0] instanceof Integer))) {
+<b class="nc"><i>429</i>&nbsp;                if((var7 || !var5.startsWith(&quot;set&quot;) || var6.length != 1) &amp;&amp; (!var7 || !var5.startsWith(&quot;get&quot;) || var6.length != 0)) {</b>
+<b class="nc"><i>430</i>&nbsp;                    if(!var5.equals(&quot;new&quot;) &amp;&amp; !var5.equals(&quot;newInstance&quot;)) {</b>
+<i>431</i>&nbsp;                        var10 = var10 + &quot; method=&quot; + this.quote(var5);
+<b class="nc"><i>432</i>&nbsp;                    }</b>
+<i>433</i>&nbsp;                } else if(3 &lt; var5.length()) {
+<b class="nc"><i>434</i>&nbsp;                    var10 = var10 + &quot; property=&quot; + this.quote(Introspector.decapitalize(var5.substring(3)));</b>
+<b class="nc"><i>435</i>&nbsp;                }</b>
+<b class="nc"><i>436</i>&nbsp;            } else {</b>
+<i>437</i>&nbsp;                var10 = var10 + &quot; index=&quot; + this.quote(var6[0].toString());
+<i>438</i>&nbsp;                var6 = var6.length == 1?new Object[0]:new Object[]{var6[1]};
+<i>439</i>&nbsp;            }
+<b class="nc"><i>440</i>&nbsp;</b>
+<i>441</i>&nbsp;            this.outputXML(var9, var10, var8, var6);
+<i>442</i>&nbsp;        } else {
+<i>443</i>&nbsp;            throw new NullPointerException((var4 == null?&quot;target&quot;:&quot;methodName&quot;) + &quot; should not be null&quot;);
+<b class="nc"><i>444</i>&nbsp;        }</b>
+<b class="nc"><i>445</i>&nbsp;    }</b>
+<b class="nc"><i>446</i>&nbsp;</b>
+<b class="nc"><i>447</i>&nbsp;    private void outputXML(String var1, String var2, Object var3, Object... var4) {</b>
+<i>448</i>&nbsp;        List var5 = this.statementList(var3);
+<b class="nc"><i>449</i>&nbsp;        if(var4.length == 0 &amp;&amp; var5.size() == 0) {</b>
+<i>450</i>&nbsp;            this.writeln(&quot;&lt;&quot; + var1 + var2 + &quot;/&gt;&quot;);
+<i>451</i>&nbsp;        } else {
+<i>452</i>&nbsp;            this.writeln(&quot;&lt;&quot; + var1 + var2 + &quot;&gt;&quot;);
+<i>453</i>&nbsp;            ++this.indentation;
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;            for(int var6 = 0; var6 &lt; var4.length; ++var6) {
+<i>456</i>&nbsp;                this.outputValue(var4[var6], (Object)null, true);
+<i>457</i>&nbsp;            }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;            while(!var5.isEmpty()) {
+<i>460</i>&nbsp;                Statement var7 = (Statement)var5.remove(0);
+<i>461</i>&nbsp;                this.outputStatement(var7, var3, false);
+<i>462</i>&nbsp;            }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;            --this.indentation;
+<i>465</i>&nbsp;            this.writeln(&quot;&lt;/&quot; + var1 + &quot;&gt;&quot;);
+<i>466</i>&nbsp;        }
+<i>467</i>&nbsp;    }
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;    static Class primitiveTypeFor(Class var0) {
+<i>470</i>&nbsp;        return var0 == Boolean.class?Boolean.TYPE:(var0 == Byte.class?Byte.TYPE:(var0 == Character.class?Character.TYPE:(var0 == Short.class?Short.TYPE:(var0 == Integer.class?Integer.TYPE:(var0 == Long.class?Long.TYPE:(var0 == Float.class?Float.TYPE:(var0 == Double.class?Double.TYPE:(var0 == Void.class?Void.TYPE:null))))))));
+<i>471</i>&nbsp;    }
+<b class="nc"><i>472</i>&nbsp;</b>
+<i>473</i>&nbsp;    private class ValueData {
+<i>474</i>&nbsp;        public int refs;
+<i>475</i>&nbsp;        public boolean marked;
+<i>476</i>&nbsp;        public String name;
+<i>477</i>&nbsp;        public Expression exp;
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;        private ValueData() {
+<i>480</i>&nbsp;            this.refs = 0;
+<i>481</i>&nbsp;            this.marked = false;
+<b class="nc"><i>482</i>&nbsp;            this.name = null;</b>
+<b class="nc"><i>483</i>&nbsp;            this.exp = null;</b>
+<i>484</i>&nbsp;        }
+<b class="nc"><i>485</i>&nbsp;    }</b>
+<b class="nc"><i>486</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

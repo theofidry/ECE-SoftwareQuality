@@ -1,0 +1,222 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ReplicateScaleFilter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.awt.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ReplicateScaleFilter (java.awt.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReplicateScaleFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 57)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.awt.image;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.image.ColorModel;
+<i>9</i>&nbsp;import java.awt.image.ImageFilter;
+<i>10</i>&nbsp;import java.util.Hashtable;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;public class ReplicateScaleFilter extends ImageFilter {
+<i>13</i>&nbsp;    protected int srcWidth;
+<i>14</i>&nbsp;    protected int srcHeight;
+<i>15</i>&nbsp;    protected int destWidth;
+<i>16</i>&nbsp;    protected int destHeight;
+<i>17</i>&nbsp;    protected int[] srcrows;
+<i>18</i>&nbsp;    protected int[] srccols;
+<i>19</i>&nbsp;    protected Object outpixbuf;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public ReplicateScaleFilter(int var1, int var2) {
+<i>22</i>&nbsp;        if(var1 != 0 &amp;&amp; var2 != 0) {
+<i>23</i>&nbsp;            this.destWidth = var1;
+<i>24</i>&nbsp;            this.destHeight = var2;
+<i>25</i>&nbsp;        } else {
+<i>26</i>&nbsp;            throw new IllegalArgumentException(&quot;Width (&quot; + var1 + &quot;) and height (&quot; + var2 + &quot;) must be non-zero&quot;);
+<i>27</i>&nbsp;        }
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public void setProperties(Hashtable&lt;?, ?&gt; var1) {
+<i>31</i>&nbsp;        Hashtable var2 = (Hashtable)var1.clone();
+<i>32</i>&nbsp;        String var3 = &quot;rescale&quot;;
+<i>33</i>&nbsp;        String var4 = this.destWidth + &quot;x&quot; + this.destHeight;
+<i>34</i>&nbsp;        Object var5 = var2.get(var3);
+<i>35</i>&nbsp;        if(var5 != null &amp;&amp; var5 instanceof String) {
+<i>36</i>&nbsp;            var4 = (String)var5 + &quot;, &quot; + var4;
+<i>37</i>&nbsp;        }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;        var2.put(var3, var4);
+<i>40</i>&nbsp;        super.setProperties(var2);
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public void setDimensions(int var1, int var2) {
+<i>44</i>&nbsp;        this.srcWidth = var1;
+<i>45</i>&nbsp;        this.srcHeight = var2;
+<i>46</i>&nbsp;        if(this.destWidth &lt; 0) {
+<i>47</i>&nbsp;            if(this.destHeight &lt; 0) {
+<i>48</i>&nbsp;                this.destWidth = this.srcWidth;
+<i>49</i>&nbsp;                this.destHeight = this.srcHeight;
+<i>50</i>&nbsp;            } else {
+<i>51</i>&nbsp;                this.destWidth = this.srcWidth * this.destHeight / this.srcHeight;
+<i>52</i>&nbsp;            }
+<i>53</i>&nbsp;        } else if(this.destHeight &lt; 0) {
+<i>54</i>&nbsp;            this.destHeight = this.srcHeight * this.destWidth / this.srcWidth;
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;        this.consumer.setDimensions(this.destWidth, this.destHeight);
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    private void calculateMaps() {
+<i>61</i>&nbsp;        this.srcrows = new int[this.destHeight + 1];
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;        int var1;
+<i>64</i>&nbsp;        for(var1 = 0; var1 &lt;= this.destHeight; ++var1) {
+<i>65</i>&nbsp;            this.srcrows[var1] = (2 * var1 * this.srcHeight + this.srcHeight) / (2 * this.destHeight);
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;        this.srccols = new int[this.destWidth + 1];
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;        for(var1 = 0; var1 &lt;= this.destWidth; ++var1) {
+<i>71</i>&nbsp;            this.srccols[var1] = (2 * var1 * this.srcWidth + this.srcWidth) / (2 * this.destWidth);
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public void setPixels(int var1, int var2, int var3, int var4, ColorModel var5, byte[] var6, int var7, int var8) {
+<i>77</i>&nbsp;        if(this.srcrows == null || this.srccols == null) {
+<i>78</i>&nbsp;            this.calculateMaps();
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;        int var11 = (2 * var1 * this.destWidth + this.srcWidth - 1) / (2 * this.srcWidth);
+<i>82</i>&nbsp;        int var12 = (2 * var2 * this.destHeight + this.srcHeight - 1) / (2 * this.srcHeight);
+<b class="nc"><i>83</i>&nbsp;        byte[] var13;</b>
+<b class="nc"><i>84</i>&nbsp;        if(this.outpixbuf != null &amp;&amp; this.outpixbuf instanceof byte[]) {</b>
+<b class="nc"><i>85</i>&nbsp;            var13 = (byte[])((byte[])this.outpixbuf);</b>
+<i>86</i>&nbsp;        } else {
+<i>87</i>&nbsp;            var13 = new byte[this.destWidth];
+<i>88</i>&nbsp;            this.outpixbuf = var13;
+<b class="nc"><i>89</i>&nbsp;        }</b>
+<b class="nc"><i>90</i>&nbsp;</b>
+<i>91</i>&nbsp;        int var10;
+<i>92</i>&nbsp;        for(int var14 = var12; (var10 = this.srcrows[var14]) &lt; var2 + var4; ++var14) {
+<i>93</i>&nbsp;            int var15 = var7 + var8 * (var10 - var2);
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;            int var9;
+<i>96</i>&nbsp;            int var16;
+<i>97</i>&nbsp;            for(var16 = var11; (var9 = this.srccols[var16]) &lt; var1 + var3; ++var16) {
+<i>98</i>&nbsp;                var13[var16] = var6[var15 + var9 - var1];
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;            if(var16 &gt; var11) {
+<i>102</i>&nbsp;                this.consumer.setPixels(var11, var14, var16 - var11, 1, var5, var13, var11, this.destWidth);
+<i>103</i>&nbsp;            }
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    }
+<b class="nc"><i>107</i>&nbsp;</b>
+<b class="nc"><i>108</i>&nbsp;    public void setPixels(int var1, int var2, int var3, int var4, ColorModel var5, int[] var6, int var7, int var8) {</b>
+<b class="nc"><i>109</i>&nbsp;        if(this.srcrows == null || this.srccols == null) {</b>
+<b class="nc"><i>110</i>&nbsp;            this.calculateMaps();</b>
+<b class="nc"><i>111</i>&nbsp;        }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<i>113</i>&nbsp;        int var11 = (2 * var1 * this.destWidth + this.srcWidth - 1) / (2 * this.srcWidth);
+<b class="nc"><i>114</i>&nbsp;        int var12 = (2 * var2 * this.destHeight + this.srcHeight - 1) / (2 * this.srcHeight);</b>
+<b class="nc"><i>115</i>&nbsp;        int[] var13;</b>
+<i>116</i>&nbsp;        if(this.outpixbuf != null &amp;&amp; this.outpixbuf instanceof int[]) {
+<i>117</i>&nbsp;            var13 = (int[])((int[])this.outpixbuf);
+<i>118</i>&nbsp;        } else {
+<i>119</i>&nbsp;            var13 = new int[this.destWidth];
+<i>120</i>&nbsp;            this.outpixbuf = var13;
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        int var10;
+<i>124</i>&nbsp;        for(int var14 = var12; (var10 = this.srcrows[var14]) &lt; var2 + var4; ++var14) {
+<i>125</i>&nbsp;            int var15 = var7 + var8 * (var10 - var2);
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;            int var9;
+<i>128</i>&nbsp;            int var16;
+<i>129</i>&nbsp;            for(var16 = var11; (var9 = this.srccols[var16]) &lt; var1 + var3; ++var16) {
+<i>130</i>&nbsp;                var13[var16] = var6[var15 + var9 - var1];
+<b class="nc"><i>131</i>&nbsp;            }</b>
+<b class="nc"><i>132</i>&nbsp;</b>
+<b class="nc"><i>133</i>&nbsp;            if(var16 &gt; var11) {</b>
+<b class="nc"><i>134</i>&nbsp;                this.consumer.setPixels(var11, var14, var16 - var11, 1, var5, var13, var11, this.destWidth);</b>
+<b class="nc"><i>135</i>&nbsp;            }</b>
+<b class="nc"><i>136</i>&nbsp;        }</b>
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<i>139</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

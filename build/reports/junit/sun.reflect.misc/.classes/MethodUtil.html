@@ -1,0 +1,439 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MethodUtil</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.reflect.misc</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MethodUtil (sun.reflect.misc)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MethodUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 121)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MethodUtil$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MethodUtil$Signature</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 150)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.reflect.misc;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.BufferedInputStream;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>11</i>&nbsp;import java.lang.reflect.Method;
+<i>12</i>&nbsp;import java.lang.reflect.Modifier;
+<i>13</i>&nbsp;import java.net.HttpURLConnection;
+<i>14</i>&nbsp;import java.net.URL;
+<i>15</i>&nbsp;import java.net.URLConnection;
+<i>16</i>&nbsp;import java.security.AccessController;
+<i>17</i>&nbsp;import java.security.AllPermission;
+<i>18</i>&nbsp;import java.security.CodeSource;
+<i>19</i>&nbsp;import java.security.PermissionCollection;
+<i>20</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>21</i>&nbsp;import java.security.SecureClassLoader;
+<i>22</i>&nbsp;import java.security.cert.Certificate;
+<i>23</i>&nbsp;import java.util.HashMap;
+<i>24</i>&nbsp;import java.util.Map;
+<i>25</i>&nbsp;import sun.misc.IOUtils;
+<i>26</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;public final class MethodUtil extends SecureClassLoader {
+<i>29</i>&nbsp;    private static String MISC_PKG = &quot;sun.reflect.misc.&quot;;
+<i>30</i>&nbsp;    private static String TRAMPOLINE;
+<i>31</i>&nbsp;    private static Method bounce;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private MethodUtil() {
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public static Method getMethod(Class&lt;?&gt; var0, String var1, Class[] var2) throws NoSuchMethodException {
+<i>37</i>&nbsp;        ReflectUtil.checkPackageAccess(var0);
+<i>38</i>&nbsp;        return var0.getMethod(var1, var2);
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public static Method[] getMethods(Class var0) {
+<i>42</i>&nbsp;        ReflectUtil.checkPackageAccess(var0);
+<i>43</i>&nbsp;        return var0.getMethods();
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public static Method[] getPublicMethods(Class var0) {
+<i>47</i>&nbsp;        if(System.getSecurityManager() == null) {
+<i>48</i>&nbsp;            return var0.getMethods();
+<i>49</i>&nbsp;        } else {
+<i>50</i>&nbsp;            HashMap var1;
+<i>51</i>&nbsp;            for(var1 = new HashMap(); var0 != null; var0 = var0.getSuperclass()) {
+<i>52</i>&nbsp;                boolean var2 = getInternalPublicMethods(var0, var1);
+<i>53</i>&nbsp;                if(var2) {
+<i>54</i>&nbsp;                    break;
+<i>55</i>&nbsp;                }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;                getInterfaceMethods(var0, var1);
+<i>58</i>&nbsp;            }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;            return (Method[])var1.values().toArray(new Method[var1.size()]);
+<i>61</i>&nbsp;        }
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;    private static void getInterfaceMethods(Class var0, Map&lt;MethodUtil.Signature, Method&gt; var1) {</b>
+<b class="nc"><i>65</i>&nbsp;        Class[] var2 = var0.getInterfaces();</b>
+<b class="nc"><i>66</i>&nbsp;</b>
+<b class="nc"><i>67</i>&nbsp;        for(int var3 = 0; var3 &lt; var2.length; ++var3) {</b>
+<i>68</i>&nbsp;            Class var4 = var2[var3];
+<i>69</i>&nbsp;            boolean var5 = getInternalPublicMethods(var4, var1);
+<b class="nc"><i>70</i>&nbsp;            if(!var5) {</b>
+<i>71</i>&nbsp;                getInterfaceMethods(var4, var1);
+<i>72</i>&nbsp;            }
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<b class="nc"><i>76</i>&nbsp;</b>
+<i>77</i>&nbsp;    private static boolean getInternalPublicMethods(Class var0, Map&lt;MethodUtil.Signature, Method&gt; var1) {
+<i>78</i>&nbsp;        Method[] var2 = null;
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;        try {</b>
+<b class="nc"><i>81</i>&nbsp;            if(!Modifier.isPublic(var0.getModifiers())) {</b>
+<i>82</i>&nbsp;                return false;
+<i>83</i>&nbsp;            }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;            if(!ReflectUtil.isPackageAccessible(var0)) {
+<i>86</i>&nbsp;                return false;
+<i>87</i>&nbsp;            }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;            var2 = var0.getMethods();
+<i>90</i>&nbsp;        } catch (SecurityException var6) {
+<i>91</i>&nbsp;            return false;
+<b class="nc"><i>92</i>&nbsp;        }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;        boolean var3 = true;
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;        int var4;</b>
+<b class="nc"><i>97</i>&nbsp;        Class var5;</b>
+<b class="nc"><i>98</i>&nbsp;        for(var4 = 0; var4 &lt; var2.length; ++var4) {</b>
+<b class="nc"><i>99</i>&nbsp;            var5 = var2[var4].getDeclaringClass();</b>
+<i>100</i>&nbsp;            if(!Modifier.isPublic(var5.getModifiers())) {
+<b class="nc"><i>101</i>&nbsp;                var3 = false;</b>
+<b class="nc"><i>102</i>&nbsp;                break;</b>
+<b class="nc"><i>103</i>&nbsp;            }</b>
+<b class="nc"><i>104</i>&nbsp;        }</b>
+<b class="nc"><i>105</i>&nbsp;</b>
+<i>106</i>&nbsp;        if(var3) {
+<i>107</i>&nbsp;            for(var4 = 0; var4 &lt; var2.length; ++var4) {
+<i>108</i>&nbsp;                addMethod(var1, var2[var4]);
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;        } else {
+<i>111</i>&nbsp;            for(var4 = 0; var4 &lt; var2.length; ++var4) {
+<b class="nc"><i>112</i>&nbsp;                var5 = var2[var4].getDeclaringClass();</b>
+<b class="nc"><i>113</i>&nbsp;                if(var0.equals(var5)) {</b>
+<b class="nc"><i>114</i>&nbsp;                    addMethod(var1, var2[var4]);</b>
+<b class="nc"><i>115</i>&nbsp;                }</b>
+<b class="nc"><i>116</i>&nbsp;            }</b>
+<b class="nc"><i>117</i>&nbsp;        }</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;        return var3;
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    private static void addMethod(Map&lt;MethodUtil.Signature, Method&gt; var0, Method var1) {
+<i>123</i>&nbsp;        MethodUtil.Signature var2 = new MethodUtil.Signature(var1);
+<i>124</i>&nbsp;        if(!var0.containsKey(var2)) {
+<i>125</i>&nbsp;            var0.put(var2, var1);
+<i>126</i>&nbsp;        } else if(!var1.getDeclaringClass().isInterface()) {
+<b class="nc"><i>127</i>&nbsp;            Method var3 = (Method)var0.get(var2);</b>
+<i>128</i>&nbsp;            if(var3.getDeclaringClass().isInterface()) {
+<i>129</i>&nbsp;                var0.put(var2, var1);
+<i>130</i>&nbsp;            }
+<i>131</i>&nbsp;        }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    }
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;    public static Object invoke(Method var0, Object var1, Object[] var2) throws InvocationTargetException, IllegalAccessException {</b>
+<i>136</i>&nbsp;        try {
+<b class="nc"><i>137</i>&nbsp;            return bounce.invoke((Object)null, new Object[]{var0, var1, var2});</b>
+<b class="nc"><i>138</i>&nbsp;        } catch (InvocationTargetException var5) {</b>
+<i>139</i>&nbsp;            Throwable var4 = var5.getCause();
+<i>140</i>&nbsp;            if(var4 instanceof InvocationTargetException) {
+<b class="nc"><i>141</i>&nbsp;                throw (InvocationTargetException)var4;</b>
+<b class="nc"><i>142</i>&nbsp;            } else if(var4 instanceof IllegalAccessException) {</b>
+<b class="nc"><i>143</i>&nbsp;                throw (IllegalAccessException)var4;</b>
+<b class="nc"><i>144</i>&nbsp;            } else if(var4 instanceof RuntimeException) {</b>
+<i>145</i>&nbsp;                throw (RuntimeException)var4;
+<i>146</i>&nbsp;            } else if(var4 instanceof Error) {
+<i>147</i>&nbsp;                throw (Error)var4;
+<i>148</i>&nbsp;            } else {
+<i>149</i>&nbsp;                throw new Error(&quot;Unexpected invocation error&quot;, var4);
+<i>150</i>&nbsp;            }
+<i>151</i>&nbsp;        } catch (IllegalAccessException var6) {
+<b class="nc"><i>152</i>&nbsp;            throw new Error(&quot;Unexpected invocation error&quot;, var6);</b>
+<b class="nc"><i>153</i>&nbsp;        }</b>
+<b class="nc"><i>154</i>&nbsp;    }</b>
+<b class="nc"><i>155</i>&nbsp;</b>
+<b class="nc"><i>156</i>&nbsp;    private static Method getTrampoline() {</b>
+<b class="nc"><i>157</i>&nbsp;        try {</b>
+<i>158</i>&nbsp;            return (Method)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+<i>159</i>&nbsp;                public Method run() throws Exception {
+<i>160</i>&nbsp;                    Class var1 = MethodUtil.getTrampolineClass();
+<b class="nc"><i>161</i>&nbsp;                    Class[] var2 = new Class[]{Method.class, Object.class, Object[].class};</b>
+<i>162</i>&nbsp;                    Method var3 = var1.getDeclaredMethod(&quot;invoke&quot;, var2);
+<i>163</i>&nbsp;                    var3.setAccessible(true);
+<i>164</i>&nbsp;                    return var3;
+<i>165</i>&nbsp;                }
+<b class="nc"><i>166</i>&nbsp;            });</b>
+<b class="nc"><i>167</i>&nbsp;        } catch (Exception var1) {</b>
+<i>168</i>&nbsp;            throw new InternalError(&quot;bouncer cannot be found&quot;);
+<b class="nc"><i>169</i>&nbsp;        }</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    protected synchronized Class loadClass(String var1, boolean var2) throws ClassNotFoundException {
+<i>173</i>&nbsp;        ReflectUtil.checkPackageAccess(var1);
+<b class="nc"><i>174</i>&nbsp;        Class var3 = this.findLoadedClass(var1);</b>
+<b class="nc"><i>175</i>&nbsp;        if(var3 == null) {</b>
+<b class="nc"><i>176</i>&nbsp;            try {</b>
+<b class="nc"><i>177</i>&nbsp;                var3 = this.findClass(var1);</b>
+<i>178</i>&nbsp;            } catch (ClassNotFoundException var5) {
+<i>179</i>&nbsp;                ;
+<i>180</i>&nbsp;            }
+<b class="nc"><i>181</i>&nbsp;</b>
+<i>182</i>&nbsp;            if(var3 == null) {
+<i>183</i>&nbsp;                var3 = this.getParent().loadClass(var1);
+<i>184</i>&nbsp;            }
+<b class="nc"><i>185</i>&nbsp;        }</b>
+<b class="nc"><i>186</i>&nbsp;</b>
+<b class="nc"><i>187</i>&nbsp;        if(var2) {</b>
+<b class="nc"><i>188</i>&nbsp;            this.resolveClass(var3);</b>
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;        return var3;
+<b class="nc"><i>192</i>&nbsp;    }</b>
+<b class="nc"><i>193</i>&nbsp;</b>
+<b class="nc"><i>194</i>&nbsp;    protected Class findClass(String var1) throws ClassNotFoundException {</b>
+<i>195</i>&nbsp;        if(!var1.startsWith(MISC_PKG)) {
+<i>196</i>&nbsp;            throw new ClassNotFoundException(var1);
+<i>197</i>&nbsp;        } else {
+<i>198</i>&nbsp;            String var2 = var1.replace(&#39;.&#39;, &#39;/&#39;).concat(&quot;.class&quot;);
+<i>199</i>&nbsp;            URL var3 = this.getResource(var2);
+<i>200</i>&nbsp;            if(var3 != null) {
+<i>201</i>&nbsp;                try {
+<i>202</i>&nbsp;                    return this.defineClass(var1, var3);
+<i>203</i>&nbsp;                } catch (IOException var5) {
+<i>204</i>&nbsp;                    throw new ClassNotFoundException(var1, var5);
+<i>205</i>&nbsp;                }
+<i>206</i>&nbsp;            } else {
+<b class="nc"><i>207</i>&nbsp;                throw new ClassNotFoundException(var1);</b>
+<i>208</i>&nbsp;            }
+<b class="nc"><i>209</i>&nbsp;        }</b>
+<b class="nc"><i>210</i>&nbsp;    }</b>
+<b class="nc"><i>211</i>&nbsp;</b>
+<i>212</i>&nbsp;    private Class defineClass(String var1, URL var2) throws IOException {
+<i>213</i>&nbsp;        byte[] var3 = getBytes(var2);
+<i>214</i>&nbsp;        CodeSource var4 = new CodeSource((URL)null, (Certificate[])null);
+<b class="nc"><i>215</i>&nbsp;        if(!var1.equals(TRAMPOLINE)) {</b>
+<b class="nc"><i>216</i>&nbsp;            throw new IOException(&quot;MethodUtil: bad name &quot; + var1);</b>
+<i>217</i>&nbsp;        } else {
+<b class="nc"><i>218</i>&nbsp;            return this.defineClass(var1, var3, 0, var3.length, var4);</b>
+<b class="nc"><i>219</i>&nbsp;        }</b>
+<b class="nc"><i>220</i>&nbsp;    }</b>
+<i>221</i>&nbsp;
+<b class="nc"><i>222</i>&nbsp;    private static byte[] getBytes(URL var0) throws IOException {</b>
+<b class="nc"><i>223</i>&nbsp;        URLConnection var1 = var0.openConnection();</b>
+<i>224</i>&nbsp;        if(var1 instanceof HttpURLConnection) {
+<b class="nc"><i>225</i>&nbsp;            HttpURLConnection var2 = (HttpURLConnection)var1;</b>
+<b class="nc"><i>226</i>&nbsp;            int var3 = var2.getResponseCode();</b>
+<b class="nc"><i>227</i>&nbsp;            if(var3 &gt;= 400) {</b>
+<i>228</i>&nbsp;                throw new IOException(&quot;open HTTP connection failed.&quot;);
+<i>229</i>&nbsp;            }
+<b class="nc"><i>230</i>&nbsp;        }</b>
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;        int var8 = var1.getContentLength();
+<i>233</i>&nbsp;        BufferedInputStream var9 = new BufferedInputStream(var1.getInputStream());
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;        byte[] var4;
+<i>236</i>&nbsp;        try {
+<i>237</i>&nbsp;            var4 = IOUtils.readFully(var9, var8, true);
+<b class="nc"><i>238</i>&nbsp;        } finally {</b>
+<b class="nc"><i>239</i>&nbsp;            var9.close();</b>
+<b class="nc"><i>240</i>&nbsp;        }</b>
+<b class="nc"><i>241</i>&nbsp;</b>
+<b class="nc"><i>242</i>&nbsp;        return var4;</b>
+<b class="nc"><i>243</i>&nbsp;    }</b>
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    protected PermissionCollection getPermissions(CodeSource var1) {
+<i>246</i>&nbsp;        PermissionCollection var2 = super.getPermissions(var1);
+<b class="nc"><i>247</i>&nbsp;        var2.add(new AllPermission());</b>
+<i>248</i>&nbsp;        return var2;
+<b class="nc"><i>249</i>&nbsp;    }</b>
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    private static Class getTrampolineClass() {
+<i>252</i>&nbsp;        try {
+<i>253</i>&nbsp;            return Class.forName(TRAMPOLINE, true, new MethodUtil());
+<i>254</i>&nbsp;        } catch (ClassNotFoundException var1) {
+<i>255</i>&nbsp;            return null;
+<i>256</i>&nbsp;        }
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    static {
+<b class="nc"><i>260</i>&nbsp;        TRAMPOLINE = MISC_PKG + &quot;Trampoline&quot;;</b>
+<b class="nc"><i>261</i>&nbsp;        bounce = getTrampoline();</b>
+<b class="nc"><i>262</i>&nbsp;    }</b>
+<i>263</i>&nbsp;
+<b class="nc"><i>264</i>&nbsp;    private static class Signature {</b>
+<b class="nc"><i>265</i>&nbsp;        private String methodName;</b>
+<b class="nc"><i>266</i>&nbsp;        private Class[] argClasses;</b>
+<b class="nc"><i>267</i>&nbsp;        private volatile int hashCode = 0;</b>
+<b class="nc"><i>268</i>&nbsp;</b>
+<b class="nc"><i>269</i>&nbsp;        Signature(Method var1) {</b>
+<b class="nc"><i>270</i>&nbsp;            this.methodName = var1.getName();</b>
+<b class="nc"><i>271</i>&nbsp;            this.argClasses = var1.getParameterTypes();</b>
+<i>272</i>&nbsp;        }
+<b class="nc"><i>273</i>&nbsp;</b>
+<i>274</i>&nbsp;        public boolean equals(Object var1) {
+<b class="nc"><i>275</i>&nbsp;            if(this == var1) {</b>
+<i>276</i>&nbsp;                return true;
+<b class="nc"><i>277</i>&nbsp;            } else {</b>
+<i>278</i>&nbsp;                MethodUtil.Signature var2 = (MethodUtil.Signature)var1;
+<i>279</i>&nbsp;                if(!this.methodName.equals(var2.methodName)) {
+<i>280</i>&nbsp;                    return false;
+<i>281</i>&nbsp;                } else if(this.argClasses.length != var2.argClasses.length) {
+<b class="nc"><i>282</i>&nbsp;                    return false;</b>
+<i>283</i>&nbsp;                } else {
+<i>284</i>&nbsp;                    for(int var3 = 0; var3 &lt; this.argClasses.length; ++var3) {
+<b class="nc"><i>285</i>&nbsp;                        if(this.argClasses[var3] != var2.argClasses[var3]) {</b>
+<b class="nc"><i>286</i>&nbsp;                            return false;</b>
+<i>287</i>&nbsp;                        }
+<b class="nc"><i>288</i>&nbsp;                    }</b>
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;                    return true;
+<b class="nc"><i>291</i>&nbsp;                }</b>
+<b class="nc"><i>292</i>&nbsp;            }</b>
+<b class="nc"><i>293</i>&nbsp;        }</b>
+<b class="nc"><i>294</i>&nbsp;</b>
+<i>295</i>&nbsp;        public int hashCode() {
+<i>296</i>&nbsp;            if(this.hashCode == 0) {
+<b class="nc"><i>297</i>&nbsp;                byte var1 = 17;</b>
+<b class="nc"><i>298</i>&nbsp;                int var3 = 37 * var1 + this.methodName.hashCode();</b>
+<b class="nc"><i>299</i>&nbsp;                if(this.argClasses != null) {</b>
+<b class="nc"><i>300</i>&nbsp;                    for(int var2 = 0; var2 &lt; this.argClasses.length; ++var2) {</b>
+<i>301</i>&nbsp;                        var3 = 37 * var3 + (this.argClasses[var2] == null?0:this.argClasses[var2].hashCode());
+<i>302</i>&nbsp;                    }
+<i>303</i>&nbsp;                }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;                this.hashCode = var3;
+<i>306</i>&nbsp;            }
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;            return this.hashCode;</b>
+<b class="nc"><i>309</i>&nbsp;        }</b>
+<b class="nc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

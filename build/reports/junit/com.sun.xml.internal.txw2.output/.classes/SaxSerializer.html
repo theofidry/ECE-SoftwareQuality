@@ -1,0 +1,240 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SaxSerializer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.txw2.output</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SaxSerializer (com.sun.xml.internal.txw2.output)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SaxSerializer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 63)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.txw2.output;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.txw2.TxwException;
+<i>9</i>&nbsp;import com.sun.xml.internal.txw2.output.IndentingXMLFilter;
+<i>10</i>&nbsp;import com.sun.xml.internal.txw2.output.XmlSerializer;
+<i>11</i>&nbsp;import java.util.Stack;
+<i>12</i>&nbsp;import javax.xml.transform.sax.SAXResult;
+<i>13</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>14</i>&nbsp;import org.xml.sax.SAXException;
+<i>15</i>&nbsp;import org.xml.sax.ext.LexicalHandler;
+<i>16</i>&nbsp;import org.xml.sax.helpers.AttributesImpl;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;public class SaxSerializer implements XmlSerializer {
+<i>19</i>&nbsp;    private final ContentHandler writer;
+<i>20</i>&nbsp;    private final LexicalHandler lexical;
+<i>21</i>&nbsp;    private final Stack&lt;String&gt; prefixBindings;
+<i>22</i>&nbsp;    private final Stack&lt;String&gt; elementBindings;
+<i>23</i>&nbsp;    private final AttributesImpl attrs;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public SaxSerializer(ContentHandler handler) {
+<i>26</i>&nbsp;        this(handler, (LexicalHandler)null, true);
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public SaxSerializer(ContentHandler handler, LexicalHandler lex) {
+<i>30</i>&nbsp;        this(handler, lex, true);
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public SaxSerializer(ContentHandler handler, LexicalHandler lex, boolean indenting) {
+<i>34</i>&nbsp;        this.prefixBindings = new Stack();
+<i>35</i>&nbsp;        this.elementBindings = new Stack();
+<i>36</i>&nbsp;        this.attrs = new AttributesImpl();
+<i>37</i>&nbsp;        if(!indenting) {
+<i>38</i>&nbsp;            this.writer = handler;
+<i>39</i>&nbsp;            this.lexical = lex;
+<i>40</i>&nbsp;        } else {
+<i>41</i>&nbsp;            IndentingXMLFilter indenter = new IndentingXMLFilter(handler, lex);
+<i>42</i>&nbsp;            this.writer = indenter;
+<i>43</i>&nbsp;            this.lexical = indenter;
+<i>44</i>&nbsp;        }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<b class="nc"><i>48</i>&nbsp;    public SaxSerializer(SAXResult result) {</b>
+<i>49</i>&nbsp;        this(result.getHandler(), result.getLexicalHandler());
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public void startDocument() {
+<i>53</i>&nbsp;        try {
+<i>54</i>&nbsp;            this.writer.startDocument();
+<i>55</i>&nbsp;        } catch (SAXException var2) {
+<i>56</i>&nbsp;            throw new TxwException(var2);
+<i>57</i>&nbsp;        }
+<i>58</i>&nbsp;    }
+<b class="nc"><i>59</i>&nbsp;</b>
+<i>60</i>&nbsp;    public void writeXmlns(String prefix, String uri) {
+<i>61</i>&nbsp;        if(prefix == null) {
+<b class="nc"><i>62</i>&nbsp;            prefix = &quot;&quot;;</b>
+<b class="nc"><i>63</i>&nbsp;        }</b>
+<b class="nc"><i>64</i>&nbsp;</b>
+<b class="nc"><i>65</i>&nbsp;        if(!prefix.equals(&quot;xml&quot;)) {</b>
+<i>66</i>&nbsp;            this.prefixBindings.add(uri);
+<b class="nc"><i>67</i>&nbsp;            this.prefixBindings.add(prefix);</b>
+<b class="nc"><i>68</i>&nbsp;        }</b>
+<b class="nc"><i>69</i>&nbsp;    }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public void beginStartTag(String uri, String localName, String prefix) {
+<i>72</i>&nbsp;        this.elementBindings.add(getQName(prefix, localName));
+<i>73</i>&nbsp;        this.elementBindings.add(localName);
+<b class="nc"><i>74</i>&nbsp;        this.elementBindings.add(uri);</b>
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public void writeAttribute(String uri, String localName, String prefix, StringBuilder value) {
+<i>78</i>&nbsp;        this.attrs.addAttribute(uri, localName, getQName(prefix, localName), &quot;CDATA&quot;, value.toString());
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public void endStartTag(String uri, String localName, String prefix) {
+<b class="nc"><i>82</i>&nbsp;        try {</b>
+<b class="nc"><i>83</i>&nbsp;            while(this.prefixBindings.size() != 0) {</b>
+<b class="nc"><i>84</i>&nbsp;                this.writer.startPrefixMapping((String)this.prefixBindings.pop(), (String)this.prefixBindings.pop());</b>
+<b class="nc"><i>85</i>&nbsp;            }</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;            this.writer.startElement(uri, localName, getQName(prefix, localName), this.attrs);
+<i>88</i>&nbsp;            this.attrs.clear();
+<i>89</i>&nbsp;        } catch (SAXException var5) {
+<b class="nc"><i>90</i>&nbsp;            throw new TxwException(var5);</b>
+<i>91</i>&nbsp;        }
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;    public void endTag() {</b>
+<b class="nc"><i>95</i>&nbsp;        try {</b>
+<i>96</i>&nbsp;            this.writer.endElement((String)this.elementBindings.pop(), (String)this.elementBindings.pop(), (String)this.elementBindings.pop());
+<i>97</i>&nbsp;        } catch (SAXException var2) {
+<b class="nc"><i>98</i>&nbsp;            throw new TxwException(var2);</b>
+<i>99</i>&nbsp;        }
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<b class="nc"><i>102</i>&nbsp;    public void text(StringBuilder text) {</b>
+<b class="nc"><i>103</i>&nbsp;        try {</b>
+<i>104</i>&nbsp;            this.writer.characters(text.toString().toCharArray(), 0, text.length());
+<i>105</i>&nbsp;        } catch (SAXException var3) {
+<i>106</i>&nbsp;            throw new TxwException(var3);
+<b class="nc"><i>107</i>&nbsp;        }</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    public void cdata(StringBuilder text) {
+<b class="nc"><i>111</i>&nbsp;        if(this.lexical == null) {</b>
+<b class="nc"><i>112</i>&nbsp;            throw new UnsupportedOperationException(&quot;LexicalHandler is needed to write PCDATA&quot;);</b>
+<b class="nc"><i>113</i>&nbsp;        } else {</b>
+<i>114</i>&nbsp;            try {
+<i>115</i>&nbsp;                this.lexical.startCDATA();
+<i>116</i>&nbsp;                this.text(text);
+<i>117</i>&nbsp;                this.lexical.endCDATA();
+<i>118</i>&nbsp;            } catch (SAXException var3) {
+<b class="nc"><i>119</i>&nbsp;                throw new TxwException(var3);</b>
+<i>120</i>&nbsp;            }
+<i>121</i>&nbsp;        }
+<b class="nc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public void comment(StringBuilder comment) {
+<i>125</i>&nbsp;        try {
+<i>126</i>&nbsp;            if(this.lexical == null) {
+<i>127</i>&nbsp;                throw new UnsupportedOperationException(&quot;LexicalHandler is needed to write comments&quot;);
+<i>128</i>&nbsp;            } else {
+<i>129</i>&nbsp;                this.lexical.comment(comment.toString().toCharArray(), 0, comment.length());
+<i>130</i>&nbsp;            }
+<b class="nc"><i>131</i>&nbsp;        } catch (SAXException var3) {</b>
+<b class="nc"><i>132</i>&nbsp;            throw new TxwException(var3);</b>
+<i>133</i>&nbsp;        }
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public void endDocument() {
+<b class="nc"><i>137</i>&nbsp;        try {</b>
+<i>138</i>&nbsp;            this.writer.endDocument();
+<i>139</i>&nbsp;        } catch (SAXException var2) {
+<i>140</i>&nbsp;            throw new TxwException(var2);
+<i>141</i>&nbsp;        }
+<b class="nc"><i>142</i>&nbsp;    }</b>
+<b class="nc"><i>143</i>&nbsp;</b>
+<b class="nc"><i>144</i>&nbsp;    public void flush() {</b>
+<b class="nc"><i>145</i>&nbsp;    }</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    private static String getQName(String prefix, String localName) {
+<i>148</i>&nbsp;        String qName;
+<i>149</i>&nbsp;        if(prefix != null &amp;&amp; prefix.length() != 0) {
+<b class="nc"><i>150</i>&nbsp;            qName = prefix + &#39;:&#39; + localName;</b>
+<i>151</i>&nbsp;        } else {
+<i>152</i>&nbsp;            qName = localName;
+<i>153</i>&nbsp;        }
+<b class="nc"><i>154</i>&nbsp;</b>
+<b class="nc"><i>155</i>&nbsp;        return qName;</b>
+<b class="nc"><i>156</i>&nbsp;    }</b>
+<i>157</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

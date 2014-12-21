@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ByteToCharConverter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.io</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ByteToCharConverter (sun.io)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ByteToCharConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.io;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>9</i>&nbsp;import sun.io.ConversionBufferFullException;
+<i>10</i>&nbsp;import sun.io.Converters;
+<i>11</i>&nbsp;import sun.io.MalformedInputException;
+<i>12</i>&nbsp;import sun.io.UnknownCharacterException;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;/** @deprecated */
+<i>15</i>&nbsp;@Deprecated
+<i>16</i>&nbsp;public abstract class ByteToCharConverter {
+<i>17</i>&nbsp;    protected boolean subMode = true;
+<i>18</i>&nbsp;    protected char[] subChars = new char[]{&#39;�&#39;};
+<i>19</i>&nbsp;    protected int charOff;
+<i>20</i>&nbsp;    protected int byteOff;
+<i>21</i>&nbsp;    protected int badInputLength;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public ByteToCharConverter() {
+<b class="nc"><i>24</i>&nbsp;    }</b>
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public static ByteToCharConverter getDefault() {
+<i>27</i>&nbsp;        Object var0 = Converters.newDefaultConverter(0);
+<i>28</i>&nbsp;        return (ByteToCharConverter)var0;
+<b class="nc"><i>29</i>&nbsp;    }</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public static ByteToCharConverter getConverter(String var0) throws UnsupportedEncodingException {
+<i>32</i>&nbsp;        Object var1 = Converters.newConverter(0, var0);
+<i>33</i>&nbsp;        return (ByteToCharConverter)var1;
+<b class="nc"><i>34</i>&nbsp;    }</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public abstract String getCharacterEncoding();
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    public abstract int convert(byte[] var1, int var2, int var3, char[] var4, int var5, int var6) throws MalformedInputException, UnknownCharacterException, ConversionBufferFullException;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public char[] convertAll(byte[] var1) throws MalformedInputException {
+<i>41</i>&nbsp;        this.reset();
+<i>42</i>&nbsp;        boolean var2 = this.subMode;
+<i>43</i>&nbsp;        this.subMode = true;
+<i>44</i>&nbsp;        char[] var3 = new char[this.getMaxCharsPerByte() * var1.length];
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        char[] var6;
+<i>47</i>&nbsp;        try {
+<i>48</i>&nbsp;            int var4 = this.convert(var1, 0, var1.length, var3, 0, var3.length);
+<i>49</i>&nbsp;            var4 += this.flush(var3, var4, var3.length);
+<i>50</i>&nbsp;            char[] var5 = new char[var4];
+<i>51</i>&nbsp;            System.arraycopy(var3, 0, var5, 0, var4);
+<i>52</i>&nbsp;            var6 = var5;
+<i>53</i>&nbsp;        } catch (ConversionBufferFullException var11) {
+<i>54</i>&nbsp;            throw new InternalError(&quot;this.getMaxCharsBerByte returned bad value&quot;);
+<i>55</i>&nbsp;        } catch (UnknownCharacterException var12) {
+<b class="nc"><i>56</i>&nbsp;            throw new InternalError();</b>
+<b class="nc"><i>57</i>&nbsp;        } finally {</b>
+<i>58</i>&nbsp;            this.subMode = var2;
+<i>59</i>&nbsp;        }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;        return var6;
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public abstract int flush(char[] var1, int var2, int var3) throws MalformedInputException, ConversionBufferFullException;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public abstract void reset();
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;    public int getMaxCharsPerByte() {</b>
+<b class="nc"><i>69</i>&nbsp;        return 1;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public int getBadInputLength() {
+<i>73</i>&nbsp;        return this.badInputLength;
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public int nextCharIndex() {
+<i>77</i>&nbsp;        return this.charOff;
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public int nextByteIndex() {
+<i>81</i>&nbsp;        return this.byteOff;
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public void setSubstitutionMode(boolean var1) {
+<i>85</i>&nbsp;        this.subMode = var1;
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public void setSubstitutionChars(char[] var1) throws IllegalArgumentException {
+<i>89</i>&nbsp;        if(var1.length &gt; this.getMaxCharsPerByte()) {
+<i>90</i>&nbsp;            throw new IllegalArgumentException();
+<i>91</i>&nbsp;        } else {
+<i>92</i>&nbsp;            this.subChars = new char[var1.length];
+<i>93</i>&nbsp;            System.arraycopy(var1, 0, this.subChars, 0, var1.length);
+<i>94</i>&nbsp;        }
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public String toString() {
+<i>98</i>&nbsp;        return &quot;ByteToCharConverter: &quot; + this.getCharacterEncoding();
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

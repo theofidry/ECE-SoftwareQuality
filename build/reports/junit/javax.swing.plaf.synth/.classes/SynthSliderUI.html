@@ -1,0 +1,834 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SynthSliderUI</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.swing.plaf.synth</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SynthSliderUI (javax.swing.plaf.synth)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SynthSliderUI</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 43)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 407)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SynthSliderUI$SynthTrackListener</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 45)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 49)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 452)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.swing.plaf.synth;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Dimension;
+<i>9</i>&nbsp;import java.awt.FontMetrics;
+<i>10</i>&nbsp;import java.awt.Graphics;
+<i>11</i>&nbsp;import java.awt.Insets;
+<i>12</i>&nbsp;import java.awt.Point;
+<i>13</i>&nbsp;import java.awt.Rectangle;
+<i>14</i>&nbsp;import java.awt.event.MouseEvent;
+<i>15</i>&nbsp;import java.beans.PropertyChangeEvent;
+<i>16</i>&nbsp;import java.beans.PropertyChangeListener;
+<i>17</i>&nbsp;import java.util.Dictionary;
+<i>18</i>&nbsp;import java.util.Enumeration;
+<i>19</i>&nbsp;import javax.swing.JComponent;
+<i>20</i>&nbsp;import javax.swing.JSlider;
+<i>21</i>&nbsp;import javax.swing.plaf.ComponentUI;
+<i>22</i>&nbsp;import javax.swing.plaf.basic.BasicSliderUI;
+<i>23</i>&nbsp;import javax.swing.plaf.basic.BasicSliderUI.TrackListener;
+<i>24</i>&nbsp;import javax.swing.plaf.synth.ColorType;
+<i>25</i>&nbsp;import javax.swing.plaf.synth.Region;
+<i>26</i>&nbsp;import javax.swing.plaf.synth.SynthContext;
+<i>27</i>&nbsp;import javax.swing.plaf.synth.SynthGraphicsUtils;
+<i>28</i>&nbsp;import javax.swing.plaf.synth.SynthLookAndFeel;
+<i>29</i>&nbsp;import javax.swing.plaf.synth.SynthStyle;
+<i>30</i>&nbsp;import javax.swing.plaf.synth.SynthUI;
+<i>31</i>&nbsp;import sun.swing.SwingUtilities2;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;public class SynthSliderUI extends BasicSliderUI implements PropertyChangeListener, SynthUI {
+<i>34</i>&nbsp;    private Rectangle valueRect = new Rectangle();
+<i>35</i>&nbsp;    private boolean paintValue;
+<i>36</i>&nbsp;    private Dimension lastSize;
+<i>37</i>&nbsp;    private int trackHeight;
+<i>38</i>&nbsp;    private int trackBorder;
+<i>39</i>&nbsp;    private int thumbWidth;
+<i>40</i>&nbsp;    private int thumbHeight;
+<i>41</i>&nbsp;    private SynthStyle style;
+<b class="nc"><i>42</i>&nbsp;    private SynthStyle sliderTrackStyle;</b>
+<i>43</i>&nbsp;    private SynthStyle sliderThumbStyle;
+<b class="nc"><i>44</i>&nbsp;    private transient boolean thumbActive;</b>
+<b class="nc"><i>45</i>&nbsp;    private transient boolean thumbPressed;</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public static ComponentUI createUI(JComponent var0) {
+<i>48</i>&nbsp;        return new SynthSliderUI((JSlider)var0);
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    protected SynthSliderUI(JSlider var1) {
+<i>52</i>&nbsp;        super(var1);
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    protected void installDefaults(JSlider var1) {
+<i>56</i>&nbsp;        this.updateStyle(var1);
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    protected void uninstallDefaults(JSlider var1) {
+<b class="nc"><i>60</i>&nbsp;        SynthContext var2 = this.getContext(var1, 1);</b>
+<i>61</i>&nbsp;        this.style.uninstallDefaults(var2);
+<i>62</i>&nbsp;        var2.dispose();
+<i>63</i>&nbsp;        this.style = null;
+<i>64</i>&nbsp;        var2 = this.getContext(var1, Region.SLIDER_TRACK, 1);
+<i>65</i>&nbsp;        this.sliderTrackStyle.uninstallDefaults(var2);
+<i>66</i>&nbsp;        var2.dispose();
+<i>67</i>&nbsp;        this.sliderTrackStyle = null;
+<i>68</i>&nbsp;        var2 = this.getContext(var1, Region.SLIDER_THUMB, 1);
+<i>69</i>&nbsp;        this.sliderThumbStyle.uninstallDefaults(var2);
+<i>70</i>&nbsp;        var2.dispose();
+<i>71</i>&nbsp;        this.sliderThumbStyle = null;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    protected void installListeners(JSlider var1) {
+<i>75</i>&nbsp;        super.installListeners(var1);
+<i>76</i>&nbsp;        var1.addPropertyChangeListener(this);
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<b class="nc"><i>79</i>&nbsp;    protected void uninstallListeners(JSlider var1) {</b>
+<i>80</i>&nbsp;        var1.removePropertyChangeListener(this);
+<i>81</i>&nbsp;        super.uninstallListeners(var1);
+<i>82</i>&nbsp;    }
+<b class="nc"><i>83</i>&nbsp;</b>
+<i>84</i>&nbsp;    private void updateStyle(JSlider var1) {
+<i>85</i>&nbsp;        SynthContext var2 = this.getContext(var1, 1);
+<i>86</i>&nbsp;        SynthStyle var3 = this.style;
+<b class="nc"><i>87</i>&nbsp;        this.style = SynthLookAndFeel.updateStyle(var2, this);</b>
+<i>88</i>&nbsp;        if(this.style != var3) {
+<i>89</i>&nbsp;            this.thumbWidth = this.style.getInt(var2, &quot;Slider.thumbWidth&quot;, 30);
+<i>90</i>&nbsp;            this.thumbHeight = this.style.getInt(var2, &quot;Slider.thumbHeight&quot;, 14);
+<b class="nc"><i>91</i>&nbsp;            String var4 = (String)this.slider.getClientProperty(&quot;JComponent.sizeVariant&quot;);</b>
+<b class="nc"><i>92</i>&nbsp;            if(var4 != null) {</b>
+<b class="nc"><i>93</i>&nbsp;                if(&quot;large&quot;.equals(var4)) {</b>
+<b class="nc"><i>94</i>&nbsp;                    this.thumbWidth = (int)((double)this.thumbWidth * 1.15D);</b>
+<i>95</i>&nbsp;                    this.thumbHeight = (int)((double)this.thumbHeight * 1.15D);
+<b class="nc"><i>96</i>&nbsp;                } else if(&quot;small&quot;.equals(var4)) {</b>
+<b class="nc"><i>97</i>&nbsp;                    this.thumbWidth = (int)((double)this.thumbWidth * 0.857D);</b>
+<b class="nc"><i>98</i>&nbsp;                    this.thumbHeight = (int)((double)this.thumbHeight * 0.857D);</b>
+<b class="nc"><i>99</i>&nbsp;                } else if(&quot;mini&quot;.equals(var4)) {</b>
+<i>100</i>&nbsp;                    this.thumbWidth = (int)((double)this.thumbWidth * 0.784D);
+<b class="nc"><i>101</i>&nbsp;                    this.thumbHeight = (int)((double)this.thumbHeight * 0.784D);</b>
+<b class="nc"><i>102</i>&nbsp;                }</b>
+<b class="nc"><i>103</i>&nbsp;            }</b>
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;            this.trackBorder = this.style.getInt(var2, &quot;Slider.trackBorder&quot;, 1);
+<i>106</i>&nbsp;            this.trackHeight = this.thumbHeight + this.trackBorder * 2;
+<i>107</i>&nbsp;            this.paintValue = this.style.getBoolean(var2, &quot;Slider.paintValue&quot;, true);
+<b class="nc"><i>108</i>&nbsp;            if(var3 != null) {</b>
+<b class="nc"><i>109</i>&nbsp;                this.uninstallKeyboardActions(var1);</b>
+<i>110</i>&nbsp;                this.installKeyboardActions(var1);
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;        }
+<b class="nc"><i>113</i>&nbsp;</b>
+<b class="nc"><i>114</i>&nbsp;        var2.dispose();</b>
+<i>115</i>&nbsp;        var2 = this.getContext(var1, Region.SLIDER_TRACK, 1);
+<i>116</i>&nbsp;        this.sliderTrackStyle = SynthLookAndFeel.updateStyle(var2, this);
+<i>117</i>&nbsp;        var2.dispose();
+<b class="nc"><i>118</i>&nbsp;        var2 = this.getContext(var1, Region.SLIDER_THUMB, 1);</b>
+<b class="nc"><i>119</i>&nbsp;        this.sliderThumbStyle = SynthLookAndFeel.updateStyle(var2, this);</b>
+<b class="nc"><i>120</i>&nbsp;        var2.dispose();</b>
+<i>121</i>&nbsp;    }
+<b class="nc"><i>122</i>&nbsp;</b>
+<b class="nc"><i>123</i>&nbsp;    protected TrackListener createTrackListener(JSlider var1) {</b>
+<i>124</i>&nbsp;        return new SynthSliderUI.SynthTrackListener();
+<i>125</i>&nbsp;    }
+<b class="nc"><i>126</i>&nbsp;</b>
+<i>127</i>&nbsp;    private void updateThumbState(int var1, int var2) {
+<i>128</i>&nbsp;        this.setThumbActive(this.thumbRect.contains(var1, var2));
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    private void updateThumbState(int var1, int var2, boolean var3) {
+<b class="nc"><i>132</i>&nbsp;        this.updateThumbState(var1, var2);</b>
+<i>133</i>&nbsp;        this.setThumbPressed(var3);
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<b class="nc"><i>136</i>&nbsp;    private void setThumbActive(boolean var1) {</b>
+<b class="nc"><i>137</i>&nbsp;        if(this.thumbActive != var1) {</b>
+<b class="nc"><i>138</i>&nbsp;            this.thumbActive = var1;</b>
+<b class="nc"><i>139</i>&nbsp;            this.slider.repaint(this.thumbRect);</b>
+<b class="nc"><i>140</i>&nbsp;        }</b>
+<b class="nc"><i>141</i>&nbsp;</b>
+<b class="nc"><i>142</i>&nbsp;    }</b>
+<b class="nc"><i>143</i>&nbsp;</b>
+<i>144</i>&nbsp;    private void setThumbPressed(boolean var1) {
+<i>145</i>&nbsp;        if(this.thumbPressed != var1) {
+<i>146</i>&nbsp;            this.thumbPressed = var1;
+<b class="nc"><i>147</i>&nbsp;            this.slider.repaint(this.thumbRect);</b>
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;
+<b class="nc"><i>150</i>&nbsp;    }</b>
+<i>151</i>&nbsp;
+<b class="nc"><i>152</i>&nbsp;    public int getBaseline(JComponent var1, int var2, int var3) {</b>
+<i>153</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>154</i>&nbsp;            throw new NullPointerException(&quot;Component must be non-null&quot;);</b>
+<b class="nc"><i>155</i>&nbsp;        } else if(var2 &gt;= 0 &amp;&amp; var3 &gt;= 0) {</b>
+<b class="nc"><i>156</i>&nbsp;            if(this.slider.getPaintLabels() &amp;&amp; this.labelsHaveSameBaselines()) {</b>
+<i>157</i>&nbsp;                Insets var4 = new Insets(0, 0, 0, 0);
+<i>158</i>&nbsp;                SynthContext var5 = this.getContext(this.slider, Region.SLIDER_TRACK);
+<b class="nc"><i>159</i>&nbsp;                this.style.getInsets(var5, var4);</b>
+<i>160</i>&nbsp;                var5.dispose();
+<b class="nc"><i>161</i>&nbsp;                int var7;</b>
+<b class="nc"><i>162</i>&nbsp;                int var8;</b>
+<i>163</i>&nbsp;                int var10;
+<b class="nc"><i>164</i>&nbsp;                int var17;</b>
+<i>165</i>&nbsp;                if(this.slider.getOrientation() == 0) {
+<b class="nc"><i>166</i>&nbsp;                    int var15 = 0;</b>
+<b class="nc"><i>167</i>&nbsp;                    if(this.paintValue) {</b>
+<i>168</i>&nbsp;                        SynthContext var16 = this.getContext(this.slider);
+<b class="nc"><i>169</i>&nbsp;                        var15 = var16.getStyle().getGraphicsUtils(var16).getMaximumCharHeight(var16);</b>
+<i>170</i>&nbsp;                        var16.dispose();
+<i>171</i>&nbsp;                    }
+<i>172</i>&nbsp;
+<b class="nc"><i>173</i>&nbsp;                    var7 = 0;</b>
+<i>174</i>&nbsp;                    if(this.slider.getPaintTicks()) {
+<i>175</i>&nbsp;                        var7 = this.getTickLength();
+<i>176</i>&nbsp;                    }
+<b class="nc"><i>177</i>&nbsp;</b>
+<i>178</i>&nbsp;                    var8 = this.getHeightOfTallestLabel();
+<i>179</i>&nbsp;                    var17 = var15 + this.trackHeight + var4.top + var4.bottom + var7 + var8 + 4;
+<i>180</i>&nbsp;                    var10 = var3 / 2 - var17 / 2;
+<b class="nc"><i>181</i>&nbsp;                    var10 += var15 + 2;</b>
+<b class="nc"><i>182</i>&nbsp;                    var10 += this.trackHeight + var4.top + var4.bottom;</b>
+<i>183</i>&nbsp;                    var10 += var7 + 2;
+<i>184</i>&nbsp;                    JComponent var18 = (JComponent)this.slider.getLabelTable().elements().nextElement();
+<i>185</i>&nbsp;                    Dimension var19 = var18.getPreferredSize();
+<b class="nc"><i>186</i>&nbsp;                    return var10 + var18.getBaseline(var19.width, var19.height);</b>
+<b class="nc"><i>187</i>&nbsp;                }</b>
+<b class="nc"><i>188</i>&nbsp;</b>
+<i>189</i>&nbsp;                Integer var6 = this.slider.getInverted()?this.getLowestValue():this.getHighestValue();
+<i>190</i>&nbsp;                if(var6 != null) {
+<i>191</i>&nbsp;                    var7 = this.insetCache.top;
+<i>192</i>&nbsp;                    var8 = 0;
+<b class="nc"><i>193</i>&nbsp;                    if(this.paintValue) {</b>
+<b class="nc"><i>194</i>&nbsp;                        SynthContext var9 = this.getContext(this.slider);</b>
+<b class="nc"><i>195</i>&nbsp;                        var8 = var9.getStyle().getGraphicsUtils(var9).getMaximumCharHeight(var9);</b>
+<i>196</i>&nbsp;                        var9.dispose();
+<i>197</i>&nbsp;                    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;                    var17 = var3 - this.insetCache.top - this.insetCache.bottom;
+<b class="nc"><i>200</i>&nbsp;                    var10 = var7 + var8;</b>
+<b class="nc"><i>201</i>&nbsp;                    int var11 = var17 - var8;</b>
+<i>202</i>&nbsp;                    int var12 = this.yPositionForValue(var6.intValue(), var10, var11);
+<b class="nc"><i>203</i>&nbsp;                    JComponent var13 = (JComponent)this.slider.getLabelTable().get(var6);</b>
+<b class="nc"><i>204</i>&nbsp;                    Dimension var14 = var13.getPreferredSize();</b>
+<i>205</i>&nbsp;                    return var12 - var14.height / 2 + var13.getBaseline(var14.width, var14.height);
+<i>206</i>&nbsp;                }
+<b class="nc"><i>207</i>&nbsp;            }</b>
+<i>208</i>&nbsp;
+<b class="nc"><i>209</i>&nbsp;            return -1;</b>
+<b class="nc"><i>210</i>&nbsp;        } else {</b>
+<i>211</i>&nbsp;            throw new IllegalArgumentException(&quot;Width and height must be &gt;= 0&quot;);
+<b class="nc"><i>212</i>&nbsp;        }</b>
+<b class="nc"><i>213</i>&nbsp;    }</b>
+<b class="nc"><i>214</i>&nbsp;</b>
+<b class="nc"><i>215</i>&nbsp;    public Dimension getPreferredSize(JComponent var1) {</b>
+<b class="nc"><i>216</i>&nbsp;        this.recalculateIfInsetsChanged();</b>
+<b class="nc"><i>217</i>&nbsp;        Dimension var2 = new Dimension(this.contentRect.width, this.contentRect.height);</b>
+<b class="nc"><i>218</i>&nbsp;        if(this.slider.getOrientation() == 1) {</b>
+<i>219</i>&nbsp;            var2.height = 200;
+<b class="nc"><i>220</i>&nbsp;        } else {</b>
+<i>221</i>&nbsp;            var2.width = 200;
+<b class="nc"><i>222</i>&nbsp;        }</b>
+<b class="nc"><i>223</i>&nbsp;</b>
+<b class="nc"><i>224</i>&nbsp;        Insets var3 = this.slider.getInsets();</b>
+<i>225</i>&nbsp;        var2.width += var3.left + var3.right;
+<b class="nc"><i>226</i>&nbsp;        var2.height += var3.top + var3.bottom;</b>
+<b class="nc"><i>227</i>&nbsp;        return var2;</b>
+<i>228</i>&nbsp;    }
+<i>229</i>&nbsp;
+<b class="nc"><i>230</i>&nbsp;    public Dimension getMinimumSize(JComponent var1) {</b>
+<b class="nc"><i>231</i>&nbsp;        this.recalculateIfInsetsChanged();</b>
+<b class="nc"><i>232</i>&nbsp;        Dimension var2 = new Dimension(this.contentRect.width, this.contentRect.height);</b>
+<b class="nc"><i>233</i>&nbsp;        if(this.slider.getOrientation() == 1) {</b>
+<b class="nc"><i>234</i>&nbsp;            var2.height = this.thumbRect.height + this.insetCache.top + this.insetCache.bottom;</b>
+<i>235</i>&nbsp;        } else {
+<b class="nc"><i>236</i>&nbsp;            var2.width = this.thumbRect.width + this.insetCache.left + this.insetCache.right;</b>
+<b class="nc"><i>237</i>&nbsp;        }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;        return var2;
+<b class="nc"><i>240</i>&nbsp;    }</b>
+<i>241</i>&nbsp;
+<b class="nc"><i>242</i>&nbsp;    protected void calculateGeometry() {</b>
+<b class="nc"><i>243</i>&nbsp;        this.calculateThumbSize();</b>
+<b class="nc"><i>244</i>&nbsp;        this.layout();</b>
+<b class="nc"><i>245</i>&nbsp;        this.calculateThumbLocation();</b>
+<b class="nc"><i>246</i>&nbsp;    }</b>
+<b class="nc"><i>247</i>&nbsp;</b>
+<i>248</i>&nbsp;    protected void layout() {
+<b class="nc"><i>249</i>&nbsp;        SynthContext var1 = this.getContext(this.slider);</b>
+<i>250</i>&nbsp;        SynthGraphicsUtils var2 = this.style.getGraphicsUtils(var1);
+<b class="nc"><i>251</i>&nbsp;        Insets var3 = new Insets(0, 0, 0, 0);</b>
+<i>252</i>&nbsp;        SynthContext var4 = this.getContext(this.slider, Region.SLIDER_TRACK);
+<b class="nc"><i>253</i>&nbsp;        this.style.getInsets(var4, var3);</b>
+<b class="nc"><i>254</i>&nbsp;        var4.dispose();</b>
+<b class="nc"><i>255</i>&nbsp;        int var7;</b>
+<i>256</i>&nbsp;        int var8;
+<b class="nc"><i>257</i>&nbsp;        int var9;</b>
+<i>258</i>&nbsp;        int var13;
+<b class="nc"><i>259</i>&nbsp;        if(this.slider.getOrientation() == 0) {</b>
+<b class="nc"><i>260</i>&nbsp;            this.valueRect.height = 0;</b>
+<i>261</i>&nbsp;            if(this.paintValue) {
+<i>262</i>&nbsp;                this.valueRect.height = var2.getMaximumCharHeight(var1);
+<i>263</i>&nbsp;            }
+<i>264</i>&nbsp;
+<b class="nc"><i>265</i>&nbsp;            this.trackRect.height = this.trackHeight;</b>
+<i>266</i>&nbsp;            this.tickRect.height = 0;
+<i>267</i>&nbsp;            if(this.slider.getPaintTicks()) {
+<i>268</i>&nbsp;                this.tickRect.height = this.getTickLength();
+<b class="nc"><i>269</i>&nbsp;            }</b>
+<b class="nc"><i>270</i>&nbsp;</b>
+<b class="nc"><i>271</i>&nbsp;            this.labelRect.height = 0;</b>
+<b class="nc"><i>272</i>&nbsp;            if(this.slider.getPaintLabels()) {</b>
+<i>273</i>&nbsp;                this.labelRect.height = this.getHeightOfTallestLabel();
+<b class="nc"><i>274</i>&nbsp;            }</b>
+<i>275</i>&nbsp;
+<b class="nc"><i>276</i>&nbsp;            this.contentRect.height = this.valueRect.height + this.trackRect.height + var3.top + var3.bottom + this.tickRect.height + this.labelRect.height + 4;</b>
+<i>277</i>&nbsp;            this.contentRect.width = this.slider.getWidth() - this.insetCache.left - this.insetCache.right;
+<i>278</i>&nbsp;            int var5 = 0;
+<i>279</i>&nbsp;            if(this.slider.getPaintLabels()) {
+<b class="nc"><i>280</i>&nbsp;                this.trackRect.x = this.insetCache.left;</b>
+<b class="nc"><i>281</i>&nbsp;                this.trackRect.width = this.contentRect.width;</b>
+<b class="nc"><i>282</i>&nbsp;                Dictionary var6 = this.slider.getLabelTable();</b>
+<b class="nc"><i>283</i>&nbsp;                if(var6 != null) {</b>
+<i>284</i>&nbsp;                    var7 = this.slider.getMinimum();
+<b class="nc"><i>285</i>&nbsp;                    var8 = this.slider.getMaximum();</b>
+<i>286</i>&nbsp;                    var9 = 2147483647;
+<b class="nc"><i>287</i>&nbsp;                    int var10 = -2147483648;</b>
+<i>288</i>&nbsp;                    Enumeration var11 = var6.keys();
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;                    while(var11.hasMoreElements()) {
+<b class="nc"><i>291</i>&nbsp;                        int var12 = ((Integer)var11.nextElement()).intValue();</b>
+<b class="nc"><i>292</i>&nbsp;                        if(var12 &gt;= var7 &amp;&amp; var12 &lt; var9) {</b>
+<i>293</i>&nbsp;                            var9 = var12;
+<i>294</i>&nbsp;                        }
+<i>295</i>&nbsp;
+<b class="nc"><i>296</i>&nbsp;                        if(var12 &lt;= var8 &amp;&amp; var12 &gt; var10) {</b>
+<b class="nc"><i>297</i>&nbsp;                            var10 = var12;</b>
+<i>298</i>&nbsp;                        }
+<i>299</i>&nbsp;                    }
+<b class="nc"><i>300</i>&nbsp;</b>
+<b class="nc"><i>301</i>&nbsp;                    var5 = this.getPadForLabel(var9);</b>
+<i>302</i>&nbsp;                    var5 = Math.max(var5, this.getPadForLabel(var10));
+<i>303</i>&nbsp;                }
+<b class="nc"><i>304</i>&nbsp;            }</b>
+<b class="nc"><i>305</i>&nbsp;</b>
+<b class="nc"><i>306</i>&nbsp;            this.valueRect.x = this.trackRect.x = this.tickRect.x = this.labelRect.x = this.insetCache.left + var5;</b>
+<b class="nc"><i>307</i>&nbsp;            this.valueRect.width = this.trackRect.width = this.tickRect.width = this.labelRect.width = this.contentRect.width - var5 * 2;</b>
+<i>308</i>&nbsp;            var13 = this.slider.getHeight() / 2 - this.contentRect.height / 2;
+<b class="nc"><i>309</i>&nbsp;            this.valueRect.y = var13;</b>
+<i>310</i>&nbsp;            var13 += this.valueRect.height + 2;
+<i>311</i>&nbsp;            this.trackRect.y = var13 + var3.top;
+<b class="nc"><i>312</i>&nbsp;            var13 += this.trackRect.height + var3.top + var3.bottom;</b>
+<b class="nc"><i>313</i>&nbsp;            this.tickRect.y = var13;</b>
+<b class="nc"><i>314</i>&nbsp;            var13 += this.tickRect.height + 2;</b>
+<i>315</i>&nbsp;            this.labelRect.y = var13;
+<i>316</i>&nbsp;            int var10000 = var13 + this.labelRect.height;
+<i>317</i>&nbsp;        } else {
+<b class="nc"><i>318</i>&nbsp;            this.trackRect.width = this.trackHeight;</b>
+<i>319</i>&nbsp;            this.tickRect.width = 0;
+<b class="nc"><i>320</i>&nbsp;            if(this.slider.getPaintTicks()) {</b>
+<b class="nc"><i>321</i>&nbsp;                this.tickRect.width = this.getTickLength();</b>
+<b class="nc"><i>322</i>&nbsp;            }</b>
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;            this.labelRect.width = 0;
+<b class="nc"><i>325</i>&nbsp;            if(this.slider.getPaintLabels()) {</b>
+<b class="nc"><i>326</i>&nbsp;                this.labelRect.width = this.getWidthOfWidestLabel();</b>
+<b class="nc"><i>327</i>&nbsp;            }</b>
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;            this.valueRect.y = this.insetCache.top;
+<b class="nc"><i>330</i>&nbsp;            this.valueRect.height = 0;</b>
+<i>331</i>&nbsp;            if(this.paintValue) {
+<i>332</i>&nbsp;                this.valueRect.height = var2.getMaximumCharHeight(var1);
+<b class="nc"><i>333</i>&nbsp;            }</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;            FontMetrics var14 = this.slider.getFontMetrics(this.slider.getFont());
+<i>336</i>&nbsp;            this.valueRect.width = Math.max(var2.computeStringWidth(var1, this.slider.getFont(), var14, &quot;&quot; + this.slider.getMaximum()), var2.computeStringWidth(var1, this.slider.getFont(), var14, &quot;&quot; + this.slider.getMinimum()));
+<b class="nc"><i>337</i>&nbsp;            var13 = this.valueRect.width / 2;</b>
+<b class="nc"><i>338</i>&nbsp;            var7 = var3.left + this.trackRect.width / 2;</b>
+<i>339</i>&nbsp;            var8 = this.trackRect.width / 2 + var3.right + this.tickRect.width + this.labelRect.width;
+<i>340</i>&nbsp;            this.contentRect.width = Math.max(var7, var13) + Math.max(var8, var13) + 2 + this.insetCache.left + this.insetCache.right;
+<b class="nc"><i>341</i>&nbsp;            this.contentRect.height = this.slider.getHeight() - this.insetCache.top - this.insetCache.bottom;</b>
+<b class="nc"><i>342</i>&nbsp;            this.trackRect.y = this.tickRect.y = this.labelRect.y = this.valueRect.y + this.valueRect.height;</b>
+<i>343</i>&nbsp;            this.trackRect.height = this.tickRect.height = this.labelRect.height = this.contentRect.height - this.valueRect.height;
+<b class="nc"><i>344</i>&nbsp;            var9 = this.slider.getWidth() / 2 - this.contentRect.width / 2;</b>
+<b class="nc"><i>345</i>&nbsp;            if(SynthLookAndFeel.isLeftToRight(this.slider)) {</b>
+<b class="nc"><i>346</i>&nbsp;                if(var13 &gt; var7) {</b>
+<b class="nc"><i>347</i>&nbsp;                    var9 += var13 - var7;</b>
+<i>348</i>&nbsp;                }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;                this.trackRect.x = var9 + var3.left;
+<i>351</i>&nbsp;                var9 += var3.left + this.trackRect.width + var3.right;
+<b class="nc"><i>352</i>&nbsp;                this.tickRect.x = var9;</b>
+<b class="nc"><i>353</i>&nbsp;                this.labelRect.x = var9 + this.tickRect.width + 2;</b>
+<b class="nc"><i>354</i>&nbsp;            } else {</b>
+<b class="nc"><i>355</i>&nbsp;                if(var13 &gt; var8) {</b>
+<b class="nc"><i>356</i>&nbsp;                    var9 += var13 - var8;</b>
+<b class="nc"><i>357</i>&nbsp;                }</b>
+<b class="nc"><i>358</i>&nbsp;</b>
+<i>359</i>&nbsp;                this.labelRect.x = var9;
+<b class="nc"><i>360</i>&nbsp;                var9 += this.labelRect.width + 2;</b>
+<b class="nc"><i>361</i>&nbsp;                this.tickRect.x = var9;</b>
+<i>362</i>&nbsp;                this.trackRect.x = var9 + this.tickRect.width + var3.left;
+<b class="nc"><i>363</i>&nbsp;            }</b>
+<i>364</i>&nbsp;        }
+<i>365</i>&nbsp;
+<b class="nc"><i>366</i>&nbsp;        var1.dispose();</b>
+<b class="nc"><i>367</i>&nbsp;        this.lastSize = this.slider.getSize();</b>
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    private int getPadForLabel(int var1) {
+<i>371</i>&nbsp;        int var2 = 0;
+<b class="nc"><i>372</i>&nbsp;        JComponent var3 = (JComponent)this.slider.getLabelTable().get(Integer.valueOf(var1));</b>
+<i>373</i>&nbsp;        if(var3 != null) {
+<b class="nc"><i>374</i>&nbsp;            int var4 = this.xPositionForValue(var1);</b>
+<i>375</i>&nbsp;            int var5 = var3.getPreferredSize().width / 2;
+<i>376</i>&nbsp;            if(var4 - var5 &lt; this.insetCache.left) {
+<b class="nc"><i>377</i>&nbsp;                var2 = Math.max(var2, this.insetCache.left - (var4 - var5));</b>
+<i>378</i>&nbsp;            }
+<b class="nc"><i>379</i>&nbsp;</b>
+<b class="nc"><i>380</i>&nbsp;            if(var4 + var5 &gt; this.slider.getWidth() - this.insetCache.right) {</b>
+<i>381</i>&nbsp;                var2 = Math.max(var2, var4 + var5 - (this.slider.getWidth() - this.insetCache.right));
+<b class="nc"><i>382</i>&nbsp;            }</b>
+<b class="nc"><i>383</i>&nbsp;        }</b>
+<i>384</i>&nbsp;
+<b class="nc"><i>385</i>&nbsp;        return var2;</b>
+<b class="nc"><i>386</i>&nbsp;    }</b>
+<i>387</i>&nbsp;
+<b class="nc"><i>388</i>&nbsp;    protected void calculateThumbLocation() {</b>
+<b class="nc"><i>389</i>&nbsp;        super.calculateThumbLocation();</b>
+<b class="nc"><i>390</i>&nbsp;        if(this.slider.getOrientation() == 0) {</b>
+<i>391</i>&nbsp;            this.thumbRect.y += this.trackBorder;
+<i>392</i>&nbsp;        } else {
+<b class="nc"><i>393</i>&nbsp;            this.thumbRect.x += this.trackBorder;</b>
+<i>394</i>&nbsp;        }
+<b class="nc"><i>395</i>&nbsp;</b>
+<b class="nc"><i>396</i>&nbsp;        Point var1 = this.slider.getMousePosition();</b>
+<b class="nc"><i>397</i>&nbsp;        if(var1 != null) {</b>
+<i>398</i>&nbsp;            this.updateThumbState(var1.x, var1.y);
+<i>399</i>&nbsp;        }
+<b class="nc"><i>400</i>&nbsp;</b>
+<b class="nc"><i>401</i>&nbsp;    }</b>
+<b class="nc"><i>402</i>&nbsp;</b>
+<i>403</i>&nbsp;    public void setThumbLocation(int var1, int var2) {
+<i>404</i>&nbsp;        super.setThumbLocation(var1, var2);
+<b class="nc"><i>405</i>&nbsp;        this.slider.repaint(this.valueRect.x, this.valueRect.y, this.valueRect.width, this.valueRect.height);</b>
+<b class="nc"><i>406</i>&nbsp;        this.setThumbActive(false);</b>
+<b class="nc"><i>407</i>&nbsp;    }</b>
+<b class="nc"><i>408</i>&nbsp;</b>
+<i>409</i>&nbsp;    protected int xPositionForValue(int var1) {
+<i>410</i>&nbsp;        int var2 = this.slider.getMinimum();
+<i>411</i>&nbsp;        int var3 = this.slider.getMaximum();
+<i>412</i>&nbsp;        int var4 = this.trackRect.x + this.thumbRect.width / 2 + this.trackBorder;
+<b class="nc"><i>413</i>&nbsp;        int var5 = this.trackRect.x + this.trackRect.width - this.thumbRect.width / 2 - this.trackBorder;</b>
+<b class="nc"><i>414</i>&nbsp;        int var6 = var5 - var4;</b>
+<i>415</i>&nbsp;        double var7 = (double)var3 - (double)var2;
+<i>416</i>&nbsp;        double var9 = (double)var6 / var7;
+<i>417</i>&nbsp;        int var11;
+<i>418</i>&nbsp;        if(!this.drawInverted()) {
+<i>419</i>&nbsp;            var11 = (int)((long)var4 + Math.round(var9 * ((double)var1 - (double)var2)));
+<b class="nc"><i>420</i>&nbsp;        } else {</b>
+<b class="nc"><i>421</i>&nbsp;            var11 = (int)((long)var5 - Math.round(var9 * ((double)var1 - (double)var2)));</b>
+<b class="nc"><i>422</i>&nbsp;        }</b>
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;        var11 = Math.max(var4, var11);</b>
+<i>425</i>&nbsp;        var11 = Math.min(var5, var11);
+<b class="nc"><i>426</i>&nbsp;        return var11;</b>
+<i>427</i>&nbsp;    }
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;    protected int yPositionForValue(int var1, int var2, int var3) {
+<b class="nc"><i>430</i>&nbsp;        int var4 = this.slider.getMinimum();</b>
+<i>431</i>&nbsp;        int var5 = this.slider.getMaximum();
+<b class="nc"><i>432</i>&nbsp;        int var6 = var2 + this.thumbRect.height / 2 + this.trackBorder;</b>
+<i>433</i>&nbsp;        int var7 = var2 + var3 - this.thumbRect.height / 2 - this.trackBorder;
+<i>434</i>&nbsp;        int var8 = var7 - var6;
+<b class="nc"><i>435</i>&nbsp;        double var9 = (double)var5 - (double)var4;</b>
+<b class="nc"><i>436</i>&nbsp;        double var11 = (double)var8 / var9;</b>
+<b class="nc"><i>437</i>&nbsp;        int var13;</b>
+<b class="nc"><i>438</i>&nbsp;        if(!this.drawInverted()) {</b>
+<i>439</i>&nbsp;            var13 = (int)((long)var6 + Math.round(var11 * ((double)var5 - (double)var1)));
+<b class="nc"><i>440</i>&nbsp;        } else {</b>
+<i>441</i>&nbsp;            var13 = (int)((long)var6 + Math.round(var11 * ((double)var1 - (double)var4)));
+<b class="nc"><i>442</i>&nbsp;        }</b>
+<b class="nc"><i>443</i>&nbsp;</b>
+<b class="nc"><i>444</i>&nbsp;        var13 = Math.max(var6, var13);</b>
+<i>445</i>&nbsp;        var13 = Math.min(var7, var13);
+<b class="nc"><i>446</i>&nbsp;        return var13;</b>
+<b class="nc"><i>447</i>&nbsp;    }</b>
+<i>448</i>&nbsp;
+<b class="nc"><i>449</i>&nbsp;    public int valueForYPosition(int var1) {</b>
+<i>450</i>&nbsp;        int var3 = this.slider.getMinimum();
+<b class="nc"><i>451</i>&nbsp;        int var4 = this.slider.getMaximum();</b>
+<b class="nc"><i>452</i>&nbsp;        int var5 = this.trackRect.y + this.thumbRect.height / 2 + this.trackBorder;</b>
+<b class="nc"><i>453</i>&nbsp;        int var6 = this.trackRect.y + this.trackRect.height - this.thumbRect.height / 2 - this.trackBorder;</b>
+<i>454</i>&nbsp;        int var7 = var6 - var5;
+<i>455</i>&nbsp;        int var2;
+<b class="nc"><i>456</i>&nbsp;        if(var1 &lt;= var5) {</b>
+<i>457</i>&nbsp;            var2 = this.drawInverted()?var3:var4;
+<b class="nc"><i>458</i>&nbsp;        } else if(var1 &gt;= var6) {</b>
+<i>459</i>&nbsp;            var2 = this.drawInverted()?var4:var3;
+<i>460</i>&nbsp;        } else {
+<i>461</i>&nbsp;            int var8 = var1 - var5;
+<i>462</i>&nbsp;            double var9 = (double)var4 - (double)var3;
+<i>463</i>&nbsp;            double var11 = var9 / (double)var7;
+<i>464</i>&nbsp;            int var13 = (int)Math.round((double)var8 * var11);
+<i>465</i>&nbsp;            var2 = this.drawInverted()?var3 + var13:var4 - var13;
+<i>466</i>&nbsp;        }
+<i>467</i>&nbsp;
+<b class="nc"><i>468</i>&nbsp;        return var2;</b>
+<b class="nc"><i>469</i>&nbsp;    }</b>
+<i>470</i>&nbsp;
+<b class="nc"><i>471</i>&nbsp;    public int valueForXPosition(int var1) {</b>
+<b class="nc"><i>472</i>&nbsp;        int var3 = this.slider.getMinimum();</b>
+<b class="nc"><i>473</i>&nbsp;        int var4 = this.slider.getMaximum();</b>
+<b class="nc"><i>474</i>&nbsp;        int var5 = this.trackRect.x + this.thumbRect.width / 2 + this.trackBorder;</b>
+<b class="nc"><i>475</i>&nbsp;        int var6 = this.trackRect.x + this.trackRect.width - this.thumbRect.width / 2 - this.trackBorder;</b>
+<b class="nc"><i>476</i>&nbsp;        int var7 = var6 - var5;</b>
+<b class="nc"><i>477</i>&nbsp;        int var2;</b>
+<i>478</i>&nbsp;        if(var1 &lt;= var5) {
+<i>479</i>&nbsp;            var2 = this.drawInverted()?var4:var3;
+<b class="nc"><i>480</i>&nbsp;        } else if(var1 &gt;= var6) {</b>
+<b class="nc"><i>481</i>&nbsp;            var2 = this.drawInverted()?var3:var4;</b>
+<i>482</i>&nbsp;        } else {
+<i>483</i>&nbsp;            int var8 = var1 - var5;
+<i>484</i>&nbsp;            double var9 = (double)var4 - (double)var3;
+<b class="nc"><i>485</i>&nbsp;            double var11 = var9 / (double)var7;</b>
+<i>486</i>&nbsp;            int var13 = (int)Math.round((double)var8 * var11);
+<i>487</i>&nbsp;            var2 = this.drawInverted()?var4 - var13:var3 + var13;
+<i>488</i>&nbsp;        }
+<b class="nc"><i>489</i>&nbsp;</b>
+<b class="nc"><i>490</i>&nbsp;        return var2;</b>
+<b class="nc"><i>491</i>&nbsp;    }</b>
+<b class="nc"><i>492</i>&nbsp;</b>
+<b class="nc"><i>493</i>&nbsp;    protected Dimension getThumbSize() {</b>
+<b class="nc"><i>494</i>&nbsp;        Dimension var1 = new Dimension();</b>
+<i>495</i>&nbsp;        if(this.slider.getOrientation() == 1) {
+<b class="nc"><i>496</i>&nbsp;            var1.width = this.thumbHeight;</b>
+<b class="nc"><i>497</i>&nbsp;            var1.height = this.thumbWidth;</b>
+<b class="nc"><i>498</i>&nbsp;        } else {</b>
+<b class="nc"><i>499</i>&nbsp;            var1.width = this.thumbWidth;</b>
+<i>500</i>&nbsp;            var1.height = this.thumbHeight;
+<i>501</i>&nbsp;        }
+<b class="nc"><i>502</i>&nbsp;</b>
+<i>503</i>&nbsp;        return var1;
+<b class="nc"><i>504</i>&nbsp;    }</b>
+<b class="nc"><i>505</i>&nbsp;</b>
+<i>506</i>&nbsp;    protected void recalculateIfInsetsChanged() {
+<b class="nc"><i>507</i>&nbsp;        SynthContext var1 = this.getContext(this.slider);</b>
+<b class="nc"><i>508</i>&nbsp;        Insets var2 = this.style.getInsets(var1, (Insets)null);</b>
+<i>509</i>&nbsp;        Insets var3 = this.slider.getInsets();
+<i>510</i>&nbsp;        var2.left += var3.left;
+<i>511</i>&nbsp;        var2.right += var3.right;
+<b class="nc"><i>512</i>&nbsp;        var2.top += var3.top;</b>
+<b class="nc"><i>513</i>&nbsp;        var2.bottom += var3.bottom;</b>
+<i>514</i>&nbsp;        if(!var2.equals(this.insetCache)) {
+<i>515</i>&nbsp;            this.insetCache = var2;
+<i>516</i>&nbsp;            this.calculateGeometry();
+<i>517</i>&nbsp;        }
+<b class="nc"><i>518</i>&nbsp;</b>
+<b class="nc"><i>519</i>&nbsp;        var1.dispose();</b>
+<b class="nc"><i>520</i>&nbsp;    }</b>
+<b class="nc"><i>521</i>&nbsp;</b>
+<b class="nc"><i>522</i>&nbsp;    public SynthContext getContext(JComponent var1) {</b>
+<b class="nc"><i>523</i>&nbsp;        return this.getContext(var1, SynthLookAndFeel.getComponentState(var1));</b>
+<b class="nc"><i>524</i>&nbsp;    }</b>
+<b class="nc"><i>525</i>&nbsp;</b>
+<i>526</i>&nbsp;    private SynthContext getContext(JComponent var1, int var2) {
+<b class="nc"><i>527</i>&nbsp;        return SynthContext.getContext(SynthContext.class, var1, SynthLookAndFeel.getRegion(var1), this.style, var2);</b>
+<b class="nc"><i>528</i>&nbsp;    }</b>
+<b class="nc"><i>529</i>&nbsp;</b>
+<i>530</i>&nbsp;    private SynthContext getContext(JComponent var1, Region var2) {
+<i>531</i>&nbsp;        return this.getContext(var1, var2, this.getComponentState(var1, var2));
+<i>532</i>&nbsp;    }
+<i>533</i>&nbsp;
+<b class="nc"><i>534</i>&nbsp;    private SynthContext getContext(JComponent var1, Region var2, int var3) {</b>
+<b class="nc"><i>535</i>&nbsp;        SynthStyle var4 = null;</b>
+<b class="nc"><i>536</i>&nbsp;        Class var5 = SynthContext.class;</b>
+<b class="nc"><i>537</i>&nbsp;        if(var2 == Region.SLIDER_TRACK) {</b>
+<b class="nc"><i>538</i>&nbsp;            var4 = this.sliderTrackStyle;</b>
+<i>539</i>&nbsp;        } else if(var2 == Region.SLIDER_THUMB) {
+<b class="nc"><i>540</i>&nbsp;            var4 = this.sliderThumbStyle;</b>
+<b class="nc"><i>541</i>&nbsp;        }</b>
+<b class="nc"><i>542</i>&nbsp;</b>
+<i>543</i>&nbsp;        return SynthContext.getContext(var5, var1, var2, var4, var3);
+<i>544</i>&nbsp;    }
+<b class="nc"><i>545</i>&nbsp;</b>
+<b class="nc"><i>546</i>&nbsp;    private int getComponentState(JComponent var1, Region var2) {</b>
+<b class="nc"><i>547</i>&nbsp;        if(var2 == Region.SLIDER_THUMB &amp;&amp; this.thumbActive &amp;&amp; var1.isEnabled()) {</b>
+<i>548</i>&nbsp;            int var3 = this.thumbPressed?4:2;
+<b class="nc"><i>549</i>&nbsp;            if(var1.isFocusOwner()) {</b>
+<b class="nc"><i>550</i>&nbsp;                var3 |= 256;</b>
+<i>551</i>&nbsp;            }
+<b class="nc"><i>552</i>&nbsp;</b>
+<b class="nc"><i>553</i>&nbsp;            return var3;</b>
+<i>554</i>&nbsp;        } else {
+<b class="nc"><i>555</i>&nbsp;            return SynthLookAndFeel.getComponentState(var1);</b>
+<b class="nc"><i>556</i>&nbsp;        }</b>
+<b class="nc"><i>557</i>&nbsp;    }</b>
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;    public void update(Graphics var1, JComponent var2) {
+<i>560</i>&nbsp;        SynthContext var3 = this.getContext(var2);
+<i>561</i>&nbsp;        SynthLookAndFeel.update(var3, var1);
+<b class="nc"><i>562</i>&nbsp;        var3.getPainter().paintSliderBackground(var3, var1, 0, 0, var2.getWidth(), var2.getHeight(), this.slider.getOrientation());</b>
+<i>563</i>&nbsp;        this.paint((SynthContext)var3, (Graphics)var1);
+<i>564</i>&nbsp;        var3.dispose();
+<b class="nc"><i>565</i>&nbsp;    }</b>
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;    public void paint(Graphics var1, JComponent var2) {
+<b class="nc"><i>568</i>&nbsp;        SynthContext var3 = this.getContext(var2);</b>
+<i>569</i>&nbsp;        this.paint((SynthContext)var3, (Graphics)var1);
+<b class="nc"><i>570</i>&nbsp;        var3.dispose();</b>
+<i>571</i>&nbsp;    }
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    protected void paint(SynthContext var1, Graphics var2) {
+<b class="nc"><i>574</i>&nbsp;        this.recalculateIfInsetsChanged();</b>
+<b class="nc"><i>575</i>&nbsp;        this.recalculateIfOrientationChanged();</b>
+<b class="nc"><i>576</i>&nbsp;        Rectangle var3 = var2.getClipBounds();</b>
+<b class="nc"><i>577</i>&nbsp;        if(this.lastSize == null || !this.lastSize.equals(this.slider.getSize())) {</b>
+<i>578</i>&nbsp;            this.calculateGeometry();
+<b class="nc"><i>579</i>&nbsp;        }</b>
+<b class="nc"><i>580</i>&nbsp;</b>
+<b class="nc"><i>581</i>&nbsp;        if(this.paintValue) {</b>
+<i>582</i>&nbsp;            FontMetrics var4 = SwingUtilities2.getFontMetrics(this.slider, var2);
+<i>583</i>&nbsp;            int var5 = var1.getStyle().getGraphicsUtils(var1).computeStringWidth(var1, var2.getFont(), var4, &quot;&quot; + this.slider.getValue());
+<b class="nc"><i>584</i>&nbsp;            this.valueRect.x = this.thumbRect.x + (this.thumbRect.width - var5) / 2;</b>
+<b class="nc"><i>585</i>&nbsp;            if(this.slider.getOrientation() == 0) {</b>
+<b class="nc"><i>586</i>&nbsp;                if(this.valueRect.x + var5 &gt; this.insetCache.left + this.contentRect.width) {</b>
+<i>587</i>&nbsp;                    this.valueRect.x = this.insetCache.left + this.contentRect.width - var5;
+<b class="nc"><i>588</i>&nbsp;                }</b>
+<b class="nc"><i>589</i>&nbsp;</b>
+<i>590</i>&nbsp;                this.valueRect.x = Math.max(this.valueRect.x, 0);
+<i>591</i>&nbsp;            }
+<b class="nc"><i>592</i>&nbsp;</b>
+<b class="nc"><i>593</i>&nbsp;            var2.setColor(var1.getStyle().getColor(var1, ColorType.TEXT_FOREGROUND));</b>
+<i>594</i>&nbsp;            var1.getStyle().getGraphicsUtils(var1).paintText(var1, var2, &quot;&quot; + this.slider.getValue(), this.valueRect.x, this.valueRect.y, -1);
+<b class="nc"><i>595</i>&nbsp;        }</b>
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;        SynthContext var6;
+<i>598</i>&nbsp;        if(this.slider.getPaintTrack() &amp;&amp; var3.intersects(this.trackRect)) {
+<b class="nc"><i>599</i>&nbsp;            var6 = this.getContext(this.slider, Region.SLIDER_TRACK);</b>
+<b class="nc"><i>600</i>&nbsp;            this.paintTrack(var6, var2, this.trackRect);</b>
+<b class="nc"><i>601</i>&nbsp;            var6.dispose();</b>
+<b class="nc"><i>602</i>&nbsp;        }</b>
+<i>603</i>&nbsp;
+<b class="nc"><i>604</i>&nbsp;        if(var3.intersects(this.thumbRect)) {</b>
+<b class="nc"><i>605</i>&nbsp;            var6 = this.getContext(this.slider, Region.SLIDER_THUMB);</b>
+<b class="nc"><i>606</i>&nbsp;            this.paintThumb(var6, var2, this.thumbRect);</b>
+<i>607</i>&nbsp;            var6.dispose();
+<i>608</i>&nbsp;        }
+<b class="nc"><i>609</i>&nbsp;</b>
+<b class="nc"><i>610</i>&nbsp;        if(this.slider.getPaintTicks() &amp;&amp; var3.intersects(this.tickRect)) {</b>
+<b class="nc"><i>611</i>&nbsp;            this.paintTicks(var2);</b>
+<i>612</i>&nbsp;        }
+<b class="nc"><i>613</i>&nbsp;</b>
+<b class="nc"><i>614</i>&nbsp;        if(this.slider.getPaintLabels() &amp;&amp; var3.intersects(this.labelRect)) {</b>
+<i>615</i>&nbsp;            this.paintLabels(var2);
+<i>616</i>&nbsp;        }
+<b class="nc"><i>617</i>&nbsp;</b>
+<b class="nc"><i>618</i>&nbsp;    }</b>
+<i>619</i>&nbsp;
+<b class="nc"><i>620</i>&nbsp;    public void paintBorder(SynthContext var1, Graphics var2, int var3, int var4, int var5, int var6) {</b>
+<i>621</i>&nbsp;        var1.getPainter().paintSliderBorder(var1, var2, var3, var4, var5, var6, this.slider.getOrientation());
+<i>622</i>&nbsp;    }
+<i>623</i>&nbsp;
+<i>624</i>&nbsp;    protected void paintThumb(SynthContext var1, Graphics var2, Rectangle var3) {
+<i>625</i>&nbsp;        int var4 = this.slider.getOrientation();
+<i>626</i>&nbsp;        SynthLookAndFeel.updateSubregion(var1, var2, var3);
+<i>627</i>&nbsp;        var1.getPainter().paintSliderThumbBackground(var1, var2, var3.x, var3.y, var3.width, var3.height, var4);
+<i>628</i>&nbsp;        var1.getPainter().paintSliderThumbBorder(var1, var2, var3.x, var3.y, var3.width, var3.height, var4);
+<i>629</i>&nbsp;    }
+<b class="nc"><i>630</i>&nbsp;</b>
+<b class="nc"><i>631</i>&nbsp;    protected void paintTrack(SynthContext var1, Graphics var2, Rectangle var3) {</b>
+<b class="nc"><i>632</i>&nbsp;        int var4 = this.slider.getOrientation();</b>
+<b class="nc"><i>633</i>&nbsp;        SynthLookAndFeel.updateSubregion(var1, var2, var3);</b>
+<i>634</i>&nbsp;        var1.getPainter().paintSliderTrackBackground(var1, var2, var3.x, var3.y, var3.width, var3.height, var4);
+<b class="nc"><i>635</i>&nbsp;        var1.getPainter().paintSliderTrackBorder(var1, var2, var3.x, var3.y, var3.width, var3.height, var4);</b>
+<i>636</i>&nbsp;    }
+<b class="nc"><i>637</i>&nbsp;</b>
+<b class="nc"><i>638</i>&nbsp;    public void propertyChange(PropertyChangeEvent var1) {</b>
+<b class="nc"><i>639</i>&nbsp;        if(SynthLookAndFeel.shouldUpdateStyle(var1)) {</b>
+<b class="nc"><i>640</i>&nbsp;            this.updateStyle((JSlider)var1.getSource());</b>
+<i>641</i>&nbsp;        }
+<b class="nc"><i>642</i>&nbsp;</b>
+<b class="nc"><i>643</i>&nbsp;    }</b>
+<b class="nc"><i>644</i>&nbsp;</b>
+<b class="nc"><i>645</i>&nbsp;    private class SynthTrackListener extends TrackListener {</b>
+<i>646</i>&nbsp;        private SynthTrackListener() {
+<b class="nc"><i>647</i>&nbsp;            super(SynthSliderUI.this);</b>
+<i>648</i>&nbsp;        }
+<i>649</i>&nbsp;
+<b class="nc"><i>650</i>&nbsp;        public void mouseExited(MouseEvent var1) {</b>
+<i>651</i>&nbsp;            SynthSliderUI.this.setThumbActive(false);
+<i>652</i>&nbsp;        }
+<i>653</i>&nbsp;
+<i>654</i>&nbsp;        public void mousePressed(MouseEvent var1) {
+<i>655</i>&nbsp;            super.mousePressed(var1);
+<i>656</i>&nbsp;            SynthSliderUI.this.setThumbPressed(SynthSliderUI.this.thumbRect.contains(var1.getX(), var1.getY()));
+<i>657</i>&nbsp;        }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;        public void mouseReleased(MouseEvent var1) {
+<b class="nc"><i>660</i>&nbsp;            super.mouseReleased(var1);</b>
+<b class="nc"><i>661</i>&nbsp;            SynthSliderUI.this.updateThumbState(var1.getX(), var1.getY(), false);</b>
+<b class="nc"><i>662</i>&nbsp;        }</b>
+<b class="nc"><i>663</i>&nbsp;</b>
+<i>664</i>&nbsp;        public void mouseDragged(MouseEvent var1) {
+<b class="nc"><i>665</i>&nbsp;            if(SynthSliderUI.this.slider.isEnabled()) {</b>
+<i>666</i>&nbsp;                this.currentMouseX = var1.getX();
+<b class="nc"><i>667</i>&nbsp;                this.currentMouseY = var1.getY();</b>
+<b class="nc"><i>668</i>&nbsp;                if(SynthSliderUI.this.isDragging()) {</b>
+<b class="nc"><i>669</i>&nbsp;                    SynthSliderUI.this.slider.setValueIsAdjusting(true);</b>
+<b class="nc"><i>670</i>&nbsp;                    int var2;</b>
+<i>671</i>&nbsp;                    switch(SynthSliderUI.this.slider.getOrientation()) {
+<b class="nc"><i>672</i>&nbsp;                    case 0:</b>
+<b class="nc"><i>673</i>&nbsp;                        int var8 = SynthSliderUI.this.thumbRect.width / 2;</b>
+<b class="nc"><i>674</i>&nbsp;                        int var9 = var1.getX() - this.offset;</b>
+<b class="nc"><i>675</i>&nbsp;                        int var10 = SynthSliderUI.this.trackRect.x + var8 + SynthSliderUI.this.trackBorder;</b>
+<i>676</i>&nbsp;                        int var11 = SynthSliderUI.this.trackRect.x + SynthSliderUI.this.trackRect.width - var8 - SynthSliderUI.this.trackBorder;
+<b class="nc"><i>677</i>&nbsp;                        int var12 = SynthSliderUI.this.xPositionForValue(SynthSliderUI.this.slider.getMaximum() - SynthSliderUI.this.slider.getExtent());</b>
+<i>678</i>&nbsp;                        if(SynthSliderUI.this.drawInverted()) {
+<i>679</i>&nbsp;                            var10 = var12;
+<b class="nc"><i>680</i>&nbsp;                        } else {</b>
+<i>681</i>&nbsp;                            var11 = var12;
+<i>682</i>&nbsp;                        }
+<i>683</i>&nbsp;
+<b class="nc"><i>684</i>&nbsp;                        var9 = Math.max(var9, var10 - var8);</b>
+<i>685</i>&nbsp;                        var9 = Math.min(var9, var11 - var8);
+<b class="nc"><i>686</i>&nbsp;                        SynthSliderUI.this.setThumbLocation(var9, SynthSliderUI.this.thumbRect.y);</b>
+<b class="nc"><i>687</i>&nbsp;                        var2 = var9 + var8;</b>
+<b class="nc"><i>688</i>&nbsp;                        SynthSliderUI.this.slider.setValue(SynthSliderUI.this.valueForXPosition(var2));</b>
+<i>689</i>&nbsp;                        break;
+<b class="nc"><i>690</i>&nbsp;                    case 1:</b>
+<b class="nc"><i>691</i>&nbsp;                        int var3 = SynthSliderUI.this.thumbRect.height / 2;</b>
+<i>692</i>&nbsp;                        int var4 = var1.getY() - this.offset;
+<b class="nc"><i>693</i>&nbsp;                        int var5 = SynthSliderUI.this.trackRect.y;</b>
+<i>694</i>&nbsp;                        int var6 = SynthSliderUI.this.trackRect.y + SynthSliderUI.this.trackRect.height - var3 - SynthSliderUI.this.trackBorder;
+<i>695</i>&nbsp;                        int var7 = SynthSliderUI.this.yPositionForValue(SynthSliderUI.this.slider.getMaximum() - SynthSliderUI.this.slider.getExtent());
+<i>696</i>&nbsp;                        if(SynthSliderUI.this.drawInverted()) {
+<b class="nc"><i>697</i>&nbsp;                            var6 = var7;</b>
+<b class="nc"><i>698</i>&nbsp;                            var5 += var3;</b>
+<b class="nc"><i>699</i>&nbsp;                        } else {</b>
+<b class="nc"><i>700</i>&nbsp;                            var5 = var7;</b>
+<b class="nc"><i>701</i>&nbsp;                        }</b>
+<i>702</i>&nbsp;
+<b class="nc"><i>703</i>&nbsp;                        var4 = Math.max(var4, var5 - var3);</b>
+<i>704</i>&nbsp;                        var4 = Math.min(var4, var6 - var3);
+<i>705</i>&nbsp;                        SynthSliderUI.this.setThumbLocation(SynthSliderUI.this.thumbRect.x, var4);
+<i>706</i>&nbsp;                        var2 = var4 + var3;
+<b class="nc"><i>707</i>&nbsp;                        SynthSliderUI.this.slider.setValue(SynthSliderUI.this.valueForYPosition(var2));</b>
+<i>708</i>&nbsp;                        break;
+<i>709</i>&nbsp;                    default:
+<i>710</i>&nbsp;                        return;
+<b class="nc"><i>711</i>&nbsp;                    }</b>
+<i>712</i>&nbsp;
+<i>713</i>&nbsp;                    if(SynthSliderUI.this.slider.getValueIsAdjusting()) {
+<i>714</i>&nbsp;                        SynthSliderUI.this.setThumbActive(true);
+<b class="nc"><i>715</i>&nbsp;                    }</b>
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;                }
+<i>718</i>&nbsp;            }
+<i>719</i>&nbsp;        }
+<b class="nc"><i>720</i>&nbsp;</b>
+<i>721</i>&nbsp;        public void mouseMoved(MouseEvent var1) {
+<i>722</i>&nbsp;            SynthSliderUI.this.updateThumbState(var1.getX(), var1.getY());
+<i>723</i>&nbsp;        }
+<b class="nc"><i>724</i>&nbsp;    }</b>
+<b class="nc"><i>725</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

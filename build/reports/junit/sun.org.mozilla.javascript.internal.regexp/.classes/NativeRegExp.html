@@ -1,0 +1,2438 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NativeRegExp</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.org.mozilla.javascript.internal.regexp</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NativeRegExp (sun.org.mozilla.javascript.internal.regexp)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NativeRegExp</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 55)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1203)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.org.mozilla.javascript.internal.regexp;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import sun.org.mozilla.javascript.internal.Context;
+<i>9</i>&nbsp;import sun.org.mozilla.javascript.internal.Function;
+<i>10</i>&nbsp;import sun.org.mozilla.javascript.internal.IdFunctionObject;
+<i>11</i>&nbsp;import sun.org.mozilla.javascript.internal.IdScriptableObject;
+<i>12</i>&nbsp;import sun.org.mozilla.javascript.internal.Kit;
+<i>13</i>&nbsp;import sun.org.mozilla.javascript.internal.ScriptRuntime;
+<i>14</i>&nbsp;import sun.org.mozilla.javascript.internal.Scriptable;
+<i>15</i>&nbsp;import sun.org.mozilla.javascript.internal.Undefined;
+<i>16</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.CompilerState;
+<i>17</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.NativeRegExpCtor;
+<i>18</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.REBackTrackData;
+<i>19</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.RECharSet;
+<i>20</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.RECompiled;
+<i>21</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.REGlobalData;
+<i>22</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.RENode;
+<i>23</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.REProgState;
+<i>24</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.RegExpImpl;
+<i>25</i>&nbsp;import sun.org.mozilla.javascript.internal.regexp.SubString;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;public class NativeRegExp extends IdScriptableObject implements Function {
+<i>28</i>&nbsp;    static final long serialVersionUID = 4965263491464903264L;
+<i>29</i>&nbsp;    private static final Object REGEXP_TAG = new Object();
+<i>30</i>&nbsp;    public static final int JSREG_GLOB = 1;
+<i>31</i>&nbsp;    public static final int JSREG_FOLD = 2;
+<i>32</i>&nbsp;    public static final int JSREG_MULTILINE = 4;
+<i>33</i>&nbsp;    public static final int TEST = 0;
+<i>34</i>&nbsp;    public static final int MATCH = 1;
+<i>35</i>&nbsp;    public static final int PREFIX = 2;
+<i>36</i>&nbsp;    private static final boolean debug = false;
+<i>37</i>&nbsp;    private static final byte REOP_EMPTY = 0;
+<i>38</i>&nbsp;    private static final byte REOP_ALT = 1;
+<i>39</i>&nbsp;    private static final byte REOP_BOL = 2;
+<i>40</i>&nbsp;    private static final byte REOP_EOL = 3;
+<i>41</i>&nbsp;    private static final byte REOP_WBDRY = 4;
+<i>42</i>&nbsp;    private static final byte REOP_WNONBDRY = 5;
+<i>43</i>&nbsp;    private static final byte REOP_QUANT = 6;
+<i>44</i>&nbsp;    private static final byte REOP_STAR = 7;
+<i>45</i>&nbsp;    private static final byte REOP_PLUS = 8;
+<i>46</i>&nbsp;    private static final byte REOP_OPT = 9;
+<i>47</i>&nbsp;    private static final byte REOP_LPAREN = 10;
+<i>48</i>&nbsp;    private static final byte REOP_RPAREN = 11;
+<i>49</i>&nbsp;    private static final byte REOP_DOT = 12;
+<b class="nc"><i>50</i>&nbsp;    private static final byte REOP_DIGIT = 14;</b>
+<i>51</i>&nbsp;    private static final byte REOP_NONDIGIT = 15;
+<i>52</i>&nbsp;    private static final byte REOP_ALNUM = 16;
+<i>53</i>&nbsp;    private static final byte REOP_NONALNUM = 17;
+<i>54</i>&nbsp;    private static final byte REOP_SPACE = 18;
+<i>55</i>&nbsp;    private static final byte REOP_NONSPACE = 19;
+<i>56</i>&nbsp;    private static final byte REOP_BACKREF = 20;
+<i>57</i>&nbsp;    private static final byte REOP_FLAT = 21;
+<i>58</i>&nbsp;    private static final byte REOP_FLAT1 = 22;
+<i>59</i>&nbsp;    private static final byte REOP_JUMP = 23;
+<i>60</i>&nbsp;    private static final byte REOP_UCFLAT1 = 28;
+<i>61</i>&nbsp;    private static final byte REOP_FLATi = 32;
+<i>62</i>&nbsp;    private static final byte REOP_FLAT1i = 33;
+<i>63</i>&nbsp;    private static final byte REOP_UCFLAT1i = 35;
+<i>64</i>&nbsp;    private static final byte REOP_ASSERT = 41;
+<i>65</i>&nbsp;    private static final byte REOP_ASSERT_NOT = 42;
+<i>66</i>&nbsp;    private static final byte REOP_ASSERTTEST = 43;
+<i>67</i>&nbsp;    private static final byte REOP_ASSERTNOTTEST = 44;
+<i>68</i>&nbsp;    private static final byte REOP_MINIMALSTAR = 45;
+<i>69</i>&nbsp;    private static final byte REOP_MINIMALPLUS = 46;
+<i>70</i>&nbsp;    private static final byte REOP_MINIMALOPT = 47;
+<i>71</i>&nbsp;    private static final byte REOP_MINIMALQUANT = 48;
+<i>72</i>&nbsp;    private static final byte REOP_ENDCHILD = 49;
+<i>73</i>&nbsp;    private static final byte REOP_CLASS = 50;
+<i>74</i>&nbsp;    private static final byte REOP_REPEAT = 51;
+<i>75</i>&nbsp;    private static final byte REOP_MINIMALREPEAT = 52;
+<i>76</i>&nbsp;    private static final byte REOP_END = 53;
+<i>77</i>&nbsp;    private static final int OFFSET_LEN = 2;
+<i>78</i>&nbsp;    private static final int INDEX_LEN = 2;
+<i>79</i>&nbsp;    private static final int Id_lastIndex = 1;
+<i>80</i>&nbsp;    private static final int Id_source = 2;
+<i>81</i>&nbsp;    private static final int Id_global = 3;
+<i>82</i>&nbsp;    private static final int Id_ignoreCase = 4;
+<i>83</i>&nbsp;    private static final int Id_multiline = 5;
+<i>84</i>&nbsp;    private static final int MAX_INSTANCE_ID = 5;
+<i>85</i>&nbsp;    private static final int Id_compile = 1;
+<i>86</i>&nbsp;    private static final int Id_toString = 2;
+<i>87</i>&nbsp;    private static final int Id_toSource = 3;
+<i>88</i>&nbsp;    private static final int Id_exec = 4;
+<i>89</i>&nbsp;    private static final int Id_test = 5;
+<i>90</i>&nbsp;    private static final int Id_prefix = 6;
+<i>91</i>&nbsp;    private static final int MAX_PROTOTYPE_ID = 6;
+<i>92</i>&nbsp;    private RECompiled re;
+<i>93</i>&nbsp;    double lastIndex;
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public static void init(Context var0, Scriptable var1, boolean var2) {
+<i>96</i>&nbsp;        NativeRegExp var3 = new NativeRegExp();
+<i>97</i>&nbsp;        var3.re = (RECompiled)compileRE(var0, &quot;&quot;, (String)null, false);
+<i>98</i>&nbsp;        var3.activatePrototypeMap(6);
+<i>99</i>&nbsp;        var3.setParentScope(var1);
+<i>100</i>&nbsp;        var3.setPrototype(getObjectPrototype(var1));
+<i>101</i>&nbsp;        NativeRegExpCtor var4 = new NativeRegExpCtor();
+<i>102</i>&nbsp;        var3.defineProperty(&quot;constructor&quot;, var4, 2);
+<i>103</i>&nbsp;        ScriptRuntime.setFunctionProtoAndParent(var4, var1);
+<i>104</i>&nbsp;        var4.setImmunePrototypeProperty(var3);
+<i>105</i>&nbsp;        if(var2) {
+<i>106</i>&nbsp;            var3.sealObject();
+<i>107</i>&nbsp;            var4.sealObject();
+<i>108</i>&nbsp;        }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        defineProperty(var1, &quot;RegExp&quot;, var4, 2);
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    NativeRegExp(Scriptable var1, Object var2) {
+<i>114</i>&nbsp;        this.re = (RECompiled)var2;
+<i>115</i>&nbsp;        this.lastIndex = 0.0D;
+<i>116</i>&nbsp;        ScriptRuntime.setObjectProtoAndParent(this, var1);
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public String getClassName() {
+<i>120</i>&nbsp;        return &quot;RegExp&quot;;
+<i>121</i>&nbsp;    }
+<b class="nc"><i>122</i>&nbsp;</b>
+<b class="nc"><i>123</i>&nbsp;    public String getTypeOf() {</b>
+<b class="nc"><i>124</i>&nbsp;        return &quot;object&quot;;</b>
+<b class="nc"><i>125</i>&nbsp;    }</b>
+<b class="nc"><i>126</i>&nbsp;</b>
+<i>127</i>&nbsp;    public Object call(Context var1, Scriptable var2, Scriptable var3, Object[] var4) {
+<b class="nc"><i>128</i>&nbsp;        return this.execSub(var1, var2, var4, 1);</b>
+<i>129</i>&nbsp;    }
+<b class="nc"><i>130</i>&nbsp;</b>
+<i>131</i>&nbsp;    public Scriptable construct(Context var1, Scriptable var2, Object[] var3) {
+<b class="nc"><i>132</i>&nbsp;        return (Scriptable)this.execSub(var1, var2, var3, 1);</b>
+<i>133</i>&nbsp;    }
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;    Scriptable compile(Context var1, Scriptable var2, Object[] var3) {</b>
+<b class="nc"><i>136</i>&nbsp;        if(var3.length &gt; 0 &amp;&amp; var3[0] instanceof NativeRegExp) {</b>
+<i>137</i>&nbsp;            if(var3.length &gt; 1 &amp;&amp; var3[1] != Undefined.instance) {
+<i>138</i>&nbsp;                throw ScriptRuntime.typeError0(&quot;msg.bad.regexp.compile&quot;);
+<b class="nc"><i>139</i>&nbsp;            } else {</b>
+<i>140</i>&nbsp;                NativeRegExp var6 = (NativeRegExp)var3[0];
+<i>141</i>&nbsp;                this.re = var6.re;
+<i>142</i>&nbsp;                this.lastIndex = var6.lastIndex;
+<b class="nc"><i>143</i>&nbsp;                return this;</b>
+<b class="nc"><i>144</i>&nbsp;            }</b>
+<b class="nc"><i>145</i>&nbsp;        } else {</b>
+<b class="nc"><i>146</i>&nbsp;            String var4 = var3.length == 0?&quot;&quot;:ScriptRuntime.toString(var3[0]);</b>
+<i>147</i>&nbsp;            String var5 = var3.length &gt; 1 &amp;&amp; var3[1] != Undefined.instance?ScriptRuntime.toString(var3[1]):null;
+<i>148</i>&nbsp;            this.re = (RECompiled)compileRE(var1, var4, var5, false);
+<i>149</i>&nbsp;            this.lastIndex = 0.0D;
+<i>150</i>&nbsp;            return this;
+<b class="nc"><i>151</i>&nbsp;        }</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public String toString() {
+<i>155</i>&nbsp;        StringBuffer var1 = new StringBuffer();
+<i>156</i>&nbsp;        var1.append(&#39;/&#39;);
+<b class="nc"><i>157</i>&nbsp;        if(this.re.source.length != 0) {</b>
+<i>158</i>&nbsp;            var1.append(this.re.source);
+<i>159</i>&nbsp;        } else {
+<i>160</i>&nbsp;            var1.append(&quot;(?:)&quot;);
+<i>161</i>&nbsp;        }
+<b class="nc"><i>162</i>&nbsp;</b>
+<i>163</i>&nbsp;        var1.append(&#39;/&#39;);
+<i>164</i>&nbsp;        if((this.re.flags &amp; 1) != 0) {
+<i>165</i>&nbsp;            var1.append(&#39;g&#39;);
+<i>166</i>&nbsp;        }
+<b class="nc"><i>167</i>&nbsp;</b>
+<b class="nc"><i>168</i>&nbsp;        if((this.re.flags &amp; 2) != 0) {</b>
+<i>169</i>&nbsp;            var1.append(&#39;i&#39;);
+<b class="nc"><i>170</i>&nbsp;        }</b>
+<i>171</i>&nbsp;
+<b class="nc"><i>172</i>&nbsp;        if((this.re.flags &amp; 4) != 0) {</b>
+<b class="nc"><i>173</i>&nbsp;            var1.append(&#39;m&#39;);</b>
+<b class="nc"><i>174</i>&nbsp;        }</b>
+<b class="nc"><i>175</i>&nbsp;</b>
+<i>176</i>&nbsp;        return var1.toString();
+<b class="nc"><i>177</i>&nbsp;    }</b>
+<b class="nc"><i>178</i>&nbsp;</b>
+<i>179</i>&nbsp;    NativeRegExp() {
+<i>180</i>&nbsp;    }
+<b class="nc"><i>181</i>&nbsp;</b>
+<b class="nc"><i>182</i>&nbsp;    private static RegExpImpl getImpl(Context var0) {</b>
+<b class="nc"><i>183</i>&nbsp;        return (RegExpImpl)ScriptRuntime.getRegExpProxy(var0);</b>
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    private Object execSub(Context var1, Scriptable var2, Object[] var3, int var4) {
+<i>187</i>&nbsp;        RegExpImpl var5 = getImpl(var1);
+<b class="nc"><i>188</i>&nbsp;        String var6;</b>
+<b class="nc"><i>189</i>&nbsp;        if(var3.length == 0) {</b>
+<b class="nc"><i>190</i>&nbsp;            var6 = var5.input;</b>
+<b class="nc"><i>191</i>&nbsp;            if(var6 == null) {</b>
+<i>192</i>&nbsp;                reportError(&quot;msg.no.re.input.for&quot;, this.toString());
+<i>193</i>&nbsp;            }
+<b class="nc"><i>194</i>&nbsp;        } else {</b>
+<i>195</i>&nbsp;            var6 = ScriptRuntime.toString(var3[0]);
+<b class="nc"><i>196</i>&nbsp;        }</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<b class="nc"><i>198</i>&nbsp;        double var7 = (this.re.flags &amp; 1) != 0?this.lastIndex:0.0D;</b>
+<b class="nc"><i>199</i>&nbsp;        Object var9;</b>
+<b class="nc"><i>200</i>&nbsp;        if(var7 &gt;= 0.0D &amp;&amp; (double)var6.length() &gt;= var7) {</b>
+<b class="nc"><i>201</i>&nbsp;            int[] var10 = new int[]{(int)var7};</b>
+<b class="nc"><i>202</i>&nbsp;            var9 = this.executeRegExp(var1, var2, var5, var6, var10, var4);</b>
+<b class="nc"><i>203</i>&nbsp;            if((this.re.flags &amp; 1) != 0) {</b>
+<i>204</i>&nbsp;                this.lastIndex = var9 != null &amp;&amp; var9 != Undefined.instance?(double)var10[0]:0.0D;
+<i>205</i>&nbsp;            }
+<b class="nc"><i>206</i>&nbsp;        } else {</b>
+<i>207</i>&nbsp;            this.lastIndex = 0.0D;
+<i>208</i>&nbsp;            var9 = null;
+<i>209</i>&nbsp;        }
+<b class="nc"><i>210</i>&nbsp;</b>
+<i>211</i>&nbsp;        return var9;
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    static Object compileRE(Context var0, String var1, String var2, boolean var3) {
+<i>215</i>&nbsp;        RECompiled var4 = new RECompiled();
+<b class="nc"><i>216</i>&nbsp;        var4.source = var1.toCharArray();</b>
+<i>217</i>&nbsp;        int var5 = var1.length();
+<b class="nc"><i>218</i>&nbsp;        int var6 = 0;</b>
+<b class="nc"><i>219</i>&nbsp;        if(var2 != null) {</b>
+<b class="nc"><i>220</i>&nbsp;            for(int var7 = 0; var7 &lt; var2.length(); ++var7) {</b>
+<b class="nc"><i>221</i>&nbsp;                char var8 = var2.charAt(var7);</b>
+<i>222</i>&nbsp;                if(var8 == 103) {
+<i>223</i>&nbsp;                    var6 |= 1;
+<b class="nc"><i>224</i>&nbsp;                } else if(var8 == 105) {</b>
+<i>225</i>&nbsp;                    var6 |= 2;
+<b class="nc"><i>226</i>&nbsp;                } else if(var8 == 109) {</b>
+<i>227</i>&nbsp;                    var6 |= 4;
+<i>228</i>&nbsp;                } else {
+<b class="nc"><i>229</i>&nbsp;                    reportError(&quot;msg.invalid.re.flag&quot;, String.valueOf(var8));</b>
+<b class="nc"><i>230</i>&nbsp;                }</b>
+<b class="nc"><i>231</i>&nbsp;            }</b>
+<i>232</i>&nbsp;        }
+<i>233</i>&nbsp;
+<b class="nc"><i>234</i>&nbsp;        var4.flags = var6;</b>
+<b class="nc"><i>235</i>&nbsp;        CompilerState var10 = new CompilerState(var0, var4.source, var5, var6);</b>
+<b class="nc"><i>236</i>&nbsp;        if(var3 &amp;&amp; var5 &gt; 0) {</b>
+<b class="nc"><i>237</i>&nbsp;            var10.result = new RENode((byte)21);</b>
+<i>238</i>&nbsp;            var10.result.chr = var10.cpbegin[0];
+<i>239</i>&nbsp;            var10.result.length = var5;
+<i>240</i>&nbsp;            var10.result.flatIndex = 0;
+<b class="nc"><i>241</i>&nbsp;            var10.progLength += 5;</b>
+<i>242</i>&nbsp;        } else if(!parseDisjunction(var10)) {
+<i>243</i>&nbsp;            return null;
+<i>244</i>&nbsp;        }
+<i>245</i>&nbsp;
+<b class="nc"><i>246</i>&nbsp;        var4.program = new byte[var10.progLength + 1];</b>
+<b class="nc"><i>247</i>&nbsp;        if(var10.classCount != 0) {</b>
+<b class="nc"><i>248</i>&nbsp;            var4.classList = new RECharSet[var10.classCount];</b>
+<i>249</i>&nbsp;            var4.classCount = var10.classCount;
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<b class="nc"><i>251</i>&nbsp;</b>
+<b class="nc"><i>252</i>&nbsp;        int var11 = emitREBytecode(var10, var4, 0, var10.result);</b>
+<b class="nc"><i>253</i>&nbsp;        var4.program[var11++] = 53;</b>
+<b class="nc"><i>254</i>&nbsp;        var4.parenCount = var10.parenCount;</b>
+<b class="nc"><i>255</i>&nbsp;        switch(var4.program[0]) {</b>
+<b class="nc"><i>256</i>&nbsp;        case 21:</b>
+<b class="nc"><i>257</i>&nbsp;        case 32:</b>
+<b class="nc"><i>258</i>&nbsp;            int var9 = getIndex(var4.program, 1);</b>
+<b class="nc"><i>259</i>&nbsp;            var4.anchorCh = var4.source[var9];</b>
+<i>260</i>&nbsp;            break;
+<b class="nc"><i>261</i>&nbsp;        case 22:</b>
+<i>262</i>&nbsp;        case 33:
+<i>263</i>&nbsp;            var4.anchorCh = (char)(var4.program[1] &amp; 255);
+<i>264</i>&nbsp;        case 23:
+<b class="nc"><i>265</i>&nbsp;        case 24:</b>
+<i>266</i>&nbsp;        case 25:
+<b class="nc"><i>267</i>&nbsp;        case 26:</b>
+<b class="nc"><i>268</i>&nbsp;        case 27:</b>
+<i>269</i>&nbsp;        case 29:
+<i>270</i>&nbsp;        case 30:
+<i>271</i>&nbsp;        case 31:
+<b class="nc"><i>272</i>&nbsp;        case 34:</b>
+<b class="nc"><i>273</i>&nbsp;        default:</b>
+<b class="nc"><i>274</i>&nbsp;            break;</b>
+<b class="nc"><i>275</i>&nbsp;        case 28:</b>
+<b class="nc"><i>276</i>&nbsp;        case 35:</b>
+<i>277</i>&nbsp;            var4.anchorCh = (char)getIndex(var4.program, 1);
+<i>278</i>&nbsp;        }
+<b class="nc"><i>279</i>&nbsp;</b>
+<b class="nc"><i>280</i>&nbsp;        return var4;</b>
+<i>281</i>&nbsp;    }
+<b class="nc"><i>282</i>&nbsp;</b>
+<b class="nc"><i>283</i>&nbsp;    static boolean isDigit(char var0) {</b>
+<b class="nc"><i>284</i>&nbsp;        return 48 &lt;= var0 &amp;&amp; var0 &lt;= 57;</b>
+<b class="nc"><i>285</i>&nbsp;    }</b>
+<i>286</i>&nbsp;
+<b class="nc"><i>287</i>&nbsp;    private static boolean isWord(char var0) {</b>
+<b class="nc"><i>288</i>&nbsp;        return Character.isLetter(var0) || isDigit(var0) || var0 == 95;</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    private static boolean isLineTerm(char var0) {
+<i>292</i>&nbsp;        return ScriptRuntime.isJSLineTerminator(var0);
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    private static boolean isREWhiteSpace(int var0) {
+<i>296</i>&nbsp;        return ScriptRuntime.isJSWhitespaceOrLineTerminator(var0);
+<i>297</i>&nbsp;    }
+<b class="nc"><i>298</i>&nbsp;</b>
+<i>299</i>&nbsp;    private static char upcase(char var0) {
+<i>300</i>&nbsp;        if(var0 &lt; 128) {
+<b class="nc"><i>301</i>&nbsp;            return 97 &lt;= var0 &amp;&amp; var0 &lt;= 122?(char)(var0 + -32):var0;</b>
+<i>302</i>&nbsp;        } else {
+<i>303</i>&nbsp;            char var1 = Character.toUpperCase(var0);
+<b class="nc"><i>304</i>&nbsp;            return var0 &gt;= 128 &amp;&amp; var1 &lt; 128?var0:var1;</b>
+<b class="nc"><i>305</i>&nbsp;        }</b>
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;    private static char downcase(char var0) {</b>
+<b class="nc"><i>309</i>&nbsp;        if(var0 &lt; 128) {</b>
+<i>310</i>&nbsp;            return 65 &lt;= var0 &amp;&amp; var0 &lt;= 90?(char)(var0 + 32):var0;
+<i>311</i>&nbsp;        } else {
+<b class="nc"><i>312</i>&nbsp;            char var1 = Character.toLowerCase(var0);</b>
+<b class="nc"><i>313</i>&nbsp;            return var0 &gt;= 128 &amp;&amp; var1 &lt; 128?var0:var1;</b>
+<i>314</i>&nbsp;        }
+<i>315</i>&nbsp;    }
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;    private static int toASCIIHexDigit(int var0) {
+<i>318</i>&nbsp;        if(var0 &lt; 48) {
+<i>319</i>&nbsp;            return -1;
+<i>320</i>&nbsp;        } else if(var0 &lt;= 57) {
+<i>321</i>&nbsp;            return var0 - 48;
+<b class="nc"><i>322</i>&nbsp;        } else {</b>
+<i>323</i>&nbsp;            var0 |= 32;
+<i>324</i>&nbsp;            return 97 &lt;= var0 &amp;&amp; var0 &lt;= 102?var0 - 97 + 10:-1;
+<i>325</i>&nbsp;        }
+<i>326</i>&nbsp;    }
+<b class="nc"><i>327</i>&nbsp;</b>
+<i>328</i>&nbsp;    private static boolean parseDisjunction(CompilerState var0) {
+<i>329</i>&nbsp;        if(!parseAlternative(var0)) {
+<i>330</i>&nbsp;            return false;
+<i>331</i>&nbsp;        } else {
+<b class="nc"><i>332</i>&nbsp;            char[] var1 = var0.cpbegin;</b>
+<i>333</i>&nbsp;            int var2 = var0.cp;
+<i>334</i>&nbsp;            if(var2 != var1.length &amp;&amp; var1[var2] == 124) {
+<i>335</i>&nbsp;                ++var0.cp;
+<i>336</i>&nbsp;                RENode var3 = new RENode((byte)1);
+<b class="nc"><i>337</i>&nbsp;                var3.kid = var0.result;</b>
+<i>338</i>&nbsp;                if(!parseDisjunction(var0)) {
+<i>339</i>&nbsp;                    return false;
+<i>340</i>&nbsp;                }
+<i>341</i>&nbsp;
+<b class="nc"><i>342</i>&nbsp;                var3.kid2 = var0.result;</b>
+<i>343</i>&nbsp;                var0.result = var3;
+<i>344</i>&nbsp;                var0.progLength += 9;
+<i>345</i>&nbsp;            }
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;            return true;
+<i>348</i>&nbsp;        }
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    private static boolean parseAlternative(CompilerState var0) {
+<i>352</i>&nbsp;        RENode var1 = null;
+<i>353</i>&nbsp;        RENode var2 = null;
+<i>354</i>&nbsp;        char[] var3 = var0.cpbegin;
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;        while(var0.cp != var0.cpend &amp;&amp; var3[var0.cp] != 124 &amp;&amp; (var0.parenNesting == 0 || var3[var0.cp] != 41)) {
+<i>357</i>&nbsp;            if(!parseTerm(var0)) {
+<i>358</i>&nbsp;                return false;
+<i>359</i>&nbsp;            }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;            if(var1 == null) {
+<i>362</i>&nbsp;                var1 = var0.result;
+<b class="nc"><i>363</i>&nbsp;            } else if(var2 == null) {</b>
+<b class="nc"><i>364</i>&nbsp;                var1.next = var0.result;</b>
+<b class="nc"><i>365</i>&nbsp;</b>
+<i>366</i>&nbsp;                for(var2 = var0.result; var2.next != null; var2 = var2.next) {
+<b class="nc"><i>367</i>&nbsp;                    ;</b>
+<i>368</i>&nbsp;                }
+<b class="nc"><i>369</i>&nbsp;            } else {</b>
+<b class="nc"><i>370</i>&nbsp;                var2.next = var0.result;</b>
+<b class="nc"><i>371</i>&nbsp;</b>
+<i>372</i>&nbsp;                for(var2 = var2.next; var2.next != null; var2 = var2.next) {
+<i>373</i>&nbsp;                    ;
+<i>374</i>&nbsp;                }
+<i>375</i>&nbsp;            }
+<b class="nc"><i>376</i>&nbsp;        }</b>
+<b class="nc"><i>377</i>&nbsp;</b>
+<b class="nc"><i>378</i>&nbsp;        if(var1 == null) {</b>
+<i>379</i>&nbsp;            var0.result = new RENode((byte)0);
+<b class="nc"><i>380</i>&nbsp;        } else {</b>
+<i>381</i>&nbsp;            var0.result = var1;
+<b class="nc"><i>382</i>&nbsp;        }</b>
+<b class="nc"><i>383</i>&nbsp;</b>
+<b class="nc"><i>384</i>&nbsp;        return true;</b>
+<i>385</i>&nbsp;    }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    private static boolean calculateBitmapSize(CompilerState var0, RENode var1, char[] var2, int var3, int var4) {
+<i>388</i>&nbsp;        char var5 = 0;
+<i>389</i>&nbsp;        int var10 = 0;
+<i>390</i>&nbsp;        boolean var11 = false;
+<i>391</i>&nbsp;        var1.bmsize = 0;
+<b class="nc"><i>392</i>&nbsp;        if(var3 == var4) {</b>
+<b class="nc"><i>393</i>&nbsp;            return true;</b>
+<b class="nc"><i>394</i>&nbsp;        } else {</b>
+<b class="nc"><i>395</i>&nbsp;            if(var2[var3] == 94) {</b>
+<i>396</i>&nbsp;                ++var3;
+<b class="nc"><i>397</i>&nbsp;            }</b>
+<b class="nc"><i>398</i>&nbsp;</b>
+<b class="nc"><i>399</i>&nbsp;            while(var3 != var4) {</b>
+<i>400</i>&nbsp;                int var15;
+<b class="nc"><i>401</i>&nbsp;                boolean var12 = false;</b>
+<i>402</i>&nbsp;                int var8 = 2;
+<i>403</i>&nbsp;                label104:
+<i>404</i>&nbsp;                switch(var2[var3]) {
+<i>405</i>&nbsp;                case &#39;\\&#39;:
+<i>406</i>&nbsp;                    ++var3;
+<i>407</i>&nbsp;                    char var6 = var2[var3++];
+<i>408</i>&nbsp;                    int var7;
+<i>409</i>&nbsp;                    int var9;
+<i>410</i>&nbsp;                    switch(var6) {
+<i>411</i>&nbsp;                    case &#39;0&#39;:
+<b class="nc"><i>412</i>&nbsp;                    case &#39;1&#39;:</b>
+<b class="nc"><i>413</i>&nbsp;                    case &#39;2&#39;:</b>
+<b class="nc"><i>414</i>&nbsp;                    case &#39;3&#39;:</b>
+<b class="nc"><i>415</i>&nbsp;                    case &#39;4&#39;:</b>
+<b class="nc"><i>416</i>&nbsp;                    case &#39;5&#39;:</b>
+<i>417</i>&nbsp;                    case &#39;6&#39;:
+<b class="nc"><i>418</i>&nbsp;                    case &#39;7&#39;:</b>
+<b class="nc"><i>419</i>&nbsp;                        var7 = var6 - 48;</b>
+<b class="nc"><i>420</i>&nbsp;                        var6 = var2[var3];</b>
+<b class="nc"><i>421</i>&nbsp;                        if(48 &lt;= var6 &amp;&amp; var6 &lt;= 55) {</b>
+<b class="nc"><i>422</i>&nbsp;                            ++var3;</b>
+<b class="nc"><i>423</i>&nbsp;                            var7 = 8 * var7 + (var6 - 48);</b>
+<b class="nc"><i>424</i>&nbsp;                            var6 = var2[var3];</b>
+<i>425</i>&nbsp;                            if(48 &lt;= var6 &amp;&amp; var6 &lt;= 55) {
+<b class="nc"><i>426</i>&nbsp;                                ++var3;</b>
+<i>427</i>&nbsp;                                var9 = 8 * var7 + (var6 - 48);
+<b class="nc"><i>428</i>&nbsp;                                if(var9 &lt;= 255) {</b>
+<i>429</i>&nbsp;                                    var7 = var9;
+<i>430</i>&nbsp;                                } else {
+<i>431</i>&nbsp;                                    --var3;
+<i>432</i>&nbsp;                                }
+<i>433</i>&nbsp;                            }
+<i>434</i>&nbsp;                        }
+<i>435</i>&nbsp;
+<i>436</i>&nbsp;                        var15 = var7;
+<b class="nc"><i>437</i>&nbsp;                        break label104;</b>
+<b class="nc"><i>438</i>&nbsp;                    case &#39;8&#39;:</b>
+<b class="nc"><i>439</i>&nbsp;                    case &#39;9&#39;:</b>
+<i>440</i>&nbsp;                    case &#39;:&#39;:
+<b class="nc"><i>441</i>&nbsp;                    case &#39;;&#39;:</b>
+<i>442</i>&nbsp;                    case &#39;&lt;&#39;:
+<i>443</i>&nbsp;                    case &#39;=&#39;:
+<b class="nc"><i>444</i>&nbsp;                    case &#39;&gt;&#39;:</b>
+<b class="nc"><i>445</i>&nbsp;                    case &#39;?&#39;:</b>
+<i>446</i>&nbsp;                    case &#39;@&#39;:
+<i>447</i>&nbsp;                    case &#39;A&#39;:
+<b class="nc"><i>448</i>&nbsp;                    case &#39;B&#39;:</b>
+<b class="nc"><i>449</i>&nbsp;                    case &#39;C&#39;:</b>
+<i>450</i>&nbsp;                    case &#39;E&#39;:
+<b class="nc"><i>451</i>&nbsp;                    case &#39;F&#39;:</b>
+<b class="nc"><i>452</i>&nbsp;                    case &#39;G&#39;:</b>
+<b class="nc"><i>453</i>&nbsp;                    case &#39;H&#39;:</b>
+<b class="nc"><i>454</i>&nbsp;                    case &#39;I&#39;:</b>
+<i>455</i>&nbsp;                    case &#39;J&#39;:
+<b class="nc"><i>456</i>&nbsp;                    case &#39;K&#39;:</b>
+<b class="nc"><i>457</i>&nbsp;                    case &#39;L&#39;:</b>
+<b class="nc"><i>458</i>&nbsp;                    case &#39;M&#39;:</b>
+<b class="nc"><i>459</i>&nbsp;                    case &#39;N&#39;:</b>
+<i>460</i>&nbsp;                    case &#39;O&#39;:
+<i>461</i>&nbsp;                    case &#39;P&#39;:
+<b class="nc"><i>462</i>&nbsp;                    case &#39;Q&#39;:</b>
+<b class="nc"><i>463</i>&nbsp;                    case &#39;R&#39;:</b>
+<b class="nc"><i>464</i>&nbsp;                    case &#39;T&#39;:</b>
+<i>465</i>&nbsp;                    case &#39;U&#39;:
+<i>466</i>&nbsp;                    case &#39;V&#39;:
+<i>467</i>&nbsp;                    case &#39;X&#39;:
+<i>468</i>&nbsp;                    case &#39;Y&#39;:
+<i>469</i>&nbsp;                    case &#39;Z&#39;:
+<i>470</i>&nbsp;                    case &#39;[&#39;:
+<i>471</i>&nbsp;                    case &#39;\\&#39;:
+<i>472</i>&nbsp;                    case &#39;]&#39;:
+<i>473</i>&nbsp;                    case &#39;^&#39;:
+<i>474</i>&nbsp;                    case &#39;_&#39;:
+<b class="nc"><i>475</i>&nbsp;                    case &#39;`&#39;:</b>
+<i>476</i>&nbsp;                    case &#39;a&#39;:
+<i>477</i>&nbsp;                    case &#39;e&#39;:
+<i>478</i>&nbsp;                    case &#39;g&#39;:
+<i>479</i>&nbsp;                    case &#39;h&#39;:
+<i>480</i>&nbsp;                    case &#39;i&#39;:
+<b class="nc"><i>481</i>&nbsp;                    case &#39;j&#39;:</b>
+<b class="nc"><i>482</i>&nbsp;                    case &#39;k&#39;:</b>
+<i>483</i>&nbsp;                    case &#39;l&#39;:
+<b class="nc"><i>484</i>&nbsp;                    case &#39;m&#39;:</b>
+<i>485</i>&nbsp;                    case &#39;o&#39;:
+<b class="nc"><i>486</i>&nbsp;                    case &#39;p&#39;:</b>
+<b class="nc"><i>487</i>&nbsp;                    case &#39;q&#39;:</b>
+<i>488</i>&nbsp;                    default:
+<b class="nc"><i>489</i>&nbsp;                        var15 = var6;</b>
+<b class="nc"><i>490</i>&nbsp;                        break label104;</b>
+<i>491</i>&nbsp;                    case &#39;D&#39;:
+<b class="nc"><i>492</i>&nbsp;                    case &#39;S&#39;:</b>
+<b class="nc"><i>493</i>&nbsp;                    case &#39;W&#39;:</b>
+<b class="nc"><i>494</i>&nbsp;                    case &#39;s&#39;:</b>
+<b class="nc"><i>495</i>&nbsp;                    case &#39;w&#39;:</b>
+<i>496</i>&nbsp;                        if(var11) {
+<b class="nc"><i>497</i>&nbsp;                            reportError(&quot;msg.bad.range&quot;, &quot;&quot;);</b>
+<b class="nc"><i>498</i>&nbsp;                            return false;</b>
+<b class="nc"><i>499</i>&nbsp;                        } else {</b>
+<i>500</i>&nbsp;                            var1.bmsize = &#39;\uffff&#39;;
+<b class="nc"><i>501</i>&nbsp;                            return true;</b>
+<b class="nc"><i>502</i>&nbsp;                        }</b>
+<i>503</i>&nbsp;                    case &#39;b&#39;:
+<b class="nc"><i>504</i>&nbsp;                        var15 = 8;</b>
+<b class="nc"><i>505</i>&nbsp;                        break label104;</b>
+<i>506</i>&nbsp;                    case &#39;c&#39;:
+<b class="nc"><i>507</i>&nbsp;                        if(var3 + 1 &lt; var4 &amp;&amp; Character.isLetter(var2[var3 + 1])) {</b>
+<b class="nc"><i>508</i>&nbsp;                            var15 = (char)(var2[var3++] &amp; 31);</b>
+<i>509</i>&nbsp;                        } else {
+<b class="nc"><i>510</i>&nbsp;                            var15 = 92;</b>
+<b class="nc"><i>511</i>&nbsp;                        }</b>
+<i>512</i>&nbsp;                        break label104;
+<b class="nc"><i>513</i>&nbsp;                    case &#39;d&#39;:</b>
+<b class="nc"><i>514</i>&nbsp;                        if(var11) {</b>
+<i>515</i>&nbsp;                            reportError(&quot;msg.bad.range&quot;, &quot;&quot;);
+<b class="nc"><i>516</i>&nbsp;                            return false;</b>
+<b class="nc"><i>517</i>&nbsp;                        }</b>
+<i>518</i>&nbsp;
+<b class="nc"><i>519</i>&nbsp;                        var15 = 57;</b>
+<b class="nc"><i>520</i>&nbsp;                        break label104;</b>
+<i>521</i>&nbsp;                    case &#39;f&#39;:
+<b class="nc"><i>522</i>&nbsp;                        var15 = 12;</b>
+<b class="nc"><i>523</i>&nbsp;                        break label104;</b>
+<i>524</i>&nbsp;                    case &#39;n&#39;:
+<b class="nc"><i>525</i>&nbsp;                        var15 = 10;</b>
+<i>526</i>&nbsp;                        break label104;
+<i>527</i>&nbsp;                    case &#39;r&#39;:
+<b class="nc"><i>528</i>&nbsp;                        var15 = 13;</b>
+<b class="nc"><i>529</i>&nbsp;                        break label104;</b>
+<b class="nc"><i>530</i>&nbsp;                    case &#39;t&#39;:</b>
+<b class="nc"><i>531</i>&nbsp;                        var15 = 9;</b>
+<b class="nc"><i>532</i>&nbsp;                        break label104;</b>
+<i>533</i>&nbsp;                    case &#39;u&#39;:
+<i>534</i>&nbsp;                        var8 += 2;
+<b class="nc"><i>535</i>&nbsp;                    case &#39;x&#39;:</b>
+<b class="nc"><i>536</i>&nbsp;                        var7 = 0;</b>
+<b class="nc"><i>537</i>&nbsp;</b>
+<i>538</i>&nbsp;                        for(var9 = 0; var9 &lt; var8 &amp;&amp; var3 &lt; var4; ++var9) {
+<i>539</i>&nbsp;                            var6 = var2[var3++];
+<b class="nc"><i>540</i>&nbsp;                            var7 = Kit.xDigitToInt(var6, var7);</b>
+<b class="nc"><i>541</i>&nbsp;                            if(var7 &lt; 0) {</b>
+<i>542</i>&nbsp;                                var3 -= var9 + 1;
+<b class="nc"><i>543</i>&nbsp;                                var7 = 92;</b>
+<b class="nc"><i>544</i>&nbsp;                                break;</b>
+<b class="nc"><i>545</i>&nbsp;                            }</b>
+<i>546</i>&nbsp;                        }
+<b class="nc"><i>547</i>&nbsp;</b>
+<b class="nc"><i>548</i>&nbsp;                        var15 = var7;</b>
+<i>549</i>&nbsp;                        break label104;
+<i>550</i>&nbsp;                    case &#39;v&#39;:
+<i>551</i>&nbsp;                        var15 = 11;
+<i>552</i>&nbsp;                        break label104;
+<i>553</i>&nbsp;                    }
+<b class="nc"><i>554</i>&nbsp;                default:</b>
+<b class="nc"><i>555</i>&nbsp;                    var15 = var2[var3++];</b>
+<b class="nc"><i>556</i>&nbsp;                }</b>
+<i>557</i>&nbsp;
+<b class="nc"><i>558</i>&nbsp;                if(var11) {</b>
+<b class="nc"><i>559</i>&nbsp;                    if(var5 &gt; var15) {</b>
+<i>560</i>&nbsp;                        reportError(&quot;msg.bad.range&quot;, &quot;&quot;);
+<i>561</i>&nbsp;                        return false;
+<i>562</i>&nbsp;                    }
+<i>563</i>&nbsp;
+<i>564</i>&nbsp;                    var11 = false;
+<i>565</i>&nbsp;                } else if(var3 &lt; var4 - 1 &amp;&amp; var2[var3] == 45) {
+<i>566</i>&nbsp;                    ++var3;
+<i>567</i>&nbsp;                    var11 = true;
+<i>568</i>&nbsp;                    var5 = (char)var15;
+<i>569</i>&nbsp;                    continue;
+<i>570</i>&nbsp;                }
+<i>571</i>&nbsp;
+<i>572</i>&nbsp;                if((var0.flags &amp; 2) != 0) {
+<i>573</i>&nbsp;                    char var13 = upcase((char)var15);
+<b class="nc"><i>574</i>&nbsp;                    char var14 = downcase((char)var15);</b>
+<b class="nc"><i>575</i>&nbsp;                    var15 = var13 &gt;= var14?var13:var14;</b>
+<b class="nc"><i>576</i>&nbsp;                }</b>
+<b class="nc"><i>577</i>&nbsp;</b>
+<b class="nc"><i>578</i>&nbsp;                if(var15 &gt; var10) {</b>
+<b class="nc"><i>579</i>&nbsp;                    var10 = var15;</b>
+<b class="nc"><i>580</i>&nbsp;                }</b>
+<b class="nc"><i>581</i>&nbsp;            }</b>
+<b class="nc"><i>582</i>&nbsp;</b>
+<b class="nc"><i>583</i>&nbsp;            var1.bmsize = var10;</b>
+<b class="nc"><i>584</i>&nbsp;            return true;</b>
+<i>585</i>&nbsp;        }
+<b class="nc"><i>586</i>&nbsp;    }</b>
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;    private static void doFlat(CompilerState var0, char var1) {
+<b class="nc"><i>589</i>&nbsp;        var0.result = new RENode((byte)21);</b>
+<b class="nc"><i>590</i>&nbsp;        var0.result.chr = var1;</b>
+<i>591</i>&nbsp;        var0.result.length = 1;
+<i>592</i>&nbsp;        var0.result.flatIndex = -1;
+<b class="nc"><i>593</i>&nbsp;        var0.progLength += 3;</b>
+<b class="nc"><i>594</i>&nbsp;    }</b>
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;    private static int getDecimalValue(char var0, CompilerState var1, int var2, String var3) {
+<i>597</i>&nbsp;        boolean var4 = false;
+<b class="nc"><i>598</i>&nbsp;        int var5 = var1.cp;</b>
+<i>599</i>&nbsp;        char[] var6 = var1.cpbegin;
+<i>600</i>&nbsp;
+<b class="nc"><i>601</i>&nbsp;        int var7;</b>
+<b class="nc"><i>602</i>&nbsp;        for(var7 = var0 - 48; var1.cp != var1.cpend; ++var1.cp) {</b>
+<b class="nc"><i>603</i>&nbsp;            var0 = var6[var1.cp];</b>
+<b class="nc"><i>604</i>&nbsp;            if(!isDigit(var0)) {</b>
+<i>605</i>&nbsp;                break;
+<b class="nc"><i>606</i>&nbsp;            }</b>
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;            if(!var4) {
+<b class="nc"><i>609</i>&nbsp;                int var8 = var0 - 48;</b>
+<b class="nc"><i>610</i>&nbsp;                if(var7 &lt; (var2 - var8) / 10) {</b>
+<b class="nc"><i>611</i>&nbsp;                    var7 = var7 * 10 + var8;</b>
+<b class="nc"><i>612</i>&nbsp;                } else {</b>
+<b class="nc"><i>613</i>&nbsp;                    var4 = true;</b>
+<b class="nc"><i>614</i>&nbsp;                    var7 = var2;</b>
+<i>615</i>&nbsp;                }
+<i>616</i>&nbsp;            }
+<i>617</i>&nbsp;        }
+<b class="nc"><i>618</i>&nbsp;</b>
+<b class="nc"><i>619</i>&nbsp;        if(var4) {</b>
+<b class="nc"><i>620</i>&nbsp;            reportError(var3, String.valueOf(var6, var5, var1.cp - var5));</b>
+<b class="nc"><i>621</i>&nbsp;        }</b>
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;        return var7;</b>
+<b class="nc"><i>624</i>&nbsp;    }</b>
+<b class="nc"><i>625</i>&nbsp;</b>
+<b class="nc"><i>626</i>&nbsp;    private static boolean parseTerm(CompilerState var0) {</b>
+<b class="nc"><i>627</i>&nbsp;        char[] var1;</b>
+<i>628</i>&nbsp;        char var2;
+<i>629</i>&nbsp;        int var4;
+<i>630</i>&nbsp;        int var10;
+<i>631</i>&nbsp;        var1 = var0.cpbegin;
+<i>632</i>&nbsp;        var2 = var1[var0.cp++];
+<i>633</i>&nbsp;        int var3 = 2;
+<i>634</i>&nbsp;        var4 = var0.parenCount;
+<i>635</i>&nbsp;        int var8;
+<i>636</i>&nbsp;        label212:
+<i>637</i>&nbsp;        switch(var2) {
+<i>638</i>&nbsp;        case &#39;$&#39;:
+<i>639</i>&nbsp;            var0.result = new RENode((byte)3);
+<i>640</i>&nbsp;            ++var0.progLength;
+<i>641</i>&nbsp;            return true;
+<i>642</i>&nbsp;        case &#39;(&#39;:
+<i>643</i>&nbsp;            RENode var14 = null;
+<i>644</i>&nbsp;            var8 = var0.cp;
+<i>645</i>&nbsp;            if(var0.cp + 1 &lt; var0.cpend &amp;&amp; var1[var0.cp] == 63 &amp;&amp; ((var2 = var1[var0.cp + 1]) == 61 || var2 == 33 || var2 == 58)) {
+<i>646</i>&nbsp;                var0.cp += 2;
+<i>647</i>&nbsp;                if(var2 == 61) {
+<i>648</i>&nbsp;                    var14 = new RENode((byte)41);
+<i>649</i>&nbsp;                    var0.progLength += 4;
+<i>650</i>&nbsp;                } else if(var2 == 33) {
+<i>651</i>&nbsp;                    var14 = new RENode((byte)42);
+<i>652</i>&nbsp;                    var0.progLength += 4;
+<i>653</i>&nbsp;                }
+<i>654</i>&nbsp;            } else {
+<i>655</i>&nbsp;                var14 = new RENode((byte)10);
+<i>656</i>&nbsp;                var0.progLength += 6;
+<i>657</i>&nbsp;                var14.parenIndex = var0.parenCount++;
+<i>658</i>&nbsp;            }
+<i>659</i>&nbsp;
+<i>660</i>&nbsp;            ++var0.parenNesting;
+<i>661</i>&nbsp;            if(!parseDisjunction(var0)) {
+<i>662</i>&nbsp;                return false;
+<i>663</i>&nbsp;            }
+<i>664</i>&nbsp;
+<i>665</i>&nbsp;            if(var0.cp == var0.cpend || var1[var0.cp] != 41) {
+<i>666</i>&nbsp;                reportError(&quot;msg.unterm.paren&quot;, &quot;&quot;);
+<i>667</i>&nbsp;                return false;
+<i>668</i>&nbsp;            }
+<i>669</i>&nbsp;
+<i>670</i>&nbsp;            ++var0.cp;
+<i>671</i>&nbsp;            --var0.parenNesting;
+<i>672</i>&nbsp;            if(var14 != null) {
+<i>673</i>&nbsp;                var14.kid = var0.result;
+<i>674</i>&nbsp;                var0.result = var14;
+<i>675</i>&nbsp;            }
+<i>676</i>&nbsp;            break;
+<i>677</i>&nbsp;        case &#39;)&#39;:
+<i>678</i>&nbsp;            reportError(&quot;msg.re.unmatched.right.paren&quot;, &quot;&quot;);
+<i>679</i>&nbsp;            return false;
+<i>680</i>&nbsp;        case &#39;*&#39;:
+<i>681</i>&nbsp;        case &#39;+&#39;:
+<i>682</i>&nbsp;        case &#39;?&#39;:
+<i>683</i>&nbsp;            reportError(&quot;msg.bad.quant&quot;, String.valueOf(var1[var0.cp - 1]));
+<i>684</i>&nbsp;            return false;
+<i>685</i>&nbsp;        case &#39;.&#39;:
+<b class="nc"><i>686</i>&nbsp;            var0.result = new RENode((byte)12);</b>
+<b class="nc"><i>687</i>&nbsp;            ++var0.progLength;</b>
+<b class="nc"><i>688</i>&nbsp;            break;</b>
+<b class="nc"><i>689</i>&nbsp;        case &#39;[&#39;:</b>
+<b class="nc"><i>690</i>&nbsp;            var0.result = new RENode((byte)50);</b>
+<i>691</i>&nbsp;            var8 = var0.cp;
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;            for(var0.result.startIndex = var8; var0.cp != var0.cpend; ++var0.cp) {
+<i>694</i>&nbsp;                if(var1[var0.cp] == 92) {
+<i>695</i>&nbsp;                    ++var0.cp;
+<i>696</i>&nbsp;                } else if(var1[var0.cp] == 93) {
+<b class="nc"><i>697</i>&nbsp;                    var0.result.kidlen = var0.cp - var8;</b>
+<b class="nc"><i>698</i>&nbsp;                    var0.result.index = var0.classCount++;</b>
+<b class="nc"><i>699</i>&nbsp;                    if(!calculateBitmapSize(var0, var0.result, var1, var8, var0.cp++)) {</b>
+<b class="nc"><i>700</i>&nbsp;                        return false;</b>
+<b class="nc"><i>701</i>&nbsp;                    }</b>
+<b class="nc"><i>702</i>&nbsp;</b>
+<b class="nc"><i>703</i>&nbsp;                    var0.progLength += 3;</b>
+<b class="nc"><i>704</i>&nbsp;                    break label212;</b>
+<i>705</i>&nbsp;                }
+<b class="nc"><i>706</i>&nbsp;            }</b>
+<b class="nc"><i>707</i>&nbsp;</b>
+<b class="nc"><i>708</i>&nbsp;            reportError(&quot;msg.unterm.class&quot;, &quot;&quot;);</b>
+<b class="nc"><i>709</i>&nbsp;            return false;</b>
+<i>710</i>&nbsp;        case &#39;\\&#39;:
+<b class="nc"><i>711</i>&nbsp;            if(var0.cp &gt;= var0.cpend) {</b>
+<b class="nc"><i>712</i>&nbsp;                reportError(&quot;msg.trail.backslash&quot;, &quot;&quot;);</b>
+<i>713</i>&nbsp;                return false;
+<i>714</i>&nbsp;            }
+<i>715</i>&nbsp;
+<b class="nc"><i>716</i>&nbsp;            var2 = var1[var0.cp++];</b>
+<b class="nc"><i>717</i>&nbsp;            int var5;</b>
+<i>718</i>&nbsp;            int var6;
+<i>719</i>&nbsp;            char var13;
+<b class="nc"><i>720</i>&nbsp;            switch(var2) {</b>
+<i>721</i>&nbsp;            case &#39;0&#39;:
+<i>722</i>&nbsp;                reportWarning(var0.cx, &quot;msg.bad.backref&quot;, &quot;&quot;);
+<i>723</i>&nbsp;
+<i>724</i>&nbsp;                for(var5 = 0; var0.cp &lt; var0.cpend; var5 = var6) {
+<i>725</i>&nbsp;                    var2 = var1[var0.cp];
+<b class="nc"><i>726</i>&nbsp;                    if(var2 &lt; 48 || var2 &gt; 55) {</b>
+<b class="nc"><i>727</i>&nbsp;                        break;</b>
+<b class="nc"><i>728</i>&nbsp;                    }</b>
+<b class="nc"><i>729</i>&nbsp;</b>
+<i>730</i>&nbsp;                    ++var0.cp;
+<i>731</i>&nbsp;                    var6 = 8 * var5 + (var2 - 48);
+<i>732</i>&nbsp;                    if(var6 &gt; 255) {
+<b class="nc"><i>733</i>&nbsp;                        break;</b>
+<i>734</i>&nbsp;                    }
+<b class="nc"><i>735</i>&nbsp;                }</b>
+<i>736</i>&nbsp;
+<i>737</i>&nbsp;                var2 = (char)var5;
+<b class="nc"><i>738</i>&nbsp;                doFlat(var0, var2);</b>
+<b class="nc"><i>739</i>&nbsp;                break label212;</b>
+<b class="nc"><i>740</i>&nbsp;            case &#39;1&#39;:</b>
+<i>741</i>&nbsp;            case &#39;2&#39;:
+<b class="nc"><i>742</i>&nbsp;            case &#39;3&#39;:</b>
+<b class="nc"><i>743</i>&nbsp;            case &#39;4&#39;:</b>
+<b class="nc"><i>744</i>&nbsp;            case &#39;5&#39;:</b>
+<i>745</i>&nbsp;            case &#39;6&#39;:
+<b class="nc"><i>746</i>&nbsp;            case &#39;7&#39;:</b>
+<b class="nc"><i>747</i>&nbsp;            case &#39;8&#39;:</b>
+<b class="nc"><i>748</i>&nbsp;            case &#39;9&#39;:</b>
+<i>749</i>&nbsp;                var8 = var0.cp - 1;
+<i>750</i>&nbsp;                var5 = getDecimalValue(var2, var0, &#39;\uffff&#39;, &quot;msg.overlarge.backref&quot;);
+<b class="nc"><i>751</i>&nbsp;                if(var5 &gt; var0.parenCount) {</b>
+<b class="nc"><i>752</i>&nbsp;                    reportWarning(var0.cx, &quot;msg.bad.backref&quot;, &quot;&quot;);</b>
+<b class="nc"><i>753</i>&nbsp;                }</b>
+<i>754</i>&nbsp;
+<b class="nc"><i>755</i>&nbsp;                if(var5 &gt; 9 &amp;&amp; var5 &gt; var0.parenCount) {</b>
+<b class="nc"><i>756</i>&nbsp;                    var0.cp = var8;</b>
+<b class="nc"><i>757</i>&nbsp;</b>
+<i>758</i>&nbsp;                    for(var5 = 0; var0.cp &lt; var0.cpend; var5 = var6) {
+<i>759</i>&nbsp;                        var2 = var1[var0.cp];
+<i>760</i>&nbsp;                        if(var2 &lt; 48 || var2 &gt; 55) {
+<i>761</i>&nbsp;                            break;
+<i>762</i>&nbsp;                        }
+<i>763</i>&nbsp;
+<i>764</i>&nbsp;                        ++var0.cp;
+<i>765</i>&nbsp;                        var6 = 8 * var5 + (var2 - 48);
+<i>766</i>&nbsp;                        if(var6 &gt; 255) {
+<i>767</i>&nbsp;                            break;
+<b class="nc"><i>768</i>&nbsp;                        }</b>
+<b class="nc"><i>769</i>&nbsp;                    }</b>
+<b class="nc"><i>770</i>&nbsp;</b>
+<b class="nc"><i>771</i>&nbsp;                    var2 = (char)var5;</b>
+<b class="nc"><i>772</i>&nbsp;                    doFlat(var0, var2);</b>
+<b class="nc"><i>773</i>&nbsp;                } else {</b>
+<b class="nc"><i>774</i>&nbsp;                    var0.result = new RENode((byte)20);</b>
+<b class="nc"><i>775</i>&nbsp;                    var0.result.parenIndex = var5 - 1;</b>
+<b class="nc"><i>776</i>&nbsp;                    var0.progLength += 3;</b>
+<i>777</i>&nbsp;                }
+<i>778</i>&nbsp;                break label212;
+<i>779</i>&nbsp;            case &#39;:&#39;:
+<i>780</i>&nbsp;            case &#39;;&#39;:
+<b class="nc"><i>781</i>&nbsp;            case &#39;&lt;&#39;:</b>
+<b class="nc"><i>782</i>&nbsp;            case &#39;=&#39;:</b>
+<b class="nc"><i>783</i>&nbsp;            case &#39;&gt;&#39;:</b>
+<i>784</i>&nbsp;            case &#39;?&#39;:
+<i>785</i>&nbsp;            case &#39;@&#39;:
+<i>786</i>&nbsp;            case &#39;A&#39;:
+<i>787</i>&nbsp;            case &#39;C&#39;:
+<i>788</i>&nbsp;            case &#39;E&#39;:
+<i>789</i>&nbsp;            case &#39;F&#39;:
+<i>790</i>&nbsp;            case &#39;G&#39;:
+<i>791</i>&nbsp;            case &#39;H&#39;:
+<i>792</i>&nbsp;            case &#39;I&#39;:
+<b class="nc"><i>793</i>&nbsp;            case &#39;J&#39;:</b>
+<b class="nc"><i>794</i>&nbsp;            case &#39;K&#39;:</b>
+<i>795</i>&nbsp;            case &#39;L&#39;:
+<i>796</i>&nbsp;            case &#39;M&#39;:
+<i>797</i>&nbsp;            case &#39;N&#39;:
+<i>798</i>&nbsp;            case &#39;O&#39;:
+<i>799</i>&nbsp;            case &#39;P&#39;:
+<b class="nc"><i>800</i>&nbsp;            case &#39;Q&#39;:</b>
+<b class="nc"><i>801</i>&nbsp;            case &#39;R&#39;:</b>
+<b class="nc"><i>802</i>&nbsp;            case &#39;T&#39;:</b>
+<b class="nc"><i>803</i>&nbsp;            case &#39;U&#39;:</b>
+<b class="nc"><i>804</i>&nbsp;            case &#39;V&#39;:</b>
+<b class="nc"><i>805</i>&nbsp;            case &#39;X&#39;:</b>
+<b class="nc"><i>806</i>&nbsp;            case &#39;Y&#39;:</b>
+<b class="nc"><i>807</i>&nbsp;            case &#39;Z&#39;:</b>
+<b class="nc"><i>808</i>&nbsp;            case &#39;[&#39;:</b>
+<b class="nc"><i>809</i>&nbsp;            case &#39;\\&#39;:</b>
+<b class="nc"><i>810</i>&nbsp;            case &#39;]&#39;:</b>
+<i>811</i>&nbsp;            case &#39;^&#39;:
+<i>812</i>&nbsp;            case &#39;_&#39;:
+<i>813</i>&nbsp;            case &#39;`&#39;:
+<i>814</i>&nbsp;            case &#39;a&#39;:
+<b class="nc"><i>815</i>&nbsp;            case &#39;e&#39;:</b>
+<b class="nc"><i>816</i>&nbsp;            case &#39;g&#39;:</b>
+<b class="nc"><i>817</i>&nbsp;            case &#39;h&#39;:</b>
+<i>818</i>&nbsp;            case &#39;i&#39;:
+<i>819</i>&nbsp;            case &#39;j&#39;:
+<b class="nc"><i>820</i>&nbsp;            case &#39;k&#39;:</b>
+<b class="nc"><i>821</i>&nbsp;            case &#39;l&#39;:</b>
+<b class="nc"><i>822</i>&nbsp;            case &#39;m&#39;:</b>
+<b class="nc"><i>823</i>&nbsp;            case &#39;o&#39;:</b>
+<i>824</i>&nbsp;            case &#39;p&#39;:
+<i>825</i>&nbsp;            case &#39;q&#39;:
+<b class="nc"><i>826</i>&nbsp;            default:</b>
+<b class="nc"><i>827</i>&nbsp;                var0.result = new RENode((byte)21);</b>
+<b class="nc"><i>828</i>&nbsp;                var0.result.chr = var2;</b>
+<i>829</i>&nbsp;                var0.result.length = 1;
+<b class="nc"><i>830</i>&nbsp;                var0.result.flatIndex = var0.cp - 1;</b>
+<b class="nc"><i>831</i>&nbsp;                var0.progLength += 3;</b>
+<b class="nc"><i>832</i>&nbsp;                break label212;</b>
+<i>833</i>&nbsp;            case &#39;B&#39;:
+<b class="nc"><i>834</i>&nbsp;                var0.result = new RENode((byte)5);</b>
+<b class="nc"><i>835</i>&nbsp;                ++var0.progLength;</b>
+<b class="nc"><i>836</i>&nbsp;                return true;</b>
+<i>837</i>&nbsp;            case &#39;D&#39;:
+<b class="nc"><i>838</i>&nbsp;                var0.result = new RENode((byte)15);</b>
+<b class="nc"><i>839</i>&nbsp;                ++var0.progLength;</b>
+<b class="nc"><i>840</i>&nbsp;                break label212;</b>
+<i>841</i>&nbsp;            case &#39;S&#39;:
+<b class="nc"><i>842</i>&nbsp;                var0.result = new RENode((byte)19);</b>
+<b class="nc"><i>843</i>&nbsp;                ++var0.progLength;</b>
+<b class="nc"><i>844</i>&nbsp;                break label212;</b>
+<i>845</i>&nbsp;            case &#39;W&#39;:
+<i>846</i>&nbsp;                var0.result = new RENode((byte)17);
+<b class="nc"><i>847</i>&nbsp;                ++var0.progLength;</b>
+<i>848</i>&nbsp;                break label212;
+<b class="nc"><i>849</i>&nbsp;            case &#39;b&#39;:</b>
+<i>850</i>&nbsp;                var0.result = new RENode((byte)4);
+<i>851</i>&nbsp;                ++var0.progLength;
+<b class="nc"><i>852</i>&nbsp;                return true;</b>
+<b class="nc"><i>853</i>&nbsp;            case &#39;c&#39;:</b>
+<i>854</i>&nbsp;                if(var0.cp + 1 &lt; var0.cpend &amp;&amp; Character.isLetter(var1[var0.cp + 1])) {
+<b class="nc"><i>855</i>&nbsp;                    var2 = (char)(var1[var0.cp++] &amp; 31);</b>
+<b class="nc"><i>856</i>&nbsp;                } else {</b>
+<i>857</i>&nbsp;                    --var0.cp;
+<i>858</i>&nbsp;                    var2 = 92;
+<b class="nc"><i>859</i>&nbsp;                }</b>
+<i>860</i>&nbsp;
+<i>861</i>&nbsp;                doFlat(var0, var2);
+<i>862</i>&nbsp;                break label212;
+<i>863</i>&nbsp;            case &#39;d&#39;:
+<b class="nc"><i>864</i>&nbsp;                var0.result = new RENode((byte)14);</b>
+<i>865</i>&nbsp;                ++var0.progLength;
+<b class="nc"><i>866</i>&nbsp;                break label212;</b>
+<b class="nc"><i>867</i>&nbsp;            case &#39;f&#39;:</b>
+<i>868</i>&nbsp;                var13 = 12;
+<b class="nc"><i>869</i>&nbsp;                doFlat(var0, var13);</b>
+<b class="nc"><i>870</i>&nbsp;                break label212;</b>
+<b class="nc"><i>871</i>&nbsp;            case &#39;n&#39;:</b>
+<i>872</i>&nbsp;                var13 = 10;
+<i>873</i>&nbsp;                doFlat(var0, var13);
+<b class="nc"><i>874</i>&nbsp;                break label212;</b>
+<b class="nc"><i>875</i>&nbsp;            case &#39;r&#39;:</b>
+<b class="nc"><i>876</i>&nbsp;                var13 = 13;</b>
+<i>877</i>&nbsp;                doFlat(var0, var13);
+<i>878</i>&nbsp;                break label212;
+<b class="nc"><i>879</i>&nbsp;            case &#39;s&#39;:</b>
+<i>880</i>&nbsp;                var0.result = new RENode((byte)18);
+<b class="nc"><i>881</i>&nbsp;                ++var0.progLength;</b>
+<b class="nc"><i>882</i>&nbsp;                break label212;</b>
+<i>883</i>&nbsp;            case &#39;t&#39;:
+<i>884</i>&nbsp;                var13 = 9;
+<b class="nc"><i>885</i>&nbsp;                doFlat(var0, var13);</b>
+<b class="nc"><i>886</i>&nbsp;                break label212;</b>
+<b class="nc"><i>887</i>&nbsp;            case &#39;u&#39;:</b>
+<i>888</i>&nbsp;                var3 += 2;
+<b class="nc"><i>889</i>&nbsp;            case &#39;x&#39;:</b>
+<b class="nc"><i>890</i>&nbsp;                int var9 = 0;</b>
+<b class="nc"><i>891</i>&nbsp;</b>
+<i>892</i>&nbsp;                for(var10 = 0; var10 &lt; var3 &amp;&amp; var0.cp &lt; var0.cpend; ++var10) {
+<b class="nc"><i>893</i>&nbsp;                    var2 = var1[var0.cp++];</b>
+<b class="nc"><i>894</i>&nbsp;                    var9 = Kit.xDigitToInt(var2, var9);</b>
+<b class="nc"><i>895</i>&nbsp;                    if(var9 &lt; 0) {</b>
+<i>896</i>&nbsp;                        var0.cp -= var10 + 2;
+<b class="nc"><i>897</i>&nbsp;                        var9 = var1[var0.cp++];</b>
+<b class="nc"><i>898</i>&nbsp;                        break;</b>
+<b class="nc"><i>899</i>&nbsp;                    }</b>
+<i>900</i>&nbsp;                }
+<b class="nc"><i>901</i>&nbsp;</b>
+<b class="nc"><i>902</i>&nbsp;                var2 = (char)var9;</b>
+<b class="nc"><i>903</i>&nbsp;                doFlat(var0, var2);</b>
+<i>904</i>&nbsp;                break label212;
+<b class="nc"><i>905</i>&nbsp;            case &#39;v&#39;:</b>
+<b class="nc"><i>906</i>&nbsp;                var13 = 11;</b>
+<b class="nc"><i>907</i>&nbsp;                doFlat(var0, var13);</b>
+<i>908</i>&nbsp;                break label212;
+<i>909</i>&nbsp;            case &#39;w&#39;:
+<b class="nc"><i>910</i>&nbsp;                var0.result = new RENode((byte)16);</b>
+<b class="nc"><i>911</i>&nbsp;                ++var0.progLength;</b>
+<b class="nc"><i>912</i>&nbsp;                break label212;</b>
+<b class="nc"><i>913</i>&nbsp;            }</b>
+<b class="nc"><i>914</i>&nbsp;        case &#39;^&#39;:</b>
+<b class="nc"><i>915</i>&nbsp;            var0.result = new RENode((byte)2);</b>
+<i>916</i>&nbsp;            ++var0.progLength;
+<i>917</i>&nbsp;            return true;
+<i>918</i>&nbsp;        default:
+<i>919</i>&nbsp;            var0.result = new RENode((byte)21);
+<i>920</i>&nbsp;            var0.result.chr = var2;
+<b class="nc"><i>921</i>&nbsp;            var0.result.length = 1;</b>
+<b class="nc"><i>922</i>&nbsp;            var0.result.flatIndex = var0.cp - 1;</b>
+<i>923</i>&nbsp;            var0.progLength += 3;
+<i>924</i>&nbsp;        }
+<b class="nc"><i>925</i>&nbsp;</b>
+<b class="nc"><i>926</i>&nbsp;        RENode var7 = var0.result;</b>
+<b class="nc"><i>927</i>&nbsp;        if(var0.cp == var0.cpend) {</b>
+<i>928</i>&nbsp;            return true;
+<i>929</i>&nbsp;        } else {
+<b class="nc"><i>930</i>&nbsp;            boolean var16 = false;</b>
+<b class="nc"><i>931</i>&nbsp;            switch(var1[var0.cp]) {</b>
+<b class="nc"><i>932</i>&nbsp;            case &#39;*&#39;:</b>
+<i>933</i>&nbsp;                var0.result = new RENode((byte)6);
+<b class="nc"><i>934</i>&nbsp;                var0.result.min = 0;</b>
+<b class="nc"><i>935</i>&nbsp;                var0.result.max = -1;</b>
+<b class="nc"><i>936</i>&nbsp;                var0.progLength += 8;</b>
+<i>937</i>&nbsp;                var16 = true;
+<b class="nc"><i>938</i>&nbsp;                break;</b>
+<i>939</i>&nbsp;            case &#39;+&#39;:
+<i>940</i>&nbsp;                var0.result = new RENode((byte)6);
+<b class="nc"><i>941</i>&nbsp;                var0.result.min = 1;</b>
+<i>942</i>&nbsp;                var0.result.max = -1;
+<b class="nc"><i>943</i>&nbsp;                var0.progLength += 8;</b>
+<b class="nc"><i>944</i>&nbsp;                var16 = true;</b>
+<i>945</i>&nbsp;                break;
+<b class="nc"><i>946</i>&nbsp;            case &#39;?&#39;:</b>
+<b class="nc"><i>947</i>&nbsp;                var0.result = new RENode((byte)6);</b>
+<b class="nc"><i>948</i>&nbsp;                var0.result.min = 0;</b>
+<b class="nc"><i>949</i>&nbsp;                var0.result.max = 1;</b>
+<b class="nc"><i>950</i>&nbsp;                var0.progLength += 8;</b>
+<b class="nc"><i>951</i>&nbsp;                var16 = true;</b>
+<i>952</i>&nbsp;                break;
+<b class="nc"><i>953</i>&nbsp;            case &#39;{&#39;:</b>
+<b class="nc"><i>954</i>&nbsp;                boolean var15 = false;</b>
+<b class="nc"><i>955</i>&nbsp;                int var11 = -1;</b>
+<b class="nc"><i>956</i>&nbsp;                int var12 = var0.cp;</b>
+<b class="nc"><i>957</i>&nbsp;                var2 = var1[++var0.cp];</b>
+<i>958</i>&nbsp;                if(isDigit(var2)) {
+<i>959</i>&nbsp;                    ++var0.cp;
+<i>960</i>&nbsp;                    var10 = getDecimalValue(var2, var0, &#39;\uffff&#39;, &quot;msg.overlarge.min&quot;);
+<i>961</i>&nbsp;                    var2 = var1[var0.cp];
+<b class="nc"><i>962</i>&nbsp;                    if(var2 == 44) {</b>
+<b class="nc"><i>963</i>&nbsp;                        var2 = var1[++var0.cp];</b>
+<i>964</i>&nbsp;                        if(isDigit(var2)) {
+<b class="nc"><i>965</i>&nbsp;                            ++var0.cp;</b>
+<b class="nc"><i>966</i>&nbsp;                            var11 = getDecimalValue(var2, var0, &#39;\uffff&#39;, &quot;msg.overlarge.max&quot;);</b>
+<b class="nc"><i>967</i>&nbsp;                            var2 = var1[var0.cp];</b>
+<i>968</i>&nbsp;                            if(var10 &gt; var11) {
+<b class="nc"><i>969</i>&nbsp;                                reportError(&quot;msg.max.lt.min&quot;, String.valueOf(var1[var0.cp]));</b>
+<b class="nc"><i>970</i>&nbsp;                                return false;</b>
+<b class="nc"><i>971</i>&nbsp;                            }</b>
+<i>972</i>&nbsp;                        }
+<b class="nc"><i>973</i>&nbsp;                    } else {</b>
+<b class="nc"><i>974</i>&nbsp;                        var11 = var10;</b>
+<i>975</i>&nbsp;                    }
+<b class="nc"><i>976</i>&nbsp;</b>
+<b class="nc"><i>977</i>&nbsp;                    if(var2 == 125) {</b>
+<b class="nc"><i>978</i>&nbsp;                        var0.result = new RENode((byte)6);</b>
+<i>979</i>&nbsp;                        var0.result.min = var10;
+<i>980</i>&nbsp;                        var0.result.max = var11;
+<b class="nc"><i>981</i>&nbsp;                        var0.progLength += 12;</b>
+<i>982</i>&nbsp;                        var16 = true;
+<b class="nc"><i>983</i>&nbsp;                    }</b>
+<i>984</i>&nbsp;                }
+<i>985</i>&nbsp;
+<i>986</i>&nbsp;                if(!var16) {
+<i>987</i>&nbsp;                    var0.cp = var12;
+<b class="nc"><i>988</i>&nbsp;                }</b>
+<b class="nc"><i>989</i>&nbsp;            }</b>
+<b class="nc"><i>990</i>&nbsp;</b>
+<b class="nc"><i>991</i>&nbsp;            if(!var16) {</b>
+<i>992</i>&nbsp;                return true;
+<i>993</i>&nbsp;            } else {
+<b class="nc"><i>994</i>&nbsp;                ++var0.cp;</b>
+<b class="nc"><i>995</i>&nbsp;                var0.result.kid = var7;</b>
+<b class="nc"><i>996</i>&nbsp;                var0.result.parenIndex = var4;</b>
+<i>997</i>&nbsp;                var0.result.parenCount = var0.parenCount - var4;
+<i>998</i>&nbsp;                if(var0.cp &lt; var0.cpend &amp;&amp; var1[var0.cp] == 63) {
+<i>999</i>&nbsp;                    ++var0.cp;
+<b class="nc"><i>1000</i>&nbsp;                    var0.result.greedy = false;</b>
+<b class="nc"><i>1001</i>&nbsp;                } else {</b>
+<i>1002</i>&nbsp;                    var0.result.greedy = true;
+<b class="nc"><i>1003</i>&nbsp;                }</b>
+<b class="nc"><i>1004</i>&nbsp;</b>
+<b class="nc"><i>1005</i>&nbsp;                return true;</b>
+<b class="nc"><i>1006</i>&nbsp;            }</b>
+<b class="nc"><i>1007</i>&nbsp;        }</b>
+<i>1008</i>&nbsp;    }
+<i>1009</i>&nbsp;
+<i>1010</i>&nbsp;    private static void resolveForwardJump(byte[] var0, int var1, int var2) {
+<b class="nc"><i>1011</i>&nbsp;        if(var1 &gt; var2) {</b>
+<b class="nc"><i>1012</i>&nbsp;            throw Kit.codeBug();</b>
+<b class="nc"><i>1013</i>&nbsp;        } else {</b>
+<i>1014</i>&nbsp;            addIndex(var0, var1, var2 - var1);
+<b class="nc"><i>1015</i>&nbsp;        }</b>
+<b class="nc"><i>1016</i>&nbsp;    }</b>
+<i>1017</i>&nbsp;
+<b class="nc"><i>1018</i>&nbsp;    private static int getOffset(byte[] var0, int var1) {</b>
+<b class="nc"><i>1019</i>&nbsp;        return getIndex(var0, var1);</b>
+<b class="nc"><i>1020</i>&nbsp;    }</b>
+<i>1021</i>&nbsp;
+<b class="nc"><i>1022</i>&nbsp;    private static int addIndex(byte[] var0, int var1, int var2) {</b>
+<b class="nc"><i>1023</i>&nbsp;        if(var2 &lt; 0) {</b>
+<b class="nc"><i>1024</i>&nbsp;            throw Kit.codeBug();</b>
+<i>1025</i>&nbsp;        } else if(var2 &gt; &#39;\uffff&#39;) {
+<b class="nc"><i>1026</i>&nbsp;            throw Context.reportRuntimeError(&quot;Too complex regexp&quot;);</b>
+<b class="nc"><i>1027</i>&nbsp;        } else {</b>
+<b class="nc"><i>1028</i>&nbsp;            var0[var1] = (byte)(var2 &gt;&gt; 8);</b>
+<i>1029</i>&nbsp;            var0[var1 + 1] = (byte)var2;
+<b class="nc"><i>1030</i>&nbsp;            return var1 + 2;</b>
+<b class="nc"><i>1031</i>&nbsp;        }</b>
+<b class="nc"><i>1032</i>&nbsp;    }</b>
+<i>1033</i>&nbsp;
+<b class="nc"><i>1034</i>&nbsp;    private static int getIndex(byte[] var0, int var1) {</b>
+<b class="nc"><i>1035</i>&nbsp;        return (var0[var1] &amp; 255) &lt;&lt; 8 | var0[var1 + 1] &amp; 255;</b>
+<b class="nc"><i>1036</i>&nbsp;    }</b>
+<i>1037</i>&nbsp;
+<b class="nc"><i>1038</i>&nbsp;    private static int emitREBytecode(CompilerState var0, RECompiled var1, int var2, RENode var3) {</b>
+<b class="nc"><i>1039</i>&nbsp;        for(byte[] var7 = var1.program; var3 != null; var3 = var3.next) {</b>
+<b class="nc"><i>1040</i>&nbsp;            var7[var2++] = var3.op;</b>
+<i>1041</i>&nbsp;            int var6;
+<i>1042</i>&nbsp;            switch(var3.op) {
+<b class="nc"><i>1043</i>&nbsp;            case 0:</b>
+<b class="nc"><i>1044</i>&nbsp;                --var2;</b>
+<b class="nc"><i>1045</i>&nbsp;                break;</b>
+<i>1046</i>&nbsp;            case 1:
+<i>1047</i>&nbsp;                RENode var4 = var3.kid2;
+<i>1048</i>&nbsp;                int var5 = var2;
+<i>1049</i>&nbsp;                var2 += 2;
+<i>1050</i>&nbsp;                var2 = emitREBytecode(var0, var1, var2, var3.kid);
+<i>1051</i>&nbsp;                var7[var2++] = 23;
+<i>1052</i>&nbsp;                var6 = var2;
+<b class="nc"><i>1053</i>&nbsp;                var2 += 2;</b>
+<b class="nc"><i>1054</i>&nbsp;                resolveForwardJump(var7, var5, var2);</b>
+<b class="nc"><i>1055</i>&nbsp;                var2 = emitREBytecode(var0, var1, var2, var4);</b>
+<b class="nc"><i>1056</i>&nbsp;                var7[var2++] = 23;</b>
+<i>1057</i>&nbsp;                var5 = var2;
+<b class="nc"><i>1058</i>&nbsp;                var2 += 2;</b>
+<b class="nc"><i>1059</i>&nbsp;                resolveForwardJump(var7, var6, var2);</b>
+<b class="nc"><i>1060</i>&nbsp;                resolveForwardJump(var7, var5, var2);</b>
+<b class="nc"><i>1061</i>&nbsp;                break;</b>
+<b class="nc"><i>1062</i>&nbsp;            case 6:</b>
+<b class="nc"><i>1063</i>&nbsp;                if(var3.min == 0 &amp;&amp; var3.max == -1) {</b>
+<i>1064</i>&nbsp;                    var7[var2 - 1] = (byte)(var3.greedy?7:45);
+<b class="nc"><i>1065</i>&nbsp;                } else if(var3.min == 0 &amp;&amp; var3.max == 1) {</b>
+<b class="nc"><i>1066</i>&nbsp;                    var7[var2 - 1] = (byte)(var3.greedy?9:47);</b>
+<b class="nc"><i>1067</i>&nbsp;                } else if(var3.min == 1 &amp;&amp; var3.max == -1) {</b>
+<i>1068</i>&nbsp;                    var7[var2 - 1] = (byte)(var3.greedy?8:46);
+<b class="nc"><i>1069</i>&nbsp;                } else {</b>
+<i>1070</i>&nbsp;                    if(!var3.greedy) {
+<i>1071</i>&nbsp;                        var7[var2 - 1] = 48;
+<i>1072</i>&nbsp;                    }
+<b class="nc"><i>1073</i>&nbsp;</b>
+<i>1074</i>&nbsp;                    var2 = addIndex(var7, var2, var3.min);
+<i>1075</i>&nbsp;                    var2 = addIndex(var7, var2, var3.max + 1);
+<b class="nc"><i>1076</i>&nbsp;                }</b>
+<b class="nc"><i>1077</i>&nbsp;</b>
+<b class="nc"><i>1078</i>&nbsp;                var2 = addIndex(var7, var2, var3.parenCount);</b>
+<b class="nc"><i>1079</i>&nbsp;                var2 = addIndex(var7, var2, var3.parenIndex);</b>
+<i>1080</i>&nbsp;                var6 = var2;
+<i>1081</i>&nbsp;                var2 += 2;
+<b class="nc"><i>1082</i>&nbsp;                var2 = emitREBytecode(var0, var1, var2, var3.kid);</b>
+<b class="nc"><i>1083</i>&nbsp;                var7[var2++] = 49;</b>
+<i>1084</i>&nbsp;                resolveForwardJump(var7, var6, var2);
+<i>1085</i>&nbsp;                break;
+<b class="nc"><i>1086</i>&nbsp;            case 10:</b>
+<b class="nc"><i>1087</i>&nbsp;                var2 = addIndex(var7, var2, var3.parenIndex);</b>
+<i>1088</i>&nbsp;                var2 = emitREBytecode(var0, var1, var2, var3.kid);
+<i>1089</i>&nbsp;                var7[var2++] = 11;
+<i>1090</i>&nbsp;                var2 = addIndex(var7, var2, var3.parenIndex);
+<i>1091</i>&nbsp;                break;
+<b class="nc"><i>1092</i>&nbsp;            case 20:</b>
+<b class="nc"><i>1093</i>&nbsp;                var2 = addIndex(var7, var2, var3.parenIndex);</b>
+<i>1094</i>&nbsp;                break;
+<b class="nc"><i>1095</i>&nbsp;            case 21:</b>
+<b class="nc"><i>1096</i>&nbsp;                if(var3.flatIndex != -1) {</b>
+<b class="nc"><i>1097</i>&nbsp;                    while(var3.next != null &amp;&amp; var3.next.op == 21 &amp;&amp; var3.flatIndex + var3.length == var3.next.flatIndex) {</b>
+<b class="nc"><i>1098</i>&nbsp;                        var3.length += var3.next.length;</b>
+<b class="nc"><i>1099</i>&nbsp;                        var3.next = var3.next.next;</b>
+<b class="nc"><i>1100</i>&nbsp;                    }</b>
+<b class="nc"><i>1101</i>&nbsp;                }</b>
+<i>1102</i>&nbsp;
+<i>1103</i>&nbsp;                if(var3.flatIndex != -1 &amp;&amp; var3.length &gt; 1) {
+<b class="nc"><i>1104</i>&nbsp;                    if((var0.flags &amp; 2) != 0) {</b>
+<b class="nc"><i>1105</i>&nbsp;                        var7[var2 - 1] = 32;</b>
+<i>1106</i>&nbsp;                    } else {
+<i>1107</i>&nbsp;                        var7[var2 - 1] = 21;
+<i>1108</i>&nbsp;                    }
+<i>1109</i>&nbsp;
+<b class="nc"><i>1110</i>&nbsp;                    var2 = addIndex(var7, var2, var3.flatIndex);</b>
+<b class="nc"><i>1111</i>&nbsp;                    var2 = addIndex(var7, var2, var3.length);</b>
+<i>1112</i>&nbsp;                } else if(var3.chr &lt; 256) {
+<i>1113</i>&nbsp;                    if((var0.flags &amp; 2) != 0) {
+<i>1114</i>&nbsp;                        var7[var2 - 1] = 33;
+<i>1115</i>&nbsp;                    } else {
+<b class="nc"><i>1116</i>&nbsp;                        var7[var2 - 1] = 22;</b>
+<i>1117</i>&nbsp;                    }
+<i>1118</i>&nbsp;
+<i>1119</i>&nbsp;                    var7[var2++] = (byte)var3.chr;
+<i>1120</i>&nbsp;                } else {
+<b class="nc"><i>1121</i>&nbsp;                    if((var0.flags &amp; 2) != 0) {</b>
+<b class="nc"><i>1122</i>&nbsp;                        var7[var2 - 1] = 35;</b>
+<b class="nc"><i>1123</i>&nbsp;                    } else {</b>
+<b class="nc"><i>1124</i>&nbsp;                        var7[var2 - 1] = 28;</b>
+<b class="nc"><i>1125</i>&nbsp;                    }</b>
+<b class="nc"><i>1126</i>&nbsp;</b>
+<i>1127</i>&nbsp;                    var2 = addIndex(var7, var2, var3.chr);
+<i>1128</i>&nbsp;                }
+<i>1129</i>&nbsp;                break;
+<i>1130</i>&nbsp;            case 41:
+<b class="nc"><i>1131</i>&nbsp;                var6 = var2;</b>
+<i>1132</i>&nbsp;                var2 += 2;
+<i>1133</i>&nbsp;                var2 = emitREBytecode(var0, var1, var2, var3.kid);
+<i>1134</i>&nbsp;                var7[var2++] = 43;
+<i>1135</i>&nbsp;                resolveForwardJump(var7, var6, var2);
+<i>1136</i>&nbsp;                break;
+<i>1137</i>&nbsp;            case 42:
+<i>1138</i>&nbsp;                var6 = var2;
+<i>1139</i>&nbsp;                var2 += 2;
+<i>1140</i>&nbsp;                var2 = emitREBytecode(var0, var1, var2, var3.kid);
+<i>1141</i>&nbsp;                var7[var2++] = 44;
+<b class="nc"><i>1142</i>&nbsp;                resolveForwardJump(var7, var6, var2);</b>
+<i>1143</i>&nbsp;                break;
+<b class="nc"><i>1144</i>&nbsp;            case 50:</b>
+<b class="nc"><i>1145</i>&nbsp;                var2 = addIndex(var7, var2, var3.index);</b>
+<b class="nc"><i>1146</i>&nbsp;                var1.classList[var3.index] = new RECharSet(var3.bmsize, var3.startIndex, var3.kidlen);</b>
+<i>1147</i>&nbsp;            }
+<b class="nc"><i>1148</i>&nbsp;        }</b>
+<b class="nc"><i>1149</i>&nbsp;</b>
+<i>1150</i>&nbsp;        return var2;
+<b class="nc"><i>1151</i>&nbsp;    }</b>
+<b class="nc"><i>1152</i>&nbsp;</b>
+<b class="nc"><i>1153</i>&nbsp;    private static void pushProgState(REGlobalData var0, int var1, int var2, REBackTrackData var3, int var4, int var5) {</b>
+<b class="nc"><i>1154</i>&nbsp;        var0.stateStackTop = new REProgState(var0.stateStackTop, var1, var2, var0.cp, var3, var4, var5);</b>
+<b class="nc"><i>1155</i>&nbsp;    }</b>
+<b class="nc"><i>1156</i>&nbsp;</b>
+<b class="nc"><i>1157</i>&nbsp;    private static REProgState popProgState(REGlobalData var0) {</b>
+<b class="nc"><i>1158</i>&nbsp;        REProgState var1 = var0.stateStackTop;</b>
+<b class="nc"><i>1159</i>&nbsp;        var0.stateStackTop = var1.previous;</b>
+<i>1160</i>&nbsp;        return var1;
+<b class="nc"><i>1161</i>&nbsp;    }</b>
+<b class="nc"><i>1162</i>&nbsp;</b>
+<b class="nc"><i>1163</i>&nbsp;    private static void pushBackTrackState(REGlobalData var0, byte var1, int var2) {</b>
+<i>1164</i>&nbsp;        var0.backTrackStackTop = new REBackTrackData(var0, var1, var2);
+<b class="nc"><i>1165</i>&nbsp;    }</b>
+<b class="nc"><i>1166</i>&nbsp;</b>
+<b class="nc"><i>1167</i>&nbsp;    private static boolean flatNMatcher(REGlobalData var0, int var1, int var2, char[] var3, int var4) {</b>
+<i>1168</i>&nbsp;        if(var0.cp + var2 &gt; var4) {
+<i>1169</i>&nbsp;            return false;
+<i>1170</i>&nbsp;        } else {
+<i>1171</i>&nbsp;            for(int var5 = 0; var5 &lt; var2; ++var5) {
+<b class="nc"><i>1172</i>&nbsp;                if(var0.regexp.source[var1 + var5] != var3[var0.cp + var5]) {</b>
+<i>1173</i>&nbsp;                    return false;
+<b class="nc"><i>1174</i>&nbsp;                }</b>
+<i>1175</i>&nbsp;            }
+<b class="nc"><i>1176</i>&nbsp;</b>
+<b class="nc"><i>1177</i>&nbsp;            var0.cp += var2;</b>
+<i>1178</i>&nbsp;            return true;
+<i>1179</i>&nbsp;        }
+<b class="nc"><i>1180</i>&nbsp;    }</b>
+<b class="nc"><i>1181</i>&nbsp;</b>
+<b class="nc"><i>1182</i>&nbsp;    private static boolean flatNIMatcher(REGlobalData var0, int var1, int var2, char[] var3, int var4) {</b>
+<i>1183</i>&nbsp;        if(var0.cp + var2 &gt; var4) {
+<b class="nc"><i>1184</i>&nbsp;            return false;</b>
+<b class="nc"><i>1185</i>&nbsp;        } else {</b>
+<b class="nc"><i>1186</i>&nbsp;            for(int var5 = 0; var5 &lt; var2; ++var5) {</b>
+<i>1187</i>&nbsp;                if(upcase(var0.regexp.source[var1 + var5]) != upcase(var3[var0.cp + var5])) {
+<i>1188</i>&nbsp;                    return false;
+<b class="nc"><i>1189</i>&nbsp;                }</b>
+<b class="nc"><i>1190</i>&nbsp;            }</b>
+<b class="nc"><i>1191</i>&nbsp;</b>
+<i>1192</i>&nbsp;            var0.cp += var2;
+<b class="nc"><i>1193</i>&nbsp;            return true;</b>
+<b class="nc"><i>1194</i>&nbsp;        }</b>
+<i>1195</i>&nbsp;    }
+<i>1196</i>&nbsp;
+<b class="nc"><i>1197</i>&nbsp;    private static boolean backrefMatcher(REGlobalData var0, int var1, char[] var2, int var3) {</b>
+<b class="nc"><i>1198</i>&nbsp;        int var6 = var0.parens_index(var1);</b>
+<i>1199</i>&nbsp;        if(var6 == -1) {
+<b class="nc"><i>1200</i>&nbsp;            return true;</b>
+<b class="nc"><i>1201</i>&nbsp;        } else {</b>
+<i>1202</i>&nbsp;            int var4 = var0.parens_length(var1);
+<i>1203</i>&nbsp;            if(var0.cp + var4 &gt; var3) {
+<b class="nc"><i>1204</i>&nbsp;                return false;</b>
+<i>1205</i>&nbsp;            } else {
+<b class="nc"><i>1206</i>&nbsp;                int var5;</b>
+<b class="nc"><i>1207</i>&nbsp;                if((var0.regexp.flags &amp; 2) != 0) {</b>
+<b class="nc"><i>1208</i>&nbsp;                    for(var5 = 0; var5 &lt; var4; ++var5) {</b>
+<b class="nc"><i>1209</i>&nbsp;                        if(upcase(var2[var6 + var5]) != upcase(var2[var0.cp + var5])) {</b>
+<b class="nc"><i>1210</i>&nbsp;                            return false;</b>
+<i>1211</i>&nbsp;                        }
+<b class="nc"><i>1212</i>&nbsp;                    }</b>
+<b class="nc"><i>1213</i>&nbsp;                } else {</b>
+<i>1214</i>&nbsp;                    for(var5 = 0; var5 &lt; var4; ++var5) {
+<b class="nc"><i>1215</i>&nbsp;                        if(var2[var6 + var5] != var2[var0.cp + var5]) {</b>
+<b class="nc"><i>1216</i>&nbsp;                            return false;</b>
+<b class="nc"><i>1217</i>&nbsp;                        }</b>
+<b class="nc"><i>1218</i>&nbsp;                    }</b>
+<b class="nc"><i>1219</i>&nbsp;                }</b>
+<b class="nc"><i>1220</i>&nbsp;</b>
+<i>1221</i>&nbsp;                var0.cp += var4;
+<b class="nc"><i>1222</i>&nbsp;                return true;</b>
+<b class="nc"><i>1223</i>&nbsp;            }</b>
+<b class="nc"><i>1224</i>&nbsp;        }</b>
+<b class="nc"><i>1225</i>&nbsp;    }</b>
+<b class="nc"><i>1226</i>&nbsp;</b>
+<b class="nc"><i>1227</i>&nbsp;    private static void addCharacterToCharSet(RECharSet var0, char var1) {</b>
+<i>1228</i>&nbsp;        int var2 = var1 / 8;
+<b class="nc"><i>1229</i>&nbsp;        if(var1 &gt; var0.length) {</b>
+<b class="nc"><i>1230</i>&nbsp;            throw new RuntimeException();</b>
+<i>1231</i>&nbsp;        } else {
+<b class="nc"><i>1232</i>&nbsp;            var0.bits[var2] = (byte)(var0.bits[var2] | 1 &lt;&lt; (var1 &amp; 7));</b>
+<b class="nc"><i>1233</i>&nbsp;        }</b>
+<i>1234</i>&nbsp;    }
+<b class="nc"><i>1235</i>&nbsp;</b>
+<b class="nc"><i>1236</i>&nbsp;    private static void addCharacterRangeToCharSet(RECharSet var0, char var1, char var2) {</b>
+<i>1237</i>&nbsp;        int var4 = var1 / 8;
+<b class="nc"><i>1238</i>&nbsp;        int var5 = var2 / 8;</b>
+<b class="nc"><i>1239</i>&nbsp;        if(var2 &lt;= var0.length &amp;&amp; var1 &lt;= var2) {</b>
+<i>1240</i>&nbsp;            var1 = (char)(var1 &amp; 7);
+<b class="nc"><i>1241</i>&nbsp;            var2 = (char)(var2 &amp; 7);</b>
+<i>1242</i>&nbsp;            if(var4 == var5) {
+<b class="nc"><i>1243</i>&nbsp;                var0.bits[var4] = (byte)(var0.bits[var4] | 255 &gt;&gt; 7 - (var2 - var1) &lt;&lt; var1);</b>
+<b class="nc"><i>1244</i>&nbsp;            } else {</b>
+<b class="nc"><i>1245</i>&nbsp;                var0.bits[var4] = (byte)(var0.bits[var4] | 255 &lt;&lt; var1);</b>
+<b class="nc"><i>1246</i>&nbsp;</b>
+<b class="nc"><i>1247</i>&nbsp;                for(int var3 = var4 + 1; var3 &lt; var5; ++var3) {</b>
+<b class="nc"><i>1248</i>&nbsp;                    var0.bits[var3] = -1;</b>
+<b class="nc"><i>1249</i>&nbsp;                }</b>
+<b class="nc"><i>1250</i>&nbsp;</b>
+<i>1251</i>&nbsp;                var0.bits[var5] = (byte)(var0.bits[var5] | 255 &gt;&gt; 7 - var2);
+<b class="nc"><i>1252</i>&nbsp;            }</b>
+<b class="nc"><i>1253</i>&nbsp;</b>
+<i>1254</i>&nbsp;        } else {
+<b class="nc"><i>1255</i>&nbsp;            throw new RuntimeException();</b>
+<i>1256</i>&nbsp;        }
+<i>1257</i>&nbsp;    }
+<i>1258</i>&nbsp;
+<b class="nc"><i>1259</i>&nbsp;    private static void processCharSet(REGlobalData var0, RECharSet var1) {</b>
+<i>1260</i>&nbsp;        synchronized(var1) {
+<b class="nc"><i>1261</i>&nbsp;            if(!var1.converted) {</b>
+<i>1262</i>&nbsp;                processCharSetImpl(var0, var1);
+<i>1263</i>&nbsp;                var1.converted = true;
+<i>1264</i>&nbsp;            }
+<i>1265</i>&nbsp;
+<i>1266</i>&nbsp;        }
+<i>1267</i>&nbsp;    }
+<i>1268</i>&nbsp;
+<b class="nc"><i>1269</i>&nbsp;    private static void processCharSetImpl(REGlobalData var0, RECharSet var1) {</b>
+<i>1270</i>&nbsp;        int var2 = var1.startIndex;
+<i>1271</i>&nbsp;        int var3 = var2 + var1.strlength;
+<i>1272</i>&nbsp;        char var4 = 0;
+<i>1273</i>&nbsp;        boolean var11 = false;
+<i>1274</i>&nbsp;        var1.sense = true;
+<i>1275</i>&nbsp;        int var6 = var1.length / 8 + 1;
+<i>1276</i>&nbsp;        var1.bits = new byte[var6];
+<i>1277</i>&nbsp;        if(var2 != var3) {
+<b class="nc"><i>1278</i>&nbsp;            if(var0.regexp.source[var2] == 94) {</b>
+<b class="nc"><i>1279</i>&nbsp;                var1.sense = false;</b>
+<b class="nc"><i>1280</i>&nbsp;                ++var2;</b>
+<i>1281</i>&nbsp;            }
+<i>1282</i>&nbsp;
+<i>1283</i>&nbsp;            label134:
+<i>1284</i>&nbsp;            while(var2 != var3) {
+<i>1285</i>&nbsp;                char var5;
+<b class="nc"><i>1286</i>&nbsp;                int var9 = 2;</b>
+<i>1287</i>&nbsp;                label131:
+<i>1288</i>&nbsp;                switch(var0.regexp.source[var2]) {
+<i>1289</i>&nbsp;                case &#39;\\&#39;:
+<i>1290</i>&nbsp;                    ++var2;
+<i>1291</i>&nbsp;                    char var7 = var0.regexp.source[var2++];
+<i>1292</i>&nbsp;                    int var8;
+<i>1293</i>&nbsp;                    int var10;
+<i>1294</i>&nbsp;                    switch(var7) {
+<i>1295</i>&nbsp;                    case &#39;0&#39;:
+<b class="nc"><i>1296</i>&nbsp;                    case &#39;1&#39;:</b>
+<b class="nc"><i>1297</i>&nbsp;                    case &#39;2&#39;:</b>
+<b class="nc"><i>1298</i>&nbsp;                    case &#39;3&#39;:</b>
+<b class="nc"><i>1299</i>&nbsp;                    case &#39;4&#39;:</b>
+<b class="nc"><i>1300</i>&nbsp;                    case &#39;5&#39;:</b>
+<i>1301</i>&nbsp;                    case &#39;6&#39;:
+<i>1302</i>&nbsp;                    case &#39;7&#39;:
+<b class="nc"><i>1303</i>&nbsp;                        var8 = var7 - 48;</b>
+<b class="nc"><i>1304</i>&nbsp;                        var7 = var0.regexp.source[var2];</b>
+<i>1305</i>&nbsp;                        if(48 &lt;= var7 &amp;&amp; var7 &lt;= 55) {
+<i>1306</i>&nbsp;                            ++var2;
+<i>1307</i>&nbsp;                            var8 = 8 * var8 + (var7 - 48);
+<i>1308</i>&nbsp;                            var7 = var0.regexp.source[var2];
+<i>1309</i>&nbsp;                            if(48 &lt;= var7 &amp;&amp; var7 &lt;= 55) {
+<i>1310</i>&nbsp;                                ++var2;
+<b class="nc"><i>1311</i>&nbsp;                                var10 = 8 * var8 + (var7 - 48);</b>
+<b class="nc"><i>1312</i>&nbsp;                                if(var10 &lt;= 255) {</b>
+<b class="nc"><i>1313</i>&nbsp;                                    var8 = var10;</b>
+<b class="nc"><i>1314</i>&nbsp;                                } else {</b>
+<i>1315</i>&nbsp;                                    --var2;
+<i>1316</i>&nbsp;                                }
+<b class="nc"><i>1317</i>&nbsp;                            }</b>
+<i>1318</i>&nbsp;                        }
+<i>1319</i>&nbsp;
+<b class="nc"><i>1320</i>&nbsp;                        var5 = (char)var8;</b>
+<b class="nc"><i>1321</i>&nbsp;                        break label131;</b>
+<i>1322</i>&nbsp;                    case &#39;8&#39;:
+<i>1323</i>&nbsp;                    case &#39;9&#39;:
+<i>1324</i>&nbsp;                    case &#39;:&#39;:
+<i>1325</i>&nbsp;                    case &#39;;&#39;:
+<i>1326</i>&nbsp;                    case &#39;&lt;&#39;:
+<i>1327</i>&nbsp;                    case &#39;=&#39;:
+<i>1328</i>&nbsp;                    case &#39;&gt;&#39;:
+<i>1329</i>&nbsp;                    case &#39;?&#39;:
+<i>1330</i>&nbsp;                    case &#39;@&#39;:
+<i>1331</i>&nbsp;                    case &#39;A&#39;:
+<i>1332</i>&nbsp;                    case &#39;B&#39;:
+<i>1333</i>&nbsp;                    case &#39;C&#39;:
+<i>1334</i>&nbsp;                    case &#39;E&#39;:
+<i>1335</i>&nbsp;                    case &#39;F&#39;:
+<i>1336</i>&nbsp;                    case &#39;G&#39;:
+<i>1337</i>&nbsp;                    case &#39;H&#39;:
+<i>1338</i>&nbsp;                    case &#39;I&#39;:
+<i>1339</i>&nbsp;                    case &#39;J&#39;:
+<i>1340</i>&nbsp;                    case &#39;K&#39;:
+<i>1341</i>&nbsp;                    case &#39;L&#39;:
+<i>1342</i>&nbsp;                    case &#39;M&#39;:
+<i>1343</i>&nbsp;                    case &#39;N&#39;:
+<i>1344</i>&nbsp;                    case &#39;O&#39;:
+<i>1345</i>&nbsp;                    case &#39;P&#39;:
+<i>1346</i>&nbsp;                    case &#39;Q&#39;:
+<i>1347</i>&nbsp;                    case &#39;R&#39;:
+<i>1348</i>&nbsp;                    case &#39;T&#39;:
+<i>1349</i>&nbsp;                    case &#39;U&#39;:
+<i>1350</i>&nbsp;                    case &#39;V&#39;:
+<i>1351</i>&nbsp;                    case &#39;X&#39;:
+<i>1352</i>&nbsp;                    case &#39;Y&#39;:
+<b class="nc"><i>1353</i>&nbsp;                    case &#39;Z&#39;:</b>
+<b class="nc"><i>1354</i>&nbsp;                    case &#39;[&#39;:</b>
+<b class="nc"><i>1355</i>&nbsp;                    case &#39;\\&#39;:</b>
+<i>1356</i>&nbsp;                    case &#39;]&#39;:
+<b class="nc"><i>1357</i>&nbsp;                    case &#39;^&#39;:</b>
+<b class="nc"><i>1358</i>&nbsp;                    case &#39;_&#39;:</b>
+<b class="nc"><i>1359</i>&nbsp;                    case &#39;`&#39;:</b>
+<i>1360</i>&nbsp;                    case &#39;a&#39;:
+<b class="nc"><i>1361</i>&nbsp;                    case &#39;e&#39;:</b>
+<b class="nc"><i>1362</i>&nbsp;                    case &#39;g&#39;:</b>
+<b class="nc"><i>1363</i>&nbsp;                    case &#39;h&#39;:</b>
+<b class="nc"><i>1364</i>&nbsp;                    case &#39;i&#39;:</b>
+<i>1365</i>&nbsp;                    case &#39;j&#39;:
+<i>1366</i>&nbsp;                    case &#39;k&#39;:
+<i>1367</i>&nbsp;                    case &#39;l&#39;:
+<b class="nc"><i>1368</i>&nbsp;                    case &#39;m&#39;:</b>
+<b class="nc"><i>1369</i>&nbsp;                    case &#39;o&#39;:</b>
+<b class="nc"><i>1370</i>&nbsp;                    case &#39;p&#39;:</b>
+<i>1371</i>&nbsp;                    case &#39;q&#39;:
+<i>1372</i>&nbsp;                    default:
+<b class="nc"><i>1373</i>&nbsp;                        var5 = var7;</b>
+<b class="nc"><i>1374</i>&nbsp;                        break label131;</b>
+<i>1375</i>&nbsp;                    case &#39;D&#39;:
+<i>1376</i>&nbsp;                        addCharacterRangeToCharSet(var1, &#39;\u0000&#39;, &#39;/&#39;);
+<i>1377</i>&nbsp;                        addCharacterRangeToCharSet(var1, &#39;:&#39;, (char)var1.length);
+<i>1378</i>&nbsp;                        continue;
+<i>1379</i>&nbsp;                    case &#39;S&#39;:
+<i>1380</i>&nbsp;                        var10 = var1.length;
+<i>1381</i>&nbsp;
+<b class="nc"><i>1382</i>&nbsp;                        while(true) {</b>
+<b class="nc"><i>1383</i>&nbsp;                            if(var10 &lt; 0) {</b>
+<b class="nc"><i>1384</i>&nbsp;                                continue label134;</b>
+<b class="nc"><i>1385</i>&nbsp;                            }</b>
+<i>1386</i>&nbsp;
+<i>1387</i>&nbsp;                            if(!isREWhiteSpace(var10)) {
+<i>1388</i>&nbsp;                                addCharacterToCharSet(var1, (char)var10);
+<i>1389</i>&nbsp;                            }
+<i>1390</i>&nbsp;
+<i>1391</i>&nbsp;                            --var10;
+<i>1392</i>&nbsp;                        }
+<i>1393</i>&nbsp;                    case &#39;W&#39;:
+<i>1394</i>&nbsp;                        var10 = var1.length;
+<b class="nc"><i>1395</i>&nbsp;</b>
+<b class="nc"><i>1396</i>&nbsp;                        while(true) {</b>
+<i>1397</i>&nbsp;                            if(var10 &lt; 0) {
+<b class="nc"><i>1398</i>&nbsp;                                continue label134;</b>
+<b class="nc"><i>1399</i>&nbsp;                            }</b>
+<i>1400</i>&nbsp;
+<b class="nc"><i>1401</i>&nbsp;                            if(!isWord((char)var10)) {</b>
+<b class="nc"><i>1402</i>&nbsp;                                addCharacterToCharSet(var1, (char)var10);</b>
+<i>1403</i>&nbsp;                            }
+<b class="nc"><i>1404</i>&nbsp;</b>
+<b class="nc"><i>1405</i>&nbsp;                            --var10;</b>
+<i>1406</i>&nbsp;                        }
+<i>1407</i>&nbsp;                    case &#39;b&#39;:
+<b class="nc"><i>1408</i>&nbsp;                        var5 = 8;</b>
+<b class="nc"><i>1409</i>&nbsp;                        break label131;</b>
+<b class="nc"><i>1410</i>&nbsp;                    case &#39;c&#39;:</b>
+<b class="nc"><i>1411</i>&nbsp;                        if(var2 + 1 &lt; var3 &amp;&amp; isWord(var0.regexp.source[var2 + 1])) {</b>
+<i>1412</i>&nbsp;                            var5 = (char)(var0.regexp.source[var2++] &amp; 31);
+<i>1413</i>&nbsp;                        } else {
+<i>1414</i>&nbsp;                            --var2;
+<i>1415</i>&nbsp;                            var5 = 92;
+<i>1416</i>&nbsp;                        }
+<i>1417</i>&nbsp;                        break label131;
+<i>1418</i>&nbsp;                    case &#39;d&#39;:
+<b class="nc"><i>1419</i>&nbsp;                        addCharacterRangeToCharSet(var1, &#39;0&#39;, &#39;9&#39;);</b>
+<b class="nc"><i>1420</i>&nbsp;                        continue;</b>
+<b class="nc"><i>1421</i>&nbsp;                    case &#39;f&#39;:</b>
+<b class="nc"><i>1422</i>&nbsp;                        var5 = 12;</b>
+<i>1423</i>&nbsp;                        break label131;
+<b class="nc"><i>1424</i>&nbsp;                    case &#39;n&#39;:</b>
+<i>1425</i>&nbsp;                        var5 = 10;
+<i>1426</i>&nbsp;                        break label131;
+<i>1427</i>&nbsp;                    case &#39;r&#39;:
+<i>1428</i>&nbsp;                        var5 = 13;
+<i>1429</i>&nbsp;                        break label131;
+<i>1430</i>&nbsp;                    case &#39;s&#39;:
+<b class="nc"><i>1431</i>&nbsp;                        var10 = var1.length;</b>
+<b class="nc"><i>1432</i>&nbsp;</b>
+<i>1433</i>&nbsp;                        while(true) {
+<b class="nc"><i>1434</i>&nbsp;                            if(var10 &lt; 0) {</b>
+<i>1435</i>&nbsp;                                continue label134;
+<i>1436</i>&nbsp;                            }
+<i>1437</i>&nbsp;
+<i>1438</i>&nbsp;                            if(isREWhiteSpace(var10)) {
+<i>1439</i>&nbsp;                                addCharacterToCharSet(var1, (char)var10);
+<b class="nc"><i>1440</i>&nbsp;                            }</b>
+<i>1441</i>&nbsp;
+<b class="nc"><i>1442</i>&nbsp;                            --var10;</b>
+<b class="nc"><i>1443</i>&nbsp;                        }</b>
+<b class="nc"><i>1444</i>&nbsp;                    case &#39;t&#39;:</b>
+<i>1445</i>&nbsp;                        var5 = 9;
+<b class="nc"><i>1446</i>&nbsp;                        break label131;</b>
+<i>1447</i>&nbsp;                    case &#39;u&#39;:
+<i>1448</i>&nbsp;                        var9 += 2;
+<b class="nc"><i>1449</i>&nbsp;                    case &#39;x&#39;:</b>
+<b class="nc"><i>1450</i>&nbsp;                        var8 = 0;</b>
+<b class="nc"><i>1451</i>&nbsp;</b>
+<i>1452</i>&nbsp;                        for(var10 = 0; var10 &lt; var9 &amp;&amp; var2 &lt; var3; ++var10) {
+<i>1453</i>&nbsp;                            var7 = var0.regexp.source[var2++];
+<b class="nc"><i>1454</i>&nbsp;                            int var12 = toASCIIHexDigit(var7);</b>
+<b class="nc"><i>1455</i>&nbsp;                            if(var12 &lt; 0) {</b>
+<b class="nc"><i>1456</i>&nbsp;                                var2 -= var10 + 1;</b>
+<i>1457</i>&nbsp;                                var8 = 92;
+<b class="nc"><i>1458</i>&nbsp;                                break;</b>
+<b class="nc"><i>1459</i>&nbsp;                            }</b>
+<b class="nc"><i>1460</i>&nbsp;</b>
+<i>1461</i>&nbsp;                            var8 = var8 &lt;&lt; 4 | var12;
+<b class="nc"><i>1462</i>&nbsp;                        }</b>
+<b class="nc"><i>1463</i>&nbsp;</b>
+<i>1464</i>&nbsp;                        var5 = (char)var8;
+<b class="nc"><i>1465</i>&nbsp;                        break label131;</b>
+<b class="nc"><i>1466</i>&nbsp;                    case &#39;v&#39;:</b>
+<i>1467</i>&nbsp;                        var5 = 11;
+<b class="nc"><i>1468</i>&nbsp;                        break label131;</b>
+<b class="nc"><i>1469</i>&nbsp;                    case &#39;w&#39;:</b>
+<i>1470</i>&nbsp;                        var10 = var1.length;
+<b class="nc"><i>1471</i>&nbsp;</b>
+<b class="nc"><i>1472</i>&nbsp;                        while(true) {</b>
+<i>1473</i>&nbsp;                            if(var10 &lt; 0) {
+<b class="nc"><i>1474</i>&nbsp;                                continue label134;</b>
+<b class="nc"><i>1475</i>&nbsp;                            }</b>
+<i>1476</i>&nbsp;
+<b class="nc"><i>1477</i>&nbsp;                            if(isWord((char)var10)) {</b>
+<b class="nc"><i>1478</i>&nbsp;                                addCharacterToCharSet(var1, (char)var10);</b>
+<i>1479</i>&nbsp;                            }
+<b class="nc"><i>1480</i>&nbsp;</b>
+<b class="nc"><i>1481</i>&nbsp;                            --var10;</b>
+<i>1482</i>&nbsp;                        }
+<b class="nc"><i>1483</i>&nbsp;                    }</b>
+<b class="nc"><i>1484</i>&nbsp;                default:</b>
+<i>1485</i>&nbsp;                    var5 = var0.regexp.source[var2++];
+<b class="nc"><i>1486</i>&nbsp;                }</b>
+<i>1487</i>&nbsp;
+<b class="nc"><i>1488</i>&nbsp;                if(var11) {</b>
+<i>1489</i>&nbsp;                    if((var0.regexp.flags &amp; 2) != 0) {
+<i>1490</i>&nbsp;                        addCharacterRangeToCharSet(var1, upcase(var4), upcase(var5));
+<b class="nc"><i>1491</i>&nbsp;                        addCharacterRangeToCharSet(var1, downcase(var4), downcase(var5));</b>
+<b class="nc"><i>1492</i>&nbsp;                    } else {</b>
+<b class="nc"><i>1493</i>&nbsp;                        addCharacterRangeToCharSet(var1, var4, var5);</b>
+<b class="nc"><i>1494</i>&nbsp;                    }</b>
+<b class="nc"><i>1495</i>&nbsp;</b>
+<i>1496</i>&nbsp;                    var11 = false;
+<i>1497</i>&nbsp;                } else {
+<i>1498</i>&nbsp;                    if((var0.regexp.flags &amp; 2) != 0) {
+<b class="nc"><i>1499</i>&nbsp;                        addCharacterToCharSet(var1, upcase(var5));</b>
+<b class="nc"><i>1500</i>&nbsp;                        addCharacterToCharSet(var1, downcase(var5));</b>
+<b class="nc"><i>1501</i>&nbsp;                    } else {</b>
+<i>1502</i>&nbsp;                        addCharacterToCharSet(var1, var5);
+<b class="nc"><i>1503</i>&nbsp;                    }</b>
+<i>1504</i>&nbsp;
+<b class="nc"><i>1505</i>&nbsp;                    if(var2 &lt; var3 - 1 &amp;&amp; var0.regexp.source[var2] == 45) {</b>
+<b class="nc"><i>1506</i>&nbsp;                        ++var2;</b>
+<i>1507</i>&nbsp;                        var11 = true;
+<i>1508</i>&nbsp;                        var4 = var5;
+<i>1509</i>&nbsp;                    }
+<i>1510</i>&nbsp;                }
+<i>1511</i>&nbsp;            }
+<i>1512</i>&nbsp;
+<i>1513</i>&nbsp;        }
+<i>1514</i>&nbsp;    }
+<i>1515</i>&nbsp;
+<i>1516</i>&nbsp;    private static boolean classMatcher(REGlobalData var0, RECharSet var1, char var2) {
+<i>1517</i>&nbsp;        if(!var1.converted) {
+<i>1518</i>&nbsp;            processCharSet(var0, var1);
+<i>1519</i>&nbsp;        }
+<i>1520</i>&nbsp;
+<b class="nc"><i>1521</i>&nbsp;        int var3 = var2 / 8;</b>
+<b class="nc"><i>1522</i>&nbsp;        if(var1.sense) {</b>
+<b class="nc"><i>1523</i>&nbsp;            if(var1.length == 0 || var2 &gt; var1.length || (var1.bits[var3] &amp; 1 &lt;&lt; (var2 &amp; 7)) == 0) {</b>
+<b class="nc"><i>1524</i>&nbsp;                return false;</b>
+<b class="nc"><i>1525</i>&nbsp;            }</b>
+<b class="nc"><i>1526</i>&nbsp;        } else if(var1.length != 0 &amp;&amp; var2 &lt;= var1.length &amp;&amp; (var1.bits[var3] &amp; 1 &lt;&lt; (var2 &amp; 7)) != 0) {</b>
+<b class="nc"><i>1527</i>&nbsp;            return false;</b>
+<b class="nc"><i>1528</i>&nbsp;        }</b>
+<b class="nc"><i>1529</i>&nbsp;</b>
+<b class="nc"><i>1530</i>&nbsp;        return true;</b>
+<b class="nc"><i>1531</i>&nbsp;    }</b>
+<i>1532</i>&nbsp;
+<b class="nc"><i>1533</i>&nbsp;    private static boolean executeREBytecode(REGlobalData var0, char[] var1, int var2) {</b>
+<i>1534</i>&nbsp;        byte var3 = 0;
+<i>1535</i>&nbsp;        byte[] var4 = var0.regexp.program;
+<b class="nc"><i>1536</i>&nbsp;        boolean var7 = false;</b>
+<b class="nc"><i>1537</i>&nbsp;        int var6 = 0;</b>
+<i>1538</i>&nbsp;        int var5 = 53;
+<i>1539</i>&nbsp;        int var15 = var3 + 1;
+<b class="nc"><i>1540</i>&nbsp;        int var8 = var4[var3];</b>
+<b class="nc"><i>1541</i>&nbsp;</b>
+<i>1542</i>&nbsp;        label367:
+<b class="nc"><i>1543</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>1544</i>&nbsp;            REProgState var9;</b>
+<i>1545</i>&nbsp;            int var10;
+<b class="nc"><i>1546</i>&nbsp;            int var11;</b>
+<i>1547</i>&nbsp;            int var12;
+<b class="nc"><i>1548</i>&nbsp;            int var13;</b>
+<b class="nc"><i>1549</i>&nbsp;            int var14;</b>
+<b class="nc"><i>1550</i>&nbsp;            char var17;</b>
+<i>1551</i>&nbsp;            int var16;
+<i>1552</i>&nbsp;            switch(var8) {
+<b class="nc"><i>1553</i>&nbsp;            case 0:</b>
+<b class="nc"><i>1554</i>&nbsp;                var7 = true;</b>
+<b class="nc"><i>1555</i>&nbsp;                break;</b>
+<i>1556</i>&nbsp;            case 1:
+<i>1557</i>&nbsp;                pushProgState(var0, 0, 0, (REBackTrackData)null, var6, var5);
+<b class="nc"><i>1558</i>&nbsp;                var16 = var15 + getOffset(var4, var15);</b>
+<b class="nc"><i>1559</i>&nbsp;                byte var21 = var4[var16++];</b>
+<b class="nc"><i>1560</i>&nbsp;                pushBackTrackState(var0, var21, var16);</b>
+<i>1561</i>&nbsp;                var15 += 2;
+<i>1562</i>&nbsp;                var8 = var4[var15++];
+<b class="nc"><i>1563</i>&nbsp;                continue;</b>
+<b class="nc"><i>1564</i>&nbsp;            case 2:</b>
+<b class="nc"><i>1565</i>&nbsp;                if(var0.cp != 0) {</b>
+<i>1566</i>&nbsp;                    if(!var0.multiline &amp;&amp; (var0.regexp.flags &amp; 4) == 0) {
+<i>1567</i>&nbsp;                        var7 = false;
+<b class="nc"><i>1568</i>&nbsp;                        break;</b>
+<b class="nc"><i>1569</i>&nbsp;                    }</b>
+<i>1570</i>&nbsp;
+<i>1571</i>&nbsp;                    if(!isLineTerm(var1[var0.cp - 1])) {
+<i>1572</i>&nbsp;                        var7 = false;
+<i>1573</i>&nbsp;                        break;
+<i>1574</i>&nbsp;                    }
+<b class="nc"><i>1575</i>&nbsp;                }</b>
+<i>1576</i>&nbsp;
+<i>1577</i>&nbsp;                var7 = true;
+<i>1578</i>&nbsp;                break;
+<b class="nc"><i>1579</i>&nbsp;            case 3:</b>
+<b class="nc"><i>1580</i>&nbsp;                if(var0.cp != var2) {</b>
+<b class="nc"><i>1581</i>&nbsp;                    if(!var0.multiline &amp;&amp; (var0.regexp.flags &amp; 4) == 0) {</b>
+<i>1582</i>&nbsp;                        var7 = false;
+<i>1583</i>&nbsp;                        break;
+<b class="nc"><i>1584</i>&nbsp;                    }</b>
+<i>1585</i>&nbsp;
+<i>1586</i>&nbsp;                    if(!isLineTerm(var1[var0.cp])) {
+<i>1587</i>&nbsp;                        var7 = false;
+<b class="nc"><i>1588</i>&nbsp;                        break;</b>
+<i>1589</i>&nbsp;                    }
+<b class="nc"><i>1590</i>&nbsp;                }</b>
+<i>1591</i>&nbsp;
+<i>1592</i>&nbsp;                var7 = true;
+<b class="nc"><i>1593</i>&nbsp;                break;</b>
+<b class="nc"><i>1594</i>&nbsp;            case 4:</b>
+<b class="nc"><i>1595</i>&nbsp;                var7 = (var0.cp == 0 || !isWord(var1[var0.cp - 1])) ^ (var0.cp &gt;= var2 || !isWord(var1[var0.cp]));</b>
+<i>1596</i>&nbsp;                break;
+<b class="nc"><i>1597</i>&nbsp;            case 5:</b>
+<i>1598</i>&nbsp;                var7 = (var0.cp == 0 || !isWord(var1[var0.cp - 1])) ^ (var0.cp &lt; var2 &amp;&amp; isWord(var1[var0.cp]));
+<b class="nc"><i>1599</i>&nbsp;                break;</b>
+<b class="nc"><i>1600</i>&nbsp;            case 6:</b>
+<b class="nc"><i>1601</i>&nbsp;            case 7:</b>
+<b class="nc"><i>1602</i>&nbsp;            case 8:</b>
+<b class="nc"><i>1603</i>&nbsp;            case 9:</b>
+<i>1604</i>&nbsp;            case 45:
+<i>1605</i>&nbsp;            case 46:
+<i>1606</i>&nbsp;            case 47:
+<i>1607</i>&nbsp;            case 48:
+<i>1608</i>&nbsp;                boolean var20 = false;
+<i>1609</i>&nbsp;                switch(var8) {
+<i>1610</i>&nbsp;                case 6:
+<i>1611</i>&nbsp;                    var20 = true;
+<i>1612</i>&nbsp;                case 48:
+<i>1613</i>&nbsp;                    var16 = getOffset(var4, var15);
+<i>1614</i>&nbsp;                    var15 += 2;
+<i>1615</i>&nbsp;                    var10 = getOffset(var4, var15) - 1;
+<i>1616</i>&nbsp;                    var15 += 2;
+<i>1617</i>&nbsp;                    break;
+<b class="nc"><i>1618</i>&nbsp;                case 7:</b>
+<b class="nc"><i>1619</i>&nbsp;                    var20 = true;</b>
+<i>1620</i>&nbsp;                case 45:
+<i>1621</i>&nbsp;                    var16 = 0;
+<b class="nc"><i>1622</i>&nbsp;                    var10 = -1;</b>
+<b class="nc"><i>1623</i>&nbsp;                    break;</b>
+<b class="nc"><i>1624</i>&nbsp;                case 8:</b>
+<i>1625</i>&nbsp;                    var20 = true;
+<i>1626</i>&nbsp;                case 46:
+<b class="nc"><i>1627</i>&nbsp;                    var16 = 1;</b>
+<i>1628</i>&nbsp;                    var10 = -1;
+<b class="nc"><i>1629</i>&nbsp;                    break;</b>
+<i>1630</i>&nbsp;                case 9:
+<i>1631</i>&nbsp;                    var20 = true;
+<b class="nc"><i>1632</i>&nbsp;                case 47:</b>
+<i>1633</i>&nbsp;                    var16 = 0;
+<b class="nc"><i>1634</i>&nbsp;                    var10 = 1;</b>
+<i>1635</i>&nbsp;                    break;
+<i>1636</i>&nbsp;                default:
+<i>1637</i>&nbsp;                    throw Kit.codeBug();
+<i>1638</i>&nbsp;                }
+<i>1639</i>&nbsp;
+<b class="nc"><i>1640</i>&nbsp;                pushProgState(var0, var16, var10, (REBackTrackData)null, var6, var5);</b>
+<b class="nc"><i>1641</i>&nbsp;                if(var20) {</b>
+<i>1642</i>&nbsp;                    var5 = 51;
+<i>1643</i>&nbsp;                    var6 = var15;
+<b class="nc"><i>1644</i>&nbsp;                    pushBackTrackState(var0, (byte)51, var15);</b>
+<i>1645</i>&nbsp;                    var15 += 6;
+<b class="nc"><i>1646</i>&nbsp;                    var8 = var4[var15++];</b>
+<b class="nc"><i>1647</i>&nbsp;                } else if(var16 != 0) {</b>
+<i>1648</i>&nbsp;                    var5 = 52;
+<i>1649</i>&nbsp;                    var6 = var15;
+<i>1650</i>&nbsp;                    var15 += 6;
+<b class="nc"><i>1651</i>&nbsp;                    var8 = var4[var15++];</b>
+<i>1652</i>&nbsp;                } else {
+<i>1653</i>&nbsp;                    pushBackTrackState(var0, (byte)52, var15);
+<i>1654</i>&nbsp;                    popProgState(var0);
+<i>1655</i>&nbsp;                    var15 += 4;
+<b class="nc"><i>1656</i>&nbsp;                    var15 += getOffset(var4, var15);</b>
+<i>1657</i>&nbsp;                    var8 = var4[var15++];
+<b class="nc"><i>1658</i>&nbsp;                }</b>
+<b class="nc"><i>1659</i>&nbsp;                continue;</b>
+<i>1660</i>&nbsp;            case 10:
+<b class="nc"><i>1661</i>&nbsp;                var16 = getIndex(var4, var15);</b>
+<b class="nc"><i>1662</i>&nbsp;                var15 += 2;</b>
+<i>1663</i>&nbsp;                var0.set_parens(var16, var0.cp, 0);
+<b class="nc"><i>1664</i>&nbsp;                var8 = var4[var15++];</b>
+<b class="nc"><i>1665</i>&nbsp;                continue;</b>
+<b class="nc"><i>1666</i>&nbsp;            case 11:</b>
+<i>1667</i>&nbsp;                var10 = getIndex(var4, var15);
+<i>1668</i>&nbsp;                var15 += 2;
+<i>1669</i>&nbsp;                var16 = var0.parens_index(var10);
+<b class="nc"><i>1670</i>&nbsp;                var0.set_parens(var10, var16, var0.cp - var16);</b>
+<b class="nc"><i>1671</i>&nbsp;                if(var10 &gt; var0.lastParen) {</b>
+<i>1672</i>&nbsp;                    var0.lastParen = var10;
+<i>1673</i>&nbsp;                }
+<b class="nc"><i>1674</i>&nbsp;</b>
+<b class="nc"><i>1675</i>&nbsp;                var8 = var4[var15++];</b>
+<i>1676</i>&nbsp;                continue;
+<b class="nc"><i>1677</i>&nbsp;            case 12:</b>
+<b class="nc"><i>1678</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; !isLineTerm(var1[var0.cp]);</b>
+<i>1679</i>&nbsp;                if(var7) {
+<b class="nc"><i>1680</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1681</i>&nbsp;                }</b>
+<b class="nc"><i>1682</i>&nbsp;                break;</b>
+<i>1683</i>&nbsp;            case 13:
+<i>1684</i>&nbsp;            case 24:
+<i>1685</i>&nbsp;            case 25:
+<b class="nc"><i>1686</i>&nbsp;            case 26:</b>
+<b class="nc"><i>1687</i>&nbsp;            case 27:</b>
+<i>1688</i>&nbsp;            case 29:
+<i>1689</i>&nbsp;            case 30:
+<b class="nc"><i>1690</i>&nbsp;            case 31:</b>
+<b class="nc"><i>1691</i>&nbsp;            case 34:</b>
+<i>1692</i>&nbsp;            case 36:
+<b class="nc"><i>1693</i>&nbsp;            case 37:</b>
+<i>1694</i>&nbsp;            case 38:
+<b class="nc"><i>1695</i>&nbsp;            case 39:</b>
+<i>1696</i>&nbsp;            case 40:
+<b class="nc"><i>1697</i>&nbsp;            default:</b>
+<i>1698</i>&nbsp;                throw Kit.codeBug();
+<b class="nc"><i>1699</i>&nbsp;            case 14:</b>
+<i>1700</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; isDigit(var1[var0.cp]);
+<b class="nc"><i>1701</i>&nbsp;                if(var7) {</b>
+<b class="nc"><i>1702</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1703</i>&nbsp;                }</b>
+<i>1704</i>&nbsp;                break;
+<i>1705</i>&nbsp;            case 15:
+<i>1706</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; !isDigit(var1[var0.cp]);
+<b class="nc"><i>1707</i>&nbsp;                if(var7) {</b>
+<b class="nc"><i>1708</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1709</i>&nbsp;                }</b>
+<i>1710</i>&nbsp;                break;
+<i>1711</i>&nbsp;            case 16:
+<i>1712</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; isWord(var1[var0.cp]);
+<b class="nc"><i>1713</i>&nbsp;                if(var7) {</b>
+<b class="nc"><i>1714</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1715</i>&nbsp;                }</b>
+<i>1716</i>&nbsp;                break;
+<i>1717</i>&nbsp;            case 17:
+<i>1718</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; !isWord(var1[var0.cp]);
+<b class="nc"><i>1719</i>&nbsp;                if(var7) {</b>
+<b class="nc"><i>1720</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1721</i>&nbsp;                }</b>
+<i>1722</i>&nbsp;                break;
+<i>1723</i>&nbsp;            case 18:
+<i>1724</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; isREWhiteSpace(var1[var0.cp]);
+<b class="nc"><i>1725</i>&nbsp;                if(var7) {</b>
+<b class="nc"><i>1726</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1727</i>&nbsp;                }</b>
+<i>1728</i>&nbsp;                break;
+<i>1729</i>&nbsp;            case 19:
+<i>1730</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; !isREWhiteSpace(var1[var0.cp]);
+<b class="nc"><i>1731</i>&nbsp;                if(var7) {</b>
+<b class="nc"><i>1732</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1733</i>&nbsp;                }</b>
+<i>1734</i>&nbsp;                break;
+<i>1735</i>&nbsp;            case 20:
+<i>1736</i>&nbsp;                var16 = getIndex(var4, var15);
+<b class="nc"><i>1737</i>&nbsp;                var15 += 2;</b>
+<b class="nc"><i>1738</i>&nbsp;                var7 = backrefMatcher(var0, var16, var1, var2);</b>
+<b class="nc"><i>1739</i>&nbsp;                break;</b>
+<i>1740</i>&nbsp;            case 21:
+<i>1741</i>&nbsp;                var16 = getIndex(var4, var15);
+<i>1742</i>&nbsp;                var15 += 2;
+<i>1743</i>&nbsp;                var10 = getIndex(var4, var15);
+<b class="nc"><i>1744</i>&nbsp;                var15 += 2;</b>
+<b class="nc"><i>1745</i>&nbsp;                var7 = flatNMatcher(var0, var16, var10, var1, var2);</b>
+<b class="nc"><i>1746</i>&nbsp;                break;</b>
+<b class="nc"><i>1747</i>&nbsp;            case 22:</b>
+<b class="nc"><i>1748</i>&nbsp;                var17 = (char)(var4[var15++] &amp; 255);</b>
+<i>1749</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; var1[var0.cp] == var17;
+<b class="nc"><i>1750</i>&nbsp;                if(var7) {</b>
+<i>1751</i>&nbsp;                    ++var0.cp;
+<i>1752</i>&nbsp;                }
+<b class="nc"><i>1753</i>&nbsp;                break;</b>
+<b class="nc"><i>1754</i>&nbsp;            case 23:</b>
+<b class="nc"><i>1755</i>&nbsp;                REProgState var19 = popProgState(var0);</b>
+<b class="nc"><i>1756</i>&nbsp;                var6 = var19.continuation_pc;</b>
+<b class="nc"><i>1757</i>&nbsp;                var5 = var19.continuation_op;</b>
+<i>1758</i>&nbsp;                var16 = getOffset(var4, var15);
+<b class="nc"><i>1759</i>&nbsp;                var15 += var16;</b>
+<i>1760</i>&nbsp;                var8 = var4[var15++];
+<i>1761</i>&nbsp;                continue;
+<b class="nc"><i>1762</i>&nbsp;            case 28:</b>
+<b class="nc"><i>1763</i>&nbsp;                var17 = (char)getIndex(var4, var15);</b>
+<b class="nc"><i>1764</i>&nbsp;                var15 += 2;</b>
+<b class="nc"><i>1765</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; var1[var0.cp] == var17;</b>
+<i>1766</i>&nbsp;                if(var7) {
+<i>1767</i>&nbsp;                    ++var0.cp;
+<b class="nc"><i>1768</i>&nbsp;                }</b>
+<i>1769</i>&nbsp;                break;
+<i>1770</i>&nbsp;            case 32:
+<b class="nc"><i>1771</i>&nbsp;                var16 = getIndex(var4, var15);</b>
+<b class="nc"><i>1772</i>&nbsp;                var15 += 2;</b>
+<i>1773</i>&nbsp;                var10 = getIndex(var4, var15);
+<b class="nc"><i>1774</i>&nbsp;                var15 += 2;</b>
+<b class="nc"><i>1775</i>&nbsp;                var7 = flatNIMatcher(var0, var16, var10, var1, var2);</b>
+<i>1776</i>&nbsp;                break;
+<i>1777</i>&nbsp;            case 33:
+<b class="nc"><i>1778</i>&nbsp;                var17 = (char)(var4[var15++] &amp; 255);</b>
+<i>1779</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; upcase(var1[var0.cp]) == upcase(var17);
+<i>1780</i>&nbsp;                if(var7) {
+<b class="nc"><i>1781</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1782</i>&nbsp;                }</b>
+<b class="nc"><i>1783</i>&nbsp;                break;</b>
+<b class="nc"><i>1784</i>&nbsp;            case 35:</b>
+<b class="nc"><i>1785</i>&nbsp;                var17 = (char)getIndex(var4, var15);</b>
+<i>1786</i>&nbsp;                var15 += 2;
+<i>1787</i>&nbsp;                var7 = var0.cp != var2 &amp;&amp; upcase(var1[var0.cp]) == upcase(var17);
+<b class="nc"><i>1788</i>&nbsp;                if(var7) {</b>
+<i>1789</i>&nbsp;                    ++var0.cp;
+<i>1790</i>&nbsp;                }
+<b class="nc"><i>1791</i>&nbsp;                break;</b>
+<b class="nc"><i>1792</i>&nbsp;            case 41:</b>
+<b class="nc"><i>1793</i>&nbsp;            case 42:</b>
+<i>1794</i>&nbsp;                pushProgState(var0, 0, 0, var0.backTrackStackTop, var6, var5);
+<b class="nc"><i>1795</i>&nbsp;                byte var18;</b>
+<b class="nc"><i>1796</i>&nbsp;                if(var8 == 41) {</b>
+<i>1797</i>&nbsp;                    var18 = 43;
+<i>1798</i>&nbsp;                } else {
+<b class="nc"><i>1799</i>&nbsp;                    var18 = 44;</b>
+<i>1800</i>&nbsp;                }
+<i>1801</i>&nbsp;
+<i>1802</i>&nbsp;                pushBackTrackState(var0, var18, var15 + getOffset(var4, var15));
+<i>1803</i>&nbsp;                var15 += 2;
+<b class="nc"><i>1804</i>&nbsp;                var8 = var4[var15++];</b>
+<i>1805</i>&nbsp;                continue;
+<i>1806</i>&nbsp;            case 43:
+<b class="nc"><i>1807</i>&nbsp;            case 44:</b>
+<b class="nc"><i>1808</i>&nbsp;                var9 = popProgState(var0);</b>
+<b class="nc"><i>1809</i>&nbsp;                var0.cp = var9.index;</b>
+<b class="nc"><i>1810</i>&nbsp;                var0.backTrackStackTop = var9.backTrack;</b>
+<b class="nc"><i>1811</i>&nbsp;                var6 = var9.continuation_pc;</b>
+<i>1812</i>&nbsp;                var5 = var9.continuation_op;
+<b class="nc"><i>1813</i>&nbsp;                if(var7) {</b>
+<i>1814</i>&nbsp;                    if(var8 == 43) {
+<i>1815</i>&nbsp;                        var7 = true;
+<i>1816</i>&nbsp;                    } else {
+<i>1817</i>&nbsp;                        var7 = false;
+<b class="nc"><i>1818</i>&nbsp;                    }</b>
+<b class="nc"><i>1819</i>&nbsp;                } else if(var8 != 43) {</b>
+<b class="nc"><i>1820</i>&nbsp;                    var7 = true;</b>
+<b class="nc"><i>1821</i>&nbsp;                }</b>
+<b class="nc"><i>1822</i>&nbsp;                break;</b>
+<b class="nc"><i>1823</i>&nbsp;            case 49:</b>
+<i>1824</i>&nbsp;                var15 = var6;
+<b class="nc"><i>1825</i>&nbsp;                var8 = var5;</b>
+<i>1826</i>&nbsp;                continue;
+<i>1827</i>&nbsp;            case 50:
+<i>1828</i>&nbsp;                var16 = getIndex(var4, var15);
+<i>1829</i>&nbsp;                var15 += 2;
+<b class="nc"><i>1830</i>&nbsp;                if(var0.cp != var2 &amp;&amp; classMatcher(var0, var0.regexp.classList[var16], var1[var0.cp])) {</b>
+<b class="nc"><i>1831</i>&nbsp;                    ++var0.cp;</b>
+<b class="nc"><i>1832</i>&nbsp;                    var7 = true;</b>
+<b class="nc"><i>1833</i>&nbsp;                } else {</b>
+<i>1834</i>&nbsp;                    var7 = false;
+<b class="nc"><i>1835</i>&nbsp;                }</b>
+<i>1836</i>&nbsp;                break;
+<i>1837</i>&nbsp;            case 51:
+<i>1838</i>&nbsp;                var9 = popProgState(var0);
+<b class="nc"><i>1839</i>&nbsp;                if(!var7) {</b>
+<b class="nc"><i>1840</i>&nbsp;                    if(var9.min == 0) {</b>
+<b class="nc"><i>1841</i>&nbsp;                        var7 = true;</b>
+<b class="nc"><i>1842</i>&nbsp;                    }</b>
+<i>1843</i>&nbsp;
+<b class="nc"><i>1844</i>&nbsp;                    var6 = var9.continuation_pc;</b>
+<b class="nc"><i>1845</i>&nbsp;                    var5 = var9.continuation_op;</b>
+<b class="nc"><i>1846</i>&nbsp;                    var15 += 4;</b>
+<i>1847</i>&nbsp;                    var15 += getOffset(var4, var15);
+<b class="nc"><i>1848</i>&nbsp;                } else if(var9.min == 0 &amp;&amp; var0.cp == var9.index) {</b>
+<i>1849</i>&nbsp;                    var7 = false;
+<i>1850</i>&nbsp;                    var6 = var9.continuation_pc;
+<b class="nc"><i>1851</i>&nbsp;                    var5 = var9.continuation_op;</b>
+<b class="nc"><i>1852</i>&nbsp;                    var15 += 4;</b>
+<b class="nc"><i>1853</i>&nbsp;                    var15 += getOffset(var4, var15);</b>
+<i>1854</i>&nbsp;                } else {
+<b class="nc"><i>1855</i>&nbsp;                    var10 = var9.min;</b>
+<i>1856</i>&nbsp;                    var11 = var9.max;
+<i>1857</i>&nbsp;                    if(var10 != 0) {
+<i>1858</i>&nbsp;                        --var10;
+<b class="nc"><i>1859</i>&nbsp;                    }</b>
+<b class="nc"><i>1860</i>&nbsp;</b>
+<b class="nc"><i>1861</i>&nbsp;                    if(var11 != -1) {</b>
+<b class="nc"><i>1862</i>&nbsp;                        --var11;</b>
+<i>1863</i>&nbsp;                    }
+<i>1864</i>&nbsp;
+<b class="nc"><i>1865</i>&nbsp;                    if(var11 != 0) {</b>
+<b class="nc"><i>1866</i>&nbsp;                        pushProgState(var0, var10, var11, (REBackTrackData)null, var9.continuation_pc, var9.continuation_op);</b>
+<b class="nc"><i>1867</i>&nbsp;                        var5 = 51;</b>
+<i>1868</i>&nbsp;                        var6 = var15;
+<i>1869</i>&nbsp;                        pushBackTrackState(var0, (byte)51, var15);
+<b class="nc"><i>1870</i>&nbsp;                        var12 = getIndex(var4, var15);</b>
+<i>1871</i>&nbsp;                        var15 += 2;
+<b class="nc"><i>1872</i>&nbsp;                        var13 = getIndex(var4, var15);</b>
+<i>1873</i>&nbsp;                        var15 += 4;
+<i>1874</i>&nbsp;                        var8 = var4[var15++];
+<i>1875</i>&nbsp;                        var14 = 0;
+<i>1876</i>&nbsp;
+<i>1877</i>&nbsp;                        while(true) {
+<b class="nc"><i>1878</i>&nbsp;                            if(var14 &gt;= var12) {</b>
+<i>1879</i>&nbsp;                                continue label367;
+<i>1880</i>&nbsp;                            }
+<b class="nc"><i>1881</i>&nbsp;</b>
+<b class="nc"><i>1882</i>&nbsp;                            var0.set_parens(var13 + var14, -1, 0);</b>
+<i>1883</i>&nbsp;                            ++var14;
+<b class="nc"><i>1884</i>&nbsp;                        }</b>
+<i>1885</i>&nbsp;                    }
+<b class="nc"><i>1886</i>&nbsp;</b>
+<i>1887</i>&nbsp;                    var7 = true;
+<b class="nc"><i>1888</i>&nbsp;                    var6 = var9.continuation_pc;</b>
+<b class="nc"><i>1889</i>&nbsp;                    var5 = var9.continuation_op;</b>
+<i>1890</i>&nbsp;                    var15 += 4;
+<b class="nc"><i>1891</i>&nbsp;                    var15 += getOffset(var4, var15);</b>
+<i>1892</i>&nbsp;                }
+<i>1893</i>&nbsp;                break;
+<i>1894</i>&nbsp;            case 52:
+<i>1895</i>&nbsp;                var9 = popProgState(var0);
+<b class="nc"><i>1896</i>&nbsp;                if(!var7) {</b>
+<b class="nc"><i>1897</i>&nbsp;                    if(var9.max == -1 || var9.max &gt; 0) {</b>
+<b class="nc"><i>1898</i>&nbsp;                        pushProgState(var0, var9.min, var9.max, (REBackTrackData)null, var9.continuation_pc, var9.continuation_op);</b>
+<b class="nc"><i>1899</i>&nbsp;                        var5 = 52;</b>
+<b class="nc"><i>1900</i>&nbsp;                        var6 = var15;</b>
+<b class="nc"><i>1901</i>&nbsp;                        var10 = getIndex(var4, var15);</b>
+<b class="nc"><i>1902</i>&nbsp;                        var15 += 2;</b>
+<b class="nc"><i>1903</i>&nbsp;                        var11 = getIndex(var4, var15);</b>
+<i>1904</i>&nbsp;                        var15 += 4;
+<b class="nc"><i>1905</i>&nbsp;</b>
+<i>1906</i>&nbsp;                        for(var12 = 0; var12 &lt; var10; ++var12) {
+<i>1907</i>&nbsp;                            var0.set_parens(var11 + var12, -1, 0);
+<b class="nc"><i>1908</i>&nbsp;                        }</b>
+<i>1909</i>&nbsp;
+<i>1910</i>&nbsp;                        var8 = var4[var15++];
+<b class="nc"><i>1911</i>&nbsp;                        continue;</b>
+<i>1912</i>&nbsp;                    }
+<i>1913</i>&nbsp;
+<i>1914</i>&nbsp;                    var6 = var9.continuation_pc;
+<b class="nc"><i>1915</i>&nbsp;                    var5 = var9.continuation_op;</b>
+<i>1916</i>&nbsp;                } else {
+<i>1917</i>&nbsp;                    if(var9.min != 0 || var0.cp != var9.index) {
+<i>1918</i>&nbsp;                        var10 = var9.min;
+<i>1919</i>&nbsp;                        var11 = var9.max;
+<i>1920</i>&nbsp;                        if(var10 != 0) {
+<i>1921</i>&nbsp;                            --var10;
+<i>1922</i>&nbsp;                        }
+<i>1923</i>&nbsp;
+<i>1924</i>&nbsp;                        if(var11 != -1) {
+<i>1925</i>&nbsp;                            --var11;
+<i>1926</i>&nbsp;                        }
+<b class="nc"><i>1927</i>&nbsp;</b>
+<b class="nc"><i>1928</i>&nbsp;                        pushProgState(var0, var10, var11, (REBackTrackData)null, var9.continuation_pc, var9.continuation_op);</b>
+<i>1929</i>&nbsp;                        if(var10 == 0) {
+<b class="nc"><i>1930</i>&nbsp;                            var6 = var9.continuation_pc;</b>
+<i>1931</i>&nbsp;                            var5 = var9.continuation_op;
+<i>1932</i>&nbsp;                            pushBackTrackState(var0, (byte)52, var15);
+<b class="nc"><i>1933</i>&nbsp;                            popProgState(var0);</b>
+<b class="nc"><i>1934</i>&nbsp;                            var15 += 4;</b>
+<b class="nc"><i>1935</i>&nbsp;                            var15 += getOffset(var4, var15);</b>
+<i>1936</i>&nbsp;                            var8 = var4[var15++];
+<b class="nc"><i>1937</i>&nbsp;                            continue;</b>
+<i>1938</i>&nbsp;                        }
+<i>1939</i>&nbsp;
+<b class="nc"><i>1940</i>&nbsp;                        var5 = 52;</b>
+<b class="nc"><i>1941</i>&nbsp;                        var6 = var15;</b>
+<b class="nc"><i>1942</i>&nbsp;                        var12 = getIndex(var4, var15);</b>
+<i>1943</i>&nbsp;                        var15 += 2;
+<b class="nc"><i>1944</i>&nbsp;                        var13 = getIndex(var4, var15);</b>
+<i>1945</i>&nbsp;                        var15 += 4;
+<i>1946</i>&nbsp;
+<b class="nc"><i>1947</i>&nbsp;                        for(var14 = 0; var14 &lt; var12; ++var14) {</b>
+<b class="nc"><i>1948</i>&nbsp;                            var0.set_parens(var13 + var14, -1, 0);</b>
+<b class="nc"><i>1949</i>&nbsp;                        }</b>
+<i>1950</i>&nbsp;
+<b class="nc"><i>1951</i>&nbsp;                        var8 = var4[var15++];</b>
+<i>1952</i>&nbsp;                        continue;
+<i>1953</i>&nbsp;                    }
+<b class="nc"><i>1954</i>&nbsp;</b>
+<b class="nc"><i>1955</i>&nbsp;                    var7 = false;</b>
+<i>1956</i>&nbsp;                    var6 = var9.continuation_pc;
+<b class="nc"><i>1957</i>&nbsp;                    var5 = var9.continuation_op;</b>
+<b class="nc"><i>1958</i>&nbsp;                }</b>
+<b class="nc"><i>1959</i>&nbsp;                break;</b>
+<i>1960</i>&nbsp;            case 53:
+<b class="nc"><i>1961</i>&nbsp;                return true;</b>
+<i>1962</i>&nbsp;            }
+<b class="nc"><i>1963</i>&nbsp;</b>
+<i>1964</i>&nbsp;            if(!var7) {
+<i>1965</i>&nbsp;                REBackTrackData var22 = var0.backTrackStackTop;
+<b class="nc"><i>1966</i>&nbsp;                if(var22 == null) {</b>
+<b class="nc"><i>1967</i>&nbsp;                    return false;</b>
+<b class="nc"><i>1968</i>&nbsp;                }</b>
+<b class="nc"><i>1969</i>&nbsp;</b>
+<i>1970</i>&nbsp;                var0.backTrackStackTop = var22.previous;
+<b class="nc"><i>1971</i>&nbsp;                var0.lastParen = var22.lastParen;</b>
+<b class="nc"><i>1972</i>&nbsp;                if(var22.parens != null) {</b>
+<i>1973</i>&nbsp;                    var0.parens = (long[])var22.parens.clone();
+<b class="nc"><i>1974</i>&nbsp;                }</b>
+<b class="nc"><i>1975</i>&nbsp;</b>
+<b class="nc"><i>1976</i>&nbsp;                var0.cp = var22.cp;</b>
+<i>1977</i>&nbsp;                var0.stateStackTop = var22.stateStackTop;
+<b class="nc"><i>1978</i>&nbsp;                var5 = var0.stateStackTop.continuation_op;</b>
+<b class="nc"><i>1979</i>&nbsp;                var6 = var0.stateStackTop.continuation_pc;</b>
+<i>1980</i>&nbsp;                var15 = var22.continuation_pc;
+<b class="nc"><i>1981</i>&nbsp;                var8 = var22.continuation_op;</b>
+<b class="nc"><i>1982</i>&nbsp;            } else {</b>
+<b class="nc"><i>1983</i>&nbsp;                var8 = var4[var15++];</b>
+<b class="nc"><i>1984</i>&nbsp;            }</b>
+<b class="nc"><i>1985</i>&nbsp;        }</b>
+<i>1986</i>&nbsp;    }
+<i>1987</i>&nbsp;
+<i>1988</i>&nbsp;    private static boolean matchRegExp(REGlobalData var0, RECompiled var1, char[] var2, int var3, int var4, boolean var5) {
+<b class="nc"><i>1989</i>&nbsp;        if(var1.parenCount != 0) {</b>
+<i>1990</i>&nbsp;            var0.parens = new long[var1.parenCount];
+<i>1991</i>&nbsp;        } else {
+<i>1992</i>&nbsp;            var0.parens = null;
+<b class="nc"><i>1993</i>&nbsp;        }</b>
+<b class="nc"><i>1994</i>&nbsp;</b>
+<b class="nc"><i>1995</i>&nbsp;        var0.backTrackStackTop = null;</b>
+<i>1996</i>&nbsp;        var0.stateStackTop = null;
+<i>1997</i>&nbsp;        var0.multiline = var5;
+<i>1998</i>&nbsp;        var0.regexp = var1;
+<b class="nc"><i>1999</i>&nbsp;        var0.lastParen = 0;</b>
+<b class="nc"><i>2000</i>&nbsp;        int var6 = var0.regexp.anchorCh;</b>
+<i>2001</i>&nbsp;
+<i>2002</i>&nbsp;        for(int var7 = var3; var7 &lt;= var4; ++var7) {
+<i>2003</i>&nbsp;            if(var6 &gt;= 0) {
+<i>2004</i>&nbsp;                while(true) {
+<b class="nc"><i>2005</i>&nbsp;                    if(var7 == var4) {</b>
+<b class="nc"><i>2006</i>&nbsp;                        return false;</b>
+<b class="nc"><i>2007</i>&nbsp;                    }</b>
+<b class="nc"><i>2008</i>&nbsp;</b>
+<b class="nc"><i>2009</i>&nbsp;                    char var8 = var2[var7];</b>
+<b class="nc"><i>2010</i>&nbsp;                    if(var8 == var6 || (var0.regexp.flags &amp; 2) != 0 &amp;&amp; upcase(var8) == upcase((char)var6)) {</b>
+<b class="nc"><i>2011</i>&nbsp;                        break;</b>
+<i>2012</i>&nbsp;                    }
+<i>2013</i>&nbsp;
+<b class="nc"><i>2014</i>&nbsp;                    ++var7;</b>
+<i>2015</i>&nbsp;                }
+<b class="nc"><i>2016</i>&nbsp;            }</b>
+<b class="nc"><i>2017</i>&nbsp;</b>
+<b class="nc"><i>2018</i>&nbsp;            var0.cp = var7;</b>
+<b class="nc"><i>2019</i>&nbsp;</b>
+<b class="nc"><i>2020</i>&nbsp;            for(int var9 = 0; var9 &lt; var1.parenCount; ++var9) {</b>
+<b class="nc"><i>2021</i>&nbsp;                var0.set_parens(var9, -1, 0);</b>
+<i>2022</i>&nbsp;            }
+<b class="nc"><i>2023</i>&nbsp;</b>
+<b class="nc"><i>2024</i>&nbsp;            boolean var10 = executeREBytecode(var0, var2, var4);</b>
+<b class="nc"><i>2025</i>&nbsp;            var0.backTrackStackTop = null;</b>
+<b class="nc"><i>2026</i>&nbsp;            var0.stateStackTop = null;</b>
+<b class="nc"><i>2027</i>&nbsp;            if(var10) {</b>
+<b class="nc"><i>2028</i>&nbsp;                var0.skipped = var7 - var3;</b>
+<b class="nc"><i>2029</i>&nbsp;                return true;</b>
+<b class="nc"><i>2030</i>&nbsp;            }</b>
+<b class="nc"><i>2031</i>&nbsp;        }</b>
+<b class="nc"><i>2032</i>&nbsp;</b>
+<i>2033</i>&nbsp;        return false;
+<b class="nc"><i>2034</i>&nbsp;    }</b>
+<i>2035</i>&nbsp;
+<i>2036</i>&nbsp;    Object executeRegExp(Context var1, Scriptable var2, RegExpImpl var3, String var4, int[] var5, int var6) {
+<b class="nc"><i>2037</i>&nbsp;        REGlobalData var7 = new REGlobalData();</b>
+<b class="nc"><i>2038</i>&nbsp;        int var8 = var5[0];</b>
+<b class="nc"><i>2039</i>&nbsp;        char[] var9 = var4.toCharArray();</b>
+<b class="nc"><i>2040</i>&nbsp;        int var10 = var9.length;</b>
+<b class="nc"><i>2041</i>&nbsp;        if(var8 &gt; var10) {</b>
+<b class="nc"><i>2042</i>&nbsp;            var8 = var10;</b>
+<b class="nc"><i>2043</i>&nbsp;        }</b>
+<b class="nc"><i>2044</i>&nbsp;</b>
+<b class="nc"><i>2045</i>&nbsp;        boolean var11 = matchRegExp(var7, this.re, var9, var8, var10, var3.multiline);</b>
+<b class="nc"><i>2046</i>&nbsp;        if(!var11) {</b>
+<i>2047</i>&nbsp;            return var6 != 2?null:Undefined.instance;
+<i>2048</i>&nbsp;        } else {
+<i>2049</i>&nbsp;            int var12 = var7.cp;
+<b class="nc"><i>2050</i>&nbsp;            var5[0] = var12;</b>
+<i>2051</i>&nbsp;            int var14 = var12 - (var8 + var7.skipped);
+<i>2052</i>&nbsp;            int var15 = var12;
+<i>2053</i>&nbsp;            var12 -= var14;
+<b class="nc"><i>2054</i>&nbsp;            Scriptable var17;</b>
+<b class="nc"><i>2055</i>&nbsp;            Object var16;</b>
+<i>2056</i>&nbsp;            if(var6 == 0) {
+<i>2057</i>&nbsp;                var16 = Boolean.TRUE;
+<i>2058</i>&nbsp;                var17 = null;
+<b class="nc"><i>2059</i>&nbsp;            } else {</b>
+<b class="nc"><i>2060</i>&nbsp;                Scriptable var18 = getTopLevelScope(var2);</b>
+<i>2061</i>&nbsp;                var16 = ScriptRuntime.newObject(var1, var18, &quot;Array&quot;, (Object[])null);
+<i>2062</i>&nbsp;                var17 = (Scriptable)var16;
+<b class="nc"><i>2063</i>&nbsp;                String var19 = new String(var9, var12, var14);</b>
+<b class="nc"><i>2064</i>&nbsp;                var17.put(0, var17, var19);</b>
+<b class="nc"><i>2065</i>&nbsp;            }</b>
+<b class="nc"><i>2066</i>&nbsp;</b>
+<b class="nc"><i>2067</i>&nbsp;            if(this.re.parenCount == 0) {</b>
+<b class="nc"><i>2068</i>&nbsp;                var3.parens = null;</b>
+<b class="nc"><i>2069</i>&nbsp;                var3.lastParen = SubString.emptySubString;</b>
+<b class="nc"><i>2070</i>&nbsp;            } else {</b>
+<i>2071</i>&nbsp;                SubString var24 = null;
+<b class="nc"><i>2072</i>&nbsp;                var3.parens = new SubString[this.re.parenCount];</b>
+<b class="nc"><i>2073</i>&nbsp;</b>
+<i>2074</i>&nbsp;                for(int var23 = 0; var23 &lt; this.re.parenCount; ++var23) {
+<i>2075</i>&nbsp;                    int var20 = var7.parens_index(var23);
+<b class="nc"><i>2076</i>&nbsp;                    if(var20 != -1) {</b>
+<b class="nc"><i>2077</i>&nbsp;                        int var22 = var7.parens_length(var23);</b>
+<b class="nc"><i>2078</i>&nbsp;                        var24 = new SubString(var9, var20, var22);</b>
+<i>2079</i>&nbsp;                        var3.parens[var23] = var24;
+<i>2080</i>&nbsp;                        if(var6 != 0) {
+<b class="nc"><i>2081</i>&nbsp;                            String var21 = var24.toString();</b>
+<i>2082</i>&nbsp;                            var17.put(var23 + 1, var17, var21);
+<b class="nc"><i>2083</i>&nbsp;                        }</b>
+<b class="nc"><i>2084</i>&nbsp;                    } else if(var6 != 0) {</b>
+<b class="nc"><i>2085</i>&nbsp;                        var17.put(var23 + 1, var17, Undefined.instance);</b>
+<b class="nc"><i>2086</i>&nbsp;                    }</b>
+<i>2087</i>&nbsp;                }
+<b class="nc"><i>2088</i>&nbsp;</b>
+<b class="nc"><i>2089</i>&nbsp;                var3.lastParen = var24;</b>
+<b class="nc"><i>2090</i>&nbsp;            }</b>
+<b class="nc"><i>2091</i>&nbsp;</b>
+<i>2092</i>&nbsp;            if(var6 != 0) {
+<i>2093</i>&nbsp;                var17.put(&quot;index&quot;, var17, Integer.valueOf(var8 + var7.skipped));
+<b class="nc"><i>2094</i>&nbsp;                var17.put(&quot;input&quot;, var17, var4);</b>
+<b class="nc"><i>2095</i>&nbsp;            }</b>
+<b class="nc"><i>2096</i>&nbsp;</b>
+<b class="nc"><i>2097</i>&nbsp;            if(var3.lastMatch == null) {</b>
+<b class="nc"><i>2098</i>&nbsp;                var3.lastMatch = new SubString();</b>
+<b class="nc"><i>2099</i>&nbsp;                var3.leftContext = new SubString();</b>
+<b class="nc"><i>2100</i>&nbsp;                var3.rightContext = new SubString();</b>
+<b class="nc"><i>2101</i>&nbsp;            }</b>
+<b class="nc"><i>2102</i>&nbsp;</b>
+<i>2103</i>&nbsp;            var3.lastMatch.charArray = var9;
+<b class="nc"><i>2104</i>&nbsp;            var3.lastMatch.index = var12;</b>
+<b class="nc"><i>2105</i>&nbsp;            var3.lastMatch.length = var14;</b>
+<b class="nc"><i>2106</i>&nbsp;            var3.leftContext.charArray = var9;</b>
+<b class="nc"><i>2107</i>&nbsp;            if(var1.getLanguageVersion() == 120) {</b>
+<b class="nc"><i>2108</i>&nbsp;                var3.leftContext.index = var8;</b>
+<b class="nc"><i>2109</i>&nbsp;                var3.leftContext.length = var7.skipped;</b>
+<b class="nc"><i>2110</i>&nbsp;            } else {</b>
+<b class="nc"><i>2111</i>&nbsp;                var3.leftContext.index = 0;</b>
+<b class="nc"><i>2112</i>&nbsp;                var3.leftContext.length = var8 + var7.skipped;</b>
+<i>2113</i>&nbsp;            }
+<b class="nc"><i>2114</i>&nbsp;</b>
+<i>2115</i>&nbsp;            var3.rightContext.charArray = var9;
+<i>2116</i>&nbsp;            var3.rightContext.index = var15;
+<i>2117</i>&nbsp;            var3.rightContext.length = var10 - var15;
+<i>2118</i>&nbsp;            return var16;
+<b class="nc"><i>2119</i>&nbsp;        }</b>
+<i>2120</i>&nbsp;    }
+<i>2121</i>&nbsp;
+<b class="nc"><i>2122</i>&nbsp;    int getFlags() {</b>
+<i>2123</i>&nbsp;        return this.re.flags;
+<i>2124</i>&nbsp;    }
+<i>2125</i>&nbsp;
+<i>2126</i>&nbsp;    private static void reportWarning(Context var0, String var1, String var2) {
+<i>2127</i>&nbsp;        if(var0.hasFeature(11)) {
+<i>2128</i>&nbsp;            String var3 = ScriptRuntime.getMessage1(var1, var2);
+<b class="nc"><i>2129</i>&nbsp;            Context.reportWarning(var3);</b>
+<b class="nc"><i>2130</i>&nbsp;        }</b>
+<b class="nc"><i>2131</i>&nbsp;</b>
+<b class="nc"><i>2132</i>&nbsp;    }</b>
+<i>2133</i>&nbsp;
+<b class="nc"><i>2134</i>&nbsp;    private static void reportError(String var0, String var1) {</b>
+<i>2135</i>&nbsp;        String var2 = ScriptRuntime.getMessage1(var0, var1);
+<i>2136</i>&nbsp;        throw ScriptRuntime.constructError(&quot;SyntaxError&quot;, var2);
+<i>2137</i>&nbsp;    }
+<b class="nc"><i>2138</i>&nbsp;</b>
+<b class="nc"><i>2139</i>&nbsp;    protected int getMaxInstanceId() {</b>
+<i>2140</i>&nbsp;        return 5;
+<i>2141</i>&nbsp;    }
+<b class="nc"><i>2142</i>&nbsp;</b>
+<i>2143</i>&nbsp;    protected int findInstanceIdInfo(String var1) {
+<b class="nc"><i>2144</i>&nbsp;        byte var2 = 0;</b>
+<i>2145</i>&nbsp;        String var3 = null;
+<b class="nc"><i>2146</i>&nbsp;        int var5 = var1.length();</b>
+<i>2147</i>&nbsp;        char var4;
+<b class="nc"><i>2148</i>&nbsp;        if(var5 == 6) {</b>
+<i>2149</i>&nbsp;            var4 = var1.charAt(0);
+<b class="nc"><i>2150</i>&nbsp;            if(var4 == 103) {</b>
+<b class="nc"><i>2151</i>&nbsp;                var3 = &quot;global&quot;;</b>
+<b class="nc"><i>2152</i>&nbsp;                var2 = 3;</b>
+<i>2153</i>&nbsp;            } else if(var4 == 115) {
+<i>2154</i>&nbsp;                var3 = &quot;source&quot;;
+<b class="nc"><i>2155</i>&nbsp;                var2 = 2;</b>
+<i>2156</i>&nbsp;            }
+<i>2157</i>&nbsp;        } else if(var5 == 9) {
+<b class="nc"><i>2158</i>&nbsp;            var4 = var1.charAt(0);</b>
+<i>2159</i>&nbsp;            if(var4 == 108) {
+<i>2160</i>&nbsp;                var3 = &quot;lastIndex&quot;;
+<i>2161</i>&nbsp;                var2 = 1;
+<i>2162</i>&nbsp;            } else if(var4 == 109) {
+<i>2163</i>&nbsp;                var3 = &quot;multiline&quot;;
+<i>2164</i>&nbsp;                var2 = 5;
+<i>2165</i>&nbsp;            }
+<i>2166</i>&nbsp;        } else if(var5 == 10) {
+<b class="nc"><i>2167</i>&nbsp;            var3 = &quot;ignoreCase&quot;;</b>
+<b class="nc"><i>2168</i>&nbsp;            var2 = 4;</b>
+<i>2169</i>&nbsp;        }
+<b class="nc"><i>2170</i>&nbsp;</b>
+<i>2171</i>&nbsp;        if(var3 != null &amp;&amp; var3 != var1 &amp;&amp; !var3.equals(var1)) {
+<i>2172</i>&nbsp;            var2 = 0;
+<b class="nc"><i>2173</i>&nbsp;        }</b>
+<i>2174</i>&nbsp;
+<b class="nc"><i>2175</i>&nbsp;        if(var2 == 0) {</b>
+<i>2176</i>&nbsp;            return super.findInstanceIdInfo(var1);
+<b class="nc"><i>2177</i>&nbsp;        } else {</b>
+<b class="nc"><i>2178</i>&nbsp;            byte var6;</b>
+<b class="nc"><i>2179</i>&nbsp;            switch(var2) {</b>
+<i>2180</i>&nbsp;            case 1:
+<b class="nc"><i>2181</i>&nbsp;                var6 = 6;</b>
+<i>2182</i>&nbsp;                break;
+<i>2183</i>&nbsp;            case 2:
+<i>2184</i>&nbsp;            case 3:
+<i>2185</i>&nbsp;            case 4:
+<b class="nc"><i>2186</i>&nbsp;            case 5:</b>
+<i>2187</i>&nbsp;                var6 = 7;
+<i>2188</i>&nbsp;                break;
+<i>2189</i>&nbsp;            default:
+<i>2190</i>&nbsp;                throw new IllegalStateException();
+<i>2191</i>&nbsp;            }
+<b class="nc"><i>2192</i>&nbsp;</b>
+<i>2193</i>&nbsp;            return instanceIdInfo(var6, var2);
+<b class="nc"><i>2194</i>&nbsp;        }</b>
+<b class="nc"><i>2195</i>&nbsp;    }</b>
+<i>2196</i>&nbsp;
+<b class="nc"><i>2197</i>&nbsp;    protected String getInstanceIdName(int var1) {</b>
+<b class="nc"><i>2198</i>&nbsp;        switch(var1) {</b>
+<i>2199</i>&nbsp;        case 1:
+<i>2200</i>&nbsp;            return &quot;lastIndex&quot;;
+<i>2201</i>&nbsp;        case 2:
+<b class="nc"><i>2202</i>&nbsp;            return &quot;source&quot;;</b>
+<i>2203</i>&nbsp;        case 3:
+<b class="nc"><i>2204</i>&nbsp;            return &quot;global&quot;;</b>
+<b class="nc"><i>2205</i>&nbsp;        case 4:</b>
+<i>2206</i>&nbsp;            return &quot;ignoreCase&quot;;
+<b class="nc"><i>2207</i>&nbsp;        case 5:</b>
+<b class="nc"><i>2208</i>&nbsp;            return &quot;multiline&quot;;</b>
+<b class="nc"><i>2209</i>&nbsp;        default:</b>
+<i>2210</i>&nbsp;            return super.getInstanceIdName(var1);
+<b class="nc"><i>2211</i>&nbsp;        }</b>
+<i>2212</i>&nbsp;    }
+<b class="nc"><i>2213</i>&nbsp;</b>
+<b class="nc"><i>2214</i>&nbsp;    protected Object getInstanceIdValue(int var1) {</b>
+<b class="nc"><i>2215</i>&nbsp;        switch(var1) {</b>
+<b class="nc"><i>2216</i>&nbsp;        case 1:</b>
+<b class="nc"><i>2217</i>&nbsp;            return ScriptRuntime.wrapNumber(this.lastIndex);</b>
+<i>2218</i>&nbsp;        case 2:
+<i>2219</i>&nbsp;            return new String(this.re.source);
+<b class="nc"><i>2220</i>&nbsp;        case 3:</b>
+<i>2221</i>&nbsp;            return ScriptRuntime.wrapBoolean((this.re.flags &amp; 1) != 0);
+<i>2222</i>&nbsp;        case 4:
+<i>2223</i>&nbsp;            return ScriptRuntime.wrapBoolean((this.re.flags &amp; 2) != 0);
+<i>2224</i>&nbsp;        case 5:
+<i>2225</i>&nbsp;            return ScriptRuntime.wrapBoolean((this.re.flags &amp; 4) != 0);
+<i>2226</i>&nbsp;        default:
+<i>2227</i>&nbsp;            return super.getInstanceIdValue(var1);
+<i>2228</i>&nbsp;        }
+<b class="nc"><i>2229</i>&nbsp;    }</b>
+<i>2230</i>&nbsp;
+<b class="nc"><i>2231</i>&nbsp;    protected void setInstanceIdValue(int var1, Object var2) {</b>
+<b class="nc"><i>2232</i>&nbsp;        switch(var1) {</b>
+<b class="nc"><i>2233</i>&nbsp;        case 1:</b>
+<b class="nc"><i>2234</i>&nbsp;            this.lastIndex = ScriptRuntime.toNumber(var2);</b>
+<b class="nc"><i>2235</i>&nbsp;            return;</b>
+<i>2236</i>&nbsp;        case 2:
+<i>2237</i>&nbsp;        case 3:
+<i>2238</i>&nbsp;        case 4:
+<b class="nc"><i>2239</i>&nbsp;        case 5:</b>
+<i>2240</i>&nbsp;            return;
+<b class="nc"><i>2241</i>&nbsp;        default:</b>
+<b class="nc"><i>2242</i>&nbsp;            super.setInstanceIdValue(var1, var2);</b>
+<b class="nc"><i>2243</i>&nbsp;        }</b>
+<i>2244</i>&nbsp;    }
+<b class="nc"><i>2245</i>&nbsp;</b>
+<b class="nc"><i>2246</i>&nbsp;    protected void initPrototypeId(int var1) {</b>
+<b class="nc"><i>2247</i>&nbsp;        String var2;</b>
+<b class="nc"><i>2248</i>&nbsp;        byte var3;</b>
+<b class="nc"><i>2249</i>&nbsp;        switch(var1) {</b>
+<b class="nc"><i>2250</i>&nbsp;        case 1:</b>
+<i>2251</i>&nbsp;            var3 = 1;
+<i>2252</i>&nbsp;            var2 = &quot;compile&quot;;
+<i>2253</i>&nbsp;            break;
+<b class="nc"><i>2254</i>&nbsp;        case 2:</b>
+<i>2255</i>&nbsp;            var3 = 0;
+<i>2256</i>&nbsp;            var2 = &quot;toString&quot;;
+<i>2257</i>&nbsp;            break;
+<i>2258</i>&nbsp;        case 3:
+<b class="nc"><i>2259</i>&nbsp;            var3 = 0;</b>
+<b class="nc"><i>2260</i>&nbsp;            var2 = &quot;toSource&quot;;</b>
+<i>2261</i>&nbsp;            break;
+<i>2262</i>&nbsp;        case 4:
+<i>2263</i>&nbsp;            var3 = 1;
+<i>2264</i>&nbsp;            var2 = &quot;exec&quot;;
+<i>2265</i>&nbsp;            break;
+<i>2266</i>&nbsp;        case 5:
+<i>2267</i>&nbsp;            var3 = 1;
+<i>2268</i>&nbsp;            var2 = &quot;test&quot;;
+<b class="nc"><i>2269</i>&nbsp;            break;</b>
+<b class="nc"><i>2270</i>&nbsp;        case 6:</b>
+<b class="nc"><i>2271</i>&nbsp;            var3 = 1;</b>
+<i>2272</i>&nbsp;            var2 = &quot;prefix&quot;;
+<b class="nc"><i>2273</i>&nbsp;            break;</b>
+<b class="nc"><i>2274</i>&nbsp;        default:</b>
+<i>2275</i>&nbsp;            throw new IllegalArgumentException(String.valueOf(var1));
+<i>2276</i>&nbsp;        }
+<b class="nc"><i>2277</i>&nbsp;</b>
+<b class="nc"><i>2278</i>&nbsp;        this.initPrototypeMethod(REGEXP_TAG, var1, var2, var3);</b>
+<b class="nc"><i>2279</i>&nbsp;    }</b>
+<i>2280</i>&nbsp;
+<b class="nc"><i>2281</i>&nbsp;    public Object execIdCall(IdFunctionObject var1, Context var2, Scriptable var3, Scriptable var4, Object[] var5) {</b>
+<i>2282</i>&nbsp;        if(!var1.hasTag(REGEXP_TAG)) {
+<b class="nc"><i>2283</i>&nbsp;            return super.execIdCall(var1, var2, var3, var4, var5);</b>
+<b class="nc"><i>2284</i>&nbsp;        } else {</b>
+<b class="nc"><i>2285</i>&nbsp;            int var6 = var1.methodId();</b>
+<i>2286</i>&nbsp;            switch(var6) {
+<b class="nc"><i>2287</i>&nbsp;            case 1:</b>
+<b class="nc"><i>2288</i>&nbsp;                return realThis(var4, var1).compile(var2, var3, var5);</b>
+<b class="nc"><i>2289</i>&nbsp;            case 2:</b>
+<b class="nc"><i>2290</i>&nbsp;            case 3:</b>
+<b class="nc"><i>2291</i>&nbsp;                return realThis(var4, var1).toString();</b>
+<b class="nc"><i>2292</i>&nbsp;            case 4:</b>
+<b class="nc"><i>2293</i>&nbsp;                return realThis(var4, var1).execSub(var2, var3, var5, 1);</b>
+<b class="nc"><i>2294</i>&nbsp;            case 5:</b>
+<i>2295</i>&nbsp;                Object var7 = realThis(var4, var1).execSub(var2, var3, var5, 0);
+<b class="nc"><i>2296</i>&nbsp;                return Boolean.TRUE.equals(var7)?Boolean.TRUE:Boolean.FALSE;</b>
+<b class="nc"><i>2297</i>&nbsp;            case 6:</b>
+<i>2298</i>&nbsp;                return realThis(var4, var1).execSub(var2, var3, var5, 2);
+<i>2299</i>&nbsp;            default:
+<b class="nc"><i>2300</i>&nbsp;                throw new IllegalArgumentException(String.valueOf(var6));</b>
+<i>2301</i>&nbsp;            }
+<i>2302</i>&nbsp;        }
+<b class="nc"><i>2303</i>&nbsp;    }</b>
+<i>2304</i>&nbsp;
+<i>2305</i>&nbsp;    private static NativeRegExp realThis(Scriptable var0, IdFunctionObject var1) {
+<i>2306</i>&nbsp;        if(!(var0 instanceof NativeRegExp)) {
+<i>2307</i>&nbsp;            throw incompatibleCallError(var1);
+<b class="nc"><i>2308</i>&nbsp;        } else {</b>
+<b class="nc"><i>2309</i>&nbsp;            return (NativeRegExp)var0;</b>
+<i>2310</i>&nbsp;        }
+<i>2311</i>&nbsp;    }
+<b class="nc"><i>2312</i>&nbsp;</b>
+<b class="nc"><i>2313</i>&nbsp;    protected int findPrototypeId(String var1) {</b>
+<b class="nc"><i>2314</i>&nbsp;        byte var2 = 0;</b>
+<b class="nc"><i>2315</i>&nbsp;        String var3 = null;</b>
+<i>2316</i>&nbsp;        char var4;
+<b class="nc"><i>2317</i>&nbsp;        switch(var1.length()) {</b>
+<b class="nc"><i>2318</i>&nbsp;        case 4:</b>
+<b class="nc"><i>2319</i>&nbsp;            var4 = var1.charAt(0);</b>
+<i>2320</i>&nbsp;            if(var4 == 101) {
+<b class="nc"><i>2321</i>&nbsp;                var3 = &quot;exec&quot;;</b>
+<b class="nc"><i>2322</i>&nbsp;                var2 = 4;</b>
+<i>2323</i>&nbsp;            } else if(var4 == 116) {
+<i>2324</i>&nbsp;                var3 = &quot;test&quot;;
+<i>2325</i>&nbsp;                var2 = 5;
+<i>2326</i>&nbsp;            }
+<i>2327</i>&nbsp;        case 5:
+<i>2328</i>&nbsp;        default:
+<i>2329</i>&nbsp;            break;
+<i>2330</i>&nbsp;        case 6:
+<i>2331</i>&nbsp;            var3 = &quot;prefix&quot;;
+<i>2332</i>&nbsp;            var2 = 6;
+<i>2333</i>&nbsp;            break;
+<i>2334</i>&nbsp;        case 7:
+<i>2335</i>&nbsp;            var3 = &quot;compile&quot;;
+<b class="nc"><i>2336</i>&nbsp;            var2 = 1;</b>
+<b class="nc"><i>2337</i>&nbsp;            break;</b>
+<i>2338</i>&nbsp;        case 8:
+<i>2339</i>&nbsp;            var4 = var1.charAt(3);
+<i>2340</i>&nbsp;            if(var4 == 111) {
+<i>2341</i>&nbsp;                var3 = &quot;toSource&quot;;
+<i>2342</i>&nbsp;                var2 = 3;
+<i>2343</i>&nbsp;            } else if(var4 == 116) {
+<b class="nc"><i>2344</i>&nbsp;                var3 = &quot;toString&quot;;</b>
+<b class="nc"><i>2345</i>&nbsp;                var2 = 2;</b>
+<i>2346</i>&nbsp;            }
+<i>2347</i>&nbsp;        }
+<b class="nc"><i>2348</i>&nbsp;</b>
+<b class="nc"><i>2349</i>&nbsp;        if(var3 != null &amp;&amp; var3 != var1 &amp;&amp; !var3.equals(var1)) {</b>
+<b class="nc"><i>2350</i>&nbsp;            var2 = 0;</b>
+<i>2351</i>&nbsp;        }
+<b class="nc"><i>2352</i>&nbsp;</b>
+<i>2353</i>&nbsp;        return var2;
+<i>2354</i>&nbsp;    }
+<i>2355</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

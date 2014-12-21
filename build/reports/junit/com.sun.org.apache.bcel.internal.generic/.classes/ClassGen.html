@@ -1,0 +1,462 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClassGen</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.bcel.internal.generic</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClassGen (com.sun.org.apache.bcel.internal.generic)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClassGen</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 45)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 142)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.bcel.internal.generic;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.bcel.internal.classfile.AccessFlags;
+<i>9</i>&nbsp;import com.sun.org.apache.bcel.internal.classfile.Attribute;
+<i>10</i>&nbsp;import com.sun.org.apache.bcel.internal.classfile.ConstantPool;
+<i>11</i>&nbsp;import com.sun.org.apache.bcel.internal.classfile.Field;
+<i>12</i>&nbsp;import com.sun.org.apache.bcel.internal.classfile.JavaClass;
+<i>13</i>&nbsp;import com.sun.org.apache.bcel.internal.classfile.Method;
+<i>14</i>&nbsp;import com.sun.org.apache.bcel.internal.classfile.SourceFile;
+<i>15</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.ClassGenException;
+<i>16</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.ClassObserver;
+<i>17</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.ConstantPoolGen;
+<i>18</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.INVOKESPECIAL;
+<i>19</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
+<i>20</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.InstructionList;
+<i>21</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.MethodGen;
+<i>22</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.Type;
+<i>23</i>&nbsp;import java.util.ArrayList;
+<i>24</i>&nbsp;import java.util.Iterator;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;public class ClassGen extends AccessFlags implements Cloneable {
+<i>27</i>&nbsp;    private String class_name;
+<i>28</i>&nbsp;    private String super_class_name;
+<i>29</i>&nbsp;    private String file_name;
+<i>30</i>&nbsp;    private int class_name_index;
+<i>31</i>&nbsp;    private int superclass_name_index;
+<i>32</i>&nbsp;    private int major;
+<i>33</i>&nbsp;    private int minor;
+<i>34</i>&nbsp;    private ConstantPoolGen cp;
+<i>35</i>&nbsp;    private ArrayList field_vec;
+<i>36</i>&nbsp;    private ArrayList method_vec;
+<i>37</i>&nbsp;    private ArrayList attribute_vec;
+<i>38</i>&nbsp;    private ArrayList interface_vec;
+<i>39</i>&nbsp;    private ArrayList observers;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public ClassGen(String class_name, String super_class_name, String file_name, int access_flags, String[] interfaces, ConstantPoolGen cp) {
+<i>42</i>&nbsp;        this.class_name_index = -1;
+<i>43</i>&nbsp;        this.superclass_name_index = -1;
+<i>44</i>&nbsp;        this.major = 45;
+<i>45</i>&nbsp;        this.minor = 3;
+<i>46</i>&nbsp;        this.field_vec = new ArrayList();
+<i>47</i>&nbsp;        this.method_vec = new ArrayList();
+<i>48</i>&nbsp;        this.attribute_vec = new ArrayList();
+<i>49</i>&nbsp;        this.interface_vec = new ArrayList();
+<i>50</i>&nbsp;        this.class_name = class_name;
+<i>51</i>&nbsp;        this.super_class_name = super_class_name;
+<i>52</i>&nbsp;        this.file_name = file_name;
+<i>53</i>&nbsp;        this.access_flags = access_flags;
+<i>54</i>&nbsp;        this.cp = cp;
+<i>55</i>&nbsp;        if(file_name != null) {
+<i>56</i>&nbsp;            this.addAttribute(new SourceFile(cp.addUtf8(&quot;SourceFile&quot;), 2, cp.addUtf8(file_name), cp.getConstantPool()));
+<i>57</i>&nbsp;        }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;        this.class_name_index = cp.addClass(class_name);
+<i>60</i>&nbsp;        this.superclass_name_index = cp.addClass(super_class_name);
+<i>61</i>&nbsp;        if(interfaces != null) {
+<i>62</i>&nbsp;            for(int i = 0; i &lt; interfaces.length; ++i) {
+<i>63</i>&nbsp;                this.addInterface(interfaces[i]);
+<i>64</i>&nbsp;            }
+<i>65</i>&nbsp;        }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public ClassGen(String class_name, String super_class_name, String file_name, int access_flags, String[] interfaces) {
+<i>70</i>&nbsp;        this(class_name, super_class_name, file_name, access_flags, interfaces, new ConstantPoolGen());
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public ClassGen(JavaClass clazz) {
+<b class="nc"><i>74</i>&nbsp;        this.class_name_index = -1;</b>
+<b class="nc"><i>75</i>&nbsp;        this.superclass_name_index = -1;</b>
+<i>76</i>&nbsp;        this.major = 45;
+<i>77</i>&nbsp;        this.minor = 3;
+<i>78</i>&nbsp;        this.field_vec = new ArrayList();
+<i>79</i>&nbsp;        this.method_vec = new ArrayList();
+<b class="nc"><i>80</i>&nbsp;        this.attribute_vec = new ArrayList();</b>
+<b class="nc"><i>81</i>&nbsp;        this.interface_vec = new ArrayList();</b>
+<b class="nc"><i>82</i>&nbsp;        this.class_name_index = clazz.getClassNameIndex();</b>
+<b class="nc"><i>83</i>&nbsp;        this.superclass_name_index = clazz.getSuperclassNameIndex();</b>
+<i>84</i>&nbsp;        this.class_name = clazz.getClassName();
+<i>85</i>&nbsp;        this.super_class_name = clazz.getSuperclassName();
+<i>86</i>&nbsp;        this.file_name = clazz.getSourceFileName();
+<i>87</i>&nbsp;        this.access_flags = clazz.getAccessFlags();
+<i>88</i>&nbsp;        this.cp = new ConstantPoolGen(clazz.getConstantPool());
+<i>89</i>&nbsp;        this.major = clazz.getMajor();
+<i>90</i>&nbsp;        this.minor = clazz.getMinor();
+<i>91</i>&nbsp;        Attribute[] attributes = clazz.getAttributes();
+<i>92</i>&nbsp;        Method[] methods = clazz.getMethods();
+<i>93</i>&nbsp;        Field[] fields = clazz.getFields();
+<i>94</i>&nbsp;        String[] interfaces = clazz.getInterfaceNames();
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;        int i;</b>
+<b class="nc"><i>97</i>&nbsp;        for(i = 0; i &lt; interfaces.length; ++i) {</b>
+<b class="nc"><i>98</i>&nbsp;            this.addInterface(interfaces[i]);</b>
+<b class="nc"><i>99</i>&nbsp;        }</b>
+<b class="nc"><i>100</i>&nbsp;</b>
+<i>101</i>&nbsp;        for(i = 0; i &lt; attributes.length; ++i) {
+<i>102</i>&nbsp;            this.addAttribute(attributes[i]);
+<b class="nc"><i>103</i>&nbsp;        }</b>
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;        for(i = 0; i &lt; methods.length; ++i) {
+<i>106</i>&nbsp;            this.addMethod(methods[i]);
+<b class="nc"><i>107</i>&nbsp;        }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<i>109</i>&nbsp;        for(i = 0; i &lt; fields.length; ++i) {
+<b class="nc"><i>110</i>&nbsp;            this.addField(fields[i]);</b>
+<b class="nc"><i>111</i>&nbsp;        }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public JavaClass getJavaClass() {
+<i>116</i>&nbsp;        int[] interfaces = this.getInterfaces();
+<i>117</i>&nbsp;        Field[] fields = this.getFields();
+<i>118</i>&nbsp;        Method[] methods = this.getMethods();
+<i>119</i>&nbsp;        Attribute[] attributes = this.getAttributes();
+<i>120</i>&nbsp;        ConstantPool cp = this.cp.getFinalConstantPool();
+<i>121</i>&nbsp;        return new JavaClass(this.class_name_index, this.superclass_name_index, this.file_name, this.major, this.minor, this.access_flags, cp, interfaces, fields, methods, attributes);
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public void addInterface(String name) {
+<b class="nc"><i>125</i>&nbsp;        this.interface_vec.add(name);</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public void removeInterface(String name) {
+<i>129</i>&nbsp;        this.interface_vec.remove(name);
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public int getMajor() {
+<b class="nc"><i>133</i>&nbsp;        return this.major;</b>
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<b class="nc"><i>136</i>&nbsp;    public void setMajor(int major) {</b>
+<b class="nc"><i>137</i>&nbsp;        this.major = major;</b>
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;    public void setMinor(int minor) {</b>
+<b class="nc"><i>141</i>&nbsp;        this.minor = minor;</b>
+<b class="nc"><i>142</i>&nbsp;    }</b>
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;    public int getMinor() {</b>
+<b class="nc"><i>145</i>&nbsp;        return this.minor;</b>
+<b class="nc"><i>146</i>&nbsp;    }</b>
+<b class="nc"><i>147</i>&nbsp;</b>
+<i>148</i>&nbsp;    public void addAttribute(Attribute a) {
+<b class="nc"><i>149</i>&nbsp;        this.attribute_vec.add(a);</b>
+<b class="nc"><i>150</i>&nbsp;    }</b>
+<i>151</i>&nbsp;
+<b class="nc"><i>152</i>&nbsp;    public void addMethod(Method m) {</b>
+<b class="nc"><i>153</i>&nbsp;        this.method_vec.add(m);</b>
+<i>154</i>&nbsp;    }
+<b class="nc"><i>155</i>&nbsp;</b>
+<b class="nc"><i>156</i>&nbsp;    public void addEmptyConstructor(int access_flags) {</b>
+<i>157</i>&nbsp;        InstructionList il = new InstructionList();
+<b class="nc"><i>158</i>&nbsp;        il.append(InstructionConstants.THIS);</b>
+<b class="nc"><i>159</i>&nbsp;        il.append(new INVOKESPECIAL(this.cp.addMethodref(this.super_class_name, &quot;&lt;init&gt;&quot;, &quot;()V&quot;)));</b>
+<i>160</i>&nbsp;        il.append(InstructionConstants.RETURN);
+<i>161</i>&nbsp;        MethodGen mg = new MethodGen(access_flags, Type.VOID, Type.NO_ARGS, (String[])null, &quot;&lt;init&gt;&quot;, this.class_name, il, this.cp);
+<i>162</i>&nbsp;        mg.setMaxStack(1);
+<i>163</i>&nbsp;        this.addMethod(mg.getMethod());
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<b class="nc"><i>166</i>&nbsp;    public void addField(Field f) {</b>
+<b class="nc"><i>167</i>&nbsp;        this.field_vec.add(f);</b>
+<b class="nc"><i>168</i>&nbsp;    }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<i>170</i>&nbsp;    public boolean containsField(Field f) {
+<i>171</i>&nbsp;        return this.field_vec.contains(f);
+<b class="nc"><i>172</i>&nbsp;    }</b>
+<i>173</i>&nbsp;
+<b class="nc"><i>174</i>&nbsp;    public Field containsField(String name) {</b>
+<i>175</i>&nbsp;        Iterator e = this.field_vec.iterator();
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;        Field f;
+<i>178</i>&nbsp;        do {
+<i>179</i>&nbsp;            if(!e.hasNext()) {
+<i>180</i>&nbsp;                return null;
+<i>181</i>&nbsp;            }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;            f = (Field)e.next();
+<b class="nc"><i>184</i>&nbsp;        } while(!f.getName().equals(name));</b>
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;        return f;
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    public Method containsMethod(String name, String signature) {
+<i>190</i>&nbsp;        Iterator e = this.method_vec.iterator();
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;        Method m;</b>
+<i>193</i>&nbsp;        do {
+<i>194</i>&nbsp;            if(!e.hasNext()) {
+<i>195</i>&nbsp;                return null;
+<i>196</i>&nbsp;            }
+<i>197</i>&nbsp;
+<b class="nc"><i>198</i>&nbsp;            m = (Method)e.next();</b>
+<i>199</i>&nbsp;        } while(!m.getName().equals(name) || !m.getSignature().equals(signature));
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;        return m;
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<b class="nc"><i>204</i>&nbsp;    public void removeAttribute(Attribute a) {</b>
+<i>205</i>&nbsp;        this.attribute_vec.remove(a);
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    public void removeMethod(Method m) {
+<i>209</i>&nbsp;        this.method_vec.remove(m);
+<i>210</i>&nbsp;    }
+<b class="nc"><i>211</i>&nbsp;</b>
+<i>212</i>&nbsp;    public void replaceMethod(Method old, Method new_) {
+<i>213</i>&nbsp;        if(new_ == null) {
+<i>214</i>&nbsp;            throw new ClassGenException(&quot;Replacement method must not be null&quot;);
+<i>215</i>&nbsp;        } else {
+<i>216</i>&nbsp;            int i = this.method_vec.indexOf(old);
+<b class="nc"><i>217</i>&nbsp;            if(i &lt; 0) {</b>
+<i>218</i>&nbsp;                this.method_vec.add(new_);
+<i>219</i>&nbsp;            } else {
+<i>220</i>&nbsp;                this.method_vec.set(i, new_);
+<i>221</i>&nbsp;            }
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;        }</b>
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    public void replaceField(Field old, Field new_) {
+<i>227</i>&nbsp;        if(new_ == null) {
+<i>228</i>&nbsp;            throw new ClassGenException(&quot;Replacement method must not be null&quot;);
+<b class="nc"><i>229</i>&nbsp;        } else {</b>
+<i>230</i>&nbsp;            int i = this.field_vec.indexOf(old);
+<i>231</i>&nbsp;            if(i &lt; 0) {
+<i>232</i>&nbsp;                this.field_vec.add(new_);
+<i>233</i>&nbsp;            } else {
+<i>234</i>&nbsp;                this.field_vec.set(i, new_);
+<i>235</i>&nbsp;            }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;        }
+<b class="nc"><i>238</i>&nbsp;    }</b>
+<b class="nc"><i>239</i>&nbsp;</b>
+<b class="nc"><i>240</i>&nbsp;    public void removeField(Field f) {</b>
+<i>241</i>&nbsp;        this.field_vec.remove(f);
+<b class="nc"><i>242</i>&nbsp;    }</b>
+<i>243</i>&nbsp;
+<b class="nc"><i>244</i>&nbsp;    public String getClassName() {</b>
+<i>245</i>&nbsp;        return this.class_name;
+<b class="nc"><i>246</i>&nbsp;    }</b>
+<b class="nc"><i>247</i>&nbsp;</b>
+<i>248</i>&nbsp;    public String getSuperclassName() {
+<i>249</i>&nbsp;        return this.super_class_name;
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    public String getFileName() {
+<i>253</i>&nbsp;        return this.file_name;
+<b class="nc"><i>254</i>&nbsp;    }</b>
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;    public void setClassName(String name) {</b>
+<i>257</i>&nbsp;        this.class_name = name.replace(&#39;/&#39;, &#39;.&#39;);
+<i>258</i>&nbsp;        this.class_name_index = this.cp.addClass(name);
+<i>259</i>&nbsp;    }
+<i>260</i>&nbsp;
+<b class="nc"><i>261</i>&nbsp;    public void setSuperclassName(String name) {</b>
+<b class="nc"><i>262</i>&nbsp;        this.super_class_name = name.replace(&#39;/&#39;, &#39;.&#39;);</b>
+<b class="nc"><i>263</i>&nbsp;        this.superclass_name_index = this.cp.addClass(name);</b>
+<b class="nc"><i>264</i>&nbsp;    }</b>
+<b class="nc"><i>265</i>&nbsp;</b>
+<i>266</i>&nbsp;    public Method[] getMethods() {
+<b class="nc"><i>267</i>&nbsp;        Method[] methods = new Method[this.method_vec.size()];</b>
+<i>268</i>&nbsp;        this.method_vec.toArray(methods);
+<i>269</i>&nbsp;        return methods;
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    public void setMethods(Method[] methods) {
+<b class="nc"><i>273</i>&nbsp;        this.method_vec.clear();</b>
+<b class="nc"><i>274</i>&nbsp;</b>
+<b class="nc"><i>275</i>&nbsp;        for(int m = 0; m &lt; methods.length; ++m) {</b>
+<b class="nc"><i>276</i>&nbsp;            this.addMethod(methods[m]);</b>
+<b class="nc"><i>277</i>&nbsp;        }</b>
+<i>278</i>&nbsp;
+<b class="nc"><i>279</i>&nbsp;    }</b>
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    public void setMethodAt(Method method, int pos) {
+<i>282</i>&nbsp;        this.method_vec.set(pos, method);
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    public Method getMethodAt(int pos) {
+<b class="nc"><i>286</i>&nbsp;        return (Method)this.method_vec.get(pos);</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    public String[] getInterfaceNames() {
+<i>290</i>&nbsp;        int size = this.interface_vec.size();
+<i>291</i>&nbsp;        String[] interfaces = new String[size];
+<b class="nc"><i>292</i>&nbsp;        this.interface_vec.toArray(interfaces);</b>
+<i>293</i>&nbsp;        return interfaces;
+<i>294</i>&nbsp;    }
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;    public int[] getInterfaces() {
+<i>297</i>&nbsp;        int size = this.interface_vec.size();
+<b class="nc"><i>298</i>&nbsp;        int[] interfaces = new int[size];</b>
+<b class="nc"><i>299</i>&nbsp;</b>
+<i>300</i>&nbsp;        for(int i = 0; i &lt; size; ++i) {
+<b class="nc"><i>301</i>&nbsp;            interfaces[i] = this.cp.addClass((String)this.interface_vec.get(i));</b>
+<i>302</i>&nbsp;        }
+<b class="nc"><i>303</i>&nbsp;</b>
+<b class="nc"><i>304</i>&nbsp;        return interfaces;</b>
+<i>305</i>&nbsp;    }
+<b class="nc"><i>306</i>&nbsp;</b>
+<i>307</i>&nbsp;    public Field[] getFields() {
+<i>308</i>&nbsp;        Field[] fields = new Field[this.field_vec.size()];
+<i>309</i>&nbsp;        this.field_vec.toArray(fields);
+<i>310</i>&nbsp;        return fields;
+<i>311</i>&nbsp;    }
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;    public Attribute[] getAttributes() {</b>
+<b class="nc"><i>314</i>&nbsp;        Attribute[] attributes = new Attribute[this.attribute_vec.size()];</b>
+<i>315</i>&nbsp;        this.attribute_vec.toArray(attributes);
+<b class="nc"><i>316</i>&nbsp;        return attributes;</b>
+<i>317</i>&nbsp;    }
+<b class="nc"><i>318</i>&nbsp;</b>
+<b class="nc"><i>319</i>&nbsp;    public ConstantPoolGen getConstantPool() {</b>
+<i>320</i>&nbsp;        return this.cp;
+<b class="nc"><i>321</i>&nbsp;    }</b>
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    public void setConstantPool(ConstantPoolGen constant_pool) {
+<i>324</i>&nbsp;        this.cp = constant_pool;
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;    public void setClassNameIndex(int class_name_index) {
+<b class="nc"><i>328</i>&nbsp;        this.class_name_index = class_name_index;</b>
+<i>329</i>&nbsp;        this.class_name = this.cp.getConstantPool().getConstantString(class_name_index, (byte)7).replace(&#39;/&#39;, &#39;.&#39;);
+<b class="nc"><i>330</i>&nbsp;    }</b>
+<b class="nc"><i>331</i>&nbsp;</b>
+<b class="nc"><i>332</i>&nbsp;    public void setSuperclassNameIndex(int superclass_name_index) {</b>
+<i>333</i>&nbsp;        this.superclass_name_index = superclass_name_index;
+<i>334</i>&nbsp;        this.super_class_name = this.cp.getConstantPool().getConstantString(superclass_name_index, (byte)7).replace(&#39;/&#39;, &#39;.&#39;);
+<b class="nc"><i>335</i>&nbsp;    }</b>
+<b class="nc"><i>336</i>&nbsp;</b>
+<i>337</i>&nbsp;    public int getSuperclassNameIndex() {
+<i>338</i>&nbsp;        return this.superclass_name_index;
+<i>339</i>&nbsp;    }
+<b class="nc"><i>340</i>&nbsp;</b>
+<b class="nc"><i>341</i>&nbsp;    public int getClassNameIndex() {</b>
+<i>342</i>&nbsp;        return this.class_name_index;
+<i>343</i>&nbsp;    }
+<i>344</i>&nbsp;
+<b class="nc"><i>345</i>&nbsp;    public void addObserver(ClassObserver o) {</b>
+<b class="nc"><i>346</i>&nbsp;        if(this.observers == null) {</b>
+<b class="nc"><i>347</i>&nbsp;            this.observers = new ArrayList();</b>
+<i>348</i>&nbsp;        }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;        this.observers.add(o);
+<b class="nc"><i>351</i>&nbsp;    }</b>
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;    public void removeObserver(ClassObserver o) {</b>
+<i>354</i>&nbsp;        if(this.observers != null) {
+<i>355</i>&nbsp;            this.observers.remove(o);
+<i>356</i>&nbsp;        }
+<b class="nc"><i>357</i>&nbsp;</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    public void update() {
+<b class="nc"><i>361</i>&nbsp;        if(this.observers != null) {</b>
+<i>362</i>&nbsp;            Iterator e = this.observers.iterator();
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;            while(e.hasNext()) {
+<b class="nc"><i>365</i>&nbsp;                ((ClassObserver)e.next()).notify(this);</b>
+<b class="nc"><i>366</i>&nbsp;            }</b>
+<i>367</i>&nbsp;        }
+<b class="nc"><i>368</i>&nbsp;</b>
+<b class="nc"><i>369</i>&nbsp;    }</b>
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    public Object clone() {
+<i>372</i>&nbsp;        try {
+<b class="nc"><i>373</i>&nbsp;            return super.clone();</b>
+<b class="nc"><i>374</i>&nbsp;        } catch (CloneNotSupportedException var2) {</b>
+<i>375</i>&nbsp;            System.err.println(var2);
+<b class="nc"><i>376</i>&nbsp;            return null;</b>
+<b class="nc"><i>377</i>&nbsp;        }</b>
+<i>378</i>&nbsp;    }
+<b class="nc"><i>379</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

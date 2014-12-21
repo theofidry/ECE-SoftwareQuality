@@ -1,0 +1,424 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NamespaceSupport</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NamespaceSupport (com.sun.org.apache.xerces.internal.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NamespaceSupport</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 98)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">NamespaceSupport$IteratorPrefixes</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NamespaceSupport$Prefixes</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 127)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLSymbols;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.NamespaceContext;
+<i>10</i>&nbsp;import java.util.Enumeration;
+<i>11</i>&nbsp;import java.util.Iterator;
+<i>12</i>&nbsp;import java.util.NoSuchElementException;
+<i>13</i>&nbsp;import java.util.Vector;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;public class NamespaceSupport implements NamespaceContext {
+<i>16</i>&nbsp;    protected String[] fNamespace = new String[32];
+<i>17</i>&nbsp;    protected int fNamespaceSize;
+<i>18</i>&nbsp;    protected int[] fContext = new int[8];
+<i>19</i>&nbsp;    protected int fCurrentContext;
+<i>20</i>&nbsp;    protected String[] fPrefixes = new String[16];
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public NamespaceSupport() {
+<i>23</i>&nbsp;    }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public NamespaceSupport(NamespaceContext context) {
+<i>26</i>&nbsp;        this.pushContext();
+<i>27</i>&nbsp;        Enumeration prefixes = context.getAllPrefixes();
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;        while(prefixes.hasMoreElements()) {
+<i>30</i>&nbsp;            String prefix = (String)prefixes.nextElement();
+<i>31</i>&nbsp;            String uri = context.getURI(prefix);
+<i>32</i>&nbsp;            this.declarePrefix(prefix, uri);
+<i>33</i>&nbsp;        }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public void reset() {
+<i>38</i>&nbsp;        this.fNamespaceSize = 0;
+<i>39</i>&nbsp;        this.fCurrentContext = 0;
+<i>40</i>&nbsp;        this.fNamespace[this.fNamespaceSize++] = XMLSymbols.PREFIX_XML;
+<i>41</i>&nbsp;        this.fNamespace[this.fNamespaceSize++] = NamespaceContext.XML_URI;
+<i>42</i>&nbsp;        this.fNamespace[this.fNamespaceSize++] = XMLSymbols.PREFIX_XMLNS;
+<i>43</i>&nbsp;        this.fNamespace[this.fNamespaceSize++] = NamespaceContext.XMLNS_URI;
+<i>44</i>&nbsp;        this.fContext[this.fCurrentContext] = this.fNamespaceSize;
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public void pushContext() {
+<i>48</i>&nbsp;        if(this.fCurrentContext + 1 == this.fContext.length) {
+<i>49</i>&nbsp;            int[] contextarray = new int[this.fContext.length * 2];
+<i>50</i>&nbsp;            System.arraycopy(this.fContext, 0, contextarray, 0, this.fContext.length);
+<i>51</i>&nbsp;            this.fContext = contextarray;
+<i>52</i>&nbsp;        }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;        this.fContext[++this.fCurrentContext] = this.fNamespaceSize;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public void popContext() {
+<i>58</i>&nbsp;        this.fNamespaceSize = this.fContext[this.fCurrentContext--];
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public boolean declarePrefix(String prefix, String uri) {
+<i>62</i>&nbsp;        if(prefix != XMLSymbols.PREFIX_XML &amp;&amp; prefix != XMLSymbols.PREFIX_XMLNS) {
+<i>63</i>&nbsp;            for(int namespacearray = this.fNamespaceSize; namespacearray &gt; this.fContext[this.fCurrentContext]; namespacearray -= 2) {
+<i>64</i>&nbsp;                if(this.fNamespace[namespacearray - 2] == prefix) {
+<i>65</i>&nbsp;                    this.fNamespace[namespacearray - 1] = uri;
+<i>66</i>&nbsp;                    return true;
+<i>67</i>&nbsp;                }
+<i>68</i>&nbsp;            }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;            if(this.fNamespaceSize == this.fNamespace.length) {
+<i>71</i>&nbsp;                String[] namespacearray1 = new String[this.fNamespaceSize * 2];
+<i>72</i>&nbsp;                System.arraycopy(this.fNamespace, 0, namespacearray1, 0, this.fNamespaceSize);
+<i>73</i>&nbsp;                this.fNamespace = namespacearray1;
+<i>74</i>&nbsp;            }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;            this.fNamespace[this.fNamespaceSize++] = prefix;
+<i>77</i>&nbsp;            this.fNamespace[this.fNamespaceSize++] = uri;
+<i>78</i>&nbsp;            return true;
+<i>79</i>&nbsp;        } else {
+<i>80</i>&nbsp;            return false;
+<i>81</i>&nbsp;        }
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public String getURI(String prefix) {
+<i>85</i>&nbsp;        for(int i = this.fNamespaceSize; i &gt; 0; i -= 2) {
+<i>86</i>&nbsp;            if(this.fNamespace[i - 2] == prefix) {
+<i>87</i>&nbsp;                return this.fNamespace[i - 1];
+<i>88</i>&nbsp;            }
+<i>89</i>&nbsp;        }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        return null;
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public String getPrefix(String uri) {
+<i>95</i>&nbsp;        for(int i = this.fNamespaceSize; i &gt; 0; i -= 2) {
+<i>96</i>&nbsp;            if(this.fNamespace[i - 1] == uri &amp;&amp; this.getURI(this.fNamespace[i - 2]) == uri) {
+<i>97</i>&nbsp;                return this.fNamespace[i - 2];
+<i>98</i>&nbsp;            }
+<i>99</i>&nbsp;        }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;        return null;
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public int getDeclaredPrefixCount() {
+<i>105</i>&nbsp;        return (this.fNamespaceSize - this.fContext[this.fCurrentContext]) / 2;
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<b class="nc"><i>108</i>&nbsp;    public String getDeclaredPrefixAt(int index) {</b>
+<i>109</i>&nbsp;        return this.fNamespace[this.fContext[this.fCurrentContext] + index * 2];
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public Iterator getPrefixes() {
+<b class="nc"><i>113</i>&nbsp;        int count = 0;</b>
+<i>114</i>&nbsp;        String[] prefix;
+<i>115</i>&nbsp;        if(this.fPrefixes.length &lt; this.fNamespace.length / 2) {
+<i>116</i>&nbsp;            prefix = new String[this.fNamespaceSize];
+<i>117</i>&nbsp;            this.fPrefixes = prefix;
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;        prefix = null;</b>
+<i>121</i>&nbsp;        boolean unique = true;
+<i>122</i>&nbsp;        int i = 2;
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;        while(i &lt; this.fNamespaceSize - 2) {
+<i>125</i>&nbsp;            String var6 = this.fNamespace[i + 2];
+<i>126</i>&nbsp;            int k = 0;
+<b class="nc"><i>127</i>&nbsp;</b>
+<b class="nc"><i>128</i>&nbsp;            while(true) {</b>
+<i>129</i>&nbsp;                if(k &lt; count) {
+<b class="nc"><i>130</i>&nbsp;                    if(this.fPrefixes[k] != var6) {</b>
+<b class="nc"><i>131</i>&nbsp;                        ++k;</b>
+<b class="nc"><i>132</i>&nbsp;                        continue;</b>
+<b class="nc"><i>133</i>&nbsp;                    }</b>
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;                    unique = false;</b>
+<i>136</i>&nbsp;                }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;                if(unique) {
+<i>139</i>&nbsp;                    this.fPrefixes[count++] = var6;
+<i>140</i>&nbsp;                }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;                unique = true;
+<i>143</i>&nbsp;                i += 2;
+<i>144</i>&nbsp;                break;
+<i>145</i>&nbsp;            }
+<i>146</i>&nbsp;        }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;        return new NamespaceSupport.IteratorPrefixes(this.fPrefixes, count);
+<b class="nc"><i>149</i>&nbsp;    }</b>
+<b class="nc"><i>150</i>&nbsp;</b>
+<i>151</i>&nbsp;    public Enumeration getAllPrefixes() {
+<i>152</i>&nbsp;        int count = 0;
+<i>153</i>&nbsp;        String[] prefix;
+<b class="nc"><i>154</i>&nbsp;        if(this.fPrefixes.length &lt; this.fNamespace.length / 2) {</b>
+<b class="nc"><i>155</i>&nbsp;            prefix = new String[this.fNamespaceSize];</b>
+<i>156</i>&nbsp;            this.fPrefixes = prefix;
+<b class="nc"><i>157</i>&nbsp;        }</b>
+<b class="nc"><i>158</i>&nbsp;</b>
+<i>159</i>&nbsp;        prefix = null;
+<b class="nc"><i>160</i>&nbsp;        boolean unique = true;</b>
+<i>161</i>&nbsp;        int i = 2;
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;        while(i &lt; this.fNamespaceSize - 2) {
+<i>164</i>&nbsp;            String var6 = this.fNamespace[i + 2];
+<i>165</i>&nbsp;            int k = 0;
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;            while(true) {
+<i>168</i>&nbsp;                if(k &lt; count) {
+<i>169</i>&nbsp;                    if(this.fPrefixes[k] != var6) {
+<i>170</i>&nbsp;                        ++k;
+<i>171</i>&nbsp;                        continue;
+<b class="nc"><i>172</i>&nbsp;                    }</b>
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;                    unique = false;</b>
+<b class="nc"><i>175</i>&nbsp;                }</b>
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;                if(unique) {
+<i>178</i>&nbsp;                    this.fPrefixes[count++] = var6;
+<b class="nc"><i>179</i>&nbsp;                }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;                unique = true;
+<i>182</i>&nbsp;                i += 2;
+<i>183</i>&nbsp;                break;
+<i>184</i>&nbsp;            }
+<i>185</i>&nbsp;        }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;        return new NamespaceSupport.Prefixes(this.fPrefixes, count);
+<b class="nc"><i>188</i>&nbsp;    }</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    public Vector getPrefixes(String uri) {
+<i>191</i>&nbsp;        boolean count = false;
+<i>192</i>&nbsp;        Object prefix = null;
+<i>193</i>&nbsp;        boolean unique = true;
+<i>194</i>&nbsp;        Vector prefixList = new Vector();
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;        for(int i = this.fNamespaceSize; i &gt; 0; i -= 2) {
+<b class="nc"><i>197</i>&nbsp;            if(this.fNamespace[i - 1] == uri &amp;&amp; !prefixList.contains(this.fNamespace[i - 2])) {</b>
+<b class="nc"><i>198</i>&nbsp;                prefixList.add(this.fNamespace[i - 2]);</b>
+<i>199</i>&nbsp;            }
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;        return prefixList;</b>
+<b class="nc"><i>203</i>&nbsp;    }</b>
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    public boolean containsPrefix(String prefix) {
+<i>206</i>&nbsp;        for(int i = this.fNamespaceSize; i &gt; 0; i -= 2) {
+<i>207</i>&nbsp;            if(this.fNamespace[i - 2] == prefix) {
+<i>208</i>&nbsp;                return true;
+<i>209</i>&nbsp;            }
+<b class="nc"><i>210</i>&nbsp;        }</b>
+<b class="nc"><i>211</i>&nbsp;</b>
+<i>212</i>&nbsp;        return false;
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    public boolean containsPrefixInCurrentContext(String prefix) {
+<b class="nc"><i>216</i>&nbsp;        for(int i = this.fContext[this.fCurrentContext]; i &lt; this.fNamespaceSize; i += 2) {</b>
+<b class="nc"><i>217</i>&nbsp;            if(this.fNamespace[i] == prefix) {</b>
+<b class="nc"><i>218</i>&nbsp;                return true;</b>
+<b class="nc"><i>219</i>&nbsp;            }</b>
+<i>220</i>&nbsp;        }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;        return false;
+<b class="nc"><i>223</i>&nbsp;    }</b>
+<b class="nc"><i>224</i>&nbsp;</b>
+<i>225</i>&nbsp;    protected final class Prefixes implements Enumeration {
+<b class="nc"><i>226</i>&nbsp;        private String[] prefixes;</b>
+<i>227</i>&nbsp;        private int counter = 0;
+<i>228</i>&nbsp;        private int size = 0;
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;        public Prefixes(String[] prefixes, int size) {
+<i>231</i>&nbsp;            this.prefixes = prefixes;
+<i>232</i>&nbsp;            this.size = size;
+<i>233</i>&nbsp;        }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;        public boolean hasMoreElements() {
+<b class="nc"><i>236</i>&nbsp;            return this.counter &lt; this.size;</b>
+<b class="nc"><i>237</i>&nbsp;        }</b>
+<b class="nc"><i>238</i>&nbsp;</b>
+<i>239</i>&nbsp;        public Object nextElement() {
+<i>240</i>&nbsp;            if(this.counter &lt; this.size) {
+<i>241</i>&nbsp;                return NamespaceSupport.this.fPrefixes[this.counter++];
+<i>242</i>&nbsp;            } else {
+<b class="nc"><i>243</i>&nbsp;                throw new NoSuchElementException(&quot;Illegal access to Namespace prefixes enumeration.&quot;);</b>
+<i>244</i>&nbsp;            }
+<i>245</i>&nbsp;        }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;        public String toString() {
+<i>248</i>&nbsp;            StringBuffer buf = new StringBuffer();
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;            for(int i = 0; i &lt; this.size; ++i) {
+<i>251</i>&nbsp;                buf.append(this.prefixes[i]);
+<i>252</i>&nbsp;                buf.append(&quot; &quot;);
+<i>253</i>&nbsp;            }
+<b class="nc"><i>254</i>&nbsp;</b>
+<b class="nc"><i>255</i>&nbsp;            return buf.toString();</b>
+<b class="nc"><i>256</i>&nbsp;        }</b>
+<b class="nc"><i>257</i>&nbsp;    }</b>
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    protected final class IteratorPrefixes implements Iterator {
+<i>260</i>&nbsp;        private String[] prefixes;
+<i>261</i>&nbsp;        private int counter = 0;
+<b class="nc"><i>262</i>&nbsp;        private int size = 0;</b>
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;        public IteratorPrefixes(String[] prefixes, int size) {
+<i>265</i>&nbsp;            this.prefixes = prefixes;
+<i>266</i>&nbsp;            this.size = size;
+<i>267</i>&nbsp;        }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;        public boolean hasNext() {
+<b class="nc"><i>270</i>&nbsp;            return this.counter &lt; this.size;</b>
+<i>271</i>&nbsp;        }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;        public Object next() {
+<i>274</i>&nbsp;            if(this.counter &lt; this.size) {
+<i>275</i>&nbsp;                return NamespaceSupport.this.fPrefixes[this.counter++];
+<i>276</i>&nbsp;            } else {
+<b class="nc"><i>277</i>&nbsp;                throw new NoSuchElementException(&quot;Illegal access to Namespace prefixes enumeration.&quot;);</b>
+<i>278</i>&nbsp;            }
+<i>279</i>&nbsp;        }
+<i>280</i>&nbsp;
+<b class="nc"><i>281</i>&nbsp;        public String toString() {</b>
+<b class="nc"><i>282</i>&nbsp;            StringBuffer buf = new StringBuffer();</b>
+<i>283</i>&nbsp;
+<b class="nc"><i>284</i>&nbsp;            for(int i = 0; i &lt; this.size; ++i) {</b>
+<b class="nc"><i>285</i>&nbsp;                buf.append(this.prefixes[i]);</b>
+<i>286</i>&nbsp;                buf.append(&quot; &quot;);
+<b class="nc"><i>287</i>&nbsp;            }</b>
+<b class="nc"><i>288</i>&nbsp;</b>
+<b class="nc"><i>289</i>&nbsp;            return buf.toString();</b>
+<b class="nc"><i>290</i>&nbsp;        }</b>
+<b class="nc"><i>291</i>&nbsp;</b>
+<b class="nc"><i>292</i>&nbsp;        public void remove() {</b>
+<b class="nc"><i>293</i>&nbsp;            throw new UnsupportedOperationException();</b>
+<b class="nc"><i>294</i>&nbsp;        }</b>
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

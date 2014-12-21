@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: REDebugCompiler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.regexp.internal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: REDebugCompiler (com.sun.org.apache.regexp.internal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">REDebugCompiler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 60)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.regexp.internal;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.regexp.internal.RECompiler;
+<i>9</i>&nbsp;import java.io.PrintWriter;
+<i>10</i>&nbsp;import java.util.Hashtable;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;public class REDebugCompiler extends RECompiler {
+<i>13</i>&nbsp;    static Hashtable hashOpcode = new Hashtable();
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    public REDebugCompiler() {
+<i>16</i>&nbsp;    }
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    String opcodeToString(char opcode) {
+<i>19</i>&nbsp;        String ret = (String)hashOpcode.get(new Integer(opcode));
+<i>20</i>&nbsp;        if(ret == null) {
+<i>21</i>&nbsp;            ret = &quot;OP_????&quot;;
+<i>22</i>&nbsp;        }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;        return ret;
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    String charToString(char c) {
+<i>28</i>&nbsp;        return c &gt;= 32 &amp;&amp; c &lt;= 127?String.valueOf(c):&quot;\\&quot; + c;
+<b class="nc"><i>29</i>&nbsp;    }</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    String nodeToString(int node) {
+<i>32</i>&nbsp;        char opcode = this.instruction[node + 0];
+<i>33</i>&nbsp;        char opdata = this.instruction[node + 1];
+<b class="nc"><i>34</i>&nbsp;        return this.opcodeToString(opcode) + &quot;, opdata = &quot; + opdata;</b>
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<b class="nc"><i>37</i>&nbsp;    public void dumpProgram(PrintWriter p) {</b>
+<b class="nc"><i>38</i>&nbsp;        for(int i = 0; i &lt; this.lenInstruction; p.println(&quot;&quot;)) {</b>
+<b class="nc"><i>39</i>&nbsp;            char opcode = this.instruction[i + 0];</b>
+<b class="nc"><i>40</i>&nbsp;            char opdata = this.instruction[i + 1];</b>
+<b class="nc"><i>41</i>&nbsp;            short next = (short)this.instruction[i + 2];</b>
+<b class="nc"><i>42</i>&nbsp;            p.print(i + &quot;. &quot; + this.nodeToString(i) + &quot;, next = &quot;);</b>
+<b class="nc"><i>43</i>&nbsp;            if(next == 0) {</b>
+<b class="nc"><i>44</i>&nbsp;                p.print(&quot;none&quot;);</b>
+<b class="nc"><i>45</i>&nbsp;            } else {</b>
+<b class="nc"><i>46</i>&nbsp;                p.print(i + next);</b>
+<b class="nc"><i>47</i>&nbsp;            }</b>
+<b class="nc"><i>48</i>&nbsp;</b>
+<b class="nc"><i>49</i>&nbsp;            i += 3;</b>
+<b class="nc"><i>50</i>&nbsp;            if(opcode == 91) {</b>
+<b class="nc"><i>51</i>&nbsp;                p.print(&quot;, [&quot;);</b>
+<b class="nc"><i>52</i>&nbsp;                char len = opdata;</b>
+<b class="nc"><i>53</i>&nbsp;</b>
+<b class="nc"><i>54</i>&nbsp;                for(int r = 0; r &lt; len; ++r) {</b>
+<b class="nc"><i>55</i>&nbsp;                    char charFirst = this.instruction[i++];</b>
+<b class="nc"><i>56</i>&nbsp;                    char charLast = this.instruction[i++];</b>
+<b class="nc"><i>57</i>&nbsp;                    if(charFirst == charLast) {</b>
+<b class="nc"><i>58</i>&nbsp;                        p.print(this.charToString(charFirst));</b>
+<i>59</i>&nbsp;                    } else {
+<i>60</i>&nbsp;                        p.print(this.charToString(charFirst) + &quot;-&quot; + this.charToString(charLast));
+<i>61</i>&nbsp;                    }
+<i>62</i>&nbsp;                }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;                p.print(&quot;]&quot;);
+<i>65</i>&nbsp;            }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;            if(opcode == 65) {
+<i>68</i>&nbsp;                p.print(&quot;, \&quot;&quot;);
+<b class="nc"><i>69</i>&nbsp;                int var10 = opdata;</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;                while(var10-- != 0) {
+<b class="nc"><i>72</i>&nbsp;                    p.print(this.charToString(this.instruction[i++]));</b>
+<i>73</i>&nbsp;                }
+<b class="nc"><i>74</i>&nbsp;</b>
+<i>75</i>&nbsp;                p.print(&quot;\&quot;&quot;);
+<b class="nc"><i>76</i>&nbsp;            }</b>
+<i>77</i>&nbsp;        }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    static {
+<i>82</i>&nbsp;        hashOpcode.put(new Integer(56), &quot;OP_RELUCTANTSTAR&quot;);
+<i>83</i>&nbsp;        hashOpcode.put(new Integer(61), &quot;OP_RELUCTANTPLUS&quot;);
+<i>84</i>&nbsp;        hashOpcode.put(new Integer(47), &quot;OP_RELUCTANTMAYBE&quot;);
+<i>85</i>&nbsp;        hashOpcode.put(new Integer(69), &quot;OP_END&quot;);
+<i>86</i>&nbsp;        hashOpcode.put(new Integer(94), &quot;OP_BOL&quot;);
+<b class="nc"><i>87</i>&nbsp;        hashOpcode.put(new Integer(36), &quot;OP_EOL&quot;);</b>
+<i>88</i>&nbsp;        hashOpcode.put(new Integer(46), &quot;OP_ANY&quot;);
+<b class="nc"><i>89</i>&nbsp;        hashOpcode.put(new Integer(91), &quot;OP_ANYOF&quot;);</b>
+<i>90</i>&nbsp;        hashOpcode.put(new Integer(124), &quot;OP_BRANCH&quot;);
+<i>91</i>&nbsp;        hashOpcode.put(new Integer(65), &quot;OP_ATOM&quot;);
+<i>92</i>&nbsp;        hashOpcode.put(new Integer(42), &quot;OP_STAR&quot;);
+<b class="nc"><i>93</i>&nbsp;        hashOpcode.put(new Integer(43), &quot;OP_PLUS&quot;);</b>
+<i>94</i>&nbsp;        hashOpcode.put(new Integer(63), &quot;OP_MAYBE&quot;);
+<i>95</i>&nbsp;        hashOpcode.put(new Integer(78), &quot;OP_NOTHING&quot;);
+<i>96</i>&nbsp;        hashOpcode.put(new Integer(71), &quot;OP_GOTO&quot;);
+<i>97</i>&nbsp;        hashOpcode.put(new Integer(92), &quot;OP_ESCAPE&quot;);
+<i>98</i>&nbsp;        hashOpcode.put(new Integer(40), &quot;OP_OPEN&quot;);
+<i>99</i>&nbsp;        hashOpcode.put(new Integer(41), &quot;OP_CLOSE&quot;);
+<i>100</i>&nbsp;        hashOpcode.put(new Integer(35), &quot;OP_BACKREF&quot;);
+<i>101</i>&nbsp;        hashOpcode.put(new Integer(80), &quot;OP_POSIXCLASS&quot;);
+<i>102</i>&nbsp;        hashOpcode.put(new Integer(60), &quot;OP_OPEN_CLUSTER&quot;);
+<i>103</i>&nbsp;        hashOpcode.put(new Integer(62), &quot;OP_CLOSE_CLUSTER&quot;);
+<b class="nc"><i>104</i>&nbsp;    }</b>
+<b class="nc"><i>105</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,351 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SoftEnvelopeGenerator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.media.sound</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SoftEnvelopeGenerator (com.sun.media.sound)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SoftEnvelopeGenerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 183)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.media.sound;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.media.sound.SoftProcess;
+<i>9</i>&nbsp;import com.sun.media.sound.SoftSynthesizer;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;public final class SoftEnvelopeGenerator implements SoftProcess {
+<i>12</i>&nbsp;    public static final int EG_OFF = 0;
+<i>13</i>&nbsp;    public static final int EG_DELAY = 1;
+<i>14</i>&nbsp;    public static final int EG_ATTACK = 2;
+<i>15</i>&nbsp;    public static final int EG_HOLD = 3;
+<i>16</i>&nbsp;    public static final int EG_DECAY = 4;
+<i>17</i>&nbsp;    public static final int EG_SUSTAIN = 5;
+<i>18</i>&nbsp;    public static final int EG_RELEASE = 6;
+<i>19</i>&nbsp;    public static final int EG_SHUTDOWN = 7;
+<i>20</i>&nbsp;    public static final int EG_END = 8;
+<i>21</i>&nbsp;    int max_count = 10;
+<i>22</i>&nbsp;    int used_count = 0;
+<i>23</i>&nbsp;    private final int[] stage;
+<i>24</i>&nbsp;    private final int[] stage_ix;
+<i>25</i>&nbsp;    private final double[] stage_v;
+<i>26</i>&nbsp;    private final int[] stage_count;
+<i>27</i>&nbsp;    private final double[][] on;
+<i>28</i>&nbsp;    private final double[][] active;
+<i>29</i>&nbsp;    private final double[][] out;
+<i>30</i>&nbsp;    private final double[][] delay;
+<i>31</i>&nbsp;    private final double[][] attack;
+<b class="nc"><i>32</i>&nbsp;    private final double[][] hold;</b>
+<i>33</i>&nbsp;    private final double[][] decay;
+<i>34</i>&nbsp;    private final double[][] sustain;
+<i>35</i>&nbsp;    private final double[][] release;
+<i>36</i>&nbsp;    private final double[][] shutdown;
+<i>37</i>&nbsp;    private final double[][] release2;
+<i>38</i>&nbsp;    private final double[][] attack2;
+<i>39</i>&nbsp;    private final double[][] decay2;
+<i>40</i>&nbsp;    private double control_time;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public SoftEnvelopeGenerator() {
+<b class="nc"><i>43</i>&nbsp;        this.stage = new int[this.max_count];</b>
+<b class="nc"><i>44</i>&nbsp;        this.stage_ix = new int[this.max_count];</b>
+<b class="nc"><i>45</i>&nbsp;        this.stage_v = new double[this.max_count];</b>
+<b class="nc"><i>46</i>&nbsp;        this.stage_count = new int[this.max_count];</b>
+<b class="nc"><i>47</i>&nbsp;        this.on = new double[this.max_count][1];</b>
+<b class="nc"><i>48</i>&nbsp;        this.active = new double[this.max_count][1];</b>
+<b class="nc"><i>49</i>&nbsp;        this.out = new double[this.max_count][1];</b>
+<b class="nc"><i>50</i>&nbsp;        this.delay = new double[this.max_count][1];</b>
+<b class="nc"><i>51</i>&nbsp;        this.attack = new double[this.max_count][1];</b>
+<b class="nc"><i>52</i>&nbsp;        this.hold = new double[this.max_count][1];</b>
+<b class="nc"><i>53</i>&nbsp;        this.decay = new double[this.max_count][1];</b>
+<b class="nc"><i>54</i>&nbsp;        this.sustain = new double[this.max_count][1];</b>
+<b class="nc"><i>55</i>&nbsp;        this.release = new double[this.max_count][1];</b>
+<b class="nc"><i>56</i>&nbsp;        this.shutdown = new double[this.max_count][1];</b>
+<b class="nc"><i>57</i>&nbsp;        this.release2 = new double[this.max_count][1];</b>
+<b class="nc"><i>58</i>&nbsp;        this.attack2 = new double[this.max_count][1];</b>
+<b class="nc"><i>59</i>&nbsp;        this.decay2 = new double[this.max_count][1];</b>
+<b class="nc"><i>60</i>&nbsp;        this.control_time = 0.0D;</b>
+<b class="nc"><i>61</i>&nbsp;    }</b>
+<b class="nc"><i>62</i>&nbsp;</b>
+<i>63</i>&nbsp;    public void reset() {
+<i>64</i>&nbsp;        for(int var1 = 0; var1 &lt; this.used_count; ++var1) {
+<b class="nc"><i>65</i>&nbsp;            this.stage[var1] = 0;</b>
+<b class="nc"><i>66</i>&nbsp;            this.on[var1][0] = 0.0D;</b>
+<b class="nc"><i>67</i>&nbsp;            this.out[var1][0] = 0.0D;</b>
+<b class="nc"><i>68</i>&nbsp;            this.delay[var1][0] = 0.0D;</b>
+<b class="nc"><i>69</i>&nbsp;            this.attack[var1][0] = 0.0D;</b>
+<b class="nc"><i>70</i>&nbsp;            this.hold[var1][0] = 0.0D;</b>
+<b class="nc"><i>71</i>&nbsp;            this.decay[var1][0] = 0.0D;</b>
+<b class="nc"><i>72</i>&nbsp;            this.sustain[var1][0] = 0.0D;</b>
+<b class="nc"><i>73</i>&nbsp;            this.release[var1][0] = 0.0D;</b>
+<b class="nc"><i>74</i>&nbsp;            this.shutdown[var1][0] = 0.0D;</b>
+<b class="nc"><i>75</i>&nbsp;            this.attack2[var1][0] = 0.0D;</b>
+<b class="nc"><i>76</i>&nbsp;            this.decay2[var1][0] = 0.0D;</b>
+<b class="nc"><i>77</i>&nbsp;            this.release2[var1][0] = 0.0D;</b>
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;        this.used_count = 0;</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    public void init(SoftSynthesizer var1) {
+<b class="nc"><i>84</i>&nbsp;        this.control_time = 1.0D / (double)var1.getControlRate();</b>
+<b class="nc"><i>85</i>&nbsp;        this.processControlLogic();</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public double[] get(int var1, String var2) {
+<b class="nc"><i>89</i>&nbsp;        if(var1 &gt;= this.used_count) {</b>
+<b class="nc"><i>90</i>&nbsp;            this.used_count = var1 + 1;</b>
+<b class="nc"><i>91</i>&nbsp;        }</b>
+<b class="nc"><i>92</i>&nbsp;</b>
+<b class="nc"><i>93</i>&nbsp;        return var2 == null?this.out[var1]:(var2.equals(&quot;on&quot;)?this.on[var1]:(var2.equals(&quot;active&quot;)?this.active[var1]:(var2.equals(&quot;delay&quot;)?this.delay[var1]:(var2.equals(&quot;attack&quot;)?this.attack[var1]:(var2.equals(&quot;hold&quot;)?this.hold[var1]:(var2.equals(&quot;decay&quot;)?this.decay[var1]:(var2.equals(&quot;sustain&quot;)?this.sustain[var1]:(var2.equals(&quot;release&quot;)?this.release[var1]:(var2.equals(&quot;shutdown&quot;)?this.shutdown[var1]:(var2.equals(&quot;attack2&quot;)?this.attack2[var1]:(var2.equals(&quot;decay2&quot;)?this.decay2[var1]:(var2.equals(&quot;release2&quot;)?this.release2[var1]:null))))))))))));</b>
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;    public void processControlLogic() {</b>
+<b class="nc"><i>97</i>&nbsp;        for(int var1 = 0; var1 &lt; this.used_count; ++var1) {</b>
+<b class="nc"><i>98</i>&nbsp;            if(this.stage[var1] != 8) {</b>
+<b class="nc"><i>99</i>&nbsp;                double var2;</b>
+<b class="nc"><i>100</i>&nbsp;                if(this.stage[var1] &gt; 0 &amp;&amp; this.stage[var1] &lt; 6 &amp;&amp; this.on[var1][0] &lt; 0.5D) {</b>
+<b class="nc"><i>101</i>&nbsp;                    if(this.on[var1][0] &lt; -0.5D) {</b>
+<b class="nc"><i>102</i>&nbsp;                        this.stage_count[var1] = (int)(Math.pow(2.0D, this.shutdown[var1][0] / 1200.0D) / this.control_time);</b>
+<b class="nc"><i>103</i>&nbsp;                        if(this.stage_count[var1] &lt; 0) {</b>
+<b class="nc"><i>104</i>&nbsp;                            this.stage_count[var1] = 0;</b>
+<b class="nc"><i>105</i>&nbsp;                        }</b>
+<b class="nc"><i>106</i>&nbsp;</b>
+<b class="nc"><i>107</i>&nbsp;                        this.stage_v[var1] = this.out[var1][0];</b>
+<b class="nc"><i>108</i>&nbsp;                        this.stage_ix[var1] = 0;</b>
+<b class="nc"><i>109</i>&nbsp;                        this.stage[var1] = 7;</b>
+<b class="nc"><i>110</i>&nbsp;                    } else {</b>
+<b class="nc"><i>111</i>&nbsp;                        if(this.release2[var1][0] &lt; 1.0E-6D &amp;&amp; this.release[var1][0] &lt; 0.0D &amp;&amp; Double.isInfinite(this.release[var1][0])) {</b>
+<b class="nc"><i>112</i>&nbsp;                            this.out[var1][0] = 0.0D;</b>
+<b class="nc"><i>113</i>&nbsp;                            this.active[var1][0] = 0.0D;</b>
+<b class="nc"><i>114</i>&nbsp;                            this.stage[var1] = 8;</b>
+<b class="nc"><i>115</i>&nbsp;                            continue;</b>
+<b class="nc"><i>116</i>&nbsp;                        }</b>
+<i>117</i>&nbsp;
+<b class="nc"><i>118</i>&nbsp;                        this.stage_count[var1] = (int)(Math.pow(2.0D, this.release[var1][0] / 1200.0D) / this.control_time);</b>
+<i>119</i>&nbsp;                        this.stage_count[var1] += (int)(this.release2[var1][0] / (this.control_time * 1000.0D));
+<i>120</i>&nbsp;                        if(this.stage_count[var1] &lt; 0) {
+<i>121</i>&nbsp;                            this.stage_count[var1] = 0;
+<b class="nc"><i>122</i>&nbsp;                        }</b>
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;                        this.stage_ix[var1] = 0;</b>
+<b class="nc"><i>125</i>&nbsp;                        var2 = 1.0D - this.out[var1][0];</b>
+<i>126</i>&nbsp;                        this.stage_ix[var1] = (int)((double)this.stage_count[var1] * var2);
+<b class="nc"><i>127</i>&nbsp;                        this.stage[var1] = 6;</b>
+<b class="nc"><i>128</i>&nbsp;                    }</b>
+<b class="nc"><i>129</i>&nbsp;                }</b>
+<b class="nc"><i>130</i>&nbsp;</b>
+<i>131</i>&nbsp;                double var4;
+<b class="nc"><i>132</i>&nbsp;                switch(this.stage[var1]) {</b>
+<b class="nc"><i>133</i>&nbsp;                case 0:</b>
+<b class="nc"><i>134</i>&nbsp;                    this.active[var1][0] = 1.0D;</b>
+<b class="nc"><i>135</i>&nbsp;                    if(this.on[var1][0] &lt; 0.5D) {</b>
+<b class="nc"><i>136</i>&nbsp;                        break;</b>
+<i>137</i>&nbsp;                    }
+<b class="nc"><i>138</i>&nbsp;</b>
+<i>139</i>&nbsp;                    this.stage[var1] = 1;
+<b class="nc"><i>140</i>&nbsp;                    this.stage_ix[var1] = (int)(Math.pow(2.0D, this.delay[var1][0] / 1200.0D) / this.control_time);</b>
+<b class="nc"><i>141</i>&nbsp;                    if(this.stage_ix[var1] &lt; 0) {</b>
+<b class="nc"><i>142</i>&nbsp;                        this.stage_ix[var1] = 0;</b>
+<b class="nc"><i>143</i>&nbsp;                    }</b>
+<i>144</i>&nbsp;                case 1:
+<i>145</i>&nbsp;                    if(this.stage_ix[var1] == 0) {
+<b class="nc"><i>146</i>&nbsp;                        var2 = this.attack[var1][0];</b>
+<i>147</i>&nbsp;                        var4 = this.attack2[var1][0];
+<b class="nc"><i>148</i>&nbsp;                        if(var4 &lt; 1.0E-6D &amp;&amp; var2 &lt; 0.0D &amp;&amp; Double.isInfinite(var2)) {</b>
+<i>149</i>&nbsp;                            this.out[var1][0] = 1.0D;
+<b class="nc"><i>150</i>&nbsp;                            this.stage[var1] = 3;</b>
+<b class="nc"><i>151</i>&nbsp;                            this.stage_count[var1] = (int)(Math.pow(2.0D, this.hold[var1][0] / 1200.0D) / this.control_time);</b>
+<i>152</i>&nbsp;                            this.stage_ix[var1] = 0;
+<b class="nc"><i>153</i>&nbsp;                            break;</b>
+<i>154</i>&nbsp;                        }
+<b class="nc"><i>155</i>&nbsp;</b>
+<b class="nc"><i>156</i>&nbsp;                        this.stage[var1] = 2;</b>
+<i>157</i>&nbsp;                        this.stage_count[var1] = (int)(Math.pow(2.0D, var2 / 1200.0D) / this.control_time);
+<b class="nc"><i>158</i>&nbsp;                        this.stage_count[var1] += (int)(var4 / (this.control_time * 1000.0D));</b>
+<i>159</i>&nbsp;                        if(this.stage_count[var1] &lt; 0) {
+<i>160</i>&nbsp;                            this.stage_count[var1] = 0;
+<i>161</i>&nbsp;                        }
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;                        this.stage_ix[var1] = 0;</b>
+<i>164</i>&nbsp;                        break;
+<b class="nc"><i>165</i>&nbsp;                    }</b>
+<b class="nc"><i>166</i>&nbsp;</b>
+<b class="nc"><i>167</i>&nbsp;                    --this.stage_ix[var1];</b>
+<b class="nc"><i>168</i>&nbsp;                    break;</b>
+<b class="nc"><i>169</i>&nbsp;                case 2:</b>
+<i>170</i>&nbsp;                    ++this.stage_ix[var1];
+<b class="nc"><i>171</i>&nbsp;                    if(this.stage_ix[var1] &gt;= this.stage_count[var1]) {</b>
+<b class="nc"><i>172</i>&nbsp;                        this.out[var1][0] = 1.0D;</b>
+<i>173</i>&nbsp;                        this.stage[var1] = 3;
+<b class="nc"><i>174</i>&nbsp;                    } else {</b>
+<b class="nc"><i>175</i>&nbsp;                        var2 = (double)this.stage_ix[var1] / (double)this.stage_count[var1];</b>
+<b class="nc"><i>176</i>&nbsp;                        var2 = 1.0D + 0.4166666666666667D / Math.log(10.0D) * Math.log(var2);</b>
+<i>177</i>&nbsp;                        if(var2 &lt; 0.0D) {
+<b class="nc"><i>178</i>&nbsp;                            var2 = 0.0D;</b>
+<i>179</i>&nbsp;                        } else if(var2 &gt; 1.0D) {
+<b class="nc"><i>180</i>&nbsp;                            var2 = 1.0D;</b>
+<b class="nc"><i>181</i>&nbsp;                        }</b>
+<b class="nc"><i>182</i>&nbsp;</b>
+<i>183</i>&nbsp;                        this.out[var1][0] = var2;
+<b class="nc"><i>184</i>&nbsp;                    }</b>
+<i>185</i>&nbsp;                    break;
+<b class="nc"><i>186</i>&nbsp;                case 3:</b>
+<b class="nc"><i>187</i>&nbsp;                    ++this.stage_ix[var1];</b>
+<i>188</i>&nbsp;                    if(this.stage_ix[var1] &gt;= this.stage_count[var1]) {
+<b class="nc"><i>189</i>&nbsp;                        this.stage[var1] = 4;</b>
+<b class="nc"><i>190</i>&nbsp;                        this.stage_count[var1] = (int)(Math.pow(2.0D, this.decay[var1][0] / 1200.0D) / this.control_time);</b>
+<b class="nc"><i>191</i>&nbsp;                        this.stage_count[var1] += (int)(this.decay2[var1][0] / (this.control_time * 1000.0D));</b>
+<b class="nc"><i>192</i>&nbsp;                        if(this.stage_count[var1] &lt; 0) {</b>
+<i>193</i>&nbsp;                            this.stage_count[var1] = 0;
+<b class="nc"><i>194</i>&nbsp;                        }</b>
+<b class="nc"><i>195</i>&nbsp;</b>
+<b class="nc"><i>196</i>&nbsp;                        this.stage_ix[var1] = 0;</b>
+<i>197</i>&nbsp;                    }
+<b class="nc"><i>198</i>&nbsp;                    break;</b>
+<b class="nc"><i>199</i>&nbsp;                case 4:</b>
+<b class="nc"><i>200</i>&nbsp;                    ++this.stage_ix[var1];</b>
+<b class="nc"><i>201</i>&nbsp;                    var2 = this.sustain[var1][0] * 0.0010D;</b>
+<i>202</i>&nbsp;                    if(this.stage_ix[var1] &gt;= this.stage_count[var1]) {
+<i>203</i>&nbsp;                        this.out[var1][0] = var2;
+<b class="nc"><i>204</i>&nbsp;                        this.stage[var1] = 5;</b>
+<b class="nc"><i>205</i>&nbsp;                        if(var2 &lt; 0.0010D) {</b>
+<b class="nc"><i>206</i>&nbsp;                            this.out[var1][0] = 0.0D;</b>
+<b class="nc"><i>207</i>&nbsp;                            this.active[var1][0] = 0.0D;</b>
+<b class="nc"><i>208</i>&nbsp;                            this.stage[var1] = 8;</b>
+<b class="nc"><i>209</i>&nbsp;                        }</b>
+<b class="nc"><i>210</i>&nbsp;                    } else {</b>
+<i>211</i>&nbsp;                        var4 = (double)this.stage_ix[var1] / (double)this.stage_count[var1];
+<b class="nc"><i>212</i>&nbsp;                        this.out[var1][0] = 1.0D - var4 + var2 * var4;</b>
+<i>213</i>&nbsp;                    }
+<b class="nc"><i>214</i>&nbsp;                case 5:</b>
+<b class="nc"><i>215</i>&nbsp;                default:</b>
+<b class="nc"><i>216</i>&nbsp;                    break;</b>
+<b class="nc"><i>217</i>&nbsp;                case 6:</b>
+<i>218</i>&nbsp;                    ++this.stage_ix[var1];
+<b class="nc"><i>219</i>&nbsp;                    if(this.stage_ix[var1] &gt;= this.stage_count[var1]) {</b>
+<b class="nc"><i>220</i>&nbsp;                        this.out[var1][0] = 0.0D;</b>
+<b class="nc"><i>221</i>&nbsp;                        this.active[var1][0] = 0.0D;</b>
+<b class="nc"><i>222</i>&nbsp;                        this.stage[var1] = 8;</b>
+<i>223</i>&nbsp;                    } else {
+<i>224</i>&nbsp;                        var4 = (double)this.stage_ix[var1] / (double)this.stage_count[var1];
+<i>225</i>&nbsp;                        this.out[var1][0] = 1.0D - var4;
+<b class="nc"><i>226</i>&nbsp;                        if(this.on[var1][0] &lt; -0.5D) {</b>
+<b class="nc"><i>227</i>&nbsp;                            this.stage_count[var1] = (int)(Math.pow(2.0D, this.shutdown[var1][0] / 1200.0D) / this.control_time);</b>
+<b class="nc"><i>228</i>&nbsp;                            if(this.stage_count[var1] &lt; 0) {</b>
+<b class="nc"><i>229</i>&nbsp;                                this.stage_count[var1] = 0;</b>
+<b class="nc"><i>230</i>&nbsp;                            }</b>
+<b class="nc"><i>231</i>&nbsp;</b>
+<b class="nc"><i>232</i>&nbsp;                            this.stage_v[var1] = this.out[var1][0];</b>
+<b class="nc"><i>233</i>&nbsp;                            this.stage_ix[var1] = 0;</b>
+<b class="nc"><i>234</i>&nbsp;                            this.stage[var1] = 7;</b>
+<i>235</i>&nbsp;                        }
+<i>236</i>&nbsp;
+<b class="nc"><i>237</i>&nbsp;                        if(this.on[var1][0] &gt; 0.5D) {</b>
+<b class="nc"><i>238</i>&nbsp;                            var2 = this.sustain[var1][0] * 0.0010D;</b>
+<i>239</i>&nbsp;                            if(this.out[var1][0] &gt; var2) {
+<b class="nc"><i>240</i>&nbsp;                                this.stage[var1] = 4;</b>
+<i>241</i>&nbsp;                                this.stage_count[var1] = (int)(Math.pow(2.0D, this.decay[var1][0] / 1200.0D) / this.control_time);
+<b class="nc"><i>242</i>&nbsp;                                this.stage_count[var1] += (int)(this.decay2[var1][0] / (this.control_time * 1000.0D));</b>
+<i>243</i>&nbsp;                                if(this.stage_count[var1] &lt; 0) {
+<b class="nc"><i>244</i>&nbsp;                                    this.stage_count[var1] = 0;</b>
+<b class="nc"><i>245</i>&nbsp;                                }</b>
+<b class="nc"><i>246</i>&nbsp;</b>
+<b class="nc"><i>247</i>&nbsp;                                var4 = (this.out[var1][0] - 1.0D) / (var2 - 1.0D);</b>
+<b class="nc"><i>248</i>&nbsp;                                this.stage_ix[var1] = (int)((double)this.stage_count[var1] * var4);</b>
+<i>249</i>&nbsp;                            }
+<b class="nc"><i>250</i>&nbsp;                        }</b>
+<b class="nc"><i>251</i>&nbsp;                    }</b>
+<i>252</i>&nbsp;                    break;
+<b class="nc"><i>253</i>&nbsp;                case 7:</b>
+<b class="nc"><i>254</i>&nbsp;                    ++this.stage_ix[var1];</b>
+<i>255</i>&nbsp;                    if(this.stage_ix[var1] &gt;= this.stage_count[var1]) {
+<b class="nc"><i>256</i>&nbsp;                        this.out[var1][0] = 0.0D;</b>
+<b class="nc"><i>257</i>&nbsp;                        this.active[var1][0] = 0.0D;</b>
+<b class="nc"><i>258</i>&nbsp;                        this.stage[var1] = 8;</b>
+<b class="nc"><i>259</i>&nbsp;                    } else {</b>
+<b class="nc"><i>260</i>&nbsp;                        var4 = (double)this.stage_ix[var1] / (double)this.stage_count[var1];</b>
+<i>261</i>&nbsp;                        this.out[var1][0] = (1.0D - var4) * this.stage_v[var1];
+<i>262</i>&nbsp;                    }
+<i>263</i>&nbsp;                }
+<b class="nc"><i>264</i>&nbsp;            }</b>
+<b class="nc"><i>265</i>&nbsp;        }</b>
+<b class="nc"><i>266</i>&nbsp;</b>
+<b class="nc"><i>267</i>&nbsp;    }</b>
+<b class="nc"><i>268</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:57</div>
+</div>
+</body>
+</html>

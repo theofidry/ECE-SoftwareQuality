@@ -1,0 +1,672 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SerializerBase</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xml.internal.serializer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SerializerBase (com.sun.org.apache.xml.internal.serializer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SerializerBase</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 66)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 227)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xml.internal.serializer;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.AttributesImplSerializer;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.DOMSerializer;
+<i>10</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.ElemContext;
+<i>11</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.NamespaceMappings;
+<i>12</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+<i>13</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.SerializerConstants;
+<i>14</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.SerializerTrace;
+<i>15</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.utils.Utils;
+<i>16</i>&nbsp;import java.io.IOException;
+<i>17</i>&nbsp;import java.io.Writer;
+<i>18</i>&nbsp;import java.util.Vector;
+<i>19</i>&nbsp;import javax.xml.transform.SourceLocator;
+<i>20</i>&nbsp;import javax.xml.transform.Transformer;
+<i>21</i>&nbsp;import org.w3c.dom.Node;
+<i>22</i>&nbsp;import org.xml.sax.Attributes;
+<i>23</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>24</i>&nbsp;import org.xml.sax.Locator;
+<i>25</i>&nbsp;import org.xml.sax.SAXException;
+<i>26</i>&nbsp;import org.xml.sax.SAXParseException;
+<i>27</i>&nbsp;import org.xml.sax.ext.Locator2;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;public abstract class SerializerBase implements SerializationHandler, SerializerConstants {
+<i>30</i>&nbsp;    protected boolean m_needToCallStartDocument = true;
+<i>31</i>&nbsp;    protected boolean m_cdataTagOpen = false;
+<i>32</i>&nbsp;    protected AttributesImplSerializer m_attributes = new AttributesImplSerializer();
+<i>33</i>&nbsp;    protected boolean m_inEntityRef = false;
+<i>34</i>&nbsp;    protected boolean m_inExternalDTD = false;
+<i>35</i>&nbsp;    private String m_doctypeSystem;
+<i>36</i>&nbsp;    private String m_doctypePublic;
+<i>37</i>&nbsp;    boolean m_needToOutputDocTypeDecl = true;
+<i>38</i>&nbsp;    private String m_encoding = null;
+<i>39</i>&nbsp;    private boolean m_shouldNotWriteXMLHeader = false;
+<i>40</i>&nbsp;    private String m_standalone;
+<i>41</i>&nbsp;    protected boolean m_standaloneWasSpecified = false;
+<i>42</i>&nbsp;    protected boolean m_isStandalone = false;
+<i>43</i>&nbsp;    protected boolean m_doIndent = false;
+<b class="nc"><i>44</i>&nbsp;    protected int m_indentAmount = 0;</b>
+<i>45</i>&nbsp;    private String m_version = null;
+<i>46</i>&nbsp;    private String m_mediatype;
+<i>47</i>&nbsp;    private Transformer m_transformer;
+<i>48</i>&nbsp;    protected Vector m_cdataSectionElements = null;
+<i>49</i>&nbsp;    protected NamespaceMappings m_prefixMap;
+<i>50</i>&nbsp;    protected SerializerTrace m_tracer;
+<i>51</i>&nbsp;    protected SourceLocator m_sourceLocator;
+<i>52</i>&nbsp;    protected Writer m_writer = null;
+<i>53</i>&nbsp;    protected ElemContext m_elemContext = new ElemContext();
+<i>54</i>&nbsp;    protected char[] m_charsBuff = new char[60];
+<i>55</i>&nbsp;    protected char[] m_attrBuff = new char[30];
+<b class="nc"><i>56</i>&nbsp;    private Locator m_locator = null;</b>
+<i>57</i>&nbsp;    protected boolean m_needToCallSetDocumentInfo = true;
+<b class="nc"><i>58</i>&nbsp;</b>
+<b class="nc"><i>59</i>&nbsp;    public SerializerBase() {</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    protected void fireEndElem(String name) throws SAXException {
+<i>63</i>&nbsp;        if(this.m_tracer != null) {
+<i>64</i>&nbsp;            this.flushMyWriter();
+<i>65</i>&nbsp;            this.m_tracer.fireGenerateEvent(4, name, (Attributes)null);
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    protected void fireCharEvent(char[] chars, int start, int length) throws SAXException {
+<i>71</i>&nbsp;        if(this.m_tracer != null) {
+<b class="nc"><i>72</i>&nbsp;            this.flushMyWriter();</b>
+<i>73</i>&nbsp;            this.m_tracer.fireGenerateEvent(5, chars, start, length);
+<b class="nc"><i>74</i>&nbsp;        }</b>
+<b class="nc"><i>75</i>&nbsp;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public void comment(String data) throws SAXException {
+<i>79</i>&nbsp;        int length = data.length();
+<i>80</i>&nbsp;        if(length &gt; this.m_charsBuff.length) {
+<i>81</i>&nbsp;            this.m_charsBuff = new char[length * 2 + 1];
+<b class="nc"><i>82</i>&nbsp;        }</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;        data.getChars(0, length, this.m_charsBuff, 0);
+<i>85</i>&nbsp;        this.comment(this.m_charsBuff, 0, length);
+<i>86</i>&nbsp;    }
+<b class="nc"><i>87</i>&nbsp;</b>
+<i>88</i>&nbsp;    protected String patchName(String qname) {
+<i>89</i>&nbsp;        int lastColon = qname.lastIndexOf(58);
+<i>90</i>&nbsp;        if(lastColon &gt; 0) {
+<i>91</i>&nbsp;            int firstColon = qname.indexOf(58);
+<i>92</i>&nbsp;            String prefix = qname.substring(0, firstColon);
+<i>93</i>&nbsp;            String localName = qname.substring(lastColon + 1);
+<b class="nc"><i>94</i>&nbsp;            String uri = this.m_prefixMap.lookupNamespace(prefix);</b>
+<i>95</i>&nbsp;            if(uri != null &amp;&amp; uri.length() == 0) {
+<i>96</i>&nbsp;                return localName;
+<i>97</i>&nbsp;            }
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;            if(firstColon != lastColon) {</b>
+<i>100</i>&nbsp;                return prefix + &#39;:&#39; + localName;
+<i>101</i>&nbsp;            }
+<b class="nc"><i>102</i>&nbsp;        }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;        return qname;
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    protected static String getLocalName(String qname) {
+<i>108</i>&nbsp;        int col = qname.lastIndexOf(58);
+<i>109</i>&nbsp;        return col &gt; 0?qname.substring(col + 1):qname;
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public void setDocumentLocator(Locator locator) {
+<i>113</i>&nbsp;        this.m_locator = locator;
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public void addAttribute(String uri, String localName, String rawName, String type, String value, boolean XSLAttribute) throws SAXException {
+<i>117</i>&nbsp;        if(this.m_elemContext.m_startTagOpen) {
+<b class="nc"><i>118</i>&nbsp;            this.addAttributeAlways(uri, localName, rawName, type, value, XSLAttribute);</b>
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public boolean addAttributeAlways(String uri, String localName, String rawName, String type, String value, boolean XSLAttribute) {
+<b class="nc"><i>124</i>&nbsp;        int index;</b>
+<i>125</i>&nbsp;        if(localName != null &amp;&amp; uri != null &amp;&amp; uri.length() != 0) {
+<i>126</i>&nbsp;            index = this.m_attributes.getIndex(uri, localName);
+<i>127</i>&nbsp;        } else {
+<i>128</i>&nbsp;            index = this.m_attributes.getIndex(rawName);
+<b class="nc"><i>129</i>&nbsp;        }</b>
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;        boolean was_added;
+<i>132</i>&nbsp;        if(index &gt;= 0) {
+<i>133</i>&nbsp;            this.m_attributes.setValue(index, value);
+<i>134</i>&nbsp;            was_added = false;
+<i>135</i>&nbsp;        } else {
+<i>136</i>&nbsp;            this.m_attributes.addAttribute(uri, localName, rawName, type, value);
+<i>137</i>&nbsp;            was_added = true;
+<i>138</i>&nbsp;        }
+<b class="nc"><i>139</i>&nbsp;</b>
+<i>140</i>&nbsp;        return was_added;
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    public void addAttribute(String name, String value) {
+<b class="nc"><i>144</i>&nbsp;        if(this.m_elemContext.m_startTagOpen) {</b>
+<i>145</i>&nbsp;            String patchedName = this.patchName(name);
+<i>146</i>&nbsp;            String localName = getLocalName(patchedName);
+<i>147</i>&nbsp;            String uri = this.getNamespaceURI(patchedName, false);
+<b class="nc"><i>148</i>&nbsp;            this.addAttributeAlways(uri, localName, patchedName, &quot;CDATA&quot;, value, false);</b>
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<b class="nc"><i>153</i>&nbsp;    public void addXSLAttribute(String name, String value, String uri) {</b>
+<i>154</i>&nbsp;        if(this.m_elemContext.m_startTagOpen) {
+<i>155</i>&nbsp;            String patchedName = this.patchName(name);
+<i>156</i>&nbsp;            String localName = getLocalName(patchedName);
+<i>157</i>&nbsp;            this.addAttributeAlways(uri, localName, patchedName, &quot;CDATA&quot;, value, true);
+<i>158</i>&nbsp;        }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    public void addAttributes(Attributes atts) throws SAXException {
+<i>163</i>&nbsp;        int nAtts = atts.getLength();
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;        for(int i = 0; i &lt; nAtts; ++i) {
+<i>166</i>&nbsp;            String uri = atts.getURI(i);
+<i>167</i>&nbsp;            if(null == uri) {
+<i>168</i>&nbsp;                uri = &quot;&quot;;
+<i>169</i>&nbsp;            }
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;            this.addAttributeAlways(uri, atts.getLocalName(i), atts.getQName(i), atts.getType(i), atts.getValue(i), false);</b>
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;    public ContentHandler asContentHandler() throws IOException {
+<i>177</i>&nbsp;        return this;
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    public void endEntity(String name) throws SAXException {
+<i>181</i>&nbsp;        if(name.equals(&quot;[dtd]&quot;)) {
+<i>182</i>&nbsp;            this.m_inExternalDTD = false;
+<i>183</i>&nbsp;        }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;        this.m_inEntityRef = false;
+<i>186</i>&nbsp;        if(this.m_tracer != null) {
+<i>187</i>&nbsp;            this.fireEndEntity(name);
+<i>188</i>&nbsp;        }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public void close() {
+<i>193</i>&nbsp;    }
+<b class="nc"><i>194</i>&nbsp;</b>
+<i>195</i>&nbsp;    protected void initCDATA() {
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    public String getEncoding() {
+<i>199</i>&nbsp;        return this.m_encoding;
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;    public void setEncoding(String m_encoding) {</b>
+<i>203</i>&nbsp;        this.m_encoding = m_encoding;
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public void setOmitXMLDeclaration(boolean b) {
+<i>207</i>&nbsp;        this.m_shouldNotWriteXMLHeader = b;
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<b class="nc"><i>210</i>&nbsp;    public boolean getOmitXMLDeclaration() {</b>
+<i>211</i>&nbsp;        return this.m_shouldNotWriteXMLHeader;
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    public String getDoctypePublic() {
+<i>215</i>&nbsp;        return this.m_doctypePublic;
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<b class="nc"><i>218</i>&nbsp;    public void setDoctypePublic(String doctypePublic) {</b>
+<i>219</i>&nbsp;        this.m_doctypePublic = doctypePublic;
+<b class="nc"><i>220</i>&nbsp;    }</b>
+<i>221</i>&nbsp;
+<b class="nc"><i>222</i>&nbsp;    public String getDoctypeSystem() {</b>
+<i>223</i>&nbsp;        return this.m_doctypeSystem;
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    public void setDoctypeSystem(String doctypeSystem) {
+<i>227</i>&nbsp;        this.m_doctypeSystem = doctypeSystem;
+<i>228</i>&nbsp;    }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    public void setDoctype(String doctypeSystem, String doctypePublic) {
+<b class="nc"><i>231</i>&nbsp;        this.m_doctypeSystem = doctypeSystem;</b>
+<b class="nc"><i>232</i>&nbsp;        this.m_doctypePublic = doctypePublic;</b>
+<i>233</i>&nbsp;    }
+<b class="nc"><i>234</i>&nbsp;</b>
+<i>235</i>&nbsp;    public void setStandalone(String standalone) {
+<b class="nc"><i>236</i>&nbsp;        if(standalone != null) {</b>
+<b class="nc"><i>237</i>&nbsp;            this.m_standaloneWasSpecified = true;</b>
+<i>238</i>&nbsp;            this.setStandaloneInternal(standalone);
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    protected void setStandaloneInternal(String standalone) {
+<i>244</i>&nbsp;        if(&quot;yes&quot;.equals(standalone)) {
+<i>245</i>&nbsp;            this.m_standalone = &quot;yes&quot;;
+<i>246</i>&nbsp;        } else {
+<i>247</i>&nbsp;            this.m_standalone = &quot;no&quot;;
+<i>248</i>&nbsp;        }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    public String getStandalone() {
+<i>253</i>&nbsp;        return this.m_standalone;
+<b class="nc"><i>254</i>&nbsp;    }</b>
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;    public boolean getIndent() {</b>
+<b class="nc"><i>257</i>&nbsp;        return this.m_doIndent;</b>
+<b class="nc"><i>258</i>&nbsp;    }</b>
+<b class="nc"><i>259</i>&nbsp;</b>
+<i>260</i>&nbsp;    public String getMediaType() {
+<i>261</i>&nbsp;        return this.m_mediatype;
+<b class="nc"><i>262</i>&nbsp;    }</b>
+<b class="nc"><i>263</i>&nbsp;</b>
+<b class="nc"><i>264</i>&nbsp;    public String getVersion() {</b>
+<i>265</i>&nbsp;        return this.m_version;
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<b class="nc"><i>267</i>&nbsp;</b>
+<i>268</i>&nbsp;    public void setVersion(String version) {
+<i>269</i>&nbsp;        this.m_version = version;
+<b class="nc"><i>270</i>&nbsp;    }</b>
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    public void setMediaType(String mediaType) {
+<i>273</i>&nbsp;        this.m_mediatype = mediaType;
+<i>274</i>&nbsp;    }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    public int getIndentAmount() {
+<i>277</i>&nbsp;        return this.m_indentAmount;
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    public void setIndentAmount(int m_indentAmount) {
+<b class="nc"><i>281</i>&nbsp;        this.m_indentAmount = m_indentAmount;</b>
+<b class="nc"><i>282</i>&nbsp;    }</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;    public void setIndent(boolean doIndent) {
+<i>285</i>&nbsp;        this.m_doIndent = doIndent;
+<i>286</i>&nbsp;    }
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    public void setIsStandalone(boolean isStandalone) {
+<i>289</i>&nbsp;        this.m_isStandalone = isStandalone;
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public void namespaceAfterStartElement(String uri, String prefix) throws SAXException {
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    public DOMSerializer asDOMSerializer() throws IOException {
+<i>296</i>&nbsp;        return this;
+<i>297</i>&nbsp;    }
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    protected boolean isCdataSection() {
+<i>300</i>&nbsp;        boolean b = false;
+<i>301</i>&nbsp;        if(null != this.m_cdataSectionElements) {
+<i>302</i>&nbsp;            if(this.m_elemContext.m_elementLocalName == null) {
+<i>303</i>&nbsp;                this.m_elemContext.m_elementLocalName = getLocalName(this.m_elemContext.m_elementName);
+<i>304</i>&nbsp;            }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;            if(this.m_elemContext.m_elementURI == null) {
+<i>307</i>&nbsp;                String nElems = getPrefixPart(this.m_elemContext.m_elementName);
+<i>308</i>&nbsp;                if(nElems != null) {
+<i>309</i>&nbsp;                    this.m_elemContext.m_elementURI = this.m_prefixMap.lookupNamespace(nElems);
+<i>310</i>&nbsp;                }
+<i>311</i>&nbsp;            }
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;            if(null != this.m_elemContext.m_elementURI &amp;&amp; this.m_elemContext.m_elementURI.length() == 0) {</b>
+<i>314</i>&nbsp;                this.m_elemContext.m_elementURI = null;
+<i>315</i>&nbsp;            }
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;            int nElems1 = this.m_cdataSectionElements.size();
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;            for(int i = 0; i &lt; nElems1; i += 2) {
+<i>320</i>&nbsp;                String uri = (String)this.m_cdataSectionElements.elementAt(i);
+<i>321</i>&nbsp;                String loc = (String)this.m_cdataSectionElements.elementAt(i + 1);
+<i>322</i>&nbsp;                if(loc.equals(this.m_elemContext.m_elementLocalName) &amp;&amp; subPartMatch(this.m_elemContext.m_elementURI, uri)) {
+<i>323</i>&nbsp;                    b = true;
+<i>324</i>&nbsp;                    break;
+<i>325</i>&nbsp;                }
+<i>326</i>&nbsp;            }
+<i>327</i>&nbsp;        }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;        return b;
+<i>330</i>&nbsp;    }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    private static final boolean subPartMatch(String p, String t) {
+<i>333</i>&nbsp;        return p == t || null != p &amp;&amp; p.equals(t);
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    protected static final String getPrefixPart(String qname) {
+<i>337</i>&nbsp;        int col = qname.indexOf(58);
+<i>338</i>&nbsp;        return col &gt; 0?qname.substring(0, col):null;
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    public NamespaceMappings getNamespaceMappings() {
+<i>342</i>&nbsp;        return this.m_prefixMap;
+<b class="nc"><i>343</i>&nbsp;    }</b>
+<i>344</i>&nbsp;
+<b class="nc"><i>345</i>&nbsp;    public String getPrefix(String namespaceURI) {</b>
+<i>346</i>&nbsp;        String prefix = this.m_prefixMap.lookupPrefix(namespaceURI);
+<i>347</i>&nbsp;        return prefix;
+<i>348</i>&nbsp;    }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    public String getNamespaceURI(String qname, boolean isElement) {
+<i>351</i>&nbsp;        String uri = &quot;&quot;;
+<i>352</i>&nbsp;        int col = qname.lastIndexOf(58);
+<i>353</i>&nbsp;        String prefix = col &gt; 0?qname.substring(0, col):&quot;&quot;;
+<i>354</i>&nbsp;        if((!&quot;&quot;.equals(prefix) || isElement) &amp;&amp; this.m_prefixMap != null) {
+<i>355</i>&nbsp;            uri = this.m_prefixMap.lookupNamespace(prefix);
+<i>356</i>&nbsp;            if(uri == null &amp;&amp; !prefix.equals(&quot;xmlns&quot;)) {
+<i>357</i>&nbsp;                throw new RuntimeException(Utils.messages.createMessage(&quot;ER_NAMESPACE_PREFIX&quot;, new Object[]{qname.substring(0, col)}));
+<i>358</i>&nbsp;            }
+<i>359</i>&nbsp;        }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;        return uri;
+<i>362</i>&nbsp;    }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;    public String getNamespaceURIFromPrefix(String prefix) {
+<i>365</i>&nbsp;        String uri = null;
+<i>366</i>&nbsp;        if(this.m_prefixMap != null) {
+<i>367</i>&nbsp;            uri = this.m_prefixMap.lookupNamespace(prefix);
+<i>368</i>&nbsp;        }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;        return uri;
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;    public void entityReference(String name) throws SAXException {
+<i>374</i>&nbsp;        this.flushPending();
+<i>375</i>&nbsp;        this.startEntity(name);
+<i>376</i>&nbsp;        this.endEntity(name);
+<i>377</i>&nbsp;        if(this.m_tracer != null) {
+<i>378</i>&nbsp;            this.fireEntityReference(name);
+<i>379</i>&nbsp;        }
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    public void setTransformer(Transformer t) {
+<b class="nc"><i>384</i>&nbsp;        this.m_transformer = t;</b>
+<b class="nc"><i>385</i>&nbsp;        if(this.m_transformer instanceof SerializerTrace &amp;&amp; ((SerializerTrace)this.m_transformer).hasTraceListeners()) {</b>
+<i>386</i>&nbsp;            this.m_tracer = (SerializerTrace)this.m_transformer;
+<b class="nc"><i>387</i>&nbsp;        } else {</b>
+<i>388</i>&nbsp;            this.m_tracer = null;
+<b class="nc"><i>389</i>&nbsp;        }</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    public Transformer getTransformer() {
+<i>394</i>&nbsp;        return this.m_transformer;
+<b class="nc"><i>395</i>&nbsp;    }</b>
+<b class="nc"><i>396</i>&nbsp;</b>
+<i>397</i>&nbsp;    public void characters(Node node) throws SAXException {
+<i>398</i>&nbsp;        this.flushPending();
+<i>399</i>&nbsp;        String data = node.getNodeValue();
+<i>400</i>&nbsp;        if(data != null) {
+<b class="nc"><i>401</i>&nbsp;            int length = data.length();</b>
+<b class="nc"><i>402</i>&nbsp;            if(length &gt; this.m_charsBuff.length) {</b>
+<i>403</i>&nbsp;                this.m_charsBuff = new char[length * 2 + 1];
+<b class="nc"><i>404</i>&nbsp;            }</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;            data.getChars(0, length, this.m_charsBuff, 0);
+<i>407</i>&nbsp;            this.characters(this.m_charsBuff, 0, length);
+<i>408</i>&nbsp;        }
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;    }
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    public void error(SAXParseException exc) throws SAXException {
+<i>413</i>&nbsp;    }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;    public void fatalError(SAXParseException exc) throws SAXException {
+<i>416</i>&nbsp;        this.m_elemContext.m_startTagOpen = false;
+<i>417</i>&nbsp;    }
+<b class="nc"><i>418</i>&nbsp;</b>
+<i>419</i>&nbsp;    public void warning(SAXParseException exc) throws SAXException {
+<b class="nc"><i>420</i>&nbsp;    }</b>
+<b class="nc"><i>421</i>&nbsp;</b>
+<b class="nc"><i>422</i>&nbsp;    protected void fireStartEntity(String name) throws SAXException {</b>
+<i>423</i>&nbsp;        if(this.m_tracer != null) {
+<b class="nc"><i>424</i>&nbsp;            this.flushMyWriter();</b>
+<i>425</i>&nbsp;            this.m_tracer.fireGenerateEvent(9, name);
+<i>426</i>&nbsp;        }
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;    }
+<i>429</i>&nbsp;
+<i>430</i>&nbsp;    private void flushMyWriter() {
+<i>431</i>&nbsp;        if(this.m_writer != null) {
+<i>432</i>&nbsp;            try {
+<i>433</i>&nbsp;                this.m_writer.flush();
+<i>434</i>&nbsp;            } catch (IOException var2) {
+<i>435</i>&nbsp;                ;
+<i>436</i>&nbsp;            }
+<i>437</i>&nbsp;        }
+<b class="nc"><i>438</i>&nbsp;</b>
+<i>439</i>&nbsp;    }
+<b class="nc"><i>440</i>&nbsp;</b>
+<b class="nc"><i>441</i>&nbsp;    protected void fireCDATAEvent(char[] chars, int start, int length) throws SAXException {</b>
+<i>442</i>&nbsp;        if(this.m_tracer != null) {
+<b class="nc"><i>443</i>&nbsp;            this.flushMyWriter();</b>
+<i>444</i>&nbsp;            this.m_tracer.fireGenerateEvent(10, chars, start, length);
+<i>445</i>&nbsp;        }
+<i>446</i>&nbsp;
+<i>447</i>&nbsp;    }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;    protected void fireCommentEvent(char[] chars, int start, int length) throws SAXException {
+<i>450</i>&nbsp;        if(this.m_tracer != null) {
+<i>451</i>&nbsp;            this.flushMyWriter();
+<i>452</i>&nbsp;            this.m_tracer.fireGenerateEvent(8, new String(chars, start, length));
+<i>453</i>&nbsp;        }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;    }
+<b class="nc"><i>456</i>&nbsp;</b>
+<b class="nc"><i>457</i>&nbsp;    public void fireEndEntity(String name) throws SAXException {</b>
+<i>458</i>&nbsp;        if(this.m_tracer != null) {
+<b class="nc"><i>459</i>&nbsp;            this.flushMyWriter();</b>
+<i>460</i>&nbsp;        }
+<b class="nc"><i>461</i>&nbsp;</b>
+<b class="nc"><i>462</i>&nbsp;    }</b>
+<i>463</i>&nbsp;
+<b class="nc"><i>464</i>&nbsp;    protected void fireStartDoc() throws SAXException {</b>
+<i>465</i>&nbsp;        if(this.m_tracer != null) {
+<i>466</i>&nbsp;            this.flushMyWriter();
+<i>467</i>&nbsp;            this.m_tracer.fireGenerateEvent(1);
+<i>468</i>&nbsp;        }
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;    }
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;    protected void fireEndDoc() throws SAXException {
+<i>473</i>&nbsp;        if(this.m_tracer != null) {
+<i>474</i>&nbsp;            this.flushMyWriter();
+<i>475</i>&nbsp;            this.m_tracer.fireGenerateEvent(2);
+<i>476</i>&nbsp;        }
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;    }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;    protected void fireStartElem(String elemName) throws SAXException {
+<i>481</i>&nbsp;        if(this.m_tracer != null) {
+<i>482</i>&nbsp;            this.flushMyWriter();
+<i>483</i>&nbsp;            this.m_tracer.fireGenerateEvent(3, elemName, this.m_attributes);
+<i>484</i>&nbsp;        }
+<i>485</i>&nbsp;
+<b class="nc"><i>486</i>&nbsp;    }</b>
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;    protected void fireEscapingEvent(String name, String data) throws SAXException {
+<i>489</i>&nbsp;        if(this.m_tracer != null) {
+<i>490</i>&nbsp;            this.flushMyWriter();
+<i>491</i>&nbsp;            this.m_tracer.fireGenerateEvent(7, name, data);
+<i>492</i>&nbsp;        }
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;    }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    protected void fireEntityReference(String name) throws SAXException {
+<i>497</i>&nbsp;        if(this.m_tracer != null) {
+<b class="nc"><i>498</i>&nbsp;            this.flushMyWriter();</b>
+<b class="nc"><i>499</i>&nbsp;            this.m_tracer.fireGenerateEvent(9, name, (Attributes)null);</b>
+<b class="nc"><i>500</i>&nbsp;        }</b>
+<i>501</i>&nbsp;
+<b class="nc"><i>502</i>&nbsp;    }</b>
+<b class="nc"><i>503</i>&nbsp;</b>
+<i>504</i>&nbsp;    public void startDocument() throws SAXException {
+<i>505</i>&nbsp;        this.startDocumentInternal();
+<i>506</i>&nbsp;        this.m_needToCallStartDocument = false;
+<i>507</i>&nbsp;    }
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    protected void startDocumentInternal() throws SAXException {
+<i>510</i>&nbsp;        if(this.m_tracer != null) {
+<i>511</i>&nbsp;            this.fireStartDoc();
+<i>512</i>&nbsp;        }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;    }
+<i>515</i>&nbsp;
+<i>516</i>&nbsp;    protected void setDocumentInfo() {
+<i>517</i>&nbsp;        if(this.m_locator != null) {
+<i>518</i>&nbsp;            try {
+<i>519</i>&nbsp;                String e = ((Locator2)this.m_locator).getXMLVersion();
+<i>520</i>&nbsp;                if(e != null) {
+<i>521</i>&nbsp;                    this.setVersion(e);
+<i>522</i>&nbsp;                }
+<i>523</i>&nbsp;            } catch (ClassCastException var2) {
+<i>524</i>&nbsp;                ;
+<i>525</i>&nbsp;            }
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;        }
+<i>528</i>&nbsp;    }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;    public void setSourceLocator(SourceLocator locator) {
+<i>531</i>&nbsp;        this.m_sourceLocator = locator;
+<b class="nc"><i>532</i>&nbsp;    }</b>
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;    public void setNamespaceMappings(NamespaceMappings mappings) {
+<i>535</i>&nbsp;        this.m_prefixMap = mappings;
+<i>536</i>&nbsp;    }
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;    public boolean reset() {
+<i>539</i>&nbsp;        this.resetSerializerBase();
+<i>540</i>&nbsp;        return true;
+<b class="nc"><i>541</i>&nbsp;    }</b>
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;    private void resetSerializerBase() {
+<i>544</i>&nbsp;        this.m_attributes.clear();
+<i>545</i>&nbsp;        this.m_cdataSectionElements = null;
+<i>546</i>&nbsp;        this.m_elemContext = new ElemContext();
+<i>547</i>&nbsp;        this.m_doctypePublic = null;
+<i>548</i>&nbsp;        this.m_doctypeSystem = null;
+<i>549</i>&nbsp;        this.m_doIndent = false;
+<i>550</i>&nbsp;        this.m_encoding = null;
+<b class="nc"><i>551</i>&nbsp;        this.m_indentAmount = 0;</b>
+<i>552</i>&nbsp;        this.m_inEntityRef = false;
+<i>553</i>&nbsp;        this.m_inExternalDTD = false;
+<i>554</i>&nbsp;        this.m_mediatype = null;
+<i>555</i>&nbsp;        this.m_needToCallStartDocument = true;
+<i>556</i>&nbsp;        this.m_needToOutputDocTypeDecl = false;
+<i>557</i>&nbsp;        if(this.m_prefixMap != null) {
+<i>558</i>&nbsp;            this.m_prefixMap.reset();
+<i>559</i>&nbsp;        }
+<i>560</i>&nbsp;
+<b class="nc"><i>561</i>&nbsp;        this.m_shouldNotWriteXMLHeader = false;</b>
+<i>562</i>&nbsp;        this.m_sourceLocator = null;
+<i>563</i>&nbsp;        this.m_standalone = null;
+<i>564</i>&nbsp;        this.m_standaloneWasSpecified = false;
+<i>565</i>&nbsp;        this.m_tracer = null;
+<i>566</i>&nbsp;        this.m_transformer = null;
+<i>567</i>&nbsp;        this.m_version = null;
+<i>568</i>&nbsp;    }
+<i>569</i>&nbsp;
+<i>570</i>&nbsp;    final boolean inTemporaryOutputState() {
+<i>571</i>&nbsp;        return this.getEncoding() == null;
+<i>572</i>&nbsp;    }
+<b class="nc"><i>573</i>&nbsp;</b>
+<i>574</i>&nbsp;    public void addAttribute(String uri, String localName, String rawName, String type, String value) throws SAXException {
+<i>575</i>&nbsp;        if(this.m_elemContext.m_startTagOpen) {
+<i>576</i>&nbsp;            this.addAttributeAlways(uri, localName, rawName, type, value, false);
+<i>577</i>&nbsp;        }
+<i>578</i>&nbsp;
+<i>579</i>&nbsp;    }
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;    public void notationDecl(String arg0, String arg1, String arg2) throws SAXException {
+<b class="nc"><i>582</i>&nbsp;    }</b>
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;    public void unparsedEntityDecl(String arg0, String arg1, String arg2, String arg3) throws SAXException {
+<i>585</i>&nbsp;    }
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;    public void setDTDEntityExpansion(boolean expand) {
+<i>588</i>&nbsp;    }
+<i>589</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

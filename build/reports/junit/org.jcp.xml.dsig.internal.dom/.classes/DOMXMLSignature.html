@@ -1,0 +1,615 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DOMXMLSignature</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.jcp.xml.dsig.internal.dom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DOMXMLSignature (org.jcp.xml.dsig.internal.dom)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DOMXMLSignature</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 191)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DOMXMLSignature$DOMSignatureValue</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 51)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 242)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package org.jcp.xml.dsig.internal.dom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xml.internal.security.Init;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+<i>10</i>&nbsp;import com.sun.org.apache.xml.internal.security.utils.Base64;
+<i>11</i>&nbsp;import java.security.InvalidKeyException;
+<i>12</i>&nbsp;import java.security.Key;
+<i>13</i>&nbsp;import java.security.Provider;
+<i>14</i>&nbsp;import java.util.ArrayList;
+<i>15</i>&nbsp;import java.util.Collections;
+<i>16</i>&nbsp;import java.util.HashMap;
+<i>17</i>&nbsp;import java.util.List;
+<i>18</i>&nbsp;import java.util.logging.Level;
+<i>19</i>&nbsp;import java.util.logging.Logger;
+<i>20</i>&nbsp;import javax.xml.crypto.KeySelectorException;
+<i>21</i>&nbsp;import javax.xml.crypto.KeySelectorResult;
+<i>22</i>&nbsp;import javax.xml.crypto.MarshalException;
+<i>23</i>&nbsp;import javax.xml.crypto.XMLCryptoContext;
+<i>24</i>&nbsp;import javax.xml.crypto.XMLStructure;
+<i>25</i>&nbsp;import javax.xml.crypto.KeySelector.Purpose;
+<i>26</i>&nbsp;import javax.xml.crypto.dom.DOMCryptoContext;
+<i>27</i>&nbsp;import javax.xml.crypto.dsig.Manifest;
+<i>28</i>&nbsp;import javax.xml.crypto.dsig.Reference;
+<i>29</i>&nbsp;import javax.xml.crypto.dsig.SignatureMethod;
+<i>30</i>&nbsp;import javax.xml.crypto.dsig.SignedInfo;
+<i>31</i>&nbsp;import javax.xml.crypto.dsig.Transform;
+<i>32</i>&nbsp;import javax.xml.crypto.dsig.XMLObject;
+<i>33</i>&nbsp;import javax.xml.crypto.dsig.XMLSignContext;
+<i>34</i>&nbsp;import javax.xml.crypto.dsig.XMLSignature;
+<i>35</i>&nbsp;import javax.xml.crypto.dsig.XMLSignatureException;
+<i>36</i>&nbsp;import javax.xml.crypto.dsig.XMLValidateContext;
+<i>37</i>&nbsp;import javax.xml.crypto.dsig.XMLSignature.SignatureValue;
+<i>38</i>&nbsp;import javax.xml.crypto.dsig.dom.DOMSignContext;
+<i>39</i>&nbsp;import javax.xml.crypto.dsig.dom.DOMValidateContext;
+<i>40</i>&nbsp;import javax.xml.crypto.dsig.keyinfo.KeyInfo;
+<i>41</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMKeyInfo;
+<i>42</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMReference;
+<i>43</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMSignatureMethod;
+<i>44</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMSignedInfo;
+<i>45</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMStructure;
+<i>46</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMUtils;
+<i>47</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMXMLObject;
+<i>48</i>&nbsp;import org.jcp.xml.dsig.internal.dom.Utils;
+<i>49</i>&nbsp;import org.w3c.dom.Attr;
+<i>50</i>&nbsp;import org.w3c.dom.Document;
+<i>51</i>&nbsp;import org.w3c.dom.Element;
+<i>52</i>&nbsp;import org.w3c.dom.Node;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;public final class DOMXMLSignature extends DOMStructure implements XMLSignature {
+<i>55</i>&nbsp;    private static Logger log = Logger.getLogger(&quot;org.jcp.xml.dsig.internal.dom&quot;);
+<i>56</i>&nbsp;    private String id;
+<i>57</i>&nbsp;    private SignatureValue sv;
+<i>58</i>&nbsp;    private KeyInfo ki;
+<i>59</i>&nbsp;    private List objects;
+<i>60</i>&nbsp;    private SignedInfo si;
+<i>61</i>&nbsp;    private Document ownerDoc = null;
+<i>62</i>&nbsp;    private Element localSigElem = null;
+<i>63</i>&nbsp;    private Element sigElem = null;
+<i>64</i>&nbsp;    private boolean validationStatus;
+<i>65</i>&nbsp;    private boolean validated = false;
+<i>66</i>&nbsp;    private KeySelectorResult ksr;
+<b class="nc"><i>67</i>&nbsp;    private HashMap signatureIdMap;</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public DOMXMLSignature(SignedInfo var1, KeyInfo var2, List var3, String var4, String var5) {
+<b class="nc"><i>70</i>&nbsp;        if(var1 == null) {</b>
+<i>71</i>&nbsp;            throw new NullPointerException(&quot;signedInfo cannot be null&quot;);
+<i>72</i>&nbsp;        } else {
+<i>73</i>&nbsp;            this.si = var1;
+<i>74</i>&nbsp;            this.id = var4;
+<i>75</i>&nbsp;            this.sv = new DOMXMLSignature.DOMSignatureValue(var5);
+<b class="nc"><i>76</i>&nbsp;            if(var3 == null) {</b>
+<b class="nc"><i>77</i>&nbsp;                this.objects = Collections.EMPTY_LIST;</b>
+<b class="nc"><i>78</i>&nbsp;            } else {</b>
+<i>79</i>&nbsp;                ArrayList var6 = new ArrayList(var3);
+<b class="nc"><i>80</i>&nbsp;                int var7 = 0;</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;                for(int var8 = var6.size(); var7 &lt; var8; ++var7) {
+<i>83</i>&nbsp;                    if(!(var6.get(var7) instanceof XMLObject)) {
+<i>84</i>&nbsp;                        throw new ClassCastException(&quot;objs[&quot; + var7 + &quot;] is not an XMLObject&quot;);
+<b class="nc"><i>85</i>&nbsp;                    }</b>
+<i>86</i>&nbsp;                }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;                this.objects = Collections.unmodifiableList(var6);
+<i>89</i>&nbsp;            }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;            this.ki = var2;
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public DOMXMLSignature(Element var1, XMLCryptoContext var2, Provider var3) throws MarshalException {
+<i>96</i>&nbsp;        this.localSigElem = var1;
+<i>97</i>&nbsp;        this.ownerDoc = this.localSigElem.getOwnerDocument();
+<i>98</i>&nbsp;        this.id = DOMUtils.getAttributeValue(this.localSigElem, &quot;Id&quot;);
+<i>99</i>&nbsp;        Element var4 = DOMUtils.getFirstChildElement(this.localSigElem);
+<i>100</i>&nbsp;        this.si = new DOMSignedInfo(var4, var2, var3);
+<i>101</i>&nbsp;        Element var5 = DOMUtils.getNextSiblingElement(var4);
+<i>102</i>&nbsp;        this.sv = new DOMXMLSignature.DOMSignatureValue(var5);
+<b class="nc"><i>103</i>&nbsp;        Element var6 = DOMUtils.getNextSiblingElement(var5);</b>
+<b class="nc"><i>104</i>&nbsp;        if(var6 != null &amp;&amp; var6.getLocalName().equals(&quot;KeyInfo&quot;)) {</b>
+<b class="nc"><i>105</i>&nbsp;            this.ki = new DOMKeyInfo(var6, var2, var3);</b>
+<i>106</i>&nbsp;            var6 = DOMUtils.getNextSiblingElement(var6);
+<b class="nc"><i>107</i>&nbsp;        }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<b class="nc"><i>109</i>&nbsp;        if(var6 == null) {</b>
+<b class="nc"><i>110</i>&nbsp;            this.objects = Collections.EMPTY_LIST;</b>
+<b class="nc"><i>111</i>&nbsp;        } else {</b>
+<i>112</i>&nbsp;            ArrayList var7;
+<b class="nc"><i>113</i>&nbsp;            for(var7 = new ArrayList(); var6 != null; var6 = DOMUtils.getNextSiblingElement(var6)) {</b>
+<b class="nc"><i>114</i>&nbsp;                var7.add(new DOMXMLObject(var6, var2, var3));</b>
+<b class="nc"><i>115</i>&nbsp;            }</b>
+<b class="nc"><i>116</i>&nbsp;</b>
+<i>117</i>&nbsp;            this.objects = Collections.unmodifiableList(var7);
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<b class="nc"><i>122</i>&nbsp;    public String getId() {</b>
+<i>123</i>&nbsp;        return this.id;
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public KeyInfo getKeyInfo() {
+<i>127</i>&nbsp;        return this.ki;
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public SignedInfo getSignedInfo() {
+<i>131</i>&nbsp;        return this.si;
+<b class="nc"><i>132</i>&nbsp;    }</b>
+<b class="nc"><i>133</i>&nbsp;</b>
+<b class="nc"><i>134</i>&nbsp;    public List getObjects() {</b>
+<i>135</i>&nbsp;        return this.objects;
+<i>136</i>&nbsp;    }
+<b class="nc"><i>137</i>&nbsp;</b>
+<i>138</i>&nbsp;    public SignatureValue getSignatureValue() {
+<i>139</i>&nbsp;        return this.sv;
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<b class="nc"><i>141</i>&nbsp;</b>
+<i>142</i>&nbsp;    public KeySelectorResult getKeySelectorResult() {
+<i>143</i>&nbsp;        return this.ksr;
+<b class="nc"><i>144</i>&nbsp;    }</b>
+<b class="nc"><i>145</i>&nbsp;</b>
+<i>146</i>&nbsp;    public void marshal(Node var1, String var2, DOMCryptoContext var3) throws MarshalException {
+<i>147</i>&nbsp;        this.marshal(var1, (Node)null, var2, var3);
+<b class="nc"><i>148</i>&nbsp;    }</b>
+<b class="nc"><i>149</i>&nbsp;</b>
+<b class="nc"><i>150</i>&nbsp;    public void marshal(Node var1, Node var2, String var3, DOMCryptoContext var4) throws MarshalException {</b>
+<b class="nc"><i>151</i>&nbsp;        this.ownerDoc = DOMUtils.getOwnerDocument(var1);</b>
+<i>152</i>&nbsp;        this.sigElem = DOMUtils.createElement(this.ownerDoc, &quot;Signature&quot;, &quot;http://www.w3.org/2000/09/xmldsig#&quot;, var3);
+<i>153</i>&nbsp;        if(var3 != null &amp;&amp; var3.length() != 0) {
+<i>154</i>&nbsp;            this.sigElem.setAttributeNS(&quot;http://www.w3.org/2000/xmlns/&quot;, &quot;xmlns:&quot; + var3, &quot;http://www.w3.org/2000/09/xmldsig#&quot;);
+<b class="nc"><i>155</i>&nbsp;        } else {</b>
+<b class="nc"><i>156</i>&nbsp;            this.sigElem.setAttributeNS(&quot;http://www.w3.org/2000/xmlns/&quot;, &quot;xmlns&quot;, &quot;http://www.w3.org/2000/09/xmldsig#&quot;);</b>
+<i>157</i>&nbsp;        }
+<b class="nc"><i>158</i>&nbsp;</b>
+<b class="nc"><i>159</i>&nbsp;        ((DOMSignedInfo)this.si).marshal(this.sigElem, var3, var4);</b>
+<b class="nc"><i>160</i>&nbsp;        ((DOMXMLSignature.DOMSignatureValue)this.sv).marshal(this.sigElem, var3, var4);</b>
+<i>161</i>&nbsp;        if(this.ki != null) {
+<b class="nc"><i>162</i>&nbsp;            ((DOMKeyInfo)this.ki).marshal(this.sigElem, (Node)null, var3, var4);</b>
+<i>163</i>&nbsp;        }
+<b class="nc"><i>164</i>&nbsp;</b>
+<i>165</i>&nbsp;        int var5 = 0;
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;        for(int var6 = this.objects.size(); var5 &lt; var6; ++var5) {
+<i>168</i>&nbsp;            ((DOMXMLObject)this.objects.get(var5)).marshal(this.sigElem, var3, var4);
+<b class="nc"><i>169</i>&nbsp;        }</b>
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;        DOMUtils.setAttributeID(this.sigElem, &quot;Id&quot;, this.id);
+<i>172</i>&nbsp;        var1.insertBefore(this.sigElem, var2);
+<b class="nc"><i>173</i>&nbsp;    }</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    public boolean validate(XMLValidateContext var1) throws XMLSignatureException {
+<i>176</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>177</i>&nbsp;            throw new NullPointerException(&quot;validateContext is null&quot;);</b>
+<i>178</i>&nbsp;        } else if(!(var1 instanceof DOMValidateContext)) {
+<i>179</i>&nbsp;            throw new ClassCastException(&quot;validateContext must be of type DOMValidateContext&quot;);
+<i>180</i>&nbsp;        } else if(this.validated) {
+<b class="nc"><i>181</i>&nbsp;            return this.validationStatus;</b>
+<i>182</i>&nbsp;        } else {
+<i>183</i>&nbsp;            boolean var2 = this.sv.validate(var1);
+<i>184</i>&nbsp;            if(!var2) {
+<b class="nc"><i>185</i>&nbsp;                this.validationStatus = false;</b>
+<i>186</i>&nbsp;                this.validated = true;
+<i>187</i>&nbsp;                return this.validationStatus;
+<i>188</i>&nbsp;            } else {
+<b class="nc"><i>189</i>&nbsp;                List var3 = this.si.getReferences();</b>
+<i>190</i>&nbsp;                boolean var4 = true;
+<i>191</i>&nbsp;                int var5 = 0;
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;                int var6;
+<b class="nc"><i>194</i>&nbsp;                for(var6 = var3.size(); var4 &amp;&amp; var5 &lt; var6; ++var5) {</b>
+<i>195</i>&nbsp;                    Reference var7 = (Reference)var3.get(var5);
+<i>196</i>&nbsp;                    boolean var8 = var7.validate(var1);
+<i>197</i>&nbsp;                    if(log.isLoggable(Level.FINE)) {
+<i>198</i>&nbsp;                        log.log(Level.FINE, &quot;Reference[&quot; + var7.getURI() + &quot;] is valid: &quot; + var8);
+<b class="nc"><i>199</i>&nbsp;                    }</b>
+<i>200</i>&nbsp;
+<b class="nc"><i>201</i>&nbsp;                    var4 &amp;= var8;</b>
+<i>202</i>&nbsp;                }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;                if(!var4) {
+<b class="nc"><i>205</i>&nbsp;                    if(log.isLoggable(Level.FINE)) {</b>
+<b class="nc"><i>206</i>&nbsp;                        log.log(Level.FINE, &quot;Couldn\&#39;t validate the References&quot;);</b>
+<i>207</i>&nbsp;                    }
+<i>208</i>&nbsp;
+<b class="nc"><i>209</i>&nbsp;                    this.validationStatus = false;</b>
+<i>210</i>&nbsp;                    this.validated = true;
+<i>211</i>&nbsp;                    return this.validationStatus;
+<i>212</i>&nbsp;                } else {
+<i>213</i>&nbsp;                    boolean var19 = true;
+<i>214</i>&nbsp;                    if(Boolean.TRUE.equals(var1.getProperty(&quot;org.jcp.xml.dsig.validateManifests&quot;))) {
+<b class="nc"><i>215</i>&nbsp;                        var6 = 0;</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;                        for(int var20 = this.objects.size(); var19 &amp;&amp; var6 &lt; var20; ++var6) {
+<b class="nc"><i>218</i>&nbsp;                            XMLObject var21 = (XMLObject)this.objects.get(var6);</b>
+<i>219</i>&nbsp;                            List var9 = var21.getContent();
+<i>220</i>&nbsp;                            int var10 = var9.size();
+<b class="nc"><i>221</i>&nbsp;</b>
+<b class="nc"><i>222</i>&nbsp;                            for(int var11 = 0; var19 &amp;&amp; var11 &lt; var10; ++var11) {</b>
+<i>223</i>&nbsp;                                XMLStructure var12 = (XMLStructure)var9.get(var11);
+<i>224</i>&nbsp;                                if(var12 instanceof Manifest) {
+<i>225</i>&nbsp;                                    if(log.isLoggable(Level.FINE)) {
+<b class="nc"><i>226</i>&nbsp;                                        log.log(Level.FINE, &quot;validating manifest&quot;);</b>
+<b class="nc"><i>227</i>&nbsp;                                    }</b>
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;                                    Manifest var13 = (Manifest)var12;
+<i>230</i>&nbsp;                                    List var14 = var13.getReferences();
+<b class="nc"><i>231</i>&nbsp;                                    int var15 = var14.size();</b>
+<i>232</i>&nbsp;
+<b class="nc"><i>233</i>&nbsp;                                    for(int var16 = 0; var19 &amp;&amp; var16 &lt; var15; ++var16) {</b>
+<i>234</i>&nbsp;                                        Reference var17 = (Reference)var14.get(var16);
+<i>235</i>&nbsp;                                        boolean var18 = var17.validate(var1);
+<i>236</i>&nbsp;                                        if(log.isLoggable(Level.FINE)) {
+<i>237</i>&nbsp;                                            log.log(Level.FINE, &quot;Manifest ref[&quot; + var17.getURI() + &quot;] is valid: &quot; + var18);
+<i>238</i>&nbsp;                                        }
+<b class="nc"><i>239</i>&nbsp;</b>
+<b class="nc"><i>240</i>&nbsp;                                        var19 &amp;= var18;</b>
+<i>241</i>&nbsp;                                    }
+<i>242</i>&nbsp;                                }
+<b class="nc"><i>243</i>&nbsp;                            }</b>
+<b class="nc"><i>244</i>&nbsp;                        }</b>
+<i>245</i>&nbsp;                    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;                    this.validationStatus = var19;
+<b class="nc"><i>248</i>&nbsp;                    this.validated = true;</b>
+<b class="nc"><i>249</i>&nbsp;                    return this.validationStatus;</b>
+<i>250</i>&nbsp;                }
+<i>251</i>&nbsp;            }
+<i>252</i>&nbsp;        }
+<b class="nc"><i>253</i>&nbsp;    }</b>
+<b class="nc"><i>254</i>&nbsp;</b>
+<b class="nc"><i>255</i>&nbsp;    public void sign(XMLSignContext var1) throws MarshalException, XMLSignatureException {</b>
+<b class="nc"><i>256</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>257</i>&nbsp;            throw new NullPointerException(&quot;signContext cannot be null&quot;);</b>
+<i>258</i>&nbsp;        } else {
+<i>259</i>&nbsp;            DOMSignContext var2 = (DOMSignContext)var1;
+<i>260</i>&nbsp;            if(var2 != null) {
+<b class="nc"><i>261</i>&nbsp;                this.marshal(var2.getParent(), var2.getNextSibling(), DOMUtils.getSignaturePrefix(var2), var2);</b>
+<b class="nc"><i>262</i>&nbsp;            }</b>
+<b class="nc"><i>263</i>&nbsp;</b>
+<b class="nc"><i>264</i>&nbsp;            ArrayList var3 = new ArrayList();</b>
+<b class="nc"><i>265</i>&nbsp;            this.signatureIdMap = new HashMap();</b>
+<b class="nc"><i>266</i>&nbsp;            this.signatureIdMap.put(this.id, this);</b>
+<b class="nc"><i>267</i>&nbsp;            this.signatureIdMap.put(this.si.getId(), this.si);</b>
+<i>268</i>&nbsp;            List var4 = this.si.getReferences();
+<i>269</i>&nbsp;            int var5 = 0;
+<b class="nc"><i>270</i>&nbsp;</b>
+<i>271</i>&nbsp;            int var6;
+<b class="nc"><i>272</i>&nbsp;            Reference var7;</b>
+<b class="nc"><i>273</i>&nbsp;            for(var6 = var4.size(); var5 &lt; var6; ++var5) {</b>
+<b class="nc"><i>274</i>&nbsp;                var7 = (Reference)var4.get(var5);</b>
+<i>275</i>&nbsp;                this.signatureIdMap.put(var7.getId(), var7);
+<b class="nc"><i>276</i>&nbsp;            }</b>
+<b class="nc"><i>277</i>&nbsp;</b>
+<b class="nc"><i>278</i>&nbsp;            var5 = 0;</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;            for(var6 = this.objects.size(); var5 &lt; var6; ++var5) {
+<i>281</i>&nbsp;                XMLObject var20 = (XMLObject)this.objects.get(var5);
+<b class="nc"><i>282</i>&nbsp;                this.signatureIdMap.put(var20.getId(), var20);</b>
+<b class="nc"><i>283</i>&nbsp;                List var8 = var20.getContent();</b>
+<i>284</i>&nbsp;                int var9 = 0;
+<i>285</i>&nbsp;
+<b class="nc"><i>286</i>&nbsp;                for(int var10 = var8.size(); var9 &lt; var10; ++var9) {</b>
+<b class="nc"><i>287</i>&nbsp;                    XMLStructure var11 = (XMLStructure)var8.get(var9);</b>
+<b class="nc"><i>288</i>&nbsp;                    if(var11 instanceof Manifest) {</b>
+<b class="nc"><i>289</i>&nbsp;                        Manifest var12 = (Manifest)var11;</b>
+<b class="nc"><i>290</i>&nbsp;                        this.signatureIdMap.put(var12.getId(), var12);</b>
+<b class="nc"><i>291</i>&nbsp;                        List var13 = var12.getReferences();</b>
+<b class="nc"><i>292</i>&nbsp;                        int var14 = 0;</b>
+<b class="nc"><i>293</i>&nbsp;</b>
+<b class="nc"><i>294</i>&nbsp;                        for(int var15 = var13.size(); var14 &lt; var15; ++var14) {</b>
+<i>295</i>&nbsp;                            Reference var16 = (Reference)var13.get(var14);
+<b class="nc"><i>296</i>&nbsp;                            var3.add(var16);</b>
+<b class="nc"><i>297</i>&nbsp;                            this.signatureIdMap.put(var16.getId(), var16);</b>
+<b class="nc"><i>298</i>&nbsp;                        }</b>
+<b class="nc"><i>299</i>&nbsp;                    }</b>
+<b class="nc"><i>300</i>&nbsp;                }</b>
+<b class="nc"><i>301</i>&nbsp;            }</b>
+<b class="nc"><i>302</i>&nbsp;</b>
+<b class="nc"><i>303</i>&nbsp;            var3.addAll(this.si.getReferences());</b>
+<i>304</i>&nbsp;            var5 = 0;
+<i>305</i>&nbsp;
+<b class="nc"><i>306</i>&nbsp;            DOMReference var22;</b>
+<i>307</i>&nbsp;            for(var6 = var3.size(); var5 &lt; var6; ++var5) {
+<i>308</i>&nbsp;                var22 = (DOMReference)var3.get(var5);
+<i>309</i>&nbsp;                this.digestReference(var22, var1);
+<i>310</i>&nbsp;            }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;            var5 = 0;
+<b class="nc"><i>313</i>&nbsp;</b>
+<b class="nc"><i>314</i>&nbsp;            for(var6 = var3.size(); var5 &lt; var6; ++var5) {</b>
+<b class="nc"><i>315</i>&nbsp;                var22 = (DOMReference)var3.get(var5);</b>
+<i>316</i>&nbsp;                if(!var22.isDigested()) {
+<i>317</i>&nbsp;                    var22.digest(var1);
+<i>318</i>&nbsp;                }
+<i>319</i>&nbsp;            }
+<b class="nc"><i>320</i>&nbsp;</b>
+<b class="nc"><i>321</i>&nbsp;            Key var21 = null;</b>
+<i>322</i>&nbsp;            KeySelectorResult var19 = null;
+<b class="nc"><i>323</i>&nbsp;</b>
+<b class="nc"><i>324</i>&nbsp;            try {</b>
+<b class="nc"><i>325</i>&nbsp;                var19 = var1.getKeySelector().select(this.ki, Purpose.SIGN, this.si.getSignatureMethod(), var1);</b>
+<i>326</i>&nbsp;                var21 = var19.getKey();
+<i>327</i>&nbsp;                if(var21 == null) {
+<i>328</i>&nbsp;                    throw new XMLSignatureException(&quot;the keySelector did not find a signing key&quot;);
+<i>329</i>&nbsp;                }
+<b class="nc"><i>330</i>&nbsp;            } catch (KeySelectorException var18) {</b>
+<i>331</i>&nbsp;                throw new XMLSignatureException(&quot;cannot find signing key&quot;, var18);
+<i>332</i>&nbsp;            }
+<i>333</i>&nbsp;
+<b class="nc"><i>334</i>&nbsp;            var7 = null;</b>
+<b class="nc"><i>335</i>&nbsp;</b>
+<b class="nc"><i>336</i>&nbsp;            byte[] var23;</b>
+<b class="nc"><i>337</i>&nbsp;            try {</b>
+<b class="nc"><i>338</i>&nbsp;                var23 = ((DOMSignatureMethod)this.si.getSignatureMethod()).sign(var21, (DOMSignedInfo)this.si, var1);</b>
+<b class="nc"><i>339</i>&nbsp;            } catch (InvalidKeyException var17) {</b>
+<b class="nc"><i>340</i>&nbsp;                throw new XMLSignatureException(var17);</b>
+<i>341</i>&nbsp;            }
+<b class="nc"><i>342</i>&nbsp;</b>
+<b class="nc"><i>343</i>&nbsp;            if(log.isLoggable(Level.FINE)) {</b>
+<b class="nc"><i>344</i>&nbsp;                log.log(Level.FINE, &quot;SignatureValue = &quot; + var23);</b>
+<b class="nc"><i>345</i>&nbsp;            }</b>
+<b class="nc"><i>346</i>&nbsp;</b>
+<b class="nc"><i>347</i>&nbsp;            ((DOMXMLSignature.DOMSignatureValue)this.sv).setValue(var23);</b>
+<b class="nc"><i>348</i>&nbsp;            this.localSigElem = this.sigElem;</b>
+<b class="nc"><i>349</i>&nbsp;            this.ksr = var19;</b>
+<b class="nc"><i>350</i>&nbsp;        }</b>
+<b class="nc"><i>351</i>&nbsp;    }</b>
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;    public boolean equals(Object var1) {</b>
+<b class="nc"><i>354</i>&nbsp;        if(this == var1) {</b>
+<b class="nc"><i>355</i>&nbsp;            return true;</b>
+<i>356</i>&nbsp;        } else if(!(var1 instanceof XMLSignature)) {
+<i>357</i>&nbsp;            return false;
+<i>358</i>&nbsp;        } else {
+<i>359</i>&nbsp;            XMLSignature var2 = (XMLSignature)var1;
+<i>360</i>&nbsp;            boolean var3 = this.id == null?var2.getId() == null:this.id.equals(var2.getId());
+<i>361</i>&nbsp;            boolean var4 = this.ki == null?var2.getKeyInfo() == null:this.ki.equals(var2.getKeyInfo());
+<b class="nc"><i>362</i>&nbsp;            return var3 &amp;&amp; var4 &amp;&amp; this.sv.equals(var2.getSignatureValue()) &amp;&amp; this.si.equals(var2.getSignedInfo()) &amp;&amp; this.objects.equals(var2.getObjects());</b>
+<i>363</i>&nbsp;        }
+<i>364</i>&nbsp;    }
+<b class="nc"><i>365</i>&nbsp;</b>
+<b class="nc"><i>366</i>&nbsp;    private void digestReference(DOMReference var1, XMLSignContext var2) throws XMLSignatureException {</b>
+<b class="nc"><i>367</i>&nbsp;        if(!var1.isDigested()) {</b>
+<i>368</i>&nbsp;            String var3 = var1.getURI();
+<i>369</i>&nbsp;            if(Utils.sameDocumentURI(var3)) {
+<i>370</i>&nbsp;                String var4 = Utils.parseIdFromSameDocumentURI(var3);
+<b class="nc"><i>371</i>&nbsp;                if(var4 != null &amp;&amp; this.signatureIdMap.containsKey(var4)) {</b>
+<b class="nc"><i>372</i>&nbsp;                    Object var5 = this.signatureIdMap.get(var4);</b>
+<b class="nc"><i>373</i>&nbsp;                    if(var5 instanceof DOMReference) {</b>
+<b class="nc"><i>374</i>&nbsp;                        this.digestReference((DOMReference)var5, var2);</b>
+<i>375</i>&nbsp;                    } else if(var5 instanceof Manifest) {
+<b class="nc"><i>376</i>&nbsp;                        Manifest var6 = (Manifest)var5;</b>
+<i>377</i>&nbsp;                        List var7 = var6.getReferences();
+<i>378</i>&nbsp;                        int var8 = 0;
+<b class="nc"><i>379</i>&nbsp;</b>
+<b class="nc"><i>380</i>&nbsp;                        for(int var9 = var7.size(); var8 &lt; var9; ++var8) {</b>
+<i>381</i>&nbsp;                            this.digestReference((DOMReference)var7.get(var8), var2);
+<b class="nc"><i>382</i>&nbsp;                        }</b>
+<i>383</i>&nbsp;                    }
+<i>384</i>&nbsp;                }
+<b class="nc"><i>385</i>&nbsp;</b>
+<b class="nc"><i>386</i>&nbsp;                if(var3.length() == 0) {</b>
+<b class="nc"><i>387</i>&nbsp;                    List var10 = var1.getTransforms();</b>
+<i>388</i>&nbsp;                    int var11 = 0;
+<i>389</i>&nbsp;
+<b class="nc"><i>390</i>&nbsp;                    for(int var12 = var10.size(); var11 &lt; var12; ++var11) {</b>
+<b class="nc"><i>391</i>&nbsp;                        Transform var13 = (Transform)var10.get(var11);</b>
+<b class="nc"><i>392</i>&nbsp;                        String var14 = var13.getAlgorithm();</b>
+<i>393</i>&nbsp;                        if(var14.equals(&quot;http://www.w3.org/TR/1999/REC-xpath-19991116&quot;) || var14.equals(&quot;http://www.w3.org/2002/06/xmldsig-filter2&quot;)) {
+<i>394</i>&nbsp;                            return;
+<b class="nc"><i>395</i>&nbsp;                        }</b>
+<i>396</i>&nbsp;                    }
+<b class="nc"><i>397</i>&nbsp;                }</b>
+<i>398</i>&nbsp;            }
+<b class="nc"><i>399</i>&nbsp;</b>
+<b class="nc"><i>400</i>&nbsp;            var1.digest(var2);</b>
+<b class="nc"><i>401</i>&nbsp;        }</b>
+<i>402</i>&nbsp;    }
+<b class="nc"><i>403</i>&nbsp;</b>
+<b class="nc"><i>404</i>&nbsp;    static {</b>
+<i>405</i>&nbsp;        Init.init();
+<b class="nc"><i>406</i>&nbsp;    }</b>
+<i>407</i>&nbsp;
+<b class="nc"><i>408</i>&nbsp;    public class DOMSignatureValue extends DOMStructure implements SignatureValue {</b>
+<b class="nc"><i>409</i>&nbsp;        private String id;</b>
+<i>410</i>&nbsp;        private byte[] value;
+<i>411</i>&nbsp;        private String valueBase64;
+<i>412</i>&nbsp;        private Element sigValueElem;
+<b class="nc"><i>413</i>&nbsp;        private boolean validated = false;</b>
+<b class="nc"><i>414</i>&nbsp;        private boolean validationStatus;</b>
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;        DOMSignatureValue(String var2) {
+<b class="nc"><i>417</i>&nbsp;            this.id = var2;</b>
+<b class="nc"><i>418</i>&nbsp;        }</b>
+<i>419</i>&nbsp;
+<b class="nc"><i>420</i>&nbsp;        DOMSignatureValue(Element var2) throws MarshalException {</b>
+<i>421</i>&nbsp;            try {
+<b class="nc"><i>422</i>&nbsp;                this.value = Base64.decode(var2);</b>
+<i>423</i>&nbsp;            } catch (Base64DecodingException var4) {
+<b class="nc"><i>424</i>&nbsp;                throw new MarshalException(var4);</b>
+<i>425</i>&nbsp;            }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;            Attr var3 = var2.getAttributeNodeNS((String)null, &quot;Id&quot;);
+<b class="nc"><i>428</i>&nbsp;            if(var3 != null) {</b>
+<i>429</i>&nbsp;                this.id = var3.getValue();
+<i>430</i>&nbsp;                var2.setIdAttributeNode(var3, true);
+<i>431</i>&nbsp;            } else {
+<i>432</i>&nbsp;                this.id = null;
+<i>433</i>&nbsp;            }
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;            this.sigValueElem = var2;
+<b class="nc"><i>436</i>&nbsp;        }</b>
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;        public String getId() {
+<i>439</i>&nbsp;            return this.id;
+<b class="nc"><i>440</i>&nbsp;        }</b>
+<b class="nc"><i>441</i>&nbsp;</b>
+<b class="nc"><i>442</i>&nbsp;        public byte[] getValue() {</b>
+<b class="nc"><i>443</i>&nbsp;            return this.value == null?null:(byte[])((byte[])this.value.clone());</b>
+<b class="nc"><i>444</i>&nbsp;        }</b>
+<b class="nc"><i>445</i>&nbsp;</b>
+<b class="nc"><i>446</i>&nbsp;        public boolean validate(XMLValidateContext var1) throws XMLSignatureException {</b>
+<b class="nc"><i>447</i>&nbsp;            if(var1 == null) {</b>
+<b class="nc"><i>448</i>&nbsp;                throw new NullPointerException(&quot;context cannot be null&quot;);</b>
+<b class="nc"><i>449</i>&nbsp;            } else if(this.validated) {</b>
+<b class="nc"><i>450</i>&nbsp;                return this.validationStatus;</b>
+<b class="nc"><i>451</i>&nbsp;            } else {</b>
+<i>452</i>&nbsp;                SignatureMethod var2 = DOMXMLSignature.this.si.getSignatureMethod();
+<i>453</i>&nbsp;                Key var3 = null;
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;                KeySelectorResult var4;
+<i>456</i>&nbsp;                try {
+<i>457</i>&nbsp;                    var4 = var1.getKeySelector().select(DOMXMLSignature.this.ki, Purpose.VERIFY, var2, var1);
+<i>458</i>&nbsp;                    var3 = var4.getKey();
+<b class="nc"><i>459</i>&nbsp;                    if(var3 == null) {</b>
+<b class="nc"><i>460</i>&nbsp;                        throw new XMLSignatureException(&quot;the keyselector did not find a validation key&quot;);</b>
+<b class="nc"><i>461</i>&nbsp;                    }</b>
+<b class="nc"><i>462</i>&nbsp;                } catch (KeySelectorException var7) {</b>
+<b class="nc"><i>463</i>&nbsp;                    throw new XMLSignatureException(&quot;cannot find validation key&quot;, var7);</b>
+<b class="nc"><i>464</i>&nbsp;                }</b>
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;                try {
+<i>467</i>&nbsp;                    this.validationStatus = ((DOMSignatureMethod)var2).verify(var3, (DOMSignedInfo)DOMXMLSignature.this.si, this.value, var1);
+<i>468</i>&nbsp;                } catch (Exception var6) {
+<i>469</i>&nbsp;                    throw new XMLSignatureException(var6);
+<i>470</i>&nbsp;                }
+<b class="nc"><i>471</i>&nbsp;</b>
+<i>472</i>&nbsp;                this.validated = true;
+<i>473</i>&nbsp;                DOMXMLSignature.this.ksr = var4;
+<i>474</i>&nbsp;                return this.validationStatus;
+<i>475</i>&nbsp;            }
+<i>476</i>&nbsp;        }
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;        public boolean equals(Object var1) {
+<i>479</i>&nbsp;            if(this == var1) {
+<i>480</i>&nbsp;                return true;
+<b class="nc"><i>481</i>&nbsp;            } else if(!(var1 instanceof SignatureValue)) {</b>
+<i>482</i>&nbsp;                return false;
+<i>483</i>&nbsp;            } else {
+<b class="nc"><i>484</i>&nbsp;                SignatureValue var2 = (SignatureValue)var1;</b>
+<b class="nc"><i>485</i>&nbsp;                boolean var3 = this.id == null?var2.getId() == null:this.id.equals(var2.getId());</b>
+<i>486</i>&nbsp;                return var3;
+<i>487</i>&nbsp;            }
+<b class="nc"><i>488</i>&nbsp;        }</b>
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;        public void marshal(Node var1, String var2, DOMCryptoContext var3) throws MarshalException {
+<b class="nc"><i>491</i>&nbsp;            this.sigValueElem = DOMUtils.createElement(DOMXMLSignature.this.ownerDoc, &quot;SignatureValue&quot;, &quot;http://www.w3.org/2000/09/xmldsig#&quot;, var2);</b>
+<b class="nc"><i>492</i>&nbsp;            if(this.valueBase64 != null) {</b>
+<b class="nc"><i>493</i>&nbsp;                this.sigValueElem.appendChild(DOMXMLSignature.this.ownerDoc.createTextNode(this.valueBase64));</b>
+<b class="nc"><i>494</i>&nbsp;            }</b>
+<i>495</i>&nbsp;
+<b class="nc"><i>496</i>&nbsp;            DOMUtils.setAttributeID(this.sigValueElem, &quot;Id&quot;, this.id);</b>
+<b class="nc"><i>497</i>&nbsp;            var1.appendChild(this.sigValueElem);</b>
+<b class="nc"><i>498</i>&nbsp;        }</b>
+<b class="nc"><i>499</i>&nbsp;</b>
+<i>500</i>&nbsp;        void setValue(byte[] var1) {
+<b class="nc"><i>501</i>&nbsp;            this.value = var1;</b>
+<i>502</i>&nbsp;            this.valueBase64 = Base64.encode(var1);
+<b class="nc"><i>503</i>&nbsp;            this.sigValueElem.appendChild(DOMXMLSignature.this.ownerDoc.createTextNode(this.valueBase64));</b>
+<i>504</i>&nbsp;        }
+<i>505</i>&nbsp;    }
+<i>506</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

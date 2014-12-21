@@ -1,0 +1,1096 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RECompiler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.regexp.internal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RECompiler (com.sun.org.apache.regexp.internal)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RECompiler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 443)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">RECompiler$RERange</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 55)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 498)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.regexp.internal;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.regexp.internal.REProgram;
+<i>9</i>&nbsp;import com.sun.org.apache.regexp.internal.RESyntaxException;
+<i>10</i>&nbsp;import java.util.Hashtable;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;public class RECompiler {
+<i>13</i>&nbsp;    char[] instruction = new char[128];
+<i>14</i>&nbsp;    int lenInstruction = 0;
+<i>15</i>&nbsp;    String pattern;
+<i>16</i>&nbsp;    int len;
+<i>17</i>&nbsp;    int idx;
+<i>18</i>&nbsp;    int parens;
+<i>19</i>&nbsp;    static final int NODE_NORMAL = 0;
+<i>20</i>&nbsp;    static final int NODE_NULLABLE = 1;
+<i>21</i>&nbsp;    static final int NODE_TOPLEVEL = 2;
+<i>22</i>&nbsp;    static final int ESC_MASK = 1048560;
+<i>23</i>&nbsp;    static final int ESC_BACKREF = 1048575;
+<i>24</i>&nbsp;    static final int ESC_COMPLEX = 1048574;
+<i>25</i>&nbsp;    static final int ESC_CLASS = 1048573;
+<i>26</i>&nbsp;    int maxBrackets = 10;
+<i>27</i>&nbsp;    static final int bracketUnbounded = -1;
+<i>28</i>&nbsp;    int brackets = 0;
+<i>29</i>&nbsp;    int[] bracketStart = null;
+<i>30</i>&nbsp;    int[] bracketEnd = null;
+<i>31</i>&nbsp;    int[] bracketMin = null;
+<i>32</i>&nbsp;    int[] bracketOpt = null;
+<i>33</i>&nbsp;    static Hashtable hashPOSIX = new Hashtable();
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public RECompiler() {
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    void ensure(int n) {
+<i>39</i>&nbsp;        int curlen = this.instruction.length;
+<i>40</i>&nbsp;        if(this.lenInstruction + n &gt;= curlen) {
+<i>41</i>&nbsp;            while(this.lenInstruction + n &gt;= curlen) {
+<i>42</i>&nbsp;                curlen *= 2;
+<i>43</i>&nbsp;            }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;            char[] newInstruction = new char[curlen];
+<i>46</i>&nbsp;            System.arraycopy(this.instruction, 0, newInstruction, 0, this.lenInstruction);
+<i>47</i>&nbsp;            this.instruction = newInstruction;
+<i>48</i>&nbsp;        }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    void emit(char c) {
+<i>53</i>&nbsp;        this.ensure(1);
+<i>54</i>&nbsp;        this.instruction[this.lenInstruction++] = c;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    void nodeInsert(char opcode, int opdata, int insertAt) {
+<i>58</i>&nbsp;        this.ensure(3);
+<i>59</i>&nbsp;        System.arraycopy(this.instruction, insertAt, this.instruction, insertAt + 3, this.lenInstruction - insertAt);
+<b class="nc"><i>60</i>&nbsp;        this.instruction[insertAt + 0] = opcode;</b>
+<i>61</i>&nbsp;        this.instruction[insertAt + 1] = (char)opdata;
+<b class="nc"><i>62</i>&nbsp;        this.instruction[insertAt + 2] = 0;</b>
+<b class="nc"><i>63</i>&nbsp;        this.lenInstruction += 3;</b>
+<b class="nc"><i>64</i>&nbsp;    }</b>
+<b class="nc"><i>65</i>&nbsp;</b>
+<b class="nc"><i>66</i>&nbsp;    void setNextOfEnd(int node, int pointTo) {</b>
+<i>67</i>&nbsp;        for(char next = this.instruction[node + 2]; next != 0 &amp;&amp; node &lt; this.lenInstruction; next = this.instruction[node + 2]) {
+<i>68</i>&nbsp;            if(node == pointTo) {
+<b class="nc"><i>69</i>&nbsp;                pointTo = this.lenInstruction;</b>
+<i>70</i>&nbsp;            }
+<i>71</i>&nbsp;
+<b class="nc"><i>72</i>&nbsp;            node += next;</b>
+<b class="nc"><i>73</i>&nbsp;        }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<b class="nc"><i>75</i>&nbsp;        if(node &lt; this.lenInstruction) {</b>
+<b class="nc"><i>76</i>&nbsp;            this.instruction[node + 2] = (char)((short)(pointTo - node));</b>
+<b class="nc"><i>77</i>&nbsp;        }</b>
+<b class="nc"><i>78</i>&nbsp;</b>
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<b class="nc"><i>80</i>&nbsp;</b>
+<b class="nc"><i>81</i>&nbsp;    int node(char opcode, int opdata) {</b>
+<b class="nc"><i>82</i>&nbsp;        this.ensure(3);</b>
+<b class="nc"><i>83</i>&nbsp;        this.instruction[this.lenInstruction + 0] = opcode;</b>
+<b class="nc"><i>84</i>&nbsp;        this.instruction[this.lenInstruction + 1] = (char)opdata;</b>
+<b class="nc"><i>85</i>&nbsp;        this.instruction[this.lenInstruction + 2] = 0;</b>
+<i>86</i>&nbsp;        this.lenInstruction += 3;
+<i>87</i>&nbsp;        return this.lenInstruction - 3;
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    void internalError() throws Error {
+<i>91</i>&nbsp;        throw new Error(&quot;Internal error!&quot;);
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;    void syntaxError(String s) throws RESyntaxException {</b>
+<b class="nc"><i>95</i>&nbsp;        throw new RESyntaxException(s);</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    void allocBrackets() {
+<i>99</i>&nbsp;        if(this.bracketStart == null) {
+<i>100</i>&nbsp;            this.bracketStart = new int[this.maxBrackets];
+<i>101</i>&nbsp;            this.bracketEnd = new int[this.maxBrackets];
+<i>102</i>&nbsp;            this.bracketMin = new int[this.maxBrackets];
+<i>103</i>&nbsp;            this.bracketOpt = new int[this.maxBrackets];
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;            for(int i = 0; i &lt; this.maxBrackets; ++i) {
+<b class="nc"><i>106</i>&nbsp;                this.bracketStart[i] = this.bracketEnd[i] = this.bracketMin[i] = this.bracketOpt[i] = -1;</b>
+<i>107</i>&nbsp;            }
+<i>108</i>&nbsp;        }
+<b class="nc"><i>109</i>&nbsp;</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<b class="nc"><i>112</i>&nbsp;    synchronized void reallocBrackets() {</b>
+<i>113</i>&nbsp;        if(this.bracketStart == null) {
+<b class="nc"><i>114</i>&nbsp;            this.allocBrackets();</b>
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;        int new_size = this.maxBrackets * 2;
+<b class="nc"><i>118</i>&nbsp;        int[] new_bS = new int[new_size];</b>
+<b class="nc"><i>119</i>&nbsp;        int[] new_bE = new int[new_size];</b>
+<b class="nc"><i>120</i>&nbsp;        int[] new_bM = new int[new_size];</b>
+<i>121</i>&nbsp;        int[] new_bO = new int[new_size];
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        for(int i = this.brackets; i &lt; new_size; ++i) {
+<i>124</i>&nbsp;            new_bS[i] = new_bE[i] = new_bM[i] = new_bO[i] = -1;
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;        System.arraycopy(this.bracketStart, 0, new_bS, 0, this.brackets);
+<i>128</i>&nbsp;        System.arraycopy(this.bracketEnd, 0, new_bE, 0, this.brackets);
+<i>129</i>&nbsp;        System.arraycopy(this.bracketMin, 0, new_bM, 0, this.brackets);
+<i>130</i>&nbsp;        System.arraycopy(this.bracketOpt, 0, new_bO, 0, this.brackets);
+<b class="nc"><i>131</i>&nbsp;        this.bracketStart = new_bS;</b>
+<i>132</i>&nbsp;        this.bracketEnd = new_bE;
+<i>133</i>&nbsp;        this.bracketMin = new_bM;
+<b class="nc"><i>134</i>&nbsp;        this.bracketOpt = new_bO;</b>
+<i>135</i>&nbsp;        this.maxBrackets = new_size;
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    void bracket() throws RESyntaxException {
+<i>139</i>&nbsp;        if(this.idx &gt;= this.len || this.pattern.charAt(this.idx++) != 123) {
+<i>140</i>&nbsp;            this.internalError();
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;        if(this.idx &gt;= this.len || !Character.isDigit(this.pattern.charAt(this.idx))) {
+<i>144</i>&nbsp;            this.syntaxError(&quot;Expected digit&quot;);
+<i>145</i>&nbsp;        }
+<i>146</i>&nbsp;
+<b class="nc"><i>147</i>&nbsp;        StringBuffer number = new StringBuffer();</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;        while(this.idx &lt; this.len &amp;&amp; Character.isDigit(this.pattern.charAt(this.idx))) {
+<b class="nc"><i>150</i>&nbsp;            number.append(this.pattern.charAt(this.idx++));</b>
+<b class="nc"><i>151</i>&nbsp;        }</b>
+<b class="nc"><i>152</i>&nbsp;</b>
+<b class="nc"><i>153</i>&nbsp;        try {</b>
+<b class="nc"><i>154</i>&nbsp;            this.bracketMin[this.brackets] = Integer.parseInt(number.toString());</b>
+<i>155</i>&nbsp;        } catch (NumberFormatException var4) {
+<i>156</i>&nbsp;            this.syntaxError(&quot;Expected valid number&quot;);
+<i>157</i>&nbsp;        }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;        if(this.idx &gt;= this.len) {
+<i>160</i>&nbsp;            this.syntaxError(&quot;Expected comma or right bracket&quot;);
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;        if(this.pattern.charAt(this.idx) == 125) {
+<i>164</i>&nbsp;            ++this.idx;
+<b class="nc"><i>165</i>&nbsp;            this.bracketOpt[this.brackets] = 0;</b>
+<i>166</i>&nbsp;        } else {
+<i>167</i>&nbsp;            if(this.idx &gt;= this.len || this.pattern.charAt(this.idx++) != 44) {
+<b class="nc"><i>168</i>&nbsp;                this.syntaxError(&quot;Expected comma&quot;);</b>
+<i>169</i>&nbsp;            }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;            if(this.idx &gt;= this.len) {
+<i>172</i>&nbsp;                this.syntaxError(&quot;Expected comma or right bracket&quot;);
+<i>173</i>&nbsp;            }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;            if(this.pattern.charAt(this.idx) == 125) {
+<b class="nc"><i>176</i>&nbsp;                ++this.idx;</b>
+<b class="nc"><i>177</i>&nbsp;                this.bracketOpt[this.brackets] = -1;</b>
+<i>178</i>&nbsp;            } else {
+<b class="nc"><i>179</i>&nbsp;                if(this.idx &gt;= this.len || !Character.isDigit(this.pattern.charAt(this.idx))) {</b>
+<b class="nc"><i>180</i>&nbsp;                    this.syntaxError(&quot;Expected digit&quot;);</b>
+<i>181</i>&nbsp;                }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;                number.setLength(0);
+<b class="nc"><i>184</i>&nbsp;</b>
+<i>185</i>&nbsp;                while(this.idx &lt; this.len &amp;&amp; Character.isDigit(this.pattern.charAt(this.idx))) {
+<b class="nc"><i>186</i>&nbsp;                    number.append(this.pattern.charAt(this.idx++));</b>
+<i>187</i>&nbsp;                }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;                try {
+<i>190</i>&nbsp;                    this.bracketOpt[this.brackets] = Integer.parseInt(number.toString()) - this.bracketMin[this.brackets];
+<i>191</i>&nbsp;                } catch (NumberFormatException var3) {
+<i>192</i>&nbsp;                    this.syntaxError(&quot;Expected valid number&quot;);
+<i>193</i>&nbsp;                }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;                if(this.bracketOpt[this.brackets] &lt; 0) {
+<i>196</i>&nbsp;                    this.syntaxError(&quot;Bad range&quot;);
+<i>197</i>&nbsp;                }
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;                if(this.idx &gt;= this.len || this.pattern.charAt(this.idx++) != 125) {</b>
+<i>200</i>&nbsp;                    this.syntaxError(&quot;Missing close brace&quot;);
+<i>201</i>&nbsp;                }
+<b class="nc"><i>202</i>&nbsp;</b>
+<b class="nc"><i>203</i>&nbsp;            }</b>
+<b class="nc"><i>204</i>&nbsp;        }</b>
+<b class="nc"><i>205</i>&nbsp;    }</b>
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    int escape() throws RESyntaxException {
+<b class="nc"><i>208</i>&nbsp;        if(this.pattern.charAt(this.idx) != 92) {</b>
+<i>209</i>&nbsp;            this.internalError();
+<i>210</i>&nbsp;        }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;        if(this.idx + 1 == this.len) {
+<i>213</i>&nbsp;            this.syntaxError(&quot;Escape terminates string&quot;);
+<i>214</i>&nbsp;        }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        this.idx += 2;
+<i>217</i>&nbsp;        char escapeChar = this.pattern.charAt(this.idx - 1);
+<b class="nc"><i>218</i>&nbsp;        int val;</b>
+<i>219</i>&nbsp;        switch(escapeChar) {
+<i>220</i>&nbsp;        case &#39;0&#39;:
+<i>221</i>&nbsp;        case &#39;1&#39;:
+<i>222</i>&nbsp;        case &#39;2&#39;:
+<i>223</i>&nbsp;        case &#39;3&#39;:
+<i>224</i>&nbsp;        case &#39;4&#39;:
+<i>225</i>&nbsp;        case &#39;5&#39;:
+<i>226</i>&nbsp;        case &#39;6&#39;:
+<b class="nc"><i>227</i>&nbsp;        case &#39;7&#39;:</b>
+<i>228</i>&nbsp;        case &#39;8&#39;:
+<i>229</i>&nbsp;        case &#39;9&#39;:
+<i>230</i>&nbsp;            if((this.idx &gt;= this.len || !Character.isDigit(this.pattern.charAt(this.idx))) &amp;&amp; escapeChar != 48) {
+<i>231</i>&nbsp;                return 1048575;
+<i>232</i>&nbsp;            } else {
+<i>233</i>&nbsp;                val = escapeChar - 48;
+<i>234</i>&nbsp;                if(this.idx &lt; this.len &amp;&amp; Character.isDigit(this.pattern.charAt(this.idx))) {
+<i>235</i>&nbsp;                    val = (val &lt;&lt; 3) + (this.pattern.charAt(this.idx++) - 48);
+<b class="nc"><i>236</i>&nbsp;                    if(this.idx &lt; this.len &amp;&amp; Character.isDigit(this.pattern.charAt(this.idx))) {</b>
+<i>237</i>&nbsp;                        val = (val &lt;&lt; 3) + (this.pattern.charAt(this.idx++) - 48);
+<i>238</i>&nbsp;                    }
+<b class="nc"><i>239</i>&nbsp;                }</b>
+<b class="nc"><i>240</i>&nbsp;</b>
+<b class="nc"><i>241</i>&nbsp;                return val;</b>
+<b class="nc"><i>242</i>&nbsp;            }</b>
+<i>243</i>&nbsp;        case &#39;:&#39;:
+<i>244</i>&nbsp;        case &#39;;&#39;:
+<b class="nc"><i>245</i>&nbsp;        case &#39;&lt;&#39;:</b>
+<i>246</i>&nbsp;        case &#39;=&#39;:
+<b class="nc"><i>247</i>&nbsp;        case &#39;&gt;&#39;:</b>
+<i>248</i>&nbsp;        case &#39;?&#39;:
+<i>249</i>&nbsp;        case &#39;@&#39;:
+<i>250</i>&nbsp;        case &#39;A&#39;:
+<i>251</i>&nbsp;        case &#39;C&#39;:
+<i>252</i>&nbsp;        case &#39;E&#39;:
+<i>253</i>&nbsp;        case &#39;F&#39;:
+<i>254</i>&nbsp;        case &#39;G&#39;:
+<b class="nc"><i>255</i>&nbsp;        case &#39;H&#39;:</b>
+<b class="nc"><i>256</i>&nbsp;        case &#39;I&#39;:</b>
+<i>257</i>&nbsp;        case &#39;J&#39;:
+<i>258</i>&nbsp;        case &#39;K&#39;:
+<b class="nc"><i>259</i>&nbsp;        case &#39;L&#39;:</b>
+<b class="nc"><i>260</i>&nbsp;        case &#39;M&#39;:</b>
+<b class="nc"><i>261</i>&nbsp;        case &#39;N&#39;:</b>
+<b class="nc"><i>262</i>&nbsp;        case &#39;O&#39;:</b>
+<b class="nc"><i>263</i>&nbsp;        case &#39;P&#39;:</b>
+<i>264</i>&nbsp;        case &#39;Q&#39;:
+<b class="nc"><i>265</i>&nbsp;        case &#39;R&#39;:</b>
+<b class="nc"><i>266</i>&nbsp;        case &#39;T&#39;:</b>
+<i>267</i>&nbsp;        case &#39;U&#39;:
+<b class="nc"><i>268</i>&nbsp;        case &#39;V&#39;:</b>
+<b class="nc"><i>269</i>&nbsp;        case &#39;X&#39;:</b>
+<b class="nc"><i>270</i>&nbsp;        case &#39;Y&#39;:</b>
+<b class="nc"><i>271</i>&nbsp;        case &#39;Z&#39;:</b>
+<b class="nc"><i>272</i>&nbsp;        case &#39;[&#39;:</b>
+<b class="nc"><i>273</i>&nbsp;        case &#39;\\&#39;:</b>
+<b class="nc"><i>274</i>&nbsp;        case &#39;]&#39;:</b>
+<b class="nc"><i>275</i>&nbsp;        case &#39;^&#39;:</b>
+<b class="nc"><i>276</i>&nbsp;        case &#39;_&#39;:</b>
+<i>277</i>&nbsp;        case &#39;`&#39;:
+<i>278</i>&nbsp;        case &#39;a&#39;:
+<i>279</i>&nbsp;        case &#39;c&#39;:
+<i>280</i>&nbsp;        case &#39;e&#39;:
+<i>281</i>&nbsp;        case &#39;g&#39;:
+<i>282</i>&nbsp;        case &#39;h&#39;:
+<i>283</i>&nbsp;        case &#39;i&#39;:
+<i>284</i>&nbsp;        case &#39;j&#39;:
+<i>285</i>&nbsp;        case &#39;k&#39;:
+<b class="nc"><i>286</i>&nbsp;        case &#39;l&#39;:</b>
+<i>287</i>&nbsp;        case &#39;m&#39;:
+<b class="nc"><i>288</i>&nbsp;        case &#39;o&#39;:</b>
+<i>289</i>&nbsp;        case &#39;p&#39;:
+<i>290</i>&nbsp;        case &#39;q&#39;:
+<i>291</i>&nbsp;        case &#39;v&#39;:
+<b class="nc"><i>292</i>&nbsp;        default:</b>
+<i>293</i>&nbsp;            return escapeChar;
+<b class="nc"><i>294</i>&nbsp;        case &#39;B&#39;:</b>
+<i>295</i>&nbsp;        case &#39;b&#39;:
+<i>296</i>&nbsp;            return 1048574;
+<i>297</i>&nbsp;        case &#39;D&#39;:
+<b class="nc"><i>298</i>&nbsp;        case &#39;S&#39;:</b>
+<b class="nc"><i>299</i>&nbsp;        case &#39;W&#39;:</b>
+<i>300</i>&nbsp;        case &#39;d&#39;:
+<b class="nc"><i>301</i>&nbsp;        case &#39;s&#39;:</b>
+<i>302</i>&nbsp;        case &#39;w&#39;:
+<i>303</i>&nbsp;            return 1048573;
+<i>304</i>&nbsp;        case &#39;f&#39;:
+<b class="nc"><i>305</i>&nbsp;            return 12;</b>
+<i>306</i>&nbsp;        case &#39;n&#39;:
+<b class="nc"><i>307</i>&nbsp;            return 10;</b>
+<i>308</i>&nbsp;        case &#39;r&#39;:
+<b class="nc"><i>309</i>&nbsp;            return 13;</b>
+<b class="nc"><i>310</i>&nbsp;        case &#39;t&#39;:</b>
+<i>311</i>&nbsp;            return 9;
+<i>312</i>&nbsp;        case &#39;u&#39;:
+<b class="nc"><i>313</i>&nbsp;        case &#39;x&#39;:</b>
+<i>314</i>&nbsp;            val = escapeChar == 117?4:2;
+<b class="nc"><i>315</i>&nbsp;</b>
+<i>316</i>&nbsp;            int val1;
+<i>317</i>&nbsp;            for(val1 = 0; this.idx &lt; this.len &amp;&amp; val-- &gt; 0; ++this.idx) {
+<i>318</i>&nbsp;                char c = this.pattern.charAt(this.idx);
+<b class="nc"><i>319</i>&nbsp;                if(c &gt;= 48 &amp;&amp; c &lt;= 57) {</b>
+<i>320</i>&nbsp;                    val1 = (val1 &lt;&lt; 4) + c - 48;
+<b class="nc"><i>321</i>&nbsp;                } else {</b>
+<b class="nc"><i>322</i>&nbsp;                    c = Character.toLowerCase(c);</b>
+<i>323</i>&nbsp;                    if(c &gt;= 97 &amp;&amp; c &lt;= 102) {
+<i>324</i>&nbsp;                        val1 = (val1 &lt;&lt; 4) + (c - 97) + 10;
+<i>325</i>&nbsp;                    } else {
+<i>326</i>&nbsp;                        this.syntaxError(&quot;Expected &quot; + val + &quot; hexadecimal digits after \\&quot; + escapeChar);
+<b class="nc"><i>327</i>&nbsp;                    }</b>
+<i>328</i>&nbsp;                }
+<b class="nc"><i>329</i>&nbsp;            }</b>
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;            return val1;
+<i>332</i>&nbsp;        }
+<b class="nc"><i>333</i>&nbsp;    }</b>
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;    int characterClass() throws RESyntaxException {</b>
+<i>336</i>&nbsp;        if(this.pattern.charAt(this.idx) != 91) {
+<i>337</i>&nbsp;            this.internalError();
+<i>338</i>&nbsp;        }
+<b class="nc"><i>339</i>&nbsp;</b>
+<i>340</i>&nbsp;        if(this.idx + 1 &gt;= this.len || this.pattern.charAt(++this.idx) == 93) {
+<b class="nc"><i>341</i>&nbsp;            this.syntaxError(&quot;Empty or unterminated class&quot;);</b>
+<b class="nc"><i>342</i>&nbsp;        }</b>
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;        int ret;
+<i>345</i>&nbsp;        if(this.idx &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) == 58) {
+<i>346</i>&nbsp;            ++this.idx;
+<b class="nc"><i>347</i>&nbsp;</b>
+<i>348</i>&nbsp;            for(ret = this.idx; this.idx &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) &gt;= 97 &amp;&amp; this.pattern.charAt(this.idx) &lt;= 122; ++this.idx) {
+<b class="nc"><i>349</i>&nbsp;                ;</b>
+<i>350</i>&nbsp;            }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;            if(this.idx + 1 &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) == 58 &amp;&amp; this.pattern.charAt(this.idx + 1) == 93) {
+<b class="nc"><i>353</i>&nbsp;                String CHAR_INVALID = this.pattern.substring(ret, this.idx);</b>
+<b class="nc"><i>354</i>&nbsp;                Character last = (Character)hashPOSIX.get(CHAR_INVALID);</b>
+<i>355</i>&nbsp;                if(last != null) {
+<b class="nc"><i>356</i>&nbsp;                    this.idx += 2;</b>
+<i>357</i>&nbsp;                    return this.node(&#39;P&#39;, last.charValue());
+<i>358</i>&nbsp;                }
+<i>359</i>&nbsp;
+<b class="nc"><i>360</i>&nbsp;                this.syntaxError(&quot;Invalid POSIX character class \&#39;&quot; + CHAR_INVALID + &quot;\&#39;&quot;);</b>
+<i>361</i>&nbsp;            }
+<b class="nc"><i>362</i>&nbsp;</b>
+<i>363</i>&nbsp;            this.syntaxError(&quot;Invalid POSIX character class syntax&quot;);
+<b class="nc"><i>364</i>&nbsp;        }</b>
+<b class="nc"><i>365</i>&nbsp;</b>
+<i>366</i>&nbsp;        ret = this.node(&#39;[&#39;, 0);
+<i>367</i>&nbsp;        char var12 = &#39;\uffff&#39;;
+<b class="nc"><i>368</i>&nbsp;        char var13 = var12;</b>
+<i>369</i>&nbsp;        boolean simpleChar = false;
+<b class="nc"><i>370</i>&nbsp;        boolean include = true;</b>
+<i>371</i>&nbsp;        boolean definingRange = false;
+<i>372</i>&nbsp;        int idxFirst = this.idx;
+<i>373</i>&nbsp;        char rangeStart = 0;
+<b class="nc"><i>374</i>&nbsp;        RECompiler.RERange range = new RECompiler.RERange();</b>
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;        int i;</b>
+<i>377</i>&nbsp;        while(this.idx &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) != 93) {
+<i>378</i>&nbsp;            char var14;
+<i>379</i>&nbsp;            label106:
+<i>380</i>&nbsp;            switch(this.pattern.charAt(this.idx)) {
+<i>381</i>&nbsp;            case &#39;-&#39;:
+<i>382</i>&nbsp;                if(definingRange) {
+<i>383</i>&nbsp;                    this.syntaxError(&quot;Bad class range&quot;);
+<i>384</i>&nbsp;                }
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;                definingRange = true;
+<i>387</i>&nbsp;                rangeStart = var13 == var12?0:var13;
+<i>388</i>&nbsp;                if(this.idx + 1 &gt;= this.len || this.pattern.charAt(++this.idx) != 93) {
+<i>389</i>&nbsp;                    continue;
+<i>390</i>&nbsp;                }
+<i>391</i>&nbsp;
+<b class="nc"><i>392</i>&nbsp;                var14 = &#39;\uffff&#39;;</b>
+<i>393</i>&nbsp;                break;
+<b class="nc"><i>394</i>&nbsp;            case &#39;\\&#39;:</b>
+<i>395</i>&nbsp;                switch(i = this.escape()) {
+<i>396</i>&nbsp;                case 1048574:
+<i>397</i>&nbsp;                case 1048575:
+<b class="nc"><i>398</i>&nbsp;                    this.syntaxError(&quot;Bad character class&quot;);</b>
+<i>399</i>&nbsp;                case 1048573:
+<b class="nc"><i>400</i>&nbsp;                    if(definingRange) {</b>
+<i>401</i>&nbsp;                        this.syntaxError(&quot;Bad character class&quot;);
+<i>402</i>&nbsp;                    }
+<i>403</i>&nbsp;
+<b class="nc"><i>404</i>&nbsp;                    switch(this.pattern.charAt(this.idx - 1)) {</b>
+<b class="nc"><i>405</i>&nbsp;                    case &#39;D&#39;:</b>
+<b class="nc"><i>406</i>&nbsp;                    case &#39;S&#39;:</b>
+<i>407</i>&nbsp;                    case &#39;W&#39;:
+<i>408</i>&nbsp;                        this.syntaxError(&quot;Bad character class&quot;);
+<i>409</i>&nbsp;                    case &#39;s&#39;:
+<b class="nc"><i>410</i>&nbsp;                        range.include(&#39;\t&#39;, include);</b>
+<i>411</i>&nbsp;                        range.include(&#39;\r&#39;, include);
+<i>412</i>&nbsp;                        range.include(&#39;\f&#39;, include);
+<i>413</i>&nbsp;                        range.include(&#39;\n&#39;, include);
+<i>414</i>&nbsp;                        range.include(&#39;\b&#39;, include);
+<i>415</i>&nbsp;                        range.include(&#39; &#39;, include);
+<i>416</i>&nbsp;                        break;
+<i>417</i>&nbsp;                    case &#39;w&#39;:
+<b class="nc"><i>418</i>&nbsp;                        range.include(97, 122, include);</b>
+<i>419</i>&nbsp;                        range.include(65, 90, include);
+<i>420</i>&nbsp;                        range.include(&#39;_&#39;, include);
+<i>421</i>&nbsp;                    case &#39;d&#39;:
+<i>422</i>&nbsp;                        range.include(48, 57, include);
+<i>423</i>&nbsp;                    }
+<b class="nc"><i>424</i>&nbsp;</b>
+<i>425</i>&nbsp;                    var13 = var12;
+<i>426</i>&nbsp;                    continue;
+<b class="nc"><i>427</i>&nbsp;                default:</b>
+<b class="nc"><i>428</i>&nbsp;                    var14 = (char)i;</b>
+<i>429</i>&nbsp;                    break label106;
+<i>430</i>&nbsp;                }
+<b class="nc"><i>431</i>&nbsp;            case &#39;^&#39;:</b>
+<i>432</i>&nbsp;                include = !include;
+<i>433</i>&nbsp;                if(this.idx == idxFirst) {
+<b class="nc"><i>434</i>&nbsp;                    range.include(0, &#39;\uffff&#39;, true);</b>
+<i>435</i>&nbsp;                }
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;                ++this.idx;</b>
+<i>438</i>&nbsp;                continue;
+<i>439</i>&nbsp;            default:
+<i>440</i>&nbsp;                var14 = this.pattern.charAt(this.idx++);
+<i>441</i>&nbsp;            }
+<b class="nc"><i>442</i>&nbsp;</b>
+<b class="nc"><i>443</i>&nbsp;            if(definingRange) {</b>
+<i>444</i>&nbsp;                if(rangeStart &gt;= var14) {
+<i>445</i>&nbsp;                    this.syntaxError(&quot;Bad character class&quot;);
+<b class="nc"><i>446</i>&nbsp;                }</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;                range.include(rangeStart, var14, include);
+<i>449</i>&nbsp;                var13 = var12;
+<i>450</i>&nbsp;                definingRange = false;
+<i>451</i>&nbsp;            } else {
+<b class="nc"><i>452</i>&nbsp;                if(this.idx &gt;= this.len || this.pattern.charAt(this.idx) != 45) {</b>
+<i>453</i>&nbsp;                    range.include(var14, include);
+<i>454</i>&nbsp;                }
+<i>455</i>&nbsp;
+<b class="nc"><i>456</i>&nbsp;                var13 = var14;</b>
+<i>457</i>&nbsp;            }
+<i>458</i>&nbsp;        }
+<i>459</i>&nbsp;
+<b class="nc"><i>460</i>&nbsp;        if(this.idx == this.len) {</b>
+<i>461</i>&nbsp;            this.syntaxError(&quot;Unterminated character class&quot;);
+<i>462</i>&nbsp;        }
+<b class="nc"><i>463</i>&nbsp;</b>
+<i>464</i>&nbsp;        ++this.idx;
+<i>465</i>&nbsp;        this.instruction[ret + 1] = (char)range.num;
+<b class="nc"><i>466</i>&nbsp;</b>
+<i>467</i>&nbsp;        for(i = 0; i &lt; range.num; ++i) {
+<i>468</i>&nbsp;            this.emit((char)range.minRange[i]);
+<b class="nc"><i>469</i>&nbsp;            this.emit((char)range.maxRange[i]);</b>
+<i>470</i>&nbsp;        }
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;        return ret;
+<i>473</i>&nbsp;    }
+<i>474</i>&nbsp;
+<i>475</i>&nbsp;    int atom() throws RESyntaxException {
+<i>476</i>&nbsp;        int ret = this.node(&#39;A&#39;, 0);
+<i>477</i>&nbsp;        int lenAtom = 0;
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;        label46:
+<i>480</i>&nbsp;        while(this.idx &lt; this.len) {
+<i>481</i>&nbsp;            int c;
+<i>482</i>&nbsp;            if(this.idx + 1 &lt; this.len) {
+<b class="nc"><i>483</i>&nbsp;                char idxBeforeEscape = this.pattern.charAt(this.idx + 1);</b>
+<i>484</i>&nbsp;                if(this.pattern.charAt(this.idx) == 92) {
+<i>485</i>&nbsp;                    c = this.idx;
+<b class="nc"><i>486</i>&nbsp;                    this.escape();</b>
+<b class="nc"><i>487</i>&nbsp;                    if(this.idx &lt; this.len) {</b>
+<i>488</i>&nbsp;                        idxBeforeEscape = this.pattern.charAt(this.idx);
+<b class="nc"><i>489</i>&nbsp;                    }</b>
+<b class="nc"><i>490</i>&nbsp;</b>
+<i>491</i>&nbsp;                    this.idx = c;
+<b class="nc"><i>492</i>&nbsp;                }</b>
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;                switch(idxBeforeEscape) {
+<b class="nc"><i>495</i>&nbsp;                case &#39;*&#39;:</b>
+<i>496</i>&nbsp;                case &#39;+&#39;:
+<i>497</i>&nbsp;                case &#39;?&#39;:
+<i>498</i>&nbsp;                case &#39;{&#39;:
+<b class="nc"><i>499</i>&nbsp;                    if(lenAtom != 0) {</b>
+<i>500</i>&nbsp;                        break label46;
+<i>501</i>&nbsp;                    }
+<i>502</i>&nbsp;                }
+<i>503</i>&nbsp;            }
+<b class="nc"><i>504</i>&nbsp;</b>
+<i>505</i>&nbsp;            switch(this.pattern.charAt(this.idx)) {
+<i>506</i>&nbsp;            case &#39;$&#39;:
+<i>507</i>&nbsp;            case &#39;(&#39;:
+<i>508</i>&nbsp;            case &#39;)&#39;:
+<i>509</i>&nbsp;            case &#39;.&#39;:
+<i>510</i>&nbsp;            case &#39;[&#39;:
+<i>511</i>&nbsp;            case &#39;]&#39;:
+<i>512</i>&nbsp;            case &#39;^&#39;:
+<i>513</i>&nbsp;            case &#39;|&#39;:
+<i>514</i>&nbsp;                break label46;
+<i>515</i>&nbsp;            case &#39;*&#39;:
+<b class="nc"><i>516</i>&nbsp;            case &#39;+&#39;:</b>
+<i>517</i>&nbsp;            case &#39;?&#39;:
+<b class="nc"><i>518</i>&nbsp;            case &#39;{&#39;:</b>
+<i>519</i>&nbsp;                if(lenAtom == 0) {
+<i>520</i>&nbsp;                    this.syntaxError(&quot;Missing operand to closure&quot;);
+<i>521</i>&nbsp;                }
+<b class="nc"><i>522</i>&nbsp;                break label46;</b>
+<i>523</i>&nbsp;            case &#39;\\&#39;:
+<b class="nc"><i>524</i>&nbsp;                int var5 = this.idx;</b>
+<i>525</i>&nbsp;                c = this.escape();
+<i>526</i>&nbsp;                if((c &amp; 1048560) == 1048560) {
+<i>527</i>&nbsp;                    this.idx = var5;
+<b class="nc"><i>528</i>&nbsp;                    break label46;</b>
+<i>529</i>&nbsp;                }
+<i>530</i>&nbsp;
+<b class="nc"><i>531</i>&nbsp;                this.emit((char)c);</b>
+<i>532</i>&nbsp;                ++lenAtom;
+<i>533</i>&nbsp;                break;
+<b class="nc"><i>534</i>&nbsp;            default:</b>
+<b class="nc"><i>535</i>&nbsp;                this.emit(this.pattern.charAt(this.idx++));</b>
+<i>536</i>&nbsp;                ++lenAtom;
+<b class="nc"><i>537</i>&nbsp;            }</b>
+<i>538</i>&nbsp;        }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;        if(lenAtom == 0) {
+<b class="nc"><i>541</i>&nbsp;            this.internalError();</b>
+<i>542</i>&nbsp;        }
+<i>543</i>&nbsp;
+<b class="nc"><i>544</i>&nbsp;        this.instruction[ret + 1] = (char)lenAtom;</b>
+<i>545</i>&nbsp;        return ret;
+<i>546</i>&nbsp;    }
+<b class="nc"><i>547</i>&nbsp;</b>
+<b class="nc"><i>548</i>&nbsp;    int terminal(int[] flags) throws RESyntaxException {</b>
+<i>549</i>&nbsp;        switch(this.pattern.charAt(this.idx)) {
+<i>550</i>&nbsp;        case &#39;$&#39;:
+<b class="nc"><i>551</i>&nbsp;        case &#39;.&#39;:</b>
+<i>552</i>&nbsp;        case &#39;^&#39;:
+<i>553</i>&nbsp;            return this.node(this.pattern.charAt(this.idx++), 0);
+<b class="nc"><i>554</i>&nbsp;        case &#39;(&#39;:</b>
+<i>555</i>&nbsp;            return this.expr(flags);
+<b class="nc"><i>556</i>&nbsp;        case &#39;)&#39;:</b>
+<i>557</i>&nbsp;            this.syntaxError(&quot;Unexpected close paren&quot;);
+<b class="nc"><i>558</i>&nbsp;        case &#39;|&#39;:</b>
+<i>559</i>&nbsp;            this.internalError();
+<i>560</i>&nbsp;        case &#39;]&#39;:
+<i>561</i>&nbsp;            this.syntaxError(&quot;Mismatched class&quot;);
+<b class="nc"><i>562</i>&nbsp;        case &#39;\u0000&#39;:</b>
+<i>563</i>&nbsp;            this.syntaxError(&quot;Unexpected end of input&quot;);
+<i>564</i>&nbsp;        case &#39;*&#39;:
+<b class="nc"><i>565</i>&nbsp;        case &#39;+&#39;:</b>
+<b class="nc"><i>566</i>&nbsp;        case &#39;?&#39;:</b>
+<b class="nc"><i>567</i>&nbsp;        case &#39;{&#39;:</b>
+<b class="nc"><i>568</i>&nbsp;            this.syntaxError(&quot;Missing operand to closure&quot;);</b>
+<b class="nc"><i>569</i>&nbsp;        case &#39;\\&#39;:</b>
+<b class="nc"><i>570</i>&nbsp;            int idxBeforeEscape = this.idx;</b>
+<b class="nc"><i>571</i>&nbsp;            switch(this.escape()) {</b>
+<i>572</i>&nbsp;            case 1048573:
+<b class="nc"><i>573</i>&nbsp;            case 1048574:</b>
+<b class="nc"><i>574</i>&nbsp;                flags[0] &amp;= -2;</b>
+<i>575</i>&nbsp;                return this.node(&#39;\\&#39;, this.pattern.charAt(this.idx - 1));
+<i>576</i>&nbsp;            case 1048575:
+<i>577</i>&nbsp;                char backreference = (char)(this.pattern.charAt(this.idx - 1) - 48);
+<i>578</i>&nbsp;                if(this.parens &lt;= backreference) {
+<i>579</i>&nbsp;                    this.syntaxError(&quot;Bad backreference&quot;);
+<b class="nc"><i>580</i>&nbsp;                }</b>
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;                flags[0] |= 1;
+<b class="nc"><i>583</i>&nbsp;                return this.node(&#39;#&#39;, backreference);</b>
+<b class="nc"><i>584</i>&nbsp;            default:</b>
+<i>585</i>&nbsp;                this.idx = idxBeforeEscape;
+<b class="nc"><i>586</i>&nbsp;                flags[0] &amp;= -2;</b>
+<i>587</i>&nbsp;            }
+<b class="nc"><i>588</i>&nbsp;        default:</b>
+<b class="nc"><i>589</i>&nbsp;            flags[0] &amp;= -2;</b>
+<i>590</i>&nbsp;            return this.atom();
+<i>591</i>&nbsp;        case &#39;[&#39;:
+<i>592</i>&nbsp;            return this.characterClass();
+<i>593</i>&nbsp;        }
+<i>594</i>&nbsp;    }
+<b class="nc"><i>595</i>&nbsp;</b>
+<i>596</i>&nbsp;    int closure(int[] flags) throws RESyntaxException {
+<i>597</i>&nbsp;        int idxBeforeTerminal = this.idx;
+<i>598</i>&nbsp;        int[] terminalFlags = new int[]{0};
+<i>599</i>&nbsp;        int ret = this.terminal(terminalFlags);
+<i>600</i>&nbsp;        flags[0] |= terminalFlags[0];
+<b class="nc"><i>601</i>&nbsp;        if(this.idx &gt;= this.len) {</b>
+<i>602</i>&nbsp;            return ret;
+<i>603</i>&nbsp;        } else {
+<i>604</i>&nbsp;            boolean greedy = true;
+<i>605</i>&nbsp;            char closureType = this.pattern.charAt(this.idx);
+<b class="nc"><i>606</i>&nbsp;            switch(closureType) {</b>
+<i>607</i>&nbsp;            case &#39;*&#39;:
+<b class="nc"><i>608</i>&nbsp;            case &#39;?&#39;:</b>
+<i>609</i>&nbsp;                flags[0] |= 1;
+<i>610</i>&nbsp;            case &#39;+&#39;:
+<i>611</i>&nbsp;                ++this.idx;
+<b class="nc"><i>612</i>&nbsp;            case &#39;{&#39;:</b>
+<i>613</i>&nbsp;                char branch = this.instruction[ret + 0];
+<i>614</i>&nbsp;                if(branch == 94 || branch == 36) {
+<i>615</i>&nbsp;                    this.syntaxError(&quot;Bad closure operand&quot;);
+<i>616</i>&nbsp;                }
+<b class="nc"><i>617</i>&nbsp;</b>
+<i>618</i>&nbsp;                if((terminalFlags[0] &amp; 1) != 0) {
+<i>619</i>&nbsp;                    this.syntaxError(&quot;Closure operand can\&#39;t be nullable&quot;);
+<b class="nc"><i>620</i>&nbsp;                }</b>
+<b class="nc"><i>621</i>&nbsp;            default:</b>
+<b class="nc"><i>622</i>&nbsp;                if(this.idx &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) == 63) {</b>
+<b class="nc"><i>623</i>&nbsp;                    ++this.idx;</b>
+<b class="nc"><i>624</i>&nbsp;                    greedy = false;</b>
+<b class="nc"><i>625</i>&nbsp;                }</b>
+<b class="nc"><i>626</i>&nbsp;</b>
+<i>627</i>&nbsp;                if(greedy) {
+<i>628</i>&nbsp;                    int var11;
+<b class="nc"><i>629</i>&nbsp;                    switch(closureType) {</b>
+<b class="nc"><i>630</i>&nbsp;                    case &#39;+&#39;:</b>
+<b class="nc"><i>631</i>&nbsp;                        var11 = this.node(&#39;|&#39;, 0);</b>
+<i>632</i>&nbsp;                        this.setNextOfEnd(ret, var11);
+<i>633</i>&nbsp;                        this.setNextOfEnd(this.node(&#39;G&#39;, 0), ret);
+<i>634</i>&nbsp;                        this.setNextOfEnd(var11, this.node(&#39;|&#39;, 0));
+<i>635</i>&nbsp;                        this.setNextOfEnd(ret, this.node(&#39;N&#39;, 0));
+<b class="nc"><i>636</i>&nbsp;                        break;</b>
+<i>637</i>&nbsp;                    case &#39;{&#39;:
+<i>638</i>&nbsp;                        boolean var10 = false;
+<i>639</i>&nbsp;                        this.allocBrackets();
+<i>640</i>&nbsp;
+<b class="nc"><i>641</i>&nbsp;                        int i;</b>
+<b class="nc"><i>642</i>&nbsp;                        for(i = 0; i &lt; this.brackets; ++i) {</b>
+<i>643</i>&nbsp;                            if(this.bracketStart[i] == this.idx) {
+<i>644</i>&nbsp;                                var10 = true;
+<i>645</i>&nbsp;                                break;
+<i>646</i>&nbsp;                            }
+<b class="nc"><i>647</i>&nbsp;                        }</b>
+<b class="nc"><i>648</i>&nbsp;</b>
+<i>649</i>&nbsp;                        if(!var10) {
+<i>650</i>&nbsp;                            if(this.brackets &gt;= this.maxBrackets) {
+<b class="nc"><i>651</i>&nbsp;                                this.reallocBrackets();</b>
+<i>652</i>&nbsp;                            }
+<i>653</i>&nbsp;
+<i>654</i>&nbsp;                            this.bracketStart[this.brackets] = this.idx;
+<i>655</i>&nbsp;                            this.bracket();
+<b class="nc"><i>656</i>&nbsp;                            this.bracketEnd[this.brackets] = this.idx;</b>
+<i>657</i>&nbsp;                            i = this.brackets++;
+<b class="nc"><i>658</i>&nbsp;                        }</b>
+<i>659</i>&nbsp;
+<b class="nc"><i>660</i>&nbsp;                        if(this.bracketMin[i]-- &gt; 0) {</b>
+<i>661</i>&nbsp;                            if(this.bracketMin[i] &lt;= 0 &amp;&amp; this.bracketOpt[i] == 0) {
+<i>662</i>&nbsp;                                this.idx = this.bracketEnd[i];
+<b class="nc"><i>663</i>&nbsp;                            } else {</b>
+<i>664</i>&nbsp;                                for(int j = 0; j &lt; this.brackets; ++j) {
+<i>665</i>&nbsp;                                    if(j != i &amp;&amp; this.bracketStart[j] &lt; this.idx &amp;&amp; this.bracketStart[j] &gt;= idxBeforeTerminal) {
+<b class="nc"><i>666</i>&nbsp;                                        --this.brackets;</b>
+<i>667</i>&nbsp;                                        this.bracketStart[j] = this.bracketStart[this.brackets];
+<b class="nc"><i>668</i>&nbsp;                                        this.bracketEnd[j] = this.bracketEnd[this.brackets];</b>
+<b class="nc"><i>669</i>&nbsp;                                        this.bracketMin[j] = this.bracketMin[this.brackets];</b>
+<i>670</i>&nbsp;                                        this.bracketOpt[j] = this.bracketOpt[this.brackets];
+<i>671</i>&nbsp;                                    }
+<i>672</i>&nbsp;                                }
+<i>673</i>&nbsp;
+<b class="nc"><i>674</i>&nbsp;                                this.idx = idxBeforeTerminal;</b>
+<i>675</i>&nbsp;                            }
+<i>676</i>&nbsp;                            break;
+<i>677</i>&nbsp;                        } else if(this.bracketOpt[i] == -1) {
+<i>678</i>&nbsp;                            closureType = 42;
+<b class="nc"><i>679</i>&nbsp;                            this.bracketOpt[i] = 0;</b>
+<i>680</i>&nbsp;                            this.idx = this.bracketEnd[i];
+<i>681</i>&nbsp;                        } else if(this.bracketOpt[i]-- &lt;= 0) {
+<b class="nc"><i>682</i>&nbsp;                            this.lenInstruction = ret;</b>
+<i>683</i>&nbsp;                            this.node(&#39;N&#39;, 0);
+<i>684</i>&nbsp;                            this.idx = this.bracketEnd[i];
+<b class="nc"><i>685</i>&nbsp;                            break;</b>
+<i>686</i>&nbsp;                        } else {
+<b class="nc"><i>687</i>&nbsp;                            if(this.bracketOpt[i] &gt; 0) {</b>
+<i>688</i>&nbsp;                                this.idx = idxBeforeTerminal;
+<b class="nc"><i>689</i>&nbsp;                            } else {</b>
+<i>690</i>&nbsp;                                this.idx = this.bracketEnd[i];
+<i>691</i>&nbsp;                            }
+<b class="nc"><i>692</i>&nbsp;</b>
+<b class="nc"><i>693</i>&nbsp;                            closureType = 63;</b>
+<i>694</i>&nbsp;                        }
+<i>695</i>&nbsp;                    case &#39;*&#39;:
+<i>696</i>&nbsp;                    case &#39;?&#39;:
+<i>697</i>&nbsp;                        if(greedy) {
+<b class="nc"><i>698</i>&nbsp;                            if(closureType == 63) {</b>
+<i>699</i>&nbsp;                                this.nodeInsert(&#39;|&#39;, 0, ret);
+<b class="nc"><i>700</i>&nbsp;                                this.setNextOfEnd(ret, this.node(&#39;|&#39;, 0));</b>
+<i>701</i>&nbsp;                                var11 = this.node(&#39;N&#39;, 0);
+<b class="nc"><i>702</i>&nbsp;                                this.setNextOfEnd(ret, var11);</b>
+<i>703</i>&nbsp;                                this.setNextOfEnd(ret + 3, var11);
+<i>704</i>&nbsp;                            }
+<i>705</i>&nbsp;
+<i>706</i>&nbsp;                            if(closureType == 42) {
+<b class="nc"><i>707</i>&nbsp;                                this.nodeInsert(&#39;|&#39;, 0, ret);</b>
+<i>708</i>&nbsp;                                this.setNextOfEnd(ret + 3, this.node(&#39;|&#39;, 0));
+<b class="nc"><i>709</i>&nbsp;                                this.setNextOfEnd(ret + 3, this.node(&#39;G&#39;, 0));</b>
+<i>710</i>&nbsp;                                this.setNextOfEnd(ret + 3, ret);
+<i>711</i>&nbsp;                                this.setNextOfEnd(ret, this.node(&#39;|&#39;, 0));
+<i>712</i>&nbsp;                                this.setNextOfEnd(ret, this.node(&#39;N&#39;, 0));
+<b class="nc"><i>713</i>&nbsp;                            }</b>
+<i>714</i>&nbsp;                        }
+<i>715</i>&nbsp;                    }
+<b class="nc"><i>716</i>&nbsp;                } else {</b>
+<b class="nc"><i>717</i>&nbsp;                    this.setNextOfEnd(ret, this.node(&#39;E&#39;, 0));</b>
+<i>718</i>&nbsp;                    switch(closureType) {
+<b class="nc"><i>719</i>&nbsp;                    case &#39;*&#39;:</b>
+<b class="nc"><i>720</i>&nbsp;                        this.nodeInsert(&#39;8&#39;, 0, ret);</b>
+<i>721</i>&nbsp;                        break;
+<b class="nc"><i>722</i>&nbsp;                    case &#39;+&#39;:</b>
+<i>723</i>&nbsp;                        this.nodeInsert(&#39;=&#39;, 0, ret);
+<i>724</i>&nbsp;                        break;
+<i>725</i>&nbsp;                    case &#39;?&#39;:
+<i>726</i>&nbsp;                        this.nodeInsert(&#39;/&#39;, 0, ret);
+<i>727</i>&nbsp;                    }
+<i>728</i>&nbsp;
+<i>729</i>&nbsp;                    this.setNextOfEnd(ret, this.lenInstruction);
+<i>730</i>&nbsp;                }
+<i>731</i>&nbsp;
+<i>732</i>&nbsp;                return ret;
+<i>733</i>&nbsp;            }
+<i>734</i>&nbsp;        }
+<i>735</i>&nbsp;    }
+<b class="nc"><i>736</i>&nbsp;</b>
+<i>737</i>&nbsp;    int branch(int[] flags) throws RESyntaxException {
+<i>738</i>&nbsp;        int ret = this.node(&#39;|&#39;, 0);
+<b class="nc"><i>739</i>&nbsp;        int chain = -1;</b>
+<i>740</i>&nbsp;        int[] closureFlags = new int[1];
+<i>741</i>&nbsp;
+<i>742</i>&nbsp;        int node;
+<i>743</i>&nbsp;        boolean nullable;
+<i>744</i>&nbsp;        for(nullable = true; this.idx &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) != 124 &amp;&amp; this.pattern.charAt(this.idx) != 41; chain = node) {
+<b class="nc"><i>745</i>&nbsp;            closureFlags[0] = 0;</b>
+<i>746</i>&nbsp;            node = this.closure(closureFlags);
+<i>747</i>&nbsp;            if(closureFlags[0] == 0) {
+<b class="nc"><i>748</i>&nbsp;                nullable = false;</b>
+<i>749</i>&nbsp;            }
+<b class="nc"><i>750</i>&nbsp;</b>
+<i>751</i>&nbsp;            if(chain != -1) {
+<i>752</i>&nbsp;                this.setNextOfEnd(chain, node);
+<b class="nc"><i>753</i>&nbsp;            }</b>
+<i>754</i>&nbsp;        }
+<b class="nc"><i>755</i>&nbsp;</b>
+<b class="nc"><i>756</i>&nbsp;        if(chain == -1) {</b>
+<b class="nc"><i>757</i>&nbsp;            this.node(&#39;N&#39;, 0);</b>
+<i>758</i>&nbsp;        }
+<b class="nc"><i>759</i>&nbsp;</b>
+<i>760</i>&nbsp;        if(nullable) {
+<b class="nc"><i>761</i>&nbsp;            flags[0] |= 1;</b>
+<i>762</i>&nbsp;        }
+<i>763</i>&nbsp;
+<i>764</i>&nbsp;        return ret;
+<b class="nc"><i>765</i>&nbsp;    }</b>
+<i>766</i>&nbsp;
+<i>767</i>&nbsp;    int expr(int[] flags) throws RESyntaxException {
+<i>768</i>&nbsp;        byte paren = -1;
+<i>769</i>&nbsp;        int ret = -1;
+<i>770</i>&nbsp;        int closeParens = this.parens;
+<i>771</i>&nbsp;        if((flags[0] &amp; 2) == 0 &amp;&amp; this.pattern.charAt(this.idx) == 40) {
+<i>772</i>&nbsp;            if(this.idx + 2 &lt; this.len &amp;&amp; this.pattern.charAt(this.idx + 1) == 63 &amp;&amp; this.pattern.charAt(this.idx + 2) == 58) {
+<i>773</i>&nbsp;                paren = 2;
+<b class="nc"><i>774</i>&nbsp;                this.idx += 3;</b>
+<i>775</i>&nbsp;                ret = this.node(&#39;&lt;&#39;, 0);
+<b class="nc"><i>776</i>&nbsp;            } else {</b>
+<i>777</i>&nbsp;                paren = 1;
+<i>778</i>&nbsp;                ++this.idx;
+<i>779</i>&nbsp;                ret = this.node(&#39;(&#39;, this.parens++);
+<i>780</i>&nbsp;            }
+<i>781</i>&nbsp;        }
+<b class="nc"><i>782</i>&nbsp;</b>
+<i>783</i>&nbsp;        flags[0] &amp;= -3;
+<i>784</i>&nbsp;        int branch = this.branch(flags);
+<i>785</i>&nbsp;        if(ret == -1) {
+<i>786</i>&nbsp;            ret = branch;
+<i>787</i>&nbsp;        } else {
+<i>788</i>&nbsp;            this.setNextOfEnd(ret, branch);
+<i>789</i>&nbsp;        }
+<i>790</i>&nbsp;
+<i>791</i>&nbsp;        while(this.idx &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) == 124) {
+<b class="nc"><i>792</i>&nbsp;            ++this.idx;</b>
+<i>793</i>&nbsp;            branch = this.branch(flags);
+<i>794</i>&nbsp;            this.setNextOfEnd(ret, branch);
+<i>795</i>&nbsp;        }
+<i>796</i>&nbsp;
+<i>797</i>&nbsp;        int end;
+<i>798</i>&nbsp;        if(paren &gt; 0) {
+<i>799</i>&nbsp;            if(this.idx &lt; this.len &amp;&amp; this.pattern.charAt(this.idx) == 41) {
+<b class="nc"><i>800</i>&nbsp;                ++this.idx;</b>
+<i>801</i>&nbsp;            } else {
+<i>802</i>&nbsp;                this.syntaxError(&quot;Missing close paren&quot;);
+<b class="nc"><i>803</i>&nbsp;            }</b>
+<i>804</i>&nbsp;
+<i>805</i>&nbsp;            if(paren == 1) {
+<i>806</i>&nbsp;                end = this.node(&#39;)&#39;, closeParens);
+<i>807</i>&nbsp;            } else {
+<i>808</i>&nbsp;                end = this.node(&#39;&gt;&#39;, 0);
+<i>809</i>&nbsp;            }
+<i>810</i>&nbsp;        } else {
+<b class="nc"><i>811</i>&nbsp;            end = this.node(&#39;E&#39;, 0);</b>
+<b class="nc"><i>812</i>&nbsp;        }</b>
+<i>813</i>&nbsp;
+<i>814</i>&nbsp;        this.setNextOfEnd(ret, end);
+<b class="nc"><i>815</i>&nbsp;        int currentNode = ret;</b>
+<i>816</i>&nbsp;
+<i>817</i>&nbsp;        for(char nextNodeOffset = this.instruction[ret + 2]; nextNodeOffset != 0 &amp;&amp; currentNode &lt; this.lenInstruction; currentNode += nextNodeOffset) {
+<b class="nc"><i>818</i>&nbsp;            if(this.instruction[currentNode + 0] == 124) {</b>
+<b class="nc"><i>819</i>&nbsp;                this.setNextOfEnd(currentNode + 3, end);</b>
+<i>820</i>&nbsp;            }
+<i>821</i>&nbsp;
+<i>822</i>&nbsp;            nextNodeOffset = this.instruction[currentNode + 2];
+<b class="nc"><i>823</i>&nbsp;        }</b>
+<b class="nc"><i>824</i>&nbsp;</b>
+<i>825</i>&nbsp;        return ret;
+<b class="nc"><i>826</i>&nbsp;    }</b>
+<i>827</i>&nbsp;
+<i>828</i>&nbsp;    public REProgram compile(String pattern) throws RESyntaxException {
+<i>829</i>&nbsp;        this.pattern = pattern;
+<i>830</i>&nbsp;        this.len = pattern.length();
+<b class="nc"><i>831</i>&nbsp;        this.idx = 0;</b>
+<b class="nc"><i>832</i>&nbsp;        this.lenInstruction = 0;</b>
+<b class="nc"><i>833</i>&nbsp;        this.parens = 1;</b>
+<i>834</i>&nbsp;        this.brackets = 0;
+<i>835</i>&nbsp;        int[] flags = new int[]{2};
+<i>836</i>&nbsp;        this.expr(flags);
+<i>837</i>&nbsp;        if(this.idx != this.len) {
+<b class="nc"><i>838</i>&nbsp;            if(pattern.charAt(this.idx) == 41) {</b>
+<i>839</i>&nbsp;                this.syntaxError(&quot;Unmatched close paren&quot;);
+<b class="nc"><i>840</i>&nbsp;            }</b>
+<i>841</i>&nbsp;
+<i>842</i>&nbsp;            this.syntaxError(&quot;Unexpected input remains&quot;);
+<i>843</i>&nbsp;        }
+<b class="nc"><i>844</i>&nbsp;</b>
+<b class="nc"><i>845</i>&nbsp;        char[] ins = new char[this.lenInstruction];</b>
+<i>846</i>&nbsp;        System.arraycopy(this.instruction, 0, ins, 0, this.lenInstruction);
+<i>847</i>&nbsp;        return new REProgram(this.parens, ins);
+<i>848</i>&nbsp;    }
+<i>849</i>&nbsp;
+<i>850</i>&nbsp;    static {
+<i>851</i>&nbsp;        hashPOSIX.put(&quot;alnum&quot;, new Character(&#39;w&#39;));
+<i>852</i>&nbsp;        hashPOSIX.put(&quot;alpha&quot;, new Character(&#39;a&#39;));
+<i>853</i>&nbsp;        hashPOSIX.put(&quot;blank&quot;, new Character(&#39;b&#39;));
+<i>854</i>&nbsp;        hashPOSIX.put(&quot;cntrl&quot;, new Character(&#39;c&#39;));
+<i>855</i>&nbsp;        hashPOSIX.put(&quot;digit&quot;, new Character(&#39;d&#39;));
+<b class="nc"><i>856</i>&nbsp;        hashPOSIX.put(&quot;graph&quot;, new Character(&#39;g&#39;));</b>
+<i>857</i>&nbsp;        hashPOSIX.put(&quot;lower&quot;, new Character(&#39;l&#39;));
+<i>858</i>&nbsp;        hashPOSIX.put(&quot;print&quot;, new Character(&#39;p&#39;));
+<i>859</i>&nbsp;        hashPOSIX.put(&quot;punct&quot;, new Character(&#39;!&#39;));
+<i>860</i>&nbsp;        hashPOSIX.put(&quot;space&quot;, new Character(&#39;s&#39;));
+<b class="nc"><i>861</i>&nbsp;        hashPOSIX.put(&quot;upper&quot;, new Character(&#39;u&#39;));</b>
+<i>862</i>&nbsp;        hashPOSIX.put(&quot;xdigit&quot;, new Character(&#39;x&#39;));
+<i>863</i>&nbsp;        hashPOSIX.put(&quot;javastart&quot;, new Character(&#39;j&#39;));
+<b class="nc"><i>864</i>&nbsp;        hashPOSIX.put(&quot;javapart&quot;, new Character(&#39;k&#39;));</b>
+<i>865</i>&nbsp;    }
+<i>866</i>&nbsp;
+<b class="nc"><i>867</i>&nbsp;    class RERange {</b>
+<i>868</i>&nbsp;        int size = 16;
+<i>869</i>&nbsp;        int[] minRange;
+<b class="nc"><i>870</i>&nbsp;        int[] maxRange;</b>
+<i>871</i>&nbsp;        int num;
+<i>872</i>&nbsp;
+<b class="nc"><i>873</i>&nbsp;        RERange() {</b>
+<i>874</i>&nbsp;            this.minRange = new int[this.size];
+<i>875</i>&nbsp;            this.maxRange = new int[this.size];
+<b class="nc"><i>876</i>&nbsp;            this.num = 0;</b>
+<i>877</i>&nbsp;        }
+<i>878</i>&nbsp;
+<b class="nc"><i>879</i>&nbsp;        void delete(int index) {</b>
+<i>880</i>&nbsp;            if(this.num != 0 &amp;&amp; index &lt; this.num) {
+<i>881</i>&nbsp;                while(true) {
+<i>882</i>&nbsp;                    ++index;
+<i>883</i>&nbsp;                    if(index &gt;= this.num) {
+<i>884</i>&nbsp;                        --this.num;
+<b class="nc"><i>885</i>&nbsp;                        return;</b>
+<i>886</i>&nbsp;                    }
+<i>887</i>&nbsp;
+<i>888</i>&nbsp;                    if(index - 1 &gt;= 0) {
+<i>889</i>&nbsp;                        this.minRange[index - 1] = this.minRange[index];
+<b class="nc"><i>890</i>&nbsp;                        this.maxRange[index - 1] = this.maxRange[index];</b>
+<i>891</i>&nbsp;                    }
+<i>892</i>&nbsp;                }
+<b class="nc"><i>893</i>&nbsp;            }</b>
+<i>894</i>&nbsp;        }
+<i>895</i>&nbsp;
+<i>896</i>&nbsp;        void merge(int min, int max) {
+<b class="nc"><i>897</i>&nbsp;            for(int newMin = 0; newMin &lt; this.num; ++newMin) {</b>
+<b class="nc"><i>898</i>&nbsp;                if(min &gt;= this.minRange[newMin] &amp;&amp; max &lt;= this.maxRange[newMin]) {</b>
+<i>899</i>&nbsp;                    return;
+<i>900</i>&nbsp;                }
+<i>901</i>&nbsp;
+<b class="nc"><i>902</i>&nbsp;                if(min &lt;= this.minRange[newMin] &amp;&amp; max &gt;= this.maxRange[newMin]) {</b>
+<b class="nc"><i>903</i>&nbsp;                    this.delete(newMin);</b>
+<i>904</i>&nbsp;                    this.merge(min, max);
+<b class="nc"><i>905</i>&nbsp;                    return;</b>
+<i>906</i>&nbsp;                }
+<b class="nc"><i>907</i>&nbsp;</b>
+<b class="nc"><i>908</i>&nbsp;                if(min &gt;= this.minRange[newMin] &amp;&amp; min &lt;= this.maxRange[newMin]) {</b>
+<i>909</i>&nbsp;                    this.delete(newMin);
+<i>910</i>&nbsp;                    min = this.minRange[newMin];
+<i>911</i>&nbsp;                    this.merge(min, max);
+<i>912</i>&nbsp;                    return;
+<i>913</i>&nbsp;                }
+<i>914</i>&nbsp;
+<b class="nc"><i>915</i>&nbsp;                if(max &gt;= this.minRange[newMin] &amp;&amp; max &lt;= this.maxRange[newMin]) {</b>
+<b class="nc"><i>916</i>&nbsp;                    this.delete(newMin);</b>
+<i>917</i>&nbsp;                    max = this.maxRange[newMin];
+<i>918</i>&nbsp;                    this.merge(min, max);
+<i>919</i>&nbsp;                    return;
+<i>920</i>&nbsp;                }
+<i>921</i>&nbsp;            }
+<i>922</i>&nbsp;
+<i>923</i>&nbsp;            if(this.num &gt;= this.size) {
+<b class="nc"><i>924</i>&nbsp;                this.size *= 2;</b>
+<b class="nc"><i>925</i>&nbsp;                int[] var5 = new int[this.size];</b>
+<i>926</i>&nbsp;                int[] newMax = new int[this.size];
+<i>927</i>&nbsp;                System.arraycopy(this.minRange, 0, var5, 0, this.num);
+<i>928</i>&nbsp;                System.arraycopy(this.maxRange, 0, newMax, 0, this.num);
+<i>929</i>&nbsp;                this.minRange = var5;
+<i>930</i>&nbsp;                this.maxRange = newMax;
+<i>931</i>&nbsp;            }
+<i>932</i>&nbsp;
+<i>933</i>&nbsp;            this.minRange[this.num] = min;
+<i>934</i>&nbsp;            this.maxRange[this.num] = max;
+<i>935</i>&nbsp;            ++this.num;
+<i>936</i>&nbsp;        }
+<b class="nc"><i>937</i>&nbsp;</b>
+<i>938</i>&nbsp;        void remove(int min, int max) {
+<i>939</i>&nbsp;            for(int i = 0; i &lt; this.num; ++i) {
+<b class="nc"><i>940</i>&nbsp;                if(this.minRange[i] &gt;= min &amp;&amp; this.maxRange[i] &lt;= max) {</b>
+<i>941</i>&nbsp;                    this.delete(i);
+<i>942</i>&nbsp;                    --i;
+<b class="nc"><i>943</i>&nbsp;                    return;</b>
+<i>944</i>&nbsp;                }
+<i>945</i>&nbsp;
+<b class="nc"><i>946</i>&nbsp;                if(min &gt;= this.minRange[i] &amp;&amp; max &lt;= this.maxRange[i]) {</b>
+<i>947</i>&nbsp;                    int minr = this.minRange[i];
+<i>948</i>&nbsp;                    int maxr = this.maxRange[i];
+<b class="nc"><i>949</i>&nbsp;                    this.delete(i);</b>
+<i>950</i>&nbsp;                    if(minr &lt; min) {
+<b class="nc"><i>951</i>&nbsp;                        this.merge(minr, min - 1);</b>
+<i>952</i>&nbsp;                    }
+<b class="nc"><i>953</i>&nbsp;</b>
+<b class="nc"><i>954</i>&nbsp;                    if(max &lt; maxr) {</b>
+<b class="nc"><i>955</i>&nbsp;                        this.merge(max + 1, maxr);</b>
+<i>956</i>&nbsp;                    }
+<i>957</i>&nbsp;
+<i>958</i>&nbsp;                    return;
+<i>959</i>&nbsp;                }
+<i>960</i>&nbsp;
+<b class="nc"><i>961</i>&nbsp;                if(this.minRange[i] &gt;= min &amp;&amp; this.minRange[i] &lt;= max) {</b>
+<i>962</i>&nbsp;                    this.minRange[i] = max + 1;
+<i>963</i>&nbsp;                    return;
+<i>964</i>&nbsp;                }
+<i>965</i>&nbsp;
+<b class="nc"><i>966</i>&nbsp;                if(this.maxRange[i] &gt;= min &amp;&amp; this.maxRange[i] &lt;= max) {</b>
+<i>967</i>&nbsp;                    this.maxRange[i] = min - 1;
+<i>968</i>&nbsp;                    return;
+<i>969</i>&nbsp;                }
+<i>970</i>&nbsp;            }
+<b class="nc"><i>971</i>&nbsp;</b>
+<b class="nc"><i>972</i>&nbsp;        }</b>
+<i>973</i>&nbsp;
+<b class="nc"><i>974</i>&nbsp;        void include(int min, int max, boolean include) {</b>
+<i>975</i>&nbsp;            if(include) {
+<b class="nc"><i>976</i>&nbsp;                this.merge(min, max);</b>
+<i>977</i>&nbsp;            } else {
+<b class="nc"><i>978</i>&nbsp;                this.remove(min, max);</b>
+<i>979</i>&nbsp;            }
+<i>980</i>&nbsp;
+<i>981</i>&nbsp;        }
+<i>982</i>&nbsp;
+<i>983</i>&nbsp;        void include(char minmax, boolean include) {
+<b class="nc"><i>984</i>&nbsp;            this.include(minmax, minmax, include);</b>
+<i>985</i>&nbsp;        }
+<b class="nc"><i>986</i>&nbsp;    }</b>
+<b class="nc"><i>987</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

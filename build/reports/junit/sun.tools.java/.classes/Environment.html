@@ -1,0 +1,703 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Environment</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.tools.java</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Environment (sun.tools.java)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Environment</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 63)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 283)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.tools.java;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.File;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import sun.tools.java.AmbiguousClass;
+<i>11</i>&nbsp;import sun.tools.java.ClassDeclaration;
+<i>12</i>&nbsp;import sun.tools.java.ClassDefinition;
+<i>13</i>&nbsp;import sun.tools.java.ClassNotFound;
+<i>14</i>&nbsp;import sun.tools.java.Constants;
+<i>15</i>&nbsp;import sun.tools.java.Identifier;
+<i>16</i>&nbsp;import sun.tools.java.IdentifierToken;
+<i>17</i>&nbsp;import sun.tools.java.Imports;
+<i>18</i>&nbsp;import sun.tools.java.MemberDefinition;
+<i>19</i>&nbsp;import sun.tools.java.Package;
+<i>20</i>&nbsp;import sun.tools.java.Type;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;public class Environment implements Constants {
+<i>23</i>&nbsp;    Environment env;
+<i>24</i>&nbsp;    String encoding;
+<i>25</i>&nbsp;    Object source;
+<i>26</i>&nbsp;    private static boolean debugging = System.getProperty(&quot;javac.debug&quot;) != null;
+<i>27</i>&nbsp;    private static boolean dependtrace = System.getProperty(&quot;javac.trace.depend&quot;) != null;
+<i>28</i>&nbsp;    private static boolean dumpmodifiers = System.getProperty(&quot;javac.dump.modifiers&quot;) != null;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public Environment(Environment var1, Object var2) {
+<i>31</i>&nbsp;        if(var1 != null &amp;&amp; var1.env != null &amp;&amp; var1.getClass() == this.getClass()) {
+<i>32</i>&nbsp;            var1 = var1.env;
+<i>33</i>&nbsp;        }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;        this.env = var1;
+<i>36</i>&nbsp;        this.source = var2;
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public Environment() {
+<i>40</i>&nbsp;        this((Environment)null, (Object)null);
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public boolean isExemptPackage(Identifier var1) {
+<i>44</i>&nbsp;        return this.env.isExemptPackage(var1);
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public ClassDeclaration getClassDeclaration(Identifier var1) {
+<i>48</i>&nbsp;        return this.env.getClassDeclaration((Identifier)var1);
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public final ClassDefinition getClassDefinition(Identifier var1) throws ClassNotFound {
+<i>52</i>&nbsp;        if(!var1.isInner()) {
+<i>53</i>&nbsp;            return this.getClassDeclaration((Identifier)var1).getClassDefinition(this);
+<i>54</i>&nbsp;        } else {
+<b class="nc"><i>55</i>&nbsp;            ClassDefinition var2 = this.getClassDefinition((Identifier)var1.getTopName());</b>
+<b class="nc"><i>56</i>&nbsp;            Identifier var3 = var1.getFlatName();</b>
+<b class="nc"><i>57</i>&nbsp;</b>
+<b class="nc"><i>58</i>&nbsp;            label36:</b>
+<b class="nc"><i>59</i>&nbsp;            while(var3.isQualified()) {</b>
+<i>60</i>&nbsp;                var3 = var3.getTail();
+<i>61</i>&nbsp;                Identifier var4 = var3.getHead();
+<b class="nc"><i>62</i>&nbsp;                String var5 = var4.toString();</b>
+<i>63</i>&nbsp;                if(var5.length() &gt; 0 &amp;&amp; Character.isDigit(var5.charAt(0))) {
+<i>64</i>&nbsp;                    ClassDefinition var7 = var2.getLocalClass(var5);
+<i>65</i>&nbsp;                    if(var7 == null) {
+<i>66</i>&nbsp;                        throw new ClassNotFound(Identifier.lookupInner(var2.getName(), var4));
+<i>67</i>&nbsp;                    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;                    var2 = var7;
+<b class="nc"><i>70</i>&nbsp;                } else {</b>
+<i>71</i>&nbsp;                    for(MemberDefinition var6 = var2.getFirstMatch(var4); var6 != null; var6 = var6.getNextMatch()) {
+<i>72</i>&nbsp;                        if(var6.isInnerClass()) {
+<i>73</i>&nbsp;                            var2 = var6.getInnerClass();
+<i>74</i>&nbsp;                            continue label36;
+<i>75</i>&nbsp;                        }
+<i>76</i>&nbsp;                    }
+<b class="nc"><i>77</i>&nbsp;</b>
+<i>78</i>&nbsp;                    throw new ClassNotFound(Identifier.lookupInner(var2.getName(), var4));
+<i>79</i>&nbsp;                }
+<i>80</i>&nbsp;            }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;            return var2;
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public ClassDeclaration getClassDeclaration(Type var1) {
+<b class="nc"><i>87</i>&nbsp;        return this.getClassDeclaration((Identifier)var1.getClassName());</b>
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<b class="nc"><i>89</i>&nbsp;</b>
+<i>90</i>&nbsp;    public final ClassDefinition getClassDefinition(Type var1) throws ClassNotFound {
+<b class="nc"><i>91</i>&nbsp;        return this.getClassDefinition((Identifier)var1.getClassName());</b>
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<i>94</i>&nbsp;    public boolean classExists(Identifier var1) {
+<b class="nc"><i>95</i>&nbsp;        return this.env.classExists((Identifier)var1);</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public final boolean classExists(Type var1) {
+<i>99</i>&nbsp;        return !var1.isType(10) || this.classExists((Identifier)var1.getClassName());
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public Package getPackage(Identifier var1) throws IOException {
+<i>103</i>&nbsp;        return this.env.getPackage(var1);
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<b class="nc"><i>106</i>&nbsp;    public void loadDefinition(ClassDeclaration var1) {</b>
+<i>107</i>&nbsp;        this.env.loadDefinition(var1);
+<b class="nc"><i>108</i>&nbsp;    }</b>
+<b class="nc"><i>109</i>&nbsp;</b>
+<b class="nc"><i>110</i>&nbsp;    public final Object getSource() {</b>
+<b class="nc"><i>111</i>&nbsp;        return this.source;</b>
+<i>112</i>&nbsp;    }
+<b class="nc"><i>113</i>&nbsp;</b>
+<b class="nc"><i>114</i>&nbsp;    public boolean resolve(long var1, ClassDefinition var3, Type var4) {</b>
+<b class="nc"><i>115</i>&nbsp;        switch(var4.getTypeCode()) {</b>
+<b class="nc"><i>116</i>&nbsp;        case 9:</b>
+<b class="nc"><i>117</i>&nbsp;            return this.resolve(var1, var3, var4.getElementType());</b>
+<b class="nc"><i>118</i>&nbsp;        case 10:</b>
+<i>119</i>&nbsp;            try {
+<i>120</i>&nbsp;                Identifier var12 = var4.getClassName();
+<i>121</i>&nbsp;                if(!var12.isQualified() &amp;&amp; !var12.isInner() &amp;&amp; !this.classExists((Identifier)var12)) {
+<b class="nc"><i>122</i>&nbsp;                    this.resolve(var12);</b>
+<i>123</i>&nbsp;                }
+<i>124</i>&nbsp;
+<b class="nc"><i>125</i>&nbsp;                ClassDefinition var11 = this.getQualifiedClassDefinition(var1, var12, var3, false);</b>
+<i>126</i>&nbsp;                if(!var3.canAccess(this, var11.getClassDeclaration())) {
+<b class="nc"><i>127</i>&nbsp;                    this.error(var1, &quot;cant.access.class&quot;, var11);</b>
+<i>128</i>&nbsp;                    return true;
+<i>129</i>&nbsp;                }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;                var11.noteUsedBy(var3, var1, this.env);
+<i>132</i>&nbsp;                return true;
+<i>133</i>&nbsp;            } catch (AmbiguousClass var9) {
+<i>134</i>&nbsp;                this.error(var1, &quot;ambig.class&quot;, var9.name1, var9.name2);
+<i>135</i>&nbsp;                return false;
+<b class="nc"><i>136</i>&nbsp;            } catch (ClassNotFound var10) {</b>
+<i>137</i>&nbsp;                ClassNotFound var13 = var10;
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;                try {
+<i>140</i>&nbsp;                    if(var13.name.isInner() &amp;&amp; this.getPackage(var13.name.getTopName()).exists()) {
+<i>141</i>&nbsp;                        this.env.error(var1, &quot;class.and.package&quot;, var13.name.getTopName());
+<i>142</i>&nbsp;                    }
+<i>143</i>&nbsp;                } catch (IOException var8) {
+<b class="nc"><i>144</i>&nbsp;                    this.env.error(var1, &quot;io.exception&quot;, &quot;package check&quot;);</b>
+<i>145</i>&nbsp;                }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;                this.error(var1, &quot;class.not.found.no.context&quot;, var10.name);
+<i>148</i>&nbsp;                return false;
+<i>149</i>&nbsp;            }
+<i>150</i>&nbsp;        case 11:
+<i>151</i>&nbsp;        default:
+<i>152</i>&nbsp;            return true;
+<b class="nc"><i>153</i>&nbsp;        case 12:</b>
+<i>154</i>&nbsp;            boolean var5 = this.resolve(var1, var3, var4.getReturnType());
+<i>155</i>&nbsp;            Type[] var6 = var4.getArgumentTypes();
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;            for(int var7 = var6.length; var7-- &gt; 0; var5 &amp;= this.resolve(var1, var3, var6[var7])) {</b>
+<i>158</i>&nbsp;                ;
+<i>159</i>&nbsp;            }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;            return var5;
+<i>162</i>&nbsp;        }
+<i>163</i>&nbsp;    }
+<b class="nc"><i>164</i>&nbsp;</b>
+<i>165</i>&nbsp;    public boolean resolveByName(long var1, ClassDefinition var3, Identifier var4) {
+<i>166</i>&nbsp;        return this.resolveByName(var1, var3, var4, false);
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    public boolean resolveExtendsByName(long var1, ClassDefinition var3, Identifier var4) {
+<i>170</i>&nbsp;        return this.resolveByName(var1, var3, var4, true);
+<b class="nc"><i>171</i>&nbsp;    }</b>
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    private boolean resolveByName(long var1, ClassDefinition var3, Identifier var4, boolean var5) {
+<i>174</i>&nbsp;        try {
+<i>175</i>&nbsp;            if(!var4.isQualified() &amp;&amp; !var4.isInner() &amp;&amp; !this.classExists((Identifier)var4)) {
+<i>176</i>&nbsp;                this.resolve(var4);
+<i>177</i>&nbsp;            }
+<b class="nc"><i>178</i>&nbsp;</b>
+<i>179</i>&nbsp;            ClassDefinition var6 = this.getQualifiedClassDefinition(var1, var4, var3, var5);
+<i>180</i>&nbsp;            ClassDeclaration var12 = var6.getClassDeclaration();
+<i>181</i>&nbsp;            if((var5 || !var3.canAccess(this, var12)) &amp;&amp; (!var5 || !var3.extendsCanAccess(this, var12))) {
+<i>182</i>&nbsp;                this.error(var1, &quot;cant.access.class&quot;, var6);
+<i>183</i>&nbsp;                return true;
+<i>184</i>&nbsp;            } else {
+<i>185</i>&nbsp;                return true;
+<i>186</i>&nbsp;            }
+<i>187</i>&nbsp;        } catch (AmbiguousClass var10) {
+<i>188</i>&nbsp;            this.error(var1, &quot;ambig.class&quot;, var10.name1, var10.name2);
+<i>189</i>&nbsp;            return false;
+<i>190</i>&nbsp;        } catch (ClassNotFound var11) {
+<i>191</i>&nbsp;            ClassNotFound var7 = var11;
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;            try {
+<i>194</i>&nbsp;                if(var7.name.isInner() &amp;&amp; this.getPackage(var7.name.getTopName()).exists()) {
+<i>195</i>&nbsp;                    this.env.error(var1, &quot;class.and.package&quot;, var7.name.getTopName());
+<i>196</i>&nbsp;                }
+<i>197</i>&nbsp;            } catch (IOException var9) {
+<i>198</i>&nbsp;                this.env.error(var1, &quot;io.exception&quot;, &quot;package check&quot;);
+<i>199</i>&nbsp;            }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;            this.error(var1, &quot;class.not.found&quot;, var11.name, &quot;type name&quot;);
+<i>202</i>&nbsp;            return false;
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public final ClassDefinition getQualifiedClassDefinition(long var1, Identifier var3, ClassDefinition var4, boolean var5) throws ClassNotFound {
+<i>207</i>&nbsp;        if(!var3.isInner()) {
+<i>208</i>&nbsp;            return this.getClassDeclaration((Identifier)var3).getClassDefinition(this);
+<i>209</i>&nbsp;        } else {
+<i>210</i>&nbsp;            ClassDefinition var6 = this.getClassDefinition((Identifier)var3.getTopName());
+<i>211</i>&nbsp;            Identifier var7 = var3.getFlatName();
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;            label48:
+<i>214</i>&nbsp;            while(var7.isQualified()) {
+<b class="nc"><i>215</i>&nbsp;                var7 = var7.getTail();</b>
+<i>216</i>&nbsp;                Identifier var8 = var7.getHead();
+<i>217</i>&nbsp;                String var9 = var8.toString();
+<i>218</i>&nbsp;                if(var9.length() &gt; 0 &amp;&amp; Character.isDigit(var9.charAt(0))) {
+<b class="nc"><i>219</i>&nbsp;                    ClassDefinition var13 = var6.getLocalClass(var9);</b>
+<b class="nc"><i>220</i>&nbsp;                    if(var13 == null) {</b>
+<b class="nc"><i>221</i>&nbsp;                        throw new ClassNotFound(Identifier.lookupInner(var6.getName(), var8));</b>
+<i>222</i>&nbsp;                    }
+<b class="nc"><i>223</i>&nbsp;</b>
+<b class="nc"><i>224</i>&nbsp;                    var6 = var13;</b>
+<i>225</i>&nbsp;                } else {
+<i>226</i>&nbsp;                    for(MemberDefinition var10 = var6.getFirstMatch(var8); var10 != null; var10 = var10.getNextMatch()) {
+<b class="nc"><i>227</i>&nbsp;                        if(var10.isInnerClass()) {</b>
+<b class="nc"><i>228</i>&nbsp;                            ClassDeclaration var11 = var6.getClassDeclaration();</b>
+<i>229</i>&nbsp;                            var6 = var10.getInnerClass();
+<b class="nc"><i>230</i>&nbsp;                            ClassDeclaration var12 = var6.getClassDeclaration();</b>
+<b class="nc"><i>231</i>&nbsp;                            if(!var5 &amp;&amp; !var4.canAccess(this.env, var12) || var5 &amp;&amp; !var4.extendsCanAccess(this.env, var12)) {</b>
+<b class="nc"><i>232</i>&nbsp;                                this.env.error(var1, &quot;no.type.access&quot;, var8, var11, var4);</b>
+<b class="nc"><i>233</i>&nbsp;                            }</b>
+<b class="nc"><i>234</i>&nbsp;                            continue label48;</b>
+<i>235</i>&nbsp;                        }
+<i>236</i>&nbsp;                    }
+<i>237</i>&nbsp;
+<b class="nc"><i>238</i>&nbsp;                    throw new ClassNotFound(Identifier.lookupInner(var6.getName(), var8));</b>
+<i>239</i>&nbsp;                }
+<b class="nc"><i>240</i>&nbsp;            }</b>
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;            return var6;
+<b class="nc"><i>243</i>&nbsp;        }</b>
+<b class="nc"><i>244</i>&nbsp;    }</b>
+<b class="nc"><i>245</i>&nbsp;</b>
+<i>246</i>&nbsp;    public Type resolveNames(ClassDefinition var1, Type var2, boolean var3) {
+<i>247</i>&nbsp;        this.dtEvent(&quot;Environment.resolveNames: &quot; + var1 + &quot;, &quot; + var2);
+<b class="nc"><i>248</i>&nbsp;        switch(var2.getTypeCode()) {</b>
+<b class="nc"><i>249</i>&nbsp;        case 9:</b>
+<b class="nc"><i>250</i>&nbsp;            var2 = Type.tArray(this.resolveNames(var1, var2.getElementType(), var3));</b>
+<b class="nc"><i>251</i>&nbsp;            break;</b>
+<i>252</i>&nbsp;        case 10:
+<i>253</i>&nbsp;            Identifier var12 = var2.getClassName();
+<i>254</i>&nbsp;            Identifier var13;
+<b class="nc"><i>255</i>&nbsp;            if(var3) {</b>
+<i>256</i>&nbsp;                var13 = this.resolvePackageQualifiedName(var12);
+<i>257</i>&nbsp;            } else {
+<b class="nc"><i>258</i>&nbsp;                var13 = var1.resolveName(this, var12);</b>
+<b class="nc"><i>259</i>&nbsp;            }</b>
+<b class="nc"><i>260</i>&nbsp;</b>
+<b class="nc"><i>261</i>&nbsp;            if(var12 != var13) {</b>
+<i>262</i>&nbsp;                var2 = Type.tClass(var13);
+<b class="nc"><i>263</i>&nbsp;            }</b>
+<i>264</i>&nbsp;        case 11:
+<b class="nc"><i>265</i>&nbsp;        default:</b>
+<i>266</i>&nbsp;            break;
+<i>267</i>&nbsp;        case 12:
+<i>268</i>&nbsp;            Type var4 = var2.getReturnType();
+<i>269</i>&nbsp;            Type var5 = this.resolveNames(var1, var4, var3);
+<i>270</i>&nbsp;            Type[] var6 = var2.getArgumentTypes();
+<i>271</i>&nbsp;            Type[] var7 = new Type[var6.length];
+<i>272</i>&nbsp;            boolean var8 = var4 != var5;
+<i>273</i>&nbsp;            int var9 = var6.length;
+<b class="nc"><i>274</i>&nbsp;</b>
+<i>275</i>&nbsp;            while(var9-- &gt; 0) {
+<i>276</i>&nbsp;                Type var10 = var6[var9];
+<i>277</i>&nbsp;                Type var11 = this.resolveNames(var1, var10, var3);
+<b class="nc"><i>278</i>&nbsp;                var7[var9] = var11;</b>
+<i>279</i>&nbsp;                if(var10 != var11) {
+<i>280</i>&nbsp;                    var8 = true;
+<i>281</i>&nbsp;                }
+<i>282</i>&nbsp;            }
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;            if(var8) {
+<b class="nc"><i>285</i>&nbsp;                var2 = Type.tMethod(var5, var7);</b>
+<b class="nc"><i>286</i>&nbsp;            }</b>
+<i>287</i>&nbsp;        }
+<b class="nc"><i>288</i>&nbsp;</b>
+<b class="nc"><i>289</i>&nbsp;        return var2;</b>
+<b class="nc"><i>290</i>&nbsp;    }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public Identifier resolveName(Identifier var1) {
+<b class="nc"><i>293</i>&nbsp;        if(var1.isQualified()) {</b>
+<b class="nc"><i>294</i>&nbsp;            Identifier var2 = this.resolveName(var1.getHead());</b>
+<i>295</i>&nbsp;            if(var2.hasAmbigPrefix()) {
+<b class="nc"><i>296</i>&nbsp;                return var2;</b>
+<b class="nc"><i>297</i>&nbsp;            } else if(!this.classExists((Identifier)var2)) {</b>
+<b class="nc"><i>298</i>&nbsp;                return this.resolvePackageQualifiedName(var1);</b>
+<b class="nc"><i>299</i>&nbsp;            } else {</b>
+<i>300</i>&nbsp;                try {
+<i>301</i>&nbsp;                    return this.getClassDefinition((Identifier)var2).resolveInnerClass(this, var1.getTail());
+<i>302</i>&nbsp;                } catch (ClassNotFound var4) {
+<b class="nc"><i>303</i>&nbsp;                    return Identifier.lookupInner(var2, var1.getTail());</b>
+<i>304</i>&nbsp;                }
+<b class="nc"><i>305</i>&nbsp;            }</b>
+<i>306</i>&nbsp;        } else {
+<i>307</i>&nbsp;            try {
+<b class="nc"><i>308</i>&nbsp;                return this.resolve(var1);</b>
+<b class="nc"><i>309</i>&nbsp;            } catch (AmbiguousClass var5) {</b>
+<b class="nc"><i>310</i>&nbsp;                return var1.hasAmbigPrefix()?var1:var1.addAmbigPrefix();</b>
+<b class="nc"><i>311</i>&nbsp;            } catch (ClassNotFound var6) {</b>
+<b class="nc"><i>312</i>&nbsp;                Imports var3 = this.getImports();</b>
+<b class="nc"><i>313</i>&nbsp;                return var3 != null?var3.forceResolve(this, var1):var1;</b>
+<b class="nc"><i>314</i>&nbsp;            }</b>
+<i>315</i>&nbsp;        }
+<i>316</i>&nbsp;    }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    public final Identifier resolvePackageQualifiedName(Identifier var1) {
+<i>319</i>&nbsp;        Identifier var2;
+<i>320</i>&nbsp;        for(var2 = null; !this.classExists((Identifier)var1); var1 = var1.getQualifier()) {
+<i>321</i>&nbsp;            if(!var1.isQualified()) {
+<i>322</i>&nbsp;                var1 = var2 == null?var1:Identifier.lookup(var1, var2);
+<i>323</i>&nbsp;                var2 = null;
+<i>324</i>&nbsp;                break;
+<i>325</i>&nbsp;            }
+<i>326</i>&nbsp;
+<b class="nc"><i>327</i>&nbsp;            Identifier var3 = var1.getName();</b>
+<b class="nc"><i>328</i>&nbsp;            var2 = var2 == null?var3:Identifier.lookup(var3, var2);</b>
+<b class="nc"><i>329</i>&nbsp;        }</b>
+<i>330</i>&nbsp;
+<b class="nc"><i>331</i>&nbsp;        if(var2 != null) {</b>
+<b class="nc"><i>332</i>&nbsp;            var1 = Identifier.lookupInner(var1, var2);</b>
+<b class="nc"><i>333</i>&nbsp;        }</b>
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;        return var1;</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<b class="nc"><i>338</i>&nbsp;    public Identifier resolve(Identifier var1) throws ClassNotFound {</b>
+<i>339</i>&nbsp;        return this.env == null?var1:this.env.resolve(var1);
+<b class="nc"><i>340</i>&nbsp;    }</b>
+<b class="nc"><i>341</i>&nbsp;</b>
+<b class="nc"><i>342</i>&nbsp;    public Imports getImports() {</b>
+<b class="nc"><i>343</i>&nbsp;        return this.env == null?null:this.env.getImports();</b>
+<i>344</i>&nbsp;    }
+<b class="nc"><i>345</i>&nbsp;</b>
+<b class="nc"><i>346</i>&nbsp;    public ClassDefinition makeClassDefinition(Environment var1, long var2, IdentifierToken var4, String var5, int var6, IdentifierToken var7, IdentifierToken[] var8, ClassDefinition var9) {</b>
+<b class="nc"><i>347</i>&nbsp;        return this.env == null?null:this.env.makeClassDefinition(var1, var2, var4, var5, var6, var7, var8, var9);</b>
+<b class="nc"><i>348</i>&nbsp;    }</b>
+<b class="nc"><i>349</i>&nbsp;</b>
+<b class="nc"><i>350</i>&nbsp;    public MemberDefinition makeMemberDefinition(Environment var1, long var2, ClassDefinition var4, String var5, int var6, Type var7, Identifier var8, IdentifierToken[] var9, IdentifierToken[] var10, Object var11) {</b>
+<b class="nc"><i>351</i>&nbsp;        return this.env == null?null:this.env.makeMemberDefinition(var1, var2, var4, var5, var6, var7, var8, var9, var10, var11);</b>
+<i>352</i>&nbsp;    }
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;    public boolean isApplicable(MemberDefinition var1, Type[] var2) throws ClassNotFound {
+<i>355</i>&nbsp;        Type var3 = var1.getType();
+<b class="nc"><i>356</i>&nbsp;        if(!var3.isType(12)) {</b>
+<i>357</i>&nbsp;            return false;
+<i>358</i>&nbsp;        } else {
+<i>359</i>&nbsp;            Type[] var4 = var3.getArgumentTypes();
+<i>360</i>&nbsp;            if(var2.length != var4.length) {
+<i>361</i>&nbsp;                return false;
+<b class="nc"><i>362</i>&nbsp;            } else {</b>
+<i>363</i>&nbsp;                int var5 = var2.length;
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;                do {
+<i>366</i>&nbsp;                    --var5;
+<i>367</i>&nbsp;                    if(var5 &lt; 0) {
+<i>368</i>&nbsp;                        return true;
+<i>369</i>&nbsp;                    }
+<i>370</i>&nbsp;                } while(this.isMoreSpecific((Type)var2[var5], (Type)var4[var5]));
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;                return false;
+<i>373</i>&nbsp;            }
+<i>374</i>&nbsp;        }
+<i>375</i>&nbsp;    }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    public boolean isMoreSpecific(MemberDefinition var1, MemberDefinition var2) throws ClassNotFound {
+<i>378</i>&nbsp;        Type var3 = var1.getClassDeclaration().getType();
+<i>379</i>&nbsp;        Type var4 = var2.getClassDeclaration().getType();
+<i>380</i>&nbsp;        boolean var5 = this.isMoreSpecific((Type)var3, (Type)var4) &amp;&amp; this.isApplicable(var2, var1.getType().getArgumentTypes());
+<i>381</i>&nbsp;        return var5;
+<i>382</i>&nbsp;    }
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;    public boolean isMoreSpecific(Type var1, Type var2) throws ClassNotFound {
+<i>385</i>&nbsp;        return this.implicitCast(var1, var2);
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;    public boolean implicitCast(Type var1, Type var2) throws ClassNotFound {
+<i>389</i>&nbsp;        if(var1 == var2) {
+<i>390</i>&nbsp;            return true;
+<b class="nc"><i>391</i>&nbsp;        } else {</b>
+<i>392</i>&nbsp;            int var3 = var2.getTypeCode();
+<i>393</i>&nbsp;            switch(var1.getTypeCode()) {
+<b class="nc"><i>394</i>&nbsp;            case 1:</b>
+<i>395</i>&nbsp;                if(var3 == 3) {
+<b class="nc"><i>396</i>&nbsp;                    return true;</b>
+<i>397</i>&nbsp;                }
+<i>398</i>&nbsp;            case 2:
+<i>399</i>&nbsp;            case 3:
+<i>400</i>&nbsp;                if(var3 == 4) {
+<i>401</i>&nbsp;                    return true;
+<i>402</i>&nbsp;                }
+<i>403</i>&nbsp;            case 4:
+<i>404</i>&nbsp;                if(var3 == 5) {
+<i>405</i>&nbsp;                    return true;
+<i>406</i>&nbsp;                }
+<i>407</i>&nbsp;            case 5:
+<i>408</i>&nbsp;                if(var3 == 6) {
+<i>409</i>&nbsp;                    return true;
+<i>410</i>&nbsp;                }
+<i>411</i>&nbsp;            case 6:
+<i>412</i>&nbsp;                if(var3 == 7) {
+<b class="nc"><i>413</i>&nbsp;                    return true;</b>
+<b class="nc"><i>414</i>&nbsp;                }</b>
+<i>415</i>&nbsp;            case 7:
+<b class="nc"><i>416</i>&nbsp;            default:</b>
+<i>417</i>&nbsp;                return false;
+<b class="nc"><i>418</i>&nbsp;            case 8:</b>
+<b class="nc"><i>419</i>&nbsp;                return var2.inMask(1792);</b>
+<i>420</i>&nbsp;            case 9:
+<b class="nc"><i>421</i>&nbsp;                if(!var2.isType(9)) {</b>
+<i>422</i>&nbsp;                    return var2 == Type.tObject || var2 == Type.tCloneable || var2 == Type.tSerializable;
+<b class="nc"><i>423</i>&nbsp;                } else {</b>
+<b class="nc"><i>424</i>&nbsp;                    do {</b>
+<i>425</i>&nbsp;                        var1 = var1.getElementType();
+<i>426</i>&nbsp;                        var2 = var2.getElementType();
+<i>427</i>&nbsp;                    } while(var1.isType(9) &amp;&amp; var2.isType(9));
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;                    return var1.inMask(1536) &amp;&amp; var2.inMask(1536)?this.isMoreSpecific((Type)var1, (Type)var2):var1.getTypeCode() == var2.getTypeCode();
+<b class="nc"><i>430</i>&nbsp;                }</b>
+<b class="nc"><i>431</i>&nbsp;            case 10:</b>
+<i>432</i>&nbsp;                if(var3 == 10) {
+<i>433</i>&nbsp;                    ClassDefinition var4 = this.getClassDefinition((Type)var1);
+<b class="nc"><i>434</i>&nbsp;                    ClassDefinition var5 = this.getClassDefinition((Type)var2);</b>
+<b class="nc"><i>435</i>&nbsp;                    return var5.implementedBy(this, var4.getClassDeclaration());</b>
+<b class="nc"><i>436</i>&nbsp;                } else {</b>
+<b class="nc"><i>437</i>&nbsp;                    return false;</b>
+<b class="nc"><i>438</i>&nbsp;                }</b>
+<b class="nc"><i>439</i>&nbsp;            }</b>
+<b class="nc"><i>440</i>&nbsp;        }</b>
+<b class="nc"><i>441</i>&nbsp;    }</b>
+<b class="nc"><i>442</i>&nbsp;</b>
+<b class="nc"><i>443</i>&nbsp;    public boolean explicitCast(Type var1, Type var2) throws ClassNotFound {</b>
+<b class="nc"><i>444</i>&nbsp;        if(this.implicitCast(var1, var2)) {</b>
+<i>445</i>&nbsp;            return true;
+<b class="nc"><i>446</i>&nbsp;        } else if(var1.inMask(254)) {</b>
+<b class="nc"><i>447</i>&nbsp;            return var2.inMask(254);</b>
+<b class="nc"><i>448</i>&nbsp;        } else if(var1.isType(10) &amp;&amp; var2.isType(10)) {</b>
+<i>449</i>&nbsp;            ClassDefinition var5 = this.getClassDefinition((Type)var1);
+<i>450</i>&nbsp;            ClassDefinition var6 = this.getClassDefinition((Type)var2);
+<i>451</i>&nbsp;            return var6.isFinal()?var5.implementedBy(this, var6.getClassDeclaration()):(var5.isFinal()?var6.implementedBy(this, var5.getClassDeclaration()):(var6.isInterface() &amp;&amp; var5.isInterface()?var6.couldImplement(var5):var6.isInterface() || var5.isInterface() || var5.superClassOf(this, var6.getClassDeclaration())));
+<i>452</i>&nbsp;        } else {
+<b class="nc"><i>453</i>&nbsp;            if(var2.isType(9)) {</b>
+<i>454</i>&nbsp;                if(var1.isType(9)) {
+<i>455</i>&nbsp;                    Type var3 = var1.getElementType();
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;                    Type var4;
+<i>458</i>&nbsp;                    for(var4 = var2.getElementType(); var3.getTypeCode() == 9 &amp;&amp; var4.getTypeCode() == 9; var4 = var4.getElementType()) {
+<i>459</i>&nbsp;                        var3 = var3.getElementType();
+<i>460</i>&nbsp;                    }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;                    if(var3.inMask(1536) &amp;&amp; var4.inMask(1536)) {
+<i>463</i>&nbsp;                        return this.explicitCast(var3, var4);
+<b class="nc"><i>464</i>&nbsp;                    }</b>
+<i>465</i>&nbsp;                } else if(var1 == Type.tObject || var1 == Type.tCloneable || var1 == Type.tSerializable) {
+<i>466</i>&nbsp;                    return true;
+<i>467</i>&nbsp;                }
+<b class="nc"><i>468</i>&nbsp;            }</b>
+<i>469</i>&nbsp;
+<b class="nc"><i>470</i>&nbsp;            return false;</b>
+<i>471</i>&nbsp;        }
+<i>472</i>&nbsp;    }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;    public int getFlags() {
+<b class="nc"><i>475</i>&nbsp;        return this.env.getFlags();</b>
+<i>476</i>&nbsp;    }
+<i>477</i>&nbsp;
+<b class="nc"><i>478</i>&nbsp;    public final boolean debug_lines() {</b>
+<b class="nc"><i>479</i>&nbsp;        return (this.getFlags() &amp; 4096) != 0;</b>
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<b class="nc"><i>482</i>&nbsp;    public final boolean debug_vars() {</b>
+<i>483</i>&nbsp;        return (this.getFlags() &amp; 8192) != 0;
+<b class="nc"><i>484</i>&nbsp;    }</b>
+<i>485</i>&nbsp;
+<b class="nc"><i>486</i>&nbsp;    public final boolean debug_source() {</b>
+<i>487</i>&nbsp;        return (this.getFlags() &amp; 262144) != 0;
+<i>488</i>&nbsp;    }
+<i>489</i>&nbsp;
+<b class="nc"><i>490</i>&nbsp;    public final boolean opt() {</b>
+<b class="nc"><i>491</i>&nbsp;        return (this.getFlags() &amp; 16384) != 0;</b>
+<i>492</i>&nbsp;    }
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;    public final boolean opt_interclass() {
+<i>495</i>&nbsp;        return (this.getFlags() &amp; &#39;耀&#39;) != 0;
+<i>496</i>&nbsp;    }
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;    public final boolean verbose() {
+<b class="nc"><i>499</i>&nbsp;        return (this.getFlags() &amp; 1) != 0;</b>
+<b class="nc"><i>500</i>&nbsp;    }</b>
+<i>501</i>&nbsp;
+<b class="nc"><i>502</i>&nbsp;    public final boolean dump() {</b>
+<i>503</i>&nbsp;        return (this.getFlags() &amp; 2) != 0;
+<b class="nc"><i>504</i>&nbsp;    }</b>
+<i>505</i>&nbsp;
+<b class="nc"><i>506</i>&nbsp;    public final boolean warnings() {</b>
+<b class="nc"><i>507</i>&nbsp;        return (this.getFlags() &amp; 4) != 0;</b>
+<b class="nc"><i>508</i>&nbsp;    }</b>
+<i>509</i>&nbsp;
+<b class="nc"><i>510</i>&nbsp;    public final boolean dependencies() {</b>
+<i>511</i>&nbsp;        return (this.getFlags() &amp; 32) != 0;
+<i>512</i>&nbsp;    }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;    public final boolean print_dependencies() {
+<i>515</i>&nbsp;        return (this.getFlags() &amp; 1024) != 0;
+<i>516</i>&nbsp;    }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;    public final boolean deprecation() {
+<i>519</i>&nbsp;        return (this.getFlags() &amp; 512) != 0;
+<i>520</i>&nbsp;    }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;    public final boolean version12() {
+<i>523</i>&nbsp;        return (this.getFlags() &amp; 2048) != 0;
+<i>524</i>&nbsp;    }
+<b class="nc"><i>525</i>&nbsp;</b>
+<i>526</i>&nbsp;    public final boolean strictdefault() {
+<b class="nc"><i>527</i>&nbsp;        return (this.getFlags() &amp; 131072) != 0;</b>
+<b class="nc"><i>528</i>&nbsp;    }</b>
+<i>529</i>&nbsp;
+<b class="nc"><i>530</i>&nbsp;    public void shutdown() {</b>
+<b class="nc"><i>531</i>&nbsp;        if(this.env != null) {</b>
+<b class="nc"><i>532</i>&nbsp;            this.env.shutdown();</b>
+<b class="nc"><i>533</i>&nbsp;        }</b>
+<i>534</i>&nbsp;
+<b class="nc"><i>535</i>&nbsp;    }</b>
+<b class="nc"><i>536</i>&nbsp;</b>
+<b class="nc"><i>537</i>&nbsp;    public void error(Object var1, long var2, String var4, Object var5, Object var6, Object var7) {</b>
+<b class="nc"><i>538</i>&nbsp;        this.env.error(var1, var2, var4, var5, var6, var7);</b>
+<b class="nc"><i>539</i>&nbsp;    }</b>
+<b class="nc"><i>540</i>&nbsp;</b>
+<b class="nc"><i>541</i>&nbsp;    public final void error(long var1, String var3, Object var4, Object var5, Object var6) {</b>
+<i>542</i>&nbsp;        this.error(this.source, var1, var3, var4, var5, var6);
+<i>543</i>&nbsp;    }
+<i>544</i>&nbsp;
+<i>545</i>&nbsp;    public final void error(long var1, String var3, Object var4, Object var5) {
+<i>546</i>&nbsp;        this.error(this.source, var1, var3, var4, var5, (Object)null);
+<i>547</i>&nbsp;    }
+<b class="nc"><i>548</i>&nbsp;</b>
+<b class="nc"><i>549</i>&nbsp;    public final void error(long var1, String var3, Object var4) {</b>
+<i>550</i>&nbsp;        this.error(this.source, var1, var3, var4, (Object)null, (Object)null);
+<i>551</i>&nbsp;    }
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;    public final void error(long var1, String var3) {
+<i>554</i>&nbsp;        this.error(this.source, var1, var3, (Object)null, (Object)null, (Object)null);
+<i>555</i>&nbsp;    }
+<b class="nc"><i>556</i>&nbsp;</b>
+<b class="nc"><i>557</i>&nbsp;    public void output(String var1) {</b>
+<i>558</i>&nbsp;        this.env.output(var1);
+<i>559</i>&nbsp;    }
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;    public static void debugOutput(Object var0) {
+<i>562</i>&nbsp;        if(debugging) {
+<i>563</i>&nbsp;            System.out.println(var0.toString());
+<i>564</i>&nbsp;        }
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;    }
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;    public void setCharacterEncoding(String var1) {
+<b class="nc"><i>569</i>&nbsp;        this.encoding = var1;</b>
+<b class="nc"><i>570</i>&nbsp;    }</b>
+<i>571</i>&nbsp;
+<i>572</i>&nbsp;    public String getCharacterEncoding() {
+<i>573</i>&nbsp;        return this.encoding;
+<i>574</i>&nbsp;    }
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;    public short getMajorVersion() {
+<i>577</i>&nbsp;        return this.env == null?45:this.env.getMajorVersion();
+<i>578</i>&nbsp;    }
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;    public short getMinorVersion() {
+<i>581</i>&nbsp;        return this.env == null?3:this.env.getMinorVersion();
+<i>582</i>&nbsp;    }
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;    public final boolean coverage() {
+<b class="nc"><i>585</i>&nbsp;        return (this.getFlags() &amp; 64) != 0;</b>
+<b class="nc"><i>586</i>&nbsp;    }</b>
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;    public final boolean covdata() {
+<i>589</i>&nbsp;        return (this.getFlags() &amp; 128) != 0;
+<i>590</i>&nbsp;    }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;    public File getcovFile() {
+<i>593</i>&nbsp;        return this.env.getcovFile();
+<i>594</i>&nbsp;    }
+<b class="nc"><i>595</i>&nbsp;</b>
+<b class="nc"><i>596</i>&nbsp;    public void dtEnter(String var1) {</b>
+<b class="nc"><i>597</i>&nbsp;        if(dependtrace) {</b>
+<b class="nc"><i>598</i>&nbsp;            System.out.println(&quot;&gt;&gt;&gt; &quot; + var1);</b>
+<b class="nc"><i>599</i>&nbsp;        }</b>
+<b class="nc"><i>600</i>&nbsp;</b>
+<b class="nc"><i>601</i>&nbsp;    }</b>
+<b class="nc"><i>602</i>&nbsp;</b>
+<b class="nc"><i>603</i>&nbsp;    public void dtExit(String var1) {</b>
+<b class="nc"><i>604</i>&nbsp;        if(dependtrace) {</b>
+<i>605</i>&nbsp;            System.out.println(&quot;&lt;&lt;&lt; &quot; + var1);
+<i>606</i>&nbsp;        }
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;    }
+<i>609</i>&nbsp;
+<i>610</i>&nbsp;    public void dtEvent(String var1) {
+<i>611</i>&nbsp;        if(dependtrace) {
+<i>612</i>&nbsp;            System.out.println(var1);
+<b class="nc"><i>613</i>&nbsp;        }</b>
+<b class="nc"><i>614</i>&nbsp;</b>
+<b class="nc"><i>615</i>&nbsp;    }</b>
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;    public boolean dumpModifiers() {
+<i>618</i>&nbsp;        return dumpmodifiers;
+<b class="nc"><i>619</i>&nbsp;    }</b>
+<i>620</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

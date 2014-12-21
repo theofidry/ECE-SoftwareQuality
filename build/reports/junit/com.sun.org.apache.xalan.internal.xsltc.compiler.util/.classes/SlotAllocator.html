@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SlotAllocator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xalan.internal.xsltc.compiler.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SlotAllocator (com.sun.org.apache.xalan.internal.xsltc.compiler.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SlotAllocator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xalan.internal.xsltc.compiler.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.LocalVariableGen;
+<i>9</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.Type;
+<i>10</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;final class SlotAllocator {
+<i>13</i>&nbsp;    private int _firstAvailableSlot;
+<i>14</i>&nbsp;    private int _size = 8;
+<i>15</i>&nbsp;    private int _free = 0;
+<i>16</i>&nbsp;    private int[] _slotsTaken;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    SlotAllocator() {
+<i>19</i>&nbsp;        this._slotsTaken = new int[this._size];
+<i>20</i>&nbsp;    }
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public void initialize(LocalVariableGen[] vars) {
+<i>23</i>&nbsp;        int length = vars.length;
+<i>24</i>&nbsp;        int slot = 0;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;        for(int i = 0; i &lt; length; ++i) {
+<i>27</i>&nbsp;            int size = vars[i].getType().getSize();
+<b class="nc"><i>28</i>&nbsp;            int index = vars[i].getIndex();</b>
+<i>29</i>&nbsp;            slot = Math.max(slot, index + size);
+<i>30</i>&nbsp;        }
+<b class="nc"><i>31</i>&nbsp;</b>
+<b class="nc"><i>32</i>&nbsp;        this._firstAvailableSlot = slot;</b>
+<b class="nc"><i>33</i>&nbsp;    }</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public int allocateSlot(Type type) {
+<b class="nc"><i>36</i>&nbsp;        int size = type.getSize();</b>
+<b class="nc"><i>37</i>&nbsp;        int limit = this._free;</b>
+<i>38</i>&nbsp;        int slot = this._firstAvailableSlot;
+<b class="nc"><i>39</i>&nbsp;        int where = 0;</b>
+<b class="nc"><i>40</i>&nbsp;        if(this._free + size &gt; this._size) {</b>
+<b class="nc"><i>41</i>&nbsp;            int[] j = new int[this._size *= 2];</b>
+<b class="nc"><i>42</i>&nbsp;</b>
+<i>43</i>&nbsp;            for(int j1 = 0; j1 &lt; limit; ++j1) {
+<b class="nc"><i>44</i>&nbsp;                j[j1] = this._slotsTaken[j1];</b>
+<i>45</i>&nbsp;            }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;            this._slotsTaken = j;
+<b class="nc"><i>48</i>&nbsp;        }</b>
+<b class="nc"><i>49</i>&nbsp;</b>
+<b class="nc"><i>50</i>&nbsp;        int var8;</b>
+<i>51</i>&nbsp;        label36:
+<b class="nc"><i>52</i>&nbsp;        while(where &lt; limit) {</b>
+<b class="nc"><i>53</i>&nbsp;            if(slot + size &lt;= this._slotsTaken[where]) {</b>
+<b class="nc"><i>54</i>&nbsp;                var8 = limit - 1;</b>
+<b class="nc"><i>55</i>&nbsp;</b>
+<b class="nc"><i>56</i>&nbsp;                while(true) {</b>
+<i>57</i>&nbsp;                    if(var8 &lt; where) {
+<i>58</i>&nbsp;                        break label36;
+<b class="nc"><i>59</i>&nbsp;                    }</b>
+<b class="nc"><i>60</i>&nbsp;</b>
+<i>61</i>&nbsp;                    this._slotsTaken[var8 + size] = this._slotsTaken[var8];
+<b class="nc"><i>62</i>&nbsp;                    --var8;</b>
+<b class="nc"><i>63</i>&nbsp;                }</b>
+<b class="nc"><i>64</i>&nbsp;            }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;            slot = this._slotsTaken[where++] + 1;
+<b class="nc"><i>67</i>&nbsp;        }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;        for(var8 = 0; var8 &lt; size; ++var8) {
+<i>70</i>&nbsp;            this._slotsTaken[where + var8] = slot + var8;
+<b class="nc"><i>71</i>&nbsp;        }</b>
+<b class="nc"><i>72</i>&nbsp;</b>
+<i>73</i>&nbsp;        this._free += size;
+<b class="nc"><i>74</i>&nbsp;        return slot;</b>
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public void releaseSlot(LocalVariableGen lvg) {
+<i>78</i>&nbsp;        int size = lvg.getType().getSize();
+<b class="nc"><i>79</i>&nbsp;        int slot = lvg.getIndex();</b>
+<b class="nc"><i>80</i>&nbsp;        int limit = this._free;</b>
+<b class="nc"><i>81</i>&nbsp;</b>
+<i>82</i>&nbsp;        for(int state = 0; state &lt; limit; ++state) {
+<b class="nc"><i>83</i>&nbsp;            if(this._slotsTaken[state] == slot) {</b>
+<b class="nc"><i>84</i>&nbsp;                for(int err = state + size; err &lt; limit; this._slotsTaken[state++] = this._slotsTaken[err++]) {</b>
+<b class="nc"><i>85</i>&nbsp;                    ;</b>
+<b class="nc"><i>86</i>&nbsp;                }</b>
+<b class="nc"><i>87</i>&nbsp;</b>
+<i>88</i>&nbsp;                this._free -= size;
+<b class="nc"><i>89</i>&nbsp;                return;</b>
+<i>90</i>&nbsp;            }
+<i>91</i>&nbsp;        }
+<i>92</i>&nbsp;
+<b class="nc"><i>93</i>&nbsp;        String var7 = &quot;Variable slot allocation error(size=&quot; + size + &quot;, slot=&quot; + slot + &quot;, limit=&quot; + limit + &quot;)&quot;;</b>
+<i>94</i>&nbsp;        ErrorMsg var8 = new ErrorMsg(&quot;INTERNAL_ERR&quot;, var7);
+<b class="nc"><i>95</i>&nbsp;        throw new Error(var8.toString());</b>
+<b class="nc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,2538 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LdapCtx</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jndi.ldap</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LdapCtx (com.sun.jndi.ldap)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LdapCtx</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 106)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1264)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LdapCtx$SearchArgs</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 107)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1269)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jndi.ldap;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jndi.ldap.DefaultResponseControlFactory;
+<i>9</i>&nbsp;import com.sun.jndi.ldap.EventSupport;
+<i>10</i>&nbsp;import com.sun.jndi.ldap.LdapAttribute;
+<i>11</i>&nbsp;import com.sun.jndi.ldap.LdapBindingEnumeration;
+<i>12</i>&nbsp;import com.sun.jndi.ldap.LdapClient;
+<i>13</i>&nbsp;import com.sun.jndi.ldap.LdapEntry;
+<i>14</i>&nbsp;import com.sun.jndi.ldap.LdapNameParser;
+<i>15</i>&nbsp;import com.sun.jndi.ldap.LdapNamingEnumeration;
+<i>16</i>&nbsp;import com.sun.jndi.ldap.LdapReferralContext;
+<i>17</i>&nbsp;import com.sun.jndi.ldap.LdapReferralException;
+<i>18</i>&nbsp;import com.sun.jndi.ldap.LdapResult;
+<i>19</i>&nbsp;import com.sun.jndi.ldap.LdapSchemaCtx;
+<i>20</i>&nbsp;import com.sun.jndi.ldap.LdapSearchEnumeration;
+<i>21</i>&nbsp;import com.sun.jndi.ldap.LdapURL;
+<i>22</i>&nbsp;import com.sun.jndi.ldap.ManageReferralControl;
+<i>23</i>&nbsp;import com.sun.jndi.ldap.Obj;
+<i>24</i>&nbsp;import com.sun.jndi.ldap.ext.StartTlsResponseImpl;
+<i>25</i>&nbsp;import com.sun.jndi.toolkit.ctx.ComponentDirContext;
+<i>26</i>&nbsp;import com.sun.jndi.toolkit.ctx.Continuation;
+<i>27</i>&nbsp;import com.sun.jndi.toolkit.dir.HierMemDirCtx;
+<i>28</i>&nbsp;import com.sun.jndi.toolkit.dir.SearchFilter;
+<i>29</i>&nbsp;import java.io.IOException;
+<i>30</i>&nbsp;import java.io.OutputStream;
+<i>31</i>&nbsp;import java.util.Hashtable;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.StringTokenizer;
+<i>34</i>&nbsp;import java.util.Vector;
+<i>35</i>&nbsp;import javax.naming.AuthenticationException;
+<i>36</i>&nbsp;import javax.naming.AuthenticationNotSupportedException;
+<i>37</i>&nbsp;import javax.naming.CommunicationException;
+<i>38</i>&nbsp;import javax.naming.CompositeName;
+<i>39</i>&nbsp;import javax.naming.ConfigurationException;
+<i>40</i>&nbsp;import javax.naming.Context;
+<i>41</i>&nbsp;import javax.naming.ContextNotEmptyException;
+<i>42</i>&nbsp;import javax.naming.InvalidNameException;
+<i>43</i>&nbsp;import javax.naming.LimitExceededException;
+<i>44</i>&nbsp;import javax.naming.Name;
+<i>45</i>&nbsp;import javax.naming.NameAlreadyBoundException;
+<i>46</i>&nbsp;import javax.naming.NameNotFoundException;
+<i>47</i>&nbsp;import javax.naming.NameParser;
+<i>48</i>&nbsp;import javax.naming.NamingEnumeration;
+<i>49</i>&nbsp;import javax.naming.NamingException;
+<i>50</i>&nbsp;import javax.naming.NoPermissionException;
+<i>51</i>&nbsp;import javax.naming.OperationNotSupportedException;
+<i>52</i>&nbsp;import javax.naming.PartialResultException;
+<i>53</i>&nbsp;import javax.naming.ServiceUnavailableException;
+<i>54</i>&nbsp;import javax.naming.SizeLimitExceededException;
+<i>55</i>&nbsp;import javax.naming.TimeLimitExceededException;
+<i>56</i>&nbsp;import javax.naming.directory.Attribute;
+<i>57</i>&nbsp;import javax.naming.directory.AttributeInUseException;
+<i>58</i>&nbsp;import javax.naming.directory.Attributes;
+<i>59</i>&nbsp;import javax.naming.directory.BasicAttribute;
+<i>60</i>&nbsp;import javax.naming.directory.BasicAttributes;
+<i>61</i>&nbsp;import javax.naming.directory.DirContext;
+<i>62</i>&nbsp;import javax.naming.directory.InvalidAttributeIdentifierException;
+<i>63</i>&nbsp;import javax.naming.directory.InvalidAttributeValueException;
+<i>64</i>&nbsp;import javax.naming.directory.InvalidSearchFilterException;
+<i>65</i>&nbsp;import javax.naming.directory.ModificationItem;
+<i>66</i>&nbsp;import javax.naming.directory.NoSuchAttributeException;
+<i>67</i>&nbsp;import javax.naming.directory.SchemaViolationException;
+<i>68</i>&nbsp;import javax.naming.directory.SearchControls;
+<i>69</i>&nbsp;import javax.naming.directory.SearchResult;
+<i>70</i>&nbsp;import javax.naming.event.EventDirContext;
+<i>71</i>&nbsp;import javax.naming.event.NamingListener;
+<i>72</i>&nbsp;import javax.naming.ldap.Control;
+<i>73</i>&nbsp;import javax.naming.ldap.ControlFactory;
+<i>74</i>&nbsp;import javax.naming.ldap.ExtendedRequest;
+<i>75</i>&nbsp;import javax.naming.ldap.ExtendedResponse;
+<i>76</i>&nbsp;import javax.naming.ldap.LdapContext;
+<i>77</i>&nbsp;import javax.naming.ldap.LdapName;
+<i>78</i>&nbsp;import javax.naming.ldap.Rdn;
+<i>79</i>&nbsp;import javax.naming.ldap.UnsolicitedNotificationListener;
+<i>80</i>&nbsp;import javax.naming.spi.DirectoryManager;
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;public final class LdapCtx extends ComponentDirContext implements EventDirContext, LdapContext {
+<b class="nc"><i>83</i>&nbsp;    private static final boolean debug = false;</b>
+<b class="nc"><i>84</i>&nbsp;    private static final boolean HARD_CLOSE = true;</b>
+<b class="nc"><i>85</i>&nbsp;    private static final boolean SOFT_CLOSE = false;</b>
+<b class="nc"><i>86</i>&nbsp;    public static final int DEFAULT_PORT = 389;</b>
+<b class="nc"><i>87</i>&nbsp;    public static final int DEFAULT_SSL_PORT = 636;</b>
+<i>88</i>&nbsp;    public static final String DEFAULT_HOST = &quot;localhost&quot;;
+<i>89</i>&nbsp;    private static final boolean DEFAULT_DELETE_RDN = true;
+<i>90</i>&nbsp;    private static final boolean DEFAULT_TYPES_ONLY = false;
+<i>91</i>&nbsp;    private static final int DEFAULT_DEREF_ALIASES = 3;
+<i>92</i>&nbsp;    private static final int DEFAULT_LDAP_VERSION = 32;
+<i>93</i>&nbsp;    private static final int DEFAULT_BATCH_SIZE = 1;
+<i>94</i>&nbsp;    private static final int DEFAULT_REFERRAL_MODE = 3;
+<i>95</i>&nbsp;    private static final char DEFAULT_REF_SEPARATOR = &#39;#&#39;;
+<i>96</i>&nbsp;    static final String DEFAULT_SSL_FACTORY = &quot;javax.net.ssl.SSLSocketFactory&quot;;
+<i>97</i>&nbsp;    private static final int DEFAULT_REFERRAL_LIMIT = 10;
+<i>98</i>&nbsp;    private static final String STARTTLS_REQ_OID = &quot;1.3.6.1.4.1.1466.20037&quot;;
+<i>99</i>&nbsp;    private static final String[] SCHEMA_ATTRIBUTES = new String[]{&quot;objectClasses&quot;, &quot;attributeTypes&quot;, &quot;matchingRules&quot;, &quot;ldapSyntaxes&quot;};
+<i>100</i>&nbsp;    private static final String VERSION = &quot;java.naming.ldap.version&quot;;
+<i>101</i>&nbsp;    private static final String BINARY_ATTRIBUTES = &quot;java.naming.ldap.attributes.binary&quot;;
+<i>102</i>&nbsp;    private static final String DELETE_RDN = &quot;java.naming.ldap.deleteRDN&quot;;
+<i>103</i>&nbsp;    private static final String DEREF_ALIASES = &quot;java.naming.ldap.derefAliases&quot;;
+<i>104</i>&nbsp;    private static final String TYPES_ONLY = &quot;java.naming.ldap.typesOnly&quot;;
+<i>105</i>&nbsp;    private static final String REF_SEPARATOR = &quot;java.naming.ldap.ref.separator&quot;;
+<i>106</i>&nbsp;    private static final String SOCKET_FACTORY = &quot;java.naming.ldap.factory.socket&quot;;
+<i>107</i>&nbsp;    static final String BIND_CONTROLS = &quot;java.naming.ldap.control.connect&quot;;
+<i>108</i>&nbsp;    private static final String REFERRAL_LIMIT = &quot;java.naming.ldap.referral.limit&quot;;
+<i>109</i>&nbsp;    private static final String TRACE_BER = &quot;com.sun.jndi.ldap.trace.ber&quot;;
+<i>110</i>&nbsp;    private static final String NETSCAPE_SCHEMA_BUG = &quot;com.sun.jndi.ldap.netscape.schemaBugs&quot;;
+<i>111</i>&nbsp;    private static final String OLD_NETSCAPE_SCHEMA_BUG = &quot;com.sun.naming.netscape.schemaBugs&quot;;
+<i>112</i>&nbsp;    private static final String CONNECT_TIMEOUT = &quot;com.sun.jndi.ldap.connect.timeout&quot;;
+<i>113</i>&nbsp;    private static final String READ_TIMEOUT = &quot;com.sun.jndi.ldap.read.timeout&quot;;
+<i>114</i>&nbsp;    private static final String ENABLE_POOL = &quot;com.sun.jndi.ldap.connect.pool&quot;;
+<i>115</i>&nbsp;    private static final String DOMAIN_NAME = &quot;com.sun.jndi.ldap.domainname&quot;;
+<i>116</i>&nbsp;    private static final String WAIT_FOR_REPLY = &quot;com.sun.jndi.ldap.search.waitForReply&quot;;
+<b class="nc"><i>117</i>&nbsp;    private static final String REPLY_QUEUE_SIZE = &quot;com.sun.jndi.ldap.search.replyQueueSize&quot;;</b>
+<i>118</i>&nbsp;    private static final NameParser parser = new LdapNameParser();
+<i>119</i>&nbsp;    private static final ControlFactory myResponseControlFactory = new DefaultResponseControlFactory();
+<i>120</i>&nbsp;    private static final Control manageReferralControl = new ManageReferralControl(false);
+<i>121</i>&nbsp;    private static final HierMemDirCtx EMPTY_SCHEMA = new HierMemDirCtx();
+<i>122</i>&nbsp;    int port_number;
+<i>123</i>&nbsp;    String hostname = null;
+<i>124</i>&nbsp;    LdapClient clnt = null;
+<i>125</i>&nbsp;    Hashtable envprops = null;
+<i>126</i>&nbsp;    int handleReferrals = 3;
+<i>127</i>&nbsp;    boolean hasLdapsScheme = false;
+<i>128</i>&nbsp;    String currentDN;
+<i>129</i>&nbsp;    Name currentParsedDN;
+<i>130</i>&nbsp;    Vector respCtls = null;
+<i>131</i>&nbsp;    Control[] reqCtls = null;
+<i>132</i>&nbsp;    private OutputStream trace = null;
+<i>133</i>&nbsp;    private boolean netscapeSchemaBug = false;
+<i>134</i>&nbsp;    private Control[] bindCtls = null;
+<i>135</i>&nbsp;    private int referralHopLimit = 10;
+<i>136</i>&nbsp;    private Hashtable schemaTrees = null;
+<i>137</i>&nbsp;    private int batchSize = 1;
+<i>138</i>&nbsp;    private boolean deleteRDN = true;
+<i>139</i>&nbsp;    private boolean typesOnly = false;
+<i>140</i>&nbsp;    private int derefAliases = 3;
+<i>141</i>&nbsp;    private char addrEncodingSeparator = 35;
+<i>142</i>&nbsp;    private Hashtable binaryAttrs = null;
+<i>143</i>&nbsp;    private int connectTimeout = -1;
+<i>144</i>&nbsp;    private int readTimeout = -1;
+<i>145</i>&nbsp;    private boolean waitForReply = true;
+<i>146</i>&nbsp;    private int replyQueueSize = -1;
+<i>147</i>&nbsp;    private boolean useSsl = false;
+<i>148</i>&nbsp;    private boolean useDefaultPortNumber = false;
+<i>149</i>&nbsp;    private boolean parentIsLdapCtx = false;
+<i>150</i>&nbsp;    private int hopCount = 1;
+<i>151</i>&nbsp;    private String url = null;
+<i>152</i>&nbsp;    private EventSupport eventSupport;
+<i>153</i>&nbsp;    private boolean unsolicited = false;
+<i>154</i>&nbsp;    private boolean sharable = true;
+<i>155</i>&nbsp;    private int enumCount = 0;
+<i>156</i>&nbsp;    private boolean closeRequested = false;
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    public LdapCtx(String var1, String var2, int var3, Hashtable var4, boolean var5) throws NamingException {
+<i>159</i>&nbsp;        this.useSsl = this.hasLdapsScheme = var5;
+<i>160</i>&nbsp;        if(var4 != null) {
+<i>161</i>&nbsp;            this.envprops = (Hashtable)var4.clone();
+<i>162</i>&nbsp;            if(&quot;ssl&quot;.equals(this.envprops.get(&quot;java.naming.security.protocol&quot;))) {
+<i>163</i>&nbsp;                this.useSsl = true;
+<i>164</i>&nbsp;            }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;            this.trace = (OutputStream)this.envprops.get(&quot;com.sun.jndi.ldap.trace.ber&quot;);
+<i>167</i>&nbsp;            if(var4.get(&quot;com.sun.jndi.ldap.netscape.schemaBugs&quot;) != null || var4.get(&quot;com.sun.naming.netscape.schemaBugs&quot;) != null) {
+<i>168</i>&nbsp;                this.netscapeSchemaBug = true;
+<i>169</i>&nbsp;            }
+<i>170</i>&nbsp;        }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;        this.currentDN = var1 != null?var1:&quot;&quot;;
+<i>173</i>&nbsp;        this.currentParsedDN = parser.parse(this.currentDN);
+<i>174</i>&nbsp;        this.hostname = var2 != null &amp;&amp; var2.length() &gt; 0?var2:&quot;localhost&quot;;
+<i>175</i>&nbsp;        if(this.hostname.charAt(0) == 91) {
+<i>176</i>&nbsp;            this.hostname = this.hostname.substring(1, this.hostname.length() - 1);
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;        if(var3 &gt; 0) {
+<i>180</i>&nbsp;            this.port_number = var3;
+<i>181</i>&nbsp;        } else {
+<i>182</i>&nbsp;            this.port_number = this.useSsl?636:389;
+<b class="nc"><i>183</i>&nbsp;            this.useDefaultPortNumber = true;</b>
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;
+<b class="nc"><i>186</i>&nbsp;        this.schemaTrees = new Hashtable(11, 0.75F);</b>
+<i>187</i>&nbsp;        this.initEnv();
+<b class="nc"><i>188</i>&nbsp;</b>
+<i>189</i>&nbsp;        try {
+<i>190</i>&nbsp;            this.connect(false);
+<b class="nc"><i>191</i>&nbsp;        } catch (NamingException var9) {</b>
+<i>192</i>&nbsp;            try {
+<b class="nc"><i>193</i>&nbsp;                this.close();</b>
+<i>194</i>&nbsp;            } catch (Exception var8) {
+<i>195</i>&nbsp;                ;
+<i>196</i>&nbsp;            }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;            throw var9;
+<i>199</i>&nbsp;        }
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    LdapCtx(LdapCtx var1, String var2) throws NamingException {
+<b class="nc"><i>203</i>&nbsp;        this.useSsl = var1.useSsl;</b>
+<i>204</i>&nbsp;        this.hasLdapsScheme = var1.hasLdapsScheme;
+<b class="nc"><i>205</i>&nbsp;        this.useDefaultPortNumber = var1.useDefaultPortNumber;</b>
+<b class="nc"><i>206</i>&nbsp;        this.hostname = var1.hostname;</b>
+<b class="nc"><i>207</i>&nbsp;        this.port_number = var1.port_number;</b>
+<b class="nc"><i>208</i>&nbsp;        this.currentDN = var2;</b>
+<i>209</i>&nbsp;        if(var1.currentDN == this.currentDN) {
+<i>210</i>&nbsp;            this.currentParsedDN = var1.currentParsedDN;
+<i>211</i>&nbsp;        } else {
+<i>212</i>&nbsp;            this.currentParsedDN = parser.parse(this.currentDN);
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;
+<b class="nc"><i>215</i>&nbsp;        this.envprops = var1.envprops;</b>
+<b class="nc"><i>216</i>&nbsp;        this.schemaTrees = var1.schemaTrees;</b>
+<i>217</i>&nbsp;        this.clnt = var1.clnt;
+<i>218</i>&nbsp;        this.clnt.incRefCount();
+<i>219</i>&nbsp;        this.parentIsLdapCtx = var2 != null &amp;&amp; !var2.equals(var1.currentDN)?true:var1.parentIsLdapCtx;
+<i>220</i>&nbsp;        this.trace = var1.trace;
+<i>221</i>&nbsp;        this.netscapeSchemaBug = var1.netscapeSchemaBug;
+<i>222</i>&nbsp;        this.initEnv();
+<b class="nc"><i>223</i>&nbsp;    }</b>
+<b class="nc"><i>224</i>&nbsp;</b>
+<b class="nc"><i>225</i>&nbsp;    public LdapContext newInstance(Control[] var1) throws NamingException {</b>
+<b class="nc"><i>226</i>&nbsp;        LdapCtx var2 = new LdapCtx(this, this.currentDN);</b>
+<b class="nc"><i>227</i>&nbsp;        var2.setRequestControls(var1);</b>
+<b class="nc"><i>228</i>&nbsp;        return var2;</b>
+<b class="nc"><i>229</i>&nbsp;    }</b>
+<b class="nc"><i>230</i>&nbsp;</b>
+<b class="nc"><i>231</i>&nbsp;    protected void c_bind(Name var1, Object var2, Continuation var3) throws NamingException {</b>
+<b class="nc"><i>232</i>&nbsp;        this.c_bind(var1, var2, (Attributes)null, var3);</b>
+<i>233</i>&nbsp;    }
+<b class="nc"><i>234</i>&nbsp;</b>
+<b class="nc"><i>235</i>&nbsp;    protected void c_bind(Name var1, Object var2, Attributes var3, Continuation var4) throws NamingException {</b>
+<b class="nc"><i>236</i>&nbsp;        var4.setError(this, var1);</b>
+<b class="nc"><i>237</i>&nbsp;        Attributes var5 = var3;</b>
+<b class="nc"><i>238</i>&nbsp;</b>
+<b class="nc"><i>239</i>&nbsp;        try {</b>
+<b class="nc"><i>240</i>&nbsp;            this.ensureOpen();</b>
+<i>241</i>&nbsp;            if(var2 == null) {
+<i>242</i>&nbsp;                if(var3 == null) {
+<i>243</i>&nbsp;                    throw new IllegalArgumentException(&quot;cannot bind null object with no attributes&quot;);
+<i>244</i>&nbsp;                }
+<b class="nc"><i>245</i>&nbsp;            } else {</b>
+<i>246</i>&nbsp;                var3 = Obj.determineBindAttrs(this.addrEncodingSeparator, var2, var3, false, var1, this, this.envprops);
+<b class="nc"><i>247</i>&nbsp;            }</b>
+<b class="nc"><i>248</i>&nbsp;</b>
+<i>249</i>&nbsp;            String var20 = this.fullyQualifiedName((Name)var1);
+<b class="nc"><i>250</i>&nbsp;            var3 = addRdnAttributes(var20, var3, var5 != var3);</b>
+<b class="nc"><i>251</i>&nbsp;            LdapEntry var22 = new LdapEntry(var20, var3);</b>
+<i>252</i>&nbsp;            LdapResult var8 = this.clnt.add(var22, this.reqCtls);
+<i>253</i>&nbsp;            this.respCtls = var8.resControls;
+<i>254</i>&nbsp;            if(var8.status != 0) {
+<i>255</i>&nbsp;                this.processReturnCode(var8, var1);
+<b class="nc"><i>256</i>&nbsp;            }</b>
+<i>257</i>&nbsp;
+<b class="nc"><i>258</i>&nbsp;        } catch (LdapReferralException var17) {</b>
+<i>259</i>&nbsp;            LdapReferralException var6 = var17;
+<b class="nc"><i>260</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<b class="nc"><i>261</i>&nbsp;                throw var4.fillInException(var17);</b>
+<i>262</i>&nbsp;            } else {
+<i>263</i>&nbsp;                while(true) {
+<b class="nc"><i>264</i>&nbsp;                    LdapReferralContext var21 = (LdapReferralContext)var6.getReferralContext(this.envprops, this.bindCtls);</b>
+<b class="nc"><i>265</i>&nbsp;</b>
+<i>266</i>&nbsp;                    try {
+<i>267</i>&nbsp;                        var21.bind(var1, var2, var5);
+<i>268</i>&nbsp;                        return;
+<i>269</i>&nbsp;                    } catch (LdapReferralException var15) {
+<b class="nc"><i>270</i>&nbsp;                        var6 = var15;</b>
+<i>271</i>&nbsp;                    } finally {
+<b class="nc"><i>272</i>&nbsp;                        var21.close();</b>
+<i>273</i>&nbsp;                    }
+<b class="nc"><i>274</i>&nbsp;                }</b>
+<i>275</i>&nbsp;            }
+<i>276</i>&nbsp;        } catch (IOException var18) {
+<i>277</i>&nbsp;            CommunicationException var7 = new CommunicationException(var18.getMessage());
+<b class="nc"><i>278</i>&nbsp;            var7.setRootCause(var18);</b>
+<b class="nc"><i>279</i>&nbsp;            throw var4.fillInException(var7);</b>
+<i>280</i>&nbsp;        } catch (NamingException var19) {
+<b class="nc"><i>281</i>&nbsp;            throw var4.fillInException(var19);</b>
+<b class="nc"><i>282</i>&nbsp;        }</b>
+<b class="nc"><i>283</i>&nbsp;    }</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    protected void c_rebind(Name var1, Object var2, Continuation var3) throws NamingException {
+<b class="nc"><i>286</i>&nbsp;        this.c_rebind(var1, var2, (Attributes)null, var3);</b>
+<b class="nc"><i>287</i>&nbsp;    }</b>
+<i>288</i>&nbsp;
+<b class="nc"><i>289</i>&nbsp;    protected void c_rebind(Name var1, Object var2, Attributes var3, Continuation var4) throws NamingException {</b>
+<b class="nc"><i>290</i>&nbsp;        var4.setError(this, var1);</b>
+<i>291</i>&nbsp;        Attributes var5 = var3;
+<i>292</i>&nbsp;
+<b class="nc"><i>293</i>&nbsp;        try {</b>
+<b class="nc"><i>294</i>&nbsp;            Attributes var29 = null;</b>
+<i>295</i>&nbsp;
+<b class="nc"><i>296</i>&nbsp;            try {</b>
+<b class="nc"><i>297</i>&nbsp;                var29 = this.c_getAttributes(var1, (String[])null, var4);</b>
+<i>298</i>&nbsp;            } catch (NameNotFoundException var23) {
+<b class="nc"><i>299</i>&nbsp;                ;</b>
+<b class="nc"><i>300</i>&nbsp;            }</b>
+<i>301</i>&nbsp;
+<b class="nc"><i>302</i>&nbsp;            if(var29 == null) {</b>
+<b class="nc"><i>303</i>&nbsp;                this.c_bind(var1, var2, var3, var4);</b>
+<b class="nc"><i>304</i>&nbsp;            } else {</b>
+<i>305</i>&nbsp;                if(var3 == null &amp;&amp; var2 instanceof DirContext) {
+<i>306</i>&nbsp;                    var3 = ((DirContext)var2).getAttributes(&quot;&quot;);
+<b class="nc"><i>307</i>&nbsp;                }</b>
+<b class="nc"><i>308</i>&nbsp;</b>
+<b class="nc"><i>309</i>&nbsp;                Attributes var31 = (Attributes)var29.clone();</b>
+<b class="nc"><i>310</i>&nbsp;                if(var3 == null) {</b>
+<i>311</i>&nbsp;                    Attribute var8 = var29.get(Obj.JAVA_ATTRIBUTES[0]);
+<b class="nc"><i>312</i>&nbsp;                    int var9;</b>
+<b class="nc"><i>313</i>&nbsp;                    if(var8 != null) {</b>
+<b class="nc"><i>314</i>&nbsp;                        var8 = (Attribute)var8.clone();</b>
+<b class="nc"><i>315</i>&nbsp;</b>
+<b class="nc"><i>316</i>&nbsp;                        for(var9 = 0; var9 &lt; Obj.JAVA_OBJECT_CLASSES.length; ++var9) {</b>
+<i>317</i>&nbsp;                            var8.remove(Obj.JAVA_OBJECT_CLASSES_LOWER[var9]);
+<b class="nc"><i>318</i>&nbsp;                            var8.remove(Obj.JAVA_OBJECT_CLASSES[var9]);</b>
+<i>319</i>&nbsp;                        }
+<i>320</i>&nbsp;
+<b class="nc"><i>321</i>&nbsp;                        var29.put(var8);</b>
+<b class="nc"><i>322</i>&nbsp;                    }</b>
+<i>323</i>&nbsp;
+<b class="nc"><i>324</i>&nbsp;                    for(var9 = 1; var9 &lt; Obj.JAVA_ATTRIBUTES.length; ++var9) {</b>
+<b class="nc"><i>325</i>&nbsp;                        var29.remove(Obj.JAVA_ATTRIBUTES[var9]);</b>
+<i>326</i>&nbsp;                    }
+<b class="nc"><i>327</i>&nbsp;</b>
+<i>328</i>&nbsp;                    var3 = var29;
+<i>329</i>&nbsp;                }
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;                if(var2 != null) {
+<b class="nc"><i>332</i>&nbsp;                    var3 = Obj.determineBindAttrs(this.addrEncodingSeparator, var2, var3, var5 != var3, var1, this, this.envprops);</b>
+<b class="nc"><i>333</i>&nbsp;                }</b>
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;                String var32 = this.fullyQualifiedName((Name)var1);</b>
+<i>336</i>&nbsp;                LdapResult var34 = this.clnt.delete(var32, this.reqCtls);
+<i>337</i>&nbsp;                this.respCtls = var34.resControls;
+<i>338</i>&nbsp;                if(var34.status != 0) {
+<i>339</i>&nbsp;                    this.processReturnCode(var34, var1);
+<b class="nc"><i>340</i>&nbsp;                } else {</b>
+<i>341</i>&nbsp;                    Object var10 = null;
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;                    try {
+<i>344</i>&nbsp;                        var3 = addRdnAttributes(var32, var3, var5 != var3);
+<i>345</i>&nbsp;                        LdapEntry var11 = new LdapEntry(var32, var3);
+<b class="nc"><i>346</i>&nbsp;                        var34 = this.clnt.add(var11, this.reqCtls);</b>
+<b class="nc"><i>347</i>&nbsp;                        if(var34.resControls != null) {</b>
+<i>348</i>&nbsp;                            this.respCtls = appendVector(this.respCtls, var34.resControls);
+<i>349</i>&nbsp;                        }
+<i>350</i>&nbsp;                    } catch (NamingException var21) {
+<i>351</i>&nbsp;                        var10 = var21;
+<i>352</i>&nbsp;                    } catch (IOException var22) {
+<i>353</i>&nbsp;                        var10 = var22;
+<i>354</i>&nbsp;                    }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;                    if(var10 != null &amp;&amp; !(var10 instanceof LdapReferralException) || var34.status != 0) {
+<b class="nc"><i>357</i>&nbsp;                        LdapResult var33 = this.clnt.add(new LdapEntry(var32, var31), this.reqCtls);</b>
+<i>358</i>&nbsp;                        if(var33.resControls != null) {
+<i>359</i>&nbsp;                            this.respCtls = appendVector(this.respCtls, var33.resControls);
+<i>360</i>&nbsp;                        }
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;                        if(var10 == null) {
+<i>363</i>&nbsp;                            this.processReturnCode(var34, var1);
+<i>364</i>&nbsp;                        }
+<i>365</i>&nbsp;                    }
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;                    if(var10 instanceof NamingException) {
+<i>368</i>&nbsp;                        throw (NamingException)var10;
+<i>369</i>&nbsp;                    } else if(var10 instanceof IOException) {
+<i>370</i>&nbsp;                        throw (IOException)var10;
+<i>371</i>&nbsp;                    }
+<i>372</i>&nbsp;                }
+<i>373</i>&nbsp;            }
+<i>374</i>&nbsp;        } catch (LdapReferralException var26) {
+<i>375</i>&nbsp;            LdapReferralException var6 = var26;
+<b class="nc"><i>376</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<i>377</i>&nbsp;                throw var4.fillInException(var26);
+<b class="nc"><i>378</i>&nbsp;            } else {</b>
+<i>379</i>&nbsp;                while(true) {
+<b class="nc"><i>380</i>&nbsp;                    LdapReferralContext var30 = (LdapReferralContext)var6.getReferralContext(this.envprops, this.bindCtls);</b>
+<i>381</i>&nbsp;
+<b class="nc"><i>382</i>&nbsp;                    try {</b>
+<b class="nc"><i>383</i>&nbsp;                        var30.rebind(var1, var2, var5);</b>
+<b class="nc"><i>384</i>&nbsp;                        return;</b>
+<i>385</i>&nbsp;                    } catch (LdapReferralException var24) {
+<i>386</i>&nbsp;                        var6 = var24;
+<i>387</i>&nbsp;                    } finally {
+<b class="nc"><i>388</i>&nbsp;                        var30.close();</b>
+<i>389</i>&nbsp;                    }
+<i>390</i>&nbsp;                }
+<i>391</i>&nbsp;            }
+<b class="nc"><i>392</i>&nbsp;        } catch (IOException var27) {</b>
+<b class="nc"><i>393</i>&nbsp;            CommunicationException var7 = new CommunicationException(var27.getMessage());</b>
+<b class="nc"><i>394</i>&nbsp;            var7.setRootCause(var27);</b>
+<i>395</i>&nbsp;            throw var4.fillInException(var7);
+<b class="nc"><i>396</i>&nbsp;        } catch (NamingException var28) {</b>
+<b class="nc"><i>397</i>&nbsp;            throw var4.fillInException(var28);</b>
+<i>398</i>&nbsp;        }
+<b class="nc"><i>399</i>&nbsp;    }</b>
+<b class="nc"><i>400</i>&nbsp;</b>
+<i>401</i>&nbsp;    protected void c_unbind(Name var1, Continuation var2) throws NamingException {
+<i>402</i>&nbsp;        var2.setError(this, var1);
+<b class="nc"><i>403</i>&nbsp;</b>
+<b class="nc"><i>404</i>&nbsp;        try {</b>
+<b class="nc"><i>405</i>&nbsp;            this.ensureOpen();</b>
+<i>406</i>&nbsp;            String var17 = this.fullyQualifiedName((Name)var1);
+<i>407</i>&nbsp;            LdapResult var19 = this.clnt.delete(var17, this.reqCtls);
+<i>408</i>&nbsp;            this.respCtls = var19.resControls;
+<i>409</i>&nbsp;            this.adjustDeleteStatus(var17, var19);
+<b class="nc"><i>410</i>&nbsp;            if(var19.status != 0) {</b>
+<i>411</i>&nbsp;                this.processReturnCode(var19, var1);
+<i>412</i>&nbsp;            }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;        } catch (LdapReferralException var14) {
+<i>415</i>&nbsp;            LdapReferralException var3 = var14;
+<b class="nc"><i>416</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<i>417</i>&nbsp;                throw var2.fillInException(var14);
+<i>418</i>&nbsp;            } else {
+<b class="nc"><i>419</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>420</i>&nbsp;                    LdapReferralContext var18 = (LdapReferralContext)var3.getReferralContext(this.envprops, this.bindCtls);</b>
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;                    try {
+<i>423</i>&nbsp;                        var18.unbind(var1);
+<i>424</i>&nbsp;                        return;
+<b class="nc"><i>425</i>&nbsp;                    } catch (LdapReferralException var12) {</b>
+<i>426</i>&nbsp;                        var3 = var12;
+<i>427</i>&nbsp;                    } finally {
+<i>428</i>&nbsp;                        var18.close();
+<b class="nc"><i>429</i>&nbsp;                    }</b>
+<b class="nc"><i>430</i>&nbsp;                }</b>
+<b class="nc"><i>431</i>&nbsp;            }</b>
+<b class="nc"><i>432</i>&nbsp;        } catch (IOException var15) {</b>
+<i>433</i>&nbsp;            CommunicationException var4 = new CommunicationException(var15.getMessage());
+<b class="nc"><i>434</i>&nbsp;            var4.setRootCause(var15);</b>
+<b class="nc"><i>435</i>&nbsp;            throw var2.fillInException(var4);</b>
+<b class="nc"><i>436</i>&nbsp;        } catch (NamingException var16) {</b>
+<i>437</i>&nbsp;            throw var2.fillInException(var16);
+<i>438</i>&nbsp;        }
+<i>439</i>&nbsp;    }
+<i>440</i>&nbsp;
+<b class="nc"><i>441</i>&nbsp;    protected void c_rename(Name var1, Name var2, Continuation var3) throws NamingException {</b>
+<i>442</i>&nbsp;        String var8 = null;
+<i>443</i>&nbsp;        String var9 = null;
+<i>444</i>&nbsp;        var3.setError(this, var1);
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;        try {
+<i>447</i>&nbsp;            this.ensureOpen();
+<i>448</i>&nbsp;            Name var6;
+<i>449</i>&nbsp;            if(var1.isEmpty()) {
+<i>450</i>&nbsp;                var6 = parser.parse(&quot;&quot;);
+<i>451</i>&nbsp;            } else {
+<i>452</i>&nbsp;                Name var4 = parser.parse(var1.get(0));
+<i>453</i>&nbsp;                var6 = var4.getPrefix(var4.size() - 1);
+<i>454</i>&nbsp;            }
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;            Name var5;
+<i>457</i>&nbsp;            if(var2 instanceof CompositeName) {
+<i>458</i>&nbsp;                var5 = parser.parse(var2.get(0));
+<i>459</i>&nbsp;            } else {
+<i>460</i>&nbsp;                var5 = var2;
+<i>461</i>&nbsp;            }
+<i>462</i>&nbsp;
+<b class="nc"><i>463</i>&nbsp;            Name var7 = var5.getPrefix(var5.size() - 1);</b>
+<i>464</i>&nbsp;            if(!var6.equals(var7)) {
+<b class="nc"><i>465</i>&nbsp;                if(!this.clnt.isLdapv3) {</b>
+<i>466</i>&nbsp;                    throw new InvalidNameException(&quot;LDAPv2 doesn\&#39;t support changing the parent as a result of a rename&quot;);
+<i>467</i>&nbsp;                }
+<b class="nc"><i>468</i>&nbsp;</b>
+<i>469</i>&nbsp;                var9 = this.fullyQualifiedName((String)var7.toString());
+<i>470</i>&nbsp;            }
+<i>471</i>&nbsp;
+<b class="nc"><i>472</i>&nbsp;            var8 = var5.get(var5.size() - 1);</b>
+<b class="nc"><i>473</i>&nbsp;            LdapResult var25 = this.clnt.moddn(this.fullyQualifiedName((Name)var1), var8, this.deleteRDN, var9, this.reqCtls);</b>
+<i>474</i>&nbsp;            this.respCtls = var25.resControls;
+<i>475</i>&nbsp;            if(var25.status != 0) {
+<b class="nc"><i>476</i>&nbsp;                this.processReturnCode(var25, var1);</b>
+<b class="nc"><i>477</i>&nbsp;            }</b>
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;        } catch (LdapReferralException var21) {
+<i>480</i>&nbsp;            LdapReferralException var10 = var21;
+<i>481</i>&nbsp;            var21.setNewRdn(var8);
+<i>482</i>&nbsp;            if(var9 != null) {
+<i>483</i>&nbsp;                PartialResultException var26 = new PartialResultException(&quot;Cannot continue referral processing when newSuperior is nonempty: &quot; + var9);
+<b class="nc"><i>484</i>&nbsp;                var26.setRootCause(var3.fillInException(var21));</b>
+<b class="nc"><i>485</i>&nbsp;                throw var3.fillInException(var26);</b>
+<i>486</i>&nbsp;            } else if(this.handleReferrals == 2) {
+<b class="nc"><i>487</i>&nbsp;                throw var3.fillInException(var21);</b>
+<i>488</i>&nbsp;            } else {
+<b class="nc"><i>489</i>&nbsp;                while(true) {</b>
+<i>490</i>&nbsp;                    LdapReferralContext var24 = (LdapReferralContext)var10.getReferralContext(this.envprops, this.bindCtls);
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;                    try {
+<b class="nc"><i>493</i>&nbsp;                        var24.rename(var1, var2);</b>
+<i>494</i>&nbsp;                        return;
+<i>495</i>&nbsp;                    } catch (LdapReferralException var19) {
+<b class="nc"><i>496</i>&nbsp;                        var10 = var19;</b>
+<i>497</i>&nbsp;                    } finally {
+<b class="nc"><i>498</i>&nbsp;                        var24.close();</b>
+<b class="nc"><i>499</i>&nbsp;                    }</b>
+<b class="nc"><i>500</i>&nbsp;                }</b>
+<b class="nc"><i>501</i>&nbsp;            }</b>
+<i>502</i>&nbsp;        } catch (IOException var22) {
+<i>503</i>&nbsp;            CommunicationException var11 = new CommunicationException(var22.getMessage());
+<b class="nc"><i>504</i>&nbsp;            var11.setRootCause(var22);</b>
+<i>505</i>&nbsp;            throw var3.fillInException(var11);
+<i>506</i>&nbsp;        } catch (NamingException var23) {
+<i>507</i>&nbsp;            throw var3.fillInException(var23);
+<b class="nc"><i>508</i>&nbsp;        }</b>
+<b class="nc"><i>509</i>&nbsp;    }</b>
+<i>510</i>&nbsp;
+<i>511</i>&nbsp;    protected Context c_createSubcontext(Name var1, Continuation var2) throws NamingException {
+<b class="nc"><i>512</i>&nbsp;        return this.c_createSubcontext(var1, (Attributes)null, var2);</b>
+<i>513</i>&nbsp;    }
+<b class="nc"><i>514</i>&nbsp;</b>
+<b class="nc"><i>515</i>&nbsp;    protected DirContext c_createSubcontext(Name var1, Attributes var2, Continuation var3) throws NamingException {</b>
+<i>516</i>&nbsp;        var3.setError(this, var1);
+<i>517</i>&nbsp;        Object var4 = var2;
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;        try {
+<b class="nc"><i>520</i>&nbsp;            this.ensureOpen();</b>
+<i>521</i>&nbsp;            if(var2 == null) {
+<b class="nc"><i>522</i>&nbsp;                BasicAttribute var21 = new BasicAttribute(Obj.JAVA_ATTRIBUTES[0], Obj.JAVA_OBJECT_CLASSES[0]);</b>
+<b class="nc"><i>523</i>&nbsp;                var21.add(&quot;top&quot;);</b>
+<i>524</i>&nbsp;                var2 = new BasicAttributes(true);
+<b class="nc"><i>525</i>&nbsp;                ((Attributes)var2).put(var21);</b>
+<b class="nc"><i>526</i>&nbsp;            }</b>
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;            String var20 = this.fullyQualifiedName((Name)var1);
+<i>529</i>&nbsp;            Attributes var19 = addRdnAttributes(var20, (Attributes)var2, var4 != var2);
+<b class="nc"><i>530</i>&nbsp;            LdapEntry var22 = new LdapEntry(var20, var19);</b>
+<i>531</i>&nbsp;            LdapResult var24 = this.clnt.add(var22, this.reqCtls);
+<b class="nc"><i>532</i>&nbsp;            this.respCtls = var24.resControls;</b>
+<i>533</i>&nbsp;            if(var24.status != 0) {
+<i>534</i>&nbsp;                this.processReturnCode(var24, var1);
+<b class="nc"><i>535</i>&nbsp;                return null;</b>
+<b class="nc"><i>536</i>&nbsp;            } else {</b>
+<b class="nc"><i>537</i>&nbsp;                return new LdapCtx(this, var20);</b>
+<b class="nc"><i>538</i>&nbsp;            }</b>
+<i>539</i>&nbsp;        } catch (LdapReferralException var16) {
+<b class="nc"><i>540</i>&nbsp;            LdapReferralException var5 = var16;</b>
+<b class="nc"><i>541</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<b class="nc"><i>542</i>&nbsp;                throw var3.fillInException(var16);</b>
+<b class="nc"><i>543</i>&nbsp;            } else {</b>
+<b class="nc"><i>544</i>&nbsp;                while(true) {</b>
+<i>545</i>&nbsp;                    LdapReferralContext var23 = (LdapReferralContext)var5.getReferralContext(this.envprops, this.bindCtls);
+<b class="nc"><i>546</i>&nbsp;</b>
+<i>547</i>&nbsp;                    try {
+<i>548</i>&nbsp;                        DirContext var7 = var23.createSubcontext(var1, (Attributes)var4);
+<b class="nc"><i>549</i>&nbsp;                        return var7;</b>
+<i>550</i>&nbsp;                    } catch (LdapReferralException var14) {
+<b class="nc"><i>551</i>&nbsp;                        var5 = var14;</b>
+<b class="nc"><i>552</i>&nbsp;                    } finally {</b>
+<i>553</i>&nbsp;                        var23.close();
+<i>554</i>&nbsp;                    }
+<b class="nc"><i>555</i>&nbsp;                }</b>
+<b class="nc"><i>556</i>&nbsp;            }</b>
+<i>557</i>&nbsp;        } catch (IOException var17) {
+<i>558</i>&nbsp;            CommunicationException var6 = new CommunicationException(var17.getMessage());
+<i>559</i>&nbsp;            var6.setRootCause(var17);
+<i>560</i>&nbsp;            throw var3.fillInException(var6);
+<b class="nc"><i>561</i>&nbsp;        } catch (NamingException var18) {</b>
+<b class="nc"><i>562</i>&nbsp;            throw var3.fillInException(var18);</b>
+<b class="nc"><i>563</i>&nbsp;        }</b>
+<b class="nc"><i>564</i>&nbsp;    }</b>
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;    protected void c_destroySubcontext(Name var1, Continuation var2) throws NamingException {
+<b class="nc"><i>567</i>&nbsp;        var2.setError(this, var1);</b>
+<b class="nc"><i>568</i>&nbsp;</b>
+<b class="nc"><i>569</i>&nbsp;        try {</b>
+<i>570</i>&nbsp;            this.ensureOpen();
+<i>571</i>&nbsp;            String var17 = this.fullyQualifiedName((Name)var1);
+<i>572</i>&nbsp;            LdapResult var19 = this.clnt.delete(var17, this.reqCtls);
+<i>573</i>&nbsp;            this.respCtls = var19.resControls;
+<b class="nc"><i>574</i>&nbsp;            this.adjustDeleteStatus(var17, var19);</b>
+<i>575</i>&nbsp;            if(var19.status != 0) {
+<i>576</i>&nbsp;                this.processReturnCode(var19, var1);
+<i>577</i>&nbsp;            }
+<i>578</i>&nbsp;
+<i>579</i>&nbsp;        } catch (LdapReferralException var14) {
+<b class="nc"><i>580</i>&nbsp;            LdapReferralException var3 = var14;</b>
+<i>581</i>&nbsp;            if(this.handleReferrals == 2) {
+<i>582</i>&nbsp;                throw var2.fillInException(var14);
+<b class="nc"><i>583</i>&nbsp;            } else {</b>
+<b class="nc"><i>584</i>&nbsp;                while(true) {</b>
+<i>585</i>&nbsp;                    LdapReferralContext var18 = (LdapReferralContext)var3.getReferralContext(this.envprops, this.bindCtls);
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;                    try {
+<i>588</i>&nbsp;                        var18.destroySubcontext(var1);
+<b class="nc"><i>589</i>&nbsp;                        return;</b>
+<i>590</i>&nbsp;                    } catch (LdapReferralException var12) {
+<i>591</i>&nbsp;                        var3 = var12;
+<i>592</i>&nbsp;                    } finally {
+<b class="nc"><i>593</i>&nbsp;                        var18.close();</b>
+<b class="nc"><i>594</i>&nbsp;                    }</b>
+<b class="nc"><i>595</i>&nbsp;                }</b>
+<b class="nc"><i>596</i>&nbsp;            }</b>
+<i>597</i>&nbsp;        } catch (IOException var15) {
+<b class="nc"><i>598</i>&nbsp;            CommunicationException var4 = new CommunicationException(var15.getMessage());</b>
+<b class="nc"><i>599</i>&nbsp;            var4.setRootCause(var15);</b>
+<b class="nc"><i>600</i>&nbsp;            throw var2.fillInException(var4);</b>
+<i>601</i>&nbsp;        } catch (NamingException var16) {
+<i>602</i>&nbsp;            throw var2.fillInException(var16);
+<i>603</i>&nbsp;        }
+<i>604</i>&nbsp;    }
+<b class="nc"><i>605</i>&nbsp;</b>
+<i>606</i>&nbsp;    private static Attributes addRdnAttributes(String var0, Attributes var1, boolean var2) throws NamingException {
+<i>607</i>&nbsp;        if(var0.equals(&quot;&quot;)) {
+<b class="nc"><i>608</i>&nbsp;            return var1;</b>
+<i>609</i>&nbsp;        } else {
+<b class="nc"><i>610</i>&nbsp;            List var3 = (new LdapName(var0)).getRdns();</b>
+<b class="nc"><i>611</i>&nbsp;            Rdn var4 = (Rdn)var3.get(var3.size() - 1);</b>
+<b class="nc"><i>612</i>&nbsp;            Attributes var5 = var4.toAttributes();</b>
+<i>613</i>&nbsp;            NamingEnumeration var6 = var5.getAll();
+<b class="nc"><i>614</i>&nbsp;</b>
+<i>615</i>&nbsp;            while(var6.hasMore()) {
+<b class="nc"><i>616</i>&nbsp;                Attribute var7 = (Attribute)var6.next();</b>
+<b class="nc"><i>617</i>&nbsp;                if(var1.get(var7.getID()) == null &amp;&amp; (var1.isCaseIgnored() || !containsIgnoreCase(var1.getIDs(), var7.getID()))) {</b>
+<i>618</i>&nbsp;                    if(!var2) {
+<i>619</i>&nbsp;                        var1 = (Attributes)var1.clone();
+<b class="nc"><i>620</i>&nbsp;                        var2 = true;</b>
+<b class="nc"><i>621</i>&nbsp;                    }</b>
+<b class="nc"><i>622</i>&nbsp;</b>
+<i>623</i>&nbsp;                    var1.put(var7);
+<i>624</i>&nbsp;                }
+<i>625</i>&nbsp;            }
+<i>626</i>&nbsp;
+<b class="nc"><i>627</i>&nbsp;            return var1;</b>
+<i>628</i>&nbsp;        }
+<i>629</i>&nbsp;    }
+<i>630</i>&nbsp;
+<i>631</i>&nbsp;    private static boolean containsIgnoreCase(NamingEnumeration var0, String var1) throws NamingException {
+<i>632</i>&nbsp;        while(true) {
+<b class="nc"><i>633</i>&nbsp;            if(var0.hasMore()) {</b>
+<i>634</i>&nbsp;                String var2 = (String)var0.next();
+<i>635</i>&nbsp;                if(!var2.equalsIgnoreCase(var1)) {
+<b class="nc"><i>636</i>&nbsp;                    continue;</b>
+<b class="nc"><i>637</i>&nbsp;                }</b>
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;                return true;
+<i>640</i>&nbsp;            }
+<i>641</i>&nbsp;
+<b class="nc"><i>642</i>&nbsp;            return false;</b>
+<i>643</i>&nbsp;        }
+<i>644</i>&nbsp;    }
+<i>645</i>&nbsp;
+<b class="nc"><i>646</i>&nbsp;    private void adjustDeleteStatus(String var1, LdapResult var2) {</b>
+<b class="nc"><i>647</i>&nbsp;        if(var2.status == 32 &amp;&amp; var2.matchedDN != null) {</b>
+<b class="nc"><i>648</i>&nbsp;            try {</b>
+<b class="nc"><i>649</i>&nbsp;                Name var3 = parser.parse(var1);</b>
+<i>650</i>&nbsp;                Name var4 = parser.parse(var2.matchedDN);
+<b class="nc"><i>651</i>&nbsp;                if(var3.size() - var4.size() == 1) {</b>
+<b class="nc"><i>652</i>&nbsp;                    var2.status = 0;</b>
+<b class="nc"><i>653</i>&nbsp;                }</b>
+<i>654</i>&nbsp;            } catch (NamingException var5) {
+<i>655</i>&nbsp;                ;
+<i>656</i>&nbsp;            }
+<i>657</i>&nbsp;        }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;    }
+<i>660</i>&nbsp;
+<b class="nc"><i>661</i>&nbsp;    private static Vector appendVector(Vector var0, Vector var1) {</b>
+<b class="nc"><i>662</i>&nbsp;        if(var0 == null) {</b>
+<i>663</i>&nbsp;            var0 = var1;
+<i>664</i>&nbsp;        } else {
+<i>665</i>&nbsp;            for(int var2 = 0; var2 &lt; var1.size(); ++var2) {
+<b class="nc"><i>666</i>&nbsp;                var0.addElement(var1.elementAt(var2));</b>
+<i>667</i>&nbsp;            }
+<i>668</i>&nbsp;        }
+<b class="nc"><i>669</i>&nbsp;</b>
+<i>670</i>&nbsp;        return var0;
+<i>671</i>&nbsp;    }
+<b class="nc"><i>672</i>&nbsp;</b>
+<b class="nc"><i>673</i>&nbsp;    protected Object c_lookupLink(Name var1, Continuation var2) throws NamingException {</b>
+<i>674</i>&nbsp;        return this.c_lookup(var1, var2);
+<b class="nc"><i>675</i>&nbsp;    }</b>
+<b class="nc"><i>676</i>&nbsp;</b>
+<i>677</i>&nbsp;    protected Object c_lookup(Name var1, Continuation var2) throws NamingException {
+<i>678</i>&nbsp;        var2.setError(this, var1);
+<b class="nc"><i>679</i>&nbsp;        Object var3 = null;</b>
+<b class="nc"><i>680</i>&nbsp;</b>
+<i>681</i>&nbsp;        Object var4;
+<b class="nc"><i>682</i>&nbsp;        try {</b>
+<i>683</i>&nbsp;            SearchControls var22 = new SearchControls();
+<b class="nc"><i>684</i>&nbsp;            var22.setSearchScope(0);</b>
+<i>685</i>&nbsp;            var22.setReturningAttributes((String[])null);
+<b class="nc"><i>686</i>&nbsp;            var22.setReturningObjFlag(true);</b>
+<b class="nc"><i>687</i>&nbsp;            LdapResult var24 = this.doSearchOnce(var1, &quot;(objectClass=*)&quot;, var22, true);</b>
+<b class="nc"><i>688</i>&nbsp;            this.respCtls = var24.resControls;</b>
+<i>689</i>&nbsp;            if(var24.status != 0) {
+<i>690</i>&nbsp;                this.processReturnCode(var24, var1);
+<i>691</i>&nbsp;            }
+<b class="nc"><i>692</i>&nbsp;</b>
+<i>693</i>&nbsp;            if(var24.entries != null &amp;&amp; var24.entries.size() == 1) {
+<i>694</i>&nbsp;                LdapEntry var25 = (LdapEntry)var24.entries.elementAt(0);
+<i>695</i>&nbsp;                var4 = var25.attributes;
+<b class="nc"><i>696</i>&nbsp;                Vector var8 = var25.respCtls;</b>
+<i>697</i>&nbsp;                if(var8 != null) {
+<b class="nc"><i>698</i>&nbsp;                    appendVector(this.respCtls, var8);</b>
+<i>699</i>&nbsp;                }
+<i>700</i>&nbsp;            } else {
+<i>701</i>&nbsp;                var4 = new BasicAttributes(true);
+<i>702</i>&nbsp;            }
+<b class="nc"><i>703</i>&nbsp;</b>
+<i>704</i>&nbsp;            if(((Attributes)var4).get(Obj.JAVA_ATTRIBUTES[2]) != null) {
+<b class="nc"><i>705</i>&nbsp;                var3 = Obj.decodeObject((Attributes)var4);</b>
+<b class="nc"><i>706</i>&nbsp;            }</b>
+<i>707</i>&nbsp;
+<i>708</i>&nbsp;            if(var3 == null) {
+<b class="nc"><i>709</i>&nbsp;                var3 = new LdapCtx(this, this.fullyQualifiedName((Name)var1));</b>
+<i>710</i>&nbsp;            }
+<i>711</i>&nbsp;        } catch (LdapReferralException var20) {
+<b class="nc"><i>712</i>&nbsp;            LdapReferralException var5 = var20;</b>
+<i>713</i>&nbsp;            if(this.handleReferrals == 2) {
+<i>714</i>&nbsp;                throw var2.fillInException(var20);
+<i>715</i>&nbsp;            }
+<i>716</i>&nbsp;
+<b class="nc"><i>717</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>718</i>&nbsp;                LdapReferralContext var6 = (LdapReferralContext)var5.getReferralContext(this.envprops, this.bindCtls);</b>
+<i>719</i>&nbsp;
+<i>720</i>&nbsp;                try {
+<b class="nc"><i>721</i>&nbsp;                    Object var7 = var6.lookup(var1);</b>
+<b class="nc"><i>722</i>&nbsp;                    return var7;</b>
+<i>723</i>&nbsp;                } catch (LdapReferralException var18) {
+<i>724</i>&nbsp;                    var5 = var18;
+<b class="nc"><i>725</i>&nbsp;                } finally {</b>
+<b class="nc"><i>726</i>&nbsp;                    var6.close();</b>
+<i>727</i>&nbsp;                }
+<i>728</i>&nbsp;            }
+<i>729</i>&nbsp;        } catch (NamingException var21) {
+<i>730</i>&nbsp;            throw var2.fillInException(var21);
+<b class="nc"><i>731</i>&nbsp;        }</b>
+<i>732</i>&nbsp;
+<i>733</i>&nbsp;        try {
+<i>734</i>&nbsp;            return DirectoryManager.getObjectInstance(var3, var1, this, this.envprops, (Attributes)var4);
+<i>735</i>&nbsp;        } catch (NamingException var16) {
+<i>736</i>&nbsp;            throw var2.fillInException(var16);
+<b class="nc"><i>737</i>&nbsp;        } catch (Exception var17) {</b>
+<i>738</i>&nbsp;            NamingException var23 = new NamingException(&quot;problem generating object using object factory&quot;);
+<i>739</i>&nbsp;            var23.setRootCause(var17);
+<b class="nc"><i>740</i>&nbsp;            throw var2.fillInException(var23);</b>
+<b class="nc"><i>741</i>&nbsp;        }</b>
+<i>742</i>&nbsp;    }
+<i>743</i>&nbsp;
+<i>744</i>&nbsp;    protected NamingEnumeration c_list(Name var1, Continuation var2) throws NamingException {
+<i>745</i>&nbsp;        SearchControls var3 = new SearchControls();
+<b class="nc"><i>746</i>&nbsp;        String[] var4 = new String[]{Obj.JAVA_ATTRIBUTES[0], Obj.JAVA_ATTRIBUTES[2]};</b>
+<i>747</i>&nbsp;        var3.setReturningAttributes(var4);
+<i>748</i>&nbsp;        var3.setReturningObjFlag(true);
+<i>749</i>&nbsp;        var2.setError(this, var1);
+<b class="nc"><i>750</i>&nbsp;        LdapResult var5 = null;</b>
+<b class="nc"><i>751</i>&nbsp;</b>
+<b class="nc"><i>752</i>&nbsp;        LdapNamingEnumeration var7;</b>
+<b class="nc"><i>753</i>&nbsp;        try {</b>
+<i>754</i>&nbsp;            var5 = this.doSearch(var1, &quot;(objectClass=*)&quot;, var3, true, true);
+<b class="nc"><i>755</i>&nbsp;            if(var5.status != 0 || var5.referrals != null) {</b>
+<b class="nc"><i>756</i>&nbsp;                this.processReturnCode(var5, var1);</b>
+<b class="nc"><i>757</i>&nbsp;            }</b>
+<i>758</i>&nbsp;
+<i>759</i>&nbsp;            return new LdapNamingEnumeration(this, var5, var1, var2);
+<i>760</i>&nbsp;        } catch (LdapReferralException var18) {
+<i>761</i>&nbsp;            LdapReferralException var6 = var18;
+<b class="nc"><i>762</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<i>763</i>&nbsp;                throw var2.fillInException(var18);
+<i>764</i>&nbsp;            } else {
+<i>765</i>&nbsp;                while(true) {
+<i>766</i>&nbsp;                    LdapReferralContext var22 = (LdapReferralContext)var6.getReferralContext(this.envprops, this.bindCtls);
+<i>767</i>&nbsp;
+<b class="nc"><i>768</i>&nbsp;                    try {</b>
+<i>769</i>&nbsp;                        NamingEnumeration var8 = var22.list(var1);
+<b class="nc"><i>770</i>&nbsp;                        return var8;</b>
+<i>771</i>&nbsp;                    } catch (LdapReferralException var16) {
+<b class="nc"><i>772</i>&nbsp;                        var6 = var16;</b>
+<b class="nc"><i>773</i>&nbsp;                    } finally {</b>
+<i>774</i>&nbsp;                        var22.close();
+<b class="nc"><i>775</i>&nbsp;                    }</b>
+<i>776</i>&nbsp;                }
+<i>777</i>&nbsp;            }
+<b class="nc"><i>778</i>&nbsp;        } catch (LimitExceededException var19) {</b>
+<b class="nc"><i>779</i>&nbsp;            var7 = new LdapNamingEnumeration(this, var5, var1, var2);</b>
+<b class="nc"><i>780</i>&nbsp;            var7.setNamingException((LimitExceededException)var2.fillInException(var19));</b>
+<i>781</i>&nbsp;            return var7;
+<b class="nc"><i>782</i>&nbsp;        } catch (PartialResultException var20) {</b>
+<b class="nc"><i>783</i>&nbsp;            var7 = new LdapNamingEnumeration(this, var5, var1, var2);</b>
+<i>784</i>&nbsp;            var7.setNamingException((PartialResultException)var2.fillInException(var20));
+<b class="nc"><i>785</i>&nbsp;            return var7;</b>
+<i>786</i>&nbsp;        } catch (NamingException var21) {
+<b class="nc"><i>787</i>&nbsp;            throw var2.fillInException(var21);</b>
+<b class="nc"><i>788</i>&nbsp;        }</b>
+<i>789</i>&nbsp;    }
+<b class="nc"><i>790</i>&nbsp;</b>
+<b class="nc"><i>791</i>&nbsp;    protected NamingEnumeration c_listBindings(Name var1, Continuation var2) throws NamingException {</b>
+<b class="nc"><i>792</i>&nbsp;        SearchControls var3 = new SearchControls();</b>
+<i>793</i>&nbsp;        var3.setReturningAttributes((String[])null);
+<i>794</i>&nbsp;        var3.setReturningObjFlag(true);
+<i>795</i>&nbsp;        var2.setError(this, var1);
+<b class="nc"><i>796</i>&nbsp;        LdapResult var4 = null;</b>
+<i>797</i>&nbsp;
+<b class="nc"><i>798</i>&nbsp;        LdapBindingEnumeration var6;</b>
+<b class="nc"><i>799</i>&nbsp;        try {</b>
+<b class="nc"><i>800</i>&nbsp;            var4 = this.doSearch(var1, &quot;(objectClass=*)&quot;, var3, true, true);</b>
+<i>801</i>&nbsp;            if(var4.status != 0 || var4.referrals != null) {
+<i>802</i>&nbsp;                this.processReturnCode(var4, var1);
+<i>803</i>&nbsp;            }
+<i>804</i>&nbsp;
+<b class="nc"><i>805</i>&nbsp;            return new LdapBindingEnumeration(this, var4, var1, var2);</b>
+<i>806</i>&nbsp;        } catch (LdapReferralException var17) {
+<i>807</i>&nbsp;            LdapReferralException var5 = var17;
+<i>808</i>&nbsp;            if(this.handleReferrals == 2) {
+<i>809</i>&nbsp;                throw var2.fillInException(var17);
+<i>810</i>&nbsp;            } else {
+<b class="nc"><i>811</i>&nbsp;                while(true) {</b>
+<i>812</i>&nbsp;                    LdapReferralContext var21 = (LdapReferralContext)var5.getReferralContext(this.envprops, this.bindCtls);
+<b class="nc"><i>813</i>&nbsp;</b>
+<b class="nc"><i>814</i>&nbsp;                    try {</b>
+<i>815</i>&nbsp;                        NamingEnumeration var7 = var21.listBindings(var1);
+<i>816</i>&nbsp;                        return var7;
+<i>817</i>&nbsp;                    } catch (LdapReferralException var15) {
+<i>818</i>&nbsp;                        var5 = var15;
+<b class="nc"><i>819</i>&nbsp;                    } finally {</b>
+<i>820</i>&nbsp;                        var21.close();
+<i>821</i>&nbsp;                    }
+<i>822</i>&nbsp;                }
+<b class="nc"><i>823</i>&nbsp;            }</b>
+<b class="nc"><i>824</i>&nbsp;        } catch (LimitExceededException var18) {</b>
+<b class="nc"><i>825</i>&nbsp;            var6 = new LdapBindingEnumeration(this, var4, var1, var2);</b>
+<b class="nc"><i>826</i>&nbsp;            var6.setNamingException((LimitExceededException)var2.fillInException(var18));</b>
+<i>827</i>&nbsp;            return var6;
+<b class="nc"><i>828</i>&nbsp;        } catch (PartialResultException var19) {</b>
+<b class="nc"><i>829</i>&nbsp;            var6 = new LdapBindingEnumeration(this, var4, var1, var2);</b>
+<i>830</i>&nbsp;            var6.setNamingException((PartialResultException)var2.fillInException(var19));
+<i>831</i>&nbsp;            return var6;
+<i>832</i>&nbsp;        } catch (NamingException var20) {
+<i>833</i>&nbsp;            throw var2.fillInException(var20);
+<i>834</i>&nbsp;        }
+<b class="nc"><i>835</i>&nbsp;    }</b>
+<i>836</i>&nbsp;
+<i>837</i>&nbsp;    protected NameParser c_getNameParser(Name var1, Continuation var2) throws NamingException {
+<b class="nc"><i>838</i>&nbsp;        var2.setSuccess();</b>
+<i>839</i>&nbsp;        return parser;
+<b class="nc"><i>840</i>&nbsp;    }</b>
+<b class="nc"><i>841</i>&nbsp;</b>
+<b class="nc"><i>842</i>&nbsp;    public String getNameInNamespace() {</b>
+<i>843</i>&nbsp;        return this.currentDN;
+<b class="nc"><i>844</i>&nbsp;    }</b>
+<i>845</i>&nbsp;
+<b class="nc"><i>846</i>&nbsp;    public Name composeName(Name var1, Name var2) throws NamingException {</b>
+<b class="nc"><i>847</i>&nbsp;        Name var3;</b>
+<i>848</i>&nbsp;        if(var1 instanceof LdapName &amp;&amp; var2 instanceof LdapName) {
+<i>849</i>&nbsp;            var3 = (Name)((Name)var2.clone());
+<b class="nc"><i>850</i>&nbsp;            var3.addAll(var1);</b>
+<b class="nc"><i>851</i>&nbsp;            return (new CompositeName()).add(var3.toString());</b>
+<b class="nc"><i>852</i>&nbsp;        } else {</b>
+<i>853</i>&nbsp;            if(!(var1 instanceof CompositeName)) {
+<i>854</i>&nbsp;                var1 = (new CompositeName()).add(var1.toString());
+<i>855</i>&nbsp;            }
+<i>856</i>&nbsp;
+<b class="nc"><i>857</i>&nbsp;            if(!(var2 instanceof CompositeName)) {</b>
+<i>858</i>&nbsp;                var2 = (new CompositeName()).add(var2.toString());
+<i>859</i>&nbsp;            }
+<i>860</i>&nbsp;
+<i>861</i>&nbsp;            int var4 = var2.size() - 1;
+<i>862</i>&nbsp;            if(!var1.isEmpty() &amp;&amp; !var2.isEmpty() &amp;&amp; !var1.get(0).equals(&quot;&quot;) &amp;&amp; !var2.get(var4).equals(&quot;&quot;)) {
+<b class="nc"><i>863</i>&nbsp;                var3 = (Name)((Name)var2.clone());</b>
+<i>864</i>&nbsp;                var3.addAll(var1);
+<b class="nc"><i>865</i>&nbsp;                if(this.parentIsLdapCtx) {</b>
+<b class="nc"><i>866</i>&nbsp;                    String var5 = concatNames(var3.get(var4 + 1), var3.get(var4));</b>
+<i>867</i>&nbsp;                    var3.remove(var4 + 1);
+<i>868</i>&nbsp;                    var3.remove(var4);
+<i>869</i>&nbsp;                    var3.add(var4, var5);
+<b class="nc"><i>870</i>&nbsp;                }</b>
+<i>871</i>&nbsp;
+<i>872</i>&nbsp;                return var3;
+<b class="nc"><i>873</i>&nbsp;            } else {</b>
+<b class="nc"><i>874</i>&nbsp;                return super.composeName(var1, var2);</b>
+<b class="nc"><i>875</i>&nbsp;            }</b>
+<b class="nc"><i>876</i>&nbsp;        }</b>
+<b class="nc"><i>877</i>&nbsp;    }</b>
+<b class="nc"><i>878</i>&nbsp;</b>
+<b class="nc"><i>879</i>&nbsp;    private String fullyQualifiedName(Name var1) {</b>
+<i>880</i>&nbsp;        return var1.isEmpty()?this.currentDN:this.fullyQualifiedName((String)var1.get(0));
+<i>881</i>&nbsp;    }
+<i>882</i>&nbsp;
+<i>883</i>&nbsp;    private String fullyQualifiedName(String var1) {
+<i>884</i>&nbsp;        return concatNames(var1, this.currentDN);
+<i>885</i>&nbsp;    }
+<i>886</i>&nbsp;
+<i>887</i>&nbsp;    private static String concatNames(String var0, String var1) {
+<i>888</i>&nbsp;        return var0 != null &amp;&amp; !var0.equals(&quot;&quot;)?(var1 != null &amp;&amp; !var1.equals(&quot;&quot;)?var0 + &quot;,&quot; + var1:var0):var1;
+<i>889</i>&nbsp;    }
+<i>890</i>&nbsp;
+<i>891</i>&nbsp;    protected Attributes c_getAttributes(Name var1, String[] var2, Continuation var3) throws NamingException {
+<i>892</i>&nbsp;        var3.setError(this, var1);
+<i>893</i>&nbsp;        SearchControls var4 = new SearchControls();
+<i>894</i>&nbsp;        var4.setSearchScope(0);
+<i>895</i>&nbsp;        var4.setReturningAttributes(var2);
+<b class="nc"><i>896</i>&nbsp;</b>
+<b class="nc"><i>897</i>&nbsp;        try {</b>
+<i>898</i>&nbsp;            LdapResult var17 = this.doSearchOnce(var1, &quot;(objectClass=*)&quot;, var4, true);
+<i>899</i>&nbsp;            this.respCtls = var17.resControls;
+<i>900</i>&nbsp;            if(var17.status != 0) {
+<i>901</i>&nbsp;                this.processReturnCode(var17, var1);
+<b class="nc"><i>902</i>&nbsp;            }</b>
+<i>903</i>&nbsp;
+<i>904</i>&nbsp;            if(var17.entries != null &amp;&amp; var17.entries.size() == 1) {
+<i>905</i>&nbsp;                LdapEntry var18 = (LdapEntry)var17.entries.elementAt(0);
+<b class="nc"><i>906</i>&nbsp;                Vector var19 = var18.respCtls;</b>
+<b class="nc"><i>907</i>&nbsp;                if(var19 != null) {</b>
+<i>908</i>&nbsp;                    appendVector(this.respCtls, var19);
+<i>909</i>&nbsp;                }
+<b class="nc"><i>910</i>&nbsp;</b>
+<i>911</i>&nbsp;                this.setParents(var18.attributes, (Name)var1.clone());
+<b class="nc"><i>912</i>&nbsp;                return var18.attributes;</b>
+<b class="nc"><i>913</i>&nbsp;            } else {</b>
+<i>914</i>&nbsp;                return new BasicAttributes(true);
+<i>915</i>&nbsp;            }
+<b class="nc"><i>916</i>&nbsp;        } catch (LdapReferralException var15) {</b>
+<i>917</i>&nbsp;            LdapReferralException var5 = var15;
+<i>918</i>&nbsp;            if(this.handleReferrals == 2) {
+<i>919</i>&nbsp;                throw var3.fillInException(var15);
+<i>920</i>&nbsp;            } else {
+<i>921</i>&nbsp;                while(true) {
+<i>922</i>&nbsp;                    LdapReferralContext var6 = (LdapReferralContext)var5.getReferralContext(this.envprops, this.bindCtls);
+<i>923</i>&nbsp;
+<i>924</i>&nbsp;                    try {
+<i>925</i>&nbsp;                        Attributes var7 = var6.getAttributes(var1, var2);
+<i>926</i>&nbsp;                        return var7;
+<b class="nc"><i>927</i>&nbsp;                    } catch (LdapReferralException var13) {</b>
+<i>928</i>&nbsp;                        var5 = var13;
+<b class="nc"><i>929</i>&nbsp;                    } finally {</b>
+<i>930</i>&nbsp;                        var6.close();
+<i>931</i>&nbsp;                    }
+<b class="nc"><i>932</i>&nbsp;                }</b>
+<b class="nc"><i>933</i>&nbsp;            }</b>
+<b class="nc"><i>934</i>&nbsp;        } catch (NamingException var16) {</b>
+<i>935</i>&nbsp;            throw var3.fillInException(var16);
+<b class="nc"><i>936</i>&nbsp;        }</b>
+<i>937</i>&nbsp;    }
+<i>938</i>&nbsp;
+<i>939</i>&nbsp;    protected void c_modifyAttributes(Name var1, int var2, Attributes var3, Continuation var4) throws NamingException {
+<b class="nc"><i>940</i>&nbsp;        var4.setError(this, var1);</b>
+<i>941</i>&nbsp;
+<i>942</i>&nbsp;        try {
+<i>943</i>&nbsp;            this.ensureOpen();
+<i>944</i>&nbsp;            if(var3 != null &amp;&amp; var3.size() != 0) {
+<i>945</i>&nbsp;                String var22 = this.fullyQualifiedName((Name)var1);
+<i>946</i>&nbsp;                int var23 = convertToLdapModCode(var2);
+<i>947</i>&nbsp;                int[] var7 = new int[var3.size()];
+<b class="nc"><i>948</i>&nbsp;                Attribute[] var8 = new Attribute[var3.size()];</b>
+<b class="nc"><i>949</i>&nbsp;                NamingEnumeration var9 = var3.getAll();</b>
+<b class="nc"><i>950</i>&nbsp;</b>
+<b class="nc"><i>951</i>&nbsp;                for(int var10 = 0; var10 &lt; var7.length &amp;&amp; var9.hasMore(); ++var10) {</b>
+<i>952</i>&nbsp;                    var7[var10] = var23;
+<i>953</i>&nbsp;                    var8[var10] = (Attribute)var9.next();
+<b class="nc"><i>954</i>&nbsp;                }</b>
+<i>955</i>&nbsp;
+<i>956</i>&nbsp;                LdapResult var25 = this.clnt.modify(var22, var7, var8, this.reqCtls);
+<i>957</i>&nbsp;                this.respCtls = var25.resControls;
+<i>958</i>&nbsp;                if(var25.status != 0) {
+<b class="nc"><i>959</i>&nbsp;                    this.processReturnCode(var25, var1);</b>
+<i>960</i>&nbsp;                }
+<i>961</i>&nbsp;            }
+<i>962</i>&nbsp;        } catch (LdapReferralException var19) {
+<i>963</i>&nbsp;            LdapReferralException var5 = var19;
+<b class="nc"><i>964</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<b class="nc"><i>965</i>&nbsp;                throw var4.fillInException(var19);</b>
+<b class="nc"><i>966</i>&nbsp;            } else {</b>
+<b class="nc"><i>967</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>968</i>&nbsp;                    LdapReferralContext var24 = (LdapReferralContext)var5.getReferralContext(this.envprops, this.bindCtls);</b>
+<i>969</i>&nbsp;
+<i>970</i>&nbsp;                    try {
+<i>971</i>&nbsp;                        var24.modifyAttributes(var1, var2, var3);
+<i>972</i>&nbsp;                        return;
+<i>973</i>&nbsp;                    } catch (LdapReferralException var17) {
+<i>974</i>&nbsp;                        var5 = var17;
+<i>975</i>&nbsp;                    } finally {
+<i>976</i>&nbsp;                        var24.close();
+<b class="nc"><i>977</i>&nbsp;                    }</b>
+<b class="nc"><i>978</i>&nbsp;                }</b>
+<i>979</i>&nbsp;            }
+<b class="nc"><i>980</i>&nbsp;        } catch (IOException var20) {</b>
+<b class="nc"><i>981</i>&nbsp;            CommunicationException var6 = new CommunicationException(var20.getMessage());</b>
+<i>982</i>&nbsp;            var6.setRootCause(var20);
+<i>983</i>&nbsp;            throw var4.fillInException(var6);
+<b class="nc"><i>984</i>&nbsp;        } catch (NamingException var21) {</b>
+<i>985</i>&nbsp;            throw var4.fillInException(var21);
+<i>986</i>&nbsp;        }
+<i>987</i>&nbsp;    }
+<i>988</i>&nbsp;
+<i>989</i>&nbsp;    protected void c_modifyAttributes(Name var1, ModificationItem[] var2, Continuation var3) throws NamingException {
+<i>990</i>&nbsp;        var3.setError(this, var1);
+<i>991</i>&nbsp;
+<i>992</i>&nbsp;        try {
+<b class="nc"><i>993</i>&nbsp;            this.ensureOpen();</b>
+<i>994</i>&nbsp;            if(var2 != null &amp;&amp; var2.length != 0) {
+<i>995</i>&nbsp;                String var20 = this.fullyQualifiedName((Name)var1);
+<i>996</i>&nbsp;                int[] var22 = new int[var2.length];
+<i>997</i>&nbsp;                Attribute[] var6 = new Attribute[var2.length];
+<b class="nc"><i>998</i>&nbsp;</b>
+<b class="nc"><i>999</i>&nbsp;                for(int var8 = 0; var8 &lt; var22.length; ++var8) {</b>
+<i>1000</i>&nbsp;                    ModificationItem var7 = var2[var8];
+<i>1001</i>&nbsp;                    var22[var8] = convertToLdapModCode(var7.getModificationOp());
+<i>1002</i>&nbsp;                    var6[var8] = var7.getAttribute();
+<b class="nc"><i>1003</i>&nbsp;                }</b>
+<b class="nc"><i>1004</i>&nbsp;</b>
+<b class="nc"><i>1005</i>&nbsp;                LdapResult var23 = this.clnt.modify(var20, var22, var6, this.reqCtls);</b>
+<b class="nc"><i>1006</i>&nbsp;                this.respCtls = var23.resControls;</b>
+<i>1007</i>&nbsp;                if(var23.status != 0) {
+<b class="nc"><i>1008</i>&nbsp;                    this.processReturnCode(var23, var1);</b>
+<b class="nc"><i>1009</i>&nbsp;                }</b>
+<i>1010</i>&nbsp;
+<i>1011</i>&nbsp;            }
+<i>1012</i>&nbsp;        } catch (LdapReferralException var17) {
+<b class="nc"><i>1013</i>&nbsp;            LdapReferralException var4 = var17;</b>
+<b class="nc"><i>1014</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<i>1015</i>&nbsp;                throw var3.fillInException(var17);
+<i>1016</i>&nbsp;            } else {
+<b class="nc"><i>1017</i>&nbsp;                while(true) {</b>
+<i>1018</i>&nbsp;                    LdapReferralContext var21 = (LdapReferralContext)var4.getReferralContext(this.envprops, this.bindCtls);
+<b class="nc"><i>1019</i>&nbsp;</b>
+<i>1020</i>&nbsp;                    try {
+<b class="nc"><i>1021</i>&nbsp;                        var21.modifyAttributes(var1, var2);</b>
+<b class="nc"><i>1022</i>&nbsp;                        return;</b>
+<i>1023</i>&nbsp;                    } catch (LdapReferralException var15) {
+<b class="nc"><i>1024</i>&nbsp;                        var4 = var15;</b>
+<b class="nc"><i>1025</i>&nbsp;                    } finally {</b>
+<b class="nc"><i>1026</i>&nbsp;                        var21.close();</b>
+<i>1027</i>&nbsp;                    }
+<i>1028</i>&nbsp;                }
+<i>1029</i>&nbsp;            }
+<b class="nc"><i>1030</i>&nbsp;        } catch (IOException var18) {</b>
+<i>1031</i>&nbsp;            CommunicationException var5 = new CommunicationException(var18.getMessage());
+<b class="nc"><i>1032</i>&nbsp;            var5.setRootCause(var18);</b>
+<i>1033</i>&nbsp;            throw var3.fillInException(var5);
+<b class="nc"><i>1034</i>&nbsp;        } catch (NamingException var19) {</b>
+<b class="nc"><i>1035</i>&nbsp;            throw var3.fillInException(var19);</b>
+<i>1036</i>&nbsp;        }
+<b class="nc"><i>1037</i>&nbsp;    }</b>
+<b class="nc"><i>1038</i>&nbsp;</b>
+<b class="nc"><i>1039</i>&nbsp;    private static int convertToLdapModCode(int var0) {</b>
+<i>1040</i>&nbsp;        switch(var0) {
+<i>1041</i>&nbsp;        case 1:
+<i>1042</i>&nbsp;            return 0;
+<i>1043</i>&nbsp;        case 2:
+<b class="nc"><i>1044</i>&nbsp;            return 2;</b>
+<i>1045</i>&nbsp;        case 3:
+<i>1046</i>&nbsp;            return 1;
+<i>1047</i>&nbsp;        default:
+<i>1048</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid modification code&quot;);
+<b class="nc"><i>1049</i>&nbsp;        }</b>
+<i>1050</i>&nbsp;    }
+<b class="nc"><i>1051</i>&nbsp;</b>
+<b class="nc"><i>1052</i>&nbsp;    protected DirContext c_getSchema(Name var1, Continuation var2) throws NamingException {</b>
+<i>1053</i>&nbsp;        var2.setError(this, var1);
+<i>1054</i>&nbsp;
+<i>1055</i>&nbsp;        try {
+<i>1056</i>&nbsp;            return this.getSchemaTree(var1);
+<b class="nc"><i>1057</i>&nbsp;        } catch (NamingException var4) {</b>
+<i>1058</i>&nbsp;            throw var2.fillInException(var4);
+<i>1059</i>&nbsp;        }
+<i>1060</i>&nbsp;    }
+<b class="nc"><i>1061</i>&nbsp;</b>
+<b class="nc"><i>1062</i>&nbsp;    protected DirContext c_getSchemaClassDefinition(Name var1, Continuation var2) throws NamingException {</b>
+<b class="nc"><i>1063</i>&nbsp;        var2.setError(this, var1);</b>
+<i>1064</i>&nbsp;
+<i>1065</i>&nbsp;        try {
+<b class="nc"><i>1066</i>&nbsp;            Attribute var3 = this.c_getAttributes(var1, new String[]{&quot;objectclass&quot;}, var2).get(&quot;objectclass&quot;);</b>
+<i>1067</i>&nbsp;            if(var3 != null &amp;&amp; var3.size() != 0) {
+<i>1068</i>&nbsp;                Context var4 = (Context)this.c_getSchema(var1, var2).lookup(&quot;ClassDefinition&quot;);
+<b class="nc"><i>1069</i>&nbsp;                HierMemDirCtx var5 = new HierMemDirCtx();</b>
+<b class="nc"><i>1070</i>&nbsp;                NamingEnumeration var8 = var3.getAll();</b>
+<i>1071</i>&nbsp;
+<b class="nc"><i>1072</i>&nbsp;                while(var8.hasMoreElements()) {</b>
+<b class="nc"><i>1073</i>&nbsp;                    String var7 = (String)var8.nextElement();</b>
+<i>1074</i>&nbsp;                    DirContext var6 = (DirContext)var4.lookup(var7);
+<b class="nc"><i>1075</i>&nbsp;                    var5.bind(var7, var6);</b>
+<b class="nc"><i>1076</i>&nbsp;                }</b>
+<i>1077</i>&nbsp;
+<i>1078</i>&nbsp;                var5.setReadOnly(new SchemaViolationException(&quot;Cannot update schema object&quot;));
+<i>1079</i>&nbsp;                return var5;
+<i>1080</i>&nbsp;            } else {
+<i>1081</i>&nbsp;                return EMPTY_SCHEMA;
+<b class="nc"><i>1082</i>&nbsp;            }</b>
+<b class="nc"><i>1083</i>&nbsp;        } catch (NamingException var9) {</b>
+<i>1084</i>&nbsp;            throw var2.fillInException(var9);
+<b class="nc"><i>1085</i>&nbsp;        }</b>
+<b class="nc"><i>1086</i>&nbsp;    }</b>
+<b class="nc"><i>1087</i>&nbsp;</b>
+<i>1088</i>&nbsp;    private DirContext getSchemaTree(Name var1) throws NamingException {
+<i>1089</i>&nbsp;        String var2 = this.getSchemaEntry(var1, true);
+<b class="nc"><i>1090</i>&nbsp;        DirContext var3 = (DirContext)this.schemaTrees.get(var2);</b>
+<i>1091</i>&nbsp;        if(var3 == null) {
+<b class="nc"><i>1092</i>&nbsp;            var3 = this.buildSchemaTree(var2);</b>
+<i>1093</i>&nbsp;            this.schemaTrees.put(var2, var3);
+<b class="nc"><i>1094</i>&nbsp;        }</b>
+<i>1095</i>&nbsp;
+<i>1096</i>&nbsp;        return var3;
+<b class="nc"><i>1097</i>&nbsp;    }</b>
+<i>1098</i>&nbsp;
+<i>1099</i>&nbsp;    private DirContext buildSchemaTree(String var1) throws NamingException {
+<b class="nc"><i>1100</i>&nbsp;        SearchControls var2 = new SearchControls(0, 0L, 0, SCHEMA_ATTRIBUTES, true, false);</b>
+<i>1101</i>&nbsp;        Name var3 = (new CompositeName()).add(var1);
+<b class="nc"><i>1102</i>&nbsp;        NamingEnumeration var4 = this.searchAux(var3, &quot;(objectClass=subschema)&quot;, var2, false, true, new Continuation());</b>
+<i>1103</i>&nbsp;        if(!var4.hasMore()) {
+<i>1104</i>&nbsp;            throw new OperationNotSupportedException(&quot;Cannot get read subschemasubentry: &quot; + var1);
+<b class="nc"><i>1105</i>&nbsp;        } else {</b>
+<i>1106</i>&nbsp;            SearchResult var5 = (SearchResult)var4.next();
+<b class="nc"><i>1107</i>&nbsp;            var4.close();</b>
+<b class="nc"><i>1108</i>&nbsp;            Object var6 = var5.getObject();</b>
+<b class="nc"><i>1109</i>&nbsp;            if(!(var6 instanceof LdapCtx)) {</b>
+<i>1110</i>&nbsp;                throw new NamingException(&quot;Cannot get schema object as DirContext: &quot; + var1);
+<i>1111</i>&nbsp;            } else {
+<i>1112</i>&nbsp;                return LdapSchemaCtx.createSchemaTree(this.envprops, var1, (LdapCtx)var6, var5.getAttributes(), this.netscapeSchemaBug);
+<i>1113</i>&nbsp;            }
+<b class="nc"><i>1114</i>&nbsp;        }</b>
+<i>1115</i>&nbsp;    }
+<i>1116</i>&nbsp;
+<i>1117</i>&nbsp;    private String getSchemaEntry(Name var1, boolean var2) throws NamingException {
+<i>1118</i>&nbsp;        SearchControls var3 = new SearchControls(0, 0L, 0, new String[]{&quot;subschemasubentry&quot;}, false, false);
+<i>1119</i>&nbsp;
+<b class="nc"><i>1120</i>&nbsp;        NamingEnumeration var4;</b>
+<i>1121</i>&nbsp;        try {
+<b class="nc"><i>1122</i>&nbsp;            var4 = this.searchAux(var1, &quot;objectclass=*&quot;, var3, var2, true, new Continuation());</b>
+<b class="nc"><i>1123</i>&nbsp;        } catch (NamingException var7) {</b>
+<i>1124</i>&nbsp;            if(!this.clnt.isLdapv3 &amp;&amp; this.currentDN.length() == 0 &amp;&amp; var1.isEmpty()) {
+<i>1125</i>&nbsp;                throw new OperationNotSupportedException(&quot;Cannot get schema information from server&quot;);
+<i>1126</i>&nbsp;            }
+<i>1127</i>&nbsp;
+<b class="nc"><i>1128</i>&nbsp;            throw var7;</b>
+<i>1129</i>&nbsp;        }
+<i>1130</i>&nbsp;
+<i>1131</i>&nbsp;        if(!var4.hasMoreElements()) {
+<b class="nc"><i>1132</i>&nbsp;            throw new ConfigurationException(&quot;Requesting schema of nonexistent entry: &quot; + var1);</b>
+<b class="nc"><i>1133</i>&nbsp;        } else {</b>
+<i>1134</i>&nbsp;            SearchResult var5 = (SearchResult)var4.next();
+<i>1135</i>&nbsp;            var4.close();
+<b class="nc"><i>1136</i>&nbsp;            Attribute var6 = var5.getAttributes().get(&quot;subschemasubentry&quot;);</b>
+<i>1137</i>&nbsp;            if(var6 != null &amp;&amp; var6.size() &gt;= 0) {
+<b class="nc"><i>1138</i>&nbsp;                return (String)((String)var6.get());</b>
+<i>1139</i>&nbsp;            } else if(this.currentDN.length() == 0 &amp;&amp; var1.isEmpty()) {
+<b class="nc"><i>1140</i>&nbsp;                throw new OperationNotSupportedException(&quot;Cannot read subschemasubentry of root DSE&quot;);</b>
+<b class="nc"><i>1141</i>&nbsp;            } else {</b>
+<i>1142</i>&nbsp;                return this.getSchemaEntry(new CompositeName(), false);
+<i>1143</i>&nbsp;            }
+<b class="nc"><i>1144</i>&nbsp;        }</b>
+<i>1145</i>&nbsp;    }
+<b class="nc"><i>1146</i>&nbsp;</b>
+<i>1147</i>&nbsp;    void setParents(Attributes var1, Name var2) throws NamingException {
+<b class="nc"><i>1148</i>&nbsp;        NamingEnumeration var3 = var1.getAll();</b>
+<b class="nc"><i>1149</i>&nbsp;</b>
+<i>1150</i>&nbsp;        while(var3.hasMore()) {
+<i>1151</i>&nbsp;            ((LdapAttribute)var3.next()).setParent(this, var2);
+<i>1152</i>&nbsp;        }
+<i>1153</i>&nbsp;
+<i>1154</i>&nbsp;    }
+<i>1155</i>&nbsp;
+<b class="nc"><i>1156</i>&nbsp;    String getURL() {</b>
+<b class="nc"><i>1157</i>&nbsp;        if(this.url == null) {</b>
+<b class="nc"><i>1158</i>&nbsp;            this.url = LdapURL.toUrlString(this.hostname, this.port_number, this.currentDN, this.hasLdapsScheme);</b>
+<i>1159</i>&nbsp;        }
+<b class="nc"><i>1160</i>&nbsp;</b>
+<i>1161</i>&nbsp;        return this.url;
+<b class="nc"><i>1162</i>&nbsp;    }</b>
+<i>1163</i>&nbsp;
+<i>1164</i>&nbsp;    protected NamingEnumeration c_search(Name var1, Attributes var2, Continuation var3) throws NamingException {
+<b class="nc"><i>1165</i>&nbsp;        return this.c_search(var1, (Attributes)var2, (String[])null, var3);</b>
+<i>1166</i>&nbsp;    }
+<i>1167</i>&nbsp;
+<b class="nc"><i>1168</i>&nbsp;    protected NamingEnumeration c_search(Name var1, Attributes var2, String[] var3, Continuation var4) throws NamingException {</b>
+<i>1169</i>&nbsp;        SearchControls var5 = new SearchControls();
+<b class="nc"><i>1170</i>&nbsp;        var5.setReturningAttributes(var3);</b>
+<i>1171</i>&nbsp;
+<i>1172</i>&nbsp;        String var6;
+<b class="nc"><i>1173</i>&nbsp;        try {</b>
+<i>1174</i>&nbsp;            var6 = SearchFilter.format(var2);
+<b class="nc"><i>1175</i>&nbsp;        } catch (NamingException var8) {</b>
+<b class="nc"><i>1176</i>&nbsp;            var4.setError(this, var1);</b>
+<b class="nc"><i>1177</i>&nbsp;            throw var4.fillInException(var8);</b>
+<i>1178</i>&nbsp;        }
+<i>1179</i>&nbsp;
+<i>1180</i>&nbsp;        return this.c_search(var1, (String)var6, (SearchControls)var5, var4);
+<i>1181</i>&nbsp;    }
+<b class="nc"><i>1182</i>&nbsp;</b>
+<i>1183</i>&nbsp;    protected NamingEnumeration c_search(Name var1, String var2, SearchControls var3, Continuation var4) throws NamingException {
+<i>1184</i>&nbsp;        return this.searchAux(var1, var2, cloneSearchControls(var3), true, this.waitForReply, var4);
+<i>1185</i>&nbsp;    }
+<i>1186</i>&nbsp;
+<i>1187</i>&nbsp;    protected NamingEnumeration c_search(Name var1, String var2, Object[] var3, SearchControls var4, Continuation var5) throws NamingException {
+<b class="nc"><i>1188</i>&nbsp;        String var6;</b>
+<i>1189</i>&nbsp;        try {
+<b class="nc"><i>1190</i>&nbsp;            var6 = SearchFilter.format(var2, var3);</b>
+<b class="nc"><i>1191</i>&nbsp;        } catch (NamingException var8) {</b>
+<i>1192</i>&nbsp;            var5.setError(this, var1);
+<i>1193</i>&nbsp;            throw var5.fillInException(var8);
+<i>1194</i>&nbsp;        }
+<i>1195</i>&nbsp;
+<b class="nc"><i>1196</i>&nbsp;        return this.c_search(var1, (String)var6, (SearchControls)var4, var5);</b>
+<i>1197</i>&nbsp;    }
+<i>1198</i>&nbsp;
+<b class="nc"><i>1199</i>&nbsp;    NamingEnumeration searchAux(Name var1, String var2, SearchControls var3, boolean var4, boolean var5, Continuation var6) throws NamingException {</b>
+<b class="nc"><i>1200</i>&nbsp;        LdapResult var7 = null;</b>
+<i>1201</i>&nbsp;        String[] var8 = new String[2];
+<i>1202</i>&nbsp;        if(var3 == null) {
+<b class="nc"><i>1203</i>&nbsp;            var3 = new SearchControls();</b>
+<i>1204</i>&nbsp;        }
+<b class="nc"><i>1205</i>&nbsp;</b>
+<i>1206</i>&nbsp;        String[] var9 = var3.getReturningAttributes();
+<b class="nc"><i>1207</i>&nbsp;        if(var3.getReturningObjFlag() &amp;&amp; var9 != null) {</b>
+<b class="nc"><i>1208</i>&nbsp;            boolean var10 = false;</b>
+<i>1209</i>&nbsp;
+<i>1210</i>&nbsp;            for(int var11 = var9.length - 1; var11 &gt;= 0; --var11) {
+<b class="nc"><i>1211</i>&nbsp;                if(var9[var11].equals(&quot;*&quot;)) {</b>
+<i>1212</i>&nbsp;                    var10 = true;
+<b class="nc"><i>1213</i>&nbsp;                    break;</b>
+<i>1214</i>&nbsp;                }
+<b class="nc"><i>1215</i>&nbsp;            }</b>
+<b class="nc"><i>1216</i>&nbsp;</b>
+<i>1217</i>&nbsp;            if(!var10) {
+<i>1218</i>&nbsp;                String[] var31 = new String[var9.length + Obj.JAVA_ATTRIBUTES.length];
+<i>1219</i>&nbsp;                System.arraycopy(var9, 0, var31, 0, var9.length);
+<i>1220</i>&nbsp;                System.arraycopy(Obj.JAVA_ATTRIBUTES, 0, var31, var9.length, Obj.JAVA_ATTRIBUTES.length);
+<i>1221</i>&nbsp;                var3.setReturningAttributes(var31);
+<i>1222</i>&nbsp;            }
+<i>1223</i>&nbsp;        }
+<i>1224</i>&nbsp;
+<i>1225</i>&nbsp;        LdapCtx.SearchArgs var29 = new LdapCtx.SearchArgs(var1, var2, var3, var9);
+<i>1226</i>&nbsp;        var6.setError(this, var1);
+<b class="nc"><i>1227</i>&nbsp;</b>
+<b class="nc"><i>1228</i>&nbsp;        LdapSearchEnumeration var30;</b>
+<i>1229</i>&nbsp;        try {
+<i>1230</i>&nbsp;            if(searchToCompare(var2, var3, var8)) {
+<i>1231</i>&nbsp;                var7 = this.compare(var1, var8[0], var8[1]);
+<b class="nc"><i>1232</i>&nbsp;                if(!var7.compareToSearchResult(this.fullyQualifiedName((Name)var1))) {</b>
+<i>1233</i>&nbsp;                    this.processReturnCode(var7, var1);
+<i>1234</i>&nbsp;                }
+<i>1235</i>&nbsp;            } else {
+<i>1236</i>&nbsp;                var7 = this.doSearch(var1, var2, var3, var4, var5);
+<i>1237</i>&nbsp;                this.processReturnCode(var7, var1);
+<i>1238</i>&nbsp;            }
+<i>1239</i>&nbsp;
+<i>1240</i>&nbsp;            return new LdapSearchEnumeration(this, var7, this.fullyQualifiedName((Name)var1), var29, var6);
+<b class="nc"><i>1241</i>&nbsp;        } catch (LdapReferralException var24) {</b>
+<b class="nc"><i>1242</i>&nbsp;            LdapReferralException var32 = var24;</b>
+<b class="nc"><i>1243</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<b class="nc"><i>1244</i>&nbsp;                throw var6.fillInException(var24);</b>
+<i>1245</i>&nbsp;            } else {
+<b class="nc"><i>1246</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>1247</i>&nbsp;                    LdapReferralContext var33 = (LdapReferralContext)var32.getReferralContext(this.envprops, this.bindCtls);</b>
+<i>1248</i>&nbsp;
+<b class="nc"><i>1249</i>&nbsp;                    try {</b>
+<b class="nc"><i>1250</i>&nbsp;                        NamingEnumeration var13 = var33.search(var1, var2, var3);</b>
+<i>1251</i>&nbsp;                        return var13;
+<i>1252</i>&nbsp;                    } catch (LdapReferralException var22) {
+<b class="nc"><i>1253</i>&nbsp;                        var32 = var22;</b>
+<i>1254</i>&nbsp;                    } finally {
+<b class="nc"><i>1255</i>&nbsp;                        var33.close();</b>
+<i>1256</i>&nbsp;                    }
+<b class="nc"><i>1257</i>&nbsp;                }</b>
+<i>1258</i>&nbsp;            }
+<i>1259</i>&nbsp;        } catch (LimitExceededException var25) {
+<b class="nc"><i>1260</i>&nbsp;            var30 = new LdapSearchEnumeration(this, var7, this.fullyQualifiedName((Name)var1), var29, var6);</b>
+<b class="nc"><i>1261</i>&nbsp;            var30.setNamingException(var25);</b>
+<i>1262</i>&nbsp;            return var30;
+<b class="nc"><i>1263</i>&nbsp;        } catch (PartialResultException var26) {</b>
+<b class="nc"><i>1264</i>&nbsp;            var30 = new LdapSearchEnumeration(this, var7, this.fullyQualifiedName((Name)var1), var29, var6);</b>
+<i>1265</i>&nbsp;            var30.setNamingException(var26);
+<b class="nc"><i>1266</i>&nbsp;            return var30;</b>
+<b class="nc"><i>1267</i>&nbsp;        } catch (IOException var27) {</b>
+<b class="nc"><i>1268</i>&nbsp;            CommunicationException var12 = new CommunicationException(var27.getMessage());</b>
+<i>1269</i>&nbsp;            var12.setRootCause(var27);
+<b class="nc"><i>1270</i>&nbsp;            throw var6.fillInException(var12);</b>
+<i>1271</i>&nbsp;        } catch (NamingException var28) {
+<i>1272</i>&nbsp;            throw var6.fillInException(var28);
+<i>1273</i>&nbsp;        }
+<b class="nc"><i>1274</i>&nbsp;    }</b>
+<i>1275</i>&nbsp;
+<i>1276</i>&nbsp;    LdapResult getSearchReply(LdapClient var1, LdapResult var2) throws NamingException {
+<i>1277</i>&nbsp;        if(this.clnt != var1) {
+<i>1278</i>&nbsp;            throw new CommunicationException(&quot;Context\&#39;s connection changed; unable to continue enumeration&quot;);
+<i>1279</i>&nbsp;        } else {
+<b class="nc"><i>1280</i>&nbsp;            try {</b>
+<i>1281</i>&nbsp;                return var1.getSearchReply(this.batchSize, var2, this.binaryAttrs);
+<i>1282</i>&nbsp;            } catch (IOException var5) {
+<i>1283</i>&nbsp;                CommunicationException var4 = new CommunicationException(var5.getMessage());
+<i>1284</i>&nbsp;                var4.setRootCause(var5);
+<b class="nc"><i>1285</i>&nbsp;                throw var4;</b>
+<b class="nc"><i>1286</i>&nbsp;            }</b>
+<b class="nc"><i>1287</i>&nbsp;        }</b>
+<b class="nc"><i>1288</i>&nbsp;    }</b>
+<i>1289</i>&nbsp;
+<b class="nc"><i>1290</i>&nbsp;    private LdapResult doSearchOnce(Name var1, String var2, SearchControls var3, boolean var4) throws NamingException {</b>
+<i>1291</i>&nbsp;        int var5 = this.batchSize;
+<i>1292</i>&nbsp;        this.batchSize = 2;
+<i>1293</i>&nbsp;        LdapResult var6 = this.doSearch(var1, var2, var3, var4, true);
+<i>1294</i>&nbsp;        this.batchSize = var5;
+<i>1295</i>&nbsp;        return var6;
+<i>1296</i>&nbsp;    }
+<i>1297</i>&nbsp;
+<i>1298</i>&nbsp;    private LdapResult doSearch(Name var1, String var2, SearchControls var3, boolean var4, boolean var5) throws NamingException {
+<i>1299</i>&nbsp;        this.ensureOpen();
+<b class="nc"><i>1300</i>&nbsp;</b>
+<i>1301</i>&nbsp;        try {
+<b class="nc"><i>1302</i>&nbsp;            byte var6;</b>
+<b class="nc"><i>1303</i>&nbsp;            switch(var3.getSearchScope()) {</b>
+<b class="nc"><i>1304</i>&nbsp;            case 0:</b>
+<i>1305</i>&nbsp;                var6 = 0;
+<i>1306</i>&nbsp;                break;
+<b class="nc"><i>1307</i>&nbsp;            case 1:</b>
+<i>1308</i>&nbsp;            default:
+<b class="nc"><i>1309</i>&nbsp;                var6 = 1;</b>
+<i>1310</i>&nbsp;                break;
+<b class="nc"><i>1311</i>&nbsp;            case 2:</b>
+<b class="nc"><i>1312</i>&nbsp;                var6 = 2;</b>
+<i>1313</i>&nbsp;            }
+<i>1314</i>&nbsp;
+<b class="nc"><i>1315</i>&nbsp;            String[] var13 = var3.getReturningAttributes();</b>
+<b class="nc"><i>1316</i>&nbsp;            if(var13 != null &amp;&amp; var13.length == 0) {</b>
+<i>1317</i>&nbsp;                var13 = new String[]{&quot;1.1&quot;};
+<i>1318</i>&nbsp;            }
+<i>1319</i>&nbsp;
+<b class="nc"><i>1320</i>&nbsp;            String var8 = var4?this.fullyQualifiedName((Name)var1):(var1.isEmpty()?&quot;&quot;:var1.get(0));</b>
+<i>1321</i>&nbsp;            int var9 = var3.getTimeLimit();
+<b class="nc"><i>1322</i>&nbsp;            int var10 = 0;</b>
+<b class="nc"><i>1323</i>&nbsp;            if(var9 &gt; 0) {</b>
+<b class="nc"><i>1324</i>&nbsp;                var10 = var9 / 1000 + 1;</b>
+<i>1325</i>&nbsp;            }
+<i>1326</i>&nbsp;
+<i>1327</i>&nbsp;            LdapResult var11 = this.clnt.search(var8, var6, this.derefAliases, (int)var3.getCountLimit(), var10, var3.getReturningObjFlag()?false:this.typesOnly, var13, var2, this.batchSize, this.reqCtls, this.binaryAttrs, var5, this.replyQueueSize);
+<b class="nc"><i>1328</i>&nbsp;            this.respCtls = var11.resControls;</b>
+<i>1329</i>&nbsp;            return var11;
+<b class="nc"><i>1330</i>&nbsp;        } catch (IOException var12) {</b>
+<i>1331</i>&nbsp;            CommunicationException var7 = new CommunicationException(var12.getMessage());
+<b class="nc"><i>1332</i>&nbsp;            var7.setRootCause(var12);</b>
+<b class="nc"><i>1333</i>&nbsp;            throw var7;</b>
+<b class="nc"><i>1334</i>&nbsp;        }</b>
+<i>1335</i>&nbsp;    }
+<i>1336</i>&nbsp;
+<i>1337</i>&nbsp;    private static boolean searchToCompare(String var0, SearchControls var1, String[] var2) {
+<i>1338</i>&nbsp;        if(var1.getSearchScope() != 0) {
+<b class="nc"><i>1339</i>&nbsp;            return false;</b>
+<i>1340</i>&nbsp;        } else {
+<i>1341</i>&nbsp;            String[] var3 = var1.getReturningAttributes();
+<i>1342</i>&nbsp;            return var3 != null &amp;&amp; var3.length == 0?filterToAssertion(var0, var2):false;
+<i>1343</i>&nbsp;        }
+<i>1344</i>&nbsp;    }
+<b class="nc"><i>1345</i>&nbsp;</b>
+<i>1346</i>&nbsp;    private static boolean filterToAssertion(String var0, String[] var1) {
+<b class="nc"><i>1347</i>&nbsp;        StringTokenizer var2 = new StringTokenizer(var0, &quot;=&quot;);</b>
+<b class="nc"><i>1348</i>&nbsp;        if(var2.countTokens() != 2) {</b>
+<i>1349</i>&nbsp;            return false;
+<i>1350</i>&nbsp;        } else {
+<i>1351</i>&nbsp;            var1[0] = var2.nextToken();
+<i>1352</i>&nbsp;            var1[1] = var2.nextToken();
+<b class="nc"><i>1353</i>&nbsp;            if(var1[1].indexOf(42) != -1) {</b>
+<i>1354</i>&nbsp;                return false;
+<i>1355</i>&nbsp;            } else {
+<i>1356</i>&nbsp;                boolean var3 = false;
+<b class="nc"><i>1357</i>&nbsp;                int var4 = var1[1].length();</b>
+<b class="nc"><i>1358</i>&nbsp;                if(var1[0].charAt(0) == 40 &amp;&amp; var1[1].charAt(var4 - 1) == 41) {</b>
+<i>1359</i>&nbsp;                    var3 = true;
+<i>1360</i>&nbsp;                } else if(var1[0].charAt(0) == 40 || var1[1].charAt(var4 - 1) == 41) {
+<i>1361</i>&nbsp;                    return false;
+<i>1362</i>&nbsp;                }
+<i>1363</i>&nbsp;
+<i>1364</i>&nbsp;                StringTokenizer var5 = new StringTokenizer(var1[0], &quot;()&amp;|!=~&gt;&lt;*&quot;, true);
+<i>1365</i>&nbsp;                if(var5.countTokens() != (var3?2:1)) {
+<b class="nc"><i>1366</i>&nbsp;                    return false;</b>
+<i>1367</i>&nbsp;                } else {
+<i>1368</i>&nbsp;                    var5 = new StringTokenizer(var1[1], &quot;()&amp;|!=~&gt;&lt;*&quot;, true);
+<b class="nc"><i>1369</i>&nbsp;                    if(var5.countTokens() != (var3?2:1)) {</b>
+<i>1370</i>&nbsp;                        return false;
+<b class="nc"><i>1371</i>&nbsp;                    } else {</b>
+<i>1372</i>&nbsp;                        if(var3) {
+<i>1373</i>&nbsp;                            var1[0] = var1[0].substring(1);
+<b class="nc"><i>1374</i>&nbsp;                            var1[1] = var1[1].substring(0, var4 - 1);</b>
+<b class="nc"><i>1375</i>&nbsp;                        }</b>
+<i>1376</i>&nbsp;
+<i>1377</i>&nbsp;                        return true;
+<b class="nc"><i>1378</i>&nbsp;                    }</b>
+<b class="nc"><i>1379</i>&nbsp;                }</b>
+<i>1380</i>&nbsp;            }
+<b class="nc"><i>1381</i>&nbsp;        }</b>
+<b class="nc"><i>1382</i>&nbsp;    }</b>
+<b class="nc"><i>1383</i>&nbsp;</b>
+<b class="nc"><i>1384</i>&nbsp;    private LdapResult compare(Name var1, String var2, String var3) throws IOException, NamingException {</b>
+<i>1385</i>&nbsp;        this.ensureOpen();
+<i>1386</i>&nbsp;        String var4 = this.fullyQualifiedName((Name)var1);
+<b class="nc"><i>1387</i>&nbsp;        LdapResult var5 = this.clnt.compare(var4, var2, var3, this.reqCtls);</b>
+<b class="nc"><i>1388</i>&nbsp;        this.respCtls = var5.resControls;</b>
+<i>1389</i>&nbsp;        return var5;
+<b class="nc"><i>1390</i>&nbsp;    }</b>
+<b class="nc"><i>1391</i>&nbsp;</b>
+<i>1392</i>&nbsp;    private static SearchControls cloneSearchControls(SearchControls var0) {
+<i>1393</i>&nbsp;        if(var0 == null) {
+<i>1394</i>&nbsp;            return null;
+<b class="nc"><i>1395</i>&nbsp;        } else {</b>
+<b class="nc"><i>1396</i>&nbsp;            String[] var1 = var0.getReturningAttributes();</b>
+<b class="nc"><i>1397</i>&nbsp;            if(var1 != null) {</b>
+<i>1398</i>&nbsp;                String[] var2 = new String[var1.length];
+<i>1399</i>&nbsp;                System.arraycopy(var1, 0, var2, 0, var1.length);
+<i>1400</i>&nbsp;                var1 = var2;
+<i>1401</i>&nbsp;            }
+<b class="nc"><i>1402</i>&nbsp;</b>
+<i>1403</i>&nbsp;            return new SearchControls(var0.getSearchScope(), var0.getCountLimit(), var0.getTimeLimit(), var1, var0.getReturningObjFlag(), var0.getDerefLinkFlag());
+<i>1404</i>&nbsp;        }
+<i>1405</i>&nbsp;    }
+<i>1406</i>&nbsp;
+<i>1407</i>&nbsp;    protected Hashtable p_getEnvironment() {
+<b class="nc"><i>1408</i>&nbsp;        return this.envprops;</b>
+<i>1409</i>&nbsp;    }
+<i>1410</i>&nbsp;
+<b class="nc"><i>1411</i>&nbsp;    public Hashtable getEnvironment() throws NamingException {</b>
+<b class="nc"><i>1412</i>&nbsp;        return this.envprops == null?new Hashtable(5, 0.75F):(Hashtable)this.envprops.clone();</b>
+<i>1413</i>&nbsp;    }
+<i>1414</i>&nbsp;
+<i>1415</i>&nbsp;    public Object removeFromEnvironment(String var1) throws NamingException {
+<i>1416</i>&nbsp;        if(this.envprops != null &amp;&amp; this.envprops.get(var1) != null) {
+<b class="nc"><i>1417</i>&nbsp;            if(var1.equals(&quot;java.naming.ldap.ref.separator&quot;)) {</b>
+<i>1418</i>&nbsp;                this.addrEncodingSeparator = 35;
+<i>1419</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.typesOnly&quot;)) {
+<i>1420</i>&nbsp;                this.typesOnly = false;
+<b class="nc"><i>1421</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.deleteRDN&quot;)) {</b>
+<b class="nc"><i>1422</i>&nbsp;                this.deleteRDN = true;</b>
+<b class="nc"><i>1423</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.derefAliases&quot;)) {</b>
+<b class="nc"><i>1424</i>&nbsp;                this.derefAliases = 3;</b>
+<i>1425</i>&nbsp;            } else if(var1.equals(&quot;java.naming.batchsize&quot;)) {
+<b class="nc"><i>1426</i>&nbsp;                this.batchSize = 1;</b>
+<b class="nc"><i>1427</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.referral.limit&quot;)) {</b>
+<b class="nc"><i>1428</i>&nbsp;                this.referralHopLimit = 10;</b>
+<i>1429</i>&nbsp;            } else if(var1.equals(&quot;java.naming.referral&quot;)) {
+<i>1430</i>&nbsp;                this.setReferralMode((String)null, true);
+<i>1431</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.attributes.binary&quot;)) {
+<i>1432</i>&nbsp;                this.setBinaryAttributes((String)null);
+<i>1433</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.connect.timeout&quot;)) {
+<b class="nc"><i>1434</i>&nbsp;                this.connectTimeout = -1;</b>
+<i>1435</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.read.timeout&quot;)) {
+<i>1436</i>&nbsp;                this.readTimeout = -1;
+<b class="nc"><i>1437</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.search.waitForReply&quot;)) {</b>
+<i>1438</i>&nbsp;                this.waitForReply = true;
+<b class="nc"><i>1439</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.search.replyQueueSize&quot;)) {</b>
+<i>1440</i>&nbsp;                this.replyQueueSize = -1;
+<i>1441</i>&nbsp;            } else if(var1.equals(&quot;java.naming.security.protocol&quot;)) {
+<b class="nc"><i>1442</i>&nbsp;                this.closeConnection(false);</b>
+<i>1443</i>&nbsp;                if(this.useSsl &amp;&amp; !this.hasLdapsScheme) {
+<i>1444</i>&nbsp;                    this.useSsl = false;
+<b class="nc"><i>1445</i>&nbsp;                    this.url = null;</b>
+<b class="nc"><i>1446</i>&nbsp;                    if(this.useDefaultPortNumber) {</b>
+<i>1447</i>&nbsp;                        this.port_number = 389;
+<b class="nc"><i>1448</i>&nbsp;                    }</b>
+<b class="nc"><i>1449</i>&nbsp;                }</b>
+<b class="nc"><i>1450</i>&nbsp;            } else if(!var1.equals(&quot;java.naming.ldap.version&quot;) &amp;&amp; !var1.equals(&quot;java.naming.ldap.factory.socket&quot;)) {</b>
+<b class="nc"><i>1451</i>&nbsp;                if(var1.equals(&quot;java.naming.security.authentication&quot;) || var1.equals(&quot;java.naming.security.principal&quot;) || var1.equals(&quot;java.naming.security.credentials&quot;)) {</b>
+<i>1452</i>&nbsp;                    this.sharable = false;
+<i>1453</i>&nbsp;                }
+<b class="nc"><i>1454</i>&nbsp;            } else {</b>
+<b class="nc"><i>1455</i>&nbsp;                this.closeConnection(false);</b>
+<i>1456</i>&nbsp;            }
+<b class="nc"><i>1457</i>&nbsp;</b>
+<b class="nc"><i>1458</i>&nbsp;            this.envprops = (Hashtable)this.envprops.clone();</b>
+<i>1459</i>&nbsp;            return this.envprops.remove(var1);
+<i>1460</i>&nbsp;        } else {
+<b class="nc"><i>1461</i>&nbsp;            return null;</b>
+<b class="nc"><i>1462</i>&nbsp;        }</b>
+<b class="nc"><i>1463</i>&nbsp;    }</b>
+<i>1464</i>&nbsp;
+<i>1465</i>&nbsp;    public Object addToEnvironment(String var1, Object var2) throws NamingException {
+<i>1466</i>&nbsp;        if(var2 == null) {
+<i>1467</i>&nbsp;            return this.removeFromEnvironment(var1);
+<b class="nc"><i>1468</i>&nbsp;        } else {</b>
+<i>1469</i>&nbsp;            if(var1.equals(&quot;java.naming.ldap.ref.separator&quot;)) {
+<i>1470</i>&nbsp;                this.setRefSeparator((String)var2);
+<i>1471</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.typesOnly&quot;)) {
+<i>1472</i>&nbsp;                this.setTypesOnly((String)var2);
+<i>1473</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.deleteRDN&quot;)) {
+<b class="nc"><i>1474</i>&nbsp;                this.setDeleteRDN((String)var2);</b>
+<i>1475</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.derefAliases&quot;)) {
+<i>1476</i>&nbsp;                this.setDerefAliases((String)var2);
+<b class="nc"><i>1477</i>&nbsp;            } else if(var1.equals(&quot;java.naming.batchsize&quot;)) {</b>
+<b class="nc"><i>1478</i>&nbsp;                this.setBatchSize((String)var2);</b>
+<i>1479</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.referral.limit&quot;)) {
+<i>1480</i>&nbsp;                this.setReferralLimit((String)var2);
+<i>1481</i>&nbsp;            } else if(var1.equals(&quot;java.naming.referral&quot;)) {
+<i>1482</i>&nbsp;                this.setReferralMode((String)var2, true);
+<b class="nc"><i>1483</i>&nbsp;            } else if(var1.equals(&quot;java.naming.ldap.attributes.binary&quot;)) {</b>
+<i>1484</i>&nbsp;                this.setBinaryAttributes((String)var2);
+<i>1485</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.connect.timeout&quot;)) {
+<i>1486</i>&nbsp;                this.setConnectTimeout((String)var2);
+<b class="nc"><i>1487</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.read.timeout&quot;)) {</b>
+<b class="nc"><i>1488</i>&nbsp;                this.setReadTimeout((String)var2);</b>
+<b class="nc"><i>1489</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.search.waitForReply&quot;)) {</b>
+<b class="nc"><i>1490</i>&nbsp;                this.setWaitForReply((String)var2);</b>
+<i>1491</i>&nbsp;            } else if(var1.equals(&quot;com.sun.jndi.ldap.search.replyQueueSize&quot;)) {
+<b class="nc"><i>1492</i>&nbsp;                this.setReplyQueueSize((String)var2);</b>
+<b class="nc"><i>1493</i>&nbsp;            } else if(var1.equals(&quot;java.naming.security.protocol&quot;)) {</b>
+<b class="nc"><i>1494</i>&nbsp;                this.closeConnection(false);</b>
+<i>1495</i>&nbsp;                if(&quot;ssl&quot;.equals(var2)) {
+<i>1496</i>&nbsp;                    this.useSsl = true;
+<i>1497</i>&nbsp;                    this.url = null;
+<b class="nc"><i>1498</i>&nbsp;                    if(this.useDefaultPortNumber) {</b>
+<i>1499</i>&nbsp;                        this.port_number = 636;
+<b class="nc"><i>1500</i>&nbsp;                    }</b>
+<i>1501</i>&nbsp;                }
+<i>1502</i>&nbsp;            } else if(!var1.equals(&quot;java.naming.ldap.version&quot;) &amp;&amp; !var1.equals(&quot;java.naming.ldap.factory.socket&quot;)) {
+<b class="nc"><i>1503</i>&nbsp;                if(var1.equals(&quot;java.naming.security.authentication&quot;) || var1.equals(&quot;java.naming.security.principal&quot;) || var1.equals(&quot;java.naming.security.credentials&quot;)) {</b>
+<i>1504</i>&nbsp;                    this.sharable = false;
+<i>1505</i>&nbsp;                }
+<b class="nc"><i>1506</i>&nbsp;            } else {</b>
+<i>1507</i>&nbsp;                this.closeConnection(false);
+<i>1508</i>&nbsp;            }
+<b class="nc"><i>1509</i>&nbsp;</b>
+<i>1510</i>&nbsp;            this.envprops = this.envprops == null?new Hashtable(5, 0.75F):(Hashtable)this.envprops.clone();
+<i>1511</i>&nbsp;            return this.envprops.put(var1, var2);
+<i>1512</i>&nbsp;        }
+<i>1513</i>&nbsp;    }
+<i>1514</i>&nbsp;
+<i>1515</i>&nbsp;    void setProviderUrl(String var1) {
+<i>1516</i>&nbsp;        if(this.envprops != null) {
+<b class="nc"><i>1517</i>&nbsp;            this.envprops.put(&quot;java.naming.provider.url&quot;, var1);</b>
+<i>1518</i>&nbsp;        }
+<b class="nc"><i>1519</i>&nbsp;</b>
+<i>1520</i>&nbsp;    }
+<b class="nc"><i>1521</i>&nbsp;</b>
+<b class="nc"><i>1522</i>&nbsp;    void setDomainName(String var1) {</b>
+<i>1523</i>&nbsp;        if(this.envprops != null) {
+<i>1524</i>&nbsp;            this.envprops.put(&quot;com.sun.jndi.ldap.domainname&quot;, var1);
+<i>1525</i>&nbsp;        }
+<i>1526</i>&nbsp;
+<i>1527</i>&nbsp;    }
+<i>1528</i>&nbsp;
+<b class="nc"><i>1529</i>&nbsp;    private void initEnv() throws NamingException {</b>
+<i>1530</i>&nbsp;        if(this.envprops == null) {
+<i>1531</i>&nbsp;            this.setReferralMode((String)null, false);
+<i>1532</i>&nbsp;        } else {
+<b class="nc"><i>1533</i>&nbsp;            this.setBatchSize((String)this.envprops.get(&quot;java.naming.batchsize&quot;));</b>
+<i>1534</i>&nbsp;            this.setRefSeparator((String)this.envprops.get(&quot;java.naming.ldap.ref.separator&quot;));
+<b class="nc"><i>1535</i>&nbsp;            this.setDeleteRDN((String)this.envprops.get(&quot;java.naming.ldap.deleteRDN&quot;));</b>
+<b class="nc"><i>1536</i>&nbsp;            this.setTypesOnly((String)this.envprops.get(&quot;java.naming.ldap.typesOnly&quot;));</b>
+<i>1537</i>&nbsp;            this.setDerefAliases((String)this.envprops.get(&quot;java.naming.ldap.derefAliases&quot;));
+<i>1538</i>&nbsp;            this.setReferralLimit((String)this.envprops.get(&quot;java.naming.ldap.referral.limit&quot;));
+<i>1539</i>&nbsp;            this.setBinaryAttributes((String)this.envprops.get(&quot;java.naming.ldap.attributes.binary&quot;));
+<b class="nc"><i>1540</i>&nbsp;            this.bindCtls = cloneControls((Control[])((Control[])this.envprops.get(&quot;java.naming.ldap.control.connect&quot;)));</b>
+<i>1541</i>&nbsp;            this.setReferralMode((String)this.envprops.get(&quot;java.naming.referral&quot;), false);
+<i>1542</i>&nbsp;            this.setConnectTimeout((String)this.envprops.get(&quot;com.sun.jndi.ldap.connect.timeout&quot;));
+<i>1543</i>&nbsp;            this.setReadTimeout((String)this.envprops.get(&quot;com.sun.jndi.ldap.read.timeout&quot;));
+<i>1544</i>&nbsp;            this.setWaitForReply((String)this.envprops.get(&quot;com.sun.jndi.ldap.search.waitForReply&quot;));
+<b class="nc"><i>1545</i>&nbsp;            this.setReplyQueueSize((String)this.envprops.get(&quot;com.sun.jndi.ldap.search.replyQueueSize&quot;));</b>
+<i>1546</i>&nbsp;        }
+<i>1547</i>&nbsp;    }
+<b class="nc"><i>1548</i>&nbsp;</b>
+<b class="nc"><i>1549</i>&nbsp;    private void setDeleteRDN(String var1) {</b>
+<b class="nc"><i>1550</i>&nbsp;        if(var1 != null &amp;&amp; var1.equalsIgnoreCase(&quot;false&quot;)) {</b>
+<i>1551</i>&nbsp;            this.deleteRDN = false;
+<b class="nc"><i>1552</i>&nbsp;        } else {</b>
+<b class="nc"><i>1553</i>&nbsp;            this.deleteRDN = true;</b>
+<i>1554</i>&nbsp;        }
+<i>1555</i>&nbsp;
+<i>1556</i>&nbsp;    }
+<b class="nc"><i>1557</i>&nbsp;</b>
+<i>1558</i>&nbsp;    private void setTypesOnly(String var1) {
+<b class="nc"><i>1559</i>&nbsp;        if(var1 != null &amp;&amp; var1.equalsIgnoreCase(&quot;true&quot;)) {</b>
+<i>1560</i>&nbsp;            this.typesOnly = true;
+<b class="nc"><i>1561</i>&nbsp;        } else {</b>
+<b class="nc"><i>1562</i>&nbsp;            this.typesOnly = false;</b>
+<i>1563</i>&nbsp;        }
+<i>1564</i>&nbsp;
+<i>1565</i>&nbsp;    }
+<i>1566</i>&nbsp;
+<i>1567</i>&nbsp;    private void setBatchSize(String var1) {
+<i>1568</i>&nbsp;        if(var1 != null) {
+<i>1569</i>&nbsp;            this.batchSize = Integer.parseInt(var1);
+<i>1570</i>&nbsp;        } else {
+<i>1571</i>&nbsp;            this.batchSize = 1;
+<b class="nc"><i>1572</i>&nbsp;        }</b>
+<i>1573</i>&nbsp;
+<b class="nc"><i>1574</i>&nbsp;    }</b>
+<i>1575</i>&nbsp;
+<b class="nc"><i>1576</i>&nbsp;    private void setReferralMode(String var1, boolean var2) {</b>
+<i>1577</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>1578</i>&nbsp;            if(var1.equals(&quot;follow&quot;)) {</b>
+<b class="nc"><i>1579</i>&nbsp;                this.handleReferrals = 1;</b>
+<i>1580</i>&nbsp;            } else if(var1.equals(&quot;throw&quot;)) {
+<i>1581</i>&nbsp;                this.handleReferrals = 2;
+<b class="nc"><i>1582</i>&nbsp;            } else {</b>
+<i>1583</i>&nbsp;                if(!var1.equals(&quot;ignore&quot;)) {
+<i>1584</i>&nbsp;                    throw new IllegalArgumentException(&quot;Illegal value for java.naming.referral property.&quot;);
+<i>1585</i>&nbsp;                }
+<i>1586</i>&nbsp;
+<i>1587</i>&nbsp;                this.handleReferrals = 3;
+<i>1588</i>&nbsp;            }
+<i>1589</i>&nbsp;        } else {
+<i>1590</i>&nbsp;            this.handleReferrals = 3;
+<i>1591</i>&nbsp;        }
+<i>1592</i>&nbsp;
+<i>1593</i>&nbsp;        if(this.handleReferrals == 3) {
+<i>1594</i>&nbsp;            this.reqCtls = addControl(this.reqCtls, manageReferralControl);
+<i>1595</i>&nbsp;        } else if(var2) {
+<b class="nc"><i>1596</i>&nbsp;            this.reqCtls = removeControl(this.reqCtls, manageReferralControl);</b>
+<i>1597</i>&nbsp;        }
+<i>1598</i>&nbsp;
+<i>1599</i>&nbsp;    }
+<i>1600</i>&nbsp;
+<i>1601</i>&nbsp;    private void setDerefAliases(String var1) {
+<i>1602</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>1603</i>&nbsp;            if(var1.equals(&quot;never&quot;)) {</b>
+<b class="nc"><i>1604</i>&nbsp;                this.derefAliases = 0;</b>
+<i>1605</i>&nbsp;            } else if(var1.equals(&quot;searching&quot;)) {
+<i>1606</i>&nbsp;                this.derefAliases = 1;
+<i>1607</i>&nbsp;            } else if(var1.equals(&quot;finding&quot;)) {
+<b class="nc"><i>1608</i>&nbsp;                this.derefAliases = 2;</b>
+<b class="nc"><i>1609</i>&nbsp;            } else {</b>
+<i>1610</i>&nbsp;                if(!var1.equals(&quot;always&quot;)) {
+<i>1611</i>&nbsp;                    throw new IllegalArgumentException(&quot;Illegal value for java.naming.ldap.derefAliases property.&quot;);
+<b class="nc"><i>1612</i>&nbsp;                }</b>
+<b class="nc"><i>1613</i>&nbsp;</b>
+<i>1614</i>&nbsp;                this.derefAliases = 3;
+<b class="nc"><i>1615</i>&nbsp;            }</b>
+<b class="nc"><i>1616</i>&nbsp;        } else {</b>
+<b class="nc"><i>1617</i>&nbsp;            this.derefAliases = 3;</b>
+<i>1618</i>&nbsp;        }
+<i>1619</i>&nbsp;
+<i>1620</i>&nbsp;    }
+<b class="nc"><i>1621</i>&nbsp;</b>
+<i>1622</i>&nbsp;    private void setRefSeparator(String var1) throws NamingException {
+<i>1623</i>&nbsp;        if(var1 != null &amp;&amp; var1.length() &gt; 0) {
+<i>1624</i>&nbsp;            this.addrEncodingSeparator = var1.charAt(0);
+<i>1625</i>&nbsp;        } else {
+<i>1626</i>&nbsp;            this.addrEncodingSeparator = 35;
+<i>1627</i>&nbsp;        }
+<i>1628</i>&nbsp;
+<i>1629</i>&nbsp;    }
+<i>1630</i>&nbsp;
+<i>1631</i>&nbsp;    private void setReferralLimit(String var1) {
+<i>1632</i>&nbsp;        if(var1 != null) {
+<i>1633</i>&nbsp;            this.referralHopLimit = Integer.parseInt(var1);
+<i>1634</i>&nbsp;            if(this.referralHopLimit == 0) {
+<i>1635</i>&nbsp;                this.referralHopLimit = 2147483647;
+<i>1636</i>&nbsp;            }
+<i>1637</i>&nbsp;        } else {
+<i>1638</i>&nbsp;            this.referralHopLimit = 10;
+<i>1639</i>&nbsp;        }
+<i>1640</i>&nbsp;
+<i>1641</i>&nbsp;    }
+<i>1642</i>&nbsp;
+<i>1643</i>&nbsp;    void setHopCount(int var1) {
+<i>1644</i>&nbsp;        this.hopCount = var1;
+<i>1645</i>&nbsp;    }
+<i>1646</i>&nbsp;
+<i>1647</i>&nbsp;    private void setConnectTimeout(String var1) {
+<i>1648</i>&nbsp;        if(var1 != null) {
+<i>1649</i>&nbsp;            this.connectTimeout = Integer.parseInt(var1);
+<i>1650</i>&nbsp;        } else {
+<b class="nc"><i>1651</i>&nbsp;            this.connectTimeout = -1;</b>
+<i>1652</i>&nbsp;        }
+<i>1653</i>&nbsp;
+<i>1654</i>&nbsp;    }
+<i>1655</i>&nbsp;
+<i>1656</i>&nbsp;    private void setReplyQueueSize(String var1) {
+<i>1657</i>&nbsp;        if(var1 != null) {
+<i>1658</i>&nbsp;            this.replyQueueSize = Integer.parseInt(var1);
+<b class="nc"><i>1659</i>&nbsp;            if(this.replyQueueSize &lt;= 0) {</b>
+<i>1660</i>&nbsp;                this.replyQueueSize = -1;
+<i>1661</i>&nbsp;            }
+<b class="nc"><i>1662</i>&nbsp;        } else {</b>
+<b class="nc"><i>1663</i>&nbsp;            this.replyQueueSize = -1;</b>
+<i>1664</i>&nbsp;        }
+<i>1665</i>&nbsp;
+<b class="nc"><i>1666</i>&nbsp;    }</b>
+<i>1667</i>&nbsp;
+<i>1668</i>&nbsp;    private void setWaitForReply(String var1) {
+<b class="nc"><i>1669</i>&nbsp;        if(var1 != null &amp;&amp; var1.equalsIgnoreCase(&quot;false&quot;)) {</b>
+<i>1670</i>&nbsp;            this.waitForReply = false;
+<b class="nc"><i>1671</i>&nbsp;        } else {</b>
+<i>1672</i>&nbsp;            this.waitForReply = true;
+<b class="nc"><i>1673</i>&nbsp;        }</b>
+<b class="nc"><i>1674</i>&nbsp;</b>
+<i>1675</i>&nbsp;    }
+<i>1676</i>&nbsp;
+<i>1677</i>&nbsp;    private void setReadTimeout(String var1) {
+<b class="nc"><i>1678</i>&nbsp;        if(var1 != null) {</b>
+<b class="nc"><i>1679</i>&nbsp;            this.readTimeout = Integer.parseInt(var1);</b>
+<i>1680</i>&nbsp;        } else {
+<b class="nc"><i>1681</i>&nbsp;            this.readTimeout = -1;</b>
+<i>1682</i>&nbsp;        }
+<i>1683</i>&nbsp;
+<i>1684</i>&nbsp;    }
+<b class="nc"><i>1685</i>&nbsp;</b>
+<b class="nc"><i>1686</i>&nbsp;    private static Vector extractURLs(String var0) {</b>
+<i>1687</i>&nbsp;        int var1 = 0;
+<i>1688</i>&nbsp;
+<b class="nc"><i>1689</i>&nbsp;        int var2;</b>
+<i>1690</i>&nbsp;        for(var2 = 0; (var1 = var0.indexOf(10, var1)) &gt;= 0; ++var2) {
+<i>1691</i>&nbsp;            ++var1;
+<b class="nc"><i>1692</i>&nbsp;        }</b>
+<i>1693</i>&nbsp;
+<i>1694</i>&nbsp;        Vector var3 = new Vector(var2);
+<i>1695</i>&nbsp;        boolean var5 = false;
+<b class="nc"><i>1696</i>&nbsp;        var1 = var0.indexOf(10);</b>
+<i>1697</i>&nbsp;
+<i>1698</i>&nbsp;        int var4;
+<i>1699</i>&nbsp;        for(var4 = var1 + 1; (var1 = var0.indexOf(10, var4)) &gt;= 0; var4 = var1 + 1) {
+<i>1700</i>&nbsp;            var3.addElement(var0.substring(var4, var1));
+<i>1701</i>&nbsp;        }
+<i>1702</i>&nbsp;
+<b class="nc"><i>1703</i>&nbsp;        var3.addElement(var0.substring(var4));</b>
+<b class="nc"><i>1704</i>&nbsp;        return var3;</b>
+<b class="nc"><i>1705</i>&nbsp;    }</b>
+<i>1706</i>&nbsp;
+<i>1707</i>&nbsp;    private void setBinaryAttributes(String var1) {
+<i>1708</i>&nbsp;        if(var1 == null) {
+<i>1709</i>&nbsp;            this.binaryAttrs = null;
+<i>1710</i>&nbsp;        } else {
+<i>1711</i>&nbsp;            this.binaryAttrs = new Hashtable(11, 0.75F);
+<i>1712</i>&nbsp;            StringTokenizer var2 = new StringTokenizer(var1.toLowerCase(), &quot; &quot;);
+<i>1713</i>&nbsp;
+<b class="nc"><i>1714</i>&nbsp;            while(var2.hasMoreTokens()) {</b>
+<b class="nc"><i>1715</i>&nbsp;                this.binaryAttrs.put(var2.nextToken(), Boolean.TRUE);</b>
+<i>1716</i>&nbsp;            }
+<i>1717</i>&nbsp;        }
+<i>1718</i>&nbsp;
+<b class="nc"><i>1719</i>&nbsp;    }</b>
+<i>1720</i>&nbsp;
+<i>1721</i>&nbsp;    protected void finalize() {
+<i>1722</i>&nbsp;        try {
+<i>1723</i>&nbsp;            this.close();
+<i>1724</i>&nbsp;        } catch (NamingException var2) {
+<i>1725</i>&nbsp;            ;
+<i>1726</i>&nbsp;        }
+<b class="nc"><i>1727</i>&nbsp;</b>
+<i>1728</i>&nbsp;    }
+<i>1729</i>&nbsp;
+<i>1730</i>&nbsp;    public synchronized void close() throws NamingException {
+<i>1731</i>&nbsp;        if(this.eventSupport != null) {
+<i>1732</i>&nbsp;            this.eventSupport.cleanup();
+<i>1733</i>&nbsp;            this.removeUnsolicited();
+<i>1734</i>&nbsp;        }
+<b class="nc"><i>1735</i>&nbsp;</b>
+<b class="nc"><i>1736</i>&nbsp;        if(this.enumCount &gt; 0) {</b>
+<i>1737</i>&nbsp;            this.closeRequested = true;
+<i>1738</i>&nbsp;        } else {
+<b class="nc"><i>1739</i>&nbsp;            this.closeConnection(false);</b>
+<b class="nc"><i>1740</i>&nbsp;        }</b>
+<b class="nc"><i>1741</i>&nbsp;    }</b>
+<b class="nc"><i>1742</i>&nbsp;</b>
+<b class="nc"><i>1743</i>&nbsp;    public void reconnect(Control[] var1) throws NamingException {</b>
+<b class="nc"><i>1744</i>&nbsp;        this.envprops = this.envprops == null?new Hashtable(5, 0.75F):(Hashtable)this.envprops.clone();</b>
+<i>1745</i>&nbsp;        if(var1 == null) {
+<i>1746</i>&nbsp;            this.envprops.remove(&quot;java.naming.ldap.control.connect&quot;);
+<i>1747</i>&nbsp;            this.bindCtls = null;
+<i>1748</i>&nbsp;        } else {
+<i>1749</i>&nbsp;            this.envprops.put(&quot;java.naming.ldap.control.connect&quot;, this.bindCtls = cloneControls(var1));
+<i>1750</i>&nbsp;        }
+<i>1751</i>&nbsp;
+<b class="nc"><i>1752</i>&nbsp;        this.sharable = false;</b>
+<i>1753</i>&nbsp;        this.ensureOpen();
+<i>1754</i>&nbsp;    }
+<i>1755</i>&nbsp;
+<i>1756</i>&nbsp;    private void ensureOpen() throws NamingException {
+<i>1757</i>&nbsp;        this.ensureOpen(false);
+<i>1758</i>&nbsp;    }
+<i>1759</i>&nbsp;
+<i>1760</i>&nbsp;    private void ensureOpen(boolean var1) throws NamingException {
+<i>1761</i>&nbsp;        try {
+<i>1762</i>&nbsp;            if(this.clnt == null) {
+<i>1763</i>&nbsp;                this.schemaTrees = new Hashtable(11, 0.75F);
+<b class="nc"><i>1764</i>&nbsp;                this.connect(var1);</b>
+<b class="nc"><i>1765</i>&nbsp;            } else if(!this.sharable || var1) {</b>
+<b class="nc"><i>1766</i>&nbsp;                LdapClient var2 = this.clnt;</b>
+<b class="nc"><i>1767</i>&nbsp;                synchronized(this.clnt) {</b>
+<b class="nc"><i>1768</i>&nbsp;                    if(!this.clnt.isLdapv3 || this.clnt.referenceCount &gt; 1 || this.clnt.usingSaslStreams()) {</b>
+<b class="nc"><i>1769</i>&nbsp;                        this.closeConnection(false);</b>
+<i>1770</i>&nbsp;                    }
+<i>1771</i>&nbsp;                }
+<i>1772</i>&nbsp;
+<i>1773</i>&nbsp;                this.schemaTrees = new Hashtable(11, 0.75F);
+<i>1774</i>&nbsp;                this.connect(var1);
+<i>1775</i>&nbsp;            }
+<i>1776</i>&nbsp;        } finally {
+<i>1777</i>&nbsp;            this.sharable = true;
+<i>1778</i>&nbsp;        }
+<b class="nc"><i>1779</i>&nbsp;</b>
+<b class="nc"><i>1780</i>&nbsp;    }</b>
+<i>1781</i>&nbsp;
+<i>1782</i>&nbsp;    private void connect(boolean var1) throws NamingException {
+<b class="nc"><i>1783</i>&nbsp;        String var2 = null;</b>
+<b class="nc"><i>1784</i>&nbsp;        Object var3 = null;</b>
+<i>1785</i>&nbsp;        String var4 = null;
+<b class="nc"><i>1786</i>&nbsp;        String var5 = null;</b>
+<i>1787</i>&nbsp;        String var6 = null;
+<i>1788</i>&nbsp;        String var7 = null;
+<i>1789</i>&nbsp;        boolean var9 = false;
+<b class="nc"><i>1790</i>&nbsp;        if(this.envprops != null) {</b>
+<b class="nc"><i>1791</i>&nbsp;            var2 = (String)this.envprops.get(&quot;java.naming.security.principal&quot;);</b>
+<i>1792</i>&nbsp;            var3 = this.envprops.get(&quot;java.naming.security.credentials&quot;);
+<i>1793</i>&nbsp;            var7 = (String)this.envprops.get(&quot;java.naming.ldap.version&quot;);
+<b class="nc"><i>1794</i>&nbsp;            var4 = this.useSsl?&quot;ssl&quot;:(String)this.envprops.get(&quot;java.naming.security.protocol&quot;);</b>
+<b class="nc"><i>1795</i>&nbsp;            var5 = (String)this.envprops.get(&quot;java.naming.ldap.factory.socket&quot;);</b>
+<b class="nc"><i>1796</i>&nbsp;            var6 = (String)this.envprops.get(&quot;java.naming.security.authentication&quot;);</b>
+<b class="nc"><i>1797</i>&nbsp;            var9 = &quot;true&quot;.equalsIgnoreCase((String)this.envprops.get(&quot;com.sun.jndi.ldap.connect.pool&quot;));</b>
+<b class="nc"><i>1798</i>&nbsp;        }</b>
+<i>1799</i>&nbsp;
+<i>1800</i>&nbsp;        if(var5 == null) {
+<b class="nc"><i>1801</i>&nbsp;            var5 = &quot;ssl&quot;.equals(var4)?&quot;javax.net.ssl.SSLSocketFactory&quot;:null;</b>
+<b class="nc"><i>1802</i>&nbsp;        }</b>
+<i>1803</i>&nbsp;
+<b class="nc"><i>1804</i>&nbsp;        if(var6 == null) {</b>
+<i>1805</i>&nbsp;            var6 = var2 == null?&quot;none&quot;:&quot;simple&quot;;
+<b class="nc"><i>1806</i>&nbsp;        }</b>
+<i>1807</i>&nbsp;
+<i>1808</i>&nbsp;        try {
+<b class="nc"><i>1809</i>&nbsp;            boolean var18 = this.clnt == null;</b>
+<i>1810</i>&nbsp;            int var8;
+<i>1811</i>&nbsp;            if(var18) {
+<i>1812</i>&nbsp;                var8 = var7 != null?Integer.parseInt(var7):32;
+<i>1813</i>&nbsp;                this.clnt = LdapClient.getInstance(var9, this.hostname, this.port_number, var5, this.connectTimeout, this.readTimeout, this.trace, var8, var6, this.bindCtls, var4, var2, var3, this.envprops);
+<b class="nc"><i>1814</i>&nbsp;                if(this.clnt.authenticateCalled()) {</b>
+<i>1815</i>&nbsp;                    return;
+<i>1816</i>&nbsp;                }
+<b class="nc"><i>1817</i>&nbsp;            } else {</b>
+<i>1818</i>&nbsp;                if(this.sharable &amp;&amp; var1) {
+<i>1819</i>&nbsp;                    return;
+<b class="nc"><i>1820</i>&nbsp;                }</b>
+<i>1821</i>&nbsp;
+<b class="nc"><i>1822</i>&nbsp;                var8 = 3;</b>
+<b class="nc"><i>1823</i>&nbsp;            }</b>
+<b class="nc"><i>1824</i>&nbsp;</b>
+<i>1825</i>&nbsp;            LdapResult var17 = this.clnt.authenticate(var18, var2, var3, var8, var6, this.bindCtls, this.envprops);
+<i>1826</i>&nbsp;            this.respCtls = var17.resControls;
+<b class="nc"><i>1827</i>&nbsp;            if(var17.status != 0) {</b>
+<i>1828</i>&nbsp;                if(var18) {
+<b class="nc"><i>1829</i>&nbsp;                    this.closeConnection(true);</b>
+<i>1830</i>&nbsp;                }
+<b class="nc"><i>1831</i>&nbsp;</b>
+<i>1832</i>&nbsp;                this.processReturnCode(var17);
+<i>1833</i>&nbsp;            }
+<b class="nc"><i>1834</i>&nbsp;        } catch (LdapReferralException var16) {</b>
+<b class="nc"><i>1835</i>&nbsp;            LdapReferralException var10 = var16;</b>
+<b class="nc"><i>1836</i>&nbsp;            if(this.handleReferrals == 2) {</b>
+<i>1837</i>&nbsp;                throw var16;
+<i>1838</i>&nbsp;            }
+<i>1839</i>&nbsp;
+<i>1840</i>&nbsp;            NamingException var13 = null;
+<b class="nc"><i>1841</i>&nbsp;</b>
+<i>1842</i>&nbsp;            while(true) {
+<i>1843</i>&nbsp;                String var11;
+<i>1844</i>&nbsp;                if((var11 = var10.getNextReferral()) == null) {
+<i>1845</i>&nbsp;                    if(var13 != null) {
+<i>1846</i>&nbsp;                        throw (NamingException)((NamingException)var13.fillInStackTrace());
+<b class="nc"><i>1847</i>&nbsp;                    }</b>
+<i>1848</i>&nbsp;
+<b class="nc"><i>1849</i>&nbsp;                    throw new NamingException(&quot;Internal error processing referral during connection&quot;);</b>
+<b class="nc"><i>1850</i>&nbsp;                }</b>
+<i>1851</i>&nbsp;
+<i>1852</i>&nbsp;                LdapURL var12 = new LdapURL(var11);
+<i>1853</i>&nbsp;                this.hostname = var12.getHost();
+<i>1854</i>&nbsp;                if(this.hostname != null &amp;&amp; this.hostname.charAt(0) == 91) {
+<b class="nc"><i>1855</i>&nbsp;                    this.hostname = this.hostname.substring(1, this.hostname.length() - 1);</b>
+<i>1856</i>&nbsp;                }
+<i>1857</i>&nbsp;
+<i>1858</i>&nbsp;                this.port_number = var12.getPort();
+<b class="nc"><i>1859</i>&nbsp;</b>
+<b class="nc"><i>1860</i>&nbsp;                try {</b>
+<i>1861</i>&nbsp;                    this.connect(var1);
+<i>1862</i>&nbsp;                    break;
+<b class="nc"><i>1863</i>&nbsp;                } catch (NamingException var15) {</b>
+<b class="nc"><i>1864</i>&nbsp;                    var13 = var15;</b>
+<i>1865</i>&nbsp;                }
+<b class="nc"><i>1866</i>&nbsp;            }</b>
+<b class="nc"><i>1867</i>&nbsp;        }</b>
+<i>1868</i>&nbsp;
+<i>1869</i>&nbsp;    }
+<i>1870</i>&nbsp;
+<b class="nc"><i>1871</i>&nbsp;    private void closeConnection(boolean var1) {</b>
+<b class="nc"><i>1872</i>&nbsp;        this.removeUnsolicited();</b>
+<i>1873</i>&nbsp;        if(this.clnt != null) {
+<b class="nc"><i>1874</i>&nbsp;            this.clnt.close(this.reqCtls, var1);</b>
+<b class="nc"><i>1875</i>&nbsp;            this.clnt = null;</b>
+<b class="nc"><i>1876</i>&nbsp;        }</b>
+<b class="nc"><i>1877</i>&nbsp;</b>
+<i>1878</i>&nbsp;    }
+<b class="nc"><i>1879</i>&nbsp;</b>
+<b class="nc"><i>1880</i>&nbsp;    synchronized void incEnumCount() {</b>
+<i>1881</i>&nbsp;        ++this.enumCount;
+<i>1882</i>&nbsp;    }
+<i>1883</i>&nbsp;
+<i>1884</i>&nbsp;    synchronized void decEnumCount() {
+<i>1885</i>&nbsp;        --this.enumCount;
+<i>1886</i>&nbsp;        if(this.enumCount == 0 &amp;&amp; this.closeRequested) {
+<i>1887</i>&nbsp;            try {
+<i>1888</i>&nbsp;                this.close();
+<i>1889</i>&nbsp;            } catch (NamingException var2) {
+<i>1890</i>&nbsp;                ;
+<i>1891</i>&nbsp;            }
+<i>1892</i>&nbsp;        }
+<b class="nc"><i>1893</i>&nbsp;</b>
+<b class="nc"><i>1894</i>&nbsp;    }</b>
+<i>1895</i>&nbsp;
+<i>1896</i>&nbsp;    protected void processReturnCode(LdapResult var1) throws NamingException {
+<i>1897</i>&nbsp;        this.processReturnCode(var1, (Name)null, this, (Name)null, this.envprops, (String)null);
+<i>1898</i>&nbsp;    }
+<b class="nc"><i>1899</i>&nbsp;</b>
+<b class="nc"><i>1900</i>&nbsp;    void processReturnCode(LdapResult var1, Name var2) throws NamingException {</b>
+<b class="nc"><i>1901</i>&nbsp;        this.processReturnCode(var1, (new CompositeName()).add(this.currentDN), this, var2, this.envprops, this.fullyQualifiedName((Name)var2));</b>
+<b class="nc"><i>1902</i>&nbsp;    }</b>
+<b class="nc"><i>1903</i>&nbsp;</b>
+<i>1904</i>&nbsp;    protected void processReturnCode(LdapResult var1, Name var2, Object var3, Name var4, Hashtable var5, String var6) throws NamingException {
+<i>1905</i>&nbsp;        String var7 = LdapClient.getErrorMessage(var1.status, var1.errorMessage);
+<i>1906</i>&nbsp;        LdapReferralException var9 = null;
+<i>1907</i>&nbsp;        Object var8;
+<i>1908</i>&nbsp;        LimitExceededException var10;
+<i>1909</i>&nbsp;        switch(var1.status) {
+<i>1910</i>&nbsp;        case 0:
+<b class="nc"><i>1911</i>&nbsp;            if(var1.referrals != null) {</b>
+<b class="nc"><i>1912</i>&nbsp;                var7 = &quot;Unprocessed Continuation Reference(s)&quot;;</b>
+<i>1913</i>&nbsp;                if(this.handleReferrals == 3) {
+<b class="nc"><i>1914</i>&nbsp;                    var8 = new PartialResultException(var7);</b>
+<i>1915</i>&nbsp;                    break;
+<b class="nc"><i>1916</i>&nbsp;                }</b>
+<b class="nc"><i>1917</i>&nbsp;</b>
+<i>1918</i>&nbsp;                int var14 = var1.referrals.size();
+<i>1919</i>&nbsp;                LdapReferralException var11 = null;
+<i>1920</i>&nbsp;                LdapReferralException var12 = null;
+<i>1921</i>&nbsp;                var7 = &quot;Continuation Reference&quot;;
+<b class="nc"><i>1922</i>&nbsp;</b>
+<i>1923</i>&nbsp;                for(int var13 = 0; var13 &lt; var14; ++var13) {
+<i>1924</i>&nbsp;                    var9 = new LdapReferralException(var2, var3, var4, var7, var5, var6, this.handleReferrals, this.reqCtls);
+<i>1925</i>&nbsp;                    var9.setReferralInfo((Vector)var1.referrals.elementAt(var13), true);
+<b class="nc"><i>1926</i>&nbsp;                    if(this.hopCount &gt; 1) {</b>
+<i>1927</i>&nbsp;                        var9.setHopCount(this.hopCount);
+<b class="nc"><i>1928</i>&nbsp;                    }</b>
+<b class="nc"><i>1929</i>&nbsp;</b>
+<i>1930</i>&nbsp;                    if(var11 == null) {
+<i>1931</i>&nbsp;                        var12 = var9;
+<b class="nc"><i>1932</i>&nbsp;                        var11 = var9;</b>
+<b class="nc"><i>1933</i>&nbsp;                    } else {</b>
+<i>1934</i>&nbsp;                        var12.nextReferralEx = var9;
+<b class="nc"><i>1935</i>&nbsp;                        var12 = var9;</b>
+<i>1936</i>&nbsp;                    }
+<i>1937</i>&nbsp;                }
+<i>1938</i>&nbsp;
+<i>1939</i>&nbsp;                var1.referrals = null;
+<i>1940</i>&nbsp;                if(var1.refEx == null) {
+<i>1941</i>&nbsp;                    var1.refEx = var11;
+<b class="nc"><i>1942</i>&nbsp;                } else {</b>
+<b class="nc"><i>1943</i>&nbsp;                    for(var12 = var1.refEx; var12.nextReferralEx != null; var12 = var12.nextReferralEx) {</b>
+<i>1944</i>&nbsp;                        ;
+<i>1945</i>&nbsp;                    }
+<b class="nc"><i>1946</i>&nbsp;</b>
+<b class="nc"><i>1947</i>&nbsp;                    var12.nextReferralEx = var11;</b>
+<i>1948</i>&nbsp;                }
+<i>1949</i>&nbsp;
+<b class="nc"><i>1950</i>&nbsp;                if(this.hopCount &gt; this.referralHopLimit) {</b>
+<i>1951</i>&nbsp;                    LimitExceededException var15 = new LimitExceededException(&quot;Referral limit exceeded&quot;);
+<i>1952</i>&nbsp;                    var15.setRootCause(var9);
+<i>1953</i>&nbsp;                    throw var15;
+<i>1954</i>&nbsp;                }
+<i>1955</i>&nbsp;            }
+<i>1956</i>&nbsp;
+<i>1957</i>&nbsp;            return;
+<b class="nc"><i>1958</i>&nbsp;        case 9:</b>
+<b class="nc"><i>1959</i>&nbsp;            if(this.handleReferrals == 3) {</b>
+<i>1960</i>&nbsp;                var8 = new PartialResultException(var7);
+<b class="nc"><i>1961</i>&nbsp;            } else if(var1.errorMessage != null &amp;&amp; !var1.errorMessage.equals(&quot;&quot;)) {</b>
+<b class="nc"><i>1962</i>&nbsp;                var1.referrals = extractURLs(var1.errorMessage);</b>
+<i>1963</i>&nbsp;                var9 = new LdapReferralException(var2, var3, var4, var7, var5, var6, this.handleReferrals, this.reqCtls);
+<i>1964</i>&nbsp;                if(this.hopCount &gt; 1) {
+<b class="nc"><i>1965</i>&nbsp;                    var9.setHopCount(this.hopCount);</b>
+<i>1966</i>&nbsp;                }
+<i>1967</i>&nbsp;
+<i>1968</i>&nbsp;                if(var1.entries != null &amp;&amp; var1.entries.size() != 0 || var1.referrals.size() != 1) {
+<i>1969</i>&nbsp;                    var9.setReferralInfo(var1.referrals, true);
+<i>1970</i>&nbsp;                    var1.refEx = var9;
+<i>1971</i>&nbsp;                    return;
+<i>1972</i>&nbsp;                }
+<i>1973</i>&nbsp;
+<i>1974</i>&nbsp;                var9.setReferralInfo(var1.referrals, false);
+<i>1975</i>&nbsp;                if(this.hopCount &gt; this.referralHopLimit) {
+<i>1976</i>&nbsp;                    var10 = new LimitExceededException(&quot;Referral limit exceeded&quot;);
+<i>1977</i>&nbsp;                    var10.setRootCause(var9);
+<i>1978</i>&nbsp;                    var8 = var10;
+<b class="nc"><i>1979</i>&nbsp;                } else {</b>
+<b class="nc"><i>1980</i>&nbsp;                    var8 = var9;</b>
+<i>1981</i>&nbsp;                }
+<b class="nc"><i>1982</i>&nbsp;            } else {</b>
+<b class="nc"><i>1983</i>&nbsp;                var8 = new PartialResultException(var7);</b>
+<b class="nc"><i>1984</i>&nbsp;            }</b>
+<b class="nc"><i>1985</i>&nbsp;            break;</b>
+<i>1986</i>&nbsp;        case 10:
+<i>1987</i>&nbsp;            if(this.handleReferrals == 3) {
+<i>1988</i>&nbsp;                var8 = new PartialResultException(var7);
+<i>1989</i>&nbsp;            } else {
+<i>1990</i>&nbsp;                var9 = new LdapReferralException(var2, var3, var4, var7, var5, var6, this.handleReferrals, this.reqCtls);
+<i>1991</i>&nbsp;                var9.setReferralInfo((Vector)var1.referrals.elementAt(0), false);
+<i>1992</i>&nbsp;                if(this.hopCount &gt; 1) {
+<i>1993</i>&nbsp;                    var9.setHopCount(this.hopCount);
+<i>1994</i>&nbsp;                }
+<i>1995</i>&nbsp;
+<i>1996</i>&nbsp;                if(this.hopCount &gt; this.referralHopLimit) {
+<i>1997</i>&nbsp;                    var10 = new LimitExceededException(&quot;Referral limit exceeded&quot;);
+<i>1998</i>&nbsp;                    var10.setRootCause(var9);
+<i>1999</i>&nbsp;                    var8 = var10;
+<i>2000</i>&nbsp;                } else {
+<i>2001</i>&nbsp;                    var8 = var9;
+<i>2002</i>&nbsp;                }
+<i>2003</i>&nbsp;            }
+<i>2004</i>&nbsp;            break;
+<i>2005</i>&nbsp;        case 34:
+<i>2006</i>&nbsp;        case 64:
+<i>2007</i>&nbsp;            if(var4 != null) {
+<i>2008</i>&nbsp;                var8 = new InvalidNameException(var4.toString() + &quot;: &quot; + var7);
+<i>2009</i>&nbsp;            } else {
+<i>2010</i>&nbsp;                var8 = new InvalidNameException(var7);
+<i>2011</i>&nbsp;            }
+<b class="nc"><i>2012</i>&nbsp;            break;</b>
+<b class="nc"><i>2013</i>&nbsp;        default:</b>
+<i>2014</i>&nbsp;            var8 = mapErrorCode(var1.status, var1.errorMessage);
+<i>2015</i>&nbsp;        }
+<i>2016</i>&nbsp;
+<b class="nc"><i>2017</i>&nbsp;        ((NamingException)var8).setResolvedName(var2);</b>
+<b class="nc"><i>2018</i>&nbsp;        ((NamingException)var8).setResolvedObj(var3);</b>
+<b class="nc"><i>2019</i>&nbsp;        ((NamingException)var8).setRemainingName(var4);</b>
+<i>2020</i>&nbsp;        throw var8;
+<i>2021</i>&nbsp;    }
+<i>2022</i>&nbsp;
+<b class="nc"><i>2023</i>&nbsp;    public static NamingException mapErrorCode(int var0, String var1) {</b>
+<b class="nc"><i>2024</i>&nbsp;        if(var0 == 0) {</b>
+<i>2025</i>&nbsp;            return null;
+<i>2026</i>&nbsp;        } else {
+<i>2027</i>&nbsp;            Object var2 = null;
+<b class="nc"><i>2028</i>&nbsp;            String var3 = LdapClient.getErrorMessage(var0, var1);</b>
+<i>2029</i>&nbsp;            switch(var0) {
+<i>2030</i>&nbsp;            case 1:
+<i>2031</i>&nbsp;                var2 = new NamingException(var3);
+<i>2032</i>&nbsp;                break;
+<i>2033</i>&nbsp;            case 2:
+<i>2034</i>&nbsp;                var2 = new CommunicationException(var3);
+<i>2035</i>&nbsp;                break;
+<i>2036</i>&nbsp;            case 3:
+<i>2037</i>&nbsp;                var2 = new TimeLimitExceededException(var3);
+<i>2038</i>&nbsp;                break;
+<i>2039</i>&nbsp;            case 4:
+<b class="nc"><i>2040</i>&nbsp;                var2 = new SizeLimitExceededException(var3);</b>
+<i>2041</i>&nbsp;                break;
+<b class="nc"><i>2042</i>&nbsp;            case 5:</b>
+<b class="nc"><i>2043</i>&nbsp;            case 6:</b>
+<i>2044</i>&nbsp;            case 35:
+<i>2045</i>&nbsp;                var2 = new NamingException(var3);
+<b class="nc"><i>2046</i>&nbsp;                break;</b>
+<b class="nc"><i>2047</i>&nbsp;            case 7:</b>
+<i>2048</i>&nbsp;            case 8:
+<i>2049</i>&nbsp;            case 13:
+<b class="nc"><i>2050</i>&nbsp;            case 48:</b>
+<b class="nc"><i>2051</i>&nbsp;                var2 = new AuthenticationNotSupportedException(var3);</b>
+<i>2052</i>&nbsp;                break;
+<i>2053</i>&nbsp;            case 9:
+<i>2054</i>&nbsp;                var2 = new NamingException(var3);
+<b class="nc"><i>2055</i>&nbsp;                break;</b>
+<b class="nc"><i>2056</i>&nbsp;            case 10:</b>
+<i>2057</i>&nbsp;                var2 = new NamingException(var3);
+<b class="nc"><i>2058</i>&nbsp;                break;</b>
+<i>2059</i>&nbsp;            case 11:
+<b class="nc"><i>2060</i>&nbsp;                var2 = new LimitExceededException(var3);</b>
+<i>2061</i>&nbsp;                break;
+<b class="nc"><i>2062</i>&nbsp;            case 12:</b>
+<i>2063</i>&nbsp;                var2 = new OperationNotSupportedException(var3);
+<b class="nc"><i>2064</i>&nbsp;                break;</b>
+<i>2065</i>&nbsp;            case 14:
+<i>2066</i>&nbsp;            case 49:
+<i>2067</i>&nbsp;                var2 = new AuthenticationException(var3);
+<b class="nc"><i>2068</i>&nbsp;                break;</b>
+<i>2069</i>&nbsp;            case 15:
+<i>2070</i>&nbsp;            case 22:
+<b class="nc"><i>2071</i>&nbsp;            case 23:</b>
+<b class="nc"><i>2072</i>&nbsp;            case 24:</b>
+<i>2073</i>&nbsp;            case 25:
+<i>2074</i>&nbsp;            case 26:
+<b class="nc"><i>2075</i>&nbsp;            case 27:</b>
+<i>2076</i>&nbsp;            case 28:
+<i>2077</i>&nbsp;            case 29:
+<b class="nc"><i>2078</i>&nbsp;            case 30:</b>
+<b class="nc"><i>2079</i>&nbsp;            case 31:</b>
+<i>2080</i>&nbsp;            case 37:
+<i>2081</i>&nbsp;            case 38:
+<i>2082</i>&nbsp;            case 39:
+<b class="nc"><i>2083</i>&nbsp;            case 40:</b>
+<b class="nc"><i>2084</i>&nbsp;            case 41:</b>
+<b class="nc"><i>2085</i>&nbsp;            case 42:</b>
+<i>2086</i>&nbsp;            case 43:
+<i>2087</i>&nbsp;            case 44:
+<b class="nc"><i>2088</i>&nbsp;            case 45:</b>
+<i>2089</i>&nbsp;            case 46:
+<i>2090</i>&nbsp;            case 47:
+<i>2091</i>&nbsp;            case 55:
+<i>2092</i>&nbsp;            case 56:
+<i>2093</i>&nbsp;            case 57:
+<b class="nc"><i>2094</i>&nbsp;            case 58:</b>
+<b class="nc"><i>2095</i>&nbsp;            case 59:</b>
+<i>2096</i>&nbsp;            case 60:
+<b class="nc"><i>2097</i>&nbsp;            case 61:</b>
+<b class="nc"><i>2098</i>&nbsp;            case 62:</b>
+<i>2099</i>&nbsp;            case 63:
+<b class="nc"><i>2100</i>&nbsp;            case 70:</b>
+<i>2101</i>&nbsp;            case 71:
+<i>2102</i>&nbsp;            case 72:
+<i>2103</i>&nbsp;            case 73:
+<b class="nc"><i>2104</i>&nbsp;            case 74:</b>
+<b class="nc"><i>2105</i>&nbsp;            case 75:</b>
+<i>2106</i>&nbsp;            case 76:
+<b class="nc"><i>2107</i>&nbsp;            case 77:</b>
+<b class="nc"><i>2108</i>&nbsp;            case 78:</b>
+<b class="nc"><i>2109</i>&nbsp;            case 79:</b>
+<b class="nc"><i>2110</i>&nbsp;            default:</b>
+<b class="nc"><i>2111</i>&nbsp;                var2 = new NamingException(var3);</b>
+<i>2112</i>&nbsp;                break;
+<b class="nc"><i>2113</i>&nbsp;            case 16:</b>
+<i>2114</i>&nbsp;                var2 = new NoSuchAttributeException(var3);
+<i>2115</i>&nbsp;                break;
+<i>2116</i>&nbsp;            case 17:
+<i>2117</i>&nbsp;                var2 = new InvalidAttributeIdentifierException(var3);
+<i>2118</i>&nbsp;                break;
+<i>2119</i>&nbsp;            case 18:
+<i>2120</i>&nbsp;                var2 = new InvalidSearchFilterException(var3);
+<i>2121</i>&nbsp;                break;
+<i>2122</i>&nbsp;            case 19:
+<i>2123</i>&nbsp;            case 21:
+<i>2124</i>&nbsp;                var2 = new InvalidAttributeValueException(var3);
+<i>2125</i>&nbsp;                break;
+<i>2126</i>&nbsp;            case 20:
+<b class="nc"><i>2127</i>&nbsp;                var2 = new AttributeInUseException(var3);</b>
+<i>2128</i>&nbsp;                break;
+<i>2129</i>&nbsp;            case 32:
+<i>2130</i>&nbsp;                var2 = new NameNotFoundException(var3);
+<b class="nc"><i>2131</i>&nbsp;                break;</b>
+<i>2132</i>&nbsp;            case 33:
+<i>2133</i>&nbsp;                var2 = new NamingException(var3);
+<i>2134</i>&nbsp;                break;
+<i>2135</i>&nbsp;            case 34:
+<i>2136</i>&nbsp;            case 64:
+<i>2137</i>&nbsp;                var2 = new InvalidNameException(var3);
+<i>2138</i>&nbsp;                break;
+<i>2139</i>&nbsp;            case 36:
+<b class="nc"><i>2140</i>&nbsp;                var2 = new NamingException(var3);</b>
+<b class="nc"><i>2141</i>&nbsp;                break;</b>
+<i>2142</i>&nbsp;            case 50:
+<i>2143</i>&nbsp;                var2 = new NoPermissionException(var3);
+<b class="nc"><i>2144</i>&nbsp;                break;</b>
+<b class="nc"><i>2145</i>&nbsp;            case 51:</b>
+<b class="nc"><i>2146</i>&nbsp;            case 52:</b>
+<b class="nc"><i>2147</i>&nbsp;                var2 = new ServiceUnavailableException(var3);</b>
+<b class="nc"><i>2148</i>&nbsp;                break;</b>
+<b class="nc"><i>2149</i>&nbsp;            case 53:</b>
+<b class="nc"><i>2150</i>&nbsp;                var2 = new OperationNotSupportedException(var3);</b>
+<b class="nc"><i>2151</i>&nbsp;                break;</b>
+<b class="nc"><i>2152</i>&nbsp;            case 54:</b>
+<b class="nc"><i>2153</i>&nbsp;                var2 = new NamingException(var3);</b>
+<b class="nc"><i>2154</i>&nbsp;                break;</b>
+<b class="nc"><i>2155</i>&nbsp;            case 65:</b>
+<b class="nc"><i>2156</i>&nbsp;            case 67:</b>
+<b class="nc"><i>2157</i>&nbsp;            case 69:</b>
+<b class="nc"><i>2158</i>&nbsp;                var2 = new SchemaViolationException(var3);</b>
+<b class="nc"><i>2159</i>&nbsp;                break;</b>
+<b class="nc"><i>2160</i>&nbsp;            case 66:</b>
+<b class="nc"><i>2161</i>&nbsp;                var2 = new ContextNotEmptyException(var3);</b>
+<b class="nc"><i>2162</i>&nbsp;                break;</b>
+<b class="nc"><i>2163</i>&nbsp;            case 68:</b>
+<b class="nc"><i>2164</i>&nbsp;                var2 = new NameAlreadyBoundException(var3);</b>
+<b class="nc"><i>2165</i>&nbsp;                break;</b>
+<b class="nc"><i>2166</i>&nbsp;            case 80:</b>
+<b class="nc"><i>2167</i>&nbsp;                var2 = new NamingException(var3);</b>
+<i>2168</i>&nbsp;            }
+<i>2169</i>&nbsp;
+<i>2170</i>&nbsp;            return (NamingException)var2;
+<b class="nc"><i>2171</i>&nbsp;        }</b>
+<b class="nc"><i>2172</i>&nbsp;    }</b>
+<i>2173</i>&nbsp;
+<b class="nc"><i>2174</i>&nbsp;    public ExtendedResponse extendedOperation(ExtendedRequest var1) throws NamingException {</b>
+<b class="nc"><i>2175</i>&nbsp;        boolean var2 = var1.getID().equals(&quot;1.3.6.1.4.1.1466.20037&quot;);</b>
+<b class="nc"><i>2176</i>&nbsp;        this.ensureOpen(var2);</b>
+<b class="nc"><i>2177</i>&nbsp;</b>
+<b class="nc"><i>2178</i>&nbsp;        ExtendedResponse var5;</b>
+<i>2179</i>&nbsp;        try {
+<i>2180</i>&nbsp;            LdapResult var16 = this.clnt.extendedOp(var1.getID(), var1.getEncodedValue(), this.reqCtls, var2);
+<b class="nc"><i>2181</i>&nbsp;            this.respCtls = var16.resControls;</b>
+<i>2182</i>&nbsp;            if(var16.status != 0) {
+<b class="nc"><i>2183</i>&nbsp;                this.processReturnCode(var16, new CompositeName());</b>
+<b class="nc"><i>2184</i>&nbsp;            }</b>
+<i>2185</i>&nbsp;
+<i>2186</i>&nbsp;            int var18 = var16.extensionValue == null?0:var16.extensionValue.length;
+<b class="nc"><i>2187</i>&nbsp;            var5 = var1.createExtendedResponse(var16.extensionId, var16.extensionValue, 0, var18);</b>
+<i>2188</i>&nbsp;            if(var5 instanceof StartTlsResponseImpl) {
+<i>2189</i>&nbsp;                String var6 = (String)((String)(this.envprops != null?this.envprops.get(&quot;com.sun.jndi.ldap.domainname&quot;):null));
+<i>2190</i>&nbsp;                ((StartTlsResponseImpl)var5).setConnection(this.clnt.conn, var6);
+<b class="nc"><i>2191</i>&nbsp;            }</b>
+<b class="nc"><i>2192</i>&nbsp;</b>
+<i>2193</i>&nbsp;            return var5;
+<i>2194</i>&nbsp;        } catch (LdapReferralException var14) {
+<i>2195</i>&nbsp;            LdapReferralException var3 = var14;
+<i>2196</i>&nbsp;            if(this.handleReferrals == 2) {
+<i>2197</i>&nbsp;                throw var14;
+<i>2198</i>&nbsp;            } else {
+<b class="nc"><i>2199</i>&nbsp;                while(true) {</b>
+<b class="nc"><i>2200</i>&nbsp;                    LdapReferralContext var17 = (LdapReferralContext)var3.getReferralContext(this.envprops, this.bindCtls);</b>
+<i>2201</i>&nbsp;
+<i>2202</i>&nbsp;                    try {
+<b class="nc"><i>2203</i>&nbsp;                        var5 = var17.extendedOperation(var1);</b>
+<b class="nc"><i>2204</i>&nbsp;                        return var5;</b>
+<b class="nc"><i>2205</i>&nbsp;                    } catch (LdapReferralException var12) {</b>
+<b class="nc"><i>2206</i>&nbsp;                        var3 = var12;</b>
+<b class="nc"><i>2207</i>&nbsp;                    } finally {</b>
+<b class="nc"><i>2208</i>&nbsp;                        var17.close();</b>
+<b class="nc"><i>2209</i>&nbsp;                    }</b>
+<b class="nc"><i>2210</i>&nbsp;                }</b>
+<b class="nc"><i>2211</i>&nbsp;            }</b>
+<b class="nc"><i>2212</i>&nbsp;        } catch (IOException var15) {</b>
+<b class="nc"><i>2213</i>&nbsp;            CommunicationException var4 = new CommunicationException(var15.getMessage());</b>
+<b class="nc"><i>2214</i>&nbsp;            var4.setRootCause(var15);</b>
+<b class="nc"><i>2215</i>&nbsp;            throw var4;</b>
+<b class="nc"><i>2216</i>&nbsp;        }</b>
+<b class="nc"><i>2217</i>&nbsp;    }</b>
+<b class="nc"><i>2218</i>&nbsp;</b>
+<b class="nc"><i>2219</i>&nbsp;    public void setRequestControls(Control[] var1) throws NamingException {</b>
+<b class="nc"><i>2220</i>&nbsp;        if(this.handleReferrals == 3) {</b>
+<b class="nc"><i>2221</i>&nbsp;            this.reqCtls = addControl(var1, manageReferralControl);</b>
+<b class="nc"><i>2222</i>&nbsp;        } else {</b>
+<b class="nc"><i>2223</i>&nbsp;            this.reqCtls = cloneControls(var1);</b>
+<b class="nc"><i>2224</i>&nbsp;        }</b>
+<b class="nc"><i>2225</i>&nbsp;</b>
+<b class="nc"><i>2226</i>&nbsp;    }</b>
+<i>2227</i>&nbsp;
+<i>2228</i>&nbsp;    public Control[] getRequestControls() throws NamingException {
+<i>2229</i>&nbsp;        return cloneControls(this.reqCtls);
+<b class="nc"><i>2230</i>&nbsp;    }</b>
+<b class="nc"><i>2231</i>&nbsp;</b>
+<i>2232</i>&nbsp;    public Control[] getConnectControls() throws NamingException {
+<b class="nc"><i>2233</i>&nbsp;        return cloneControls(this.bindCtls);</b>
+<b class="nc"><i>2234</i>&nbsp;    }</b>
+<b class="nc"><i>2235</i>&nbsp;</b>
+<b class="nc"><i>2236</i>&nbsp;    public Control[] getResponseControls() throws NamingException {</b>
+<b class="nc"><i>2237</i>&nbsp;        return this.respCtls != null?this.convertControls(this.respCtls):null;</b>
+<i>2238</i>&nbsp;    }
+<i>2239</i>&nbsp;
+<b class="nc"><i>2240</i>&nbsp;    Control[] convertControls(Vector var1) throws NamingException {</b>
+<i>2241</i>&nbsp;        int var2 = var1.size();
+<b class="nc"><i>2242</i>&nbsp;        if(var2 == 0) {</b>
+<b class="nc"><i>2243</i>&nbsp;            return null;</b>
+<i>2244</i>&nbsp;        } else {
+<i>2245</i>&nbsp;            Control[] var3 = new Control[var2];
+<b class="nc"><i>2246</i>&nbsp;</b>
+<i>2247</i>&nbsp;            for(int var4 = 0; var4 &lt; var2; ++var4) {
+<i>2248</i>&nbsp;                var3[var4] = myResponseControlFactory.getControlInstance((Control)var1.elementAt(var4));
+<i>2249</i>&nbsp;                if(var3[var4] == null) {
+<b class="nc"><i>2250</i>&nbsp;                    var3[var4] = ControlFactory.getControlInstance((Control)var1.elementAt(var4), this, this.envprops);</b>
+<i>2251</i>&nbsp;                }
+<i>2252</i>&nbsp;            }
+<b class="nc"><i>2253</i>&nbsp;</b>
+<i>2254</i>&nbsp;            return var3;
+<i>2255</i>&nbsp;        }
+<i>2256</i>&nbsp;    }
+<i>2257</i>&nbsp;
+<i>2258</i>&nbsp;    private static Control[] addControl(Control[] var0, Control var1) {
+<i>2259</i>&nbsp;        if(var0 == null) {
+<i>2260</i>&nbsp;            return new Control[]{var1};
+<b class="nc"><i>2261</i>&nbsp;        } else {</b>
+<b class="nc"><i>2262</i>&nbsp;            int var2 = findControl(var0, var1);</b>
+<i>2263</i>&nbsp;            if(var2 != -1) {
+<i>2264</i>&nbsp;                return var0;
+<i>2265</i>&nbsp;            } else {
+<i>2266</i>&nbsp;                Control[] var3 = new Control[var0.length + 1];
+<i>2267</i>&nbsp;                System.arraycopy(var0, 0, var3, 0, var0.length);
+<i>2268</i>&nbsp;                var3[var0.length] = var1;
+<i>2269</i>&nbsp;                return var3;
+<i>2270</i>&nbsp;            }
+<i>2271</i>&nbsp;        }
+<b class="nc"><i>2272</i>&nbsp;    }</b>
+<b class="nc"><i>2273</i>&nbsp;</b>
+<i>2274</i>&nbsp;    private static int findControl(Control[] var0, Control var1) {
+<i>2275</i>&nbsp;        for(int var2 = 0; var2 &lt; var0.length; ++var2) {
+<i>2276</i>&nbsp;            if(var0[var2] == var1) {
+<i>2277</i>&nbsp;                return var2;
+<b class="nc"><i>2278</i>&nbsp;            }</b>
+<i>2279</i>&nbsp;        }
+<b class="nc"><i>2280</i>&nbsp;</b>
+<i>2281</i>&nbsp;        return -1;
+<i>2282</i>&nbsp;    }
+<i>2283</i>&nbsp;
+<i>2284</i>&nbsp;    private static Control[] removeControl(Control[] var0, Control var1) {
+<b class="nc"><i>2285</i>&nbsp;        if(var0 == null) {</b>
+<i>2286</i>&nbsp;            return null;
+<i>2287</i>&nbsp;        } else {
+<b class="nc"><i>2288</i>&nbsp;            int var2 = findControl(var0, var1);</b>
+<i>2289</i>&nbsp;            if(var2 == -1) {
+<i>2290</i>&nbsp;                return var0;
+<b class="nc"><i>2291</i>&nbsp;            } else {</b>
+<i>2292</i>&nbsp;                Control[] var3 = new Control[var0.length - 1];
+<i>2293</i>&nbsp;                System.arraycopy(var0, 0, var3, 0, var2);
+<b class="nc"><i>2294</i>&nbsp;                System.arraycopy(var0, var2 + 1, var3, var2, var0.length - var2 - 1);</b>
+<i>2295</i>&nbsp;                return var3;
+<i>2296</i>&nbsp;            }
+<b class="nc"><i>2297</i>&nbsp;        }</b>
+<i>2298</i>&nbsp;    }
+<i>2299</i>&nbsp;
+<b class="nc"><i>2300</i>&nbsp;    private static Control[] cloneControls(Control[] var0) {</b>
+<i>2301</i>&nbsp;        if(var0 == null) {
+<b class="nc"><i>2302</i>&nbsp;            return null;</b>
+<i>2303</i>&nbsp;        } else {
+<b class="nc"><i>2304</i>&nbsp;            Control[] var1 = new Control[var0.length];</b>
+<i>2305</i>&nbsp;            System.arraycopy(var0, 0, var1, 0, var0.length);
+<i>2306</i>&nbsp;            return var1;
+<b class="nc"><i>2307</i>&nbsp;        }</b>
+<i>2308</i>&nbsp;    }
+<i>2309</i>&nbsp;
+<b class="nc"><i>2310</i>&nbsp;    public void addNamingListener(Name var1, int var2, NamingListener var3) throws NamingException {</b>
+<i>2311</i>&nbsp;        this.addNamingListener((String)getTargetName(var1), var2, var3);
+<i>2312</i>&nbsp;    }
+<b class="nc"><i>2313</i>&nbsp;</b>
+<i>2314</i>&nbsp;    public void addNamingListener(String var1, int var2, NamingListener var3) throws NamingException {
+<i>2315</i>&nbsp;        if(this.eventSupport == null) {
+<i>2316</i>&nbsp;            this.eventSupport = new EventSupport(this);
+<b class="nc"><i>2317</i>&nbsp;        }</b>
+<i>2318</i>&nbsp;
+<i>2319</i>&nbsp;        this.eventSupport.addNamingListener(getTargetName(new CompositeName(var1)), var2, var3);
+<b class="nc"><i>2320</i>&nbsp;        if(var3 instanceof UnsolicitedNotificationListener &amp;&amp; !this.unsolicited) {</b>
+<i>2321</i>&nbsp;            this.addUnsolicited();
+<i>2322</i>&nbsp;        }
+<i>2323</i>&nbsp;
+<i>2324</i>&nbsp;    }
+<i>2325</i>&nbsp;
+<i>2326</i>&nbsp;    public void removeNamingListener(NamingListener var1) throws NamingException {
+<b class="nc"><i>2327</i>&nbsp;        if(this.eventSupport != null) {</b>
+<i>2328</i>&nbsp;            this.eventSupport.removeNamingListener(var1);
+<b class="nc"><i>2329</i>&nbsp;            if(var1 instanceof UnsolicitedNotificationListener &amp;&amp; !this.eventSupport.hasUnsolicited()) {</b>
+<i>2330</i>&nbsp;                this.removeUnsolicited();
+<b class="nc"><i>2331</i>&nbsp;            }</b>
+<i>2332</i>&nbsp;
+<i>2333</i>&nbsp;        }
+<i>2334</i>&nbsp;    }
+<i>2335</i>&nbsp;
+<b class="nc"><i>2336</i>&nbsp;    public void addNamingListener(String var1, String var2, SearchControls var3, NamingListener var4) throws NamingException {</b>
+<i>2337</i>&nbsp;        if(this.eventSupport == null) {
+<b class="nc"><i>2338</i>&nbsp;            this.eventSupport = new EventSupport(this);</b>
+<i>2339</i>&nbsp;        }
+<b class="nc"><i>2340</i>&nbsp;</b>
+<i>2341</i>&nbsp;        this.eventSupport.addNamingListener(getTargetName(new CompositeName(var1)), var2, cloneSearchControls(var3), var4);
+<i>2342</i>&nbsp;        if(var4 instanceof UnsolicitedNotificationListener &amp;&amp; !this.unsolicited) {
+<i>2343</i>&nbsp;            this.addUnsolicited();
+<i>2344</i>&nbsp;        }
+<i>2345</i>&nbsp;
+<i>2346</i>&nbsp;    }
+<i>2347</i>&nbsp;
+<i>2348</i>&nbsp;    public void addNamingListener(Name var1, String var2, SearchControls var3, NamingListener var4) throws NamingException {
+<b class="nc"><i>2349</i>&nbsp;        this.addNamingListener((String)getTargetName(var1), var2, var3, var4);</b>
+<b class="nc"><i>2350</i>&nbsp;    }</b>
+<i>2351</i>&nbsp;
+<b class="nc"><i>2352</i>&nbsp;    public void addNamingListener(Name var1, String var2, Object[] var3, SearchControls var4, NamingListener var5) throws NamingException {</b>
+<i>2353</i>&nbsp;        this.addNamingListener((String)getTargetName(var1), var2, var3, var4, var5);
+<i>2354</i>&nbsp;    }
+<i>2355</i>&nbsp;
+<i>2356</i>&nbsp;    public void addNamingListener(String var1, String var2, Object[] var3, SearchControls var4, NamingListener var5) throws NamingException {
+<i>2357</i>&nbsp;        String var6 = SearchFilter.format(var2, var3);
+<i>2358</i>&nbsp;        this.addNamingListener((String)getTargetName(new CompositeName(var1)), var6, var4, var5);
+<i>2359</i>&nbsp;    }
+<i>2360</i>&nbsp;
+<i>2361</i>&nbsp;    public boolean targetMustExist() {
+<b class="nc"><i>2362</i>&nbsp;        return true;</b>
+<b class="nc"><i>2363</i>&nbsp;    }</b>
+<b class="nc"><i>2364</i>&nbsp;</b>
+<b class="nc"><i>2365</i>&nbsp;    private static String getTargetName(Name var0) throws NamingException {</b>
+<b class="nc"><i>2366</i>&nbsp;        if(var0 instanceof CompositeName) {</b>
+<b class="nc"><i>2367</i>&nbsp;            if(var0.size() &gt; 1) {</b>
+<b class="nc"><i>2368</i>&nbsp;                throw new InvalidNameException(&quot;Target cannot span multiple namespaces: &quot; + var0);</b>
+<i>2369</i>&nbsp;            } else {
+<b class="nc"><i>2370</i>&nbsp;                return var0.size() == 0?&quot;&quot;:var0.get(0);</b>
+<i>2371</i>&nbsp;            }
+<i>2372</i>&nbsp;        } else {
+<i>2373</i>&nbsp;            return var0.toString();
+<b class="nc"><i>2374</i>&nbsp;        }</b>
+<i>2375</i>&nbsp;    }
+<i>2376</i>&nbsp;
+<b class="nc"><i>2377</i>&nbsp;    private void addUnsolicited() throws NamingException {</b>
+<i>2378</i>&nbsp;        this.ensureOpen();
+<b class="nc"><i>2379</i>&nbsp;        EventSupport var1 = this.eventSupport;</b>
+<i>2380</i>&nbsp;        synchronized(this.eventSupport) {
+<b class="nc"><i>2381</i>&nbsp;            this.clnt.addUnsolicited(this);</b>
+<i>2382</i>&nbsp;            this.unsolicited = true;
+<i>2383</i>&nbsp;        }
+<b class="nc"><i>2384</i>&nbsp;    }</b>
+<i>2385</i>&nbsp;
+<i>2386</i>&nbsp;    private void removeUnsolicited() {
+<i>2387</i>&nbsp;        if(this.eventSupport != null) {
+<i>2388</i>&nbsp;            EventSupport var1 = this.eventSupport;
+<i>2389</i>&nbsp;            synchronized(this.eventSupport) {
+<i>2390</i>&nbsp;                if(this.unsolicited &amp;&amp; this.clnt != null) {
+<i>2391</i>&nbsp;                    this.clnt.removeUnsolicited(this);
+<i>2392</i>&nbsp;                }
+<b class="nc"><i>2393</i>&nbsp;</b>
+<b class="nc"><i>2394</i>&nbsp;                this.unsolicited = false;</b>
+<b class="nc"><i>2395</i>&nbsp;            }</b>
+<b class="nc"><i>2396</i>&nbsp;        }</b>
+<b class="nc"><i>2397</i>&nbsp;    }</b>
+<b class="nc"><i>2398</i>&nbsp;</b>
+<b class="nc"><i>2399</i>&nbsp;    void fireUnsolicited(Object var1) {</b>
+<b class="nc"><i>2400</i>&nbsp;        EventSupport var2 = this.eventSupport;</b>
+<b class="nc"><i>2401</i>&nbsp;        synchronized(this.eventSupport) {</b>
+<i>2402</i>&nbsp;            if(this.unsolicited) {
+<b class="nc"><i>2403</i>&nbsp;                this.eventSupport.fireUnsolicited(var1);</b>
+<i>2404</i>&nbsp;                if(var1 instanceof NamingException) {
+<i>2405</i>&nbsp;                    this.unsolicited = false;
+<i>2406</i>&nbsp;                }
+<b class="nc"><i>2407</i>&nbsp;            }</b>
+<i>2408</i>&nbsp;
+<i>2409</i>&nbsp;        }
+<i>2410</i>&nbsp;    }
+<i>2411</i>&nbsp;
+<b class="nc"><i>2412</i>&nbsp;    static {</b>
+<b class="nc"><i>2413</i>&nbsp;        EMPTY_SCHEMA.setReadOnly(new SchemaViolationException(&quot;Cannot update schema object&quot;));</b>
+<i>2414</i>&nbsp;    }
+<b class="nc"><i>2415</i>&nbsp;</b>
+<i>2416</i>&nbsp;    static final class SearchArgs {
+<i>2417</i>&nbsp;        Name name;
+<i>2418</i>&nbsp;        String filter;
+<i>2419</i>&nbsp;        SearchControls cons;
+<i>2420</i>&nbsp;        String[] reqAttrs;
+<i>2421</i>&nbsp;
+<i>2422</i>&nbsp;        SearchArgs(Name var1, String var2, SearchControls var3, String[] var4) {
+<i>2423</i>&nbsp;            this.name = var1;
+<b class="nc"><i>2424</i>&nbsp;            this.filter = var2;</b>
+<b class="nc"><i>2425</i>&nbsp;            this.cons = var3;</b>
+<i>2426</i>&nbsp;            this.reqAttrs = var4;
+<i>2427</i>&nbsp;        }
+<b class="nc"><i>2428</i>&nbsp;    }</b>
+<b class="nc"><i>2429</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UNIXToolkit</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.awt</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UNIXToolkit (sun.awt)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UNIXToolkit</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 86)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.awt;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.java.swing.plaf.gtk.GTKConstants.TextDirection;
+<i>9</i>&nbsp;import java.awt.Point;
+<i>10</i>&nbsp;import java.awt.RenderingHints;
+<i>11</i>&nbsp;import java.awt.color.ColorSpace;
+<i>12</i>&nbsp;import java.awt.image.BufferedImage;
+<i>13</i>&nbsp;import java.awt.image.ComponentColorModel;
+<i>14</i>&nbsp;import java.awt.image.DataBufferByte;
+<i>15</i>&nbsp;import java.awt.image.Raster;
+<i>16</i>&nbsp;import java.awt.image.WritableRaster;
+<i>17</i>&nbsp;import java.security.AccessController;
+<i>18</i>&nbsp;import java.util.Hashtable;
+<i>19</i>&nbsp;import sun.awt.SunToolkit;
+<b class="nc"><i>20</i>&nbsp;import sun.java2d.opengl.OGLRenderQueue;</b>
+<i>21</i>&nbsp;import sun.security.action.GetIntegerAction;
+<i>22</i>&nbsp;
+<b class="nc"><i>23</i>&nbsp;public abstract class UNIXToolkit extends SunToolkit {</b>
+<i>24</i>&nbsp;    public static final Object GTK_LOCK = new Object();
+<b class="nc"><i>25</i>&nbsp;    private static final int[] BAND_OFFSETS = new int[]{0, 1, 2};</b>
+<b class="nc"><i>26</i>&nbsp;    private static final int[] BAND_OFFSETS_ALPHA = new int[]{0, 1, 2, 3};</b>
+<i>27</i>&nbsp;    private static final int DEFAULT_DATATRANSFER_TIMEOUT = 10000;
+<i>28</i>&nbsp;    private Boolean nativeGTKAvailable;
+<b class="nc"><i>29</i>&nbsp;    private Boolean nativeGTKLoaded;</b>
+<b class="nc"><i>30</i>&nbsp;    private BufferedImage tmpImage = null;</b>
+<i>31</i>&nbsp;    public static final String FONTCONFIGAAHINT = &quot;fontconfig/Antialias&quot;;
+<i>32</i>&nbsp;
+<b class="nc"><i>33</i>&nbsp;    public UNIXToolkit() {</b>
+<i>34</i>&nbsp;    }
+<b class="nc"><i>35</i>&nbsp;</b>
+<b class="nc"><i>36</i>&nbsp;    public static int getDatatransferTimeout() {</b>
+<i>37</i>&nbsp;        Integer var0 = (Integer)AccessController.doPrivileged(new GetIntegerAction(&quot;sun.awt.datatransfer.timeout&quot;));
+<b class="nc"><i>38</i>&nbsp;        return var0 != null &amp;&amp; var0.intValue() &gt; 0?var0.intValue():10000;</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public boolean isNativeGTKAvailable() {
+<i>42</i>&nbsp;        Object var1 = GTK_LOCK;
+<i>43</i>&nbsp;        synchronized(GTK_LOCK) {
+<i>44</i>&nbsp;            if(this.nativeGTKLoaded != null) {
+<i>45</i>&nbsp;                return this.nativeGTKLoaded.booleanValue();
+<b class="nc"><i>46</i>&nbsp;            } else if(this.nativeGTKAvailable != null) {</b>
+<b class="nc"><i>47</i>&nbsp;                return this.nativeGTKAvailable.booleanValue();</b>
+<b class="nc"><i>48</i>&nbsp;            } else {</b>
+<b class="nc"><i>49</i>&nbsp;                boolean var2 = check_gtk();</b>
+<i>50</i>&nbsp;                this.nativeGTKAvailable = Boolean.valueOf(var2);
+<b class="nc"><i>51</i>&nbsp;                return var2;</b>
+<b class="nc"><i>52</i>&nbsp;            }</b>
+<i>53</i>&nbsp;        }
+<i>54</i>&nbsp;    }
+<b class="nc"><i>55</i>&nbsp;</b>
+<b class="nc"><i>56</i>&nbsp;    public boolean loadGTK() {</b>
+<i>57</i>&nbsp;        Object var1 = GTK_LOCK;
+<i>58</i>&nbsp;        synchronized(GTK_LOCK) {
+<i>59</i>&nbsp;            if(this.nativeGTKLoaded == null) {
+<i>60</i>&nbsp;                boolean var2 = load_gtk();
+<i>61</i>&nbsp;                this.nativeGTKLoaded = Boolean.valueOf(var2);
+<i>62</i>&nbsp;            }
+<b class="nc"><i>63</i>&nbsp;        }</b>
+<b class="nc"><i>64</i>&nbsp;</b>
+<b class="nc"><i>65</i>&nbsp;        return this.nativeGTKLoaded.booleanValue();</b>
+<i>66</i>&nbsp;    }
+<b class="nc"><i>67</i>&nbsp;</b>
+<b class="nc"><i>68</i>&nbsp;    protected Object lazilyLoadDesktopProperty(String var1) {</b>
+<i>69</i>&nbsp;        return var1.startsWith(&quot;gtk.icon.&quot;)?this.lazilyLoadGTKIcon(var1):super.lazilyLoadDesktopProperty(var1);
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    protected Object lazilyLoadGTKIcon(String var1) {
+<i>73</i>&nbsp;        Object var2 = this.desktopProperties.get(var1);
+<i>74</i>&nbsp;        if(var2 != null) {
+<b class="nc"><i>75</i>&nbsp;            return var2;</b>
+<b class="nc"><i>76</i>&nbsp;        } else {</b>
+<i>77</i>&nbsp;            String[] var3 = var1.split(&quot;\\.&quot;);
+<b class="nc"><i>78</i>&nbsp;            if(var3.length != 5) {</b>
+<i>79</i>&nbsp;                return null;
+<i>80</i>&nbsp;            } else {
+<i>81</i>&nbsp;                boolean var4 = false;
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;                int var8;
+<i>84</i>&nbsp;                try {
+<i>85</i>&nbsp;                    var8 = Integer.parseInt(var3[3]);
+<i>86</i>&nbsp;                } catch (NumberFormatException var7) {
+<i>87</i>&nbsp;                    return null;
+<i>88</i>&nbsp;                }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;                TextDirection var5 = &quot;ltr&quot;.equals(var3[4])?TextDirection.LTR:TextDirection.RTL;
+<b class="nc"><i>91</i>&nbsp;                BufferedImage var6 = this.getStockIcon(-1, var3[2], var8, var5.ordinal(), (String)null);</b>
+<b class="nc"><i>92</i>&nbsp;                if(var6 != null) {</b>
+<b class="nc"><i>93</i>&nbsp;                    this.setDesktopProperty(var1, var6);</b>
+<i>94</i>&nbsp;                }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;                return var6;
+<b class="nc"><i>97</i>&nbsp;            }</b>
+<b class="nc"><i>98</i>&nbsp;        }</b>
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public BufferedImage getGTKIcon(String var1) {
+<i>102</i>&nbsp;        if(!this.loadGTK()) {
+<b class="nc"><i>103</i>&nbsp;            return null;</b>
+<i>104</i>&nbsp;        } else {
+<b class="nc"><i>105</i>&nbsp;            Object var2 = GTK_LOCK;</b>
+<b class="nc"><i>106</i>&nbsp;            synchronized(GTK_LOCK) {</b>
+<b class="nc"><i>107</i>&nbsp;                if(!this.load_gtk_icon(var1)) {</b>
+<b class="nc"><i>108</i>&nbsp;                    this.tmpImage = null;</b>
+<i>109</i>&nbsp;                }
+<i>110</i>&nbsp;            }
+<b class="nc"><i>111</i>&nbsp;</b>
+<i>112</i>&nbsp;            return this.tmpImage;
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<b class="nc"><i>115</i>&nbsp;</b>
+<b class="nc"><i>116</i>&nbsp;    public BufferedImage getStockIcon(int var1, String var2, int var3, int var4, String var5) {</b>
+<i>117</i>&nbsp;        if(!this.loadGTK()) {
+<b class="nc"><i>118</i>&nbsp;            return null;</b>
+<i>119</i>&nbsp;        } else {
+<b class="nc"><i>120</i>&nbsp;            Object var6 = GTK_LOCK;</b>
+<i>121</i>&nbsp;            synchronized(GTK_LOCK) {
+<i>122</i>&nbsp;                if(!this.load_stock_icon(var1, var2, var3, var4, var5)) {
+<i>123</i>&nbsp;                    this.tmpImage = null;
+<i>124</i>&nbsp;                }
+<i>125</i>&nbsp;            }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;            return this.tmpImage;
+<i>128</i>&nbsp;        }
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public void loadIconCallback(byte[] var1, int var2, int var3, int var4, int var5, int var6, boolean var7) {
+<b class="nc"><i>132</i>&nbsp;        this.tmpImage = null;</b>
+<b class="nc"><i>133</i>&nbsp;        DataBufferByte var8 = new DataBufferByte(var1, var4 * var3);</b>
+<i>134</i>&nbsp;        WritableRaster var9 = Raster.createInterleavedRaster(var8, var2, var3, var4, var6, var7?BAND_OFFSETS_ALPHA:BAND_OFFSETS, (Point)null);
+<i>135</i>&nbsp;        ComponentColorModel var10 = new ComponentColorModel(ColorSpace.getInstance(1000), var7, false, 3, 0);
+<i>136</i>&nbsp;        this.tmpImage = new BufferedImage(var10, var9, false, (Hashtable)null);
+<b class="nc"><i>137</i>&nbsp;    }</b>
+<b class="nc"><i>138</i>&nbsp;</b>
+<b class="nc"><i>139</i>&nbsp;    private static native boolean check_gtk();</b>
+<i>140</i>&nbsp;
+<b class="nc"><i>141</i>&nbsp;    private static native boolean load_gtk();</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    private static native boolean unload_gtk();
+<b class="nc"><i>144</i>&nbsp;</b>
+<i>145</i>&nbsp;    private native boolean load_gtk_icon(String var1);
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    private native boolean load_stock_icon(int var1, String var2, int var3, int var4, String var5);
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    private native void nativeSync();
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public void sync() {
+<i>152</i>&nbsp;        this.nativeSync();
+<i>153</i>&nbsp;        OGLRenderQueue.sync();
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    protected RenderingHints getDesktopAAHints() {
+<i>157</i>&nbsp;        Object var1 = this.getDesktopProperty(&quot;gnome.Xft/Antialias&quot;);
+<i>158</i>&nbsp;        if(var1 == null) {
+<i>159</i>&nbsp;            var1 = this.getDesktopProperty(&quot;fontconfig/Antialias&quot;);
+<i>160</i>&nbsp;            return var1 != null?new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, var1):null;
+<i>161</i>&nbsp;        } else {
+<i>162</i>&nbsp;            boolean var2 = Boolean.valueOf(var1 instanceof Number &amp;&amp; ((Number)var1).intValue() != 0).booleanValue();
+<i>163</i>&nbsp;            Object var3;
+<i>164</i>&nbsp;            if(var2) {
+<b class="nc"><i>165</i>&nbsp;                String var4 = (String)this.getDesktopProperty(&quot;gnome.Xft/RGBA&quot;);</b>
+<b class="nc"><i>166</i>&nbsp;                if(var4 != null &amp;&amp; !var4.equals(&quot;none&quot;)) {</b>
+<i>167</i>&nbsp;                    if(var4.equals(&quot;rgb&quot;)) {
+<i>168</i>&nbsp;                        var3 = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
+<i>169</i>&nbsp;                    } else if(var4.equals(&quot;bgr&quot;)) {
+<b class="nc"><i>170</i>&nbsp;                        var3 = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR;</b>
+<b class="nc"><i>171</i>&nbsp;                    } else if(var4.equals(&quot;vrgb&quot;)) {</b>
+<b class="nc"><i>172</i>&nbsp;                        var3 = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB;</b>
+<i>173</i>&nbsp;                    } else if(var4.equals(&quot;vbgr&quot;)) {
+<b class="nc"><i>174</i>&nbsp;                        var3 = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR;</b>
+<i>175</i>&nbsp;                    } else {
+<i>176</i>&nbsp;                        var3 = RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
+<b class="nc"><i>177</i>&nbsp;                    }</b>
+<i>178</i>&nbsp;                } else {
+<i>179</i>&nbsp;                    var3 = RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
+<i>180</i>&nbsp;                }
+<i>181</i>&nbsp;            } else {
+<i>182</i>&nbsp;                var3 = RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT;
+<i>183</i>&nbsp;            }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;            return new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, var3);
+<i>186</i>&nbsp;        }
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    private native boolean gtkCheckVersionImpl(int var1, int var2, int var3);
+<b class="nc"><i>190</i>&nbsp;</b>
+<i>191</i>&nbsp;    public boolean checkGtkVersion(int var1, int var2, int var3) {
+<i>192</i>&nbsp;        return this.loadGTK()?this.gtkCheckVersionImpl(var1, var2, var3):false;
+<i>193</i>&nbsp;    }
+<b class="nc"><i>194</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

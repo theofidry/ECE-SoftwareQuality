@@ -1,0 +1,353 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AbstractUnmarshallerImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.xml.bind.helpers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AbstractUnmarshallerImpl (javax.xml.bind.helpers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AbstractUnmarshallerImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 97)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.xml.bind.helpers;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.File;
+<i>9</i>&nbsp;import java.io.InputStream;
+<i>10</i>&nbsp;import java.io.Reader;
+<i>11</i>&nbsp;import java.net.MalformedURLException;
+<i>12</i>&nbsp;import java.net.URL;
+<i>13</i>&nbsp;import javax.xml.bind.JAXBElement;
+<i>14</i>&nbsp;import javax.xml.bind.JAXBException;
+<i>15</i>&nbsp;import javax.xml.bind.PropertyException;
+<i>16</i>&nbsp;import javax.xml.bind.UnmarshalException;
+<i>17</i>&nbsp;import javax.xml.bind.Unmarshaller;
+<i>18</i>&nbsp;import javax.xml.bind.ValidationEventHandler;
+<i>19</i>&nbsp;import javax.xml.bind.Unmarshaller.Listener;
+<i>20</i>&nbsp;import javax.xml.bind.annotation.adapters.XmlAdapter;
+<i>21</i>&nbsp;import javax.xml.bind.attachment.AttachmentUnmarshaller;
+<i>22</i>&nbsp;import javax.xml.bind.helpers.DefaultValidationEventHandler;
+<i>23</i>&nbsp;import javax.xml.bind.helpers.Messages;
+<i>24</i>&nbsp;import javax.xml.parsers.ParserConfigurationException;
+<i>25</i>&nbsp;import javax.xml.parsers.SAXParserFactory;
+<i>26</i>&nbsp;import javax.xml.stream.XMLEventReader;
+<i>27</i>&nbsp;import javax.xml.stream.XMLStreamReader;
+<i>28</i>&nbsp;import javax.xml.transform.Source;
+<i>29</i>&nbsp;import javax.xml.transform.dom.DOMSource;
+<i>30</i>&nbsp;import javax.xml.transform.sax.SAXSource;
+<i>31</i>&nbsp;import javax.xml.transform.stream.StreamSource;
+<i>32</i>&nbsp;import javax.xml.validation.Schema;
+<i>33</i>&nbsp;import org.w3c.dom.Node;
+<i>34</i>&nbsp;import org.xml.sax.InputSource;
+<i>35</i>&nbsp;import org.xml.sax.SAXException;
+<i>36</i>&nbsp;import org.xml.sax.XMLReader;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;public abstract class AbstractUnmarshallerImpl implements Unmarshaller {
+<i>39</i>&nbsp;    private ValidationEventHandler eventHandler = new DefaultValidationEventHandler();
+<i>40</i>&nbsp;    protected boolean validating = false;
+<i>41</i>&nbsp;    private XMLReader reader = null;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public AbstractUnmarshallerImpl() {
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    protected XMLReader getXMLReader() throws JAXBException {
+<i>47</i>&nbsp;        if(this.reader == null) {
+<i>48</i>&nbsp;            try {
+<i>49</i>&nbsp;                SAXParserFactory e = SAXParserFactory.newInstance();
+<i>50</i>&nbsp;                e.setNamespaceAware(true);
+<i>51</i>&nbsp;                e.setValidating(false);
+<i>52</i>&nbsp;                this.reader = e.newSAXParser().getXMLReader();
+<b class="nc"><i>53</i>&nbsp;            } catch (ParserConfigurationException var2) {</b>
+<i>54</i>&nbsp;                throw new JAXBException(var2);
+<i>55</i>&nbsp;            } catch (SAXException var3) {
+<b class="nc"><i>56</i>&nbsp;                throw new JAXBException(var3);</b>
+<i>57</i>&nbsp;            }
+<i>58</i>&nbsp;        }
+<i>59</i>&nbsp;
+<b class="nc"><i>60</i>&nbsp;        return this.reader;</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public Object unmarshal(Source source) throws JAXBException {
+<i>64</i>&nbsp;        if(source == null) {
+<b class="nc"><i>65</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;source&quot;));</b>
+<i>66</i>&nbsp;        } else if(source instanceof SAXSource) {
+<i>67</i>&nbsp;            return this.unmarshal((SAXSource)((SAXSource)source));
+<i>68</i>&nbsp;        } else if(source instanceof StreamSource) {
+<i>69</i>&nbsp;            return this.unmarshal((InputSource)streamSourceToInputSource((StreamSource)source));
+<i>70</i>&nbsp;        } else if(source instanceof DOMSource) {
+<i>71</i>&nbsp;            return this.unmarshal((Node)((DOMSource)source).getNode());
+<i>72</i>&nbsp;        } else {
+<i>73</i>&nbsp;            throw new IllegalArgumentException();
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<b class="nc"><i>77</i>&nbsp;    private Object unmarshal(SAXSource source) throws JAXBException {</b>
+<i>78</i>&nbsp;        XMLReader r = source.getXMLReader();
+<i>79</i>&nbsp;        if(r == null) {
+<b class="nc"><i>80</i>&nbsp;            r = this.getXMLReader();</b>
+<b class="nc"><i>81</i>&nbsp;        }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;        return this.unmarshal((XMLReader)r, (InputSource)source.getInputSource());
+<i>84</i>&nbsp;    }
+<b class="nc"><i>85</i>&nbsp;</b>
+<b class="nc"><i>86</i>&nbsp;    protected abstract Object unmarshal(XMLReader var1, InputSource var2) throws JAXBException;</b>
+<b class="nc"><i>87</i>&nbsp;</b>
+<b class="nc"><i>88</i>&nbsp;    public final Object unmarshal(InputSource source) throws JAXBException {</b>
+<b class="nc"><i>89</i>&nbsp;        if(source == null) {</b>
+<b class="nc"><i>90</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;source&quot;));</b>
+<b class="nc"><i>91</i>&nbsp;        } else {</b>
+<i>92</i>&nbsp;            return this.unmarshal((XMLReader)this.getXMLReader(), (InputSource)source);
+<b class="nc"><i>93</i>&nbsp;        }</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    private Object unmarshal(String url) throws JAXBException {
+<b class="nc"><i>97</i>&nbsp;        return this.unmarshal((InputSource)(new InputSource(url)));</b>
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public final Object unmarshal(URL url) throws JAXBException {
+<i>101</i>&nbsp;        if(url == null) {
+<b class="nc"><i>102</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;url&quot;));</b>
+<b class="nc"><i>103</i>&nbsp;        } else {</b>
+<b class="nc"><i>104</i>&nbsp;            return this.unmarshal((String)url.toExternalForm());</b>
+<b class="nc"><i>105</i>&nbsp;        }</b>
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<b class="nc"><i>107</i>&nbsp;</b>
+<i>108</i>&nbsp;    public final Object unmarshal(File f) throws JAXBException {
+<i>109</i>&nbsp;        if(f == null) {
+<b class="nc"><i>110</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;file&quot;));</b>
+<i>111</i>&nbsp;        } else {
+<i>112</i>&nbsp;            try {
+<i>113</i>&nbsp;                String e = f.getAbsolutePath();
+<i>114</i>&nbsp;                if(File.separatorChar != 47) {
+<i>115</i>&nbsp;                    e = e.replace(File.separatorChar, &#39;/&#39;);
+<b class="nc"><i>116</i>&nbsp;                }</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<b class="nc"><i>118</i>&nbsp;                if(!e.startsWith(&quot;/&quot;)) {</b>
+<i>119</i>&nbsp;                    e = &quot;/&quot; + e;
+<b class="nc"><i>120</i>&nbsp;                }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;                if(!e.endsWith(&quot;/&quot;) &amp;&amp; f.isDirectory()) {
+<i>123</i>&nbsp;                    e = e + &quot;/&quot;;
+<i>124</i>&nbsp;                }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;                return this.unmarshal((URL)(new URL(&quot;file&quot;, &quot;&quot;, e)));
+<i>127</i>&nbsp;            } catch (MalformedURLException var3) {
+<i>128</i>&nbsp;                throw new IllegalArgumentException(var3.getMessage());
+<i>129</i>&nbsp;            }
+<i>130</i>&nbsp;        }
+<i>131</i>&nbsp;    }
+<b class="nc"><i>132</i>&nbsp;</b>
+<b class="nc"><i>133</i>&nbsp;    public final Object unmarshal(InputStream is) throws JAXBException {</b>
+<i>134</i>&nbsp;        if(is == null) {
+<i>135</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;is&quot;));
+<i>136</i>&nbsp;        } else {
+<b class="nc"><i>137</i>&nbsp;            InputSource isrc = new InputSource(is);</b>
+<i>138</i>&nbsp;            return this.unmarshal((InputSource)isrc);
+<i>139</i>&nbsp;        }
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;    public final Object unmarshal(Reader reader) throws JAXBException {</b>
+<i>143</i>&nbsp;        if(reader == null) {
+<i>144</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;reader&quot;));
+<i>145</i>&nbsp;        } else {
+<b class="nc"><i>146</i>&nbsp;            InputSource isrc = new InputSource(reader);</b>
+<b class="nc"><i>147</i>&nbsp;            return this.unmarshal((InputSource)isrc);</b>
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;    private static InputSource streamSourceToInputSource(StreamSource ss) {</b>
+<i>152</i>&nbsp;        InputSource is = new InputSource();
+<i>153</i>&nbsp;        is.setSystemId(ss.getSystemId());
+<i>154</i>&nbsp;        is.setByteStream(ss.getInputStream());
+<b class="nc"><i>155</i>&nbsp;        is.setCharacterStream(ss.getReader());</b>
+<b class="nc"><i>156</i>&nbsp;        return is;</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    public boolean isValidating() throws JAXBException {
+<i>160</i>&nbsp;        return this.validating;
+<i>161</i>&nbsp;    }
+<b class="nc"><i>162</i>&nbsp;</b>
+<b class="nc"><i>163</i>&nbsp;    public void setEventHandler(ValidationEventHandler handler) throws JAXBException {</b>
+<b class="nc"><i>164</i>&nbsp;        if(handler == null) {</b>
+<b class="nc"><i>165</i>&nbsp;            this.eventHandler = new DefaultValidationEventHandler();</b>
+<b class="nc"><i>166</i>&nbsp;        } else {</b>
+<b class="nc"><i>167</i>&nbsp;            this.eventHandler = handler;</b>
+<b class="nc"><i>168</i>&nbsp;        }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<b class="nc"><i>171</i>&nbsp;</b>
+<i>172</i>&nbsp;    public void setValidating(boolean validating) throws JAXBException {
+<i>173</i>&nbsp;        this.validating = validating;
+<i>174</i>&nbsp;    }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;    public ValidationEventHandler getEventHandler() throws JAXBException {
+<i>177</i>&nbsp;        return this.eventHandler;
+<b class="nc"><i>178</i>&nbsp;    }</b>
+<b class="nc"><i>179</i>&nbsp;</b>
+<i>180</i>&nbsp;    protected UnmarshalException createUnmarshalException(SAXException e) {
+<i>181</i>&nbsp;        Exception nested = e.getException();
+<i>182</i>&nbsp;        if(nested instanceof UnmarshalException) {
+<b class="nc"><i>183</i>&nbsp;            return (UnmarshalException)nested;</b>
+<b class="nc"><i>184</i>&nbsp;        } else if(nested instanceof RuntimeException) {</b>
+<i>185</i>&nbsp;            throw (RuntimeException)nested;
+<i>186</i>&nbsp;        } else {
+<i>187</i>&nbsp;            return nested != null?new UnmarshalException(nested):new UnmarshalException(e);
+<b class="nc"><i>188</i>&nbsp;        }</b>
+<b class="nc"><i>189</i>&nbsp;    }</b>
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    public void setProperty(String name, Object value) throws PropertyException {
+<i>192</i>&nbsp;        if(name == null) {
+<b class="nc"><i>193</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;name&quot;));</b>
+<b class="nc"><i>194</i>&nbsp;        } else {</b>
+<i>195</i>&nbsp;            throw new PropertyException(name, value);
+<i>196</i>&nbsp;        }
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;    public Object getProperty(String name) throws PropertyException {</b>
+<b class="nc"><i>200</i>&nbsp;        if(name == null) {</b>
+<b class="nc"><i>201</i>&nbsp;            throw new IllegalArgumentException(Messages.format(&quot;Shared.MustNotBeNull&quot;, &quot;name&quot;));</b>
+<b class="nc"><i>202</i>&nbsp;        } else {</b>
+<i>203</i>&nbsp;            throw new PropertyException(name);
+<b class="nc"><i>204</i>&nbsp;        }</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    public Object unmarshal(XMLEventReader reader) throws JAXBException {
+<i>208</i>&nbsp;        throw new UnsupportedOperationException();
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    public Object unmarshal(XMLStreamReader reader) throws JAXBException {
+<i>212</i>&nbsp;        throw new UnsupportedOperationException();
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    public &lt;T&gt; JAXBElement&lt;T&gt; unmarshal(Node node, Class&lt;T&gt; expectedType) throws JAXBException {
+<i>216</i>&nbsp;        throw new UnsupportedOperationException();
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    public &lt;T&gt; JAXBElement&lt;T&gt; unmarshal(Source source, Class&lt;T&gt; expectedType) throws JAXBException {
+<i>220</i>&nbsp;        throw new UnsupportedOperationException();
+<b class="nc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    public &lt;T&gt; JAXBElement&lt;T&gt; unmarshal(XMLStreamReader reader, Class&lt;T&gt; expectedType) throws JAXBException {
+<i>224</i>&nbsp;        throw new UnsupportedOperationException();
+<i>225</i>&nbsp;    }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;    public &lt;T&gt; JAXBElement&lt;T&gt; unmarshal(XMLEventReader reader, Class&lt;T&gt; expectedType) throws JAXBException {
+<i>228</i>&nbsp;        throw new UnsupportedOperationException();
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    public void setSchema(Schema schema) {
+<i>232</i>&nbsp;        throw new UnsupportedOperationException();
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    public Schema getSchema() {
+<i>236</i>&nbsp;        throw new UnsupportedOperationException();
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    public void setAdapter(XmlAdapter adapter) {
+<i>240</i>&nbsp;        if(adapter == null) {
+<b class="nc"><i>241</i>&nbsp;            throw new IllegalArgumentException();</b>
+<b class="nc"><i>242</i>&nbsp;        } else {</b>
+<i>243</i>&nbsp;            this.setAdapter(adapter.getClass(), adapter);
+<b class="nc"><i>244</i>&nbsp;        }</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    public &lt;A extends XmlAdapter&gt; void setAdapter(Class&lt;A&gt; type, A adapter) {
+<i>248</i>&nbsp;        throw new UnsupportedOperationException();
+<i>249</i>&nbsp;    }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    public &lt;A extends XmlAdapter&gt; A getAdapter(Class&lt;A&gt; type) {
+<i>252</i>&nbsp;        throw new UnsupportedOperationException();
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    public void setAttachmentUnmarshaller(AttachmentUnmarshaller au) {
+<i>256</i>&nbsp;        throw new UnsupportedOperationException();
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    public AttachmentUnmarshaller getAttachmentUnmarshaller() {
+<i>260</i>&nbsp;        throw new UnsupportedOperationException();
+<i>261</i>&nbsp;    }
+<b class="nc"><i>262</i>&nbsp;</b>
+<i>263</i>&nbsp;    public void setListener(Listener listener) {
+<i>264</i>&nbsp;        throw new UnsupportedOperationException();
+<i>265</i>&nbsp;    }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;    public Listener getListener() {
+<i>268</i>&nbsp;        throw new UnsupportedOperationException();
+<i>269</i>&nbsp;    }
+<i>270</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

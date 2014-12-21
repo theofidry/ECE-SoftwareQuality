@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DupFilterIterator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xalan.internal.xsltc.dom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DupFilterIterator (com.sun.org.apache.xalan.internal.xsltc.dom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DupFilterIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 46)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xalan.internal.xsltc.dom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.dom.KeyIndex;
+<i>9</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary;
+<i>10</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.util.IntegerArray;
+<i>11</i>&nbsp;import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+<i>12</i>&nbsp;import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public final class DupFilterIterator extends DTMAxisIteratorBase {
+<i>15</i>&nbsp;    private DTMAxisIterator _source;
+<i>16</i>&nbsp;    private IntegerArray _nodes = new IntegerArray();
+<i>17</i>&nbsp;    private int _current = 0;
+<i>18</i>&nbsp;    private int _nodesSize = 0;
+<i>19</i>&nbsp;    private int _lastNext = -1;
+<i>20</i>&nbsp;    private int _markedLastNext = -1;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public DupFilterIterator(DTMAxisIterator source) {
+<i>23</i>&nbsp;        this._source = source;
+<i>24</i>&nbsp;        if(source instanceof KeyIndex) {
+<i>25</i>&nbsp;            this.setStartNode(0);
+<i>26</i>&nbsp;        }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public DTMAxisIterator setStartNode(int node) {
+<i>31</i>&nbsp;        if(this._isRestartable) {
+<i>32</i>&nbsp;            boolean sourceIsKeyIndex = this._source instanceof KeyIndex;
+<i>33</i>&nbsp;            if(sourceIsKeyIndex &amp;&amp; this._startNode == 0) {
+<i>34</i>&nbsp;                return this;
+<i>35</i>&nbsp;            }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;            if(node != this._startNode) {
+<i>38</i>&nbsp;                this._source.setStartNode(this._startNode = node);
+<i>39</i>&nbsp;                this._nodes.clear();
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;                while((node = this._source.next()) != -1) {
+<i>42</i>&nbsp;                    this._nodes.add(node);
+<i>43</i>&nbsp;                }
+<b class="nc"><i>44</i>&nbsp;</b>
+<i>45</i>&nbsp;                if(!sourceIsKeyIndex) {
+<i>46</i>&nbsp;                    this._nodes.sort();
+<i>47</i>&nbsp;                }
+<i>48</i>&nbsp;
+<b class="nc"><i>49</i>&nbsp;                this._nodesSize = this._nodes.cardinality();</b>
+<i>50</i>&nbsp;                this._current = 0;
+<i>51</i>&nbsp;                this._lastNext = -1;
+<i>52</i>&nbsp;                this.resetPosition();
+<i>53</i>&nbsp;            }
+<b class="nc"><i>54</i>&nbsp;        }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;        return this;
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<b class="nc"><i>59</i>&nbsp;    public int next() {</b>
+<i>60</i>&nbsp;        while(true) {
+<i>61</i>&nbsp;            if(this._current &lt; this._nodesSize) {
+<i>62</i>&nbsp;                int next = this._nodes.at(this._current++);
+<i>63</i>&nbsp;                if(next == this._lastNext) {
+<b class="nc"><i>64</i>&nbsp;                    continue;</b>
+<i>65</i>&nbsp;                }
+<b class="nc"><i>66</i>&nbsp;</b>
+<b class="nc"><i>67</i>&nbsp;                return this.returnNode(this._lastNext = next);</b>
+<i>68</i>&nbsp;            }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;            return -1;
+<i>71</i>&nbsp;        }
+<i>72</i>&nbsp;    }
+<b class="nc"><i>73</i>&nbsp;</b>
+<b class="nc"><i>74</i>&nbsp;    public DTMAxisIterator cloneIterator() {</b>
+<i>75</i>&nbsp;        try {
+<i>76</i>&nbsp;            DupFilterIterator e = (DupFilterIterator)super.clone();
+<i>77</i>&nbsp;            e._nodes = (IntegerArray)this._nodes.clone();
+<i>78</i>&nbsp;            e._source = this._source.cloneIterator();
+<i>79</i>&nbsp;            e._isRestartable = false;
+<i>80</i>&nbsp;            return e.reset();
+<i>81</i>&nbsp;        } catch (CloneNotSupportedException var2) {
+<i>82</i>&nbsp;            BasisLibrary.runTimeError(&quot;ITERATOR_CLONE_ERR&quot;, var2.toString());
+<i>83</i>&nbsp;            return null;
+<b class="nc"><i>84</i>&nbsp;        }</b>
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<b class="nc"><i>87</i>&nbsp;    public void setRestartable(boolean isRestartable) {</b>
+<i>88</i>&nbsp;        this._isRestartable = isRestartable;
+<b class="nc"><i>89</i>&nbsp;        this._source.setRestartable(isRestartable);</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;    public void setMark() {</b>
+<b class="nc"><i>93</i>&nbsp;        this._markedNode = this._current;</b>
+<i>94</i>&nbsp;        this._markedLastNext = this._lastNext;
+<b class="nc"><i>95</i>&nbsp;    }</b>
+<b class="nc"><i>96</i>&nbsp;</b>
+<b class="nc"><i>97</i>&nbsp;    public void gotoMark() {</b>
+<i>98</i>&nbsp;        this._current = this._markedNode;
+<b class="nc"><i>99</i>&nbsp;        this._lastNext = this._markedLastNext;</b>
+<b class="nc"><i>100</i>&nbsp;    }</b>
+<b class="nc"><i>101</i>&nbsp;</b>
+<b class="nc"><i>102</i>&nbsp;    public DTMAxisIterator reset() {</b>
+<b class="nc"><i>103</i>&nbsp;        this._current = 0;</b>
+<i>104</i>&nbsp;        this._lastNext = -1;
+<i>105</i>&nbsp;        return this.resetPosition();
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<i>107</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

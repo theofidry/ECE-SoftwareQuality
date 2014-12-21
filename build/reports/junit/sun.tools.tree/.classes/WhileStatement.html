@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WhileStatement</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.tools.tree</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WhileStatement (sun.tools.tree)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WhileStatement</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.tools.tree;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.PrintStream;
+<i>9</i>&nbsp;import java.util.Hashtable;
+<i>10</i>&nbsp;import sun.tools.asm.Assembler;
+<i>11</i>&nbsp;import sun.tools.asm.Label;
+<i>12</i>&nbsp;import sun.tools.java.Environment;
+<i>13</i>&nbsp;import sun.tools.java.Type;
+<i>14</i>&nbsp;import sun.tools.tree.CheckContext;
+<i>15</i>&nbsp;import sun.tools.tree.CodeContext;
+<i>16</i>&nbsp;import sun.tools.tree.ConditionVars;
+<i>17</i>&nbsp;import sun.tools.tree.Context;
+<i>18</i>&nbsp;import sun.tools.tree.Expression;
+<i>19</i>&nbsp;import sun.tools.tree.Statement;
+<i>20</i>&nbsp;import sun.tools.tree.Vset;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;public class WhileStatement extends Statement {
+<i>23</i>&nbsp;    Expression cond;
+<i>24</i>&nbsp;    Statement body;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public WhileStatement(long var1, Expression var3, Statement var4) {
+<i>27</i>&nbsp;        super(93, var1);
+<i>28</i>&nbsp;        this.cond = var3;
+<i>29</i>&nbsp;        this.body = var4;
+<b class="nc"><i>30</i>&nbsp;    }</b>
+<b class="nc"><i>31</i>&nbsp;</b>
+<b class="nc"><i>32</i>&nbsp;    Vset check(Environment var1, Context var2, Vset var3, Hashtable var4) {</b>
+<i>33</i>&nbsp;        this.checkLabel(var1, var2);
+<i>34</i>&nbsp;        CheckContext var5 = new CheckContext(var2, this);
+<i>35</i>&nbsp;        Vset var6 = var3.copy();
+<i>36</i>&nbsp;        ConditionVars var7 = this.cond.checkCondition(var1, var5, this.reach(var1, var3), var4);
+<i>37</i>&nbsp;        this.cond = this.convert(var1, var5, Type.tBoolean, this.cond);
+<i>38</i>&nbsp;        var3 = this.body.check(var1, var5, var7.vsTrue, var4);
+<b class="nc"><i>39</i>&nbsp;        var3 = var3.join(var5.vsContinue);</b>
+<b class="nc"><i>40</i>&nbsp;        var2.checkBackBranch(var1, this, var6, var3);</b>
+<i>41</i>&nbsp;        var3 = var5.vsBreak.join(var7.vsFalse);
+<b class="nc"><i>42</i>&nbsp;        return var2.removeAdditionalVars(var3);</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<b class="nc"><i>45</i>&nbsp;    public Statement inline(Environment var1, Context var2) {</b>
+<i>46</i>&nbsp;        var2 = new Context(var2, this);
+<b class="nc"><i>47</i>&nbsp;        this.cond = this.cond.inlineValue(var1, var2);</b>
+<i>48</i>&nbsp;        if(this.body != null) {
+<b class="nc"><i>49</i>&nbsp;            this.body = this.body.inline(var1, var2);</b>
+<b class="nc"><i>50</i>&nbsp;        }</b>
+<i>51</i>&nbsp;
+<b class="nc"><i>52</i>&nbsp;        return this;</b>
+<i>53</i>&nbsp;    }
+<b class="nc"><i>54</i>&nbsp;</b>
+<b class="nc"><i>55</i>&nbsp;    public int costInline(int var1, Environment var2, Context var3) {</b>
+<i>56</i>&nbsp;        return 1 + this.cond.costInline(var1, var2, var3) + (this.body != null?this.body.costInline(var1, var2, var3):0);
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public Statement copyInline(Context var1, boolean var2) {
+<i>60</i>&nbsp;        WhileStatement var3 = (WhileStatement)this.clone();
+<i>61</i>&nbsp;        var3.cond = this.cond.copyInline(var1);
+<b class="nc"><i>62</i>&nbsp;        if(this.body != null) {</b>
+<b class="nc"><i>63</i>&nbsp;            var3.body = this.body.copyInline(var1, var2);</b>
+<b class="nc"><i>64</i>&nbsp;        }</b>
+<b class="nc"><i>65</i>&nbsp;</b>
+<i>66</i>&nbsp;        return var3;
+<b class="nc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public void code(Environment var1, Context var2, Assembler var3) {
+<i>70</i>&nbsp;        CodeContext var4 = new CodeContext(var2, this);
+<i>71</i>&nbsp;        var3.add(this.where, 167, var4.contLabel);
+<i>72</i>&nbsp;        Label var5 = new Label();
+<i>73</i>&nbsp;        var3.add(var5);
+<b class="nc"><i>74</i>&nbsp;        if(this.body != null) {</b>
+<i>75</i>&nbsp;            this.body.code(var1, var4, var3);
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        var3.add(var4.contLabel);
+<i>79</i>&nbsp;        this.cond.codeBranch(var1, var4, var3, var5, true);
+<i>80</i>&nbsp;        var3.add(var4.breakLabel);
+<i>81</i>&nbsp;    }
+<b class="nc"><i>82</i>&nbsp;</b>
+<b class="nc"><i>83</i>&nbsp;    public void print(PrintStream var1, int var2) {</b>
+<b class="nc"><i>84</i>&nbsp;        super.print(var1, var2);</b>
+<b class="nc"><i>85</i>&nbsp;        var1.print(&quot;while &quot;);</b>
+<i>86</i>&nbsp;        this.cond.print(var1);
+<b class="nc"><i>87</i>&nbsp;        if(this.body != null) {</b>
+<i>88</i>&nbsp;            var1.print(&quot; &quot;);
+<i>89</i>&nbsp;            this.body.print(var1, var2);
+<i>90</i>&nbsp;        } else {
+<i>91</i>&nbsp;            var1.print(&quot;;&quot;);
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<i>95</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

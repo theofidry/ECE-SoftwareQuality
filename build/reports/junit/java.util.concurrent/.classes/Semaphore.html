@@ -1,0 +1,361 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Semaphore</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.util.concurrent</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Semaphore (java.util.concurrent)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Semaphore</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Semaphore$FairSync</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Semaphore$NonfairSync</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Semaphore$Sync</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 60)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.util.concurrent;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.Serializable;
+<i>9</i>&nbsp;import java.util.Collection;
+<i>10</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>11</i>&nbsp;import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;public class Semaphore implements Serializable {
+<i>14</i>&nbsp;    private static final long serialVersionUID = -3222578661600680210L;
+<i>15</i>&nbsp;    private final Semaphore.Sync sync;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    public Semaphore(int var1) {
+<i>18</i>&nbsp;        this.sync = new Semaphore.NonfairSync(var1);
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public Semaphore(int var1, boolean var2) {
+<i>22</i>&nbsp;        this.sync = (Semaphore.Sync)(var2?new Semaphore.FairSync(var1):new Semaphore.NonfairSync(var1));
+<i>23</i>&nbsp;    }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public void acquire() throws InterruptedException {
+<i>26</i>&nbsp;        this.sync.acquireSharedInterruptibly(1);
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public void acquireUninterruptibly() {
+<i>30</i>&nbsp;        this.sync.acquireShared(1);
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public boolean tryAcquire() {
+<i>34</i>&nbsp;        return this.sync.nonfairTryAcquireShared(1) &gt;= 0;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public boolean tryAcquire(long var1, TimeUnit var3) throws InterruptedException {
+<i>38</i>&nbsp;        return this.sync.tryAcquireSharedNanos(1, var3.toNanos(var1));
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public void release() {
+<i>42</i>&nbsp;        this.sync.releaseShared(1);
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public void acquire(int var1) throws InterruptedException {
+<i>46</i>&nbsp;        if(var1 &lt; 0) {
+<i>47</i>&nbsp;            throw new IllegalArgumentException();
+<i>48</i>&nbsp;        } else {
+<i>49</i>&nbsp;            this.sync.acquireSharedInterruptibly(var1);
+<i>50</i>&nbsp;        }
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public void acquireUninterruptibly(int var1) {
+<i>54</i>&nbsp;        if(var1 &lt; 0) {
+<i>55</i>&nbsp;            throw new IllegalArgumentException();
+<i>56</i>&nbsp;        } else {
+<i>57</i>&nbsp;            this.sync.acquireShared(var1);
+<i>58</i>&nbsp;        }
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public boolean tryAcquire(int var1) {
+<i>62</i>&nbsp;        if(var1 &lt; 0) {
+<i>63</i>&nbsp;            throw new IllegalArgumentException();
+<i>64</i>&nbsp;        } else {
+<i>65</i>&nbsp;            return this.sync.nonfairTryAcquireShared(var1) &gt;= 0;
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public boolean tryAcquire(int var1, long var2, TimeUnit var4) throws InterruptedException {
+<i>70</i>&nbsp;        if(var1 &lt; 0) {
+<i>71</i>&nbsp;            throw new IllegalArgumentException();
+<i>72</i>&nbsp;        } else {
+<i>73</i>&nbsp;            return this.sync.tryAcquireSharedNanos(var1, var4.toNanos(var2));
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public void release(int var1) {
+<i>78</i>&nbsp;        if(var1 &lt; 0) {
+<i>79</i>&nbsp;            throw new IllegalArgumentException();
+<i>80</i>&nbsp;        } else {
+<i>81</i>&nbsp;            this.sync.releaseShared(var1);
+<i>82</i>&nbsp;        }
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public int availablePermits() {
+<i>86</i>&nbsp;        return this.sync.getPermits();
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public int drainPermits() {
+<i>90</i>&nbsp;        return this.sync.drainPermits();
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    protected void reducePermits(int var1) {
+<i>94</i>&nbsp;        if(var1 &lt; 0) {
+<i>95</i>&nbsp;            throw new IllegalArgumentException();
+<i>96</i>&nbsp;        } else {
+<i>97</i>&nbsp;            this.sync.reducePermits(var1);
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public boolean isFair() {
+<i>102</i>&nbsp;        return this.sync instanceof Semaphore.FairSync;
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public final boolean hasQueuedThreads() {
+<i>106</i>&nbsp;        return this.sync.hasQueuedThreads();
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    public final int getQueueLength() {
+<i>110</i>&nbsp;        return this.sync.getQueueLength();
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    protected Collection&lt;Thread&gt; getQueuedThreads() {
+<i>114</i>&nbsp;        return this.sync.getQueuedThreads();
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public String toString() {
+<i>118</i>&nbsp;        return super.toString() + &quot;[Permits = &quot; + this.sync.getPermits() + &quot;]&quot;;
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    static final class FairSync extends Semaphore.Sync {
+<i>122</i>&nbsp;        private static final long serialVersionUID = 2014338818796000944L;
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;        FairSync(int var1) {
+<i>125</i>&nbsp;            super(var1);
+<i>126</i>&nbsp;        }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;        protected int tryAcquireShared(int var1) {
+<i>129</i>&nbsp;            int var2;
+<i>130</i>&nbsp;            int var3;
+<i>131</i>&nbsp;            do {
+<i>132</i>&nbsp;                if(this.hasQueuedPredecessors()) {
+<i>133</i>&nbsp;                    return -1;
+<i>134</i>&nbsp;                }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;                var2 = this.getState();
+<i>137</i>&nbsp;                var3 = var2 - var1;
+<i>138</i>&nbsp;            } while(var3 &gt;= 0 &amp;&amp; !this.compareAndSetState(var2, var3));
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;            return var3;
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    static final class NonfairSync extends Semaphore.Sync {
+<i>145</i>&nbsp;        private static final long serialVersionUID = -2694183684443567898L;
+<b class="nc"><i>146</i>&nbsp;</b>
+<b class="nc"><i>147</i>&nbsp;        NonfairSync(int var1) {</b>
+<i>148</i>&nbsp;            super(var1);
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;        protected int tryAcquireShared(int var1) {</b>
+<i>152</i>&nbsp;            return this.nonfairTryAcquireShared(var1);
+<i>153</i>&nbsp;        }
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<b class="nc"><i>156</i>&nbsp;    abstract static class Sync extends AbstractQueuedSynchronizer {</b>
+<b class="nc"><i>157</i>&nbsp;        private static final long serialVersionUID = 1192457210091910933L;</b>
+<b class="nc"><i>158</i>&nbsp;</b>
+<i>159</i>&nbsp;        Sync(int var1) {
+<b class="nc"><i>160</i>&nbsp;            this.setState(var1);</b>
+<b class="nc"><i>161</i>&nbsp;        }</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;        final int getPermits() {
+<i>164</i>&nbsp;            return this.getState();
+<i>165</i>&nbsp;        }
+<b class="nc"><i>166</i>&nbsp;</b>
+<b class="nc"><i>167</i>&nbsp;        final int nonfairTryAcquireShared(int var1) {</b>
+<b class="nc"><i>168</i>&nbsp;            int var2;</b>
+<b class="nc"><i>169</i>&nbsp;            int var3;</b>
+<i>170</i>&nbsp;            do {
+<i>171</i>&nbsp;                var2 = this.getState();
+<i>172</i>&nbsp;                var3 = var2 - var1;
+<i>173</i>&nbsp;            } while(var3 &gt;= 0 &amp;&amp; !this.compareAndSetState(var2, var3));
+<b class="nc"><i>174</i>&nbsp;</b>
+<b class="nc"><i>175</i>&nbsp;            return var3;</b>
+<b class="nc"><i>176</i>&nbsp;        }</b>
+<i>177</i>&nbsp;
+<b class="nc"><i>178</i>&nbsp;        protected final boolean tryReleaseShared(int var1) {</b>
+<i>179</i>&nbsp;            int var2;
+<i>180</i>&nbsp;            int var3;
+<i>181</i>&nbsp;            do {
+<i>182</i>&nbsp;                var2 = this.getState();
+<b class="nc"><i>183</i>&nbsp;                var3 = var2 + var1;</b>
+<b class="nc"><i>184</i>&nbsp;                if(var3 &lt; var2) {</b>
+<b class="nc"><i>185</i>&nbsp;                    throw new Error(&quot;Maximum permit count exceeded&quot;);</b>
+<b class="nc"><i>186</i>&nbsp;                }</b>
+<i>187</i>&nbsp;            } while(!this.compareAndSetState(var2, var3));
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;            return true;
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;        final void reducePermits(int var1) {
+<i>193</i>&nbsp;            int var2;
+<i>194</i>&nbsp;            int var3;
+<i>195</i>&nbsp;            do {
+<i>196</i>&nbsp;                var2 = this.getState();
+<b class="nc"><i>197</i>&nbsp;                var3 = var2 - var1;</b>
+<i>198</i>&nbsp;                if(var3 &gt; var2) {
+<i>199</i>&nbsp;                    throw new Error(&quot;Permit count underflow&quot;);
+<i>200</i>&nbsp;                }
+<b class="nc"><i>201</i>&nbsp;            } while(!this.compareAndSetState(var2, var3));</b>
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;        final int drainPermits() {
+<i>206</i>&nbsp;            int var1;
+<i>207</i>&nbsp;            do {
+<i>208</i>&nbsp;                var1 = this.getState();
+<i>209</i>&nbsp;            } while(var1 != 0 &amp;&amp; !this.compareAndSetState(var1, 0));
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;            return var1;
+<b class="nc"><i>212</i>&nbsp;        }</b>
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

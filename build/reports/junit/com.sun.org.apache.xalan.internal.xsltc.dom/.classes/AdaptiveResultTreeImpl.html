@@ -1,0 +1,759 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AdaptiveResultTreeImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xalan.internal.xsltc.dom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AdaptiveResultTreeImpl (com.sun.org.apache.xalan.internal.xsltc.dom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AdaptiveResultTreeImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 122)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 370)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xalan.internal.xsltc.dom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.DOM;
+<i>9</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.StripFilter;
+<i>10</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+<i>11</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.dom.SAXImpl;
+<i>12</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl;
+<i>13</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.dom.XSLTCDTMManager;
+<i>14</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary;
+<i>15</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+<i>16</i>&nbsp;import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+<i>17</i>&nbsp;import com.sun.org.apache.xml.internal.dtm.DTMAxisTraverser;
+<i>18</i>&nbsp;import com.sun.org.apache.xml.internal.dtm.DTMWSFilter;
+<i>19</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+<i>20</i>&nbsp;import com.sun.org.apache.xml.internal.utils.XMLString;
+<i>21</i>&nbsp;import javax.xml.transform.Source;
+<i>22</i>&nbsp;import javax.xml.transform.SourceLocator;
+<i>23</i>&nbsp;import org.w3c.dom.Node;
+<i>24</i>&nbsp;import org.w3c.dom.NodeList;
+<i>25</i>&nbsp;import org.xml.sax.Attributes;
+<i>26</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>27</i>&nbsp;import org.xml.sax.DTDHandler;
+<i>28</i>&nbsp;import org.xml.sax.EntityResolver;
+<i>29</i>&nbsp;import org.xml.sax.ErrorHandler;
+<i>30</i>&nbsp;import org.xml.sax.SAXException;
+<i>31</i>&nbsp;import org.xml.sax.ext.DeclHandler;
+<i>32</i>&nbsp;import org.xml.sax.ext.LexicalHandler;
+<i>33</i>&nbsp;import org.xml.sax.helpers.AttributesImpl;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;public class AdaptiveResultTreeImpl extends SimpleResultTreeImpl {
+<i>36</i>&nbsp;    private static int _documentURIIndex = 0;
+<i>37</i>&nbsp;    private static final String EMPTY_STRING = &quot;&quot;.intern();
+<i>38</i>&nbsp;    private SAXImpl _dom;
+<i>39</i>&nbsp;    private DTMWSFilter _wsfilter;
+<i>40</i>&nbsp;    private int _initSize;
+<i>41</i>&nbsp;    private boolean _buildIdIndex;
+<i>42</i>&nbsp;    private final AttributesImpl _attributes = new AttributesImpl();
+<i>43</i>&nbsp;    private String _openElementName;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public AdaptiveResultTreeImpl(XSLTCDTMManager dtmManager, int documentID, DTMWSFilter wsfilter, int initSize, boolean buildIdIndex) {
+<i>46</i>&nbsp;        super(dtmManager, documentID);
+<i>47</i>&nbsp;        this._wsfilter = wsfilter;
+<i>48</i>&nbsp;        this._initSize = initSize;
+<i>49</i>&nbsp;        this._buildIdIndex = buildIdIndex;
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public DOM getNestedDOM() {
+<i>53</i>&nbsp;        return this._dom;
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public int getDocument() {
+<i>57</i>&nbsp;        return this._dom != null?this._dom.getDocument():super.getDocument();
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public String getStringValue() {
+<i>61</i>&nbsp;        return this._dom != null?this._dom.getStringValue():super.getStringValue();
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public DTMAxisIterator getIterator() {
+<i>65</i>&nbsp;        return this._dom != null?this._dom.getIterator():super.getIterator();
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public DTMAxisIterator getChildren(int node) {
+<i>69</i>&nbsp;        return this._dom != null?this._dom.getChildren(node):super.getChildren(node);
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public DTMAxisIterator getTypedChildren(int type) {
+<i>73</i>&nbsp;        return this._dom != null?this._dom.getTypedChildren(type):super.getTypedChildren(type);
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<b class="nc"><i>76</i>&nbsp;    public DTMAxisIterator getAxisIterator(int axis) {</b>
+<i>77</i>&nbsp;        return this._dom != null?this._dom.getAxisIterator(axis):super.getAxisIterator(axis);
+<b class="nc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public DTMAxisIterator getTypedAxisIterator(int axis, int type) {
+<i>81</i>&nbsp;        return this._dom != null?this._dom.getTypedAxisIterator(axis, type):super.getTypedAxisIterator(axis, type);
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public DTMAxisIterator getNthDescendant(int node, int n, boolean includeself) {
+<i>85</i>&nbsp;        return this._dom != null?this._dom.getNthDescendant(node, n, includeself):super.getNthDescendant(node, n, includeself);
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public DTMAxisIterator getNamespaceAxisIterator(int axis, int ns) {
+<i>89</i>&nbsp;        return this._dom != null?this._dom.getNamespaceAxisIterator(axis, ns):super.getNamespaceAxisIterator(axis, ns);
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public DTMAxisIterator getNodeValueIterator(DTMAxisIterator iter, int returnType, String value, boolean op) {
+<i>93</i>&nbsp;        return this._dom != null?this._dom.getNodeValueIterator(iter, returnType, value, op):super.getNodeValueIterator(iter, returnType, value, op);
+<i>94</i>&nbsp;    }
+<b class="nc"><i>95</i>&nbsp;</b>
+<i>96</i>&nbsp;    public DTMAxisIterator orderNodes(DTMAxisIterator source, int node) {
+<i>97</i>&nbsp;        return this._dom != null?this._dom.orderNodes(source, node):super.orderNodes(source, node);
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public String getNodeName(int node) {
+<i>101</i>&nbsp;        return this._dom != null?this._dom.getNodeName(node):super.getNodeName(node);
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public String getNodeNameX(int node) {
+<i>105</i>&nbsp;        return this._dom != null?this._dom.getNodeNameX(node):super.getNodeNameX(node);
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<i>107</i>&nbsp;
+<b class="nc"><i>108</i>&nbsp;    public String getNamespaceName(int node) {</b>
+<b class="nc"><i>109</i>&nbsp;        return this._dom != null?this._dom.getNamespaceName(node):super.getNamespaceName(node);</b>
+<b class="nc"><i>110</i>&nbsp;    }</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public int getExpandedTypeID(int nodeHandle) {
+<i>113</i>&nbsp;        return this._dom != null?this._dom.getExpandedTypeID(nodeHandle):super.getExpandedTypeID(nodeHandle);
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;    public int getNamespaceType(int node) {</b>
+<i>117</i>&nbsp;        return this._dom != null?this._dom.getNamespaceType(node):super.getNamespaceType(node);
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public int getParent(int nodeHandle) {
+<i>121</i>&nbsp;        return this._dom != null?this._dom.getParent(nodeHandle):super.getParent(nodeHandle);
+<b class="nc"><i>122</i>&nbsp;    }</b>
+<b class="nc"><i>123</i>&nbsp;</b>
+<i>124</i>&nbsp;    public int getAttributeNode(int gType, int element) {
+<i>125</i>&nbsp;        return this._dom != null?this._dom.getAttributeNode(gType, element):super.getAttributeNode(gType, element);
+<b class="nc"><i>126</i>&nbsp;    }</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public String getStringValueX(int nodeHandle) {
+<i>129</i>&nbsp;        return this._dom != null?this._dom.getStringValueX(nodeHandle):super.getStringValueX(nodeHandle);
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public void copy(int node, SerializationHandler handler) throws TransletException {
+<b class="nc"><i>133</i>&nbsp;        if(this._dom != null) {</b>
+<b class="nc"><i>134</i>&nbsp;            this._dom.copy(node, handler);</b>
+<i>135</i>&nbsp;        } else {
+<i>136</i>&nbsp;            super.copy(node, handler);
+<b class="nc"><i>137</i>&nbsp;        }</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public void copy(DTMAxisIterator nodes, SerializationHandler handler) throws TransletException {
+<i>142</i>&nbsp;        if(this._dom != null) {
+<b class="nc"><i>143</i>&nbsp;            this._dom.copy(nodes, handler);</b>
+<b class="nc"><i>144</i>&nbsp;        } else {</b>
+<i>145</i>&nbsp;            super.copy(nodes, handler);
+<i>146</i>&nbsp;        }
+<b class="nc"><i>147</i>&nbsp;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    public String shallowCopy(int node, SerializationHandler handler) throws TransletException {
+<i>151</i>&nbsp;        return this._dom != null?this._dom.shallowCopy(node, handler):super.shallowCopy(node, handler);
+<i>152</i>&nbsp;    }
+<b class="nc"><i>153</i>&nbsp;</b>
+<b class="nc"><i>154</i>&nbsp;    public boolean lessThan(int node1, int node2) {</b>
+<i>155</i>&nbsp;        return this._dom != null?this._dom.lessThan(node1, node2):super.lessThan(node1, node2);
+<i>156</i>&nbsp;    }
+<b class="nc"><i>157</i>&nbsp;</b>
+<i>158</i>&nbsp;    public void characters(int node, SerializationHandler handler) throws TransletException {
+<i>159</i>&nbsp;        if(this._dom != null) {
+<i>160</i>&nbsp;            this._dom.characters(node, handler);
+<i>161</i>&nbsp;        } else {
+<i>162</i>&nbsp;            super.characters(node, handler);
+<b class="nc"><i>163</i>&nbsp;        }</b>
+<b class="nc"><i>164</i>&nbsp;</b>
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<b class="nc"><i>167</i>&nbsp;    public Node makeNode(int index) {</b>
+<i>168</i>&nbsp;        return this._dom != null?this._dom.makeNode(index):super.makeNode(index);
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    public Node makeNode(DTMAxisIterator iter) {
+<i>172</i>&nbsp;        return this._dom != null?this._dom.makeNode(iter):super.makeNode(iter);
+<b class="nc"><i>173</i>&nbsp;    }</b>
+<b class="nc"><i>174</i>&nbsp;</b>
+<i>175</i>&nbsp;    public NodeList makeNodeList(int index) {
+<i>176</i>&nbsp;        return this._dom != null?this._dom.makeNodeList(index):super.makeNodeList(index);
+<b class="nc"><i>177</i>&nbsp;    }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public NodeList makeNodeList(DTMAxisIterator iter) {
+<i>180</i>&nbsp;        return this._dom != null?this._dom.makeNodeList(iter):super.makeNodeList(iter);
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<b class="nc"><i>183</i>&nbsp;    public String getLanguage(int node) {</b>
+<b class="nc"><i>184</i>&nbsp;        return this._dom != null?this._dom.getLanguage(node):super.getLanguage(node);</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;    public int getSize() {</b>
+<i>188</i>&nbsp;        return this._dom != null?this._dom.getSize():super.getSize();
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    public String getDocumentURI(int node) {
+<i>192</i>&nbsp;        return this._dom != null?this._dom.getDocumentURI(node):&quot;adaptive_rtf&quot; + _documentURIIndex++;
+<b class="nc"><i>193</i>&nbsp;    }</b>
+<b class="nc"><i>194</i>&nbsp;</b>
+<i>195</i>&nbsp;    public void setFilter(StripFilter filter) {
+<i>196</i>&nbsp;        if(this._dom != null) {
+<b class="nc"><i>197</i>&nbsp;            this._dom.setFilter(filter);</b>
+<i>198</i>&nbsp;        } else {
+<i>199</i>&nbsp;            super.setFilter(filter);
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    }
+<b class="nc"><i>203</i>&nbsp;</b>
+<b class="nc"><i>204</i>&nbsp;    public void setupMapping(String[] names, String[] uris, int[] types, String[] namespaces) {</b>
+<i>205</i>&nbsp;        if(this._dom != null) {
+<i>206</i>&nbsp;            this._dom.setupMapping(names, uris, types, namespaces);
+<b class="nc"><i>207</i>&nbsp;        } else {</b>
+<i>208</i>&nbsp;            super.setupMapping(names, uris, types, namespaces);
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    public boolean isElement(int node) {
+<b class="nc"><i>214</i>&nbsp;        return this._dom != null?this._dom.isElement(node):super.isElement(node);</b>
+<b class="nc"><i>215</i>&nbsp;    }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    public boolean isAttribute(int node) {
+<b class="nc"><i>218</i>&nbsp;        return this._dom != null?this._dom.isAttribute(node):super.isAttribute(node);</b>
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    public String lookupNamespace(int node, String prefix) throws TransletException {
+<i>222</i>&nbsp;        return this._dom != null?this._dom.lookupNamespace(node, prefix):super.lookupNamespace(node, prefix);
+<i>223</i>&nbsp;    }
+<b class="nc"><i>224</i>&nbsp;</b>
+<b class="nc"><i>225</i>&nbsp;    public final int getNodeIdent(int nodehandle) {</b>
+<i>226</i>&nbsp;        return this._dom != null?this._dom.getNodeIdent(nodehandle):super.getNodeIdent(nodehandle);
+<i>227</i>&nbsp;    }
+<b class="nc"><i>228</i>&nbsp;</b>
+<i>229</i>&nbsp;    public final int getNodeHandle(int nodeId) {
+<i>230</i>&nbsp;        return this._dom != null?this._dom.getNodeHandle(nodeId):super.getNodeHandle(nodeId);
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    public DOM getResultTreeFrag(int initialSize, int rtfType) {
+<b class="nc"><i>234</i>&nbsp;        return this._dom != null?this._dom.getResultTreeFrag(initialSize, rtfType):super.getResultTreeFrag(initialSize, rtfType);</b>
+<b class="nc"><i>235</i>&nbsp;    }</b>
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    public SerializationHandler getOutputDomBuilder() {
+<b class="nc"><i>238</i>&nbsp;        return this;</b>
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    public int getNSType(int node) {
+<i>242</i>&nbsp;        return this._dom != null?this._dom.getNSType(node):super.getNSType(node);
+<i>243</i>&nbsp;    }
+<b class="nc"><i>244</i>&nbsp;</b>
+<b class="nc"><i>245</i>&nbsp;    public String getUnparsedEntityURI(String name) {</b>
+<i>246</i>&nbsp;        return this._dom != null?this._dom.getUnparsedEntityURI(name):super.getUnparsedEntityURI(name);
+<i>247</i>&nbsp;    }
+<b class="nc"><i>248</i>&nbsp;</b>
+<i>249</i>&nbsp;    public Hashtable getElementsWithIDs() {
+<i>250</i>&nbsp;        return this._dom != null?this._dom.getElementsWithIDs():super.getElementsWithIDs();
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    private void maybeEmitStartElement() throws SAXException {
+<b class="nc"><i>254</i>&nbsp;        if(this._openElementName != null) {</b>
+<b class="nc"><i>255</i>&nbsp;            int index;</b>
+<i>256</i>&nbsp;            if((index = this._openElementName.indexOf(&quot;:&quot;)) &lt; 0) {
+<i>257</i>&nbsp;                this._dom.startElement((String)null, this._openElementName, this._openElementName, this._attributes);
+<b class="nc"><i>258</i>&nbsp;            } else {</b>
+<i>259</i>&nbsp;                String uri = this._dom.getNamespaceURI(this._openElementName.substring(0, index));
+<i>260</i>&nbsp;                this._dom.startElement(uri, this._openElementName.substring(index + 1), this._openElementName, this._attributes);
+<i>261</i>&nbsp;            }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;            this._openElementName = null;
+<i>264</i>&nbsp;        }
+<b class="nc"><i>265</i>&nbsp;</b>
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    private void prepareNewDOM() throws SAXException {
+<b class="nc"><i>269</i>&nbsp;        this._dom = (SAXImpl)this._dtmManager.getDTM((Source)null, true, this._wsfilter, true, false, false, this._initSize, this._buildIdIndex);</b>
+<i>270</i>&nbsp;        this._dom.startDocument();
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;        for(int i = 0; i &lt; this._size; ++i) {
+<i>273</i>&nbsp;            String str = this._textArray[i];
+<i>274</i>&nbsp;            this._dom.characters(str.toCharArray(), 0, str.length());
+<b class="nc"><i>275</i>&nbsp;        }</b>
+<b class="nc"><i>276</i>&nbsp;</b>
+<i>277</i>&nbsp;        this._size = 0;
+<i>278</i>&nbsp;    }
+<b class="nc"><i>279</i>&nbsp;</b>
+<i>280</i>&nbsp;    public void startDocument() throws SAXException {
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    public void endDocument() throws SAXException {
+<i>284</i>&nbsp;        if(this._dom != null) {
+<b class="nc"><i>285</i>&nbsp;            this._dom.endDocument();</b>
+<b class="nc"><i>286</i>&nbsp;        } else {</b>
+<i>287</i>&nbsp;            super.endDocument();
+<i>288</i>&nbsp;        }
+<b class="nc"><i>289</i>&nbsp;</b>
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public void characters(String str) throws SAXException {
+<i>293</i>&nbsp;        if(this._dom != null) {
+<i>294</i>&nbsp;            this.characters(str.toCharArray(), 0, str.length());
+<b class="nc"><i>295</i>&nbsp;        } else {</b>
+<b class="nc"><i>296</i>&nbsp;            super.characters(str);</b>
+<i>297</i>&nbsp;        }
+<i>298</i>&nbsp;
+<b class="nc"><i>299</i>&nbsp;    }</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    public void characters(char[] ch, int offset, int length) throws SAXException {
+<i>302</i>&nbsp;        if(this._dom != null) {
+<i>303</i>&nbsp;            this.maybeEmitStartElement();
+<i>304</i>&nbsp;            this._dom.characters(ch, offset, length);
+<b class="nc"><i>305</i>&nbsp;        } else {</b>
+<b class="nc"><i>306</i>&nbsp;            super.characters(ch, offset, length);</b>
+<i>307</i>&nbsp;        }
+<i>308</i>&nbsp;
+<b class="nc"><i>309</i>&nbsp;    }</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    public boolean setEscaping(boolean escape) throws SAXException {
+<i>312</i>&nbsp;        return this._dom != null?this._dom.setEscaping(escape):super.setEscaping(escape);
+<i>313</i>&nbsp;    }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    public void startElement(String elementName) throws SAXException {
+<b class="nc"><i>316</i>&nbsp;        if(this._dom == null) {</b>
+<b class="nc"><i>317</i>&nbsp;            this.prepareNewDOM();</b>
+<i>318</i>&nbsp;        }
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;        this.maybeEmitStartElement();</b>
+<i>321</i>&nbsp;        this._openElementName = elementName;
+<i>322</i>&nbsp;        this._attributes.clear();
+<i>323</i>&nbsp;    }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    public void startElement(String uri, String localName, String qName) throws SAXException {
+<i>326</i>&nbsp;        this.startElement(qName);
+<b class="nc"><i>327</i>&nbsp;    }</b>
+<b class="nc"><i>328</i>&nbsp;</b>
+<i>329</i>&nbsp;    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+<i>330</i>&nbsp;        this.startElement(qName);
+<b class="nc"><i>331</i>&nbsp;    }</b>
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    public void endElement(String elementName) throws SAXException {
+<i>334</i>&nbsp;        this.maybeEmitStartElement();
+<i>335</i>&nbsp;        this._dom.endElement((String)null, (String)null, elementName);
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<b class="nc"><i>338</i>&nbsp;    public void endElement(String uri, String localName, String qName) throws SAXException {</b>
+<b class="nc"><i>339</i>&nbsp;        this.endElement(qName);</b>
+<i>340</i>&nbsp;    }
+<i>341</i>&nbsp;
+<b class="nc"><i>342</i>&nbsp;    public void addAttribute(String qName, String value) {</b>
+<i>343</i>&nbsp;        int colonpos = qName.indexOf(&quot;:&quot;);
+<i>344</i>&nbsp;        String uri = EMPTY_STRING;
+<i>345</i>&nbsp;        String localName = qName;
+<i>346</i>&nbsp;        if(colonpos &gt; 0) {
+<i>347</i>&nbsp;            String prefix = qName.substring(0, colonpos);
+<b class="nc"><i>348</i>&nbsp;            localName = qName.substring(colonpos + 1);</b>
+<b class="nc"><i>349</i>&nbsp;            uri = this._dom.getNamespaceURI(prefix);</b>
+<i>350</i>&nbsp;        }
+<i>351</i>&nbsp;
+<b class="nc"><i>352</i>&nbsp;        this.addAttribute(uri, localName, qName, &quot;CDATA&quot;, value);</b>
+<i>353</i>&nbsp;    }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    public void addUniqueAttribute(String qName, String value, int flags) throws SAXException {
+<i>356</i>&nbsp;        this.addAttribute(qName, value);
+<i>357</i>&nbsp;    }
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;    public void addAttribute(String uri, String localName, String qname, String type, String value) {
+<i>360</i>&nbsp;        if(this._openElementName != null) {
+<i>361</i>&nbsp;            this._attributes.addAttribute(uri, localName, qname, type, value);
+<i>362</i>&nbsp;        } else {
+<i>363</i>&nbsp;            BasisLibrary.runTimeError(&quot;STRAY_ATTRIBUTE_ERR&quot;, qname);
+<i>364</i>&nbsp;        }
+<b class="nc"><i>365</i>&nbsp;</b>
+<b class="nc"><i>366</i>&nbsp;    }</b>
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    public void namespaceAfterStartElement(String prefix, String uri) throws SAXException {
+<b class="nc"><i>369</i>&nbsp;        if(this._dom == null) {</b>
+<i>370</i>&nbsp;            this.prepareNewDOM();
+<i>371</i>&nbsp;        }
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;        this._dom.startPrefixMapping(prefix, uri);
+<i>374</i>&nbsp;    }
+<b class="nc"><i>375</i>&nbsp;</b>
+<b class="nc"><i>376</i>&nbsp;    public void comment(String comment) throws SAXException {</b>
+<i>377</i>&nbsp;        if(this._dom == null) {
+<i>378</i>&nbsp;            this.prepareNewDOM();
+<b class="nc"><i>379</i>&nbsp;        }</b>
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;        this.maybeEmitStartElement();
+<i>382</i>&nbsp;        char[] chars = comment.toCharArray();
+<i>383</i>&nbsp;        this._dom.comment(chars, 0, chars.length);
+<i>384</i>&nbsp;    }
+<b class="nc"><i>385</i>&nbsp;</b>
+<b class="nc"><i>386</i>&nbsp;    public void comment(char[] chars, int offset, int length) throws SAXException {</b>
+<i>387</i>&nbsp;        if(this._dom == null) {
+<i>388</i>&nbsp;            this.prepareNewDOM();
+<b class="nc"><i>389</i>&nbsp;        }</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;        this.maybeEmitStartElement();
+<i>392</i>&nbsp;        this._dom.comment(chars, offset, length);
+<i>393</i>&nbsp;    }
+<i>394</i>&nbsp;
+<b class="nc"><i>395</i>&nbsp;    public void processingInstruction(String target, String data) throws SAXException {</b>
+<b class="nc"><i>396</i>&nbsp;        if(this._dom == null) {</b>
+<i>397</i>&nbsp;            this.prepareNewDOM();
+<i>398</i>&nbsp;        }
+<b class="nc"><i>399</i>&nbsp;</b>
+<i>400</i>&nbsp;        this.maybeEmitStartElement();
+<i>401</i>&nbsp;        this._dom.processingInstruction(target, data);
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    public void setFeature(String featureId, boolean state) {
+<b class="nc"><i>405</i>&nbsp;        if(this._dom != null) {</b>
+<b class="nc"><i>406</i>&nbsp;            this._dom.setFeature(featureId, state);</b>
+<i>407</i>&nbsp;        }
+<i>408</i>&nbsp;
+<b class="nc"><i>409</i>&nbsp;    }</b>
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    public void setProperty(String property, Object value) {
+<i>412</i>&nbsp;        if(this._dom != null) {
+<i>413</i>&nbsp;            this._dom.setProperty(property, value);
+<i>414</i>&nbsp;        }
+<b class="nc"><i>415</i>&nbsp;</b>
+<b class="nc"><i>416</i>&nbsp;    }</b>
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    public DTMAxisTraverser getAxisTraverser(int axis) {
+<b class="nc"><i>419</i>&nbsp;        return this._dom != null?this._dom.getAxisTraverser(axis):super.getAxisTraverser(axis);</b>
+<i>420</i>&nbsp;    }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;    public boolean hasChildNodes(int nodeHandle) {
+<i>423</i>&nbsp;        return this._dom != null?this._dom.hasChildNodes(nodeHandle):super.hasChildNodes(nodeHandle);
+<i>424</i>&nbsp;    }
+<b class="nc"><i>425</i>&nbsp;</b>
+<b class="nc"><i>426</i>&nbsp;    public int getFirstChild(int nodeHandle) {</b>
+<i>427</i>&nbsp;        return this._dom != null?this._dom.getFirstChild(nodeHandle):super.getFirstChild(nodeHandle);
+<i>428</i>&nbsp;    }
+<b class="nc"><i>429</i>&nbsp;</b>
+<i>430</i>&nbsp;    public int getLastChild(int nodeHandle) {
+<i>431</i>&nbsp;        return this._dom != null?this._dom.getLastChild(nodeHandle):super.getLastChild(nodeHandle);
+<i>432</i>&nbsp;    }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    public int getAttributeNode(int elementHandle, String namespaceURI, String name) {
+<b class="nc"><i>435</i>&nbsp;        return this._dom != null?this._dom.getAttributeNode(elementHandle, namespaceURI, name):super.getAttributeNode(elementHandle, namespaceURI, name);</b>
+<b class="nc"><i>436</i>&nbsp;    }</b>
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;    public int getFirstAttribute(int nodeHandle) {
+<b class="nc"><i>439</i>&nbsp;        return this._dom != null?this._dom.getFirstAttribute(nodeHandle):super.getFirstAttribute(nodeHandle);</b>
+<i>440</i>&nbsp;    }
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;    public int getFirstNamespaceNode(int nodeHandle, boolean inScope) {
+<i>443</i>&nbsp;        return this._dom != null?this._dom.getFirstNamespaceNode(nodeHandle, inScope):super.getFirstNamespaceNode(nodeHandle, inScope);
+<i>444</i>&nbsp;    }
+<b class="nc"><i>445</i>&nbsp;</b>
+<b class="nc"><i>446</i>&nbsp;    public int getNextSibling(int nodeHandle) {</b>
+<i>447</i>&nbsp;        return this._dom != null?this._dom.getNextSibling(nodeHandle):super.getNextSibling(nodeHandle);
+<i>448</i>&nbsp;    }
+<b class="nc"><i>449</i>&nbsp;</b>
+<i>450</i>&nbsp;    public int getPreviousSibling(int nodeHandle) {
+<i>451</i>&nbsp;        return this._dom != null?this._dom.getPreviousSibling(nodeHandle):super.getPreviousSibling(nodeHandle);
+<i>452</i>&nbsp;    }
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;    public int getNextAttribute(int nodeHandle) {
+<b class="nc"><i>455</i>&nbsp;        return this._dom != null?this._dom.getNextAttribute(nodeHandle):super.getNextAttribute(nodeHandle);</b>
+<b class="nc"><i>456</i>&nbsp;    }</b>
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;    public int getNextNamespaceNode(int baseHandle, int namespaceHandle, boolean inScope) {
+<b class="nc"><i>459</i>&nbsp;        return this._dom != null?this._dom.getNextNamespaceNode(baseHandle, namespaceHandle, inScope):super.getNextNamespaceNode(baseHandle, namespaceHandle, inScope);</b>
+<i>460</i>&nbsp;    }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;    public int getOwnerDocument(int nodeHandle) {
+<i>463</i>&nbsp;        return this._dom != null?this._dom.getOwnerDocument(nodeHandle):super.getOwnerDocument(nodeHandle);
+<i>464</i>&nbsp;    }
+<b class="nc"><i>465</i>&nbsp;</b>
+<b class="nc"><i>466</i>&nbsp;    public int getDocumentRoot(int nodeHandle) {</b>
+<i>467</i>&nbsp;        return this._dom != null?this._dom.getDocumentRoot(nodeHandle):super.getDocumentRoot(nodeHandle);
+<i>468</i>&nbsp;    }
+<b class="nc"><i>469</i>&nbsp;</b>
+<i>470</i>&nbsp;    public XMLString getStringValue(int nodeHandle) {
+<i>471</i>&nbsp;        return this._dom != null?this._dom.getStringValue(nodeHandle):super.getStringValue(nodeHandle);
+<i>472</i>&nbsp;    }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;    public int getStringValueChunkCount(int nodeHandle) {
+<b class="nc"><i>475</i>&nbsp;        return this._dom != null?this._dom.getStringValueChunkCount(nodeHandle):super.getStringValueChunkCount(nodeHandle);</b>
+<b class="nc"><i>476</i>&nbsp;    }</b>
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;    public char[] getStringValueChunk(int nodeHandle, int chunkIndex, int[] startAndLen) {
+<b class="nc"><i>479</i>&nbsp;        return this._dom != null?this._dom.getStringValueChunk(nodeHandle, chunkIndex, startAndLen):super.getStringValueChunk(nodeHandle, chunkIndex, startAndLen);</b>
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    public int getExpandedTypeID(String namespace, String localName, int type) {
+<i>483</i>&nbsp;        return this._dom != null?this._dom.getExpandedTypeID(namespace, localName, type):super.getExpandedTypeID(namespace, localName, type);
+<i>484</i>&nbsp;    }
+<i>485</i>&nbsp;
+<b class="nc"><i>486</i>&nbsp;    public String getLocalNameFromExpandedNameID(int ExpandedNameID) {</b>
+<b class="nc"><i>487</i>&nbsp;        return this._dom != null?this._dom.getLocalNameFromExpandedNameID(ExpandedNameID):super.getLocalNameFromExpandedNameID(ExpandedNameID);</b>
+<i>488</i>&nbsp;    }
+<i>489</i>&nbsp;
+<b class="nc"><i>490</i>&nbsp;    public String getNamespaceFromExpandedNameID(int ExpandedNameID) {</b>
+<i>491</i>&nbsp;        return this._dom != null?this._dom.getNamespaceFromExpandedNameID(ExpandedNameID):super.getNamespaceFromExpandedNameID(ExpandedNameID);
+<i>492</i>&nbsp;    }
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;    public String getLocalName(int nodeHandle) {
+<i>495</i>&nbsp;        return this._dom != null?this._dom.getLocalName(nodeHandle):super.getLocalName(nodeHandle);
+<i>496</i>&nbsp;    }
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;    public String getPrefix(int nodeHandle) {
+<b class="nc"><i>499</i>&nbsp;        return this._dom != null?this._dom.getPrefix(nodeHandle):super.getPrefix(nodeHandle);</b>
+<b class="nc"><i>500</i>&nbsp;    }</b>
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    public String getNamespaceURI(int nodeHandle) {
+<b class="nc"><i>503</i>&nbsp;        return this._dom != null?this._dom.getNamespaceURI(nodeHandle):super.getNamespaceURI(nodeHandle);</b>
+<i>504</i>&nbsp;    }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;    public String getNodeValue(int nodeHandle) {
+<i>507</i>&nbsp;        return this._dom != null?this._dom.getNodeValue(nodeHandle):super.getNodeValue(nodeHandle);
+<i>508</i>&nbsp;    }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;    public short getNodeType(int nodeHandle) {
+<i>511</i>&nbsp;        return this._dom != null?this._dom.getNodeType(nodeHandle):super.getNodeType(nodeHandle);
+<b class="nc"><i>512</i>&nbsp;    }</b>
+<b class="nc"><i>513</i>&nbsp;</b>
+<i>514</i>&nbsp;    public short getLevel(int nodeHandle) {
+<i>515</i>&nbsp;        return this._dom != null?this._dom.getLevel(nodeHandle):super.getLevel(nodeHandle);
+<b class="nc"><i>516</i>&nbsp;    }</b>
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;    public boolean isSupported(String feature, String version) {
+<i>519</i>&nbsp;        return this._dom != null?this._dom.isSupported(feature, version):super.isSupported(feature, version);
+<i>520</i>&nbsp;    }
+<i>521</i>&nbsp;
+<b class="nc"><i>522</i>&nbsp;    public String getDocumentBaseURI() {</b>
+<b class="nc"><i>523</i>&nbsp;        return this._dom != null?this._dom.getDocumentBaseURI():super.getDocumentBaseURI();</b>
+<i>524</i>&nbsp;    }
+<i>525</i>&nbsp;
+<b class="nc"><i>526</i>&nbsp;    public void setDocumentBaseURI(String baseURI) {</b>
+<i>527</i>&nbsp;        if(this._dom != null) {
+<i>528</i>&nbsp;            this._dom.setDocumentBaseURI(baseURI);
+<i>529</i>&nbsp;        } else {
+<i>530</i>&nbsp;            super.setDocumentBaseURI(baseURI);
+<i>531</i>&nbsp;        }
+<b class="nc"><i>532</i>&nbsp;</b>
+<i>533</i>&nbsp;    }
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;    public String getDocumentSystemIdentifier(int nodeHandle) {
+<i>536</i>&nbsp;        return this._dom != null?this._dom.getDocumentSystemIdentifier(nodeHandle):super.getDocumentSystemIdentifier(nodeHandle);
+<b class="nc"><i>537</i>&nbsp;    }</b>
+<b class="nc"><i>538</i>&nbsp;</b>
+<i>539</i>&nbsp;    public String getDocumentEncoding(int nodeHandle) {
+<i>540</i>&nbsp;        return this._dom != null?this._dom.getDocumentEncoding(nodeHandle):super.getDocumentEncoding(nodeHandle);
+<b class="nc"><i>541</i>&nbsp;    }</b>
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;    public String getDocumentStandalone(int nodeHandle) {
+<i>544</i>&nbsp;        return this._dom != null?this._dom.getDocumentStandalone(nodeHandle):super.getDocumentStandalone(nodeHandle);
+<i>545</i>&nbsp;    }
+<i>546</i>&nbsp;
+<b class="nc"><i>547</i>&nbsp;    public String getDocumentVersion(int documentHandle) {</b>
+<b class="nc"><i>548</i>&nbsp;        return this._dom != null?this._dom.getDocumentVersion(documentHandle):super.getDocumentVersion(documentHandle);</b>
+<i>549</i>&nbsp;    }
+<i>550</i>&nbsp;
+<b class="nc"><i>551</i>&nbsp;    public boolean getDocumentAllDeclarationsProcessed() {</b>
+<i>552</i>&nbsp;        return this._dom != null?this._dom.getDocumentAllDeclarationsProcessed():super.getDocumentAllDeclarationsProcessed();
+<i>553</i>&nbsp;    }
+<i>554</i>&nbsp;
+<i>555</i>&nbsp;    public String getDocumentTypeDeclarationSystemIdentifier() {
+<i>556</i>&nbsp;        return this._dom != null?this._dom.getDocumentTypeDeclarationSystemIdentifier():super.getDocumentTypeDeclarationSystemIdentifier();
+<b class="nc"><i>557</i>&nbsp;    }</b>
+<b class="nc"><i>558</i>&nbsp;</b>
+<i>559</i>&nbsp;    public String getDocumentTypeDeclarationPublicIdentifier() {
+<i>560</i>&nbsp;        return this._dom != null?this._dom.getDocumentTypeDeclarationPublicIdentifier():super.getDocumentTypeDeclarationPublicIdentifier();
+<b class="nc"><i>561</i>&nbsp;    }</b>
+<i>562</i>&nbsp;
+<i>563</i>&nbsp;    public int getElementById(String elementId) {
+<i>564</i>&nbsp;        return this._dom != null?this._dom.getElementById(elementId):super.getElementById(elementId);
+<i>565</i>&nbsp;    }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;    public boolean supportsPreStripping() {
+<i>568</i>&nbsp;        return this._dom != null?this._dom.supportsPreStripping():super.supportsPreStripping();
+<i>569</i>&nbsp;    }
+<i>570</i>&nbsp;
+<b class="nc"><i>571</i>&nbsp;    public boolean isNodeAfter(int firstNodeHandle, int secondNodeHandle) {</b>
+<i>572</i>&nbsp;        return this._dom != null?this._dom.isNodeAfter(firstNodeHandle, secondNodeHandle):super.isNodeAfter(firstNodeHandle, secondNodeHandle);
+<i>573</i>&nbsp;    }
+<b class="nc"><i>574</i>&nbsp;</b>
+<b class="nc"><i>575</i>&nbsp;    public boolean isCharacterElementContentWhitespace(int nodeHandle) {</b>
+<i>576</i>&nbsp;        return this._dom != null?this._dom.isCharacterElementContentWhitespace(nodeHandle):super.isCharacterElementContentWhitespace(nodeHandle);
+<b class="nc"><i>577</i>&nbsp;    }</b>
+<b class="nc"><i>578</i>&nbsp;</b>
+<i>579</i>&nbsp;    public boolean isDocumentAllDeclarationsProcessed(int documentHandle) {
+<i>580</i>&nbsp;        return this._dom != null?this._dom.isDocumentAllDeclarationsProcessed(documentHandle):super.isDocumentAllDeclarationsProcessed(documentHandle);
+<i>581</i>&nbsp;    }
+<b class="nc"><i>582</i>&nbsp;</b>
+<i>583</i>&nbsp;    public boolean isAttributeSpecified(int attributeHandle) {
+<i>584</i>&nbsp;        return this._dom != null?this._dom.isAttributeSpecified(attributeHandle):super.isAttributeSpecified(attributeHandle);
+<i>585</i>&nbsp;    }
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;    public void dispatchCharactersEvents(int nodeHandle, ContentHandler ch, boolean normalize) throws SAXException {
+<i>588</i>&nbsp;        if(this._dom != null) {
+<i>589</i>&nbsp;            this._dom.dispatchCharactersEvents(nodeHandle, ch, normalize);
+<b class="nc"><i>590</i>&nbsp;        } else {</b>
+<i>591</i>&nbsp;            super.dispatchCharactersEvents(nodeHandle, ch, normalize);
+<i>592</i>&nbsp;        }
+<b class="nc"><i>593</i>&nbsp;</b>
+<i>594</i>&nbsp;    }
+<b class="nc"><i>595</i>&nbsp;</b>
+<b class="nc"><i>596</i>&nbsp;    public void dispatchToEvents(int nodeHandle, ContentHandler ch) throws SAXException {</b>
+<b class="nc"><i>597</i>&nbsp;        if(this._dom != null) {</b>
+<i>598</i>&nbsp;            this._dom.dispatchToEvents(nodeHandle, ch);
+<b class="nc"><i>599</i>&nbsp;        } else {</b>
+<i>600</i>&nbsp;            super.dispatchToEvents(nodeHandle, ch);
+<i>601</i>&nbsp;        }
+<i>602</i>&nbsp;
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    public Node getNode(int nodeHandle) {
+<i>606</i>&nbsp;        return this._dom != null?this._dom.getNode(nodeHandle):super.getNode(nodeHandle);
+<i>607</i>&nbsp;    }
+<b class="nc"><i>608</i>&nbsp;</b>
+<b class="nc"><i>609</i>&nbsp;    public boolean needsTwoThreads() {</b>
+<i>610</i>&nbsp;        return this._dom != null?this._dom.needsTwoThreads():super.needsTwoThreads();
+<i>611</i>&nbsp;    }
+<b class="nc"><i>612</i>&nbsp;</b>
+<i>613</i>&nbsp;    public ContentHandler getContentHandler() {
+<i>614</i>&nbsp;        return this._dom != null?this._dom.getContentHandler():super.getContentHandler();
+<i>615</i>&nbsp;    }
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;    public LexicalHandler getLexicalHandler() {
+<b class="nc"><i>618</i>&nbsp;        return this._dom != null?this._dom.getLexicalHandler():super.getLexicalHandler();</b>
+<b class="nc"><i>619</i>&nbsp;    }</b>
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;    public EntityResolver getEntityResolver() {
+<b class="nc"><i>622</i>&nbsp;        return this._dom != null?this._dom.getEntityResolver():super.getEntityResolver();</b>
+<i>623</i>&nbsp;    }
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    public DTDHandler getDTDHandler() {
+<i>626</i>&nbsp;        return this._dom != null?this._dom.getDTDHandler():super.getDTDHandler();
+<i>627</i>&nbsp;    }
+<i>628</i>&nbsp;
+<b class="nc"><i>629</i>&nbsp;    public ErrorHandler getErrorHandler() {</b>
+<b class="nc"><i>630</i>&nbsp;        return this._dom != null?this._dom.getErrorHandler():super.getErrorHandler();</b>
+<b class="nc"><i>631</i>&nbsp;    }</b>
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;    public DeclHandler getDeclHandler() {
+<b class="nc"><i>634</i>&nbsp;        return this._dom != null?this._dom.getDeclHandler():super.getDeclHandler();</b>
+<i>635</i>&nbsp;    }
+<i>636</i>&nbsp;
+<i>637</i>&nbsp;    public void appendChild(int newChild, boolean clone, boolean cloneDepth) {
+<i>638</i>&nbsp;        if(this._dom != null) {
+<i>639</i>&nbsp;            this._dom.appendChild(newChild, clone, cloneDepth);
+<b class="nc"><i>640</i>&nbsp;        } else {</b>
+<b class="nc"><i>641</i>&nbsp;            super.appendChild(newChild, clone, cloneDepth);</b>
+<i>642</i>&nbsp;        }
+<i>643</i>&nbsp;
+<b class="nc"><i>644</i>&nbsp;    }</b>
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;    public void appendTextChild(String str) {
+<i>647</i>&nbsp;        if(this._dom != null) {
+<i>648</i>&nbsp;            this._dom.appendTextChild(str);
+<i>649</i>&nbsp;        } else {
+<b class="nc"><i>650</i>&nbsp;            super.appendTextChild(str);</b>
+<b class="nc"><i>651</i>&nbsp;        }</b>
+<i>652</i>&nbsp;
+<i>653</i>&nbsp;    }
+<b class="nc"><i>654</i>&nbsp;</b>
+<b class="nc"><i>655</i>&nbsp;    public SourceLocator getSourceLocatorFor(int node) {</b>
+<b class="nc"><i>656</i>&nbsp;        return this._dom != null?this._dom.getSourceLocatorFor(node):super.getSourceLocatorFor(node);</b>
+<i>657</i>&nbsp;    }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;    public void documentRegistration() {
+<i>660</i>&nbsp;        if(this._dom != null) {
+<i>661</i>&nbsp;            this._dom.documentRegistration();
+<b class="nc"><i>662</i>&nbsp;        } else {</b>
+<i>663</i>&nbsp;            super.documentRegistration();
+<i>664</i>&nbsp;        }
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;    }
+<i>667</i>&nbsp;
+<b class="nc"><i>668</i>&nbsp;    public void documentRelease() {</b>
+<i>669</i>&nbsp;        if(this._dom != null) {
+<i>670</i>&nbsp;            this._dom.documentRelease();
+<i>671</i>&nbsp;        } else {
+<i>672</i>&nbsp;            super.documentRelease();
+<b class="nc"><i>673</i>&nbsp;        }</b>
+<b class="nc"><i>674</i>&nbsp;</b>
+<i>675</i>&nbsp;    }
+<i>676</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

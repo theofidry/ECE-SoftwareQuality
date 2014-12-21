@@ -1,0 +1,381 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Main</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.tools.native2ascii</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Main (sun.tools.native2ascii)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Main</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 145)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.tools.native2ascii;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.BufferedReader;
+<i>9</i>&nbsp;import java.io.BufferedWriter;
+<i>10</i>&nbsp;import java.io.File;
+<i>11</i>&nbsp;import java.io.FileInputStream;
+<i>12</i>&nbsp;import java.io.FileOutputStream;
+<i>13</i>&nbsp;import java.io.FileReader;
+<i>14</i>&nbsp;import java.io.FileWriter;
+<i>15</i>&nbsp;import java.io.IOException;
+<i>16</i>&nbsp;import java.io.InputStream;
+<i>17</i>&nbsp;import java.io.InputStreamReader;
+<i>18</i>&nbsp;import java.io.OutputStream;
+<i>19</i>&nbsp;import java.io.OutputStreamWriter;
+<i>20</i>&nbsp;import java.io.Reader;
+<i>21</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>22</i>&nbsp;import java.io.Writer;
+<i>23</i>&nbsp;import java.nio.charset.Charset;
+<i>24</i>&nbsp;import java.nio.charset.CharsetEncoder;
+<i>25</i>&nbsp;import java.nio.charset.IllegalCharsetNameException;
+<i>26</i>&nbsp;import java.nio.charset.UnsupportedCharsetException;
+<i>27</i>&nbsp;import java.text.MessageFormat;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.MissingResourceException;
+<i>30</i>&nbsp;import java.util.ResourceBundle;
+<i>31</i>&nbsp;import sun.tools.native2ascii.A2NFilter;
+<i>32</i>&nbsp;import sun.tools.native2ascii.N2AFilter;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;public class Main {
+<i>35</i>&nbsp;    String inputFileName = null;
+<i>36</i>&nbsp;    String outputFileName = null;
+<i>37</i>&nbsp;    File tempFile = null;
+<i>38</i>&nbsp;    boolean reverse = false;
+<i>39</i>&nbsp;    static String encodingString = null;
+<i>40</i>&nbsp;    static String defaultEncoding = null;
+<i>41</i>&nbsp;    static CharsetEncoder encoder = null;
+<i>42</i>&nbsp;    private static ResourceBundle rsrc;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public Main() {
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public synchronized boolean convert(String[] var1) {
+<i>48</i>&nbsp;        ArrayList var2 = new ArrayList(2);
+<i>49</i>&nbsp;        File var3 = null;
+<i>50</i>&nbsp;        boolean var4 = false;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;        for(int var5 = 0; var5 &lt; var1.length; ++var5) {
+<i>53</i>&nbsp;            if(var1[var5].equals(&quot;-encoding&quot;)) {
+<i>54</i>&nbsp;                if(var5 + 1 &gt;= var1.length) {
+<i>55</i>&nbsp;                    this.error(this.getMsg(&quot;err.bad.arg&quot;));
+<i>56</i>&nbsp;                    this.usage();
+<i>57</i>&nbsp;                    return false;
+<i>58</i>&nbsp;                }
+<i>59</i>&nbsp;
+<b class="nc"><i>60</i>&nbsp;                ++var5;</b>
+<i>61</i>&nbsp;                encodingString = var1[var5];
+<b class="nc"><i>62</i>&nbsp;            } else if(var1[var5].equals(&quot;-reverse&quot;)) {</b>
+<b class="nc"><i>63</i>&nbsp;                this.reverse = true;</b>
+<b class="nc"><i>64</i>&nbsp;            } else {</b>
+<b class="nc"><i>65</i>&nbsp;                if(var2.size() &gt; 1) {</b>
+<b class="nc"><i>66</i>&nbsp;                    this.usage();</b>
+<b class="nc"><i>67</i>&nbsp;                    return false;</b>
+<b class="nc"><i>68</i>&nbsp;                }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;                var2.add(var1[var5]);
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;        if(encodingString == null) {</b>
+<b class="nc"><i>75</i>&nbsp;            defaultEncoding = Charset.defaultCharset().name();</b>
+<b class="nc"><i>76</i>&nbsp;        }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        char[] var10 = System.getProperty(&quot;line.separator&quot;).toCharArray();
+<b class="nc"><i>79</i>&nbsp;</b>
+<b class="nc"><i>80</i>&nbsp;        try {</b>
+<b class="nc"><i>81</i>&nbsp;            initializeConverter();</b>
+<b class="nc"><i>82</i>&nbsp;            if(var2.size() == 1) {</b>
+<i>83</i>&nbsp;                this.inputFileName = (String)var2.get(0);
+<b class="nc"><i>84</i>&nbsp;            }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<b class="nc"><i>86</i>&nbsp;            if(var2.size() == 2) {</b>
+<i>87</i>&nbsp;                this.inputFileName = (String)var2.get(0);
+<b class="nc"><i>88</i>&nbsp;                this.outputFileName = (String)var2.get(1);</b>
+<b class="nc"><i>89</i>&nbsp;                var4 = true;</b>
+<i>90</i>&nbsp;            }
+<b class="nc"><i>91</i>&nbsp;</b>
+<b class="nc"><i>92</i>&nbsp;            if(var4) {</b>
+<b class="nc"><i>93</i>&nbsp;                var3 = new File(this.outputFileName);</b>
+<i>94</i>&nbsp;                if(var3.exists() &amp;&amp; !var3.canWrite()) {
+<b class="nc"><i>95</i>&nbsp;                    throw new Exception(this.formatMsg(&quot;err.cannot.write&quot;, this.outputFileName));</b>
+<i>96</i>&nbsp;                }
+<i>97</i>&nbsp;            }
+<b class="nc"><i>98</i>&nbsp;</b>
+<b class="nc"><i>99</i>&nbsp;            if(this.reverse) {</b>
+<i>100</i>&nbsp;                BufferedReader var6 = this.getA2NInput(this.inputFileName);
+<b class="nc"><i>101</i>&nbsp;                Writer var7 = this.getA2NOutput(this.outputFileName);</b>
+<i>102</i>&nbsp;
+<b class="nc"><i>103</i>&nbsp;                String var8;</b>
+<i>104</i>&nbsp;                while((var8 = var6.readLine()) != null) {
+<b class="nc"><i>105</i>&nbsp;                    var7.write(var8.toCharArray());</b>
+<b class="nc"><i>106</i>&nbsp;                    var7.write(var10);</b>
+<i>107</i>&nbsp;                    if(this.outputFileName == null) {
+<b class="nc"><i>108</i>&nbsp;                        var7.flush();</b>
+<b class="nc"><i>109</i>&nbsp;                    }</b>
+<b class="nc"><i>110</i>&nbsp;                }</b>
+<b class="nc"><i>111</i>&nbsp;</b>
+<i>112</i>&nbsp;                var6.close();
+<i>113</i>&nbsp;                var7.close();
+<b class="nc"><i>114</i>&nbsp;            } else {</b>
+<b class="nc"><i>115</i>&nbsp;                BufferedReader var12 = this.getN2AInput(this.inputFileName);</b>
+<b class="nc"><i>116</i>&nbsp;                BufferedWriter var13 = this.getN2AOutput(this.outputFileName);</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<i>118</i>&nbsp;                String var11;
+<i>119</i>&nbsp;                while((var11 = var12.readLine()) != null) {
+<i>120</i>&nbsp;                    var13.write(var11.toCharArray());
+<b class="nc"><i>121</i>&nbsp;                    var13.write(var10);</b>
+<b class="nc"><i>122</i>&nbsp;                    if(this.outputFileName == null) {</b>
+<b class="nc"><i>123</i>&nbsp;                        var13.flush();</b>
+<i>124</i>&nbsp;                    }
+<i>125</i>&nbsp;                }
+<b class="nc"><i>126</i>&nbsp;</b>
+<b class="nc"><i>127</i>&nbsp;                var13.close();</b>
+<b class="nc"><i>128</i>&nbsp;            }</b>
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;            if(var4) {</b>
+<i>131</i>&nbsp;                if(var3.exists()) {
+<i>132</i>&nbsp;                    var3.delete();
+<b class="nc"><i>133</i>&nbsp;                }</b>
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;                this.tempFile.renameTo(var3);</b>
+<i>136</i>&nbsp;            }
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;            return true;</b>
+<b class="nc"><i>139</i>&nbsp;        } catch (Exception var9) {</b>
+<i>140</i>&nbsp;            this.error(var9.toString());
+<b class="nc"><i>141</i>&nbsp;            return false;</b>
+<b class="nc"><i>142</i>&nbsp;        }</b>
+<b class="nc"><i>143</i>&nbsp;    }</b>
+<b class="nc"><i>144</i>&nbsp;</b>
+<b class="nc"><i>145</i>&nbsp;    private void error(String var1) {</b>
+<i>146</i>&nbsp;        System.out.println(var1);
+<i>147</i>&nbsp;    }
+<b class="nc"><i>148</i>&nbsp;</b>
+<i>149</i>&nbsp;    private void usage() {
+<i>150</i>&nbsp;        System.out.println(this.getMsg(&quot;usage&quot;));
+<b class="nc"><i>151</i>&nbsp;    }</b>
+<b class="nc"><i>152</i>&nbsp;</b>
+<i>153</i>&nbsp;    private BufferedReader getN2AInput(String var1) throws Exception {
+<i>154</i>&nbsp;        Object var2;
+<i>155</i>&nbsp;        if(var1 == null) {
+<i>156</i>&nbsp;            var2 = System.in;
+<b class="nc"><i>157</i>&nbsp;        } else {</b>
+<i>158</i>&nbsp;            File var3 = new File(var1);
+<b class="nc"><i>159</i>&nbsp;            if(!var3.canRead()) {</b>
+<i>160</i>&nbsp;                throw new Exception(this.formatMsg(&quot;err.cannot.read&quot;, var3.getName()));
+<i>161</i>&nbsp;            }
+<b class="nc"><i>162</i>&nbsp;</b>
+<b class="nc"><i>163</i>&nbsp;            try {</b>
+<b class="nc"><i>164</i>&nbsp;                var2 = new FileInputStream(var1);</b>
+<b class="nc"><i>165</i>&nbsp;            } catch (IOException var5) {</b>
+<i>166</i>&nbsp;                throw new Exception(this.formatMsg(&quot;err.cannot.read&quot;, var3.getName()));
+<b class="nc"><i>167</i>&nbsp;            }</b>
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;        BufferedReader var6 = encodingString != null?new BufferedReader(new InputStreamReader((InputStream)var2, encodingString)):new BufferedReader(new InputStreamReader((InputStream)var2));
+<b class="nc"><i>171</i>&nbsp;        return var6;</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    private BufferedWriter getN2AOutput(String var1) throws Exception {
+<b class="nc"><i>175</i>&nbsp;        Object var2;</b>
+<i>176</i>&nbsp;        if(var1 == null) {
+<i>177</i>&nbsp;            var2 = new OutputStreamWriter(System.out, &quot;US-ASCII&quot;);
+<i>178</i>&nbsp;        } else {
+<i>179</i>&nbsp;            File var4 = new File(var1);
+<i>180</i>&nbsp;            File var5 = var4.getParentFile();
+<i>181</i>&nbsp;            if(var5 == null) {
+<b class="nc"><i>182</i>&nbsp;                var5 = new File(System.getProperty(&quot;user.dir&quot;));</b>
+<b class="nc"><i>183</i>&nbsp;            }</b>
+<i>184</i>&nbsp;
+<b class="nc"><i>185</i>&nbsp;            this.tempFile = File.createTempFile(&quot;_N2A&quot;, &quot;.TMP&quot;, var5);</b>
+<b class="nc"><i>186</i>&nbsp;            this.tempFile.deleteOnExit();</b>
+<b class="nc"><i>187</i>&nbsp;</b>
+<i>188</i>&nbsp;            try {
+<i>189</i>&nbsp;                var2 = new FileWriter(this.tempFile);
+<i>190</i>&nbsp;            } catch (IOException var7) {
+<b class="nc"><i>191</i>&nbsp;                throw new Exception(this.formatMsg(&quot;err.cannot.write&quot;, this.tempFile.getName()));</b>
+<b class="nc"><i>192</i>&nbsp;            }</b>
+<b class="nc"><i>193</i>&nbsp;        }</b>
+<b class="nc"><i>194</i>&nbsp;</b>
+<i>195</i>&nbsp;        BufferedWriter var3 = new BufferedWriter(new N2AFilter((Writer)var2));
+<i>196</i>&nbsp;        return var3;
+<b class="nc"><i>197</i>&nbsp;    }</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    private BufferedReader getA2NInput(String var1) throws Exception {
+<i>200</i>&nbsp;        Object var2;
+<b class="nc"><i>201</i>&nbsp;        if(var1 == null) {</b>
+<i>202</i>&nbsp;            var2 = new InputStreamReader(System.in, &quot;US-ASCII&quot;);
+<i>203</i>&nbsp;        } else {
+<i>204</i>&nbsp;            File var4 = new File(var1);
+<i>205</i>&nbsp;            if(!var4.canRead()) {
+<i>206</i>&nbsp;                throw new Exception(this.formatMsg(&quot;err.cannot.read&quot;, var4.getName()));
+<i>207</i>&nbsp;            }
+<i>208</i>&nbsp;
+<b class="nc"><i>209</i>&nbsp;            try {</b>
+<b class="nc"><i>210</i>&nbsp;                var2 = new FileReader(var1);</b>
+<i>211</i>&nbsp;            } catch (Exception var6) {
+<i>212</i>&nbsp;                throw new Exception(this.formatMsg(&quot;err.cannot.read&quot;, var4.getName()));
+<b class="nc"><i>213</i>&nbsp;            }</b>
+<i>214</i>&nbsp;        }
+<b class="nc"><i>215</i>&nbsp;</b>
+<i>216</i>&nbsp;        BufferedReader var3 = new BufferedReader(new A2NFilter((Reader)var2));
+<b class="nc"><i>217</i>&nbsp;        return var3;</b>
+<b class="nc"><i>218</i>&nbsp;    }</b>
+<i>219</i>&nbsp;
+<b class="nc"><i>220</i>&nbsp;    private Writer getA2NOutput(String var1) throws Exception {</b>
+<i>221</i>&nbsp;        OutputStreamWriter var2 = null;
+<i>222</i>&nbsp;        Object var3 = null;
+<b class="nc"><i>223</i>&nbsp;        if(var1 == null) {</b>
+<i>224</i>&nbsp;            var3 = System.out;
+<i>225</i>&nbsp;        } else {
+<b class="nc"><i>226</i>&nbsp;            File var4 = new File(var1);</b>
+<b class="nc"><i>227</i>&nbsp;            File var5 = var4.getParentFile();</b>
+<b class="nc"><i>228</i>&nbsp;            if(var5 == null) {</b>
+<b class="nc"><i>229</i>&nbsp;                var5 = new File(System.getProperty(&quot;user.dir&quot;));</b>
+<i>230</i>&nbsp;            }
+<i>231</i>&nbsp;
+<b class="nc"><i>232</i>&nbsp;            this.tempFile = File.createTempFile(&quot;_N2A&quot;, &quot;.TMP&quot;, var5);</b>
+<b class="nc"><i>233</i>&nbsp;            this.tempFile.deleteOnExit();</b>
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;            try {
+<i>236</i>&nbsp;                var3 = new FileOutputStream(this.tempFile);
+<i>237</i>&nbsp;            } catch (IOException var7) {
+<i>238</i>&nbsp;                throw new Exception(this.formatMsg(&quot;err.cannot.write&quot;, this.tempFile.getName()));
+<i>239</i>&nbsp;            }
+<b class="nc"><i>240</i>&nbsp;        }</b>
+<b class="nc"><i>241</i>&nbsp;</b>
+<i>242</i>&nbsp;        var2 = encodingString != null?new OutputStreamWriter((OutputStream)var3, encodingString):new OutputStreamWriter((OutputStream)var3);
+<b class="nc"><i>243</i>&nbsp;        return var2;</b>
+<b class="nc"><i>244</i>&nbsp;    }</b>
+<b class="nc"><i>245</i>&nbsp;</b>
+<i>246</i>&nbsp;    private static Charset lookupCharset(String var0) {
+<i>247</i>&nbsp;        if(Charset.isSupported(var0)) {
+<i>248</i>&nbsp;            try {
+<b class="nc"><i>249</i>&nbsp;                return Charset.forName(var0);</b>
+<b class="nc"><i>250</i>&nbsp;            } catch (UnsupportedCharsetException var2) {</b>
+<b class="nc"><i>251</i>&nbsp;                throw new Error(var2);</b>
+<b class="nc"><i>252</i>&nbsp;            }</b>
+<i>253</i>&nbsp;        } else {
+<i>254</i>&nbsp;            return null;
+<b class="nc"><i>255</i>&nbsp;        }</b>
+<b class="nc"><i>256</i>&nbsp;    }</b>
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    public static boolean canConvert(char var0) {
+<i>259</i>&nbsp;        return encoder != null &amp;&amp; encoder.canEncode(var0);
+<i>260</i>&nbsp;    }
+<b class="nc"><i>261</i>&nbsp;</b>
+<b class="nc"><i>262</i>&nbsp;    private static void initializeConverter() throws UnsupportedEncodingException {</b>
+<i>263</i>&nbsp;        Charset var0 = null;
+<b class="nc"><i>264</i>&nbsp;</b>
+<b class="nc"><i>265</i>&nbsp;        try {</b>
+<i>266</i>&nbsp;            var0 = encodingString == null?lookupCharset(defaultEncoding):lookupCharset(encodingString);
+<b class="nc"><i>267</i>&nbsp;            encoder = var0 != null?var0.newEncoder():null;</b>
+<i>268</i>&nbsp;        } catch (IllegalCharsetNameException var2) {
+<b class="nc"><i>269</i>&nbsp;            throw new Error(var2);</b>
+<b class="nc"><i>270</i>&nbsp;        }</b>
+<b class="nc"><i>271</i>&nbsp;    }</b>
+<b class="nc"><i>272</i>&nbsp;</b>
+<i>273</i>&nbsp;    private String getMsg(String var1) {
+<i>274</i>&nbsp;        try {
+<b class="nc"><i>275</i>&nbsp;            return rsrc.getString(var1);</b>
+<i>276</i>&nbsp;        } catch (MissingResourceException var3) {
+<i>277</i>&nbsp;            throw new Error(&quot;Error in  message file format.&quot;);
+<b class="nc"><i>278</i>&nbsp;        }</b>
+<b class="nc"><i>279</i>&nbsp;    }</b>
+<b class="nc"><i>280</i>&nbsp;</b>
+<b class="nc"><i>281</i>&nbsp;    private String formatMsg(String var1, String var2) {</b>
+<i>282</i>&nbsp;        String var3 = this.getMsg(var1);
+<i>283</i>&nbsp;        return MessageFormat.format(var3, new Object[]{var2});
+<b class="nc"><i>284</i>&nbsp;    }</b>
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    public static void main(String[] var0) {
+<i>287</i>&nbsp;        Main var1 = new Main();
+<b class="nc"><i>288</i>&nbsp;        System.exit(var1.convert(var0)?0:1);</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    static {
+<b class="nc"><i>292</i>&nbsp;        try {</b>
+<i>293</i>&nbsp;            rsrc = ResourceBundle.getBundle(&quot;sun.tools.native2ascii.resources.MsgNative2ascii&quot;);
+<b class="nc"><i>294</i>&nbsp;        } catch (MissingResourceException var1) {</b>
+<b class="nc"><i>295</i>&nbsp;            throw new Error(&quot;Missing message file.&quot;);</b>
+<b class="nc"><i>296</i>&nbsp;        }</b>
+<i>297</i>&nbsp;    }
+<i>298</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

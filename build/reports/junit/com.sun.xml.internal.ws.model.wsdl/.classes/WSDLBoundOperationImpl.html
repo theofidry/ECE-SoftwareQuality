@@ -1,0 +1,408 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WSDLBoundOperationImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.model.wsdl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WSDLBoundOperationImpl (com.sun.xml.internal.ws.model.wsdl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WSDLBoundOperationImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 38)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 125)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.model.wsdl;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.istack.internal.NotNull;
+<i>9</i>&nbsp;import com.sun.istack.internal.Nullable;
+<i>10</i>&nbsp;import com.sun.xml.internal.ws.api.model.ParameterBinding;
+<i>11</i>&nbsp;import com.sun.xml.internal.ws.api.model.wsdl.WSDLBoundOperation;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.api.model.wsdl.WSDLBoundPortType;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.api.model.wsdl.WSDLPart;
+<i>14</i>&nbsp;import com.sun.xml.internal.ws.api.model.wsdl.WSDLBoundOperation.ANONYMOUS;
+<i>15</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.AbstractExtensibleImpl;
+<i>16</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLBoundFaultImpl;
+<i>17</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLBoundPortTypeImpl;
+<i>18</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLMessageImpl;
+<i>19</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLModelImpl;
+<i>20</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLOperationImpl;
+<i>21</i>&nbsp;import com.sun.xml.internal.ws.model.wsdl.WSDLPartImpl;
+<i>22</i>&nbsp;import java.util.ArrayList;
+<i>23</i>&nbsp;import java.util.Collections;
+<i>24</i>&nbsp;import java.util.HashMap;
+<i>25</i>&nbsp;import java.util.Iterator;
+<i>26</i>&nbsp;import java.util.List;
+<i>27</i>&nbsp;import java.util.Map;
+<i>28</i>&nbsp;import javax.jws.WebParam.Mode;
+<i>29</i>&nbsp;import javax.jws.soap.SOAPBinding.Style;
+<i>30</i>&nbsp;import javax.xml.namespace.QName;
+<i>31</i>&nbsp;import javax.xml.stream.XMLStreamReader;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;public final class WSDLBoundOperationImpl extends AbstractExtensibleImpl implements WSDLBoundOperation {
+<i>34</i>&nbsp;    private final QName name;
+<i>35</i>&nbsp;    private final Map&lt;String, ParameterBinding&gt; inputParts;
+<i>36</i>&nbsp;    private final Map&lt;String, ParameterBinding&gt; outputParts;
+<i>37</i>&nbsp;    private final Map&lt;String, ParameterBinding&gt; faultParts;
+<i>38</i>&nbsp;    private final Map&lt;String, String&gt; inputMimeTypes;
+<i>39</i>&nbsp;    private final Map&lt;String, String&gt; outputMimeTypes;
+<i>40</i>&nbsp;    private final Map&lt;String, String&gt; faultMimeTypes;
+<i>41</i>&nbsp;    private boolean explicitInputSOAPBodyParts = false;
+<i>42</i>&nbsp;    private boolean explicitOutputSOAPBodyParts = false;
+<i>43</i>&nbsp;    private boolean explicitFaultSOAPBodyParts = false;
+<i>44</i>&nbsp;    private Boolean emptyInputBody;
+<i>45</i>&nbsp;    private Boolean emptyOutputBody;
+<i>46</i>&nbsp;    private Boolean emptyFaultBody;
+<i>47</i>&nbsp;    private final Map&lt;String, WSDLPartImpl&gt; inParts;
+<i>48</i>&nbsp;    private final Map&lt;String, WSDLPartImpl&gt; outParts;
+<i>49</i>&nbsp;    private final Map&lt;String, WSDLPartImpl&gt; fltParts;
+<i>50</i>&nbsp;    private final List&lt;WSDLBoundFaultImpl&gt; wsdlBoundFaults;
+<i>51</i>&nbsp;    private WSDLOperationImpl operation;
+<i>52</i>&nbsp;    private String soapAction;
+<i>53</i>&nbsp;    private ANONYMOUS anonymous;
+<b class="nc"><i>54</i>&nbsp;    private final WSDLBoundPortTypeImpl owner;</b>
+<b class="nc"><i>55</i>&nbsp;    private Style style;</b>
+<b class="nc"><i>56</i>&nbsp;    private String reqNamespace;</b>
+<i>57</i>&nbsp;    private String respNamespace;
+<i>58</i>&nbsp;    private QName requestPayloadName;
+<i>59</i>&nbsp;    private QName responsePayloadName;
+<i>60</i>&nbsp;    private boolean emptyRequestPayload;
+<i>61</i>&nbsp;    private boolean emptyResponsePayload;
+<i>62</i>&nbsp;    private Map&lt;QName, WSDLMessageImpl&gt; messages;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public WSDLBoundOperationImpl(XMLStreamReader xsr, WSDLBoundPortTypeImpl owner, QName name) {
+<i>65</i>&nbsp;        super(xsr);
+<i>66</i>&nbsp;        this.style = Style.DOCUMENT;
+<i>67</i>&nbsp;        this.name = name;
+<i>68</i>&nbsp;        this.inputParts = new HashMap();
+<i>69</i>&nbsp;        this.outputParts = new HashMap();
+<i>70</i>&nbsp;        this.faultParts = new HashMap();
+<i>71</i>&nbsp;        this.inputMimeTypes = new HashMap();
+<i>72</i>&nbsp;        this.outputMimeTypes = new HashMap();
+<i>73</i>&nbsp;        this.faultMimeTypes = new HashMap();
+<i>74</i>&nbsp;        this.inParts = new HashMap();
+<i>75</i>&nbsp;        this.outParts = new HashMap();
+<i>76</i>&nbsp;        this.fltParts = new HashMap();
+<b class="nc"><i>77</i>&nbsp;        this.wsdlBoundFaults = new ArrayList();</b>
+<b class="nc"><i>78</i>&nbsp;        this.owner = owner;</b>
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<b class="nc"><i>80</i>&nbsp;</b>
+<b class="nc"><i>81</i>&nbsp;    public QName getName() {</b>
+<b class="nc"><i>82</i>&nbsp;        return this.name;</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<b class="nc"><i>84</i>&nbsp;</b>
+<b class="nc"><i>85</i>&nbsp;    public String getSOAPAction() {</b>
+<b class="nc"><i>86</i>&nbsp;        return this.soapAction;</b>
+<b class="nc"><i>87</i>&nbsp;    }</b>
+<b class="nc"><i>88</i>&nbsp;</b>
+<b class="nc"><i>89</i>&nbsp;    public void setSoapAction(String soapAction) {</b>
+<i>90</i>&nbsp;        this.soapAction = soapAction != null?soapAction:&quot;&quot;;
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<b class="nc"><i>93</i>&nbsp;    public WSDLPartImpl getPart(String partName, Mode mode) {</b>
+<i>94</i>&nbsp;        return mode == Mode.IN?(WSDLPartImpl)this.inParts.get(partName):(mode == Mode.OUT?(WSDLPartImpl)this.outParts.get(partName):null);
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<b class="nc"><i>97</i>&nbsp;    public void addPart(WSDLPartImpl part, Mode mode) {</b>
+<i>98</i>&nbsp;        if(mode == Mode.IN) {
+<i>99</i>&nbsp;            this.inParts.put(part.getName(), part);
+<i>100</i>&nbsp;        } else if(mode == Mode.OUT) {
+<b class="nc"><i>101</i>&nbsp;            this.outParts.put(part.getName(), part);</b>
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    }
+<b class="nc"><i>105</i>&nbsp;</b>
+<b class="nc"><i>106</i>&nbsp;    public Map&lt;String, ParameterBinding&gt; getInputParts() {</b>
+<b class="nc"><i>107</i>&nbsp;        return this.inputParts;</b>
+<b class="nc"><i>108</i>&nbsp;    }</b>
+<i>109</i>&nbsp;
+<b class="nc"><i>110</i>&nbsp;    public Map&lt;String, ParameterBinding&gt; getOutputParts() {</b>
+<i>111</i>&nbsp;        return this.outputParts;
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<b class="nc"><i>114</i>&nbsp;    public Map&lt;String, ParameterBinding&gt; getFaultParts() {</b>
+<b class="nc"><i>115</i>&nbsp;        return this.faultParts;</b>
+<b class="nc"><i>116</i>&nbsp;    }</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<i>118</i>&nbsp;    public Map&lt;String, WSDLPart&gt; getInParts() {
+<i>119</i>&nbsp;        return Collections.unmodifiableMap(this.inParts);
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public Map&lt;String, WSDLPart&gt; getOutParts() {
+<i>123</i>&nbsp;        return Collections.unmodifiableMap(this.outParts);
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;    @NotNull</b>
+<i>127</i>&nbsp;    public List&lt;WSDLBoundFaultImpl&gt; getFaults() {
+<i>128</i>&nbsp;        return this.wsdlBoundFaults;
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public void addFault(@NotNull WSDLBoundFaultImpl fault) {
+<i>132</i>&nbsp;        this.wsdlBoundFaults.add(fault);
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;    public Map&lt;String, String&gt; getInputMimeTypes() {</b>
+<i>136</i>&nbsp;        return this.inputMimeTypes;
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    public Map&lt;String, String&gt; getOutputMimeTypes() {
+<i>140</i>&nbsp;        return this.outputMimeTypes;
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    public Map&lt;String, String&gt; getFaultMimeTypes() {
+<b class="nc"><i>144</i>&nbsp;        return this.faultMimeTypes;</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    public ParameterBinding getInputBinding(String part) {
+<i>148</i>&nbsp;        if(this.emptyInputBody == null) {
+<b class="nc"><i>149</i>&nbsp;            if(this.inputParts.get(&quot; &quot;) != null) {</b>
+<i>150</i>&nbsp;                this.emptyInputBody = Boolean.valueOf(true);
+<i>151</i>&nbsp;            } else {
+<i>152</i>&nbsp;                this.emptyInputBody = Boolean.valueOf(false);
+<b class="nc"><i>153</i>&nbsp;            }</b>
+<i>154</i>&nbsp;        }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;        ParameterBinding block = (ParameterBinding)this.inputParts.get(part);
+<i>157</i>&nbsp;        return block == null?(!this.explicitInputSOAPBodyParts &amp;&amp; !this.emptyInputBody.booleanValue()?ParameterBinding.BODY:ParameterBinding.UNBOUND):block;
+<b class="nc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    public ParameterBinding getOutputBinding(String part) {
+<i>161</i>&nbsp;        if(this.emptyOutputBody == null) {
+<b class="nc"><i>162</i>&nbsp;            if(this.outputParts.get(&quot; &quot;) != null) {</b>
+<i>163</i>&nbsp;                this.emptyOutputBody = Boolean.valueOf(true);
+<i>164</i>&nbsp;            } else {
+<i>165</i>&nbsp;                this.emptyOutputBody = Boolean.valueOf(false);
+<i>166</i>&nbsp;            }
+<i>167</i>&nbsp;        }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;        ParameterBinding block = (ParameterBinding)this.outputParts.get(part);
+<i>170</i>&nbsp;        return block == null?(!this.explicitOutputSOAPBodyParts &amp;&amp; !this.emptyOutputBody.booleanValue()?ParameterBinding.BODY:ParameterBinding.UNBOUND):block;
+<i>171</i>&nbsp;    }
+<b class="nc"><i>172</i>&nbsp;</b>
+<i>173</i>&nbsp;    public ParameterBinding getFaultBinding(String part) {
+<i>174</i>&nbsp;        if(this.emptyFaultBody == null) {
+<i>175</i>&nbsp;            if(this.faultParts.get(&quot; &quot;) != null) {
+<i>176</i>&nbsp;                this.emptyFaultBody = Boolean.valueOf(true);
+<i>177</i>&nbsp;            } else {
+<i>178</i>&nbsp;                this.emptyFaultBody = Boolean.valueOf(false);
+<i>179</i>&nbsp;            }
+<i>180</i>&nbsp;        }
+<b class="nc"><i>181</i>&nbsp;</b>
+<i>182</i>&nbsp;        ParameterBinding block = (ParameterBinding)this.faultParts.get(part);
+<i>183</i>&nbsp;        return block == null?(!this.explicitFaultSOAPBodyParts &amp;&amp; !this.emptyFaultBody.booleanValue()?ParameterBinding.BODY:ParameterBinding.UNBOUND):block;
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    public String getMimeTypeForInputPart(String part) {
+<i>187</i>&nbsp;        return (String)this.inputMimeTypes.get(part);
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<b class="nc"><i>190</i>&nbsp;    public String getMimeTypeForOutputPart(String part) {</b>
+<i>191</i>&nbsp;        return (String)this.outputMimeTypes.get(part);
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    public String getMimeTypeForFaultPart(String part) {
+<i>195</i>&nbsp;        return (String)this.faultMimeTypes.get(part);
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    public WSDLOperationImpl getOperation() {
+<i>199</i>&nbsp;        return this.operation;
+<b class="nc"><i>200</i>&nbsp;    }</b>
+<b class="nc"><i>201</i>&nbsp;</b>
+<b class="nc"><i>202</i>&nbsp;    public WSDLBoundPortType getBoundPortType() {</b>
+<i>203</i>&nbsp;        return this.owner;
+<b class="nc"><i>204</i>&nbsp;    }</b>
+<i>205</i>&nbsp;
+<b class="nc"><i>206</i>&nbsp;    public void setInputExplicitBodyParts(boolean b) {</b>
+<b class="nc"><i>207</i>&nbsp;        this.explicitInputSOAPBodyParts = b;</b>
+<b class="nc"><i>208</i>&nbsp;    }</b>
+<b class="nc"><i>209</i>&nbsp;</b>
+<b class="nc"><i>210</i>&nbsp;    public void setOutputExplicitBodyParts(boolean b) {</b>
+<i>211</i>&nbsp;        this.explicitOutputSOAPBodyParts = b;
+<i>212</i>&nbsp;    }
+<b class="nc"><i>213</i>&nbsp;</b>
+<i>214</i>&nbsp;    public void setFaultExplicitBodyParts(boolean b) {
+<i>215</i>&nbsp;        this.explicitFaultSOAPBodyParts = b;
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    public void setStyle(Style style) {
+<i>219</i>&nbsp;        this.style = style;
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    @Nullable
+<b class="nc"><i>223</i>&nbsp;    public QName getReqPayloadName() {</b>
+<b class="nc"><i>224</i>&nbsp;        if(this.emptyRequestPayload) {</b>
+<b class="nc"><i>225</i>&nbsp;            return null;</b>
+<i>226</i>&nbsp;        } else if(this.requestPayloadName != null) {
+<b class="nc"><i>227</i>&nbsp;            return this.requestPayloadName;</b>
+<i>228</i>&nbsp;        } else if(this.style.equals(Style.RPC)) {
+<b class="nc"><i>229</i>&nbsp;            String inMsgName1 = this.getRequestNamespace() != null?this.getRequestNamespace():this.name.getNamespaceURI();</b>
+<b class="nc"><i>230</i>&nbsp;            this.requestPayloadName = new QName(inMsgName1, this.name.getLocalPart());</b>
+<b class="nc"><i>231</i>&nbsp;            return this.requestPayloadName;</b>
+<b class="nc"><i>232</i>&nbsp;        } else {</b>
+<b class="nc"><i>233</i>&nbsp;            QName inMsgName = this.operation.getInput().getMessage().getName();</b>
+<i>234</i>&nbsp;            WSDLMessageImpl message = (WSDLMessageImpl)this.messages.get(inMsgName);
+<i>235</i>&nbsp;            Iterator i$ = message.parts().iterator();
+<b class="nc"><i>236</i>&nbsp;</b>
+<i>237</i>&nbsp;            WSDLPartImpl part;
+<i>238</i>&nbsp;            ParameterBinding binding;
+<i>239</i>&nbsp;            do {
+<i>240</i>&nbsp;                if(!i$.hasNext()) {
+<i>241</i>&nbsp;                    this.emptyRequestPayload = true;
+<i>242</i>&nbsp;                    return null;
+<i>243</i>&nbsp;                }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;                part = (WSDLPartImpl)i$.next();
+<b class="nc"><i>246</i>&nbsp;                binding = this.getInputBinding(part.getName());</b>
+<b class="nc"><i>247</i>&nbsp;            } while(!binding.isBody());</b>
+<b class="nc"><i>248</i>&nbsp;</b>
+<i>249</i>&nbsp;            this.requestPayloadName = part.getDescriptor().name();
+<b class="nc"><i>250</i>&nbsp;            return this.requestPayloadName;</b>
+<i>251</i>&nbsp;        }
+<b class="nc"><i>252</i>&nbsp;    }</b>
+<b class="nc"><i>253</i>&nbsp;</b>
+<b class="nc"><i>254</i>&nbsp;    @Nullable</b>
+<b class="nc"><i>255</i>&nbsp;    public QName getResPayloadName() {</b>
+<b class="nc"><i>256</i>&nbsp;        if(this.emptyResponsePayload) {</b>
+<i>257</i>&nbsp;            return null;
+<i>258</i>&nbsp;        } else if(this.responsePayloadName != null) {
+<b class="nc"><i>259</i>&nbsp;            return this.responsePayloadName;</b>
+<i>260</i>&nbsp;        } else if(this.style.equals(Style.RPC)) {
+<i>261</i>&nbsp;            String outMsgName1 = this.getResponseNamespace() != null?this.getResponseNamespace():this.name.getNamespaceURI();
+<i>262</i>&nbsp;            this.responsePayloadName = new QName(outMsgName1, this.name.getLocalPart() + &quot;Response&quot;);
+<i>263</i>&nbsp;            return this.responsePayloadName;
+<i>264</i>&nbsp;        } else {
+<i>265</i>&nbsp;            QName outMsgName = this.operation.getOutput().getMessage().getName();
+<i>266</i>&nbsp;            WSDLMessageImpl message = (WSDLMessageImpl)this.messages.get(outMsgName);
+<i>267</i>&nbsp;            Iterator i$ = message.parts().iterator();
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;            WSDLPartImpl part;</b>
+<i>270</i>&nbsp;            ParameterBinding binding;
+<i>271</i>&nbsp;            do {
+<i>272</i>&nbsp;                if(!i$.hasNext()) {
+<i>273</i>&nbsp;                    this.emptyResponsePayload = true;
+<i>274</i>&nbsp;                    return null;
+<i>275</i>&nbsp;                }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;                part = (WSDLPartImpl)i$.next();
+<i>278</i>&nbsp;                binding = this.getOutputBinding(part.getName());
+<b class="nc"><i>279</i>&nbsp;            } while(!binding.isBody());</b>
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;            this.responsePayloadName = part.getDescriptor().name();
+<i>282</i>&nbsp;            return this.responsePayloadName;
+<i>283</i>&nbsp;        }
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    public String getRequestNamespace() {
+<i>287</i>&nbsp;        return this.reqNamespace != null?this.reqNamespace:this.name.getNamespaceURI();
+<i>288</i>&nbsp;    }
+<b class="nc"><i>289</i>&nbsp;</b>
+<i>290</i>&nbsp;    public void setRequestNamespace(String ns) {
+<i>291</i>&nbsp;        this.reqNamespace = ns;
+<i>292</i>&nbsp;    }
+<b class="nc"><i>293</i>&nbsp;</b>
+<i>294</i>&nbsp;    public String getResponseNamespace() {
+<i>295</i>&nbsp;        return this.respNamespace != null?this.respNamespace:this.name.getNamespaceURI();
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;    public void setResponseNamespace(String ns) {</b>
+<i>299</i>&nbsp;        this.respNamespace = ns;
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<b class="nc"><i>302</i>&nbsp;    WSDLBoundPortTypeImpl getOwner() {</b>
+<i>303</i>&nbsp;        return this.owner;
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<b class="nc"><i>306</i>&nbsp;    void freeze(WSDLModelImpl parent) {</b>
+<i>307</i>&nbsp;        this.messages = parent.getMessages();
+<i>308</i>&nbsp;        this.operation = this.owner.getPortType().get(this.name.getLocalPart());
+<i>309</i>&nbsp;        Iterator i$ = this.wsdlBoundFaults.iterator();
+<b class="nc"><i>310</i>&nbsp;</b>
+<i>311</i>&nbsp;        while(i$.hasNext()) {
+<i>312</i>&nbsp;            WSDLBoundFaultImpl bf = (WSDLBoundFaultImpl)i$.next();
+<b class="nc"><i>313</i>&nbsp;            bf.freeze(this);</b>
+<i>314</i>&nbsp;        }
+<b class="nc"><i>315</i>&nbsp;</b>
+<i>316</i>&nbsp;    }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    public void setAnonymous(ANONYMOUS anonymous) {
+<b class="nc"><i>319</i>&nbsp;        this.anonymous = anonymous;</b>
+<b class="nc"><i>320</i>&nbsp;    }</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;    public ANONYMOUS getAnonymous() {</b>
+<b class="nc"><i>323</i>&nbsp;        return this.anonymous;</b>
+<i>324</i>&nbsp;    }
+<b class="nc"><i>325</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

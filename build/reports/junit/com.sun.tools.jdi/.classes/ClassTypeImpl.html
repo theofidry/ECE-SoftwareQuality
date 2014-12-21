@@ -1,0 +1,484 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClassTypeImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.jdi</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClassTypeImpl (com.sun.tools.jdi)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClassTypeImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 174)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ClassTypeImpl$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ClassTypeImpl$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 178)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.jdi;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jdi.ClassNotLoadedException;
+<i>9</i>&nbsp;import com.sun.jdi.ClassType;
+<i>10</i>&nbsp;import com.sun.jdi.Field;
+<i>11</i>&nbsp;import com.sun.jdi.IncompatibleThreadStateException;
+<i>12</i>&nbsp;import com.sun.jdi.InterfaceType;
+<i>13</i>&nbsp;import com.sun.jdi.InvalidTypeException;
+<i>14</i>&nbsp;import com.sun.jdi.InvocationException;
+<i>15</i>&nbsp;import com.sun.jdi.Method;
+<i>16</i>&nbsp;import com.sun.jdi.ObjectReference;
+<b class="nc"><i>17</i>&nbsp;import com.sun.jdi.ReferenceType;</b>
+<b class="nc"><i>18</i>&nbsp;import com.sun.jdi.ThreadReference;</b>
+<b class="nc"><i>19</i>&nbsp;import com.sun.jdi.Value;</b>
+<b class="nc"><i>20</i>&nbsp;import com.sun.jdi.VirtualMachine;</b>
+<b class="nc"><i>21</i>&nbsp;import com.sun.tools.jdi.CommandSender;</b>
+<i>22</i>&nbsp;import com.sun.tools.jdi.FieldImpl;
+<i>23</i>&nbsp;import com.sun.tools.jdi.InterfaceTypeImpl;
+<b class="nc"><i>24</i>&nbsp;import com.sun.tools.jdi.JDWPException;</b>
+<i>25</i>&nbsp;import com.sun.tools.jdi.MethodImpl;
+<i>26</i>&nbsp;import com.sun.tools.jdi.PacketStream;
+<i>27</i>&nbsp;import com.sun.tools.jdi.ReferenceTypeImpl;
+<b class="nc"><i>28</i>&nbsp;import com.sun.tools.jdi.ThreadReferenceImpl;</b>
+<b class="nc"><i>29</i>&nbsp;import com.sun.tools.jdi.ValueImpl;</b>
+<i>30</i>&nbsp;import com.sun.tools.jdi.JDWP.ClassType.InvokeMethod;
+<b class="nc"><i>31</i>&nbsp;import com.sun.tools.jdi.JDWP.ClassType.NewInstance;</b>
+<i>32</i>&nbsp;import com.sun.tools.jdi.JDWP.ClassType.SetValues;
+<b class="nc"><i>33</i>&nbsp;import com.sun.tools.jdi.JDWP.ClassType.Superclass;</b>
+<b class="nc"><i>34</i>&nbsp;import com.sun.tools.jdi.JDWP.ClassType.SetValues.FieldValue;</b>
+<b class="nc"><i>35</i>&nbsp;import java.util.ArrayList;</b>
+<i>36</i>&nbsp;import java.util.Iterator;
+<i>37</i>&nbsp;import java.util.List;
+<i>38</i>&nbsp;import java.util.Map;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;public class ClassTypeImpl extends ReferenceTypeImpl implements ClassType {
+<i>41</i>&nbsp;    private boolean cachedSuperclass = false;
+<b class="nc"><i>42</i>&nbsp;    private ClassType superclass = null;</b>
+<b class="nc"><i>43</i>&nbsp;    private int lastLine = -1;</b>
+<i>44</i>&nbsp;    private List&lt;InterfaceType&gt; interfaces = null;
+<b class="nc"><i>45</i>&nbsp;</b>
+<i>46</i>&nbsp;    protected ClassTypeImpl(VirtualMachine var1, long var2) {
+<i>47</i>&nbsp;        super(var1, var2);
+<b class="nc"><i>48</i>&nbsp;    }</b>
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public ClassType superclass() {
+<i>51</i>&nbsp;        if(!this.cachedSuperclass) {
+<b class="nc"><i>52</i>&nbsp;            ClassTypeImpl var1 = null;</b>
+<b class="nc"><i>53</i>&nbsp;</b>
+<i>54</i>&nbsp;            try {
+<b class="nc"><i>55</i>&nbsp;                var1 = Superclass.process(this.vm, this).superclass;</b>
+<i>56</i>&nbsp;            } catch (JDWPException var3) {
+<i>57</i>&nbsp;                throw var3.toJDIException();
+<i>58</i>&nbsp;            }
+<b class="nc"><i>59</i>&nbsp;</b>
+<b class="nc"><i>60</i>&nbsp;            if(var1 != null) {</b>
+<i>61</i>&nbsp;                this.superclass = var1;
+<b class="nc"><i>62</i>&nbsp;            }</b>
+<b class="nc"><i>63</i>&nbsp;</b>
+<b class="nc"><i>64</i>&nbsp;            this.cachedSuperclass = true;</b>
+<b class="nc"><i>65</i>&nbsp;        }</b>
+<b class="nc"><i>66</i>&nbsp;</b>
+<i>67</i>&nbsp;        return this.superclass;
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<b class="nc"><i>69</i>&nbsp;</b>
+<b class="nc"><i>70</i>&nbsp;    public List&lt;InterfaceType&gt; interfaces() {</b>
+<i>71</i>&nbsp;        if(this.interfaces == null) {
+<i>72</i>&nbsp;            this.interfaces = this.getInterfaces();
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;
+<b class="nc"><i>75</i>&nbsp;        return this.interfaces;</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<i>78</i>&nbsp;    void addInterfaces(List&lt;InterfaceType&gt; var1) {
+<i>79</i>&nbsp;        List var2 = this.interfaces();
+<i>80</i>&nbsp;        var1.addAll(this.interfaces());
+<b class="nc"><i>81</i>&nbsp;        Iterator var3 = var2.iterator();</b>
+<b class="nc"><i>82</i>&nbsp;</b>
+<b class="nc"><i>83</i>&nbsp;        while(var3.hasNext()) {</b>
+<b class="nc"><i>84</i>&nbsp;            InterfaceTypeImpl var4 = (InterfaceTypeImpl)var3.next();</b>
+<b class="nc"><i>85</i>&nbsp;            var4.addSuperinterfaces(var1);</b>
+<b class="nc"><i>86</i>&nbsp;        }</b>
+<b class="nc"><i>87</i>&nbsp;</b>
+<b class="nc"><i>88</i>&nbsp;        ClassTypeImpl var5 = (ClassTypeImpl)this.superclass();</b>
+<b class="nc"><i>89</i>&nbsp;        if(var5 != null) {</b>
+<b class="nc"><i>90</i>&nbsp;            var5.addInterfaces(var1);</b>
+<i>91</i>&nbsp;        }
+<i>92</i>&nbsp;
+<b class="nc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;
+<b class="nc"><i>95</i>&nbsp;    public List&lt;InterfaceType&gt; allInterfaces() {</b>
+<i>96</i>&nbsp;        ArrayList var1 = new ArrayList();
+<i>97</i>&nbsp;        this.addInterfaces(var1);
+<i>98</i>&nbsp;        return var1;
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<b class="nc"><i>100</i>&nbsp;</b>
+<i>101</i>&nbsp;    public List&lt;ClassType&gt; subclasses() {
+<b class="nc"><i>102</i>&nbsp;        ArrayList var1 = new ArrayList();</b>
+<i>103</i>&nbsp;        Iterator var2 = this.vm.allClasses().iterator();
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;        while(var2.hasNext()) {
+<i>106</i>&nbsp;            ReferenceType var3 = (ReferenceType)var2.next();
+<i>107</i>&nbsp;            if(var3 instanceof ClassType) {
+<i>108</i>&nbsp;                ClassType var4 = (ClassType)var3;
+<i>109</i>&nbsp;                ClassType var5 = var4.superclass();
+<b class="nc"><i>110</i>&nbsp;                if(var5 != null &amp;&amp; var5.equals(this)) {</b>
+<b class="nc"><i>111</i>&nbsp;                    var1.add((ClassType)var3);</b>
+<b class="nc"><i>112</i>&nbsp;                }</b>
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;        }
+<b class="nc"><i>115</i>&nbsp;</b>
+<b class="nc"><i>116</i>&nbsp;        return var1;</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public boolean isEnum() {
+<i>120</i>&nbsp;        ClassType var1 = this.superclass();
+<b class="nc"><i>121</i>&nbsp;        return var1 != null &amp;&amp; var1.name().equals(&quot;java.lang.Enum&quot;);</b>
+<i>122</i>&nbsp;    }
+<b class="nc"><i>123</i>&nbsp;</b>
+<i>124</i>&nbsp;    public void setValue(Field var1, Value var2) throws InvalidTypeException, ClassNotLoadedException {
+<i>125</i>&nbsp;        this.validateMirror(var1);
+<i>126</i>&nbsp;        this.validateMirrorOrNull(var2);
+<i>127</i>&nbsp;        this.validateFieldSet(var1);
+<i>128</i>&nbsp;        if(!var1.isStatic()) {
+<b class="nc"><i>129</i>&nbsp;            throw new IllegalArgumentException(&quot;Must set non-static field through an instance&quot;);</b>
+<b class="nc"><i>130</i>&nbsp;        } else {</b>
+<b class="nc"><i>131</i>&nbsp;            try {</b>
+<b class="nc"><i>132</i>&nbsp;                FieldValue[] var3 = new FieldValue[]{new FieldValue(((FieldImpl)var1).ref(), ValueImpl.prepareForAssignment(var2, (FieldImpl)var1))};</b>
+<b class="nc"><i>133</i>&nbsp;</b>
+<i>134</i>&nbsp;                try {
+<i>135</i>&nbsp;                    SetValues.process(this.vm, this, var3);
+<i>136</i>&nbsp;                } catch (JDWPException var5) {
+<i>137</i>&nbsp;                    throw var5.toJDIException();
+<i>138</i>&nbsp;                }
+<i>139</i>&nbsp;            } catch (ClassNotLoadedException var6) {
+<i>140</i>&nbsp;                if(var2 != null) {
+<i>141</i>&nbsp;                    throw var6;
+<b class="nc"><i>142</i>&nbsp;                }</b>
+<b class="nc"><i>143</i>&nbsp;            }</b>
+<i>144</i>&nbsp;
+<b class="nc"><i>145</i>&nbsp;        }</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    PacketStream sendInvokeCommand(final ThreadReferenceImpl var1, final MethodImpl var2, final ValueImpl[] var3, final int var4) {
+<i>149</i>&nbsp;        CommandSender var5 = new CommandSender() {
+<i>150</i>&nbsp;            public PacketStream send() {
+<i>151</i>&nbsp;                return InvokeMethod.enqueueCommand(ClassTypeImpl.this.vm, ClassTypeImpl.this, var1, var2.ref(), var3, var4);
+<b class="nc"><i>152</i>&nbsp;            }</b>
+<b class="nc"><i>153</i>&nbsp;        };</b>
+<i>154</i>&nbsp;        PacketStream var6;
+<b class="nc"><i>155</i>&nbsp;        if((var4 &amp; 1) != 0) {</b>
+<i>156</i>&nbsp;            var6 = var1.sendResumingCommand(var5);
+<i>157</i>&nbsp;        } else {
+<i>158</i>&nbsp;            var6 = this.vm.sendResumingCommand(var5);
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;        return var6;
+<b class="nc"><i>162</i>&nbsp;    }</b>
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;    PacketStream sendNewInstanceCommand(final ThreadReferenceImpl var1, final MethodImpl var2, final ValueImpl[] var3, final int var4) {
+<b class="nc"><i>165</i>&nbsp;        CommandSender var5 = new CommandSender() {</b>
+<i>166</i>&nbsp;            public PacketStream send() {
+<b class="nc"><i>167</i>&nbsp;                return NewInstance.enqueueCommand(ClassTypeImpl.this.vm, ClassTypeImpl.this, var1, var2.ref(), var3, var4);</b>
+<i>168</i>&nbsp;            }
+<i>169</i>&nbsp;        };
+<i>170</i>&nbsp;        PacketStream var6;
+<i>171</i>&nbsp;        if((var4 &amp; 1) != 0) {
+<i>172</i>&nbsp;            var6 = var1.sendResumingCommand(var5);
+<i>173</i>&nbsp;        } else {
+<b class="nc"><i>174</i>&nbsp;            var6 = this.vm.sendResumingCommand(var5);</b>
+<b class="nc"><i>175</i>&nbsp;        }</b>
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;        return var6;</b>
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    public Value invokeMethod(ThreadReference var1, Method var2, List&lt;? extends Value&gt; var3, int var4) throws InvalidTypeException, ClassNotLoadedException, IncompatibleThreadStateException, InvocationException {
+<i>181</i>&nbsp;        this.validateMirror(var1);
+<i>182</i>&nbsp;        this.validateMirror(var2);
+<i>183</i>&nbsp;        this.validateMirrorsOrNulls(var3);
+<b class="nc"><i>184</i>&nbsp;        MethodImpl var5 = (MethodImpl)var2;</b>
+<b class="nc"><i>185</i>&nbsp;        ThreadReferenceImpl var6 = (ThreadReferenceImpl)var1;</b>
+<i>186</i>&nbsp;        this.validateMethodInvocation(var5);
+<b class="nc"><i>187</i>&nbsp;        List var7 = var5.validateAndPrepareArgumentsForInvoke(var3);</b>
+<i>188</i>&nbsp;        ValueImpl[] var8 = (ValueImpl[])var7.toArray(new ValueImpl[0]);
+<b class="nc"><i>189</i>&nbsp;</b>
+<i>190</i>&nbsp;        InvokeMethod var9;
+<i>191</i>&nbsp;        try {
+<i>192</i>&nbsp;            PacketStream var10 = this.sendInvokeCommand(var6, var5, var8, var4);
+<i>193</i>&nbsp;            var9 = InvokeMethod.waitForReply(this.vm, var10);
+<i>194</i>&nbsp;        } catch (JDWPException var11) {
+<i>195</i>&nbsp;            if(var11.errorCode() == 10) {
+<i>196</i>&nbsp;                throw new IncompatibleThreadStateException();
+<i>197</i>&nbsp;            }
+<b class="nc"><i>198</i>&nbsp;</b>
+<b class="nc"><i>199</i>&nbsp;            throw var11.toJDIException();</b>
+<b class="nc"><i>200</i>&nbsp;        }</b>
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;        if((var4 &amp; 1) == 0) {</b>
+<b class="nc"><i>203</i>&nbsp;            this.vm.notifySuspend();</b>
+<i>204</i>&nbsp;        }
+<b class="nc"><i>205</i>&nbsp;</b>
+<i>206</i>&nbsp;        if(var9.exception != null) {
+<b class="nc"><i>207</i>&nbsp;            throw new InvocationException(var9.exception);</b>
+<i>208</i>&nbsp;        } else {
+<b class="nc"><i>209</i>&nbsp;            return var9.returnValue;</b>
+<i>210</i>&nbsp;        }
+<i>211</i>&nbsp;    }
+<b class="nc"><i>212</i>&nbsp;</b>
+<i>213</i>&nbsp;    public ObjectReference newInstance(ThreadReference var1, Method var2, List&lt;? extends Value&gt; var3, int var4) throws InvalidTypeException, ClassNotLoadedException, IncompatibleThreadStateException, InvocationException {
+<b class="nc"><i>214</i>&nbsp;        this.validateMirror(var1);</b>
+<b class="nc"><i>215</i>&nbsp;        this.validateMirror(var2);</b>
+<b class="nc"><i>216</i>&nbsp;        this.validateMirrorsOrNulls(var3);</b>
+<b class="nc"><i>217</i>&nbsp;        MethodImpl var5 = (MethodImpl)var2;</b>
+<i>218</i>&nbsp;        ThreadReferenceImpl var6 = (ThreadReferenceImpl)var1;
+<b class="nc"><i>219</i>&nbsp;        this.validateConstructorInvocation(var5);</b>
+<i>220</i>&nbsp;        List var7 = var5.validateAndPrepareArgumentsForInvoke(var3);
+<b class="nc"><i>221</i>&nbsp;        ValueImpl[] var8 = (ValueImpl[])var7.toArray(new ValueImpl[0]);</b>
+<i>222</i>&nbsp;        NewInstance var9 = null;
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;        try {
+<i>225</i>&nbsp;            PacketStream var10 = this.sendNewInstanceCommand(var6, var5, var8, var4);
+<i>226</i>&nbsp;            var9 = NewInstance.waitForReply(this.vm, var10);
+<b class="nc"><i>227</i>&nbsp;        } catch (JDWPException var11) {</b>
+<b class="nc"><i>228</i>&nbsp;            if(var11.errorCode() == 10) {</b>
+<i>229</i>&nbsp;                throw new IncompatibleThreadStateException();
+<i>230</i>&nbsp;            }
+<b class="nc"><i>231</i>&nbsp;</b>
+<b class="nc"><i>232</i>&nbsp;            throw var11.toJDIException();</b>
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;</b>
+<i>235</i>&nbsp;        if((var4 &amp; 1) == 0) {
+<i>236</i>&nbsp;            this.vm.notifySuspend();
+<i>237</i>&nbsp;        }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;        if(var9.exception != null) {
+<i>240</i>&nbsp;            throw new InvocationException(var9.exception);
+<i>241</i>&nbsp;        } else {
+<i>242</i>&nbsp;            return var9.newObject;
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;    }
+<i>245</i>&nbsp;
+<b class="nc"><i>246</i>&nbsp;    public Method concreteMethodByName(String var1, String var2) {</b>
+<b class="nc"><i>247</i>&nbsp;        Method var3 = null;</b>
+<b class="nc"><i>248</i>&nbsp;        Iterator var4 = this.visibleMethods().iterator();</b>
+<i>249</i>&nbsp;
+<b class="nc"><i>250</i>&nbsp;        while(var4.hasNext()) {</b>
+<b class="nc"><i>251</i>&nbsp;            Method var5 = (Method)var4.next();</b>
+<i>252</i>&nbsp;            if(var5.name().equals(var1) &amp;&amp; var5.signature().equals(var2) &amp;&amp; !var5.isAbstract()) {
+<b class="nc"><i>253</i>&nbsp;                var3 = var5;</b>
+<i>254</i>&nbsp;                break;
+<b class="nc"><i>255</i>&nbsp;            }</b>
+<i>256</i>&nbsp;        }
+<b class="nc"><i>257</i>&nbsp;</b>
+<b class="nc"><i>258</i>&nbsp;        return var3;</b>
+<i>259</i>&nbsp;    }
+<b class="nc"><i>260</i>&nbsp;</b>
+<i>261</i>&nbsp;    public List&lt;Method&gt; allMethods() {
+<b class="nc"><i>262</i>&nbsp;        ArrayList var1 = new ArrayList(this.methods());</b>
+<b class="nc"><i>263</i>&nbsp;</b>
+<b class="nc"><i>264</i>&nbsp;        for(ClassType var2 = this.superclass(); var2 != null; var2 = var2.superclass()) {</b>
+<b class="nc"><i>265</i>&nbsp;            var1.addAll(var2.methods());</b>
+<i>266</i>&nbsp;        }
+<b class="nc"><i>267</i>&nbsp;</b>
+<i>268</i>&nbsp;        Iterator var3 = this.allInterfaces().iterator();
+<b class="nc"><i>269</i>&nbsp;</b>
+<i>270</i>&nbsp;        while(var3.hasNext()) {
+<i>271</i>&nbsp;            InterfaceType var4 = (InterfaceType)var3.next();
+<i>272</i>&nbsp;            var1.addAll(var4.methods());
+<i>273</i>&nbsp;        }
+<i>274</i>&nbsp;
+<b class="nc"><i>275</i>&nbsp;        return var1;</b>
+<b class="nc"><i>276</i>&nbsp;    }</b>
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    List&lt;ReferenceType&gt; inheritedTypes() {
+<b class="nc"><i>279</i>&nbsp;        ArrayList var1 = new ArrayList();</b>
+<b class="nc"><i>280</i>&nbsp;        if(this.superclass() != null) {</b>
+<i>281</i>&nbsp;            var1.add(0, this.superclass());
+<b class="nc"><i>282</i>&nbsp;        }</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;        Iterator var2 = this.interfaces().iterator();
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;        while(var2.hasNext()) {
+<b class="nc"><i>287</i>&nbsp;            ReferenceType var3 = (ReferenceType)var2.next();</b>
+<b class="nc"><i>288</i>&nbsp;            var1.add(var3);</b>
+<b class="nc"><i>289</i>&nbsp;        }</b>
+<b class="nc"><i>290</i>&nbsp;</b>
+<b class="nc"><i>291</i>&nbsp;        return var1;</b>
+<b class="nc"><i>292</i>&nbsp;    }</b>
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    void validateMethodInvocation(Method var1) throws InvalidTypeException, InvocationException {
+<i>295</i>&nbsp;        ReferenceTypeImpl var2 = (ReferenceTypeImpl)var1.declaringType();
+<b class="nc"><i>296</i>&nbsp;        if(!var2.isAssignableFrom(this)) {</b>
+<b class="nc"><i>297</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid method&quot;);</b>
+<i>298</i>&nbsp;        } else if(!var1.isStatic()) {
+<b class="nc"><i>299</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot invoke instance method on a class type&quot;);</b>
+<b class="nc"><i>300</i>&nbsp;        } else if(var1.isStaticInitializer()) {</b>
+<i>301</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot invoke static initializer&quot;);
+<i>302</i>&nbsp;        }
+<i>303</i>&nbsp;    }
+<b class="nc"><i>304</i>&nbsp;</b>
+<i>305</i>&nbsp;    void validateConstructorInvocation(Method var1) throws InvalidTypeException, InvocationException {
+<b class="nc"><i>306</i>&nbsp;        ReferenceTypeImpl var2 = (ReferenceTypeImpl)var1.declaringType();</b>
+<b class="nc"><i>307</i>&nbsp;        if(!var2.equals(this)) {</b>
+<b class="nc"><i>308</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid constructor&quot;);</b>
+<b class="nc"><i>309</i>&nbsp;        } else if(!var1.isConstructor()) {</b>
+<i>310</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot create instance with non-constructor&quot;);
+<i>311</i>&nbsp;        }
+<i>312</i>&nbsp;    }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    void addVisibleMethods(Map&lt;String, Method&gt; var1) {
+<i>315</i>&nbsp;        Iterator var2 = this.interfaces().iterator();
+<b class="nc"><i>316</i>&nbsp;</b>
+<b class="nc"><i>317</i>&nbsp;        while(var2.hasNext()) {</b>
+<b class="nc"><i>318</i>&nbsp;            InterfaceTypeImpl var3 = (InterfaceTypeImpl)var2.next();</b>
+<b class="nc"><i>319</i>&nbsp;            var3.addVisibleMethods(var1);</b>
+<b class="nc"><i>320</i>&nbsp;        }</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;        ClassTypeImpl var4 = (ClassTypeImpl)this.superclass();</b>
+<i>323</i>&nbsp;        if(var4 != null) {
+<i>324</i>&nbsp;            var4.addVisibleMethods(var1);
+<i>325</i>&nbsp;        }
+<b class="nc"><i>326</i>&nbsp;</b>
+<b class="nc"><i>327</i>&nbsp;        this.addToMethodMap(var1, this.methods());</b>
+<b class="nc"><i>328</i>&nbsp;    }</b>
+<i>329</i>&nbsp;
+<b class="nc"><i>330</i>&nbsp;    boolean isAssignableTo(ReferenceType var1) {</b>
+<i>331</i>&nbsp;        ClassTypeImpl var2 = (ClassTypeImpl)this.superclass();
+<i>332</i>&nbsp;        if(this.equals(var1)) {
+<i>333</i>&nbsp;            return true;
+<i>334</i>&nbsp;        } else if(var2 != null &amp;&amp; var2.isAssignableTo(var1)) {
+<i>335</i>&nbsp;            return true;
+<i>336</i>&nbsp;        } else {
+<i>337</i>&nbsp;            List var3 = this.interfaces();
+<i>338</i>&nbsp;            Iterator var4 = var3.iterator();
+<b class="nc"><i>339</i>&nbsp;</b>
+<b class="nc"><i>340</i>&nbsp;            InterfaceTypeImpl var5;</b>
+<b class="nc"><i>341</i>&nbsp;            do {</b>
+<i>342</i>&nbsp;                if(!var4.hasNext()) {
+<i>343</i>&nbsp;                    return false;
+<i>344</i>&nbsp;                }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;                var5 = (InterfaceTypeImpl)var4.next();
+<b class="nc"><i>347</i>&nbsp;            } while(!var5.isAssignableTo(var1));</b>
+<b class="nc"><i>348</i>&nbsp;</b>
+<b class="nc"><i>349</i>&nbsp;            return true;</b>
+<b class="nc"><i>350</i>&nbsp;        }</b>
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    public String toString() {
+<i>354</i>&nbsp;        return &quot;class &quot; + this.name() + &quot; (&quot; + this.loaderString() + &quot;)&quot;;
+<i>355</i>&nbsp;    }
+<i>356</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

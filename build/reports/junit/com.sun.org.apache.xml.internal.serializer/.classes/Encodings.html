@@ -1,0 +1,395 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Encodings</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xml.internal.serializer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Encodings (com.sun.org.apache.xml.internal.serializer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Encodings</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 110)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xml.internal.serializer;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xalan.internal.utils.SecuritySupport;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.EncodingInfo;
+<i>10</i>&nbsp;import com.sun.org.apache.xml.internal.serializer.utils.WrappedRuntimeException;
+<i>11</i>&nbsp;import java.io.BufferedWriter;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.io.InputStream;
+<i>14</i>&nbsp;import java.io.OutputStream;
+<i>15</i>&nbsp;import java.io.OutputStreamWriter;
+<i>16</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>17</i>&nbsp;import java.io.Writer;
+<i>18</i>&nbsp;import java.net.MalformedURLException;
+<i>19</i>&nbsp;import java.net.URL;
+<i>20</i>&nbsp;import java.nio.charset.Charset;
+<i>21</i>&nbsp;import java.nio.charset.IllegalCharsetNameException;
+<i>22</i>&nbsp;import java.nio.charset.UnsupportedCharsetException;
+<i>23</i>&nbsp;import java.util.Collections;
+<i>24</i>&nbsp;import java.util.Enumeration;
+<i>25</i>&nbsp;import java.util.HashMap;
+<i>26</i>&nbsp;import java.util.Iterator;
+<i>27</i>&nbsp;import java.util.Map;
+<i>28</i>&nbsp;import java.util.Properties;
+<i>29</i>&nbsp;import java.util.StringTokenizer;
+<i>30</i>&nbsp;import java.util.Map.Entry;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public final class Encodings {
+<i>33</i>&nbsp;    private static final int m_defaultLastPrintable = 127;
+<i>34</i>&nbsp;    private static final String ENCODINGS_FILE = &quot;com/sun/org/apache/xml/internal/serializer/Encodings.properties&quot;;
+<i>35</i>&nbsp;    private static final String ENCODINGS_PROP = &quot;com.sun.org.apache.xalan.internal.serialize.encodings&quot;;
+<i>36</i>&nbsp;    static final String DEFAULT_MIME_ENCODING = &quot;UTF-8&quot;;
+<i>37</i>&nbsp;    private static final Encodings.EncodingInfos _encodingInfos = new Encodings.EncodingInfos();
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public Encodings() {
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    static Writer getWriter(OutputStream output, String encoding) throws UnsupportedEncodingException {
+<i>43</i>&nbsp;        EncodingInfo ei = _encodingInfos.findEncoding(toUpperCaseFast(encoding));
+<i>44</i>&nbsp;        if(ei != null) {
+<i>45</i>&nbsp;            try {
+<i>46</i>&nbsp;                return new BufferedWriter(new OutputStreamWriter(output, ei.javaName));
+<i>47</i>&nbsp;            } catch (UnsupportedEncodingException var4) {
+<b class="nc"><i>48</i>&nbsp;                ;</b>
+<i>49</i>&nbsp;            }
+<i>50</i>&nbsp;        }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;        return new BufferedWriter(new OutputStreamWriter(output, encoding));
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public static int getLastPrintable() {
+<i>56</i>&nbsp;        return 127;
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    static EncodingInfo getEncodingInfo(String encoding) {
+<i>60</i>&nbsp;        String normalizedEncoding = toUpperCaseFast(encoding);
+<i>61</i>&nbsp;        EncodingInfo ei = _encodingInfos.findEncoding(normalizedEncoding);
+<i>62</i>&nbsp;        if(ei == null) {
+<i>63</i>&nbsp;            try {
+<i>64</i>&nbsp;                Charset x = Charset.forName(encoding);
+<i>65</i>&nbsp;                String name = x.name();
+<i>66</i>&nbsp;                ei = new EncodingInfo(name, name);
+<i>67</i>&nbsp;                _encodingInfos.putEncoding(normalizedEncoding, ei);
+<i>68</i>&nbsp;            } catch (UnsupportedCharsetException | IllegalCharsetNameException var5) {
+<i>69</i>&nbsp;                ei = new EncodingInfo((String)null, (String)null);
+<i>70</i>&nbsp;            }
+<i>71</i>&nbsp;        }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;        return ei;
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    private static String toUpperCaseFast(String s) {
+<i>77</i>&nbsp;        boolean different = false;
+<i>78</i>&nbsp;        int mx = s.length();
+<i>79</i>&nbsp;        char[] chars = new char[mx];
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;        for(int upper = 0; upper &lt; mx; ++upper) {</b>
+<i>82</i>&nbsp;            char ch = s.charAt(upper);
+<b class="nc"><i>83</i>&nbsp;            if(97 &lt;= ch &amp;&amp; ch &lt;= 122) {</b>
+<i>84</i>&nbsp;                ch = (char)(ch + -32);
+<i>85</i>&nbsp;                different = true;
+<i>86</i>&nbsp;            }
+<b class="nc"><i>87</i>&nbsp;</b>
+<i>88</i>&nbsp;            chars[upper] = ch;
+<i>89</i>&nbsp;        }
+<i>90</i>&nbsp;
+<b class="nc"><i>91</i>&nbsp;        String var6;</b>
+<i>92</i>&nbsp;        if(different) {
+<i>93</i>&nbsp;            var6 = String.valueOf(chars);
+<i>94</i>&nbsp;        } else {
+<b class="nc"><i>95</i>&nbsp;            var6 = s;</b>
+<i>96</i>&nbsp;        }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;        return var6;
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    static String getMimeEncoding(String encoding) {
+<i>102</i>&nbsp;        if(null == encoding) {
+<i>103</i>&nbsp;            try {
+<i>104</i>&nbsp;                encoding = SecuritySupport.getSystemProperty(&quot;file.encoding&quot;, &quot;UTF8&quot;);
+<b class="nc"><i>105</i>&nbsp;                if(null != encoding) {</b>
+<i>106</i>&nbsp;                    String se = !encoding.equalsIgnoreCase(&quot;Cp1252&quot;) &amp;&amp; !encoding.equalsIgnoreCase(&quot;ISO8859_1&quot;) &amp;&amp; !encoding.equalsIgnoreCase(&quot;8859_1&quot;) &amp;&amp; !encoding.equalsIgnoreCase(&quot;UTF8&quot;)?convertJava2MimeEncoding(encoding):&quot;UTF-8&quot;;
+<b class="nc"><i>107</i>&nbsp;                    encoding = null != se?se:&quot;UTF-8&quot;;</b>
+<i>108</i>&nbsp;                } else {
+<b class="nc"><i>109</i>&nbsp;                    encoding = &quot;UTF-8&quot;;</b>
+<i>110</i>&nbsp;                }
+<i>111</i>&nbsp;            } catch (SecurityException var2) {
+<i>112</i>&nbsp;                encoding = &quot;UTF-8&quot;;
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;        } else {
+<i>115</i>&nbsp;            encoding = convertJava2MimeEncoding(encoding);
+<i>116</i>&nbsp;        }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;        return encoding;
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    private static String convertJava2MimeEncoding(String encoding) {
+<b class="nc"><i>122</i>&nbsp;        EncodingInfo enc = _encodingInfos.getEncodingFromJavaKey(toUpperCaseFast(encoding));</b>
+<i>123</i>&nbsp;        return null != enc?enc.name:encoding;
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public static String convertMime2JavaEncoding(String encoding) {
+<i>127</i>&nbsp;        EncodingInfo info = _encodingInfos.findEncoding(toUpperCaseFast(encoding));
+<i>128</i>&nbsp;        return info != null?info.javaName:encoding;
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    static boolean isHighUTF16Surrogate(char ch) {
+<i>132</i>&nbsp;        return &#39;\ud800&#39; &lt;= ch &amp;&amp; ch &lt;= &#39;\udbff&#39;;
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    static boolean isLowUTF16Surrogate(char ch) {
+<i>136</i>&nbsp;        return &#39;\udc00&#39; &lt;= ch &amp;&amp; ch &lt;= &#39;\udfff&#39;;
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    static int toCodePoint(char highSurrogate, char lowSurrogate) {
+<i>140</i>&nbsp;        int codePoint = (highSurrogate - &#39;\ud800&#39; &lt;&lt; 10) + (lowSurrogate - &#39;\udc00&#39;) + 65536;
+<i>141</i>&nbsp;        return codePoint;
+<b class="nc"><i>142</i>&nbsp;    }</b>
+<b class="nc"><i>143</i>&nbsp;</b>
+<b class="nc"><i>144</i>&nbsp;    static int toCodePoint(char ch) {</b>
+<b class="nc"><i>145</i>&nbsp;        return ch;</b>
+<b class="nc"><i>146</i>&nbsp;    }</b>
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;    private static final class EncodingInfos {</b>
+<i>149</i>&nbsp;        private final Map&lt;String, EncodingInfo&gt; _encodingTableKeyJava;
+<i>150</i>&nbsp;        private final Map&lt;String, EncodingInfo&gt; _encodingTableKeyMime;
+<b class="nc"><i>151</i>&nbsp;        private final Map&lt;String, EncodingInfo&gt; _encodingDynamicTable;</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;        private EncodingInfos() {
+<i>154</i>&nbsp;            this._encodingTableKeyJava = new HashMap();
+<i>155</i>&nbsp;            this._encodingTableKeyMime = new HashMap();
+<i>156</i>&nbsp;            this._encodingDynamicTable = Collections.synchronizedMap(new HashMap());
+<i>157</i>&nbsp;            this.loadEncodingInfo();
+<i>158</i>&nbsp;        }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;        private InputStream openEncodingsFileStream() throws MalformedURLException, IOException {
+<i>161</i>&nbsp;            String urlString = null;
+<i>162</i>&nbsp;            InputStream is = null;
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;            try {
+<i>165</i>&nbsp;                urlString = SecuritySupport.getSystemProperty(&quot;com.sun.org.apache.xalan.internal.serialize.encodings&quot;, &quot;&quot;);
+<b class="nc"><i>166</i>&nbsp;            } catch (SecurityException var4) {</b>
+<b class="nc"><i>167</i>&nbsp;                ;</b>
+<b class="nc"><i>168</i>&nbsp;            }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;            if(urlString != null &amp;&amp; urlString.length() &gt; 0) {</b>
+<i>171</i>&nbsp;                URL url = new URL(urlString);
+<b class="nc"><i>172</i>&nbsp;                is = url.openStream();</b>
+<i>173</i>&nbsp;            }
+<b class="nc"><i>174</i>&nbsp;</b>
+<b class="nc"><i>175</i>&nbsp;            if(is == null) {</b>
+<i>176</i>&nbsp;                is = SecuritySupport.getResourceAsStream(&quot;com/sun/org/apache/xml/internal/serializer/Encodings.properties&quot;);
+<b class="nc"><i>177</i>&nbsp;            }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;            return is;
+<i>180</i>&nbsp;        }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;        private Properties loadProperties() throws MalformedURLException, IOException {
+<b class="nc"><i>183</i>&nbsp;            Properties props = new Properties();</b>
+<b class="nc"><i>184</i>&nbsp;            InputStream is = this.openEncodingsFileStream();</b>
+<i>185</i>&nbsp;
+<b class="nc"><i>186</i>&nbsp;            try {</b>
+<i>187</i>&nbsp;                if(is != null) {
+<b class="nc"><i>188</i>&nbsp;                    props.load(is);</b>
+<i>189</i>&nbsp;                }
+<i>190</i>&nbsp;            } finally {
+<i>191</i>&nbsp;                if(is != null) {
+<i>192</i>&nbsp;                    is.close();
+<i>193</i>&nbsp;                }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;            }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;            return props;
+<i>198</i>&nbsp;        }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;        private String[] parseMimeTypes(String val) {
+<i>201</i>&nbsp;            int pos = val.indexOf(32);
+<i>202</i>&nbsp;            if(pos &lt; 0) {
+<i>203</i>&nbsp;                return new String[]{val};
+<i>204</i>&nbsp;            } else {
+<i>205</i>&nbsp;                StringTokenizer st = new StringTokenizer(val.substring(0, pos), &quot;,&quot;);
+<i>206</i>&nbsp;                String[] values = new String[st.countTokens()];
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;                for(int i = 0; st.hasMoreTokens(); ++i) {
+<i>209</i>&nbsp;                    values[i] = st.nextToken();
+<i>210</i>&nbsp;                }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;                return values;
+<b class="nc"><i>213</i>&nbsp;            }</b>
+<i>214</i>&nbsp;        }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        private String findCharsetNameFor(String name) {
+<i>217</i>&nbsp;            try {
+<i>218</i>&nbsp;                return Charset.forName(name).name();
+<i>219</i>&nbsp;            } catch (Exception var3) {
+<i>220</i>&nbsp;                return null;
+<b class="nc"><i>221</i>&nbsp;            }</b>
+<i>222</i>&nbsp;        }
+<b class="nc"><i>223</i>&nbsp;</b>
+<i>224</i>&nbsp;        private String findCharsetNameFor(String javaName, String[] mimes) {
+<i>225</i>&nbsp;            String cs = this.findCharsetNameFor(javaName);
+<i>226</i>&nbsp;            if(cs != null) {
+<i>227</i>&nbsp;                return javaName;
+<i>228</i>&nbsp;            } else {
+<i>229</i>&nbsp;                String[] arr$ = mimes;
+<i>230</i>&nbsp;                int len$ = mimes.length;
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;                for(int i$ = 0; i$ &lt; len$; ++i$) {
+<b class="nc"><i>233</i>&nbsp;                    String m = arr$[i$];</b>
+<i>234</i>&nbsp;                    cs = this.findCharsetNameFor(m);
+<i>235</i>&nbsp;                    if(cs != null) {
+<i>236</i>&nbsp;                        break;
+<i>237</i>&nbsp;                    }
+<i>238</i>&nbsp;                }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;                return cs;
+<b class="nc"><i>241</i>&nbsp;            }</b>
+<i>242</i>&nbsp;        }
+<b class="nc"><i>243</i>&nbsp;</b>
+<i>244</i>&nbsp;        private void loadEncodingInfo() {
+<i>245</i>&nbsp;            try {
+<b class="nc"><i>246</i>&nbsp;                Properties ioe = this.loadProperties();</b>
+<i>247</i>&nbsp;                Enumeration keys = ioe.keys();
+<i>248</i>&nbsp;                HashMap canonicals = new HashMap();
+<b class="nc"><i>249</i>&nbsp;</b>
+<i>250</i>&nbsp;                while(keys.hasMoreElements()) {
+<b class="nc"><i>251</i>&nbsp;                    String i$ = (String)keys.nextElement();</b>
+<b class="nc"><i>252</i>&nbsp;                    String[] e = this.parseMimeTypes(ioe.getProperty(i$));</b>
+<i>253</i>&nbsp;                    String charsetName = this.findCharsetNameFor(i$, e);
+<i>254</i>&nbsp;                    if(charsetName != null) {
+<i>255</i>&nbsp;                        String kj = Encodings.toUpperCaseFast(i$);
+<b class="nc"><i>256</i>&nbsp;                        String kc = Encodings.toUpperCaseFast(charsetName);</b>
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;                        for(int i = 0; i &lt; e.length; ++i) {
+<b class="nc"><i>259</i>&nbsp;                            String mimeName = e[i];</b>
+<i>260</i>&nbsp;                            String km = Encodings.toUpperCaseFast(mimeName);
+<i>261</i>&nbsp;                            EncodingInfo info = new EncodingInfo(mimeName, charsetName);
+<i>262</i>&nbsp;                            this._encodingTableKeyMime.put(km, info);
+<i>263</i>&nbsp;                            if(!canonicals.containsKey(kc)) {
+<i>264</i>&nbsp;                                canonicals.put(kc, info);
+<i>265</i>&nbsp;                                this._encodingTableKeyJava.put(kc, info);
+<i>266</i>&nbsp;                            }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;                            this._encodingTableKeyJava.put(kj, info);
+<i>269</i>&nbsp;                        }
+<i>270</i>&nbsp;                    }
+<b class="nc"><i>271</i>&nbsp;                }</b>
+<i>272</i>&nbsp;
+<b class="nc"><i>273</i>&nbsp;                Iterator var15 = this._encodingTableKeyJava.entrySet().iterator();</b>
+<b class="nc"><i>274</i>&nbsp;</b>
+<b class="nc"><i>275</i>&nbsp;                while(var15.hasNext()) {</b>
+<i>276</i>&nbsp;                    Entry var16 = (Entry)var15.next();
+<i>277</i>&nbsp;                    var16.setValue(canonicals.get(Encodings.toUpperCaseFast(((EncodingInfo)var16.getValue()).javaName)));
+<i>278</i>&nbsp;                }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;            } catch (MalformedURLException var13) {
+<i>281</i>&nbsp;                throw new WrappedRuntimeException(var13);
+<i>282</i>&nbsp;            } catch (IOException var14) {
+<i>283</i>&nbsp;                throw new WrappedRuntimeException(var14);
+<i>284</i>&nbsp;            }
+<i>285</i>&nbsp;        }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;        EncodingInfo findEncoding(String normalizedEncoding) {
+<b class="nc"><i>288</i>&nbsp;            EncodingInfo info = (EncodingInfo)this._encodingTableKeyJava.get(normalizedEncoding);</b>
+<i>289</i>&nbsp;            if(info == null) {
+<b class="nc"><i>290</i>&nbsp;                info = (EncodingInfo)this._encodingTableKeyMime.get(normalizedEncoding);</b>
+<i>291</i>&nbsp;            }
+<b class="nc"><i>292</i>&nbsp;</b>
+<i>293</i>&nbsp;            if(info == null) {
+<i>294</i>&nbsp;                info = (EncodingInfo)this._encodingDynamicTable.get(normalizedEncoding);
+<i>295</i>&nbsp;            }
+<b class="nc"><i>296</i>&nbsp;</b>
+<i>297</i>&nbsp;            return info;
+<i>298</i>&nbsp;        }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;        EncodingInfo getEncodingFromMimeKey(String normalizedMimeName) {
+<i>301</i>&nbsp;            return (EncodingInfo)this._encodingTableKeyMime.get(normalizedMimeName);
+<i>302</i>&nbsp;        }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;        EncodingInfo getEncodingFromJavaKey(String normalizedJavaName) {
+<i>305</i>&nbsp;            return (EncodingInfo)this._encodingTableKeyJava.get(normalizedJavaName);
+<i>306</i>&nbsp;        }
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;        void putEncoding(String key, EncodingInfo info) {</b>
+<i>309</i>&nbsp;            this._encodingDynamicTable.put(key, info);
+<i>310</i>&nbsp;        }
+<b class="nc"><i>311</i>&nbsp;    }</b>
+<b class="nc"><i>312</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

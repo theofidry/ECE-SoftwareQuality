@@ -1,0 +1,269 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Main</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.hat</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Main (com.sun.tools.hat)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Main</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 122)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.hat;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.hat.internal.model.ReachableExcludesImpl;
+<i>9</i>&nbsp;import com.sun.tools.hat.internal.model.Snapshot;
+<i>10</i>&nbsp;import com.sun.tools.hat.internal.parser.Reader;
+<i>11</i>&nbsp;import com.sun.tools.hat.internal.server.QueryListener;
+<i>12</i>&nbsp;import java.io.File;
+<i>13</i>&nbsp;import java.io.IOException;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;public class Main {
+<i>16</i>&nbsp;    private static String VERSION_STRING = &quot;jhat version 2.0&quot;;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    public Main() {
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    private static void usage(String var0) {
+<i>22</i>&nbsp;        if(var0 != null) {
+<i>23</i>&nbsp;            System.err.println(&quot;ERROR: &quot; + var0);
+<i>24</i>&nbsp;        }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;        System.err.println(&quot;Usage:  jhat [-stack &lt;bool&gt;] [-refs &lt;bool&gt;] [-port &lt;port&gt;] [-baseline &lt;file&gt;] [-debug &lt;int&gt;] [-version] [-h|-help] &lt;file&gt;&quot;);
+<i>27</i>&nbsp;        System.err.println();
+<i>28</i>&nbsp;        System.err.println(&quot;\t-J&lt;flag&gt;          Pass &lt;flag&gt; directly to the runtime system. For&quot;);
+<i>29</i>&nbsp;        System.err.println(&quot;\t\t\t  example, -J-mx512m to use a maximum heap size of 512MB&quot;);
+<i>30</i>&nbsp;        System.err.println(&quot;\t-stack false:     Turn off tracking object allocation call stack.&quot;);
+<b class="nc"><i>31</i>&nbsp;        System.err.println(&quot;\t-refs false:      Turn off tracking of references to objects&quot;);</b>
+<i>32</i>&nbsp;        System.err.println(&quot;\t-port &lt;port&gt;:     Set the port for the HTTP server.  Defaults to 7000&quot;);
+<b class="nc"><i>33</i>&nbsp;        System.err.println(&quot;\t-exclude &lt;file&gt;:  Specify a file that lists data members that should&quot;);</b>
+<i>34</i>&nbsp;        System.err.println(&quot;\t\t\t  be excluded from the reachableFrom query.&quot;);
+<i>35</i>&nbsp;        System.err.println(&quot;\t-baseline &lt;file&gt;: Specify a baseline object dump.  Objects in&quot;);
+<b class="nc"><i>36</i>&nbsp;        System.err.println(&quot;\t\t\t  both heap dumps with the same ID and same class will&quot;);</b>
+<b class="nc"><i>37</i>&nbsp;        System.err.println(&quot;\t\t\t  be marked as not being \&quot;new\&quot;.&quot;);</b>
+<i>38</i>&nbsp;        System.err.println(&quot;\t-debug &lt;int&gt;:     Set debug level.&quot;);
+<b class="nc"><i>39</i>&nbsp;        System.err.println(&quot;\t\t\t    0:  No debug output&quot;);</b>
+<b class="nc"><i>40</i>&nbsp;        System.err.println(&quot;\t\t\t    1:  Debug hprof file parsing&quot;);</b>
+<b class="nc"><i>41</i>&nbsp;        System.err.println(&quot;\t\t\t    2:  Debug hprof file parsing, no server&quot;);</b>
+<b class="nc"><i>42</i>&nbsp;        System.err.println(&quot;\t-version          Report version number&quot;);</b>
+<b class="nc"><i>43</i>&nbsp;        System.err.println(&quot;\t-h|-help          Print this help and exit&quot;);</b>
+<b class="nc"><i>44</i>&nbsp;        System.err.println(&quot;\t&lt;file&gt;            The file to read&quot;);</b>
+<b class="nc"><i>45</i>&nbsp;        System.err.println();</b>
+<b class="nc"><i>46</i>&nbsp;        System.err.println(&quot;For a dump file that contains multiple heap dumps,&quot;);</b>
+<b class="nc"><i>47</i>&nbsp;        System.err.println(&quot;you may specify which dump in the file&quot;);</b>
+<b class="nc"><i>48</i>&nbsp;        System.err.println(&quot;by appending \&quot;#&lt;number&gt;\&quot; to the file name, i.e. \&quot;foo.hprof#3\&quot;.&quot;);</b>
+<b class="nc"><i>49</i>&nbsp;        System.err.println();</b>
+<b class="nc"><i>50</i>&nbsp;        System.err.println(&quot;All boolean options default to \&quot;true\&quot;&quot;);</b>
+<b class="nc"><i>51</i>&nbsp;        System.exit(1);</b>
+<b class="nc"><i>52</i>&nbsp;    }</b>
+<b class="nc"><i>53</i>&nbsp;</b>
+<b class="nc"><i>54</i>&nbsp;    private static boolean booleanValue(String var0) {</b>
+<b class="nc"><i>55</i>&nbsp;        if(&quot;true&quot;.equalsIgnoreCase(var0)) {</b>
+<b class="nc"><i>56</i>&nbsp;            return true;</b>
+<b class="nc"><i>57</i>&nbsp;        } else if(&quot;false&quot;.equalsIgnoreCase(var0)) {</b>
+<b class="nc"><i>58</i>&nbsp;            return false;</b>
+<b class="nc"><i>59</i>&nbsp;        } else {</b>
+<b class="nc"><i>60</i>&nbsp;            usage(&quot;Boolean value must be true or false&quot;);</b>
+<b class="nc"><i>61</i>&nbsp;            return false;</b>
+<b class="nc"><i>62</i>&nbsp;        }</b>
+<b class="nc"><i>63</i>&nbsp;    }</b>
+<b class="nc"><i>64</i>&nbsp;</b>
+<i>65</i>&nbsp;    public static void main(String[] var0) {
+<i>66</i>&nbsp;        if(var0.length &lt; 1) {
+<i>67</i>&nbsp;            usage(&quot;No arguments supplied&quot;);
+<i>68</i>&nbsp;        }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;        boolean var1 = false;
+<b class="nc"><i>71</i>&nbsp;        int var2 = 7000;</b>
+<b class="nc"><i>72</i>&nbsp;        boolean var3 = true;</b>
+<b class="nc"><i>73</i>&nbsp;        boolean var4 = true;</b>
+<b class="nc"><i>74</i>&nbsp;        String var5 = null;</b>
+<i>75</i>&nbsp;        String var6 = null;
+<b class="nc"><i>76</i>&nbsp;        int var7 = 0;</b>
+<b class="nc"><i>77</i>&nbsp;        int var8 = 0;</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;        while(true) {
+<i>80</i>&nbsp;            if(var8 &gt; var0.length - 1) {
+<i>81</i>&nbsp;                usage(&quot;Option parsing error&quot;);
+<b class="nc"><i>82</i>&nbsp;            }</b>
+<b class="nc"><i>83</i>&nbsp;</b>
+<i>84</i>&nbsp;            if(&quot;-version&quot;.equals(var0[var8])) {
+<i>85</i>&nbsp;                System.out.print(VERSION_STRING);
+<b class="nc"><i>86</i>&nbsp;                System.out.println(&quot; (java version &quot; + System.getProperty(&quot;java.version&quot;) + &quot;)&quot;);</b>
+<b class="nc"><i>87</i>&nbsp;                System.exit(0);</b>
+<b class="nc"><i>88</i>&nbsp;            }</b>
+<b class="nc"><i>89</i>&nbsp;</b>
+<b class="nc"><i>90</i>&nbsp;            if(&quot;-h&quot;.equals(var0[var8]) || &quot;-help&quot;.equals(var0[var8])) {</b>
+<b class="nc"><i>91</i>&nbsp;                usage((String)null);</b>
+<b class="nc"><i>92</i>&nbsp;            }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<b class="nc"><i>94</i>&nbsp;            if(var8 == var0.length - 1) {</b>
+<b class="nc"><i>95</i>&nbsp;                String var17 = var0[var0.length - 1];</b>
+<i>96</i>&nbsp;                Snapshot var18 = null;
+<b class="nc"><i>97</i>&nbsp;                File var19 = null;</b>
+<b class="nc"><i>98</i>&nbsp;                if(var6 != null) {</b>
+<b class="nc"><i>99</i>&nbsp;                    var19 = new File(var6);</b>
+<b class="nc"><i>100</i>&nbsp;                    if(!var19.exists()) {</b>
+<i>101</i>&nbsp;                        System.out.println(&quot;Exclude file &quot; + var19 + &quot; does not exist.  Aborting.&quot;);
+<i>102</i>&nbsp;                        System.exit(1);
+<b class="nc"><i>103</i>&nbsp;                    }</b>
+<b class="nc"><i>104</i>&nbsp;                }</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;                System.out.println(&quot;Reading from &quot; + var17 + &quot;...&quot;);
+<b class="nc"><i>107</i>&nbsp;</b>
+<b class="nc"><i>108</i>&nbsp;                try {</b>
+<i>109</i>&nbsp;                    var18 = Reader.readFile(var17, var3, var7);
+<b class="nc"><i>110</i>&nbsp;                } catch (IOException var15) {</b>
+<b class="nc"><i>111</i>&nbsp;                    var15.printStackTrace();</b>
+<b class="nc"><i>112</i>&nbsp;                    System.exit(1);</b>
+<b class="nc"><i>113</i>&nbsp;                } catch (RuntimeException var16) {</b>
+<b class="nc"><i>114</i>&nbsp;                    var16.printStackTrace();</b>
+<b class="nc"><i>115</i>&nbsp;                    System.exit(1);</b>
+<b class="nc"><i>116</i>&nbsp;                }</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<b class="nc"><i>118</i>&nbsp;                System.out.println(&quot;Snapshot read, resolving...&quot;);</b>
+<b class="nc"><i>119</i>&nbsp;                var18.resolve(var4);</b>
+<b class="nc"><i>120</i>&nbsp;                System.out.println(&quot;Snapshot resolved.&quot;);</b>
+<b class="nc"><i>121</i>&nbsp;                if(var19 != null) {</b>
+<b class="nc"><i>122</i>&nbsp;                    var18.setReachableExcludes(new ReachableExcludesImpl(var19));</b>
+<b class="nc"><i>123</i>&nbsp;                }</b>
+<b class="nc"><i>124</i>&nbsp;</b>
+<i>125</i>&nbsp;                if(var5 != null) {
+<b class="nc"><i>126</i>&nbsp;                    System.out.println(&quot;Reading baseline snapshot...&quot;);</b>
+<i>127</i>&nbsp;                    Snapshot var11 = null;
+<i>128</i>&nbsp;
+<b class="nc"><i>129</i>&nbsp;                    try {</b>
+<b class="nc"><i>130</i>&nbsp;                        var11 = Reader.readFile(var5, false, var7);</b>
+<b class="nc"><i>131</i>&nbsp;                    } catch (IOException var13) {</b>
+<b class="nc"><i>132</i>&nbsp;                        var13.printStackTrace();</b>
+<b class="nc"><i>133</i>&nbsp;                        System.exit(1);</b>
+<b class="nc"><i>134</i>&nbsp;                    } catch (RuntimeException var14) {</b>
+<b class="nc"><i>135</i>&nbsp;                        var14.printStackTrace();</b>
+<i>136</i>&nbsp;                        System.exit(1);
+<b class="nc"><i>137</i>&nbsp;                    }</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;                    var11.resolve(false);
+<i>140</i>&nbsp;                    System.out.println(&quot;Discovering new objects...&quot;);
+<b class="nc"><i>141</i>&nbsp;                    var18.markNewRelativeTo(var11);</b>
+<i>142</i>&nbsp;                    var11 = null;
+<b class="nc"><i>143</i>&nbsp;                }</b>
+<b class="nc"><i>144</i>&nbsp;</b>
+<b class="nc"><i>145</i>&nbsp;                if(var7 == 2) {</b>
+<b class="nc"><i>146</i>&nbsp;                    System.out.println(&quot;No server, -debug 2 was used.&quot;);</b>
+<b class="nc"><i>147</i>&nbsp;                    System.exit(0);</b>
+<b class="nc"><i>148</i>&nbsp;                }</b>
+<b class="nc"><i>149</i>&nbsp;</b>
+<b class="nc"><i>150</i>&nbsp;                if(var1) {</b>
+<b class="nc"><i>151</i>&nbsp;                    System.out.println(&quot;-parseonly is true, exiting..&quot;);</b>
+<b class="nc"><i>152</i>&nbsp;                    System.exit(0);</b>
+<b class="nc"><i>153</i>&nbsp;                }</b>
+<i>154</i>&nbsp;
+<b class="nc"><i>155</i>&nbsp;                QueryListener var20 = new QueryListener(var2);</b>
+<b class="nc"><i>156</i>&nbsp;                var20.setModel(var18);</b>
+<i>157</i>&nbsp;                Thread var12 = new Thread(var20, &quot;Query Listener&quot;);
+<i>158</i>&nbsp;                var12.setPriority(6);
+<b class="nc"><i>159</i>&nbsp;                var12.start();</b>
+<b class="nc"><i>160</i>&nbsp;                System.out.println(&quot;Started HTTP server on port &quot; + var2);</b>
+<b class="nc"><i>161</i>&nbsp;                System.out.println(&quot;Server is ready.&quot;);</b>
+<i>162</i>&nbsp;                return;
+<b class="nc"><i>163</i>&nbsp;            }</b>
+<i>164</i>&nbsp;
+<b class="nc"><i>165</i>&nbsp;            String var9 = var0[var8];</b>
+<b class="nc"><i>166</i>&nbsp;            String var10 = var0[var8 + 1];</b>
+<b class="nc"><i>167</i>&nbsp;            if(&quot;-stack&quot;.equals(var9)) {</b>
+<b class="nc"><i>168</i>&nbsp;                var3 = booleanValue(var10);</b>
+<b class="nc"><i>169</i>&nbsp;            } else if(&quot;-refs&quot;.equals(var9)) {</b>
+<b class="nc"><i>170</i>&nbsp;                var4 = booleanValue(var10);</b>
+<b class="nc"><i>171</i>&nbsp;            } else if(&quot;-port&quot;.equals(var9)) {</b>
+<b class="nc"><i>172</i>&nbsp;                var2 = Integer.parseInt(var10, 10);</b>
+<b class="nc"><i>173</i>&nbsp;            } else if(&quot;-exclude&quot;.equals(var9)) {</b>
+<b class="nc"><i>174</i>&nbsp;                var6 = var10;</b>
+<b class="nc"><i>175</i>&nbsp;            } else if(&quot;-baseline&quot;.equals(var9)) {</b>
+<i>176</i>&nbsp;                var5 = var10;
+<b class="nc"><i>177</i>&nbsp;            } else if(&quot;-debug&quot;.equals(var9)) {</b>
+<b class="nc"><i>178</i>&nbsp;                var7 = Integer.parseInt(var10, 10);</b>
+<b class="nc"><i>179</i>&nbsp;            } else if(&quot;-parseonly&quot;.equals(var9)) {</b>
+<i>180</i>&nbsp;                var1 = booleanValue(var10);
+<i>181</i>&nbsp;            }
+<b class="nc"><i>182</i>&nbsp;</b>
+<i>183</i>&nbsp;            var8 += 2;
+<b class="nc"><i>184</i>&nbsp;        }</b>
+<b class="nc"><i>185</i>&nbsp;    }</b>
+<i>186</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:46</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,621 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StandardMBean</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.management</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StandardMBean (javax.management)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StandardMBean</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 54)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 230)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StandardMBean$MBeanInfoSafeAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 56)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 242)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.management;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jmx.defaults.JmxProperties;
+<i>9</i>&nbsp;import com.sun.jmx.mbeanserver.DescriptorCache;
+<i>10</i>&nbsp;import com.sun.jmx.mbeanserver.Introspector;
+<i>11</i>&nbsp;import com.sun.jmx.mbeanserver.MBeanSupport;
+<i>12</i>&nbsp;import com.sun.jmx.mbeanserver.MXBeanSupport;
+<i>13</i>&nbsp;import com.sun.jmx.mbeanserver.StandardMBeanSupport;
+<i>14</i>&nbsp;import com.sun.jmx.mbeanserver.Util;
+<i>15</i>&nbsp;import java.security.AccessController;
+<i>16</i>&nbsp;import java.security.PrivilegedAction;
+<i>17</i>&nbsp;import java.util.HashMap;
+<i>18</i>&nbsp;import java.util.Map;
+<i>19</i>&nbsp;import java.util.WeakHashMap;
+<i>20</i>&nbsp;import java.util.logging.Level;
+<i>21</i>&nbsp;import javax.management.Attribute;
+<i>22</i>&nbsp;import javax.management.AttributeList;
+<i>23</i>&nbsp;import javax.management.AttributeNotFoundException;
+<i>24</i>&nbsp;import javax.management.Descriptor;
+<i>25</i>&nbsp;import javax.management.DynamicMBean;
+<i>26</i>&nbsp;import javax.management.ImmutableDescriptor;
+<i>27</i>&nbsp;import javax.management.InvalidAttributeValueException;
+<i>28</i>&nbsp;import javax.management.JMX;
+<i>29</i>&nbsp;import javax.management.MBeanAttributeInfo;
+<i>30</i>&nbsp;import javax.management.MBeanConstructorInfo;
+<i>31</i>&nbsp;import javax.management.MBeanException;
+<i>32</i>&nbsp;import javax.management.MBeanFeatureInfo;
+<i>33</i>&nbsp;import javax.management.MBeanInfo;
+<i>34</i>&nbsp;import javax.management.MBeanNotificationInfo;
+<i>35</i>&nbsp;import javax.management.MBeanOperationInfo;
+<i>36</i>&nbsp;import javax.management.MBeanParameterInfo;
+<i>37</i>&nbsp;import javax.management.MBeanRegistration;
+<i>38</i>&nbsp;import javax.management.MBeanServer;
+<i>39</i>&nbsp;import javax.management.MBeanServerFactory;
+<i>40</i>&nbsp;import javax.management.NotCompliantMBeanException;
+<i>41</i>&nbsp;import javax.management.ObjectName;
+<i>42</i>&nbsp;import javax.management.ReflectionException;
+<i>43</i>&nbsp;import javax.management.StandardEmitterMBean;
+<i>44</i>&nbsp;import javax.management.openmbean.OpenMBeanAttributeInfo;
+<i>45</i>&nbsp;import javax.management.openmbean.OpenMBeanAttributeInfoSupport;
+<i>46</i>&nbsp;import javax.management.openmbean.OpenMBeanConstructorInfo;
+<i>47</i>&nbsp;import javax.management.openmbean.OpenMBeanConstructorInfoSupport;
+<i>48</i>&nbsp;import javax.management.openmbean.OpenMBeanOperationInfo;
+<i>49</i>&nbsp;import javax.management.openmbean.OpenMBeanOperationInfoSupport;
+<i>50</i>&nbsp;import javax.management.openmbean.OpenMBeanParameterInfo;
+<i>51</i>&nbsp;import javax.management.openmbean.OpenMBeanParameterInfoSupport;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;public class StandardMBean implements DynamicMBean, MBeanRegistration {
+<i>54</i>&nbsp;    private static final DescriptorCache descriptors;
+<i>55</i>&nbsp;    private volatile MBeanSupport&lt;?&gt; mbean;
+<i>56</i>&nbsp;    private volatile MBeanInfo cachedMBeanInfo;
+<i>57</i>&nbsp;    private static final Map&lt;Class&lt;?&gt;, Boolean&gt; mbeanInfoSafeMap;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private &lt;T&gt; void construct(T var1, Class&lt;T&gt; var2, boolean var3, boolean var4) throws NotCompliantMBeanException {
+<i>60</i>&nbsp;        if(var1 == null) {
+<i>61</i>&nbsp;            if(!var3) {
+<i>62</i>&nbsp;                throw new IllegalArgumentException(&quot;implementation is null&quot;);
+<i>63</i>&nbsp;            }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;            var1 = Util.cast(this);
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;        if(var4) {
+<i>69</i>&nbsp;            if(var2 == null) {
+<i>70</i>&nbsp;                var2 = (Class)Util.cast(Introspector.getMXBeanInterface(var1.getClass()));
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;            this.mbean = new MXBeanSupport(var1, var2);
+<i>74</i>&nbsp;        } else {
+<i>75</i>&nbsp;            if(var2 == null) {
+<i>76</i>&nbsp;                var2 = (Class)Util.cast(Introspector.getStandardMBeanInterface(var1.getClass()));
+<i>77</i>&nbsp;            }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;            this.mbean = new StandardMBeanSupport(var1, var2);
+<i>80</i>&nbsp;        }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public &lt;T&gt; StandardMBean(T var1, Class&lt;T&gt; var2) throws NotCompliantMBeanException {
+<i>85</i>&nbsp;        this.construct(var1, var2, false, false);
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    protected StandardMBean(Class&lt;?&gt; var1) throws NotCompliantMBeanException {
+<i>89</i>&nbsp;        this.construct((Object)null, var1, true, false);
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public &lt;T&gt; StandardMBean(T var1, Class&lt;T&gt; var2, boolean var3) {
+<i>93</i>&nbsp;        try {
+<i>94</i>&nbsp;            this.construct(var1, var2, false, var3);
+<i>95</i>&nbsp;        } catch (NotCompliantMBeanException var5) {
+<i>96</i>&nbsp;            throw new IllegalArgumentException(var5);
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    protected StandardMBean(Class&lt;?&gt; var1, boolean var2) {
+<i>101</i>&nbsp;        try {
+<i>102</i>&nbsp;            this.construct((Object)null, var1, true, var2);
+<i>103</i>&nbsp;        } catch (NotCompliantMBeanException var4) {
+<i>104</i>&nbsp;            throw new IllegalArgumentException(var4);
+<i>105</i>&nbsp;        }
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public void setImplementation(Object var1) throws NotCompliantMBeanException {
+<i>109</i>&nbsp;        if(var1 == null) {
+<i>110</i>&nbsp;            throw new IllegalArgumentException(&quot;implementation is null&quot;);
+<i>111</i>&nbsp;        } else {
+<i>112</i>&nbsp;            if(this.isMXBean()) {
+<i>113</i>&nbsp;                this.mbean = new MXBeanSupport(var1, (Class)Util.cast(this.getMBeanInterface()));
+<i>114</i>&nbsp;            } else {
+<i>115</i>&nbsp;                this.mbean = new StandardMBeanSupport(var1, (Class)Util.cast(this.getMBeanInterface()));
+<b class="nc"><i>116</i>&nbsp;            }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    public Object getImplementation() {
+<i>122</i>&nbsp;        return this.mbean.getResource();
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public final Class&lt;?&gt; getMBeanInterface() {
+<i>126</i>&nbsp;        return this.mbean.getMBeanInterface();
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public Class&lt;?&gt; getImplementationClass() {
+<i>130</i>&nbsp;        return this.mbean.getResource().getClass();
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    public Object getAttribute(String var1) throws AttributeNotFoundException, MBeanException, ReflectionException {
+<i>134</i>&nbsp;        return this.mbean.getAttribute(var1);
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    public void setAttribute(Attribute var1) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
+<i>138</i>&nbsp;        this.mbean.setAttribute(var1);
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public AttributeList getAttributes(String[] var1) {
+<i>142</i>&nbsp;        return this.mbean.getAttributes(var1);
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public AttributeList setAttributes(AttributeList var1) {
+<i>146</i>&nbsp;        return this.mbean.setAttributes(var1);
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    public Object invoke(String var1, Object[] var2, String[] var3) throws MBeanException, ReflectionException {
+<i>150</i>&nbsp;        return this.mbean.invoke(var1, var2, var3);
+<b class="nc"><i>151</i>&nbsp;    }</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    public MBeanInfo getMBeanInfo() {
+<b class="nc"><i>154</i>&nbsp;        try {</b>
+<b class="nc"><i>155</i>&nbsp;            MBeanInfo var1 = this.getCachedMBeanInfo();</b>
+<b class="nc"><i>156</i>&nbsp;            if(var1 != null) {</b>
+<i>157</i>&nbsp;                return var1;
+<b class="nc"><i>158</i>&nbsp;            }</b>
+<b class="nc"><i>159</i>&nbsp;        } catch (RuntimeException var15) {</b>
+<b class="nc"><i>160</i>&nbsp;            if(JmxProperties.MISC_LOGGER.isLoggable(Level.FINEST)) {</b>
+<i>161</i>&nbsp;                JmxProperties.MISC_LOGGER.logp(Level.FINEST, MBeanServerFactory.class.getName(), &quot;getMBeanInfo&quot;, &quot;Failed to get cached MBeanInfo&quot;, var15);
+<i>162</i>&nbsp;            }
+<b class="nc"><i>163</i>&nbsp;        }</b>
+<i>164</i>&nbsp;
+<b class="nc"><i>165</i>&nbsp;        if(JmxProperties.MISC_LOGGER.isLoggable(Level.FINER)) {</b>
+<b class="nc"><i>166</i>&nbsp;            JmxProperties.MISC_LOGGER.logp(Level.FINER, MBeanServerFactory.class.getName(), &quot;getMBeanInfo&quot;, &quot;Building MBeanInfo for &quot; + this.getImplementationClass().getName());</b>
+<i>167</i>&nbsp;        }
+<i>168</i>&nbsp;
+<b class="nc"><i>169</i>&nbsp;        MBeanSupport var16 = this.mbean;</b>
+<i>170</i>&nbsp;        MBeanInfo var2 = var16.getMBeanInfo();
+<i>171</i>&nbsp;        Object var3 = var16.getResource();
+<i>172</i>&nbsp;        boolean var4 = immutableInfo(this.getClass());
+<i>173</i>&nbsp;        String var5 = this.getClassName(var2);
+<i>174</i>&nbsp;        String var6 = this.getDescription((MBeanInfo)var2);
+<i>175</i>&nbsp;        MBeanConstructorInfo[] var7 = this.getConstructors((MBeanInfo)var2, var3);
+<i>176</i>&nbsp;        MBeanAttributeInfo[] var8 = this.getAttributes((MBeanInfo)var2);
+<i>177</i>&nbsp;        MBeanOperationInfo[] var9 = this.getOperations(var2);
+<i>178</i>&nbsp;        MBeanNotificationInfo[] var10 = this.getNotifications(var2);
+<i>179</i>&nbsp;        Descriptor var11 = this.getDescriptor(var2, var4);
+<i>180</i>&nbsp;        MBeanInfo var12 = new MBeanInfo(var5, var6, var8, var7, var9, var10, var11);
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;        try {
+<i>183</i>&nbsp;            this.cacheMBeanInfo(var12);
+<i>184</i>&nbsp;        } catch (RuntimeException var14) {
+<i>185</i>&nbsp;            if(JmxProperties.MISC_LOGGER.isLoggable(Level.FINEST)) {
+<i>186</i>&nbsp;                JmxProperties.MISC_LOGGER.logp(Level.FINEST, MBeanServerFactory.class.getName(), &quot;getMBeanInfo&quot;, &quot;Failed to cache MBeanInfo&quot;, var14);
+<i>187</i>&nbsp;            }
+<i>188</i>&nbsp;        }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;        return var12;
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    protected String getClassName(MBeanInfo var1) {
+<i>194</i>&nbsp;        return var1 == null?this.getImplementationClass().getName():var1.getClassName();
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    protected String getDescription(MBeanInfo var1) {
+<i>198</i>&nbsp;        return var1 == null?null:var1.getDescription();
+<b class="nc"><i>199</i>&nbsp;    }</b>
+<b class="nc"><i>200</i>&nbsp;</b>
+<i>201</i>&nbsp;    protected String getDescription(MBeanFeatureInfo var1) {
+<i>202</i>&nbsp;        return var1 == null?null:var1.getDescription();
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    protected String getDescription(MBeanAttributeInfo var1) {
+<i>206</i>&nbsp;        return this.getDescription((MBeanFeatureInfo)var1);
+<i>207</i>&nbsp;    }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    protected String getDescription(MBeanConstructorInfo var1) {
+<i>210</i>&nbsp;        return this.getDescription((MBeanFeatureInfo)var1);
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    protected String getDescription(MBeanConstructorInfo var1, MBeanParameterInfo var2, int var3) {
+<i>214</i>&nbsp;        return var2 == null?null:var2.getDescription();
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    protected String getParameterName(MBeanConstructorInfo var1, MBeanParameterInfo var2, int var3) {
+<i>218</i>&nbsp;        return var2 == null?null:var2.getName();
+<b class="nc"><i>219</i>&nbsp;    }</b>
+<b class="nc"><i>220</i>&nbsp;</b>
+<i>221</i>&nbsp;    protected String getDescription(MBeanOperationInfo var1) {
+<i>222</i>&nbsp;        return this.getDescription((MBeanFeatureInfo)var1);
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    protected int getImpact(MBeanOperationInfo var1) {
+<i>226</i>&nbsp;        return var1 == null?3:var1.getImpact();
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    protected String getParameterName(MBeanOperationInfo var1, MBeanParameterInfo var2, int var3) {
+<i>230</i>&nbsp;        return var2 == null?null:var2.getName();
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    protected String getDescription(MBeanOperationInfo var1, MBeanParameterInfo var2, int var3) {
+<i>234</i>&nbsp;        return var2 == null?null:var2.getDescription();
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    protected MBeanConstructorInfo[] getConstructors(MBeanConstructorInfo[] var1, Object var2) {
+<i>238</i>&nbsp;        return var1 == null?null:(var2 != null &amp;&amp; var2 != this?null:var1);
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    MBeanNotificationInfo[] getNotifications(MBeanInfo var1) {
+<i>242</i>&nbsp;        return null;
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    Descriptor getDescriptor(MBeanInfo var1, boolean var2) {
+<i>246</i>&nbsp;        ImmutableDescriptor var3;
+<i>247</i>&nbsp;        if(var1 != null &amp;&amp; var1.getDescriptor() != null &amp;&amp; var1.getDescriptor().getFieldNames().length != 0) {
+<i>248</i>&nbsp;            Descriptor var10 = var1.getDescriptor();
+<i>249</i>&nbsp;            HashMap var11 = new HashMap();
+<i>250</i>&nbsp;            String[] var6 = var10.getFieldNames();
+<i>251</i>&nbsp;            int var7 = var6.length;
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;            for(int var8 = 0; var8 &lt; var7; ++var8) {
+<b class="nc"><i>254</i>&nbsp;                String var9 = var6[var8];</b>
+<i>255</i>&nbsp;                if(var9.equals(&quot;immutableInfo&quot;)) {
+<b class="nc"><i>256</i>&nbsp;                    var11.put(var9, Boolean.toString(var2));</b>
+<b class="nc"><i>257</i>&nbsp;                } else {</b>
+<b class="nc"><i>258</i>&nbsp;                    var11.put(var9, var10.getFieldValue(var9));</b>
+<b class="nc"><i>259</i>&nbsp;                }</b>
+<i>260</i>&nbsp;            }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;            var3 = new ImmutableDescriptor(var11);
+<i>263</i>&nbsp;        } else {
+<i>264</i>&nbsp;            String var4 = &quot;interfaceClassName=&quot; + this.getMBeanInterface().getName();
+<i>265</i>&nbsp;            String var5 = &quot;immutableInfo=&quot; + var2;
+<i>266</i>&nbsp;            var3 = new ImmutableDescriptor(new String[]{var4, var5});
+<i>267</i>&nbsp;            var3 = descriptors.get(var3);
+<i>268</i>&nbsp;        }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;        return var3;
+<i>271</i>&nbsp;    }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;    protected MBeanInfo getCachedMBeanInfo() {
+<i>274</i>&nbsp;        return this.cachedMBeanInfo;
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    protected void cacheMBeanInfo(MBeanInfo var1) {
+<i>278</i>&nbsp;        this.cachedMBeanInfo = var1;
+<i>279</i>&nbsp;    }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    private boolean isMXBean() {
+<i>282</i>&nbsp;        return this.mbean.isMXBean();
+<i>283</i>&nbsp;    }
+<b class="nc"><i>284</i>&nbsp;</b>
+<i>285</i>&nbsp;    private static &lt;T&gt; boolean identicalArrays(T[] var0, T[] var1) {
+<b class="nc"><i>286</i>&nbsp;        if(var0 == var1) {</b>
+<b class="nc"><i>287</i>&nbsp;            return true;</b>
+<b class="nc"><i>288</i>&nbsp;        } else if(var0 != null &amp;&amp; var1 != null &amp;&amp; var0.length == var1.length) {</b>
+<b class="nc"><i>289</i>&nbsp;            for(int var2 = 0; var2 &lt; var0.length; ++var2) {</b>
+<i>290</i>&nbsp;                if(var0[var2] != var1[var2]) {
+<i>291</i>&nbsp;                    return false;
+<i>292</i>&nbsp;                }
+<i>293</i>&nbsp;            }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;            return true;
+<i>296</i>&nbsp;        } else {
+<i>297</i>&nbsp;            return false;
+<i>298</i>&nbsp;        }
+<i>299</i>&nbsp;    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    private static &lt;T&gt; boolean equal(T var0, T var1) {
+<i>302</i>&nbsp;        return var0 == var1?true:(var0 != null &amp;&amp; var1 != null?var0.equals(var1):false);
+<i>303</i>&nbsp;    }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;    private static MBeanParameterInfo customize(MBeanParameterInfo var0, String var1, String var2) {
+<i>306</i>&nbsp;        if(equal(var1, var0.getName()) &amp;&amp; equal(var2, var0.getDescription())) {
+<i>307</i>&nbsp;            return var0;
+<i>308</i>&nbsp;        } else if(var0 instanceof OpenMBeanParameterInfo) {
+<i>309</i>&nbsp;            OpenMBeanParameterInfo var3 = (OpenMBeanParameterInfo)var0;
+<i>310</i>&nbsp;            return new OpenMBeanParameterInfoSupport(var1, var2, var3.getOpenType(), var0.getDescriptor());
+<i>311</i>&nbsp;        } else {
+<i>312</i>&nbsp;            return new MBeanParameterInfo(var1, var0.getType(), var2, var0.getDescriptor());
+<b class="nc"><i>313</i>&nbsp;        }</b>
+<b class="nc"><i>314</i>&nbsp;    }</b>
+<i>315</i>&nbsp;
+<b class="nc"><i>316</i>&nbsp;    private static MBeanConstructorInfo customize(MBeanConstructorInfo var0, String var1, MBeanParameterInfo[] var2) {</b>
+<b class="nc"><i>317</i>&nbsp;        if(equal(var1, var0.getDescription()) &amp;&amp; identicalArrays(var2, var0.getSignature())) {</b>
+<i>318</i>&nbsp;            return var0;
+<i>319</i>&nbsp;        } else if(var0 instanceof OpenMBeanConstructorInfo) {
+<b class="nc"><i>320</i>&nbsp;            OpenMBeanParameterInfo[] var3 = paramsToOpenParams(var2);</b>
+<i>321</i>&nbsp;            return new OpenMBeanConstructorInfoSupport(var0.getName(), var1, var3, var0.getDescriptor());
+<i>322</i>&nbsp;        } else {
+<i>323</i>&nbsp;            return new MBeanConstructorInfo(var0.getName(), var1, var2, var0.getDescriptor());
+<i>324</i>&nbsp;        }
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;    private static MBeanOperationInfo customize(MBeanOperationInfo var0, String var1, MBeanParameterInfo[] var2, int var3) {
+<i>328</i>&nbsp;        if(equal(var1, var0.getDescription()) &amp;&amp; identicalArrays(var2, var0.getSignature()) &amp;&amp; var3 == var0.getImpact()) {
+<i>329</i>&nbsp;            return var0;
+<i>330</i>&nbsp;        } else if(var0 instanceof OpenMBeanOperationInfo) {
+<i>331</i>&nbsp;            OpenMBeanOperationInfo var4 = (OpenMBeanOperationInfo)var0;
+<b class="nc"><i>332</i>&nbsp;            OpenMBeanParameterInfo[] var5 = paramsToOpenParams(var2);</b>
+<i>333</i>&nbsp;            return new OpenMBeanOperationInfoSupport(var0.getName(), var1, var5, var4.getReturnOpenType(), var3, var0.getDescriptor());
+<i>334</i>&nbsp;        } else {
+<i>335</i>&nbsp;            return new MBeanOperationInfo(var0.getName(), var1, var2, var0.getReturnType(), var3, var0.getDescriptor());
+<i>336</i>&nbsp;        }
+<i>337</i>&nbsp;    }
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    private static MBeanAttributeInfo customize(MBeanAttributeInfo var0, String var1) {
+<b class="nc"><i>340</i>&nbsp;        if(equal(var1, var0.getDescription())) {</b>
+<i>341</i>&nbsp;            return var0;
+<i>342</i>&nbsp;        } else if(var0 instanceof OpenMBeanAttributeInfo) {
+<i>343</i>&nbsp;            OpenMBeanAttributeInfo var2 = (OpenMBeanAttributeInfo)var0;
+<i>344</i>&nbsp;            return new OpenMBeanAttributeInfoSupport(var0.getName(), var1, var2.getOpenType(), var0.isReadable(), var0.isWritable(), var0.isIs(), var0.getDescriptor());
+<i>345</i>&nbsp;        } else {
+<i>346</i>&nbsp;            return new MBeanAttributeInfo(var0.getName(), var0.getType(), var1, var0.isReadable(), var0.isWritable(), var0.isIs(), var0.getDescriptor());
+<i>347</i>&nbsp;        }
+<b class="nc"><i>348</i>&nbsp;    }</b>
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    private static OpenMBeanParameterInfo[] paramsToOpenParams(MBeanParameterInfo[] var0) {
+<i>351</i>&nbsp;        if(var0 instanceof OpenMBeanParameterInfo[]) {
+<i>352</i>&nbsp;            return (OpenMBeanParameterInfo[])((OpenMBeanParameterInfo[])var0);
+<i>353</i>&nbsp;        } else {
+<i>354</i>&nbsp;            OpenMBeanParameterInfoSupport[] var1 = new OpenMBeanParameterInfoSupport[var0.length];
+<i>355</i>&nbsp;            System.arraycopy(var0, 0, var1, 0, var0.length);
+<i>356</i>&nbsp;            return var1;
+<i>357</i>&nbsp;        }
+<b class="nc"><i>358</i>&nbsp;    }</b>
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    private MBeanConstructorInfo[] getConstructors(MBeanInfo var1, Object var2) {
+<i>361</i>&nbsp;        MBeanConstructorInfo[] var3 = this.getConstructors((MBeanConstructorInfo[])var1.getConstructors(), var2);
+<i>362</i>&nbsp;        if(var3 == null) {
+<i>363</i>&nbsp;            return null;
+<i>364</i>&nbsp;        } else {
+<i>365</i>&nbsp;            int var4 = var3.length;
+<i>366</i>&nbsp;            MBeanConstructorInfo[] var5 = new MBeanConstructorInfo[var4];
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;            for(int var6 = 0; var6 &lt; var4; ++var6) {
+<b class="nc"><i>369</i>&nbsp;                MBeanConstructorInfo var7 = var3[var6];</b>
+<i>370</i>&nbsp;                MBeanParameterInfo[] var8 = var7.getSignature();
+<i>371</i>&nbsp;                MBeanParameterInfo[] var9;
+<i>372</i>&nbsp;                if(var8 != null) {
+<i>373</i>&nbsp;                    int var10 = var8.length;
+<i>374</i>&nbsp;                    var9 = new MBeanParameterInfo[var10];
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;                    for(int var11 = 0; var11 &lt; var10; ++var11) {</b>
+<i>377</i>&nbsp;                        MBeanParameterInfo var12 = var8[var11];
+<i>378</i>&nbsp;                        var9[var11] = customize((MBeanParameterInfo)var12, this.getParameterName((MBeanConstructorInfo)var7, var12, var11), (String)this.getDescription((MBeanConstructorInfo)var7, var12, var11));
+<i>379</i>&nbsp;                    }
+<i>380</i>&nbsp;                } else {
+<i>381</i>&nbsp;                    var9 = null;
+<i>382</i>&nbsp;                }
+<b class="nc"><i>383</i>&nbsp;</b>
+<i>384</i>&nbsp;                var5[var6] = customize((MBeanConstructorInfo)var7, this.getDescription((MBeanConstructorInfo)var7), (MBeanParameterInfo[])var9);
+<i>385</i>&nbsp;            }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;            return var5;
+<i>388</i>&nbsp;        }
+<i>389</i>&nbsp;    }
+<i>390</i>&nbsp;
+<b class="nc"><i>391</i>&nbsp;    private MBeanOperationInfo[] getOperations(MBeanInfo var1) {</b>
+<i>392</i>&nbsp;        MBeanOperationInfo[] var2 = var1.getOperations();
+<i>393</i>&nbsp;        if(var2 == null) {
+<i>394</i>&nbsp;            return null;
+<i>395</i>&nbsp;        } else {
+<i>396</i>&nbsp;            int var3 = var2.length;
+<i>397</i>&nbsp;            MBeanOperationInfo[] var4 = new MBeanOperationInfo[var3];
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;            for(int var5 = 0; var5 &lt; var3; ++var5) {
+<i>400</i>&nbsp;                MBeanOperationInfo var6 = var2[var5];
+<i>401</i>&nbsp;                MBeanParameterInfo[] var7 = var6.getSignature();
+<i>402</i>&nbsp;                MBeanParameterInfo[] var8;
+<i>403</i>&nbsp;                if(var7 != null) {
+<i>404</i>&nbsp;                    int var9 = var7.length;
+<i>405</i>&nbsp;                    var8 = new MBeanParameterInfo[var9];
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;                    for(int var10 = 0; var10 &lt; var9; ++var10) {
+<i>408</i>&nbsp;                        MBeanParameterInfo var11 = var7[var10];
+<i>409</i>&nbsp;                        var8[var10] = customize((MBeanParameterInfo)var11, this.getParameterName((MBeanOperationInfo)var6, var11, var10), (String)this.getDescription((MBeanOperationInfo)var6, var11, var10));
+<i>410</i>&nbsp;                    }
+<i>411</i>&nbsp;                } else {
+<i>412</i>&nbsp;                    var8 = null;
+<i>413</i>&nbsp;                }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;                var4[var5] = customize(var6, this.getDescription((MBeanOperationInfo)var6), var8, this.getImpact(var6));
+<i>416</i>&nbsp;            }
+<i>417</i>&nbsp;
+<b class="nc"><i>418</i>&nbsp;            return var4;</b>
+<b class="nc"><i>419</i>&nbsp;        }</b>
+<b class="nc"><i>420</i>&nbsp;    }</b>
+<b class="nc"><i>421</i>&nbsp;</b>
+<b class="nc"><i>422</i>&nbsp;    private MBeanAttributeInfo[] getAttributes(MBeanInfo var1) {</b>
+<b class="nc"><i>423</i>&nbsp;        MBeanAttributeInfo[] var2 = var1.getAttributes();</b>
+<i>424</i>&nbsp;        if(var2 == null) {
+<b class="nc"><i>425</i>&nbsp;            return null;</b>
+<b class="nc"><i>426</i>&nbsp;        } else {</b>
+<i>427</i>&nbsp;            int var4 = var2.length;
+<i>428</i>&nbsp;            MBeanAttributeInfo[] var3 = new MBeanAttributeInfo[var4];
+<i>429</i>&nbsp;
+<b class="nc"><i>430</i>&nbsp;            for(int var5 = 0; var5 &lt; var4; ++var5) {</b>
+<b class="nc"><i>431</i>&nbsp;                MBeanAttributeInfo var6 = var2[var5];</b>
+<b class="nc"><i>432</i>&nbsp;                var3[var5] = customize(var6, this.getDescription((MBeanAttributeInfo)var6));</b>
+<i>433</i>&nbsp;            }
+<b class="nc"><i>434</i>&nbsp;</b>
+<i>435</i>&nbsp;            return var3;
+<b class="nc"><i>436</i>&nbsp;        }</b>
+<b class="nc"><i>437</i>&nbsp;    }</b>
+<b class="nc"><i>438</i>&nbsp;</b>
+<b class="nc"><i>439</i>&nbsp;    public ObjectName preRegister(MBeanServer var1, ObjectName var2) throws Exception {</b>
+<b class="nc"><i>440</i>&nbsp;        this.mbean.register(var1, var2);</b>
+<b class="nc"><i>441</i>&nbsp;        return var2;</b>
+<b class="nc"><i>442</i>&nbsp;    }</b>
+<i>443</i>&nbsp;
+<b class="nc"><i>444</i>&nbsp;    public void postRegister(Boolean var1) {</b>
+<i>445</i>&nbsp;        if(!var1.booleanValue()) {
+<i>446</i>&nbsp;            this.mbean.unregister();
+<b class="nc"><i>447</i>&nbsp;        }</b>
+<b class="nc"><i>448</i>&nbsp;</b>
+<b class="nc"><i>449</i>&nbsp;    }</b>
+<b class="nc"><i>450</i>&nbsp;</b>
+<b class="nc"><i>451</i>&nbsp;    public void preDeregister() throws Exception {</b>
+<i>452</i>&nbsp;    }
+<b class="nc"><i>453</i>&nbsp;</b>
+<i>454</i>&nbsp;    public void postDeregister() {
+<i>455</i>&nbsp;        this.mbean.unregister();
+<i>456</i>&nbsp;    }
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;    static boolean immutableInfo(Class&lt;? extends StandardMBean&gt; var0) {
+<i>459</i>&nbsp;        if(var0 != StandardMBean.class &amp;&amp; var0 != StandardEmitterMBean.class) {
+<i>460</i>&nbsp;            Map var1 = mbeanInfoSafeMap;
+<i>461</i>&nbsp;            synchronized(mbeanInfoSafeMap) {
+<i>462</i>&nbsp;                Boolean var2 = (Boolean)mbeanInfoSafeMap.get(var0);
+<i>463</i>&nbsp;                if(var2 == null) {
+<i>464</i>&nbsp;                    try {
+<i>465</i>&nbsp;                        StandardMBean.MBeanInfoSafeAction var3 = new StandardMBean.MBeanInfoSafeAction(var0);
+<i>466</i>&nbsp;                        var2 = (Boolean)AccessController.doPrivileged(var3);
+<i>467</i>&nbsp;                    } catch (Exception var5) {
+<b class="nc"><i>468</i>&nbsp;                        var2 = Boolean.valueOf(false);</b>
+<b class="nc"><i>469</i>&nbsp;                    }</b>
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;                    mbeanInfoSafeMap.put(var0, var2);
+<i>472</i>&nbsp;                }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;                return var2.booleanValue();
+<i>475</i>&nbsp;            }
+<i>476</i>&nbsp;        } else {
+<i>477</i>&nbsp;            return true;
+<i>478</i>&nbsp;        }
+<i>479</i>&nbsp;    }
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;    static boolean overrides(Class&lt;?&gt; var0, Class&lt;?&gt; var1, String var2, Class&lt;?&gt;... var3) {
+<i>482</i>&nbsp;        Class var4 = var0;
+<i>483</i>&nbsp;
+<b class="nc"><i>484</i>&nbsp;        while(var4 != var1) {</b>
+<b class="nc"><i>485</i>&nbsp;            try {</b>
+<i>486</i>&nbsp;                var4.getDeclaredMethod(var2, var3);
+<i>487</i>&nbsp;                return true;
+<i>488</i>&nbsp;            } catch (NoSuchMethodException var6) {
+<i>489</i>&nbsp;                var4 = var4.getSuperclass();
+<i>490</i>&nbsp;            }
+<i>491</i>&nbsp;        }
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;        return false;
+<i>494</i>&nbsp;    }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    static {
+<i>497</i>&nbsp;        descriptors = DescriptorCache.getInstance(JMX.proof);
+<i>498</i>&nbsp;        mbeanInfoSafeMap = new WeakHashMap();
+<i>499</i>&nbsp;    }
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;    private static class MBeanInfoSafeAction implements PrivilegedAction&lt;Boolean&gt; {
+<i>502</i>&nbsp;        private final Class&lt;?&gt; subclass;
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;        MBeanInfoSafeAction(Class&lt;?&gt; var1) {
+<i>505</i>&nbsp;            this.subclass = var1;
+<i>506</i>&nbsp;        }
+<b class="nc"><i>507</i>&nbsp;</b>
+<b class="nc"><i>508</i>&nbsp;        public Boolean run() {</b>
+<i>509</i>&nbsp;            return StandardMBean.overrides(this.subclass, StandardMBean.class, &quot;cacheMBeanInfo&quot;, new Class[]{MBeanInfo.class})?Boolean.valueOf(false):(StandardMBean.overrides(this.subclass, StandardMBean.class, &quot;getCachedMBeanInfo&quot;, (Class[])null)?Boolean.valueOf(false):(StandardMBean.overrides(this.subclass, StandardMBean.class, &quot;getMBeanInfo&quot;, (Class[])null)?Boolean.valueOf(false):(StandardEmitterMBean.class.isAssignableFrom(this.subclass) &amp;&amp; StandardMBean.overrides(this.subclass, StandardEmitterMBean.class, &quot;getNotificationInfo&quot;, (Class[])null)?Boolean.valueOf(false):Boolean.valueOf(true))));
+<i>510</i>&nbsp;        }
+<i>511</i>&nbsp;    }
+<i>512</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

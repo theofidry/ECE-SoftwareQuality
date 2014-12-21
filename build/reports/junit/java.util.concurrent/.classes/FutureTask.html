@@ -1,0 +1,452 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FutureTask</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.util.concurrent</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FutureTask (java.util.concurrent)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FutureTask</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FutureTask$Sync</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 71)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 86)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.util.concurrent;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.concurrent.Callable;
+<i>9</i>&nbsp;import java.util.concurrent.CancellationException;
+<i>10</i>&nbsp;import java.util.concurrent.ExecutionException;
+<i>11</i>&nbsp;import java.util.concurrent.Executors;
+<i>12</i>&nbsp;import java.util.concurrent.RunnableFuture;
+<i>13</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>14</i>&nbsp;import java.util.concurrent.TimeoutException;
+<i>15</i>&nbsp;import java.util.concurrent.locks.LockSupport;
+<i>16</i>&nbsp;import sun.misc.Unsafe;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;public class FutureTask&lt;V&gt; implements RunnableFuture&lt;V&gt; {
+<i>19</i>&nbsp;    private volatile int state;
+<i>20</i>&nbsp;    private static final int NEW = 0;
+<i>21</i>&nbsp;    private static final int COMPLETING = 1;
+<i>22</i>&nbsp;    private static final int NORMAL = 2;
+<i>23</i>&nbsp;    private static final int EXCEPTIONAL = 3;
+<i>24</i>&nbsp;    private static final int CANCELLED = 4;
+<i>25</i>&nbsp;    private static final int INTERRUPTING = 5;
+<i>26</i>&nbsp;    private static final int INTERRUPTED = 6;
+<i>27</i>&nbsp;    private Callable&lt;V&gt; callable;
+<i>28</i>&nbsp;    private Object outcome;
+<i>29</i>&nbsp;    private volatile Thread runner;
+<i>30</i>&nbsp;    private volatile FutureTask.WaitNode waiters;
+<i>31</i>&nbsp;    private static final Unsafe UNSAFE;
+<i>32</i>&nbsp;    private static final long stateOffset;
+<i>33</i>&nbsp;    private static final long runnerOffset;
+<i>34</i>&nbsp;    private static final long waitersOffset;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    private V report(int var1) throws ExecutionException {
+<i>37</i>&nbsp;        Object var2 = this.outcome;
+<i>38</i>&nbsp;        if(var1 == 2) {
+<i>39</i>&nbsp;            return var2;
+<i>40</i>&nbsp;        } else if(var1 &gt;= 4) {
+<i>41</i>&nbsp;            throw new CancellationException();
+<i>42</i>&nbsp;        } else {
+<i>43</i>&nbsp;            throw new ExecutionException((Throwable)var2);
+<i>44</i>&nbsp;        }
+<b class="nc"><i>45</i>&nbsp;    }</b>
+<b class="nc"><i>46</i>&nbsp;</b>
+<b class="nc"><i>47</i>&nbsp;    public FutureTask(Callable&lt;V&gt; var1) {</b>
+<b class="nc"><i>48</i>&nbsp;        if(var1 == null) {</b>
+<i>49</i>&nbsp;            throw new NullPointerException();
+<i>50</i>&nbsp;        } else {
+<i>51</i>&nbsp;            this.callable = var1;
+<i>52</i>&nbsp;            this.state = 0;
+<i>53</i>&nbsp;        }
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public FutureTask(Runnable var1, V var2) {
+<i>57</i>&nbsp;        this.callable = Executors.callable(var1, var2);
+<i>58</i>&nbsp;        this.state = 0;
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public boolean isCancelled() {
+<i>62</i>&nbsp;        return this.state &gt;= 4;
+<b class="nc"><i>63</i>&nbsp;    }</b>
+<b class="nc"><i>64</i>&nbsp;</b>
+<i>65</i>&nbsp;    public boolean isDone() {
+<i>66</i>&nbsp;        return this.state != 0;
+<i>67</i>&nbsp;    }
+<b class="nc"><i>68</i>&nbsp;</b>
+<i>69</i>&nbsp;    public boolean cancel(boolean var1) {
+<i>70</i>&nbsp;        if(this.state != 0) {
+<i>71</i>&nbsp;            return false;
+<b class="nc"><i>72</i>&nbsp;        } else {</b>
+<i>73</i>&nbsp;            if(var1) {
+<i>74</i>&nbsp;                if(!UNSAFE.compareAndSwapInt(this, stateOffset, 0, 5)) {
+<i>75</i>&nbsp;                    return false;
+<b class="nc"><i>76</i>&nbsp;                }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;                Thread var2 = this.runner;
+<i>79</i>&nbsp;                if(var2 != null) {
+<i>80</i>&nbsp;                    var2.interrupt();
+<i>81</i>&nbsp;                }
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;                UNSAFE.putOrderedInt(this, stateOffset, 6);</b>
+<i>84</i>&nbsp;            } else if(!UNSAFE.compareAndSwapInt(this, stateOffset, 0, 4)) {
+<i>85</i>&nbsp;                return false;
+<i>86</i>&nbsp;            }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;            this.finishCompletion();
+<i>89</i>&nbsp;            return true;
+<i>90</i>&nbsp;        }
+<b class="nc"><i>91</i>&nbsp;    }</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public V get() throws InterruptedException, ExecutionException {
+<i>94</i>&nbsp;        int var1 = this.state;
+<i>95</i>&nbsp;        if(var1 &lt;= 1) {
+<i>96</i>&nbsp;            var1 = this.awaitDone(false, 0L);
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        return this.report(var1);
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public V get(long var1, TimeUnit var3) throws InterruptedException, ExecutionException, TimeoutException {
+<i>103</i>&nbsp;        if(var3 == null) {
+<i>104</i>&nbsp;            throw new NullPointerException();
+<i>105</i>&nbsp;        } else {
+<i>106</i>&nbsp;            int var4 = this.state;
+<i>107</i>&nbsp;            if(var4 &lt;= 1 &amp;&amp; (var4 = this.awaitDone(true, var3.toNanos(var1))) &lt;= 1) {
+<i>108</i>&nbsp;                throw new TimeoutException();
+<i>109</i>&nbsp;            } else {
+<i>110</i>&nbsp;                return this.report(var4);
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;        }
+<b class="nc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    protected void done() {
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    protected void set(V var1) {
+<i>119</i>&nbsp;        if(UNSAFE.compareAndSwapInt(this, stateOffset, 0, 1)) {
+<i>120</i>&nbsp;            this.outcome = var1;
+<i>121</i>&nbsp;            UNSAFE.putOrderedInt(this, stateOffset, 2);
+<i>122</i>&nbsp;            this.finishCompletion();
+<i>123</i>&nbsp;        }
+<i>124</i>&nbsp;
+<b class="nc"><i>125</i>&nbsp;    }</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    protected void setException(Throwable var1) {
+<i>128</i>&nbsp;        if(UNSAFE.compareAndSwapInt(this, stateOffset, 0, 1)) {
+<i>129</i>&nbsp;            this.outcome = var1;
+<i>130</i>&nbsp;            UNSAFE.putOrderedInt(this, stateOffset, 3);
+<i>131</i>&nbsp;            this.finishCompletion();
+<i>132</i>&nbsp;        }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public void run() {
+<i>137</i>&nbsp;        if(this.state == 0 &amp;&amp; UNSAFE.compareAndSwapObject(this, runnerOffset, (Object)null, Thread.currentThread())) {
+<b class="nc"><i>138</i>&nbsp;            boolean var9 = false;</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;            try {
+<i>141</i>&nbsp;                var9 = true;
+<i>142</i>&nbsp;                Callable var1 = this.callable;
+<i>143</i>&nbsp;                if(var1 != null) {
+<i>144</i>&nbsp;                    if(this.state == 0) {
+<i>145</i>&nbsp;                        Object var2;
+<i>146</i>&nbsp;                        boolean var3;
+<i>147</i>&nbsp;                        try {
+<i>148</i>&nbsp;                            var2 = var1.call();
+<i>149</i>&nbsp;                            var3 = true;
+<b class="nc"><i>150</i>&nbsp;                        } catch (Throwable var10) {</b>
+<i>151</i>&nbsp;                            var2 = null;
+<i>152</i>&nbsp;                            var3 = false;
+<i>153</i>&nbsp;                            this.setException(var10);
+<i>154</i>&nbsp;                        }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;                        if(var3) {
+<i>157</i>&nbsp;                            this.set(var2);
+<i>158</i>&nbsp;                            var9 = false;
+<i>159</i>&nbsp;                        } else {
+<i>160</i>&nbsp;                            var9 = false;
+<i>161</i>&nbsp;                        }
+<i>162</i>&nbsp;                    } else {
+<i>163</i>&nbsp;                        var9 = false;
+<i>164</i>&nbsp;                    }
+<i>165</i>&nbsp;                } else {
+<i>166</i>&nbsp;                    var9 = false;
+<i>167</i>&nbsp;                }
+<i>168</i>&nbsp;            } finally {
+<i>169</i>&nbsp;                if(var9) {
+<i>170</i>&nbsp;                    this.runner = null;
+<i>171</i>&nbsp;                    int var6 = this.state;
+<i>172</i>&nbsp;                    if(var6 &gt;= 5) {
+<i>173</i>&nbsp;                        this.handlePossibleCancellationInterrupt(var6);
+<i>174</i>&nbsp;                    }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;                }
+<i>177</i>&nbsp;            }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;            this.runner = null;
+<i>180</i>&nbsp;            int var12 = this.state;
+<i>181</i>&nbsp;            if(var12 &gt;= 5) {
+<i>182</i>&nbsp;                this.handlePossibleCancellationInterrupt(var12);
+<i>183</i>&nbsp;            }
+<i>184</i>&nbsp;
+<b class="nc"><i>185</i>&nbsp;        }</b>
+<b class="nc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    protected boolean runAndReset() {
+<i>189</i>&nbsp;        if(this.state == 0 &amp;&amp; UNSAFE.compareAndSwapObject(this, runnerOffset, (Object)null, Thread.currentThread())) {
+<b class="nc"><i>190</i>&nbsp;            boolean var1 = false;</b>
+<i>191</i>&nbsp;            int var2 = this.state;
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;            try {
+<i>194</i>&nbsp;                Callable var3 = this.callable;
+<i>195</i>&nbsp;                if(var3 != null &amp;&amp; var2 == 0) {
+<i>196</i>&nbsp;                    try {
+<b class="nc"><i>197</i>&nbsp;                        var3.call();</b>
+<i>198</i>&nbsp;                        var1 = true;
+<i>199</i>&nbsp;                    } catch (Throwable var8) {
+<i>200</i>&nbsp;                        this.setException(var8);
+<i>201</i>&nbsp;                    }
+<i>202</i>&nbsp;                }
+<i>203</i>&nbsp;            } finally {
+<i>204</i>&nbsp;                this.runner = null;
+<b class="nc"><i>205</i>&nbsp;                var2 = this.state;</b>
+<b class="nc"><i>206</i>&nbsp;                if(var2 &gt;= 5) {</b>
+<i>207</i>&nbsp;                    this.handlePossibleCancellationInterrupt(var2);
+<i>208</i>&nbsp;                }
+<i>209</i>&nbsp;
+<b class="nc"><i>210</i>&nbsp;            }</b>
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;            return var1 &amp;&amp; var2 == 0;
+<i>213</i>&nbsp;        } else {
+<b class="nc"><i>214</i>&nbsp;            return false;</b>
+<i>215</i>&nbsp;        }
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<b class="nc"><i>218</i>&nbsp;    private void handlePossibleCancellationInterrupt(int var1) {</b>
+<b class="nc"><i>219</i>&nbsp;        if(var1 == 5) {</b>
+<b class="nc"><i>220</i>&nbsp;            while(this.state == 5) {</b>
+<b class="nc"><i>221</i>&nbsp;                Thread.yield();</b>
+<b class="nc"><i>222</i>&nbsp;            }</b>
+<b class="nc"><i>223</i>&nbsp;        }</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    }
+<i>226</i>&nbsp;
+<b class="nc"><i>227</i>&nbsp;    private void finishCompletion() {</b>
+<b class="nc"><i>228</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>229</i>&nbsp;            FutureTask.WaitNode var1 = this.waiters;</b>
+<b class="nc"><i>230</i>&nbsp;            if(this.waiters != null) {</b>
+<b class="nc"><i>231</i>&nbsp;                if(!UNSAFE.compareAndSwapObject(this, waitersOffset, var1, (Object)null)) {</b>
+<b class="nc"><i>232</i>&nbsp;                    continue;</b>
+<b class="nc"><i>233</i>&nbsp;                }</b>
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;                while(true) {
+<i>236</i>&nbsp;                    Thread var2 = var1.thread;
+<i>237</i>&nbsp;                    if(var2 != null) {
+<b class="nc"><i>238</i>&nbsp;                        var1.thread = null;</b>
+<b class="nc"><i>239</i>&nbsp;                        LockSupport.unpark(var2);</b>
+<i>240</i>&nbsp;                    }
+<b class="nc"><i>241</i>&nbsp;</b>
+<i>242</i>&nbsp;                    FutureTask.WaitNode var3 = var1.next;
+<i>243</i>&nbsp;                    if(var3 == null) {
+<i>244</i>&nbsp;                        break;
+<b class="nc"><i>245</i>&nbsp;                    }</b>
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;                    var1.next = null;
+<b class="nc"><i>248</i>&nbsp;                    var1 = var3;</b>
+<b class="nc"><i>249</i>&nbsp;                }</b>
+<b class="nc"><i>250</i>&nbsp;            }</b>
+<b class="nc"><i>251</i>&nbsp;</b>
+<i>252</i>&nbsp;            this.done();
+<i>253</i>&nbsp;            this.callable = null;
+<b class="nc"><i>254</i>&nbsp;            return;</b>
+<i>255</i>&nbsp;        }
+<i>256</i>&nbsp;    }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    private int awaitDone(boolean var1, long var2) throws InterruptedException {
+<b class="nc"><i>259</i>&nbsp;        long var4 = var1?System.nanoTime() + var2:0L;</b>
+<b class="nc"><i>260</i>&nbsp;        FutureTask.WaitNode var6 = null;</b>
+<i>261</i>&nbsp;        boolean var7 = false;
+<b class="nc"><i>262</i>&nbsp;</b>
+<i>263</i>&nbsp;        while(!Thread.interrupted()) {
+<i>264</i>&nbsp;            int var8 = this.state;
+<i>265</i>&nbsp;            if(var8 &gt; 1) {
+<b class="nc"><i>266</i>&nbsp;                if(var6 != null) {</b>
+<i>267</i>&nbsp;                    var6.thread = null;
+<i>268</i>&nbsp;                }
+<b class="nc"><i>269</i>&nbsp;</b>
+<b class="nc"><i>270</i>&nbsp;                return var8;</b>
+<b class="nc"><i>271</i>&nbsp;            }</b>
+<b class="nc"><i>272</i>&nbsp;</b>
+<b class="nc"><i>273</i>&nbsp;            if(var8 == 1) {</b>
+<i>274</i>&nbsp;                Thread.yield();
+<i>275</i>&nbsp;            } else if(var6 == null) {
+<b class="nc"><i>276</i>&nbsp;                var6 = new FutureTask.WaitNode();</b>
+<i>277</i>&nbsp;            } else if(!var7) {
+<i>278</i>&nbsp;                var7 = UNSAFE.compareAndSwapObject(this, waitersOffset, var6.next = this.waiters, var6);
+<i>279</i>&nbsp;            } else if(var1) {
+<i>280</i>&nbsp;                var2 = var4 - System.nanoTime();
+<b class="nc"><i>281</i>&nbsp;                if(var2 &lt;= 0L) {</b>
+<b class="nc"><i>282</i>&nbsp;                    this.removeWaiter(var6);</b>
+<b class="nc"><i>283</i>&nbsp;                    return this.state;</b>
+<b class="nc"><i>284</i>&nbsp;                }</b>
+<b class="nc"><i>285</i>&nbsp;</b>
+<b class="nc"><i>286</i>&nbsp;                LockSupport.parkNanos(this, var2);</b>
+<b class="nc"><i>287</i>&nbsp;            } else {</b>
+<b class="nc"><i>288</i>&nbsp;                LockSupport.park(this);</b>
+<b class="nc"><i>289</i>&nbsp;            }</b>
+<b class="nc"><i>290</i>&nbsp;        }</b>
+<i>291</i>&nbsp;
+<b class="nc"><i>292</i>&nbsp;        this.removeWaiter(var6);</b>
+<b class="nc"><i>293</i>&nbsp;        throw new InterruptedException();</b>
+<b class="nc"><i>294</i>&nbsp;    }</b>
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;    private void removeWaiter(FutureTask.WaitNode var1) {
+<i>297</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>298</i>&nbsp;            var1.thread = null;</b>
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;            label28:
+<b class="nc"><i>301</i>&nbsp;            while(true) {</b>
+<b class="nc"><i>302</i>&nbsp;                FutureTask.WaitNode var2 = null;</b>
+<b class="nc"><i>303</i>&nbsp;</b>
+<i>304</i>&nbsp;                FutureTask.WaitNode var4;
+<b class="nc"><i>305</i>&nbsp;                for(FutureTask.WaitNode var3 = this.waiters; var3 != null; var3 = var4) {</b>
+<b class="nc"><i>306</i>&nbsp;                    var4 = var3.next;</b>
+<b class="nc"><i>307</i>&nbsp;                    if(var3.thread != null) {</b>
+<b class="nc"><i>308</i>&nbsp;                        var2 = var3;</b>
+<i>309</i>&nbsp;                    } else if(var2 != null) {
+<i>310</i>&nbsp;                        var2.next = var4;
+<i>311</i>&nbsp;                        if(var2.thread == null) {
+<b class="nc"><i>312</i>&nbsp;                            continue label28;</b>
+<b class="nc"><i>313</i>&nbsp;                        }</b>
+<i>314</i>&nbsp;                    } else if(!UNSAFE.compareAndSwapObject(this, waitersOffset, var3, var4)) {
+<b class="nc"><i>315</i>&nbsp;                        continue label28;</b>
+<b class="nc"><i>316</i>&nbsp;                    }</b>
+<b class="nc"><i>317</i>&nbsp;                }</b>
+<b class="nc"><i>318</i>&nbsp;</b>
+<b class="nc"><i>319</i>&nbsp;                return;</b>
+<b class="nc"><i>320</i>&nbsp;            }</b>
+<b class="nc"><i>321</i>&nbsp;        }</b>
+<b class="nc"><i>322</i>&nbsp;    }</b>
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    static {
+<i>325</i>&nbsp;        try {
+<i>326</i>&nbsp;            UNSAFE = Unsafe.getUnsafe();
+<i>327</i>&nbsp;            Class var0 = FutureTask.class;
+<i>328</i>&nbsp;            stateOffset = UNSAFE.objectFieldOffset(var0.getDeclaredField(&quot;state&quot;));
+<i>329</i>&nbsp;            runnerOffset = UNSAFE.objectFieldOffset(var0.getDeclaredField(&quot;runner&quot;));
+<i>330</i>&nbsp;            waitersOffset = UNSAFE.objectFieldOffset(var0.getDeclaredField(&quot;waiters&quot;));
+<i>331</i>&nbsp;        } catch (Exception var1) {
+<i>332</i>&nbsp;            throw new Error(var1);
+<i>333</i>&nbsp;        }
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    static final class WaitNode {
+<i>337</i>&nbsp;        volatile Thread thread = Thread.currentThread();
+<i>338</i>&nbsp;        volatile FutureTask.WaitNode next;
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;        WaitNode() {
+<i>341</i>&nbsp;        }
+<i>342</i>&nbsp;    }
+<i>343</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

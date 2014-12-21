@@ -1,0 +1,981 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: X509CRLImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.x509</a> ]
+</div>
+
+<h1>Coverage Summary for Class: X509CRLImpl (sun.security.x509)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">X509CRLImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 46)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 383)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">X509CRLImpl$X509IssuerSerial</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 53)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 407)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.x509;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InputStream;
+<i>10</i>&nbsp;import java.io.OutputStream;
+<i>11</i>&nbsp;import java.math.BigInteger;
+<i>12</i>&nbsp;import java.security.InvalidKeyException;
+<i>13</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>14</i>&nbsp;import java.security.NoSuchProviderException;
+<i>15</i>&nbsp;import java.security.Principal;
+<i>16</i>&nbsp;import java.security.PrivateKey;
+<i>17</i>&nbsp;import java.security.PublicKey;
+<i>18</i>&nbsp;import java.security.Signature;
+<i>19</i>&nbsp;import java.security.SignatureException;
+<i>20</i>&nbsp;import java.security.cert.CRLException;
+<i>21</i>&nbsp;import java.security.cert.Certificate;
+<i>22</i>&nbsp;import java.security.cert.X509CRL;
+<i>23</i>&nbsp;import java.security.cert.X509CRLEntry;
+<i>24</i>&nbsp;import java.security.cert.X509Certificate;
+<i>25</i>&nbsp;import java.util.Collection;
+<i>26</i>&nbsp;import java.util.Date;
+<i>27</i>&nbsp;import java.util.Enumeration;
+<i>28</i>&nbsp;import java.util.Iterator;
+<i>29</i>&nbsp;import java.util.LinkedList;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import java.util.Map;
+<i>32</i>&nbsp;import java.util.Set;
+<i>33</i>&nbsp;import java.util.TreeMap;
+<i>34</i>&nbsp;import java.util.TreeSet;
+<i>35</i>&nbsp;import javax.security.auth.x500.X500Principal;
+<i>36</i>&nbsp;import sun.misc.HexDumpEncoder;
+<i>37</i>&nbsp;import sun.security.provider.X509Factory;
+<i>38</i>&nbsp;import sun.security.util.DerEncoder;
+<i>39</i>&nbsp;import sun.security.util.DerInputStream;
+<i>40</i>&nbsp;import sun.security.util.DerOutputStream;
+<i>41</i>&nbsp;import sun.security.util.DerValue;
+<i>42</i>&nbsp;import sun.security.util.ObjectIdentifier;
+<i>43</i>&nbsp;import sun.security.x509.AlgorithmId;
+<i>44</i>&nbsp;import sun.security.x509.AuthorityKeyIdentifierExtension;
+<i>45</i>&nbsp;import sun.security.x509.CRLExtensions;
+<i>46</i>&nbsp;import sun.security.x509.CRLNumberExtension;
+<i>47</i>&nbsp;import sun.security.x509.CertificateIssuerExtension;
+<i>48</i>&nbsp;import sun.security.x509.DeltaCRLIndicatorExtension;
+<i>49</i>&nbsp;import sun.security.x509.Extension;
+<i>50</i>&nbsp;import sun.security.x509.GeneralNames;
+<i>51</i>&nbsp;import sun.security.x509.IssuerAlternativeNameExtension;
+<i>52</i>&nbsp;import sun.security.x509.IssuingDistributionPointExtension;
+<i>53</i>&nbsp;import sun.security.x509.KeyIdentifier;
+<i>54</i>&nbsp;import sun.security.x509.OIDMap;
+<i>55</i>&nbsp;import sun.security.x509.PKIXExtensions;
+<i>56</i>&nbsp;import sun.security.x509.X500Name;
+<i>57</i>&nbsp;import sun.security.x509.X509CRLEntryImpl;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;public class X509CRLImpl extends X509CRL implements DerEncoder {
+<i>60</i>&nbsp;    private byte[] signedCRL;
+<i>61</i>&nbsp;    private byte[] signature;
+<i>62</i>&nbsp;    private byte[] tbsCertList;
+<i>63</i>&nbsp;    private AlgorithmId sigAlgId;
+<i>64</i>&nbsp;    private int version;
+<i>65</i>&nbsp;    private AlgorithmId infoSigAlgId;
+<i>66</i>&nbsp;    private X500Name issuer;
+<i>67</i>&nbsp;    private X500Principal issuerPrincipal;
+<i>68</i>&nbsp;    private Date thisUpdate;
+<i>69</i>&nbsp;    private Date nextUpdate;
+<i>70</i>&nbsp;    private Map&lt;X509CRLImpl.X509IssuerSerial, X509CRLEntry&gt; revokedMap;
+<i>71</i>&nbsp;    private List&lt;X509CRLEntry&gt; revokedList;
+<i>72</i>&nbsp;    private CRLExtensions extensions;
+<i>73</i>&nbsp;    private static final boolean isExplicit = true;
+<i>74</i>&nbsp;    private static final long YR_2050 = 2524636800000L;
+<i>75</i>&nbsp;    private boolean readOnly;
+<i>76</i>&nbsp;    private PublicKey verifiedPublicKey;
+<b class="nc"><i>77</i>&nbsp;    private String verifiedProvider;</b>
+<b class="nc"><i>78</i>&nbsp;</b>
+<b class="nc"><i>79</i>&nbsp;    private X509CRLImpl() {</b>
+<b class="nc"><i>80</i>&nbsp;        this.signedCRL = null;</b>
+<i>81</i>&nbsp;        this.signature = null;
+<i>82</i>&nbsp;        this.tbsCertList = null;
+<i>83</i>&nbsp;        this.sigAlgId = null;
+<i>84</i>&nbsp;        this.issuer = null;
+<b class="nc"><i>85</i>&nbsp;        this.issuerPrincipal = null;</b>
+<b class="nc"><i>86</i>&nbsp;        this.thisUpdate = null;</b>
+<b class="nc"><i>87</i>&nbsp;        this.nextUpdate = null;</b>
+<b class="nc"><i>88</i>&nbsp;        this.revokedMap = new TreeMap();</b>
+<b class="nc"><i>89</i>&nbsp;        this.revokedList = new LinkedList();</b>
+<i>90</i>&nbsp;        this.extensions = null;
+<b class="nc"><i>91</i>&nbsp;        this.readOnly = false;</b>
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public X509CRLImpl(byte[] var1) throws CRLException {
+<i>95</i>&nbsp;        this.signedCRL = null;
+<b class="nc"><i>96</i>&nbsp;        this.signature = null;</b>
+<i>97</i>&nbsp;        this.tbsCertList = null;
+<i>98</i>&nbsp;        this.sigAlgId = null;
+<i>99</i>&nbsp;        this.issuer = null;
+<i>100</i>&nbsp;        this.issuerPrincipal = null;
+<i>101</i>&nbsp;        this.thisUpdate = null;
+<i>102</i>&nbsp;        this.nextUpdate = null;
+<i>103</i>&nbsp;        this.revokedMap = new TreeMap();
+<i>104</i>&nbsp;        this.revokedList = new LinkedList();
+<i>105</i>&nbsp;        this.extensions = null;
+<i>106</i>&nbsp;        this.readOnly = false;
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;        try {
+<i>109</i>&nbsp;            this.parse(new DerValue(var1));
+<i>110</i>&nbsp;        } catch (IOException var3) {
+<i>111</i>&nbsp;            this.signedCRL = null;
+<i>112</i>&nbsp;            throw new CRLException(&quot;Parsing error: &quot; + var3.getMessage());
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public X509CRLImpl(DerValue var1) throws CRLException {
+<i>117</i>&nbsp;        this.signedCRL = null;
+<i>118</i>&nbsp;        this.signature = null;
+<i>119</i>&nbsp;        this.tbsCertList = null;
+<i>120</i>&nbsp;        this.sigAlgId = null;
+<i>121</i>&nbsp;        this.issuer = null;
+<i>122</i>&nbsp;        this.issuerPrincipal = null;
+<i>123</i>&nbsp;        this.thisUpdate = null;
+<i>124</i>&nbsp;        this.nextUpdate = null;
+<i>125</i>&nbsp;        this.revokedMap = new TreeMap();
+<i>126</i>&nbsp;        this.revokedList = new LinkedList();
+<b class="nc"><i>127</i>&nbsp;        this.extensions = null;</b>
+<i>128</i>&nbsp;        this.readOnly = false;
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;        try {</b>
+<b class="nc"><i>131</i>&nbsp;            this.parse(var1);</b>
+<b class="nc"><i>132</i>&nbsp;        } catch (IOException var3) {</b>
+<b class="nc"><i>133</i>&nbsp;            this.signedCRL = null;</b>
+<i>134</i>&nbsp;            throw new CRLException(&quot;Parsing error: &quot; + var3.getMessage());
+<i>135</i>&nbsp;        }
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public X509CRLImpl(InputStream var1) throws CRLException {
+<i>139</i>&nbsp;        this.signedCRL = null;
+<i>140</i>&nbsp;        this.signature = null;
+<i>141</i>&nbsp;        this.tbsCertList = null;
+<b class="nc"><i>142</i>&nbsp;        this.sigAlgId = null;</b>
+<i>143</i>&nbsp;        this.issuer = null;
+<b class="nc"><i>144</i>&nbsp;        this.issuerPrincipal = null;</b>
+<b class="nc"><i>145</i>&nbsp;        this.thisUpdate = null;</b>
+<b class="nc"><i>146</i>&nbsp;        this.nextUpdate = null;</b>
+<b class="nc"><i>147</i>&nbsp;        this.revokedMap = new TreeMap();</b>
+<b class="nc"><i>148</i>&nbsp;        this.revokedList = new LinkedList();</b>
+<i>149</i>&nbsp;        this.extensions = null;
+<i>150</i>&nbsp;        this.readOnly = false;
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;        try {
+<i>153</i>&nbsp;            this.parse(new DerValue(var1));
+<i>154</i>&nbsp;        } catch (IOException var3) {
+<i>155</i>&nbsp;            this.signedCRL = null;
+<i>156</i>&nbsp;            throw new CRLException(&quot;Parsing error: &quot; + var3.getMessage());
+<i>157</i>&nbsp;        }
+<b class="nc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<b class="nc"><i>160</i>&nbsp;    public X509CRLImpl(X500Name var1, Date var2, Date var3) {</b>
+<b class="nc"><i>161</i>&nbsp;        this.signedCRL = null;</b>
+<b class="nc"><i>162</i>&nbsp;        this.signature = null;</b>
+<b class="nc"><i>163</i>&nbsp;        this.tbsCertList = null;</b>
+<b class="nc"><i>164</i>&nbsp;        this.sigAlgId = null;</b>
+<i>165</i>&nbsp;        this.issuer = null;
+<i>166</i>&nbsp;        this.issuerPrincipal = null;
+<i>167</i>&nbsp;        this.thisUpdate = null;
+<i>168</i>&nbsp;        this.nextUpdate = null;
+<i>169</i>&nbsp;        this.revokedMap = new TreeMap();
+<i>170</i>&nbsp;        this.revokedList = new LinkedList();
+<i>171</i>&nbsp;        this.extensions = null;
+<i>172</i>&nbsp;        this.readOnly = false;
+<i>173</i>&nbsp;        this.issuer = var1;
+<b class="nc"><i>174</i>&nbsp;        this.thisUpdate = var2;</b>
+<b class="nc"><i>175</i>&nbsp;        this.nextUpdate = var3;</b>
+<b class="nc"><i>176</i>&nbsp;    }</b>
+<b class="nc"><i>177</i>&nbsp;</b>
+<i>178</i>&nbsp;    public X509CRLImpl(X500Name var1, Date var2, Date var3, X509CRLEntry[] var4) throws CRLException {
+<i>179</i>&nbsp;        this.signedCRL = null;
+<i>180</i>&nbsp;        this.signature = null;
+<i>181</i>&nbsp;        this.tbsCertList = null;
+<i>182</i>&nbsp;        this.sigAlgId = null;
+<i>183</i>&nbsp;        this.issuer = null;
+<i>184</i>&nbsp;        this.issuerPrincipal = null;
+<i>185</i>&nbsp;        this.thisUpdate = null;
+<i>186</i>&nbsp;        this.nextUpdate = null;
+<i>187</i>&nbsp;        this.revokedMap = new TreeMap();
+<i>188</i>&nbsp;        this.revokedList = new LinkedList();
+<i>189</i>&nbsp;        this.extensions = null;
+<i>190</i>&nbsp;        this.readOnly = false;
+<i>191</i>&nbsp;        this.issuer = var1;
+<i>192</i>&nbsp;        this.thisUpdate = var2;
+<b class="nc"><i>193</i>&nbsp;        this.nextUpdate = var3;</b>
+<b class="nc"><i>194</i>&nbsp;        if(var4 != null) {</b>
+<b class="nc"><i>195</i>&nbsp;            X500Principal var5 = this.getIssuerX500Principal();</b>
+<b class="nc"><i>196</i>&nbsp;            X500Principal var6 = var5;</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<b class="nc"><i>198</i>&nbsp;            for(int var7 = 0; var7 &lt; var4.length; ++var7) {</b>
+<b class="nc"><i>199</i>&nbsp;                X509CRLEntryImpl var8 = (X509CRLEntryImpl)var4[var7];</b>
+<b class="nc"><i>200</i>&nbsp;</b>
+<b class="nc"><i>201</i>&nbsp;                try {</b>
+<i>202</i>&nbsp;                    var6 = this.getCertIssuer(var8, var6);
+<b class="nc"><i>203</i>&nbsp;                } catch (IOException var10) {</b>
+<b class="nc"><i>204</i>&nbsp;                    throw new CRLException(var10);</b>
+<b class="nc"><i>205</i>&nbsp;                }</b>
+<b class="nc"><i>206</i>&nbsp;</b>
+<b class="nc"><i>207</i>&nbsp;                var8.setCertificateIssuer(var5, var6);</b>
+<b class="nc"><i>208</i>&nbsp;                X509CRLImpl.X509IssuerSerial var9 = new X509CRLImpl.X509IssuerSerial(var6, var8.getSerialNumber());</b>
+<i>209</i>&nbsp;                this.revokedMap.put(var9, var8);
+<b class="nc"><i>210</i>&nbsp;                this.revokedList.add(var8);</b>
+<b class="nc"><i>211</i>&nbsp;                if(var8.hasExtensions()) {</b>
+<b class="nc"><i>212</i>&nbsp;                    this.version = 1;</b>
+<b class="nc"><i>213</i>&nbsp;                }</b>
+<i>214</i>&nbsp;            }
+<i>215</i>&nbsp;        }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    public X509CRLImpl(X500Name var1, Date var2, Date var3, X509CRLEntry[] var4, CRLExtensions var5) throws CRLException {
+<i>220</i>&nbsp;        this(var1, var2, var3, var4);
+<i>221</i>&nbsp;        if(var5 != null) {
+<i>222</i>&nbsp;            this.extensions = var5;
+<i>223</i>&nbsp;            this.version = 1;
+<i>224</i>&nbsp;        }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    public byte[] getEncodedInternal() throws CRLException {
+<i>229</i>&nbsp;        if(this.signedCRL == null) {
+<i>230</i>&nbsp;            throw new CRLException(&quot;Null CRL to encode&quot;);
+<i>231</i>&nbsp;        } else {
+<i>232</i>&nbsp;            return this.signedCRL;
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;    }</b>
+<b class="nc"><i>235</i>&nbsp;</b>
+<b class="nc"><i>236</i>&nbsp;    public byte[] getEncoded() throws CRLException {</b>
+<b class="nc"><i>237</i>&nbsp;        return (byte[])this.getEncodedInternal().clone();</b>
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    public void encodeInfo(OutputStream var1) throws CRLException {
+<i>241</i>&nbsp;        try {
+<i>242</i>&nbsp;            DerOutputStream var2 = new DerOutputStream();
+<i>243</i>&nbsp;            DerOutputStream var3 = new DerOutputStream();
+<i>244</i>&nbsp;            DerOutputStream var4 = new DerOutputStream();
+<i>245</i>&nbsp;            if(this.version != 0) {
+<i>246</i>&nbsp;                var2.putInteger(this.version);
+<b class="nc"><i>247</i>&nbsp;            }</b>
+<b class="nc"><i>248</i>&nbsp;</b>
+<i>249</i>&nbsp;            this.infoSigAlgId.encode(var2);
+<b class="nc"><i>250</i>&nbsp;            if(this.version == 0 &amp;&amp; this.issuer.toString() == null) {</b>
+<i>251</i>&nbsp;                throw new CRLException(&quot;Null Issuer DN not allowed in v1 CRL&quot;);
+<i>252</i>&nbsp;            } else {
+<i>253</i>&nbsp;                this.issuer.encode(var2);
+<i>254</i>&nbsp;                if(this.thisUpdate.getTime() &lt; 2524636800000L) {
+<i>255</i>&nbsp;                    var2.putUTCTime(this.thisUpdate);
+<i>256</i>&nbsp;                } else {
+<i>257</i>&nbsp;                    var2.putGeneralizedTime(this.thisUpdate);
+<i>258</i>&nbsp;                }
+<b class="nc"><i>259</i>&nbsp;</b>
+<i>260</i>&nbsp;                if(this.nextUpdate != null) {
+<i>261</i>&nbsp;                    if(this.nextUpdate.getTime() &lt; 2524636800000L) {
+<i>262</i>&nbsp;                        var2.putUTCTime(this.nextUpdate);
+<i>263</i>&nbsp;                    } else {
+<i>264</i>&nbsp;                        var2.putGeneralizedTime(this.nextUpdate);
+<i>265</i>&nbsp;                    }
+<i>266</i>&nbsp;                }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;                if(!this.revokedList.isEmpty()) {
+<i>269</i>&nbsp;                    Iterator var5 = this.revokedList.iterator();
+<b class="nc"><i>270</i>&nbsp;</b>
+<b class="nc"><i>271</i>&nbsp;                    while(var5.hasNext()) {</b>
+<b class="nc"><i>272</i>&nbsp;                        X509CRLEntry var6 = (X509CRLEntry)var5.next();</b>
+<i>273</i>&nbsp;                        ((X509CRLEntryImpl)var6).encode(var3);
+<b class="nc"><i>274</i>&nbsp;                    }</b>
+<b class="nc"><i>275</i>&nbsp;</b>
+<b class="nc"><i>276</i>&nbsp;                    var2.write((byte)48, var3);</b>
+<b class="nc"><i>277</i>&nbsp;                }</b>
+<b class="nc"><i>278</i>&nbsp;</b>
+<b class="nc"><i>279</i>&nbsp;                if(this.extensions != null) {</b>
+<i>280</i>&nbsp;                    this.extensions.encode(var2, true);
+<b class="nc"><i>281</i>&nbsp;                }</b>
+<b class="nc"><i>282</i>&nbsp;</b>
+<i>283</i>&nbsp;                var4.write((byte)48, var2);
+<b class="nc"><i>284</i>&nbsp;                this.tbsCertList = var4.toByteArray();</b>
+<i>285</i>&nbsp;                var1.write(this.tbsCertList);
+<b class="nc"><i>286</i>&nbsp;            }</b>
+<b class="nc"><i>287</i>&nbsp;        } catch (IOException var7) {</b>
+<b class="nc"><i>288</i>&nbsp;            throw new CRLException(&quot;Encoding error: &quot; + var7.getMessage());</b>
+<i>289</i>&nbsp;        }
+<b class="nc"><i>290</i>&nbsp;    }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public void verify(PublicKey var1) throws CRLException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+<b class="nc"><i>293</i>&nbsp;        this.verify(var1, &quot;&quot;);</b>
+<b class="nc"><i>294</i>&nbsp;    }</b>
+<b class="nc"><i>295</i>&nbsp;</b>
+<i>296</i>&nbsp;    public synchronized void verify(PublicKey var1, String var2) throws CRLException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+<b class="nc"><i>297</i>&nbsp;        if(var2 == null) {</b>
+<i>298</i>&nbsp;            var2 = &quot;&quot;;
+<i>299</i>&nbsp;        }
+<b class="nc"><i>300</i>&nbsp;</b>
+<b class="nc"><i>301</i>&nbsp;        if(this.verifiedPublicKey == null || !this.verifiedPublicKey.equals(var1) || !var2.equals(this.verifiedProvider)) {</b>
+<i>302</i>&nbsp;            if(this.signedCRL == null) {
+<b class="nc"><i>303</i>&nbsp;                throw new CRLException(&quot;Uninitialized CRL&quot;);</b>
+<i>304</i>&nbsp;            } else {
+<b class="nc"><i>305</i>&nbsp;                Signature var3 = null;</b>
+<b class="nc"><i>306</i>&nbsp;                if(var2.length() == 0) {</b>
+<b class="nc"><i>307</i>&nbsp;                    var3 = Signature.getInstance(this.sigAlgId.getName());</b>
+<b class="nc"><i>308</i>&nbsp;                } else {</b>
+<b class="nc"><i>309</i>&nbsp;                    var3 = Signature.getInstance(this.sigAlgId.getName(), var2);</b>
+<i>310</i>&nbsp;                }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;                var3.initVerify(var1);
+<i>313</i>&nbsp;                if(this.tbsCertList == null) {
+<i>314</i>&nbsp;                    throw new CRLException(&quot;Uninitialized CRL&quot;);
+<i>315</i>&nbsp;                } else {
+<i>316</i>&nbsp;                    var3.update(this.tbsCertList, 0, this.tbsCertList.length);
+<i>317</i>&nbsp;                    if(!var3.verify(this.signature)) {
+<i>318</i>&nbsp;                        throw new SignatureException(&quot;Signature does not match.&quot;);
+<i>319</i>&nbsp;                    } else {
+<i>320</i>&nbsp;                        this.verifiedPublicKey = var1;
+<i>321</i>&nbsp;                        this.verifiedProvider = var2;
+<i>322</i>&nbsp;                    }
+<i>323</i>&nbsp;                }
+<i>324</i>&nbsp;            }
+<i>325</i>&nbsp;        }
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<b class="nc"><i>328</i>&nbsp;    public void sign(PrivateKey var1, String var2) throws CRLException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {</b>
+<i>329</i>&nbsp;        this.sign(var1, var2, (String)null);
+<i>330</i>&nbsp;    }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    public void sign(PrivateKey var1, String var2, String var3) throws CRLException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+<i>333</i>&nbsp;        try {
+<i>334</i>&nbsp;            if(this.readOnly) {
+<i>335</i>&nbsp;                throw new CRLException(&quot;cannot over-write existing CRL&quot;);
+<i>336</i>&nbsp;            } else {
+<i>337</i>&nbsp;                Signature var4 = null;
+<i>338</i>&nbsp;                if(var3 != null &amp;&amp; var3.length() != 0) {
+<i>339</i>&nbsp;                    var4 = Signature.getInstance(var2, var3);
+<i>340</i>&nbsp;                } else {
+<i>341</i>&nbsp;                    var4 = Signature.getInstance(var2);
+<i>342</i>&nbsp;                }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;                var4.initSign(var1);
+<i>345</i>&nbsp;                this.sigAlgId = AlgorithmId.get(var4.getAlgorithm());
+<i>346</i>&nbsp;                this.infoSigAlgId = this.sigAlgId;
+<i>347</i>&nbsp;                DerOutputStream var5 = new DerOutputStream();
+<i>348</i>&nbsp;                DerOutputStream var6 = new DerOutputStream();
+<i>349</i>&nbsp;                this.encodeInfo(var6);
+<i>350</i>&nbsp;                this.sigAlgId.encode(var6);
+<b class="nc"><i>351</i>&nbsp;                var4.update(this.tbsCertList, 0, this.tbsCertList.length);</b>
+<b class="nc"><i>352</i>&nbsp;                this.signature = var4.sign();</b>
+<i>353</i>&nbsp;                var6.putBitString(this.signature);
+<b class="nc"><i>354</i>&nbsp;                var5.write((byte)48, var6);</b>
+<i>355</i>&nbsp;                this.signedCRL = var5.toByteArray();
+<i>356</i>&nbsp;                this.readOnly = true;
+<b class="nc"><i>357</i>&nbsp;            }</b>
+<i>358</i>&nbsp;        } catch (IOException var7) {
+<i>359</i>&nbsp;            throw new CRLException(&quot;Error while encoding data: &quot; + var7.getMessage());
+<i>360</i>&nbsp;        }
+<b class="nc"><i>361</i>&nbsp;    }</b>
+<b class="nc"><i>362</i>&nbsp;</b>
+<i>363</i>&nbsp;    public String toString() {
+<b class="nc"><i>364</i>&nbsp;        StringBuffer var1 = new StringBuffer();</b>
+<b class="nc"><i>365</i>&nbsp;        var1.append(&quot;X.509 CRL v&quot; + (this.version + 1) + &quot;\n&quot;);</b>
+<b class="nc"><i>366</i>&nbsp;        if(this.sigAlgId != null) {</b>
+<i>367</i>&nbsp;            var1.append(&quot;Signature Algorithm: &quot; + this.sigAlgId.toString() + &quot;, OID=&quot; + this.sigAlgId.getOID().toString() + &quot;\n&quot;);
+<b class="nc"><i>368</i>&nbsp;        }</b>
+<i>369</i>&nbsp;
+<b class="nc"><i>370</i>&nbsp;        if(this.issuer != null) {</b>
+<i>371</i>&nbsp;            var1.append(&quot;Issuer: &quot; + this.issuer.toString() + &quot;\n&quot;);
+<b class="nc"><i>372</i>&nbsp;        }</b>
+<b class="nc"><i>373</i>&nbsp;</b>
+<i>374</i>&nbsp;        if(this.thisUpdate != null) {
+<i>375</i>&nbsp;            var1.append(&quot;\nThis Update: &quot; + this.thisUpdate.toString() + &quot;\n&quot;);
+<b class="nc"><i>376</i>&nbsp;        }</b>
+<i>377</i>&nbsp;
+<b class="nc"><i>378</i>&nbsp;        if(this.nextUpdate != null) {</b>
+<b class="nc"><i>379</i>&nbsp;            var1.append(&quot;Next Update: &quot; + this.nextUpdate.toString() + &quot;\n&quot;);</b>
+<i>380</i>&nbsp;        }
+<b class="nc"><i>381</i>&nbsp;</b>
+<b class="nc"><i>382</i>&nbsp;        if(this.revokedList.isEmpty()) {</b>
+<i>383</i>&nbsp;            var1.append(&quot;\nNO certificates have been revoked\n&quot;);
+<i>384</i>&nbsp;        } else {
+<i>385</i>&nbsp;            var1.append(&quot;\nRevoked Certificates: &quot; + this.revokedList.size());
+<i>386</i>&nbsp;            int var2 = 1;
+<i>387</i>&nbsp;            Iterator var3 = this.revokedList.iterator();
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;            while(var3.hasNext()) {
+<i>390</i>&nbsp;                X509CRLEntry var4 = (X509CRLEntry)var3.next();
+<i>391</i>&nbsp;                var1.append(&quot;\n[&quot; + var2++ + &quot;] &quot; + var4.toString());
+<i>392</i>&nbsp;            }
+<i>393</i>&nbsp;        }
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;        if(this.extensions != null) {
+<i>396</i>&nbsp;            Collection var10 = this.extensions.getAllExtensions();
+<i>397</i>&nbsp;            Object[] var12 = var10.toArray();
+<i>398</i>&nbsp;            var1.append(&quot;\nCRL Extensions: &quot; + var12.length);
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;            for(int var13 = 0; var13 &lt; var12.length; ++var13) {
+<b class="nc"><i>401</i>&nbsp;                var1.append(&quot;\n[&quot; + (var13 + 1) + &quot;]: &quot;);</b>
+<i>402</i>&nbsp;                Extension var5 = (Extension)var12[var13];
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;                try {
+<i>405</i>&nbsp;                    if(OIDMap.getClass(var5.getExtensionId()) == null) {
+<i>406</i>&nbsp;                        var1.append(var5.toString());
+<i>407</i>&nbsp;                        byte[] var6 = var5.getExtensionValue();
+<i>408</i>&nbsp;                        if(var6 != null) {
+<i>409</i>&nbsp;                            DerOutputStream var7 = new DerOutputStream();
+<i>410</i>&nbsp;                            var7.putOctetString(var6);
+<i>411</i>&nbsp;                            var6 = var7.toByteArray();
+<i>412</i>&nbsp;                            HexDumpEncoder var8 = new HexDumpEncoder();
+<i>413</i>&nbsp;                            var1.append(&quot;Extension unknown: DER encoded OCTET string =\n&quot; + var8.encodeBuffer(var6) + &quot;\n&quot;);
+<i>414</i>&nbsp;                        }
+<i>415</i>&nbsp;                    } else {
+<i>416</i>&nbsp;                        var1.append(var5.toString());
+<i>417</i>&nbsp;                    }
+<i>418</i>&nbsp;                } catch (Exception var9) {
+<i>419</i>&nbsp;                    var1.append(&quot;, Error parsing this extension&quot;);
+<i>420</i>&nbsp;                }
+<i>421</i>&nbsp;            }
+<b class="nc"><i>422</i>&nbsp;        }</b>
+<b class="nc"><i>423</i>&nbsp;</b>
+<b class="nc"><i>424</i>&nbsp;        if(this.signature != null) {</b>
+<b class="nc"><i>425</i>&nbsp;            HexDumpEncoder var11 = new HexDumpEncoder();</b>
+<b class="nc"><i>426</i>&nbsp;            var1.append(&quot;\nSignature:\n&quot; + var11.encodeBuffer(this.signature) + &quot;\n&quot;);</b>
+<i>427</i>&nbsp;        } else {
+<b class="nc"><i>428</i>&nbsp;            var1.append(&quot;NOT signed yet\n&quot;);</b>
+<i>429</i>&nbsp;        }
+<b class="nc"><i>430</i>&nbsp;</b>
+<i>431</i>&nbsp;        return var1.toString();
+<i>432</i>&nbsp;    }
+<b class="nc"><i>433</i>&nbsp;</b>
+<b class="nc"><i>434</i>&nbsp;    public boolean isRevoked(Certificate var1) {</b>
+<i>435</i>&nbsp;        if(!this.revokedMap.isEmpty() &amp;&amp; var1 instanceof X509Certificate) {
+<b class="nc"><i>436</i>&nbsp;            X509Certificate var2 = (X509Certificate)var1;</b>
+<b class="nc"><i>437</i>&nbsp;            X509CRLImpl.X509IssuerSerial var3 = new X509CRLImpl.X509IssuerSerial(var2);</b>
+<i>438</i>&nbsp;            return this.revokedMap.containsKey(var3);
+<i>439</i>&nbsp;        } else {
+<b class="nc"><i>440</i>&nbsp;            return false;</b>
+<i>441</i>&nbsp;        }
+<i>442</i>&nbsp;    }
+<b class="nc"><i>443</i>&nbsp;</b>
+<i>444</i>&nbsp;    public int getVersion() {
+<i>445</i>&nbsp;        return this.version + 1;
+<b class="nc"><i>446</i>&nbsp;    }</b>
+<b class="nc"><i>447</i>&nbsp;</b>
+<b class="nc"><i>448</i>&nbsp;    public Principal getIssuerDN() {</b>
+<i>449</i>&nbsp;        return this.issuer;
+<i>450</i>&nbsp;    }
+<b class="nc"><i>451</i>&nbsp;</b>
+<b class="nc"><i>452</i>&nbsp;    public X500Principal getIssuerX500Principal() {</b>
+<b class="nc"><i>453</i>&nbsp;        if(this.issuerPrincipal == null) {</b>
+<i>454</i>&nbsp;            this.issuerPrincipal = this.issuer.asX500Principal();
+<b class="nc"><i>455</i>&nbsp;        }</b>
+<b class="nc"><i>456</i>&nbsp;</b>
+<i>457</i>&nbsp;        return this.issuerPrincipal;
+<b class="nc"><i>458</i>&nbsp;    }</b>
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;    public Date getThisUpdate() {
+<i>461</i>&nbsp;        return new Date(this.thisUpdate.getTime());
+<i>462</i>&nbsp;    }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;    public Date getNextUpdate() {
+<i>465</i>&nbsp;        return this.nextUpdate == null?null:new Date(this.nextUpdate.getTime());
+<i>466</i>&nbsp;    }
+<b class="nc"><i>467</i>&nbsp;</b>
+<b class="nc"><i>468</i>&nbsp;    public X509CRLEntry getRevokedCertificate(BigInteger var1) {</b>
+<b class="nc"><i>469</i>&nbsp;        if(this.revokedMap.isEmpty()) {</b>
+<b class="nc"><i>470</i>&nbsp;            return null;</b>
+<i>471</i>&nbsp;        } else {
+<b class="nc"><i>472</i>&nbsp;            X509CRLImpl.X509IssuerSerial var2 = new X509CRLImpl.X509IssuerSerial(this.getIssuerX500Principal(), var1);</b>
+<b class="nc"><i>473</i>&nbsp;            return (X509CRLEntry)this.revokedMap.get(var2);</b>
+<b class="nc"><i>474</i>&nbsp;        }</b>
+<b class="nc"><i>475</i>&nbsp;    }</b>
+<b class="nc"><i>476</i>&nbsp;</b>
+<b class="nc"><i>477</i>&nbsp;    public X509CRLEntry getRevokedCertificate(X509Certificate var1) {</b>
+<b class="nc"><i>478</i>&nbsp;        if(this.revokedMap.isEmpty()) {</b>
+<b class="nc"><i>479</i>&nbsp;            return null;</b>
+<i>480</i>&nbsp;        } else {
+<b class="nc"><i>481</i>&nbsp;            X509CRLImpl.X509IssuerSerial var2 = new X509CRLImpl.X509IssuerSerial(var1);</b>
+<b class="nc"><i>482</i>&nbsp;            return (X509CRLEntry)this.revokedMap.get(var2);</b>
+<b class="nc"><i>483</i>&nbsp;        }</b>
+<b class="nc"><i>484</i>&nbsp;    }</b>
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;    public Set&lt;X509CRLEntry&gt; getRevokedCertificates() {
+<b class="nc"><i>487</i>&nbsp;        return this.revokedList.isEmpty()?null:new TreeSet(this.revokedList);</b>
+<b class="nc"><i>488</i>&nbsp;    }</b>
+<b class="nc"><i>489</i>&nbsp;</b>
+<b class="nc"><i>490</i>&nbsp;    public byte[] getTBSCertList() throws CRLException {</b>
+<b class="nc"><i>491</i>&nbsp;        if(this.tbsCertList == null) {</b>
+<b class="nc"><i>492</i>&nbsp;            throw new CRLException(&quot;Uninitialized CRL&quot;);</b>
+<b class="nc"><i>493</i>&nbsp;        } else {</b>
+<i>494</i>&nbsp;            byte[] var1 = new byte[this.tbsCertList.length];
+<b class="nc"><i>495</i>&nbsp;            System.arraycopy(this.tbsCertList, 0, var1, 0, var1.length);</b>
+<b class="nc"><i>496</i>&nbsp;            return var1;</b>
+<b class="nc"><i>497</i>&nbsp;        }</b>
+<b class="nc"><i>498</i>&nbsp;    }</b>
+<b class="nc"><i>499</i>&nbsp;</b>
+<b class="nc"><i>500</i>&nbsp;    public byte[] getSignature() {</b>
+<b class="nc"><i>501</i>&nbsp;        if(this.signature == null) {</b>
+<b class="nc"><i>502</i>&nbsp;            return null;</b>
+<b class="nc"><i>503</i>&nbsp;        } else {</b>
+<i>504</i>&nbsp;            byte[] var1 = new byte[this.signature.length];
+<i>505</i>&nbsp;            System.arraycopy(this.signature, 0, var1, 0, var1.length);
+<i>506</i>&nbsp;            return var1;
+<b class="nc"><i>507</i>&nbsp;        }</b>
+<b class="nc"><i>508</i>&nbsp;    }</b>
+<b class="nc"><i>509</i>&nbsp;</b>
+<b class="nc"><i>510</i>&nbsp;    public String getSigAlgName() {</b>
+<b class="nc"><i>511</i>&nbsp;        return this.sigAlgId == null?null:this.sigAlgId.getName();</b>
+<i>512</i>&nbsp;    }
+<i>513</i>&nbsp;
+<b class="nc"><i>514</i>&nbsp;    public String getSigAlgOID() {</b>
+<b class="nc"><i>515</i>&nbsp;        if(this.sigAlgId == null) {</b>
+<b class="nc"><i>516</i>&nbsp;            return null;</b>
+<i>517</i>&nbsp;        } else {
+<b class="nc"><i>518</i>&nbsp;            ObjectIdentifier var1 = this.sigAlgId.getOID();</b>
+<b class="nc"><i>519</i>&nbsp;            return var1.toString();</b>
+<b class="nc"><i>520</i>&nbsp;        }</b>
+<i>521</i>&nbsp;    }
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;    public byte[] getSigAlgParams() {
+<i>524</i>&nbsp;        if(this.sigAlgId == null) {
+<i>525</i>&nbsp;            return null;
+<i>526</i>&nbsp;        } else {
+<i>527</i>&nbsp;            try {
+<i>528</i>&nbsp;                return this.sigAlgId.getEncodedParams();
+<i>529</i>&nbsp;            } catch (IOException var2) {
+<i>530</i>&nbsp;                return null;
+<b class="nc"><i>531</i>&nbsp;            }</b>
+<b class="nc"><i>532</i>&nbsp;        }</b>
+<i>533</i>&nbsp;    }
+<b class="nc"><i>534</i>&nbsp;</b>
+<b class="nc"><i>535</i>&nbsp;    public AlgorithmId getSigAlgId() {</b>
+<b class="nc"><i>536</i>&nbsp;        return this.sigAlgId;</b>
+<i>537</i>&nbsp;    }
+<i>538</i>&nbsp;
+<i>539</i>&nbsp;    public KeyIdentifier getAuthKeyId() throws IOException {
+<i>540</i>&nbsp;        AuthorityKeyIdentifierExtension var1 = this.getAuthKeyIdExtension();
+<i>541</i>&nbsp;        if(var1 != null) {
+<i>542</i>&nbsp;            KeyIdentifier var2 = (KeyIdentifier)var1.get(&quot;key_id&quot;);
+<i>543</i>&nbsp;            return var2;
+<i>544</i>&nbsp;        } else {
+<i>545</i>&nbsp;            return null;
+<i>546</i>&nbsp;        }
+<i>547</i>&nbsp;    }
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;    public AuthorityKeyIdentifierExtension getAuthKeyIdExtension() throws IOException {
+<b class="nc"><i>550</i>&nbsp;        Object var1 = this.getExtension(PKIXExtensions.AuthorityKey_Id);</b>
+<i>551</i>&nbsp;        return (AuthorityKeyIdentifierExtension)var1;
+<i>552</i>&nbsp;    }
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;    public CRLNumberExtension getCRLNumberExtension() throws IOException {
+<i>555</i>&nbsp;        Object var1 = this.getExtension(PKIXExtensions.CRLNumber_Id);
+<i>556</i>&nbsp;        return (CRLNumberExtension)var1;
+<i>557</i>&nbsp;    }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;    public BigInteger getCRLNumber() throws IOException {
+<i>560</i>&nbsp;        CRLNumberExtension var1 = this.getCRLNumberExtension();
+<i>561</i>&nbsp;        if(var1 != null) {
+<i>562</i>&nbsp;            BigInteger var2 = (BigInteger)var1.get(&quot;value&quot;);
+<i>563</i>&nbsp;            return var2;
+<i>564</i>&nbsp;        } else {
+<i>565</i>&nbsp;            return null;
+<i>566</i>&nbsp;        }
+<i>567</i>&nbsp;    }
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;    public DeltaCRLIndicatorExtension getDeltaCRLIndicatorExtension() throws IOException {
+<i>570</i>&nbsp;        Object var1 = this.getExtension(PKIXExtensions.DeltaCRLIndicator_Id);
+<i>571</i>&nbsp;        return (DeltaCRLIndicatorExtension)var1;
+<i>572</i>&nbsp;    }
+<i>573</i>&nbsp;
+<i>574</i>&nbsp;    public BigInteger getBaseCRLNumber() throws IOException {
+<i>575</i>&nbsp;        DeltaCRLIndicatorExtension var1 = this.getDeltaCRLIndicatorExtension();
+<i>576</i>&nbsp;        if(var1 != null) {
+<i>577</i>&nbsp;            BigInteger var2 = (BigInteger)var1.get(&quot;value&quot;);
+<i>578</i>&nbsp;            return var2;
+<i>579</i>&nbsp;        } else {
+<i>580</i>&nbsp;            return null;
+<i>581</i>&nbsp;        }
+<b class="nc"><i>582</i>&nbsp;    }</b>
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;    public IssuerAlternativeNameExtension getIssuerAltNameExtension() throws IOException {
+<i>585</i>&nbsp;        Object var1 = this.getExtension(PKIXExtensions.IssuerAlternativeName_Id);
+<i>586</i>&nbsp;        return (IssuerAlternativeNameExtension)var1;
+<i>587</i>&nbsp;    }
+<i>588</i>&nbsp;
+<i>589</i>&nbsp;    public IssuingDistributionPointExtension getIssuingDistributionPointExtension() throws IOException {
+<b class="nc"><i>590</i>&nbsp;        Object var1 = this.getExtension(PKIXExtensions.IssuingDistributionPoint_Id);</b>
+<b class="nc"><i>591</i>&nbsp;        return (IssuingDistributionPointExtension)var1;</b>
+<i>592</i>&nbsp;    }
+<b class="nc"><i>593</i>&nbsp;</b>
+<i>594</i>&nbsp;    public boolean hasUnsupportedCriticalExtension() {
+<i>595</i>&nbsp;        return this.extensions == null?false:this.extensions.hasUnsupportedCriticalExtension();
+<i>596</i>&nbsp;    }
+<i>597</i>&nbsp;
+<i>598</i>&nbsp;    public Set&lt;String&gt; getCriticalExtensionOIDs() {
+<i>599</i>&nbsp;        if(this.extensions == null) {
+<i>600</i>&nbsp;            return null;
+<i>601</i>&nbsp;        } else {
+<i>602</i>&nbsp;            TreeSet var1 = new TreeSet();
+<b class="nc"><i>603</i>&nbsp;            Iterator var2 = this.extensions.getAllExtensions().iterator();</b>
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;            while(var2.hasNext()) {
+<i>606</i>&nbsp;                Extension var3 = (Extension)var2.next();
+<i>607</i>&nbsp;                if(var3.isCritical()) {
+<i>608</i>&nbsp;                    var1.add(var3.getExtensionId().toString());
+<i>609</i>&nbsp;                }
+<i>610</i>&nbsp;            }
+<i>611</i>&nbsp;
+<i>612</i>&nbsp;            return var1;
+<b class="nc"><i>613</i>&nbsp;        }</b>
+<b class="nc"><i>614</i>&nbsp;    }</b>
+<b class="nc"><i>615</i>&nbsp;</b>
+<i>616</i>&nbsp;    public Set&lt;String&gt; getNonCriticalExtensionOIDs() {
+<i>617</i>&nbsp;        if(this.extensions == null) {
+<i>618</i>&nbsp;            return null;
+<i>619</i>&nbsp;        } else {
+<i>620</i>&nbsp;            TreeSet var1 = new TreeSet();
+<i>621</i>&nbsp;            Iterator var2 = this.extensions.getAllExtensions().iterator();
+<i>622</i>&nbsp;
+<i>623</i>&nbsp;            while(var2.hasNext()) {
+<i>624</i>&nbsp;                Extension var3 = (Extension)var2.next();
+<i>625</i>&nbsp;                if(!var3.isCritical()) {
+<b class="nc"><i>626</i>&nbsp;                    var1.add(var3.getExtensionId().toString());</b>
+<b class="nc"><i>627</i>&nbsp;                }</b>
+<i>628</i>&nbsp;            }
+<i>629</i>&nbsp;
+<b class="nc"><i>630</i>&nbsp;            return var1;</b>
+<i>631</i>&nbsp;        }
+<b class="nc"><i>632</i>&nbsp;    }</b>
+<i>633</i>&nbsp;
+<i>634</i>&nbsp;    public byte[] getExtensionValue(String var1) {
+<i>635</i>&nbsp;        if(this.extensions == null) {
+<i>636</i>&nbsp;            return null;
+<i>637</i>&nbsp;        } else {
+<i>638</i>&nbsp;            try {
+<b class="nc"><i>639</i>&nbsp;                String var2 = OIDMap.getName(new ObjectIdentifier(var1));</b>
+<b class="nc"><i>640</i>&nbsp;                Extension var3 = null;</b>
+<i>641</i>&nbsp;                if(var2 == null) {
+<b class="nc"><i>642</i>&nbsp;                    ObjectIdentifier var4 = new ObjectIdentifier(var1);</b>
+<b class="nc"><i>643</i>&nbsp;                    Extension var5 = null;</b>
+<i>644</i>&nbsp;                    Enumeration var7 = this.extensions.getElements();
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;                    while(var7.hasMoreElements()) {
+<i>647</i>&nbsp;                        var5 = (Extension)var7.nextElement();
+<i>648</i>&nbsp;                        ObjectIdentifier var6 = var5.getExtensionId();
+<i>649</i>&nbsp;                        if(var6.equals(var4)) {
+<i>650</i>&nbsp;                            var3 = var5;
+<i>651</i>&nbsp;                            break;
+<i>652</i>&nbsp;                        }
+<i>653</i>&nbsp;                    }
+<i>654</i>&nbsp;                } else {
+<b class="nc"><i>655</i>&nbsp;                    var3 = this.extensions.get(var2);</b>
+<b class="nc"><i>656</i>&nbsp;                }</b>
+<i>657</i>&nbsp;
+<b class="nc"><i>658</i>&nbsp;                if(var3 == null) {</b>
+<i>659</i>&nbsp;                    return null;
+<i>660</i>&nbsp;                } else {
+<i>661</i>&nbsp;                    byte[] var9 = var3.getExtensionValue();
+<i>662</i>&nbsp;                    if(var9 == null) {
+<i>663</i>&nbsp;                        return null;
+<i>664</i>&nbsp;                    } else {
+<i>665</i>&nbsp;                        DerOutputStream var10 = new DerOutputStream();
+<i>666</i>&nbsp;                        var10.putOctetString(var9);
+<i>667</i>&nbsp;                        return var10.toByteArray();
+<i>668</i>&nbsp;                    }
+<i>669</i>&nbsp;                }
+<i>670</i>&nbsp;            } catch (Exception var8) {
+<b class="nc"><i>671</i>&nbsp;                return null;</b>
+<b class="nc"><i>672</i>&nbsp;            }</b>
+<b class="nc"><i>673</i>&nbsp;        }</b>
+<b class="nc"><i>674</i>&nbsp;    }</b>
+<b class="nc"><i>675</i>&nbsp;</b>
+<i>676</i>&nbsp;    public Object getExtension(ObjectIdentifier var1) {
+<i>677</i>&nbsp;        return this.extensions == null?null:this.extensions.get(OIDMap.getName(var1));
+<i>678</i>&nbsp;    }
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;    private void parse(DerValue var1) throws CRLException, IOException {
+<i>681</i>&nbsp;        if(this.readOnly) {
+<i>682</i>&nbsp;            throw new CRLException(&quot;cannot over-write existing CRL&quot;);
+<i>683</i>&nbsp;        } else if(var1.getData() != null &amp;&amp; var1.tag == 48) {
+<b class="nc"><i>684</i>&nbsp;            this.signedCRL = var1.toByteArray();</b>
+<b class="nc"><i>685</i>&nbsp;            DerValue[] var2 = new DerValue[]{var1.data.getDerValue(), var1.data.getDerValue(), var1.data.getDerValue()};</b>
+<b class="nc"><i>686</i>&nbsp;            if(var1.data.available() != 0) {</b>
+<b class="nc"><i>687</i>&nbsp;                throw new CRLException(&quot;signed overrun, bytes = &quot; + var1.data.available());</b>
+<b class="nc"><i>688</i>&nbsp;            } else if(var2[0].tag != 48) {</b>
+<i>689</i>&nbsp;                throw new CRLException(&quot;signed CRL fields invalid&quot;);
+<i>690</i>&nbsp;            } else {
+<i>691</i>&nbsp;                this.sigAlgId = AlgorithmId.parse(var2[1]);
+<i>692</i>&nbsp;                this.signature = var2[2].getBitString();
+<i>693</i>&nbsp;                if(var2[1].data.available() != 0) {
+<i>694</i>&nbsp;                    throw new CRLException(&quot;AlgorithmId field overrun&quot;);
+<i>695</i>&nbsp;                } else if(var2[2].data.available() != 0) {
+<i>696</i>&nbsp;                    throw new CRLException(&quot;Signature field overrun&quot;);
+<i>697</i>&nbsp;                } else {
+<i>698</i>&nbsp;                    this.tbsCertList = var2[0].toByteArray();
+<i>699</i>&nbsp;                    DerInputStream var3 = var2[0].data;
+<i>700</i>&nbsp;                    this.version = 0;
+<i>701</i>&nbsp;                    byte var5 = (byte)var3.peekByte();
+<i>702</i>&nbsp;                    if(var5 == 2) {
+<i>703</i>&nbsp;                        this.version = var3.getInteger();
+<i>704</i>&nbsp;                        if(this.version != 1) {
+<i>705</i>&nbsp;                            throw new CRLException(&quot;Invalid version&quot;);
+<i>706</i>&nbsp;                        }
+<b class="nc"><i>707</i>&nbsp;                    }</b>
+<b class="nc"><i>708</i>&nbsp;</b>
+<b class="nc"><i>709</i>&nbsp;                    DerValue var4 = var3.getDerValue();</b>
+<i>710</i>&nbsp;                    AlgorithmId var6 = AlgorithmId.parse(var4);
+<i>711</i>&nbsp;                    if(!var6.equals(this.sigAlgId)) {
+<i>712</i>&nbsp;                        throw new CRLException(&quot;Signature algorithm mismatch&quot;);
+<i>713</i>&nbsp;                    } else {
+<i>714</i>&nbsp;                        this.infoSigAlgId = var6;
+<i>715</i>&nbsp;                        this.issuer = new X500Name(var3);
+<i>716</i>&nbsp;                        if(this.issuer.isEmpty()) {
+<i>717</i>&nbsp;                            throw new CRLException(&quot;Empty issuer DN not allowed in X509CRLs&quot;);
+<i>718</i>&nbsp;                        } else {
+<i>719</i>&nbsp;                            var5 = (byte)var3.peekByte();
+<i>720</i>&nbsp;                            if(var5 == 23) {
+<i>721</i>&nbsp;                                this.thisUpdate = var3.getUTCTime();
+<i>722</i>&nbsp;                            } else {
+<b class="nc"><i>723</i>&nbsp;                                if(var5 != 24) {</b>
+<b class="nc"><i>724</i>&nbsp;                                    throw new CRLException(&quot;Invalid encoding for thisUpdate (tag=&quot; + var5 + &quot;)&quot;);</b>
+<b class="nc"><i>725</i>&nbsp;                                }</b>
+<b class="nc"><i>726</i>&nbsp;</b>
+<i>727</i>&nbsp;                                this.thisUpdate = var3.getGeneralizedTime();
+<i>728</i>&nbsp;                            }
+<i>729</i>&nbsp;
+<i>730</i>&nbsp;                            if(var3.available() != 0) {
+<i>731</i>&nbsp;                                var5 = (byte)var3.peekByte();
+<i>732</i>&nbsp;                                if(var5 == 23) {
+<i>733</i>&nbsp;                                    this.nextUpdate = var3.getUTCTime();
+<i>734</i>&nbsp;                                } else if(var5 == 24) {
+<i>735</i>&nbsp;                                    this.nextUpdate = var3.getGeneralizedTime();
+<i>736</i>&nbsp;                                }
+<i>737</i>&nbsp;
+<i>738</i>&nbsp;                                if(var3.available() != 0) {
+<b class="nc"><i>739</i>&nbsp;                                    var5 = (byte)var3.peekByte();</b>
+<b class="nc"><i>740</i>&nbsp;                                    if(var5 == 48 &amp;&amp; (var5 &amp; 192) != 128) {</b>
+<i>741</i>&nbsp;                                        DerValue[] var7 = var3.getSequence(4);
+<b class="nc"><i>742</i>&nbsp;                                        X500Principal var8 = this.getIssuerX500Principal();</b>
+<b class="nc"><i>743</i>&nbsp;                                        X500Principal var9 = var8;</b>
+<b class="nc"><i>744</i>&nbsp;</b>
+<i>745</i>&nbsp;                                        for(int var10 = 0; var10 &lt; var7.length; ++var10) {
+<i>746</i>&nbsp;                                            X509CRLEntryImpl var11 = new X509CRLEntryImpl(var7[var10]);
+<i>747</i>&nbsp;                                            var9 = this.getCertIssuer(var11, var9);
+<i>748</i>&nbsp;                                            var11.setCertificateIssuer(var8, var9);
+<i>749</i>&nbsp;                                            X509CRLImpl.X509IssuerSerial var12 = new X509CRLImpl.X509IssuerSerial(var9, var11.getSerialNumber());
+<i>750</i>&nbsp;                                            this.revokedMap.put(var12, var11);
+<i>751</i>&nbsp;                                            this.revokedList.add(var11);
+<i>752</i>&nbsp;                                        }
+<i>753</i>&nbsp;                                    }
+<i>754</i>&nbsp;
+<i>755</i>&nbsp;                                    if(var3.available() != 0) {
+<b class="nc"><i>756</i>&nbsp;                                        var4 = var3.getDerValue();</b>
+<b class="nc"><i>757</i>&nbsp;                                        if(var4.isConstructed() &amp;&amp; var4.isContextSpecific((byte)0)) {</b>
+<b class="nc"><i>758</i>&nbsp;                                            this.extensions = new CRLExtensions(var4.data);</b>
+<b class="nc"><i>759</i>&nbsp;                                        }</b>
+<i>760</i>&nbsp;
+<b class="nc"><i>761</i>&nbsp;                                        this.readOnly = true;</b>
+<i>762</i>&nbsp;                                    }
+<i>763</i>&nbsp;                                }
+<i>764</i>&nbsp;                            }
+<i>765</i>&nbsp;                        }
+<i>766</i>&nbsp;                    }
+<i>767</i>&nbsp;                }
+<i>768</i>&nbsp;            }
+<i>769</i>&nbsp;        } else {
+<i>770</i>&nbsp;            throw new CRLException(&quot;Invalid DER-encoded CRL data&quot;);
+<i>771</i>&nbsp;        }
+<i>772</i>&nbsp;    }
+<b class="nc"><i>773</i>&nbsp;</b>
+<b class="nc"><i>774</i>&nbsp;    public static X500Principal getIssuerX500Principal(X509CRL var0) {</b>
+<i>775</i>&nbsp;        try {
+<i>776</i>&nbsp;            byte[] var1 = var0.getEncoded();
+<i>777</i>&nbsp;            DerInputStream var2 = new DerInputStream(var1);
+<i>778</i>&nbsp;            DerValue var3 = var2.getSequence(3)[0];
+<i>779</i>&nbsp;            DerInputStream var4 = var3.data;
+<i>780</i>&nbsp;            byte var6 = (byte)var4.peekByte();
+<i>781</i>&nbsp;            DerValue var5;
+<i>782</i>&nbsp;            if(var6 == 2) {
+<i>783</i>&nbsp;                var5 = var4.getDerValue();
+<b class="nc"><i>784</i>&nbsp;            }</b>
+<b class="nc"><i>785</i>&nbsp;</b>
+<i>786</i>&nbsp;            var5 = var4.getDerValue();
+<i>787</i>&nbsp;            var5 = var4.getDerValue();
+<i>788</i>&nbsp;            byte[] var7 = var5.toByteArray();
+<i>789</i>&nbsp;            return new X500Principal(var7);
+<i>790</i>&nbsp;        } catch (Exception var8) {
+<i>791</i>&nbsp;            throw new RuntimeException(&quot;Could not parse issuer&quot;, var8);
+<i>792</i>&nbsp;        }
+<i>793</i>&nbsp;    }
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;    public static byte[] getEncodedInternal(X509CRL var0) throws CRLException {</b>
+<b class="nc"><i>796</i>&nbsp;        return var0 instanceof X509CRLImpl?((X509CRLImpl)var0).getEncodedInternal():var0.getEncoded();</b>
+<b class="nc"><i>797</i>&nbsp;    }</b>
+<b class="nc"><i>798</i>&nbsp;</b>
+<i>799</i>&nbsp;    public static X509CRLImpl toImpl(X509CRL var0) throws CRLException {
+<b class="nc"><i>800</i>&nbsp;        return var0 instanceof X509CRLImpl?(X509CRLImpl)var0:X509Factory.intern(var0);</b>
+<i>801</i>&nbsp;    }
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;    private X500Principal getCertIssuer(X509CRLEntryImpl var1, X500Principal var2) throws IOException {
+<i>804</i>&nbsp;        CertificateIssuerExtension var3 = var1.getCertificateIssuerExtension();
+<i>805</i>&nbsp;        if(var3 != null) {
+<i>806</i>&nbsp;            GeneralNames var4 = (GeneralNames)var3.get(&quot;issuer&quot;);
+<i>807</i>&nbsp;            X500Name var5 = (X500Name)var4.get(0).getName();
+<i>808</i>&nbsp;            return var5.asX500Principal();
+<i>809</i>&nbsp;        } else {
+<i>810</i>&nbsp;            return var2;
+<i>811</i>&nbsp;        }
+<i>812</i>&nbsp;    }
+<b class="nc"><i>813</i>&nbsp;</b>
+<b class="nc"><i>814</i>&nbsp;    public void derEncode(OutputStream var1) throws IOException {</b>
+<i>815</i>&nbsp;        if(this.signedCRL == null) {
+<i>816</i>&nbsp;            throw new IOException(&quot;Null CRL to encode&quot;);
+<i>817</i>&nbsp;        } else {
+<i>818</i>&nbsp;            var1.write((byte[])this.signedCRL.clone());
+<i>819</i>&nbsp;        }
+<i>820</i>&nbsp;    }
+<i>821</i>&nbsp;
+<i>822</i>&nbsp;    private static final class X509IssuerSerial implements Comparable&lt;X509CRLImpl.X509IssuerSerial&gt; {
+<i>823</i>&nbsp;        final X500Principal issuer;
+<b class="nc"><i>824</i>&nbsp;        final BigInteger serial;</b>
+<b class="nc"><i>825</i>&nbsp;        volatile int hashcode;</b>
+<b class="nc"><i>826</i>&nbsp;</b>
+<b class="nc"><i>827</i>&nbsp;        X509IssuerSerial(X500Principal var1, BigInteger var2) {</b>
+<i>828</i>&nbsp;            this.hashcode = 0;
+<b class="nc"><i>829</i>&nbsp;            this.issuer = var1;</b>
+<i>830</i>&nbsp;            this.serial = var2;
+<i>831</i>&nbsp;        }
+<i>832</i>&nbsp;
+<i>833</i>&nbsp;        X509IssuerSerial(X509Certificate var1) {
+<i>834</i>&nbsp;            this(var1.getIssuerX500Principal(), var1.getSerialNumber());
+<i>835</i>&nbsp;        }
+<i>836</i>&nbsp;
+<i>837</i>&nbsp;        X500Principal getIssuer() {
+<i>838</i>&nbsp;            return this.issuer;
+<i>839</i>&nbsp;        }
+<i>840</i>&nbsp;
+<b class="nc"><i>841</i>&nbsp;        BigInteger getSerial() {</b>
+<b class="nc"><i>842</i>&nbsp;            return this.serial;</b>
+<i>843</i>&nbsp;        }
+<i>844</i>&nbsp;
+<i>845</i>&nbsp;        public boolean equals(Object var1) {
+<i>846</i>&nbsp;            if(var1 == this) {
+<i>847</i>&nbsp;                return true;
+<i>848</i>&nbsp;            } else if(!(var1 instanceof X509CRLImpl.X509IssuerSerial)) {
+<i>849</i>&nbsp;                return false;
+<i>850</i>&nbsp;            } else {
+<i>851</i>&nbsp;                X509CRLImpl.X509IssuerSerial var2 = (X509CRLImpl.X509IssuerSerial)var1;
+<i>852</i>&nbsp;                return this.serial.equals(var2.getSerial()) &amp;&amp; this.issuer.equals(var2.getIssuer());
+<i>853</i>&nbsp;            }
+<i>854</i>&nbsp;        }
+<b class="nc"><i>855</i>&nbsp;</b>
+<b class="nc"><i>856</i>&nbsp;        public int hashCode() {</b>
+<i>857</i>&nbsp;            if(this.hashcode == 0) {
+<i>858</i>&nbsp;                byte var1 = 17;
+<i>859</i>&nbsp;                int var2 = 37 * var1 + this.issuer.hashCode();
+<i>860</i>&nbsp;                var2 = 37 * var2 + this.serial.hashCode();
+<i>861</i>&nbsp;                this.hashcode = var2;
+<i>862</i>&nbsp;            }
+<i>863</i>&nbsp;
+<b class="nc"><i>864</i>&nbsp;            return this.hashcode;</b>
+<b class="nc"><i>865</i>&nbsp;        }</b>
+<b class="nc"><i>866</i>&nbsp;</b>
+<i>867</i>&nbsp;        public int compareTo(X509CRLImpl.X509IssuerSerial var1) {
+<i>868</i>&nbsp;            int var2 = this.issuer.toString().compareTo(var1.issuer.toString());
+<i>869</i>&nbsp;            return var2 != 0?var2:this.serial.compareTo(var1.serial);
+<i>870</i>&nbsp;        }
+<i>871</i>&nbsp;    }
+<i>872</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

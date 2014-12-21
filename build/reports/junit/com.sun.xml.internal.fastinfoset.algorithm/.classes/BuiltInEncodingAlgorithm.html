@@ -1,0 +1,151 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BuiltInEncodingAlgorithm</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.fastinfoset.algorithm</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BuiltInEncodingAlgorithm (com.sun.xml.internal.fastinfoset.algorithm)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BuiltInEncodingAlgorithm</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.fastinfoset.algorithm;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.org.jvnet.fastinfoset.EncodingAlgorithm;
+<i>9</i>&nbsp;import com.sun.xml.internal.org.jvnet.fastinfoset.EncodingAlgorithmException;
+<i>10</i>&nbsp;import java.nio.CharBuffer;
+<i>11</i>&nbsp;import java.util.regex.Matcher;
+<i>12</i>&nbsp;import java.util.regex.Pattern;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public abstract class BuiltInEncodingAlgorithm implements EncodingAlgorithm {
+<i>15</i>&nbsp;    protected static final Pattern SPACE_PATTERN = Pattern.compile(&quot;\\s&quot;);
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    public BuiltInEncodingAlgorithm() {
+<i>18</i>&nbsp;    }
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    public abstract int getPrimtiveLengthFromOctetLength(int var1) throws EncodingAlgorithmException;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public abstract int getOctetLengthFromPrimitiveLength(int var1);
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public abstract void encodeToBytes(Object var1, int var2, int var3, byte[] var4, int var5);
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public void matchWhiteSpaceDelimnatedWords(CharBuffer cb, BuiltInEncodingAlgorithm.WordListener wl) {
+<i>27</i>&nbsp;        Matcher m = SPACE_PATTERN.matcher(cb);
+<i>28</i>&nbsp;        int i = 0;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;        for(boolean s = false; m.find(); i = m.end()) {
+<i>31</i>&nbsp;            int s1 = m.start();
+<i>32</i>&nbsp;            if(s1 != i) {
+<i>33</i>&nbsp;                wl.word(i, s1);
+<i>34</i>&nbsp;            }
+<i>35</i>&nbsp;        }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;        if(i != cb.length()) {
+<i>38</i>&nbsp;            wl.word(i, cb.length());
+<i>39</i>&nbsp;        }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public StringBuffer removeWhitespace(char[] ch, int start, int length) {
+<i>44</i>&nbsp;        StringBuffer buf = new StringBuffer();
+<i>45</i>&nbsp;        int firstNonWS = 0;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;        int idx;
+<b class="nc"><i>48</i>&nbsp;        for(idx = 0; idx &lt; length; ++idx) {</b>
+<b class="nc"><i>49</i>&nbsp;            if(Character.isWhitespace(ch[idx + start])) {</b>
+<i>50</i>&nbsp;                if(firstNonWS &lt; idx) {
+<i>51</i>&nbsp;                    buf.append(ch, firstNonWS + start, idx - firstNonWS);
+<i>52</i>&nbsp;                }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;                firstNonWS = idx + 1;
+<i>55</i>&nbsp;            }
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;        if(firstNonWS &lt; idx) {
+<i>59</i>&nbsp;            buf.append(ch, firstNonWS + start, idx - firstNonWS);
+<i>60</i>&nbsp;        }
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;        return buf;</b>
+<b class="nc"><i>63</i>&nbsp;    }</b>
+<b class="nc"><i>64</i>&nbsp;</b>
+<b class="nc"><i>65</i>&nbsp;    public interface WordListener {</b>
+<b class="nc"><i>66</i>&nbsp;        void word(int var1, int var2);</b>
+<b class="nc"><i>67</i>&nbsp;    }</b>
+<b class="nc"><i>68</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

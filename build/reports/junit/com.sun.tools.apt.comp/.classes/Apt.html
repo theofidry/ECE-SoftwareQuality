@@ -1,0 +1,545 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Apt</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.apt.comp</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Apt (com.sun.tools.apt.comp)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Apt</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 200)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Apt$AptTreeScanner</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 217)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.apt.comp;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.mirror.apt.AnnotationProcessor;
+<i>9</i>&nbsp;import com.sun.mirror.apt.AnnotationProcessorFactory;
+<i>10</i>&nbsp;import com.sun.mirror.apt.AnnotationProcessors;
+<i>11</i>&nbsp;import com.sun.mirror.declaration.AnnotationTypeDeclaration;
+<i>12</i>&nbsp;import com.sun.mirror.declaration.TypeDeclaration;
+<i>13</i>&nbsp;import com.sun.tools.apt.comp.AnnotationProcessingError;
+<i>14</i>&nbsp;import com.sun.tools.apt.comp.BootstrapAPF;
+<i>15</i>&nbsp;import com.sun.tools.apt.comp.UsageMessageNeededException;
+<i>16</i>&nbsp;import com.sun.tools.apt.mirror.AptEnv;
+<i>17</i>&nbsp;import com.sun.tools.apt.mirror.apt.AnnotationProcessorEnvironmentImpl;
+<i>18</i>&nbsp;import com.sun.tools.apt.mirror.apt.FilerImpl;
+<i>19</i>&nbsp;import com.sun.tools.apt.util.Bark;
+<i>20</i>&nbsp;import com.sun.tools.javac.code.Symbol;
+<i>21</i>&nbsp;import com.sun.tools.javac.code.Attribute.Compound;
+<i>22</i>&nbsp;import com.sun.tools.javac.code.Scope.Entry;
+<i>23</i>&nbsp;import com.sun.tools.javac.code.Symbol.ClassSymbol;
+<i>24</i>&nbsp;import com.sun.tools.javac.code.Symbol.MethodSymbol;
+<i>25</i>&nbsp;import com.sun.tools.javac.comp.AttrContext;
+<i>26</i>&nbsp;import com.sun.tools.javac.comp.Env;
+<i>27</i>&nbsp;import com.sun.tools.javac.processing.JavacProcessingEnvironment;
+<i>28</i>&nbsp;import com.sun.tools.javac.tree.JCTree;
+<i>29</i>&nbsp;import com.sun.tools.javac.tree.TreeScanner;
+<i>30</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCAnnotation;
+<i>31</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCBlock;
+<i>32</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+<i>33</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+<i>34</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+<i>35</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
+<i>36</i>&nbsp;import com.sun.tools.javac.util.Context;
+<i>37</i>&nbsp;import com.sun.tools.javac.util.List;
+<i>38</i>&nbsp;import com.sun.tools.javac.util.ListBuffer;
+<i>39</i>&nbsp;import com.sun.tools.javac.util.Options;
+<i>40</i>&nbsp;import com.sun.tools.javac.util.Context.Key;
+<i>41</i>&nbsp;import java.io.PrintWriter;
+<i>42</i>&nbsp;import java.util.Collection;
+<i>43</i>&nbsp;import java.util.Collections;
+<i>44</i>&nbsp;import java.util.HashSet;
+<i>45</i>&nbsp;import java.util.Iterator;
+<i>46</i>&nbsp;import java.util.LinkedHashMap;
+<i>47</i>&nbsp;import java.util.LinkedHashSet;
+<i>48</i>&nbsp;import java.util.LinkedList;
+<i>49</i>&nbsp;import java.util.Map;
+<i>50</i>&nbsp;import java.util.Set;
+<b class="nc"><i>51</i>&nbsp;import java.util.TreeSet;</b>
+<i>52</i>&nbsp;import java.util.regex.Pattern;
+<b class="nc"><i>53</i>&nbsp;import sun.misc.Service;</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;public class Apt extends ListBuffer&lt;Env&lt;AttrContext&gt;&gt; {
+<i>56</i>&nbsp;    Set&lt;String&gt; genSourceFileNames = new LinkedHashSet();
+<i>57</i>&nbsp;    Set&lt;String&gt; genClassFileNames = new LinkedHashSet();
+<b class="nc"><i>58</i>&nbsp;    AptEnv aptenv;</b>
+<i>59</i>&nbsp;    private Context context;
+<b class="nc"><i>60</i>&nbsp;    protected static final Key&lt;Apt&gt; aptKey = new Key();</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public Set&lt;String&gt; getSourceFileNames() {
+<i>63</i>&nbsp;        return this.genSourceFileNames;
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public Set&lt;String&gt; getClassFileNames() {
+<i>67</i>&nbsp;        return this.genClassFileNames;
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<b class="nc"><i>70</i>&nbsp;    public static Apt instance(Context var0) {</b>
+<i>71</i>&nbsp;        Apt var1 = (Apt)var0.get(aptKey);
+<i>72</i>&nbsp;        if(var1 == null) {
+<i>73</i>&nbsp;            var1 = new Apt(var0);
+<i>74</i>&nbsp;        }
+<b class="nc"><i>75</i>&nbsp;</b>
+<b class="nc"><i>76</i>&nbsp;        return var1;</b>
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<b class="nc"><i>78</i>&nbsp;</b>
+<i>79</i>&nbsp;    protected Apt(Context var1) {
+<i>80</i>&nbsp;        this.context = var1;
+<i>81</i>&nbsp;        var1.put(aptKey, this);
+<b class="nc"><i>82</i>&nbsp;        this.aptenv = AptEnv.instance(var1);</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<b class="nc"><i>85</i>&nbsp;    Set&lt;String&gt; computeAnnotationSet(Collection&lt;ClassSymbol&gt; var1) {</b>
+<b class="nc"><i>86</i>&nbsp;        HashSet var2 = new HashSet();</b>
+<i>87</i>&nbsp;        Iterator var3 = var1.iterator();
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;        while(var3.hasNext()) {
+<i>90</i>&nbsp;            ClassSymbol var4 = (ClassSymbol)var3.next();
+<i>91</i>&nbsp;            this.computeAnnotationSet(var4, var2);
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;        return var2;
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    void computeAnnotationSet(Symbol var1, Set&lt;String&gt; var2) {
+<i>98</i>&nbsp;        if(var1 != null) {
+<i>99</i>&nbsp;            Iterator var3;
+<i>100</i>&nbsp;            if(var1.getAnnotationMirrors() != null) {
+<i>101</i>&nbsp;                var3 = var1.getAnnotationMirrors().iterator();
+<i>102</i>&nbsp;
+<b class="nc"><i>103</i>&nbsp;                while(var3.hasNext()) {</b>
+<i>104</i>&nbsp;                    Compound var4 = (Compound)var3.next();
+<i>105</i>&nbsp;                    var2.add(var4.type.tsym.toString());
+<i>106</i>&nbsp;                }
+<i>107</i>&nbsp;            }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;            if(var1 instanceof MethodSymbol) {
+<i>110</i>&nbsp;                var3 = ((MethodSymbol)var1).params().iterator();
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;                while(var3.hasNext()) {
+<i>113</i>&nbsp;                    Symbol var6 = (Symbol)var3.next();
+<b class="nc"><i>114</i>&nbsp;                    this.computeAnnotationSet(var6, var2);</b>
+<i>115</i>&nbsp;                }
+<i>116</i>&nbsp;            }
+<b class="nc"><i>117</i>&nbsp;</b>
+<b class="nc"><i>118</i>&nbsp;            if(var1.members() != null) {</b>
+<b class="nc"><i>119</i>&nbsp;                for(Entry var5 = var1.members().elems; var5 != null; var5 = var5.sibling) {</b>
+<b class="nc"><i>120</i>&nbsp;                    this.computeAnnotationSet(var5.sym, var2);</b>
+<i>121</i>&nbsp;                }
+<i>122</i>&nbsp;            }
+<i>123</i>&nbsp;        }
+<b class="nc"><i>124</i>&nbsp;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;    public void main(List&lt;JCCompilationUnit&gt; var1, ListBuffer&lt;ClassSymbol&gt; var2, Map&lt;String, String&gt; var3, ClassLoader var4, AnnotationProcessorFactory var5, Set&lt;Class&lt;? extends AnnotationProcessorFactory&gt;&gt; var6) {</b>
+<b class="nc"><i>128</i>&nbsp;        Bark var7 = Bark.instance(this.context);</b>
+<b class="nc"><i>129</i>&nbsp;        PrintWriter var8 = var7.warnWriter;</b>
+<i>130</i>&nbsp;        Options var9 = Options.instance(this.context);
+<i>131</i>&nbsp;        LinkedHashSet var10 = new LinkedHashSet();
+<i>132</i>&nbsp;        LinkedHashSet var11 = new LinkedHashSet();
+<i>133</i>&nbsp;        LinkedHashSet var12 = new LinkedHashSet();
+<i>134</i>&nbsp;        Set var13 = Collections.emptySet();
+<i>135</i>&nbsp;        LinkedHashSet var14 = new LinkedHashSet();
+<i>136</i>&nbsp;        Apt.AptTreeScanner var15 = new Apt.AptTreeScanner();
+<i>137</i>&nbsp;        Iterator var16 = var1.iterator();
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;        JCTree var17;
+<i>140</i>&nbsp;        while(var16.hasNext()) {
+<b class="nc"><i>141</i>&nbsp;            var17 = (JCTree)var16.next();</b>
+<i>142</i>&nbsp;            var17.accept(var15);
+<i>143</i>&nbsp;        }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;        var16 = var15.specifiedDeclCollection.iterator();
+<b class="nc"><i>146</i>&nbsp;</b>
+<i>147</i>&nbsp;        TypeDeclaration var18;
+<b class="nc"><i>148</i>&nbsp;        ClassSymbol var41;</b>
+<i>149</i>&nbsp;        while(var16.hasNext()) {
+<i>150</i>&nbsp;            var41 = (ClassSymbol)var16.next();
+<i>151</i>&nbsp;            var18 = this.aptenv.declMaker.getTypeDeclaration(var41);
+<b class="nc"><i>152</i>&nbsp;            var10.add(var18);</b>
+<i>153</i>&nbsp;        }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;        var16 = var15.declCollection.iterator();
+<b class="nc"><i>156</i>&nbsp;</b>
+<i>157</i>&nbsp;        while(var16.hasNext()) {
+<i>158</i>&nbsp;            var41 = (ClassSymbol)var16.next();
+<i>159</i>&nbsp;            var18 = this.aptenv.declMaker.getTypeDeclaration(var41);
+<b class="nc"><i>160</i>&nbsp;            var11.add(var18);</b>
+<b class="nc"><i>161</i>&nbsp;        }</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;        var12.addAll(var15.getAnnotationSet());
+<i>164</i>&nbsp;        var16 = var2.iterator();
+<i>165</i>&nbsp;
+<b class="nc"><i>166</i>&nbsp;        while(var16.hasNext()) {</b>
+<i>167</i>&nbsp;            var41 = (ClassSymbol)var16.next();
+<b class="nc"><i>168</i>&nbsp;            var18 = this.aptenv.declMaker.getTypeDeclaration(var41);</b>
+<b class="nc"><i>169</i>&nbsp;            var10.add(var18);</b>
+<i>170</i>&nbsp;            var11.add(var18);
+<b class="nc"><i>171</i>&nbsp;            this.computeAnnotationSet(var41, var12);</b>
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;        if(var9.get(&quot;-XListAnnotationTypes&quot;) != null) {
+<b class="nc"><i>175</i>&nbsp;            var8.println(&quot;Set of annotations found:&quot; + (new TreeSet(var12)).toString());</b>
+<b class="nc"><i>176</i>&nbsp;        }</b>
+<b class="nc"><i>177</i>&nbsp;</b>
+<b class="nc"><i>178</i>&nbsp;        AnnotationProcessorEnvironmentImpl var42 = new AnnotationProcessorEnvironmentImpl(var10, var11, var3, this.context);</b>
+<i>179</i>&nbsp;        if(var9.get(&quot;-XListDeclarations&quot;) != null) {
+<b class="nc"><i>180</i>&nbsp;            var8.println(&quot;Set of Specified Declarations:&quot; + var10);</b>
+<b class="nc"><i>181</i>&nbsp;            var8.println(&quot;Set of Included Declarations: &quot; + var11);</b>
+<b class="nc"><i>182</i>&nbsp;        }</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;        if(var9.get(&quot;-print&quot;) != null) {</b>
+<b class="nc"><i>185</i>&nbsp;            if(var10.size() == 0) {</b>
+<b class="nc"><i>186</i>&nbsp;                throw new UsageMessageNeededException();</b>
+<i>187</i>&nbsp;            }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;            AnnotationProcessor var47 = (new BootstrapAPF()).getProcessorFor(new HashSet(), var42);
+<i>190</i>&nbsp;            var47.process();
+<i>191</i>&nbsp;        } else {
+<i>192</i>&nbsp;            var17 = null;
+<i>193</i>&nbsp;            LinkedList var45 = new LinkedList();
+<i>194</i>&nbsp;            String var19 = var9.get(&quot;-factory&quot;);
+<i>195</i>&nbsp;            Iterator var46;
+<i>196</i>&nbsp;            Iterator var49;
+<b class="nc"><i>197</i>&nbsp;            if(var5 != null) {</b>
+<b class="nc"><i>198</i>&nbsp;                var45.add(var5);</b>
+<b class="nc"><i>199</i>&nbsp;                var46 = var45.iterator();</b>
+<i>200</i>&nbsp;            } else if(var19 != null) {
+<b class="nc"><i>201</i>&nbsp;                try {</b>
+<b class="nc"><i>202</i>&nbsp;                    AnnotationProcessorFactory var20 = (AnnotationProcessorFactory)((AnnotationProcessorFactory)var4.loadClass(var19).newInstance());</b>
+<b class="nc"><i>203</i>&nbsp;                    var45.add(var20);</b>
+<b class="nc"><i>204</i>&nbsp;                } catch (ClassNotFoundException var35) {</b>
+<b class="nc"><i>205</i>&nbsp;                    var7.aptWarning(&quot;FactoryNotFound&quot;, new Object[]{var19});</b>
+<i>206</i>&nbsp;                } catch (ClassCastException var36) {
+<i>207</i>&nbsp;                    var7.aptWarning(&quot;FactoryWrongType&quot;, new Object[]{var19});
+<i>208</i>&nbsp;                } catch (Exception var37) {
+<i>209</i>&nbsp;                    var7.aptWarning(&quot;FactoryCantInstantiate&quot;, new Object[]{var19});
+<i>210</i>&nbsp;                } catch (Throwable var38) {
+<b class="nc"><i>211</i>&nbsp;                    throw new AnnotationProcessingError(var38);</b>
+<b class="nc"><i>212</i>&nbsp;                }</b>
+<b class="nc"><i>213</i>&nbsp;</b>
+<i>214</i>&nbsp;                var46 = var45.iterator();
+<i>215</i>&nbsp;            } else {
+<i>216</i>&nbsp;                var49 = Service.providers(AnnotationProcessorFactory.class, var4);
+<b class="nc"><i>217</i>&nbsp;                var46 = var49;</b>
+<b class="nc"><i>218</i>&nbsp;            }</b>
+<b class="nc"><i>219</i>&nbsp;</b>
+<b class="nc"><i>220</i>&nbsp;            LinkedHashMap var44 = new LinkedHashMap();</b>
+<i>221</i>&nbsp;            if(!var46.hasNext() &amp;&amp; var6.size() == 0) {
+<b class="nc"><i>222</i>&nbsp;                if(var12.size() &gt; 0) {</b>
+<b class="nc"><i>223</i>&nbsp;                    var7.aptWarning(&quot;NoAnnotationProcessors&quot;, new Object[0]);</b>
+<b class="nc"><i>224</i>&nbsp;                }</b>
+<b class="nc"><i>225</i>&nbsp;</b>
+<i>226</i>&nbsp;                if(var10.size() == 0) {
+<b class="nc"><i>227</i>&nbsp;                    throw new UsageMessageNeededException();</b>
+<i>228</i>&nbsp;                }
+<i>229</i>&nbsp;
+<b class="nc"><i>230</i>&nbsp;                return;</b>
+<b class="nc"><i>231</i>&nbsp;            }</b>
+<i>232</i>&nbsp;
+<b class="nc"><i>233</i>&nbsp;            if(var12.size() == 0) {</b>
+<b class="nc"><i>234</i>&nbsp;                var12.add(&quot;&quot;);</b>
+<b class="nc"><i>235</i>&nbsp;            }</b>
+<b class="nc"><i>236</i>&nbsp;</b>
+<i>237</i>&nbsp;            HashSet var43 = new HashSet();
+<b class="nc"><i>238</i>&nbsp;            var43.add(&quot;&quot;);</b>
+<b class="nc"><i>239</i>&nbsp;            Set var51 = Collections.unmodifiableSet(var43);</b>
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;            AnnotationProcessorFactory var22;
+<i>242</i>&nbsp;            while(var46.hasNext()) {
+<b class="nc"><i>243</i>&nbsp;                Object var48 = var46.next();</b>
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;                try {
+<b class="nc"><i>246</i>&nbsp;                    HashSet var21 = new HashSet();</b>
+<b class="nc"><i>247</i>&nbsp;                    var22 = (AnnotationProcessorFactory)var48;</b>
+<i>248</i>&nbsp;                    Collection var23 = var22.supportedAnnotationTypes();
+<i>249</i>&nbsp;                    LinkedList var24 = new LinkedList();
+<b class="nc"><i>250</i>&nbsp;                    Iterator var25 = var23.iterator();</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;                    String var26;
+<i>253</i>&nbsp;                    while(var25.hasNext()) {
+<b class="nc"><i>254</i>&nbsp;                        var26 = (String)var25.next();</b>
+<b class="nc"><i>255</i>&nbsp;                        var24.add(this.importStringToPattern(var26));</b>
+<b class="nc"><i>256</i>&nbsp;                    }</b>
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;                    var25 = var12.iterator();
+<b class="nc"><i>259</i>&nbsp;</b>
+<i>260</i>&nbsp;                    while(var25.hasNext()) {
+<b class="nc"><i>261</i>&nbsp;                        var26 = (String)var25.next();</b>
+<b class="nc"><i>262</i>&nbsp;                        Iterator var27 = var24.iterator();</b>
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;                        while(var27.hasNext()) {
+<i>265</i>&nbsp;                            Pattern var28 = (Pattern)var27.next();
+<b class="nc"><i>266</i>&nbsp;                            if(var28.matcher(var26).matches()) {</b>
+<i>267</i>&nbsp;                                var21.add(var26);
+<i>268</i>&nbsp;                                break;
+<i>269</i>&nbsp;                            }
+<i>270</i>&nbsp;                        }
+<i>271</i>&nbsp;                    }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;                    var12.removeAll(var21);
+<i>274</i>&nbsp;                    if(var9.get(&quot;-XPrintFactoryInfo&quot;) != null) {
+<i>275</i>&nbsp;                        var8.println(&quot;Factory &quot; + var22.getClass().getName() + &quot; matches &quot; + (var21.size() == 0?&quot;nothing.&quot;:var21));
+<i>276</i>&nbsp;                    }
+<i>277</i>&nbsp;
+<b class="nc"><i>278</i>&nbsp;                    if(var21.size() &gt; 0) {</b>
+<i>279</i>&nbsp;                        HashSet var58 = new HashSet();
+<b class="nc"><i>280</i>&nbsp;                        if(!var21.equals(var51)) {</b>
+<i>281</i>&nbsp;                            Iterator var60 = var21.iterator();
+<b class="nc"><i>282</i>&nbsp;</b>
+<b class="nc"><i>283</i>&nbsp;                            while(var60.hasNext()) {</b>
+<b class="nc"><i>284</i>&nbsp;                                String var61 = (String)var60.next();</b>
+<b class="nc"><i>285</i>&nbsp;                                TypeDeclaration var59 = this.aptenv.declMaker.getTypeDeclaration(var61);</b>
+<i>286</i>&nbsp;                                if(var59 == null) {
+<b class="nc"><i>287</i>&nbsp;                                    var7.aptError(&quot;DeclarationCreation&quot;, new Object[]{var61});</b>
+<i>288</i>&nbsp;                                } else {
+<b class="nc"><i>289</i>&nbsp;                                    try {</b>
+<b class="nc"><i>290</i>&nbsp;                                        AnnotationTypeDeclaration var29 = (AnnotationTypeDeclaration)var59;</b>
+<b class="nc"><i>291</i>&nbsp;                                        var58.add(var29);</b>
+<b class="nc"><i>292</i>&nbsp;                                    } catch (ClassCastException var34) {</b>
+<b class="nc"><i>293</i>&nbsp;                                        var7.aptError(&quot;BadDeclaration&quot;, new Object[]{var61});</b>
+<b class="nc"><i>294</i>&nbsp;                                    }</b>
+<b class="nc"><i>295</i>&nbsp;                                }</b>
+<b class="nc"><i>296</i>&nbsp;                            }</b>
+<b class="nc"><i>297</i>&nbsp;                        }</b>
+<b class="nc"><i>298</i>&nbsp;</b>
+<i>299</i>&nbsp;                        var14.add(var22.getClass());
+<b class="nc"><i>300</i>&nbsp;                        var6.add(var22.getClass());</b>
+<i>301</i>&nbsp;                        var44.put(var22, var58);
+<b class="nc"><i>302</i>&nbsp;                    } else if(var6.contains(var22.getClass())) {</b>
+<i>303</i>&nbsp;                        var14.add(var22.getClass());
+<i>304</i>&nbsp;                        var44.put(var22, var13);
+<b class="nc"><i>305</i>&nbsp;                    }</b>
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;                    if(var12.size() == 0) {
+<b class="nc"><i>308</i>&nbsp;                        break;</b>
+<b class="nc"><i>309</i>&nbsp;                    }</b>
+<b class="nc"><i>310</i>&nbsp;                } catch (ClassCastException var40) {</b>
+<b class="nc"><i>311</i>&nbsp;                    var7.aptWarning(&quot;BadFactory&quot;, new Object[]{var40});</b>
+<b class="nc"><i>312</i>&nbsp;                }</b>
+<i>313</i>&nbsp;            }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;            var12.remove(&quot;&quot;);
+<i>316</i>&nbsp;            LinkedHashSet var50 = new LinkedHashSet(var6);
+<i>317</i>&nbsp;            var50.removeAll(var14);
+<i>318</i>&nbsp;            var49 = var50.iterator();
+<b class="nc"><i>319</i>&nbsp;</b>
+<b class="nc"><i>320</i>&nbsp;            while(var49.hasNext()) {</b>
+<i>321</i>&nbsp;                Class var54 = (Class)var49.next();
+<b class="nc"><i>322</i>&nbsp;</b>
+<b class="nc"><i>323</i>&nbsp;                try {</b>
+<b class="nc"><i>324</i>&nbsp;                    var22 = (AnnotationProcessorFactory)var54.newInstance();</b>
+<i>325</i>&nbsp;                    var44.put(var22, var13);
+<b class="nc"><i>326</i>&nbsp;                } catch (Exception var32) {</b>
+<b class="nc"><i>327</i>&nbsp;                    var7.aptWarning(&quot;FactoryCantInstantiate&quot;, new Object[]{var54.getName()});</b>
+<i>328</i>&nbsp;                } catch (Throwable var33) {
+<b class="nc"><i>329</i>&nbsp;                    throw new AnnotationProcessingError(var33);</b>
+<i>330</i>&nbsp;                }
+<b class="nc"><i>331</i>&nbsp;            }</b>
+<b class="nc"><i>332</i>&nbsp;</b>
+<i>333</i>&nbsp;            if(var12.size() &gt; 0) {
+<b class="nc"><i>334</i>&nbsp;                var7.aptWarning(&quot;AnnotationsWithoutProcessors&quot;, new Object[]{var12});</b>
+<b class="nc"><i>335</i>&nbsp;            }</b>
+<b class="nc"><i>336</i>&nbsp;</b>
+<i>337</i>&nbsp;            var50 = new LinkedHashSet();
+<b class="nc"><i>338</i>&nbsp;            if(var10.size() == 0 &amp;&amp; var44.keySet().size() == 0) {</b>
+<b class="nc"><i>339</i>&nbsp;                throw new UsageMessageNeededException();</b>
+<b class="nc"><i>340</i>&nbsp;            }</b>
+<b class="nc"><i>341</i>&nbsp;</b>
+<b class="nc"><i>342</i>&nbsp;            try {</b>
+<i>343</i>&nbsp;                var49 = var44.entrySet().iterator();
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;                while(var49.hasNext()) {
+<i>346</i>&nbsp;                    java.util.Map.Entry var55 = (java.util.Map.Entry)var49.next();
+<b class="nc"><i>347</i>&nbsp;                    var22 = (AnnotationProcessorFactory)var55.getKey();</b>
+<i>348</i>&nbsp;                    AnnotationProcessor var53 = var22.getProcessorFor((Set)var55.getValue(), var42);
+<b class="nc"><i>349</i>&nbsp;                    if(var53 != null) {</b>
+<b class="nc"><i>350</i>&nbsp;                        var50.add(var53);</b>
+<i>351</i>&nbsp;                    } else {
+<i>352</i>&nbsp;                        var7.aptWarning(&quot;NullProcessor&quot;, new Object[]{var22.getClass().getName()});
+<i>353</i>&nbsp;                    }
+<i>354</i>&nbsp;                }
+<i>355</i>&nbsp;            } catch (Throwable var39) {
+<b class="nc"><i>356</i>&nbsp;                throw new AnnotationProcessingError(var39);</b>
+<i>357</i>&nbsp;            }
+<i>358</i>&nbsp;
+<b class="nc"><i>359</i>&nbsp;            LinkedList var56 = new LinkedList();</b>
+<i>360</i>&nbsp;            var56.addAll(var50);
+<i>361</i>&nbsp;            AnnotationProcessor var57 = AnnotationProcessors.getCompositeAnnotationProcessor(var56);
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;            try {
+<b class="nc"><i>364</i>&nbsp;                var57.process();</b>
+<b class="nc"><i>365</i>&nbsp;            } catch (Throwable var31) {</b>
+<b class="nc"><i>366</i>&nbsp;                throw new AnnotationProcessingError(var31);</b>
+<i>367</i>&nbsp;            }
+<b class="nc"><i>368</i>&nbsp;</b>
+<b class="nc"><i>369</i>&nbsp;            var42.roundComplete();</b>
+<i>370</i>&nbsp;            FilerImpl var52 = (FilerImpl)var42.getFiler();
+<i>371</i>&nbsp;            this.genSourceFileNames = var52.getSourceFileNames();
+<b class="nc"><i>372</i>&nbsp;            this.genClassFileNames = var52.getClassFileNames();</b>
+<b class="nc"><i>373</i>&nbsp;            var52.flush();</b>
+<i>374</i>&nbsp;        }
+<b class="nc"><i>375</i>&nbsp;</b>
+<b class="nc"><i>376</i>&nbsp;    }</b>
+<b class="nc"><i>377</i>&nbsp;</b>
+<i>378</i>&nbsp;    Pattern importStringToPattern(String var1) {
+<b class="nc"><i>379</i>&nbsp;        if(JavacProcessingEnvironment.isValidImportString(var1)) {</b>
+<i>380</i>&nbsp;            return JavacProcessingEnvironment.validImportStringToPattern(var1);
+<i>381</i>&nbsp;        } else {
+<b class="nc"><i>382</i>&nbsp;            Bark var2 = Bark.instance(this.context);</b>
+<b class="nc"><i>383</i>&nbsp;            var2.aptWarning(&quot;MalformedSupportedString&quot;, new Object[]{var1});</b>
+<b class="nc"><i>384</i>&nbsp;            return JavacProcessingEnvironment.noMatches;</b>
+<b class="nc"><i>385</i>&nbsp;        }</b>
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;    static class AptTreeScanner extends TreeScanner {
+<i>389</i>&nbsp;        private Set&lt;String&gt; annotationSet = new LinkedHashSet();
+<b class="nc"><i>390</i>&nbsp;        private Collection&lt;ClassSymbol&gt; specifiedDeclCollection = new LinkedHashSet();</b>
+<b class="nc"><i>391</i>&nbsp;        private Collection&lt;ClassSymbol&gt; declCollection = new LinkedHashSet();</b>
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;        public Set&lt;String&gt; getAnnotationSet() {
+<b class="nc"><i>394</i>&nbsp;            return this.annotationSet;</b>
+<b class="nc"><i>395</i>&nbsp;        }</b>
+<i>396</i>&nbsp;
+<b class="nc"><i>397</i>&nbsp;        public AptTreeScanner() {</b>
+<b class="nc"><i>398</i>&nbsp;        }</b>
+<b class="nc"><i>399</i>&nbsp;</b>
+<b class="nc"><i>400</i>&nbsp;        public void visitTopLevel(JCCompilationUnit var1) {</b>
+<i>401</i>&nbsp;            super.visitTopLevel(var1);
+<b class="nc"><i>402</i>&nbsp;            Iterator var2 = var1.defs.iterator();</b>
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;            while(var2.hasNext()) {
+<i>405</i>&nbsp;                JCTree var3 = (JCTree)var2.next();
+<i>406</i>&nbsp;                if(var3 instanceof JCClassDecl) {
+<i>407</i>&nbsp;                    this.specifiedDeclCollection.add(((JCClassDecl)var3).sym);
+<i>408</i>&nbsp;                }
+<b class="nc"><i>409</i>&nbsp;            }</b>
+<i>410</i>&nbsp;
+<b class="nc"><i>411</i>&nbsp;        }</b>
+<b class="nc"><i>412</i>&nbsp;</b>
+<i>413</i>&nbsp;        public void visitBlock(JCBlock var1) {
+<b class="nc"><i>414</i>&nbsp;        }</b>
+<b class="nc"><i>415</i>&nbsp;</b>
+<b class="nc"><i>416</i>&nbsp;        public void visitClassDef(JCClassDecl var1) {</b>
+<b class="nc"><i>417</i>&nbsp;            if(var1.sym != null) {</b>
+<b class="nc"><i>418</i>&nbsp;                super.visitClassDef(var1);</b>
+<b class="nc"><i>419</i>&nbsp;                this.declCollection.add(var1.sym);</b>
+<b class="nc"><i>420</i>&nbsp;            }</b>
+<i>421</i>&nbsp;        }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;        public void visitMethodDef(JCMethodDecl var1) {
+<b class="nc"><i>424</i>&nbsp;            super.visitMethodDef(var1);</b>
+<b class="nc"><i>425</i>&nbsp;        }</b>
+<i>426</i>&nbsp;
+<b class="nc"><i>427</i>&nbsp;        public void visitVarDef(JCVariableDecl var1) {</b>
+<i>428</i>&nbsp;            super.visitVarDef(var1);
+<i>429</i>&nbsp;        }
+<i>430</i>&nbsp;
+<b class="nc"><i>431</i>&nbsp;        public void visitAnnotation(JCAnnotation var1) {</b>
+<i>432</i>&nbsp;            super.visitAnnotation(var1);
+<b class="nc"><i>433</i>&nbsp;            this.annotationSet.add(var1.type.tsym.toString());</b>
+<i>434</i>&nbsp;        }
+<i>435</i>&nbsp;    }
+<b class="nc"><i>436</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

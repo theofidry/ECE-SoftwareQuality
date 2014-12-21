@@ -1,0 +1,1403 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RangeImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.dom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RangeImpl (com.sun.org.apache.xerces.internal.dom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RangeImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 55)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 707)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.dom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.DOMMessageFormatter;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.RangeExceptionImpl;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.dom.TextImpl;
+<i>12</i>&nbsp;import java.util.Vector;
+<i>13</i>&nbsp;import org.w3c.dom.CharacterData;
+<i>14</i>&nbsp;import org.w3c.dom.DOMException;
+<i>15</i>&nbsp;import org.w3c.dom.DocumentFragment;
+<i>16</i>&nbsp;import org.w3c.dom.Node;
+<i>17</i>&nbsp;import org.w3c.dom.ranges.Range;
+<i>18</i>&nbsp;import org.w3c.dom.ranges.RangeException;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class RangeImpl implements Range {
+<i>21</i>&nbsp;    DocumentImpl fDocument;
+<i>22</i>&nbsp;    Node fStartContainer;
+<i>23</i>&nbsp;    Node fEndContainer;
+<i>24</i>&nbsp;    int fStartOffset;
+<i>25</i>&nbsp;    int fEndOffset;
+<i>26</i>&nbsp;    boolean fIsCollapsed;
+<i>27</i>&nbsp;    boolean fDetach = false;
+<i>28</i>&nbsp;    Node fInsertNode = null;
+<i>29</i>&nbsp;    Node fDeleteNode = null;
+<i>30</i>&nbsp;    Node fSplitNode = null;
+<i>31</i>&nbsp;    boolean fInsertedFromRange = false;
+<i>32</i>&nbsp;    Node fRemoveChild = null;
+<i>33</i>&nbsp;    static final int EXTRACT_CONTENTS = 1;
+<i>34</i>&nbsp;    static final int CLONE_CONTENTS = 2;
+<i>35</i>&nbsp;    static final int DELETE_CONTENTS = 3;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public RangeImpl(DocumentImpl document) {
+<i>38</i>&nbsp;        this.fDocument = document;
+<i>39</i>&nbsp;        this.fStartContainer = document;
+<i>40</i>&nbsp;        this.fEndContainer = document;
+<i>41</i>&nbsp;        this.fStartOffset = 0;
+<i>42</i>&nbsp;        this.fEndOffset = 0;
+<i>43</i>&nbsp;        this.fDetach = false;
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public Node getStartContainer() {
+<i>47</i>&nbsp;        if(this.fDetach) {
+<i>48</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>49</i>&nbsp;        } else {
+<i>50</i>&nbsp;            return this.fStartContainer;
+<i>51</i>&nbsp;        }
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<b class="nc"><i>54</i>&nbsp;    public int getStartOffset() {</b>
+<b class="nc"><i>55</i>&nbsp;        if(this.fDetach) {</b>
+<b class="nc"><i>56</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<b class="nc"><i>57</i>&nbsp;        } else {</b>
+<i>58</i>&nbsp;            return this.fStartOffset;
+<b class="nc"><i>59</i>&nbsp;        }</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public Node getEndContainer() {
+<i>63</i>&nbsp;        if(this.fDetach) {
+<i>64</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<b class="nc"><i>65</i>&nbsp;        } else {</b>
+<b class="nc"><i>66</i>&nbsp;            return this.fEndContainer;</b>
+<b class="nc"><i>67</i>&nbsp;        }</b>
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<b class="nc"><i>69</i>&nbsp;</b>
+<b class="nc"><i>70</i>&nbsp;    public int getEndOffset() {</b>
+<b class="nc"><i>71</i>&nbsp;        if(this.fDetach) {</b>
+<i>72</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>73</i>&nbsp;        } else {
+<i>74</i>&nbsp;            return this.fEndOffset;
+<b class="nc"><i>75</i>&nbsp;        }</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public boolean getCollapsed() {
+<i>79</i>&nbsp;        if(this.fDetach) {
+<b class="nc"><i>80</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<i>81</i>&nbsp;        } else {
+<i>82</i>&nbsp;            return this.fStartContainer == this.fEndContainer &amp;&amp; this.fStartOffset == this.fEndOffset;
+<i>83</i>&nbsp;        }
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<b class="nc"><i>85</i>&nbsp;</b>
+<i>86</i>&nbsp;    public Node getCommonAncestorContainer() {
+<i>87</i>&nbsp;        if(this.fDetach) {
+<i>88</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<b class="nc"><i>89</i>&nbsp;        } else {</b>
+<i>90</i>&nbsp;            Vector startV = new Vector();
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;            Node node;
+<b class="nc"><i>93</i>&nbsp;            for(node = this.fStartContainer; node != null; node = node.getParentNode()) {</b>
+<b class="nc"><i>94</i>&nbsp;                startV.addElement(node);</b>
+<i>95</i>&nbsp;            }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;            Vector endV = new Vector();
+<b class="nc"><i>98</i>&nbsp;</b>
+<i>99</i>&nbsp;            for(node = this.fEndContainer; node != null; node = node.getParentNode()) {
+<i>100</i>&nbsp;                endV.addElement(node);
+<i>101</i>&nbsp;            }
+<b class="nc"><i>102</i>&nbsp;</b>
+<b class="nc"><i>103</i>&nbsp;            int s = startV.size() - 1;</b>
+<i>104</i>&nbsp;            int e = endV.size() - 1;
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;            Object result;
+<b class="nc"><i>107</i>&nbsp;            for(result = null; s &gt;= 0 &amp;&amp; e &gt;= 0 &amp;&amp; startV.elementAt(s) == endV.elementAt(e); --e) {</b>
+<i>108</i>&nbsp;                result = startV.elementAt(s);
+<i>109</i>&nbsp;                --s;
+<i>110</i>&nbsp;            }
+<b class="nc"><i>111</i>&nbsp;</b>
+<b class="nc"><i>112</i>&nbsp;            return (Node)result;</b>
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;    public void setStart(Node refNode, int offset) throws RangeException, DOMException {</b>
+<i>117</i>&nbsp;        if(this.fDocument.errorChecking) {
+<i>118</i>&nbsp;            if(this.fDetach) {
+<i>119</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>120</i>&nbsp;            }
+<b class="nc"><i>121</i>&nbsp;</b>
+<b class="nc"><i>122</i>&nbsp;            if(!this.isLegalContainer(refNode)) {</b>
+<i>123</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<i>124</i>&nbsp;            }
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {</b>
+<i>127</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<b class="nc"><i>128</i>&nbsp;            }</b>
+<b class="nc"><i>129</i>&nbsp;        }</b>
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;        this.checkIndex(refNode, offset);</b>
+<i>132</i>&nbsp;        this.fStartContainer = refNode;
+<b class="nc"><i>133</i>&nbsp;        this.fStartOffset = offset;</b>
+<b class="nc"><i>134</i>&nbsp;        if(this.getCommonAncestorContainer() == null || this.fStartContainer == this.fEndContainer &amp;&amp; this.fEndOffset &lt; this.fStartOffset) {</b>
+<b class="nc"><i>135</i>&nbsp;            this.collapse(true);</b>
+<i>136</i>&nbsp;        }
+<b class="nc"><i>137</i>&nbsp;</b>
+<i>138</i>&nbsp;    }
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;    public void setEnd(Node refNode, int offset) throws RangeException, DOMException {</b>
+<b class="nc"><i>141</i>&nbsp;        if(this.fDocument.errorChecking) {</b>
+<b class="nc"><i>142</i>&nbsp;            if(this.fDetach) {</b>
+<b class="nc"><i>143</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<b class="nc"><i>144</i>&nbsp;            }</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;            if(!this.isLegalContainer(refNode)) {
+<i>147</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<b class="nc"><i>148</i>&nbsp;            }</b>
+<b class="nc"><i>149</i>&nbsp;</b>
+<i>150</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {
+<b class="nc"><i>151</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));</b>
+<i>152</i>&nbsp;            }
+<i>153</i>&nbsp;        }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;        this.checkIndex(refNode, offset);
+<i>156</i>&nbsp;        this.fEndContainer = refNode;
+<i>157</i>&nbsp;        this.fEndOffset = offset;
+<b class="nc"><i>158</i>&nbsp;        if(this.getCommonAncestorContainer() == null || this.fStartContainer == this.fEndContainer &amp;&amp; this.fEndOffset &lt; this.fStartOffset) {</b>
+<b class="nc"><i>159</i>&nbsp;            this.collapse(false);</b>
+<b class="nc"><i>160</i>&nbsp;        }</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<b class="nc"><i>164</i>&nbsp;    public void setStartBefore(Node refNode) throws RangeException {</b>
+<b class="nc"><i>165</i>&nbsp;        if(this.fDocument.errorChecking) {</b>
+<i>166</i>&nbsp;            if(this.fDetach) {
+<i>167</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>168</i>&nbsp;            }
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;            if(!this.hasLegalRootContainer(refNode) || !this.isLegalContainedNode(refNode)) {</b>
+<i>171</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<i>172</i>&nbsp;            }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {
+<i>175</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<b class="nc"><i>176</i>&nbsp;            }</b>
+<i>177</i>&nbsp;        }
+<b class="nc"><i>178</i>&nbsp;</b>
+<b class="nc"><i>179</i>&nbsp;        this.fStartContainer = refNode.getParentNode();</b>
+<i>180</i>&nbsp;        int i = 0;
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;        for(Node n = refNode; n != null; n = n.getPreviousSibling()) {
+<i>183</i>&nbsp;            ++i;
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;
+<b class="nc"><i>186</i>&nbsp;        this.fStartOffset = i - 1;</b>
+<i>187</i>&nbsp;        if(this.getCommonAncestorContainer() == null || this.fStartContainer == this.fEndContainer &amp;&amp; this.fEndOffset &lt; this.fStartOffset) {
+<b class="nc"><i>188</i>&nbsp;            this.collapse(true);</b>
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    public void setStartAfter(Node refNode) throws RangeException {
+<i>194</i>&nbsp;        if(this.fDocument.errorChecking) {
+<b class="nc"><i>195</i>&nbsp;            if(this.fDetach) {</b>
+<b class="nc"><i>196</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<b class="nc"><i>197</i>&nbsp;            }</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;            if(!this.hasLegalRootContainer(refNode) || !this.isLegalContainedNode(refNode)) {
+<i>200</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<b class="nc"><i>201</i>&nbsp;            }</b>
+<b class="nc"><i>202</i>&nbsp;</b>
+<i>203</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {
+<i>204</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<i>205</i>&nbsp;            }
+<b class="nc"><i>206</i>&nbsp;        }</b>
+<b class="nc"><i>207</i>&nbsp;</b>
+<i>208</i>&nbsp;        this.fStartContainer = refNode.getParentNode();
+<i>209</i>&nbsp;        int i = 0;
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;        for(Node n = refNode; n != null; n = n.getPreviousSibling()) {
+<i>212</i>&nbsp;            ++i;
+<b class="nc"><i>213</i>&nbsp;        }</b>
+<i>214</i>&nbsp;
+<b class="nc"><i>215</i>&nbsp;        this.fStartOffset = i;</b>
+<b class="nc"><i>216</i>&nbsp;        if(this.getCommonAncestorContainer() == null || this.fStartContainer == this.fEndContainer &amp;&amp; this.fEndOffset &lt; this.fStartOffset) {</b>
+<i>217</i>&nbsp;            this.collapse(true);
+<i>218</i>&nbsp;        }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    public void setEndBefore(Node refNode) throws RangeException {
+<b class="nc"><i>223</i>&nbsp;        if(this.fDocument.errorChecking) {</b>
+<i>224</i>&nbsp;            if(this.fDetach) {
+<b class="nc"><i>225</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<i>226</i>&nbsp;            }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;            if(!this.hasLegalRootContainer(refNode) || !this.isLegalContainedNode(refNode)) {
+<i>229</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<i>230</i>&nbsp;            }
+<i>231</i>&nbsp;
+<b class="nc"><i>232</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {</b>
+<b class="nc"><i>233</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));</b>
+<b class="nc"><i>234</i>&nbsp;            }</b>
+<i>235</i>&nbsp;        }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;        this.fEndContainer = refNode.getParentNode();
+<b class="nc"><i>238</i>&nbsp;        int i = 0;</b>
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;        for(Node n = refNode; n != null; n = n.getPreviousSibling()) {
+<b class="nc"><i>241</i>&nbsp;            ++i;</b>
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        this.fEndOffset = i - 1;
+<b class="nc"><i>245</i>&nbsp;        if(this.getCommonAncestorContainer() == null || this.fStartContainer == this.fEndContainer &amp;&amp; this.fEndOffset &lt; this.fStartOffset) {</b>
+<b class="nc"><i>246</i>&nbsp;            this.collapse(false);</b>
+<i>247</i>&nbsp;        }
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    public void setEndAfter(Node refNode) throws RangeException {
+<b class="nc"><i>252</i>&nbsp;        if(this.fDocument.errorChecking) {</b>
+<b class="nc"><i>253</i>&nbsp;            if(this.fDetach) {</b>
+<b class="nc"><i>254</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<b class="nc"><i>255</i>&nbsp;            }</b>
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;            if(!this.hasLegalRootContainer(refNode) || !this.isLegalContainedNode(refNode)) {</b>
+<i>258</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<i>259</i>&nbsp;            }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {
+<i>262</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<i>263</i>&nbsp;            }
+<b class="nc"><i>264</i>&nbsp;        }</b>
+<i>265</i>&nbsp;
+<b class="nc"><i>266</i>&nbsp;        this.fEndContainer = refNode.getParentNode();</b>
+<i>267</i>&nbsp;        int i = 0;
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;        for(Node n = refNode; n != null; n = n.getPreviousSibling()) {
+<i>270</i>&nbsp;            ++i;
+<i>271</i>&nbsp;        }
+<i>272</i>&nbsp;
+<b class="nc"><i>273</i>&nbsp;        this.fEndOffset = i;</b>
+<b class="nc"><i>274</i>&nbsp;        if(this.getCommonAncestorContainer() == null || this.fStartContainer == this.fEndContainer &amp;&amp; this.fEndOffset &lt; this.fStartOffset) {</b>
+<b class="nc"><i>275</i>&nbsp;            this.collapse(false);</b>
+<i>276</i>&nbsp;        }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    }
+<b class="nc"><i>279</i>&nbsp;</b>
+<i>280</i>&nbsp;    public void collapse(boolean toStart) {
+<b class="nc"><i>281</i>&nbsp;        if(this.fDetach) {</b>
+<i>282</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>283</i>&nbsp;        } else {
+<i>284</i>&nbsp;            if(toStart) {
+<b class="nc"><i>285</i>&nbsp;                this.fEndContainer = this.fStartContainer;</b>
+<b class="nc"><i>286</i>&nbsp;                this.fEndOffset = this.fStartOffset;</b>
+<i>287</i>&nbsp;            } else {
+<i>288</i>&nbsp;                this.fStartContainer = this.fEndContainer;
+<i>289</i>&nbsp;                this.fStartOffset = this.fEndOffset;
+<i>290</i>&nbsp;            }
+<b class="nc"><i>291</i>&nbsp;</b>
+<b class="nc"><i>292</i>&nbsp;        }</b>
+<b class="nc"><i>293</i>&nbsp;    }</b>
+<b class="nc"><i>294</i>&nbsp;</b>
+<i>295</i>&nbsp;    public void selectNode(Node refNode) throws RangeException {
+<b class="nc"><i>296</i>&nbsp;        if(this.fDocument.errorChecking) {</b>
+<i>297</i>&nbsp;            if(this.fDetach) {
+<i>298</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>299</i>&nbsp;            }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;            if(!this.isLegalContainer(refNode.getParentNode()) || !this.isLegalContainedNode(refNode)) {
+<i>302</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<b class="nc"><i>303</i>&nbsp;            }</b>
+<i>304</i>&nbsp;
+<b class="nc"><i>305</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {</b>
+<i>306</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<i>307</i>&nbsp;            }
+<i>308</i>&nbsp;        }
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;        Node parent = refNode.getParentNode();
+<i>311</i>&nbsp;        if(parent != null) {
+<b class="nc"><i>312</i>&nbsp;            this.fStartContainer = parent;</b>
+<b class="nc"><i>313</i>&nbsp;            this.fEndContainer = parent;</b>
+<b class="nc"><i>314</i>&nbsp;            int i = 0;</b>
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;            for(Node n = refNode; n != null; n = n.getPreviousSibling()) {
+<i>317</i>&nbsp;                ++i;
+<b class="nc"><i>318</i>&nbsp;            }</b>
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;            this.fStartOffset = i - 1;</b>
+<i>321</i>&nbsp;            this.fEndOffset = this.fStartOffset + 1;
+<i>322</i>&nbsp;        }
+<i>323</i>&nbsp;
+<b class="nc"><i>324</i>&nbsp;    }</b>
+<b class="nc"><i>325</i>&nbsp;</b>
+<i>326</i>&nbsp;    public void selectNodeContents(Node refNode) throws RangeException {
+<i>327</i>&nbsp;        if(this.fDocument.errorChecking) {
+<i>328</i>&nbsp;            if(this.fDetach) {
+<i>329</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<b class="nc"><i>330</i>&nbsp;            }</b>
+<b class="nc"><i>331</i>&nbsp;</b>
+<b class="nc"><i>332</i>&nbsp;            if(!this.isLegalContainer(refNode)) {</b>
+<b class="nc"><i>333</i>&nbsp;                throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));</b>
+<i>334</i>&nbsp;            }
+<b class="nc"><i>335</i>&nbsp;</b>
+<i>336</i>&nbsp;            if(this.fDocument != refNode.getOwnerDocument() &amp;&amp; this.fDocument != refNode) {
+<i>337</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<i>338</i>&nbsp;            }
+<i>339</i>&nbsp;        }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;        this.fStartContainer = refNode;
+<b class="nc"><i>342</i>&nbsp;        this.fEndContainer = refNode;</b>
+<i>343</i>&nbsp;        Node first = refNode.getFirstChild();
+<b class="nc"><i>344</i>&nbsp;        this.fStartOffset = 0;</b>
+<i>345</i>&nbsp;        if(first == null) {
+<i>346</i>&nbsp;            this.fEndOffset = 0;
+<i>347</i>&nbsp;        } else {
+<i>348</i>&nbsp;            int i = 0;
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;            for(Node n = first; n != null; n = n.getNextSibling()) {
+<b class="nc"><i>351</i>&nbsp;                ++i;</b>
+<b class="nc"><i>352</i>&nbsp;            }</b>
+<b class="nc"><i>353</i>&nbsp;</b>
+<i>354</i>&nbsp;            this.fEndOffset = i;
+<i>355</i>&nbsp;        }
+<i>356</i>&nbsp;
+<b class="nc"><i>357</i>&nbsp;    }</b>
+<i>358</i>&nbsp;
+<b class="nc"><i>359</i>&nbsp;    public short compareBoundaryPoints(short how, Range sourceRange) throws DOMException {</b>
+<i>360</i>&nbsp;        if(this.fDocument.errorChecking) {
+<i>361</i>&nbsp;            if(this.fDetach) {
+<i>362</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<b class="nc"><i>363</i>&nbsp;            }</b>
+<b class="nc"><i>364</i>&nbsp;</b>
+<i>365</i>&nbsp;            if(this.fDocument != sourceRange.getStartContainer().getOwnerDocument() &amp;&amp; this.fDocument != sourceRange.getStartContainer() &amp;&amp; sourceRange.getStartContainer() != null || this.fDocument != sourceRange.getEndContainer().getOwnerDocument() &amp;&amp; this.fDocument != sourceRange.getEndContainer() &amp;&amp; sourceRange.getStartContainer() != null) {
+<i>366</i>&nbsp;                throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<i>367</i>&nbsp;            }
+<i>368</i>&nbsp;        }
+<b class="nc"><i>369</i>&nbsp;</b>
+<b class="nc"><i>370</i>&nbsp;        Node endPointA;</b>
+<b class="nc"><i>371</i>&nbsp;        Node endPointB;</b>
+<b class="nc"><i>372</i>&nbsp;        int offsetA;</b>
+<i>373</i>&nbsp;        int offsetB;
+<b class="nc"><i>374</i>&nbsp;        if(how == 0) {</b>
+<i>375</i>&nbsp;            endPointA = sourceRange.getStartContainer();
+<i>376</i>&nbsp;            endPointB = this.fStartContainer;
+<i>377</i>&nbsp;            offsetA = sourceRange.getStartOffset();
+<i>378</i>&nbsp;            offsetB = this.fStartOffset;
+<i>379</i>&nbsp;        } else if(how == 1) {
+<i>380</i>&nbsp;            endPointA = sourceRange.getStartContainer();
+<b class="nc"><i>381</i>&nbsp;            endPointB = this.fEndContainer;</b>
+<i>382</i>&nbsp;            offsetA = sourceRange.getStartOffset();
+<b class="nc"><i>383</i>&nbsp;            offsetB = this.fEndOffset;</b>
+<i>384</i>&nbsp;        } else if(how == 3) {
+<i>385</i>&nbsp;            endPointA = sourceRange.getEndContainer();
+<i>386</i>&nbsp;            endPointB = this.fStartContainer;
+<i>387</i>&nbsp;            offsetA = sourceRange.getEndOffset();
+<i>388</i>&nbsp;            offsetB = this.fStartOffset;
+<b class="nc"><i>389</i>&nbsp;        } else {</b>
+<b class="nc"><i>390</i>&nbsp;            endPointA = sourceRange.getEndContainer();</b>
+<i>391</i>&nbsp;            endPointB = this.fEndContainer;
+<i>392</i>&nbsp;            offsetA = sourceRange.getEndOffset();
+<i>393</i>&nbsp;            offsetB = this.fEndOffset;
+<i>394</i>&nbsp;        }
+<b class="nc"><i>395</i>&nbsp;</b>
+<b class="nc"><i>396</i>&nbsp;        if(endPointA == endPointB) {</b>
+<b class="nc"><i>397</i>&nbsp;            return (short)(offsetA &lt; offsetB?1:(offsetA == offsetB?0:-1));</b>
+<i>398</i>&nbsp;        } else {
+<b class="nc"><i>399</i>&nbsp;            Node depthDiff = endPointB;</b>
+<b class="nc"><i>400</i>&nbsp;</b>
+<i>401</i>&nbsp;            Node n;
+<i>402</i>&nbsp;            int pB;
+<i>403</i>&nbsp;            for(n = endPointB.getParentNode(); n != null; n = n.getParentNode()) {
+<i>404</i>&nbsp;                if(n == endPointA) {
+<i>405</i>&nbsp;                    pB = this.indexOf(depthDiff, endPointA);
+<i>406</i>&nbsp;                    if(offsetA &lt;= pB) {
+<b class="nc"><i>407</i>&nbsp;                        return (short)1;</b>
+<b class="nc"><i>408</i>&nbsp;                    }</b>
+<b class="nc"><i>409</i>&nbsp;</b>
+<i>410</i>&nbsp;                    return (short)-1;
+<i>411</i>&nbsp;                }
+<i>412</i>&nbsp;
+<b class="nc"><i>413</i>&nbsp;                depthDiff = n;</b>
+<i>414</i>&nbsp;            }
+<b class="nc"><i>415</i>&nbsp;</b>
+<i>416</i>&nbsp;            depthDiff = endPointA;
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;            for(n = endPointA.getParentNode(); n != null; n = n.getParentNode()) {
+<b class="nc"><i>419</i>&nbsp;                if(n == endPointB) {</b>
+<b class="nc"><i>420</i>&nbsp;                    pB = this.indexOf(depthDiff, endPointB);</b>
+<i>421</i>&nbsp;                    if(pB &lt; offsetB) {
+<i>422</i>&nbsp;                        return (short)1;
+<i>423</i>&nbsp;                    }
+<i>424</i>&nbsp;
+<b class="nc"><i>425</i>&nbsp;                    return (short)-1;</b>
+<b class="nc"><i>426</i>&nbsp;                }</b>
+<i>427</i>&nbsp;
+<b class="nc"><i>428</i>&nbsp;                depthDiff = n;</b>
+<b class="nc"><i>429</i>&nbsp;            }</b>
+<b class="nc"><i>430</i>&nbsp;</b>
+<b class="nc"><i>431</i>&nbsp;            int var10 = 0;</b>
+<b class="nc"><i>432</i>&nbsp;</b>
+<i>433</i>&nbsp;            for(n = endPointA; n != null; n = n.getParentNode()) {
+<b class="nc"><i>434</i>&nbsp;                ++var10;</b>
+<b class="nc"><i>435</i>&nbsp;            }</b>
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;            for(n = endPointB; n != null; n = n.getParentNode()) {
+<i>438</i>&nbsp;                --var10;
+<i>439</i>&nbsp;            }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;            while(var10 &gt; 0) {
+<b class="nc"><i>442</i>&nbsp;                endPointA = endPointA.getParentNode();</b>
+<b class="nc"><i>443</i>&nbsp;                --var10;</b>
+<b class="nc"><i>444</i>&nbsp;            }</b>
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;            while(var10 &lt; 0) {
+<i>447</i>&nbsp;                endPointB = endPointB.getParentNode();
+<b class="nc"><i>448</i>&nbsp;                ++var10;</b>
+<b class="nc"><i>449</i>&nbsp;            }</b>
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;            n = endPointA.getParentNode();
+<i>452</i>&nbsp;
+<b class="nc"><i>453</i>&nbsp;            for(Node var11 = endPointB.getParentNode(); n != var11; var11 = var11.getParentNode()) {</b>
+<b class="nc"><i>454</i>&nbsp;                endPointA = n;</b>
+<i>455</i>&nbsp;                endPointB = var11;
+<i>456</i>&nbsp;                n = n.getParentNode();
+<i>457</i>&nbsp;            }
+<i>458</i>&nbsp;
+<b class="nc"><i>459</i>&nbsp;            for(n = endPointA.getNextSibling(); n != null; n = n.getNextSibling()) {</b>
+<b class="nc"><i>460</i>&nbsp;                if(n == endPointB) {</b>
+<b class="nc"><i>461</i>&nbsp;                    return (short)1;</b>
+<b class="nc"><i>462</i>&nbsp;                }</b>
+<b class="nc"><i>463</i>&nbsp;            }</b>
+<b class="nc"><i>464</i>&nbsp;</b>
+<i>465</i>&nbsp;            return (short)-1;
+<b class="nc"><i>466</i>&nbsp;        }</b>
+<b class="nc"><i>467</i>&nbsp;    }</b>
+<b class="nc"><i>468</i>&nbsp;</b>
+<i>469</i>&nbsp;    public void deleteContents() throws DOMException {
+<b class="nc"><i>470</i>&nbsp;        this.traverseContents(3);</b>
+<i>471</i>&nbsp;    }
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;    public DocumentFragment extractContents() throws DOMException {
+<i>474</i>&nbsp;        return this.traverseContents(1);
+<i>475</i>&nbsp;    }
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;    public DocumentFragment cloneContents() throws DOMException {
+<b class="nc"><i>478</i>&nbsp;        return this.traverseContents(2);</b>
+<b class="nc"><i>479</i>&nbsp;    }</b>
+<b class="nc"><i>480</i>&nbsp;</b>
+<i>481</i>&nbsp;    public void insertNode(Node newNode) throws DOMException, RangeException {
+<i>482</i>&nbsp;        if(newNode != null) {
+<i>483</i>&nbsp;            short type = newNode.getNodeType();
+<i>484</i>&nbsp;            if(this.fDocument.errorChecking) {
+<b class="nc"><i>485</i>&nbsp;                if(this.fDetach) {</b>
+<i>486</i>&nbsp;                    throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>487</i>&nbsp;                }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;                if(this.fDocument != newNode.getOwnerDocument()) {
+<i>490</i>&nbsp;                    throw new DOMException((short)4, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;WRONG_DOCUMENT_ERR&quot;, (Object[])null));
+<b class="nc"><i>491</i>&nbsp;                }</b>
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;                if(type == 2 || type == 6 || type == 12 || type == 9) {
+<i>494</i>&nbsp;                    throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<i>495</i>&nbsp;                }
+<i>496</i>&nbsp;            }
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;            int currentChildren = 0;
+<i>499</i>&nbsp;            this.fInsertedFromRange = true;
+<i>500</i>&nbsp;            if(this.fStartContainer.getNodeType() == 3) {
+<b class="nc"><i>501</i>&nbsp;                Node i = this.fStartContainer.getParentNode();</b>
+<b class="nc"><i>502</i>&nbsp;                currentChildren = i.getChildNodes().getLength();</b>
+<b class="nc"><i>503</i>&nbsp;                Node cloneCurrent = this.fStartContainer.cloneNode(false);</b>
+<b class="nc"><i>504</i>&nbsp;                ((TextImpl)cloneCurrent).setNodeValueInternal(cloneCurrent.getNodeValue().substring(this.fStartOffset));</b>
+<b class="nc"><i>505</i>&nbsp;                ((TextImpl)this.fStartContainer).setNodeValueInternal(this.fStartContainer.getNodeValue().substring(0, this.fStartOffset));</b>
+<i>506</i>&nbsp;                Node next = this.fStartContainer.getNextSibling();
+<b class="nc"><i>507</i>&nbsp;                if(next != null) {</b>
+<b class="nc"><i>508</i>&nbsp;                    if(i != null) {</b>
+<b class="nc"><i>509</i>&nbsp;                        i.insertBefore(newNode, next);</b>
+<b class="nc"><i>510</i>&nbsp;                        i.insertBefore(cloneCurrent, next);</b>
+<b class="nc"><i>511</i>&nbsp;                    }</b>
+<i>512</i>&nbsp;                } else if(i != null) {
+<b class="nc"><i>513</i>&nbsp;                    i.appendChild(newNode);</b>
+<b class="nc"><i>514</i>&nbsp;                    i.appendChild(cloneCurrent);</b>
+<b class="nc"><i>515</i>&nbsp;                }</b>
+<b class="nc"><i>516</i>&nbsp;</b>
+<b class="nc"><i>517</i>&nbsp;                if(this.fEndContainer == this.fStartContainer) {</b>
+<i>518</i>&nbsp;                    this.fEndContainer = cloneCurrent;
+<b class="nc"><i>519</i>&nbsp;                    this.fEndOffset -= this.fStartOffset;</b>
+<b class="nc"><i>520</i>&nbsp;                } else if(this.fEndContainer == i) {</b>
+<b class="nc"><i>521</i>&nbsp;                    this.fEndOffset += i.getChildNodes().getLength() - currentChildren;</b>
+<b class="nc"><i>522</i>&nbsp;                }</b>
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;                this.signalSplitData(this.fStartContainer, cloneCurrent, this.fStartOffset);
+<i>525</i>&nbsp;            } else {
+<i>526</i>&nbsp;                if(this.fEndContainer == this.fStartContainer) {
+<i>527</i>&nbsp;                    currentChildren = this.fEndContainer.getChildNodes().getLength();
+<i>528</i>&nbsp;                }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;                Node current = this.fStartContainer.getFirstChild();
+<i>531</i>&nbsp;                boolean var9 = false;
+<i>532</i>&nbsp;
+<b class="nc"><i>533</i>&nbsp;                for(int var8 = 0; var8 &lt; this.fStartOffset &amp;&amp; current != null; ++var8) {</b>
+<b class="nc"><i>534</i>&nbsp;                    current = current.getNextSibling();</b>
+<b class="nc"><i>535</i>&nbsp;                }</b>
+<b class="nc"><i>536</i>&nbsp;</b>
+<i>537</i>&nbsp;                if(current != null) {
+<i>538</i>&nbsp;                    this.fStartContainer.insertBefore(newNode, current);
+<i>539</i>&nbsp;                } else {
+<b class="nc"><i>540</i>&nbsp;                    this.fStartContainer.appendChild(newNode);</b>
+<b class="nc"><i>541</i>&nbsp;                }</b>
+<b class="nc"><i>542</i>&nbsp;</b>
+<i>543</i>&nbsp;                if(this.fEndContainer == this.fStartContainer &amp;&amp; this.fEndOffset != 0) {
+<b class="nc"><i>544</i>&nbsp;                    this.fEndOffset += this.fEndContainer.getChildNodes().getLength() - currentChildren;</b>
+<b class="nc"><i>545</i>&nbsp;                }</b>
+<b class="nc"><i>546</i>&nbsp;            }</b>
+<b class="nc"><i>547</i>&nbsp;</b>
+<i>548</i>&nbsp;            this.fInsertedFromRange = false;
+<i>549</i>&nbsp;        }
+<i>550</i>&nbsp;    }
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;    public void surroundContents(Node newParent) throws DOMException, RangeException {
+<b class="nc"><i>553</i>&nbsp;        if(newParent != null) {</b>
+<b class="nc"><i>554</i>&nbsp;            short type = newParent.getNodeType();</b>
+<b class="nc"><i>555</i>&nbsp;            if(this.fDocument.errorChecking) {</b>
+<i>556</i>&nbsp;                if(this.fDetach) {
+<b class="nc"><i>557</i>&nbsp;                    throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<b class="nc"><i>558</i>&nbsp;                }</b>
+<b class="nc"><i>559</i>&nbsp;</b>
+<b class="nc"><i>560</i>&nbsp;                if(type == 2 || type == 6 || type == 12 || type == 10 || type == 9 || type == 11) {</b>
+<i>561</i>&nbsp;                    throw new RangeExceptionImpl((short)2, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_NODE_TYPE_ERR&quot;, (Object[])null));
+<i>562</i>&nbsp;                }
+<i>563</i>&nbsp;            }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;            Node realStart = this.fStartContainer;
+<i>566</i>&nbsp;            Node realEnd = this.fEndContainer;
+<i>567</i>&nbsp;            if(this.fStartContainer.getNodeType() == 3) {
+<b class="nc"><i>568</i>&nbsp;                realStart = this.fStartContainer.getParentNode();</b>
+<b class="nc"><i>569</i>&nbsp;            }</b>
+<b class="nc"><i>570</i>&nbsp;</b>
+<b class="nc"><i>571</i>&nbsp;            if(this.fEndContainer.getNodeType() == 3) {</b>
+<b class="nc"><i>572</i>&nbsp;                realEnd = this.fEndContainer.getParentNode();</b>
+<b class="nc"><i>573</i>&nbsp;            }</b>
+<b class="nc"><i>574</i>&nbsp;</b>
+<b class="nc"><i>575</i>&nbsp;            if(realStart != realEnd) {</b>
+<i>576</i>&nbsp;                throw new RangeExceptionImpl((short)1, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;BAD_BOUNDARYPOINTS_ERR&quot;, (Object[])null));
+<b class="nc"><i>577</i>&nbsp;            } else {</b>
+<b class="nc"><i>578</i>&nbsp;                DocumentFragment frag = this.extractContents();</b>
+<b class="nc"><i>579</i>&nbsp;                this.insertNode(newParent);</b>
+<i>580</i>&nbsp;                newParent.appendChild(frag);
+<b class="nc"><i>581</i>&nbsp;                this.selectNode(newParent);</b>
+<b class="nc"><i>582</i>&nbsp;            }</b>
+<b class="nc"><i>583</i>&nbsp;        }</b>
+<b class="nc"><i>584</i>&nbsp;    }</b>
+<i>585</i>&nbsp;
+<b class="nc"><i>586</i>&nbsp;    public Range cloneRange() {</b>
+<b class="nc"><i>587</i>&nbsp;        if(this.fDetach) {</b>
+<i>588</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<b class="nc"><i>589</i>&nbsp;        } else {</b>
+<b class="nc"><i>590</i>&nbsp;            Range range = this.fDocument.createRange();</b>
+<b class="nc"><i>591</i>&nbsp;            range.setStart(this.fStartContainer, this.fStartOffset);</b>
+<i>592</i>&nbsp;            range.setEnd(this.fEndContainer, this.fEndOffset);
+<b class="nc"><i>593</i>&nbsp;            return range;</b>
+<b class="nc"><i>594</i>&nbsp;        }</b>
+<i>595</i>&nbsp;    }
+<i>596</i>&nbsp;
+<b class="nc"><i>597</i>&nbsp;    public String toString() {</b>
+<i>598</i>&nbsp;        if(this.fDetach) {
+<i>599</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));
+<i>600</i>&nbsp;        } else {
+<i>601</i>&nbsp;            Node node = this.fStartContainer;
+<i>602</i>&nbsp;            Node stopNode = this.fEndContainer;
+<b class="nc"><i>603</i>&nbsp;            StringBuffer sb = new StringBuffer();</b>
+<i>604</i>&nbsp;            int i;
+<i>605</i>&nbsp;            if(this.fStartContainer.getNodeType() != 3 &amp;&amp; this.fStartContainer.getNodeType() != 4) {
+<i>606</i>&nbsp;                node = node.getFirstChild();
+<i>607</i>&nbsp;                if(this.fStartOffset &gt; 0) {
+<i>608</i>&nbsp;                    for(i = 0; i &lt; this.fStartOffset &amp;&amp; node != null; ++i) {
+<b class="nc"><i>609</i>&nbsp;                        node = node.getNextSibling();</b>
+<i>610</i>&nbsp;                    }
+<i>611</i>&nbsp;                }
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;                if(node == null) {
+<i>614</i>&nbsp;                    node = this.nextNode(this.fStartContainer, false);
+<b class="nc"><i>615</i>&nbsp;                }</b>
+<i>616</i>&nbsp;            } else {
+<i>617</i>&nbsp;                if(this.fStartContainer == this.fEndContainer) {
+<i>618</i>&nbsp;                    sb.append(this.fStartContainer.getNodeValue().substring(this.fStartOffset, this.fEndOffset));
+<i>619</i>&nbsp;                    return sb.toString();
+<i>620</i>&nbsp;                }
+<b class="nc"><i>621</i>&nbsp;</b>
+<i>622</i>&nbsp;                sb.append(this.fStartContainer.getNodeValue().substring(this.fStartOffset));
+<b class="nc"><i>623</i>&nbsp;                node = this.nextNode(node, true);</b>
+<i>624</i>&nbsp;            }
+<b class="nc"><i>625</i>&nbsp;</b>
+<b class="nc"><i>626</i>&nbsp;            if(this.fEndContainer.getNodeType() != 3 &amp;&amp; this.fEndContainer.getNodeType() != 4) {</b>
+<b class="nc"><i>627</i>&nbsp;                i = this.fEndOffset;</b>
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;                for(stopNode = this.fEndContainer.getFirstChild(); i &gt; 0 &amp;&amp; stopNode != null; stopNode = stopNode.getNextSibling()) {
+<i>630</i>&nbsp;                    --i;
+<b class="nc"><i>631</i>&nbsp;                }</b>
+<b class="nc"><i>632</i>&nbsp;</b>
+<i>633</i>&nbsp;                if(stopNode == null) {
+<i>634</i>&nbsp;                    stopNode = this.nextNode(this.fEndContainer, false);
+<i>635</i>&nbsp;                }
+<b class="nc"><i>636</i>&nbsp;            }</b>
+<i>637</i>&nbsp;
+<i>638</i>&nbsp;            for(; node != stopNode &amp;&amp; node != null; node = this.nextNode(node, true)) {
+<i>639</i>&nbsp;                if(node.getNodeType() == 3 || node.getNodeType() == 4) {
+<i>640</i>&nbsp;                    sb.append(node.getNodeValue());
+<b class="nc"><i>641</i>&nbsp;                }</b>
+<i>642</i>&nbsp;            }
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;            if(this.fEndContainer.getNodeType() == 3 || this.fEndContainer.getNodeType() == 4) {
+<i>645</i>&nbsp;                sb.append(this.fEndContainer.getNodeValue().substring(0, this.fEndOffset));
+<i>646</i>&nbsp;            }
+<i>647</i>&nbsp;
+<b class="nc"><i>648</i>&nbsp;            return sb.toString();</b>
+<b class="nc"><i>649</i>&nbsp;        }</b>
+<i>650</i>&nbsp;    }
+<i>651</i>&nbsp;
+<b class="nc"><i>652</i>&nbsp;    public void detach() {</b>
+<i>653</i>&nbsp;        if(this.fDetach) {
+<b class="nc"><i>654</i>&nbsp;            throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<b class="nc"><i>655</i>&nbsp;        } else {</b>
+<i>656</i>&nbsp;            this.fDetach = true;
+<b class="nc"><i>657</i>&nbsp;            this.fDocument.removeRange(this);</b>
+<b class="nc"><i>658</i>&nbsp;        }</b>
+<i>659</i>&nbsp;    }
+<b class="nc"><i>660</i>&nbsp;</b>
+<i>661</i>&nbsp;    void signalSplitData(Node node, Node newNode, int offset) {
+<b class="nc"><i>662</i>&nbsp;        this.fSplitNode = node;</b>
+<b class="nc"><i>663</i>&nbsp;        this.fDocument.splitData(node, newNode, offset);</b>
+<b class="nc"><i>664</i>&nbsp;        this.fSplitNode = null;</b>
+<b class="nc"><i>665</i>&nbsp;    }</b>
+<b class="nc"><i>666</i>&nbsp;</b>
+<i>667</i>&nbsp;    void receiveSplitData(Node node, Node newNode, int offset) {
+<i>668</i>&nbsp;        if(node != null &amp;&amp; newNode != null) {
+<b class="nc"><i>669</i>&nbsp;            if(this.fSplitNode != node) {</b>
+<b class="nc"><i>670</i>&nbsp;                if(node == this.fStartContainer &amp;&amp; this.fStartContainer.getNodeType() == 3 &amp;&amp; this.fStartOffset &gt; offset) {</b>
+<b class="nc"><i>671</i>&nbsp;                    this.fStartOffset -= offset;</b>
+<i>672</i>&nbsp;                    this.fStartContainer = newNode;
+<i>673</i>&nbsp;                }
+<i>674</i>&nbsp;
+<b class="nc"><i>675</i>&nbsp;                if(node == this.fEndContainer &amp;&amp; this.fEndContainer.getNodeType() == 3 &amp;&amp; this.fEndOffset &gt; offset) {</b>
+<b class="nc"><i>676</i>&nbsp;                    this.fEndOffset -= offset;</b>
+<b class="nc"><i>677</i>&nbsp;                    this.fEndContainer = newNode;</b>
+<i>678</i>&nbsp;                }
+<b class="nc"><i>679</i>&nbsp;</b>
+<i>680</i>&nbsp;            }
+<b class="nc"><i>681</i>&nbsp;        }</b>
+<i>682</i>&nbsp;    }
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;    void deleteData(CharacterData node, int offset, int count) {
+<b class="nc"><i>685</i>&nbsp;        this.fDeleteNode = node;</b>
+<i>686</i>&nbsp;        node.deleteData(offset, count);
+<i>687</i>&nbsp;        this.fDeleteNode = null;
+<b class="nc"><i>688</i>&nbsp;    }</b>
+<b class="nc"><i>689</i>&nbsp;</b>
+<b class="nc"><i>690</i>&nbsp;    void receiveDeletedText(Node node, int offset, int count) {</b>
+<i>691</i>&nbsp;        if(node != null) {
+<b class="nc"><i>692</i>&nbsp;            if(this.fDeleteNode != node) {</b>
+<b class="nc"><i>693</i>&nbsp;                if(node == this.fStartContainer &amp;&amp; this.fStartContainer.getNodeType() == 3) {</b>
+<b class="nc"><i>694</i>&nbsp;                    if(this.fStartOffset &gt; offset + count) {</b>
+<b class="nc"><i>695</i>&nbsp;                        this.fStartOffset = offset + (this.fStartOffset - (offset + count));</b>
+<i>696</i>&nbsp;                    } else if(this.fStartOffset &gt; offset) {
+<b class="nc"><i>697</i>&nbsp;                        this.fStartOffset = offset;</b>
+<b class="nc"><i>698</i>&nbsp;                    }</b>
+<i>699</i>&nbsp;                }
+<b class="nc"><i>700</i>&nbsp;</b>
+<i>701</i>&nbsp;                if(node == this.fEndContainer &amp;&amp; this.fEndContainer.getNodeType() == 3) {
+<i>702</i>&nbsp;                    if(this.fEndOffset &gt; offset + count) {
+<i>703</i>&nbsp;                        this.fEndOffset = offset + (this.fEndOffset - (offset + count));
+<b class="nc"><i>704</i>&nbsp;                    } else if(this.fEndOffset &gt; offset) {</b>
+<b class="nc"><i>705</i>&nbsp;                        this.fEndOffset = offset;</b>
+<i>706</i>&nbsp;                    }
+<i>707</i>&nbsp;                }
+<b class="nc"><i>708</i>&nbsp;</b>
+<i>709</i>&nbsp;            }
+<i>710</i>&nbsp;        }
+<i>711</i>&nbsp;    }
+<i>712</i>&nbsp;
+<i>713</i>&nbsp;    void insertData(CharacterData node, int index, String insert) {
+<b class="nc"><i>714</i>&nbsp;        this.fInsertNode = node;</b>
+<b class="nc"><i>715</i>&nbsp;        node.insertData(index, insert);</b>
+<i>716</i>&nbsp;        this.fInsertNode = null;
+<b class="nc"><i>717</i>&nbsp;    }</b>
+<b class="nc"><i>718</i>&nbsp;</b>
+<b class="nc"><i>719</i>&nbsp;    void receiveInsertedText(Node node, int index, int len) {</b>
+<i>720</i>&nbsp;        if(node != null) {
+<i>721</i>&nbsp;            if(this.fInsertNode != node) {
+<i>722</i>&nbsp;                if(node == this.fStartContainer &amp;&amp; this.fStartContainer.getNodeType() == 3 &amp;&amp; index &lt; this.fStartOffset) {
+<b class="nc"><i>723</i>&nbsp;                    this.fStartOffset += len;</b>
+<i>724</i>&nbsp;                }
+<i>725</i>&nbsp;
+<i>726</i>&nbsp;                if(node == this.fEndContainer &amp;&amp; this.fEndContainer.getNodeType() == 3 &amp;&amp; index &lt; this.fEndOffset) {
+<i>727</i>&nbsp;                    this.fEndOffset += len;
+<i>728</i>&nbsp;                }
+<i>729</i>&nbsp;
+<b class="nc"><i>730</i>&nbsp;            }</b>
+<i>731</i>&nbsp;        }
+<i>732</i>&nbsp;    }
+<i>733</i>&nbsp;
+<i>734</i>&nbsp;    void receiveReplacedText(Node node) {
+<i>735</i>&nbsp;        if(node != null) {
+<b class="nc"><i>736</i>&nbsp;            if(node == this.fStartContainer &amp;&amp; this.fStartContainer.getNodeType() == 3) {</b>
+<b class="nc"><i>737</i>&nbsp;                this.fStartOffset = 0;</b>
+<b class="nc"><i>738</i>&nbsp;            }</b>
+<b class="nc"><i>739</i>&nbsp;</b>
+<i>740</i>&nbsp;            if(node == this.fEndContainer &amp;&amp; this.fEndContainer.getNodeType() == 3) {
+<b class="nc"><i>741</i>&nbsp;                this.fEndOffset = 0;</b>
+<b class="nc"><i>742</i>&nbsp;            }</b>
+<i>743</i>&nbsp;
+<i>744</i>&nbsp;        }
+<b class="nc"><i>745</i>&nbsp;    }</b>
+<b class="nc"><i>746</i>&nbsp;</b>
+<i>747</i>&nbsp;    public void insertedNodeFromDOM(Node node) {
+<i>748</i>&nbsp;        if(node != null) {
+<i>749</i>&nbsp;            if(this.fInsertNode != node) {
+<i>750</i>&nbsp;                if(!this.fInsertedFromRange) {
+<b class="nc"><i>751</i>&nbsp;                    Node parent = node.getParentNode();</b>
+<b class="nc"><i>752</i>&nbsp;                    int index;</b>
+<b class="nc"><i>753</i>&nbsp;                    if(parent == this.fStartContainer) {</b>
+<b class="nc"><i>754</i>&nbsp;                        index = this.indexOf(node, this.fStartContainer);</b>
+<i>755</i>&nbsp;                        if(index &lt; this.fStartOffset) {
+<i>756</i>&nbsp;                            ++this.fStartOffset;
+<i>757</i>&nbsp;                        }
+<b class="nc"><i>758</i>&nbsp;                    }</b>
+<b class="nc"><i>759</i>&nbsp;</b>
+<i>760</i>&nbsp;                    if(parent == this.fEndContainer) {
+<i>761</i>&nbsp;                        index = this.indexOf(node, this.fEndContainer);
+<i>762</i>&nbsp;                        if(index &lt; this.fEndOffset) {
+<i>763</i>&nbsp;                            ++this.fEndOffset;
+<b class="nc"><i>764</i>&nbsp;                        }</b>
+<b class="nc"><i>765</i>&nbsp;                    }</b>
+<b class="nc"><i>766</i>&nbsp;</b>
+<b class="nc"><i>767</i>&nbsp;                }</b>
+<i>768</i>&nbsp;            }
+<i>769</i>&nbsp;        }
+<i>770</i>&nbsp;    }
+<b class="nc"><i>771</i>&nbsp;</b>
+<b class="nc"><i>772</i>&nbsp;    Node removeChild(Node parent, Node child) {</b>
+<i>773</i>&nbsp;        this.fRemoveChild = child;
+<i>774</i>&nbsp;        Node n = parent.removeChild(child);
+<i>775</i>&nbsp;        this.fRemoveChild = null;
+<i>776</i>&nbsp;        return n;
+<b class="nc"><i>777</i>&nbsp;    }</b>
+<b class="nc"><i>778</i>&nbsp;</b>
+<b class="nc"><i>779</i>&nbsp;    void removeNode(Node node) {</b>
+<b class="nc"><i>780</i>&nbsp;        if(node != null) {</b>
+<i>781</i>&nbsp;            if(this.fRemoveChild != node) {
+<i>782</i>&nbsp;                Node parent = node.getParentNode();
+<b class="nc"><i>783</i>&nbsp;                int index;</b>
+<b class="nc"><i>784</i>&nbsp;                if(parent == this.fStartContainer) {</b>
+<b class="nc"><i>785</i>&nbsp;                    index = this.indexOf(node, this.fStartContainer);</b>
+<i>786</i>&nbsp;                    if(index &lt; this.fStartOffset) {
+<b class="nc"><i>787</i>&nbsp;                        --this.fStartOffset;</b>
+<b class="nc"><i>788</i>&nbsp;                    }</b>
+<i>789</i>&nbsp;                }
+<i>790</i>&nbsp;
+<i>791</i>&nbsp;                if(parent == this.fEndContainer) {
+<b class="nc"><i>792</i>&nbsp;                    index = this.indexOf(node, this.fEndContainer);</b>
+<b class="nc"><i>793</i>&nbsp;                    if(index &lt; this.fEndOffset) {</b>
+<b class="nc"><i>794</i>&nbsp;                        --this.fEndOffset;</b>
+<b class="nc"><i>795</i>&nbsp;                    }</b>
+<b class="nc"><i>796</i>&nbsp;                }</b>
+<b class="nc"><i>797</i>&nbsp;</b>
+<i>798</i>&nbsp;                if(parent != this.fStartContainer || parent != this.fEndContainer) {
+<i>799</i>&nbsp;                    if(this.isAncestorOf(node, this.fStartContainer)) {
+<b class="nc"><i>800</i>&nbsp;                        this.fStartContainer = parent;</b>
+<b class="nc"><i>801</i>&nbsp;                        this.fStartOffset = this.indexOf(node, parent);</b>
+<i>802</i>&nbsp;                    }
+<i>803</i>&nbsp;
+<b class="nc"><i>804</i>&nbsp;                    if(this.isAncestorOf(node, this.fEndContainer)) {</b>
+<i>805</i>&nbsp;                        this.fEndContainer = parent;
+<b class="nc"><i>806</i>&nbsp;                        this.fEndOffset = this.indexOf(node, parent);</b>
+<b class="nc"><i>807</i>&nbsp;                    }</b>
+<b class="nc"><i>808</i>&nbsp;                }</b>
+<b class="nc"><i>809</i>&nbsp;</b>
+<b class="nc"><i>810</i>&nbsp;            }</b>
+<i>811</i>&nbsp;        }
+<b class="nc"><i>812</i>&nbsp;    }</b>
+<b class="nc"><i>813</i>&nbsp;</b>
+<i>814</i>&nbsp;    private DocumentFragment traverseContents(int how) throws DOMException {
+<b class="nc"><i>815</i>&nbsp;        if(this.fStartContainer != null &amp;&amp; this.fEndContainer != null) {</b>
+<b class="nc"><i>816</i>&nbsp;            if(this.fDetach) {</b>
+<b class="nc"><i>817</i>&nbsp;                throw new DOMException((short)11, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INVALID_STATE_ERR&quot;, (Object[])null));</b>
+<i>818</i>&nbsp;            } else if(this.fStartContainer == this.fEndContainer) {
+<b class="nc"><i>819</i>&nbsp;                return this.traverseSameContainer(how);</b>
+<i>820</i>&nbsp;            } else {
+<i>821</i>&nbsp;                int endContainerDepth = 0;
+<b class="nc"><i>822</i>&nbsp;                Node startContainerDepth = this.fEndContainer;</b>
+<i>823</i>&nbsp;
+<i>824</i>&nbsp;                Node depthDiff;
+<b class="nc"><i>825</i>&nbsp;                for(depthDiff = startContainerDepth.getParentNode(); depthDiff != null; depthDiff = depthDiff.getParentNode()) {</b>
+<i>826</i>&nbsp;                    if(depthDiff == this.fStartContainer) {
+<b class="nc"><i>827</i>&nbsp;                        return this.traverseCommonStartContainer(startContainerDepth, how);</b>
+<i>828</i>&nbsp;                    }
+<b class="nc"><i>829</i>&nbsp;</b>
+<i>830</i>&nbsp;                    ++endContainerDepth;
+<i>831</i>&nbsp;                    startContainerDepth = depthDiff;
+<i>832</i>&nbsp;                }
+<b class="nc"><i>833</i>&nbsp;</b>
+<b class="nc"><i>834</i>&nbsp;                int var9 = 0;</b>
+<i>835</i>&nbsp;                depthDiff = this.fStartContainer;
+<i>836</i>&nbsp;
+<i>837</i>&nbsp;                Node startNode;
+<b class="nc"><i>838</i>&nbsp;                for(startNode = depthDiff.getParentNode(); startNode != null; startNode = startNode.getParentNode()) {</b>
+<b class="nc"><i>839</i>&nbsp;                    if(startNode == this.fEndContainer) {</b>
+<i>840</i>&nbsp;                        return this.traverseCommonEndContainer(depthDiff, how);
+<i>841</i>&nbsp;                    }
+<i>842</i>&nbsp;
+<i>843</i>&nbsp;                    ++var9;
+<i>844</i>&nbsp;                    depthDiff = startNode;
+<i>845</i>&nbsp;                }
+<i>846</i>&nbsp;
+<i>847</i>&nbsp;                int var10 = var9 - endContainerDepth;
+<i>848</i>&nbsp;
+<i>849</i>&nbsp;                for(startNode = this.fStartContainer; var10 &gt; 0; --var10) {
+<i>850</i>&nbsp;                    startNode = startNode.getParentNode();
+<b class="nc"><i>851</i>&nbsp;                }</b>
+<i>852</i>&nbsp;
+<b class="nc"><i>853</i>&nbsp;                Node endNode;</b>
+<b class="nc"><i>854</i>&nbsp;                for(endNode = this.fEndContainer; var10 &lt; 0; ++var10) {</b>
+<i>855</i>&nbsp;                    endNode = endNode.getParentNode();
+<i>856</i>&nbsp;                }
+<i>857</i>&nbsp;
+<i>858</i>&nbsp;                Node sp = startNode.getParentNode();
+<i>859</i>&nbsp;
+<i>860</i>&nbsp;                for(Node ep = endNode.getParentNode(); sp != ep; ep = ep.getParentNode()) {
+<b class="nc"><i>861</i>&nbsp;                    startNode = sp;</b>
+<b class="nc"><i>862</i>&nbsp;                    endNode = ep;</b>
+<i>863</i>&nbsp;                    sp = sp.getParentNode();
+<b class="nc"><i>864</i>&nbsp;                }</b>
+<i>865</i>&nbsp;
+<b class="nc"><i>866</i>&nbsp;                return this.traverseCommonAncestors(startNode, endNode, how);</b>
+<b class="nc"><i>867</i>&nbsp;            }</b>
+<b class="nc"><i>868</i>&nbsp;        } else {</b>
+<i>869</i>&nbsp;            return null;
+<i>870</i>&nbsp;        }
+<b class="nc"><i>871</i>&nbsp;    }</b>
+<i>872</i>&nbsp;
+<b class="nc"><i>873</i>&nbsp;    private DocumentFragment traverseSameContainer(int how) {</b>
+<b class="nc"><i>874</i>&nbsp;        DocumentFragment frag = null;</b>
+<b class="nc"><i>875</i>&nbsp;        if(how != 3) {</b>
+<i>876</i>&nbsp;            frag = this.fDocument.createDocumentFragment();
+<i>877</i>&nbsp;        }
+<i>878</i>&nbsp;
+<i>879</i>&nbsp;        if(this.fStartOffset == this.fEndOffset) {
+<i>880</i>&nbsp;            return frag;
+<i>881</i>&nbsp;        } else if(this.fStartContainer.getNodeType() == 3) {
+<i>882</i>&nbsp;            String var7 = this.fStartContainer.getNodeValue();
+<i>883</i>&nbsp;            String var8 = var7.substring(this.fStartOffset, this.fEndOffset);
+<i>884</i>&nbsp;            if(how != 2) {
+<b class="nc"><i>885</i>&nbsp;                ((TextImpl)this.fStartContainer).deleteData(this.fStartOffset, this.fEndOffset - this.fStartOffset);</b>
+<b class="nc"><i>886</i>&nbsp;                this.collapse(true);</b>
+<b class="nc"><i>887</i>&nbsp;            }</b>
+<i>888</i>&nbsp;
+<i>889</i>&nbsp;            if(how == 3) {
+<i>890</i>&nbsp;                return null;
+<i>891</i>&nbsp;            } else {
+<i>892</i>&nbsp;                frag.appendChild(this.fDocument.createTextNode(var8));
+<i>893</i>&nbsp;                return frag;
+<i>894</i>&nbsp;            }
+<i>895</i>&nbsp;        } else {
+<b class="nc"><i>896</i>&nbsp;            Node n = this.getSelectedNode(this.fStartContainer, this.fStartOffset);</b>
+<b class="nc"><i>897</i>&nbsp;</b>
+<b class="nc"><i>898</i>&nbsp;            Node sibling;</b>
+<i>899</i>&nbsp;            for(int cnt = this.fEndOffset - this.fStartOffset; cnt &gt; 0; n = sibling) {
+<b class="nc"><i>900</i>&nbsp;                sibling = n.getNextSibling();</b>
+<b class="nc"><i>901</i>&nbsp;                Node xferNode = this.traverseFullySelected(n, how);</b>
+<i>902</i>&nbsp;                if(frag != null) {
+<b class="nc"><i>903</i>&nbsp;                    frag.appendChild(xferNode);</b>
+<b class="nc"><i>904</i>&nbsp;                }</b>
+<i>905</i>&nbsp;
+<i>906</i>&nbsp;                --cnt;
+<b class="nc"><i>907</i>&nbsp;            }</b>
+<i>908</i>&nbsp;
+<b class="nc"><i>909</i>&nbsp;            if(how != 2) {</b>
+<b class="nc"><i>910</i>&nbsp;                this.collapse(true);</b>
+<i>911</i>&nbsp;            }
+<b class="nc"><i>912</i>&nbsp;</b>
+<b class="nc"><i>913</i>&nbsp;            return frag;</b>
+<i>914</i>&nbsp;        }
+<i>915</i>&nbsp;    }
+<i>916</i>&nbsp;
+<i>917</i>&nbsp;    private DocumentFragment traverseCommonStartContainer(Node endAncestor, int how) {
+<i>918</i>&nbsp;        DocumentFragment frag = null;
+<i>919</i>&nbsp;        if(how != 3) {
+<i>920</i>&nbsp;            frag = this.fDocument.createDocumentFragment();
+<i>921</i>&nbsp;        }
+<i>922</i>&nbsp;
+<b class="nc"><i>923</i>&nbsp;        Node n = this.traverseRightBoundary(endAncestor, how);</b>
+<b class="nc"><i>924</i>&nbsp;        if(frag != null) {</b>
+<b class="nc"><i>925</i>&nbsp;            frag.appendChild(n);</b>
+<i>926</i>&nbsp;        }
+<i>927</i>&nbsp;
+<i>928</i>&nbsp;        int endIdx = this.indexOf(endAncestor, this.fStartContainer);
+<i>929</i>&nbsp;        int cnt = endIdx - this.fStartOffset;
+<i>930</i>&nbsp;        if(cnt &lt;= 0) {
+<i>931</i>&nbsp;            if(how != 2) {
+<i>932</i>&nbsp;                this.setEndBefore(endAncestor);
+<i>933</i>&nbsp;                this.collapse(false);
+<b class="nc"><i>934</i>&nbsp;            }</b>
+<b class="nc"><i>935</i>&nbsp;</b>
+<b class="nc"><i>936</i>&nbsp;            return frag;</b>
+<i>937</i>&nbsp;        } else {
+<b class="nc"><i>938</i>&nbsp;            Node sibling;</b>
+<b class="nc"><i>939</i>&nbsp;            for(n = endAncestor.getPreviousSibling(); cnt &gt; 0; n = sibling) {</b>
+<i>940</i>&nbsp;                sibling = n.getPreviousSibling();
+<i>941</i>&nbsp;                Node xferNode = this.traverseFullySelected(n, how);
+<b class="nc"><i>942</i>&nbsp;                if(frag != null) {</b>
+<i>943</i>&nbsp;                    frag.insertBefore(xferNode, frag.getFirstChild());
+<b class="nc"><i>944</i>&nbsp;                }</b>
+<b class="nc"><i>945</i>&nbsp;</b>
+<i>946</i>&nbsp;                --cnt;
+<i>947</i>&nbsp;            }
+<i>948</i>&nbsp;
+<i>949</i>&nbsp;            if(how != 2) {
+<i>950</i>&nbsp;                this.setEndBefore(endAncestor);
+<i>951</i>&nbsp;                this.collapse(false);
+<i>952</i>&nbsp;            }
+<i>953</i>&nbsp;
+<i>954</i>&nbsp;            return frag;
+<i>955</i>&nbsp;        }
+<b class="nc"><i>956</i>&nbsp;    }</b>
+<b class="nc"><i>957</i>&nbsp;</b>
+<i>958</i>&nbsp;    private DocumentFragment traverseCommonEndContainer(Node startAncestor, int how) {
+<b class="nc"><i>959</i>&nbsp;        DocumentFragment frag = null;</b>
+<i>960</i>&nbsp;        if(how != 3) {
+<b class="nc"><i>961</i>&nbsp;            frag = this.fDocument.createDocumentFragment();</b>
+<i>962</i>&nbsp;        }
+<b class="nc"><i>963</i>&nbsp;</b>
+<i>964</i>&nbsp;        Node n = this.traverseLeftBoundary(startAncestor, how);
+<i>965</i>&nbsp;        if(frag != null) {
+<i>966</i>&nbsp;            frag.appendChild(n);
+<i>967</i>&nbsp;        }
+<i>968</i>&nbsp;
+<i>969</i>&nbsp;        int startIdx = this.indexOf(startAncestor, this.fEndContainer);
+<i>970</i>&nbsp;        ++startIdx;
+<i>971</i>&nbsp;        int cnt = this.fEndOffset - startIdx;
+<i>972</i>&nbsp;
+<b class="nc"><i>973</i>&nbsp;        Node sibling;</b>
+<b class="nc"><i>974</i>&nbsp;        for(n = startAncestor.getNextSibling(); cnt &gt; 0; n = sibling) {</b>
+<b class="nc"><i>975</i>&nbsp;            sibling = n.getNextSibling();</b>
+<i>976</i>&nbsp;            Node xferNode = this.traverseFullySelected(n, how);
+<b class="nc"><i>977</i>&nbsp;            if(frag != null) {</b>
+<i>978</i>&nbsp;                frag.appendChild(xferNode);
+<b class="nc"><i>979</i>&nbsp;            }</b>
+<b class="nc"><i>980</i>&nbsp;</b>
+<b class="nc"><i>981</i>&nbsp;            --cnt;</b>
+<b class="nc"><i>982</i>&nbsp;        }</b>
+<i>983</i>&nbsp;
+<i>984</i>&nbsp;        if(how != 2) {
+<i>985</i>&nbsp;            this.setStartAfter(startAncestor);
+<b class="nc"><i>986</i>&nbsp;            this.collapse(true);</b>
+<b class="nc"><i>987</i>&nbsp;        }</b>
+<b class="nc"><i>988</i>&nbsp;</b>
+<b class="nc"><i>989</i>&nbsp;        return frag;</b>
+<i>990</i>&nbsp;    }
+<i>991</i>&nbsp;
+<i>992</i>&nbsp;    private DocumentFragment traverseCommonAncestors(Node startAncestor, Node endAncestor, int how) {
+<i>993</i>&nbsp;        DocumentFragment frag = null;
+<i>994</i>&nbsp;        if(how != 3) {
+<i>995</i>&nbsp;            frag = this.fDocument.createDocumentFragment();
+<i>996</i>&nbsp;        }
+<i>997</i>&nbsp;
+<i>998</i>&nbsp;        Node n = this.traverseLeftBoundary(startAncestor, how);
+<i>999</i>&nbsp;        if(frag != null) {
+<i>1000</i>&nbsp;            frag.appendChild(n);
+<b class="nc"><i>1001</i>&nbsp;        }</b>
+<i>1002</i>&nbsp;
+<b class="nc"><i>1003</i>&nbsp;        Node commonParent = startAncestor.getParentNode();</b>
+<b class="nc"><i>1004</i>&nbsp;        int startOffset = this.indexOf(startAncestor, commonParent);</b>
+<b class="nc"><i>1005</i>&nbsp;        int endOffset = this.indexOf(endAncestor, commonParent);</b>
+<b class="nc"><i>1006</i>&nbsp;        ++startOffset;</b>
+<i>1007</i>&nbsp;        int cnt = endOffset - startOffset;
+<i>1008</i>&nbsp;
+<i>1009</i>&nbsp;        for(Node sibling = startAncestor.getNextSibling(); cnt &gt; 0; --cnt) {
+<i>1010</i>&nbsp;            Node nextSibling = sibling.getNextSibling();
+<i>1011</i>&nbsp;            n = this.traverseFullySelected(sibling, how);
+<i>1012</i>&nbsp;            if(frag != null) {
+<i>1013</i>&nbsp;                frag.appendChild(n);
+<b class="nc"><i>1014</i>&nbsp;            }</b>
+<b class="nc"><i>1015</i>&nbsp;</b>
+<i>1016</i>&nbsp;            sibling = nextSibling;
+<b class="nc"><i>1017</i>&nbsp;        }</b>
+<i>1018</i>&nbsp;
+<b class="nc"><i>1019</i>&nbsp;        n = this.traverseRightBoundary(endAncestor, how);</b>
+<b class="nc"><i>1020</i>&nbsp;        if(frag != null) {</b>
+<b class="nc"><i>1021</i>&nbsp;            frag.appendChild(n);</b>
+<b class="nc"><i>1022</i>&nbsp;        }</b>
+<i>1023</i>&nbsp;
+<i>1024</i>&nbsp;        if(how != 2) {
+<i>1025</i>&nbsp;            this.setStartAfter(startAncestor);
+<b class="nc"><i>1026</i>&nbsp;            this.collapse(true);</b>
+<b class="nc"><i>1027</i>&nbsp;        }</b>
+<b class="nc"><i>1028</i>&nbsp;</b>
+<b class="nc"><i>1029</i>&nbsp;        return frag;</b>
+<i>1030</i>&nbsp;    }
+<i>1031</i>&nbsp;
+<i>1032</i>&nbsp;    private Node traverseRightBoundary(Node root, int how) {
+<b class="nc"><i>1033</i>&nbsp;        Node next = this.getSelectedNode(this.fEndContainer, this.fEndOffset - 1);</b>
+<i>1034</i>&nbsp;        boolean isFullySelected = next != this.fEndContainer;
+<b class="nc"><i>1035</i>&nbsp;        if(next == root) {</b>
+<b class="nc"><i>1036</i>&nbsp;            return this.traverseNode(next, isFullySelected, false, how);</b>
+<b class="nc"><i>1037</i>&nbsp;        } else {</b>
+<i>1038</i>&nbsp;            Node parent = next.getParentNode();
+<b class="nc"><i>1039</i>&nbsp;</b>
+<b class="nc"><i>1040</i>&nbsp;            Node clonedGrandParent;</b>
+<b class="nc"><i>1041</i>&nbsp;            for(Node clonedParent = this.traverseNode(parent, false, false, how); parent != null; clonedParent = clonedGrandParent) {</b>
+<i>1042</i>&nbsp;                while(next != null) {
+<i>1043</i>&nbsp;                    clonedGrandParent = next.getPreviousSibling();
+<i>1044</i>&nbsp;                    Node clonedChild = this.traverseNode(next, isFullySelected, false, how);
+<i>1045</i>&nbsp;                    if(how != 3) {
+<i>1046</i>&nbsp;                        clonedParent.insertBefore(clonedChild, clonedParent.getFirstChild());
+<i>1047</i>&nbsp;                    }
+<i>1048</i>&nbsp;
+<i>1049</i>&nbsp;                    isFullySelected = true;
+<i>1050</i>&nbsp;                    next = clonedGrandParent;
+<i>1051</i>&nbsp;                }
+<i>1052</i>&nbsp;
+<i>1053</i>&nbsp;                if(parent == root) {
+<i>1054</i>&nbsp;                    return clonedParent;
+<i>1055</i>&nbsp;                }
+<i>1056</i>&nbsp;
+<i>1057</i>&nbsp;                next = parent.getPreviousSibling();
+<i>1058</i>&nbsp;                parent = parent.getParentNode();
+<i>1059</i>&nbsp;                clonedGrandParent = this.traverseNode(parent, false, false, how);
+<i>1060</i>&nbsp;                if(how != 3) {
+<i>1061</i>&nbsp;                    clonedGrandParent.appendChild(clonedParent);
+<i>1062</i>&nbsp;                }
+<i>1063</i>&nbsp;            }
+<i>1064</i>&nbsp;
+<i>1065</i>&nbsp;            return null;
+<i>1066</i>&nbsp;        }
+<i>1067</i>&nbsp;    }
+<i>1068</i>&nbsp;
+<i>1069</i>&nbsp;    private Node traverseLeftBoundary(Node root, int how) {
+<i>1070</i>&nbsp;        Node next = this.getSelectedNode(this.getStartContainer(), this.getStartOffset());
+<i>1071</i>&nbsp;        boolean isFullySelected = next != this.getStartContainer();
+<i>1072</i>&nbsp;        if(next == root) {
+<i>1073</i>&nbsp;            return this.traverseNode(next, isFullySelected, true, how);
+<i>1074</i>&nbsp;        } else {
+<i>1075</i>&nbsp;            Node parent = next.getParentNode();
+<i>1076</i>&nbsp;
+<i>1077</i>&nbsp;            Node clonedGrandParent;
+<i>1078</i>&nbsp;            for(Node clonedParent = this.traverseNode(parent, false, true, how); parent != null; clonedParent = clonedGrandParent) {
+<i>1079</i>&nbsp;                while(next != null) {
+<i>1080</i>&nbsp;                    clonedGrandParent = next.getNextSibling();
+<i>1081</i>&nbsp;                    Node clonedChild = this.traverseNode(next, isFullySelected, true, how);
+<i>1082</i>&nbsp;                    if(how != 3) {
+<i>1083</i>&nbsp;                        clonedParent.appendChild(clonedChild);
+<i>1084</i>&nbsp;                    }
+<i>1085</i>&nbsp;
+<i>1086</i>&nbsp;                    isFullySelected = true;
+<i>1087</i>&nbsp;                    next = clonedGrandParent;
+<i>1088</i>&nbsp;                }
+<i>1089</i>&nbsp;
+<b class="nc"><i>1090</i>&nbsp;                if(parent == root) {</b>
+<b class="nc"><i>1091</i>&nbsp;                    return clonedParent;</b>
+<i>1092</i>&nbsp;                }
+<i>1093</i>&nbsp;
+<i>1094</i>&nbsp;                next = parent.getNextSibling();
+<b class="nc"><i>1095</i>&nbsp;                parent = parent.getParentNode();</b>
+<b class="nc"><i>1096</i>&nbsp;                clonedGrandParent = this.traverseNode(parent, false, true, how);</b>
+<i>1097</i>&nbsp;                if(how != 3) {
+<i>1098</i>&nbsp;                    clonedGrandParent.appendChild(clonedParent);
+<i>1099</i>&nbsp;                }
+<i>1100</i>&nbsp;            }
+<i>1101</i>&nbsp;
+<i>1102</i>&nbsp;            return null;
+<i>1103</i>&nbsp;        }
+<i>1104</i>&nbsp;    }
+<i>1105</i>&nbsp;
+<i>1106</i>&nbsp;    private Node traverseNode(Node n, boolean isFullySelected, boolean isLeft, int how) {
+<i>1107</i>&nbsp;        return isFullySelected?this.traverseFullySelected(n, how):(n.getNodeType() == 3?this.traverseTextNode(n, isLeft, how):this.traversePartiallySelected(n, how));
+<i>1108</i>&nbsp;    }
+<i>1109</i>&nbsp;
+<b class="nc"><i>1110</i>&nbsp;    private Node traverseFullySelected(Node n, int how) {</b>
+<b class="nc"><i>1111</i>&nbsp;        switch(how) {</b>
+<i>1112</i>&nbsp;        case 1:
+<i>1113</i>&nbsp;            if(n.getNodeType() == 10) {
+<i>1114</i>&nbsp;                throw new DOMException((short)3, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;HIERARCHY_REQUEST_ERR&quot;, (Object[])null));
+<i>1115</i>&nbsp;            }
+<i>1116</i>&nbsp;
+<b class="nc"><i>1117</i>&nbsp;            return n;</b>
+<b class="nc"><i>1118</i>&nbsp;        case 2:</b>
+<b class="nc"><i>1119</i>&nbsp;            return n.cloneNode(true);</b>
+<b class="nc"><i>1120</i>&nbsp;        case 3:</b>
+<i>1121</i>&nbsp;            n.getParentNode().removeChild(n);
+<b class="nc"><i>1122</i>&nbsp;            return null;</b>
+<b class="nc"><i>1123</i>&nbsp;        default:</b>
+<b class="nc"><i>1124</i>&nbsp;            return null;</b>
+<i>1125</i>&nbsp;        }
+<i>1126</i>&nbsp;    }
+<i>1127</i>&nbsp;
+<i>1128</i>&nbsp;    private Node traversePartiallySelected(Node n, int how) {
+<b class="nc"><i>1129</i>&nbsp;        switch(how) {</b>
+<b class="nc"><i>1130</i>&nbsp;        case 1:</b>
+<b class="nc"><i>1131</i>&nbsp;        case 2:</b>
+<b class="nc"><i>1132</i>&nbsp;            return n.cloneNode(false);</b>
+<i>1133</i>&nbsp;        case 3:
+<b class="nc"><i>1134</i>&nbsp;            return null;</b>
+<b class="nc"><i>1135</i>&nbsp;        default:</b>
+<b class="nc"><i>1136</i>&nbsp;            return null;</b>
+<i>1137</i>&nbsp;        }
+<i>1138</i>&nbsp;    }
+<i>1139</i>&nbsp;
+<i>1140</i>&nbsp;    private Node traverseTextNode(Node n, boolean isLeft, int how) {
+<b class="nc"><i>1141</i>&nbsp;        String txtValue = n.getNodeValue();</b>
+<i>1142</i>&nbsp;        String newNodeValue;
+<b class="nc"><i>1143</i>&nbsp;        String oldNodeValue;</b>
+<b class="nc"><i>1144</i>&nbsp;        int newNode;</b>
+<b class="nc"><i>1145</i>&nbsp;        if(isLeft) {</b>
+<b class="nc"><i>1146</i>&nbsp;            newNode = this.getStartOffset();</b>
+<i>1147</i>&nbsp;            newNodeValue = txtValue.substring(newNode);
+<i>1148</i>&nbsp;            oldNodeValue = txtValue.substring(0, newNode);
+<b class="nc"><i>1149</i>&nbsp;        } else {</b>
+<b class="nc"><i>1150</i>&nbsp;            newNode = this.getEndOffset();</b>
+<b class="nc"><i>1151</i>&nbsp;            newNodeValue = txtValue.substring(0, newNode);</b>
+<b class="nc"><i>1152</i>&nbsp;            oldNodeValue = txtValue.substring(newNode);</b>
+<i>1153</i>&nbsp;        }
+<i>1154</i>&nbsp;
+<i>1155</i>&nbsp;        if(how != 2) {
+<b class="nc"><i>1156</i>&nbsp;            n.setNodeValue(oldNodeValue);</b>
+<b class="nc"><i>1157</i>&nbsp;        }</b>
+<b class="nc"><i>1158</i>&nbsp;</b>
+<i>1159</i>&nbsp;        if(how == 3) {
+<b class="nc"><i>1160</i>&nbsp;            return null;</b>
+<b class="nc"><i>1161</i>&nbsp;        } else {</b>
+<i>1162</i>&nbsp;            Node newNode1 = n.cloneNode(false);
+<b class="nc"><i>1163</i>&nbsp;            newNode1.setNodeValue(newNodeValue);</b>
+<i>1164</i>&nbsp;            return newNode1;
+<i>1165</i>&nbsp;        }
+<i>1166</i>&nbsp;    }
+<i>1167</i>&nbsp;
+<i>1168</i>&nbsp;    void checkIndex(Node refNode, int offset) throws DOMException {
+<i>1169</i>&nbsp;        if(offset &lt; 0) {
+<i>1170</i>&nbsp;            throw new DOMException((short)1, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INDEX_SIZE_ERR&quot;, (Object[])null));
+<i>1171</i>&nbsp;        } else {
+<i>1172</i>&nbsp;            short type = refNode.getNodeType();
+<i>1173</i>&nbsp;            if(type != 3 &amp;&amp; type != 4 &amp;&amp; type != 8 &amp;&amp; type != 7) {
+<i>1174</i>&nbsp;                if(offset &gt; refNode.getChildNodes().getLength()) {
+<i>1175</i>&nbsp;                    throw new DOMException((short)1, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INDEX_SIZE_ERR&quot;, (Object[])null));
+<i>1176</i>&nbsp;                }
+<i>1177</i>&nbsp;            } else if(offset &gt; refNode.getNodeValue().length()) {
+<i>1178</i>&nbsp;                throw new DOMException((short)1, DOMMessageFormatter.formatMessage(&quot;http://www.w3.org/dom/DOMTR&quot;, &quot;INDEX_SIZE_ERR&quot;, (Object[])null));
+<i>1179</i>&nbsp;            }
+<i>1180</i>&nbsp;
+<i>1181</i>&nbsp;        }
+<i>1182</i>&nbsp;    }
+<i>1183</i>&nbsp;
+<i>1184</i>&nbsp;    private Node getRootContainer(Node node) {
+<i>1185</i>&nbsp;        if(node == null) {
+<i>1186</i>&nbsp;            return null;
+<i>1187</i>&nbsp;        } else {
+<i>1188</i>&nbsp;            while(node.getParentNode() != null) {
+<i>1189</i>&nbsp;                node = node.getParentNode();
+<i>1190</i>&nbsp;            }
+<i>1191</i>&nbsp;
+<i>1192</i>&nbsp;            return node;
+<i>1193</i>&nbsp;        }
+<i>1194</i>&nbsp;    }
+<i>1195</i>&nbsp;
+<i>1196</i>&nbsp;    private boolean isLegalContainer(Node node) {
+<i>1197</i>&nbsp;        if(node == null) {
+<b class="nc"><i>1198</i>&nbsp;            return false;</b>
+<b class="nc"><i>1199</i>&nbsp;        } else {</b>
+<b class="nc"><i>1200</i>&nbsp;            while(node != null) {</b>
+<i>1201</i>&nbsp;                switch(node.getNodeType()) {
+<i>1202</i>&nbsp;                case 6:
+<b class="nc"><i>1203</i>&nbsp;                case 10:</b>
+<b class="nc"><i>1204</i>&nbsp;                case 12:</b>
+<i>1205</i>&nbsp;                    return false;
+<i>1206</i>&nbsp;                default:
+<b class="nc"><i>1207</i>&nbsp;                    node = node.getParentNode();</b>
+<i>1208</i>&nbsp;                }
+<i>1209</i>&nbsp;            }
+<b class="nc"><i>1210</i>&nbsp;</b>
+<b class="nc"><i>1211</i>&nbsp;            return true;</b>
+<i>1212</i>&nbsp;        }
+<i>1213</i>&nbsp;    }
+<b class="nc"><i>1214</i>&nbsp;</b>
+<i>1215</i>&nbsp;    private boolean hasLegalRootContainer(Node node) {
+<b class="nc"><i>1216</i>&nbsp;        if(node == null) {</b>
+<i>1217</i>&nbsp;            return false;
+<i>1218</i>&nbsp;        } else {
+<b class="nc"><i>1219</i>&nbsp;            Node rootContainer = this.getRootContainer(node);</b>
+<i>1220</i>&nbsp;            switch(rootContainer.getNodeType()) {
+<b class="nc"><i>1221</i>&nbsp;            case 2:</b>
+<b class="nc"><i>1222</i>&nbsp;            case 9:</b>
+<b class="nc"><i>1223</i>&nbsp;            case 11:</b>
+<b class="nc"><i>1224</i>&nbsp;                return true;</b>
+<i>1225</i>&nbsp;            default:
+<i>1226</i>&nbsp;                return false;
+<i>1227</i>&nbsp;            }
+<b class="nc"><i>1228</i>&nbsp;        }</b>
+<b class="nc"><i>1229</i>&nbsp;    }</b>
+<b class="nc"><i>1230</i>&nbsp;</b>
+<i>1231</i>&nbsp;    private boolean isLegalContainedNode(Node node) {
+<b class="nc"><i>1232</i>&nbsp;        if(node == null) {</b>
+<b class="nc"><i>1233</i>&nbsp;            return false;</b>
+<b class="nc"><i>1234</i>&nbsp;        } else {</b>
+<b class="nc"><i>1235</i>&nbsp;            switch(node.getNodeType()) {</b>
+<b class="nc"><i>1236</i>&nbsp;            case 2:</b>
+<b class="nc"><i>1237</i>&nbsp;            case 6:</b>
+<b class="nc"><i>1238</i>&nbsp;            case 9:</b>
+<i>1239</i>&nbsp;            case 11:
+<i>1240</i>&nbsp;            case 12:
+<b class="nc"><i>1241</i>&nbsp;                return false;</b>
+<b class="nc"><i>1242</i>&nbsp;            case 3:</b>
+<b class="nc"><i>1243</i>&nbsp;            case 4:</b>
+<i>1244</i>&nbsp;            case 5:
+<i>1245</i>&nbsp;            case 7:
+<i>1246</i>&nbsp;            case 8:
+<i>1247</i>&nbsp;            case 10:
+<i>1248</i>&nbsp;            default:
+<i>1249</i>&nbsp;                return true;
+<i>1250</i>&nbsp;            }
+<i>1251</i>&nbsp;        }
+<i>1252</i>&nbsp;    }
+<i>1253</i>&nbsp;
+<i>1254</i>&nbsp;    Node nextNode(Node node, boolean visitChildren) {
+<i>1255</i>&nbsp;        if(node == null) {
+<i>1256</i>&nbsp;            return null;
+<i>1257</i>&nbsp;        } else {
+<i>1258</i>&nbsp;            Node result;
+<i>1259</i>&nbsp;            if(visitChildren) {
+<i>1260</i>&nbsp;                result = node.getFirstChild();
+<i>1261</i>&nbsp;                if(result != null) {
+<i>1262</i>&nbsp;                    return result;
+<i>1263</i>&nbsp;                }
+<i>1264</i>&nbsp;            }
+<i>1265</i>&nbsp;
+<i>1266</i>&nbsp;            result = node.getNextSibling();
+<i>1267</i>&nbsp;            if(result != null) {
+<i>1268</i>&nbsp;                return result;
+<i>1269</i>&nbsp;            } else {
+<i>1270</i>&nbsp;                for(Node parent = node.getParentNode(); parent != null &amp;&amp; parent != this.fDocument; parent = parent.getParentNode()) {
+<i>1271</i>&nbsp;                    result = parent.getNextSibling();
+<i>1272</i>&nbsp;                    if(result != null) {
+<i>1273</i>&nbsp;                        return result;
+<i>1274</i>&nbsp;                    }
+<i>1275</i>&nbsp;                }
+<i>1276</i>&nbsp;
+<i>1277</i>&nbsp;                return null;
+<i>1278</i>&nbsp;            }
+<i>1279</i>&nbsp;        }
+<i>1280</i>&nbsp;    }
+<i>1281</i>&nbsp;
+<i>1282</i>&nbsp;    boolean isAncestorOf(Node a, Node b) {
+<i>1283</i>&nbsp;        for(Node node = b; node != null; node = node.getParentNode()) {
+<b class="nc"><i>1284</i>&nbsp;            if(node == a) {</b>
+<b class="nc"><i>1285</i>&nbsp;                return true;</b>
+<b class="nc"><i>1286</i>&nbsp;            }</b>
+<b class="nc"><i>1287</i>&nbsp;        }</b>
+<b class="nc"><i>1288</i>&nbsp;</b>
+<b class="nc"><i>1289</i>&nbsp;        return false;</b>
+<i>1290</i>&nbsp;    }
+<b class="nc"><i>1291</i>&nbsp;</b>
+<b class="nc"><i>1292</i>&nbsp;    int indexOf(Node child, Node parent) {</b>
+<b class="nc"><i>1293</i>&nbsp;        if(child.getParentNode() != parent) {</b>
+<i>1294</i>&nbsp;            return -1;
+<i>1295</i>&nbsp;        } else {
+<i>1296</i>&nbsp;            int i = 0;
+<b class="nc"><i>1297</i>&nbsp;</b>
+<i>1298</i>&nbsp;            for(Node node = parent.getFirstChild(); node != child; node = node.getNextSibling()) {
+<b class="nc"><i>1299</i>&nbsp;                ++i;</b>
+<b class="nc"><i>1300</i>&nbsp;            }</b>
+<i>1301</i>&nbsp;
+<b class="nc"><i>1302</i>&nbsp;            return i;</b>
+<i>1303</i>&nbsp;        }
+<i>1304</i>&nbsp;    }
+<b class="nc"><i>1305</i>&nbsp;</b>
+<b class="nc"><i>1306</i>&nbsp;    private Node getSelectedNode(Node container, int offset) {</b>
+<i>1307</i>&nbsp;        if(container.getNodeType() == 3) {
+<b class="nc"><i>1308</i>&nbsp;            return container;</b>
+<b class="nc"><i>1309</i>&nbsp;        } else if(offset &lt; 0) {</b>
+<b class="nc"><i>1310</i>&nbsp;            return container;</b>
+<b class="nc"><i>1311</i>&nbsp;        } else {</b>
+<b class="nc"><i>1312</i>&nbsp;            Node child;</b>
+<b class="nc"><i>1313</i>&nbsp;            for(child = container.getFirstChild(); child != null &amp;&amp; offset &gt; 0; child = child.getNextSibling()) {</b>
+<b class="nc"><i>1314</i>&nbsp;                --offset;</b>
+<i>1315</i>&nbsp;            }
+<i>1316</i>&nbsp;
+<b class="nc"><i>1317</i>&nbsp;            return child != null?child:container;</b>
+<i>1318</i>&nbsp;        }
+<b class="nc"><i>1319</i>&nbsp;    }</b>
+<b class="nc"><i>1320</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

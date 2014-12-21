@@ -1,0 +1,211 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AquaInternalFrameManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.apple.laf</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AquaInternalFrameManager (com.apple.laf)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AquaInternalFrameManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 49)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.apple.laf;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.apple.laf.AquaInternalFramePaneUI;
+<i>9</i>&nbsp;import java.awt.Container;
+<i>10</i>&nbsp;import java.awt.Rectangle;
+<i>11</i>&nbsp;import java.beans.PropertyVetoException;
+<i>12</i>&nbsp;import java.util.Vector;
+<i>13</i>&nbsp;import javax.swing.DefaultDesktopManager;
+<i>14</i>&nbsp;import javax.swing.JInternalFrame;
+<i>15</i>&nbsp;import javax.swing.JInternalFrame.JDesktopIcon;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;public class AquaInternalFrameManager extends DefaultDesktopManager {
+<i>18</i>&nbsp;    JInternalFrame fCurrentFrame;
+<i>19</i>&nbsp;    JInternalFrame fInitialFrame;
+<i>20</i>&nbsp;    AquaInternalFramePaneUI fCurrentPaneUI;
+<i>21</i>&nbsp;    Vector&lt;JInternalFrame&gt; fChildFrames = new Vector(1);
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public AquaInternalFrameManager() {
+<i>24</i>&nbsp;    }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public void closeFrame(JInternalFrame var1) {
+<i>27</i>&nbsp;        if(var1 == this.fCurrentFrame) {
+<i>28</i>&nbsp;            this.activateNextFrame();
+<i>29</i>&nbsp;        }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;        this.fChildFrames.removeElement(var1);
+<i>32</i>&nbsp;        super.closeFrame(var1);
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public void deiconifyFrame(JInternalFrame var1) {
+<b class="nc"><i>36</i>&nbsp;        JDesktopIcon var2 = var1.getDesktopIcon();</b>
+<i>37</i>&nbsp;        var1.reshape(var2.getX(), var2.getY(), var1.getWidth(), var1.getHeight());
+<i>38</i>&nbsp;        super.deiconifyFrame(var1);
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    void addIcon(Container var1, JDesktopIcon var2) {
+<i>42</i>&nbsp;        var1.add(var2);
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public void iconifyFrame(JInternalFrame var1) {
+<i>46</i>&nbsp;        JDesktopIcon var2 = var1.getDesktopIcon();
+<i>47</i>&nbsp;        Rectangle var4 = this.getBoundsForIconOf(var1);
+<i>48</i>&nbsp;        var2.setBounds(var4.x, var4.y, var4.width, var4.height);
+<i>49</i>&nbsp;        Container var3 = var1.getParent();
+<i>50</i>&nbsp;        if(var3 != null) {
+<i>51</i>&nbsp;            var3.remove(var1);
+<i>52</i>&nbsp;            this.addIcon(var3, var2);
+<b class="nc"><i>53</i>&nbsp;            var3.repaint(var1.getX(), var1.getY(), var1.getWidth(), var1.getHeight());</b>
+<i>54</i>&nbsp;        }
+<i>55</i>&nbsp;    }
+<b class="nc"><i>56</i>&nbsp;</b>
+<b class="nc"><i>57</i>&nbsp;    public void activateFrame(JInternalFrame var1) {</b>
+<i>58</i>&nbsp;        try {
+<b class="nc"><i>59</i>&nbsp;            if(var1 != null) {</b>
+<b class="nc"><i>60</i>&nbsp;                super.activateFrame(var1);</b>
+<i>61</i>&nbsp;            }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;            if(this.fChildFrames.indexOf(var1) == -1) {
+<i>64</i>&nbsp;                this.fChildFrames.addElement(var1);
+<i>65</i>&nbsp;            }
+<b class="nc"><i>66</i>&nbsp;</b>
+<i>67</i>&nbsp;            if(this.fCurrentFrame != null &amp;&amp; var1 != this.fCurrentFrame &amp;&amp; this.fCurrentFrame.isSelected()) {
+<i>68</i>&nbsp;                this.fCurrentFrame.setSelected(false);
+<b class="nc"><i>69</i>&nbsp;            }</b>
+<b class="nc"><i>70</i>&nbsp;</b>
+<i>71</i>&nbsp;            if(var1 != null &amp;&amp; !var1.isSelected()) {
+<i>72</i>&nbsp;                var1.setSelected(true);
+<i>73</i>&nbsp;            }
+<b class="nc"><i>74</i>&nbsp;</b>
+<i>75</i>&nbsp;            this.fCurrentFrame = var1;
+<i>76</i>&nbsp;        } catch (PropertyVetoException var3) {
+<i>77</i>&nbsp;            ;
+<i>78</i>&nbsp;        }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private void switchFrame(boolean var1) {
+<b class="nc"><i>83</i>&nbsp;        if(this.fCurrentFrame == null) {</b>
+<i>84</i>&nbsp;            if(this.fInitialFrame != null) {
+<b class="nc"><i>85</i>&nbsp;                this.activateFrame(this.fInitialFrame);</b>
+<b class="nc"><i>86</i>&nbsp;            }</b>
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;        } else {</b>
+<b class="nc"><i>89</i>&nbsp;            int var2 = this.fChildFrames.size();</b>
+<i>90</i>&nbsp;            if(var2 &gt; 1) {
+<b class="nc"><i>91</i>&nbsp;                int var3 = this.fChildFrames.indexOf(this.fCurrentFrame);</b>
+<b class="nc"><i>92</i>&nbsp;                if(var3 == -1) {</b>
+<b class="nc"><i>93</i>&nbsp;                    this.fCurrentFrame = null;</b>
+<i>94</i>&nbsp;                } else {
+<i>95</i>&nbsp;                    int var4;
+<i>96</i>&nbsp;                    if(var1) {
+<i>97</i>&nbsp;                        var4 = var3 + 1;
+<i>98</i>&nbsp;                        if(var4 == var2) {
+<b class="nc"><i>99</i>&nbsp;                            var4 = 0;</b>
+<i>100</i>&nbsp;                        }
+<i>101</i>&nbsp;                    } else {
+<b class="nc"><i>102</i>&nbsp;                        var4 = var3 - 1;</b>
+<b class="nc"><i>103</i>&nbsp;                        if(var4 == -1) {</b>
+<i>104</i>&nbsp;                            var4 = var2 - 1;
+<i>105</i>&nbsp;                        }
+<b class="nc"><i>106</i>&nbsp;                    }</b>
+<b class="nc"><i>107</i>&nbsp;</b>
+<b class="nc"><i>108</i>&nbsp;                    JInternalFrame var5 = (JInternalFrame)this.fChildFrames.elementAt(var4);</b>
+<i>109</i>&nbsp;                    this.activateFrame(var5);
+<i>110</i>&nbsp;                    this.fCurrentFrame = var5;
+<i>111</i>&nbsp;                }
+<b class="nc"><i>112</i>&nbsp;            }</b>
+<b class="nc"><i>113</i>&nbsp;        }</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;    public void activateNextFrame() {</b>
+<b class="nc"><i>117</i>&nbsp;        this.switchFrame(true);</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public void activateNextFrame(JInternalFrame var1) {
+<b class="nc"><i>121</i>&nbsp;        this.fInitialFrame = var1;</b>
+<i>122</i>&nbsp;        this.switchFrame(true);
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public void activatePreviousFrame() {
+<i>126</i>&nbsp;        this.switchFrame(false);
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<b class="nc"><i>128</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,925 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UnionGen</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.corba.se.idl.toJavaPortable</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UnionGen (com.sun.tools.corba.se.idl.toJavaPortable)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UnionGen</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 535)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.corba.se.idl.toJavaPortable;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.corba.se.idl.EnumEntry;
+<i>9</i>&nbsp;import com.sun.tools.corba.se.idl.GenFileStream;
+<i>10</i>&nbsp;import com.sun.tools.corba.se.idl.PrimitiveEntry;
+<i>11</i>&nbsp;import com.sun.tools.corba.se.idl.SequenceEntry;
+<i>12</i>&nbsp;import com.sun.tools.corba.se.idl.StringEntry;
+<i>13</i>&nbsp;import com.sun.tools.corba.se.idl.SymtabEntry;
+<i>14</i>&nbsp;import com.sun.tools.corba.se.idl.TypedefEntry;
+<i>15</i>&nbsp;import com.sun.tools.corba.se.idl.UnionBranch;
+<i>16</i>&nbsp;import com.sun.tools.corba.se.idl.UnionEntry;
+<i>17</i>&nbsp;import com.sun.tools.corba.se.idl.constExpr.EvaluationException;
+<i>18</i>&nbsp;import com.sun.tools.corba.se.idl.constExpr.Expression;
+<i>19</i>&nbsp;import com.sun.tools.corba.se.idl.toJavaPortable.Compile;
+<i>20</i>&nbsp;import com.sun.tools.corba.se.idl.toJavaPortable.Factories;
+<i>21</i>&nbsp;import com.sun.tools.corba.se.idl.toJavaPortable.JavaGenerator;
+<i>22</i>&nbsp;import com.sun.tools.corba.se.idl.toJavaPortable.TCOffsets;
+<i>23</i>&nbsp;import com.sun.tools.corba.se.idl.toJavaPortable.Util;
+<i>24</i>&nbsp;import java.io.PrintWriter;
+<i>25</i>&nbsp;import java.util.Enumeration;
+<i>26</i>&nbsp;import java.util.Hashtable;
+<i>27</i>&nbsp;import java.util.Vector;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;public class UnionGen implements com.sun.tools.corba.se.idl.UnionGen, JavaGenerator {
+<i>30</i>&nbsp;    protected Hashtable symbolTable = null;
+<i>31</i>&nbsp;    protected UnionEntry u = null;
+<i>32</i>&nbsp;    protected PrintWriter stream = null;
+<i>33</i>&nbsp;    protected SymtabEntry utype = null;
+<i>34</i>&nbsp;    protected boolean unionIsEnum;
+<i>35</i>&nbsp;    protected String typePackage = &quot;&quot;;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public UnionGen() {
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public void generate(Hashtable var1, UnionEntry var2, PrintWriter var3) {
+<i>41</i>&nbsp;        this.symbolTable = var1;
+<i>42</i>&nbsp;        this.u = var2;
+<i>43</i>&nbsp;        this.init();
+<i>44</i>&nbsp;        this.openStream();
+<i>45</i>&nbsp;        if(this.stream != null) {
+<i>46</i>&nbsp;            this.generateHelper();
+<i>47</i>&nbsp;            this.generateHolder();
+<i>48</i>&nbsp;            this.writeHeading();
+<i>49</i>&nbsp;            this.writeBody();
+<i>50</i>&nbsp;            this.writeClosing();
+<i>51</i>&nbsp;            this.closeStream();
+<i>52</i>&nbsp;            this.generateContainedTypes();
+<i>53</i>&nbsp;        }
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    protected void init() {
+<i>57</i>&nbsp;        this.utype = Util.typeOf(this.u.type());
+<i>58</i>&nbsp;        this.unionIsEnum = this.utype instanceof EnumEntry;
+<b class="nc"><i>59</i>&nbsp;    }</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    protected void openStream() {
+<i>62</i>&nbsp;        this.stream = Util.stream(this.u, &quot;.java&quot;);
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    protected void generateHelper() {
+<i>66</i>&nbsp;        ((Factories)Compile.compiler.factories()).helper().generate(this.symbolTable, this.u);
+<b class="nc"><i>67</i>&nbsp;    }</b>
+<b class="nc"><i>68</i>&nbsp;</b>
+<b class="nc"><i>69</i>&nbsp;    protected void generateHolder() {</b>
+<i>70</i>&nbsp;        ((Factories)Compile.compiler.factories()).holder().generate(this.symbolTable, this.u);
+<b class="nc"><i>71</i>&nbsp;    }</b>
+<b class="nc"><i>72</i>&nbsp;</b>
+<i>73</i>&nbsp;    protected void writeHeading() {
+<b class="nc"><i>74</i>&nbsp;        if(this.unionIsEnum) {</b>
+<b class="nc"><i>75</i>&nbsp;            this.typePackage = Util.javaQualifiedName(this.utype) + &#39;.&#39;;</b>
+<b class="nc"><i>76</i>&nbsp;        } else {</b>
+<b class="nc"><i>77</i>&nbsp;            this.typePackage = &quot;&quot;;</b>
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<b class="nc"><i>79</i>&nbsp;</b>
+<b class="nc"><i>80</i>&nbsp;        Util.writePackage(this.stream, this.u);</b>
+<i>81</i>&nbsp;        Util.writeProlog(this.stream, ((GenFileStream)this.stream).name());
+<i>82</i>&nbsp;        String var1 = this.u.name();
+<i>83</i>&nbsp;        this.stream.println(&quot;public final class &quot; + this.u.name() + &quot; implements org.omg.CORBA.portable.IDLEntity&quot;);
+<i>84</i>&nbsp;        this.stream.println(&quot;{&quot;);
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    protected void writeBody() {
+<b class="nc"><i>88</i>&nbsp;        int var1 = this.u.branches().size() + 1;</b>
+<b class="nc"><i>89</i>&nbsp;        Enumeration var2 = this.u.branches().elements();</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        int var3;
+<i>92</i>&nbsp;        UnionBranch var4;
+<i>93</i>&nbsp;        for(var3 = 0; var2.hasMoreElements(); ++var3) {
+<i>94</i>&nbsp;            var4 = (UnionBranch)var2.nextElement();
+<i>95</i>&nbsp;            Util.fillInfo(var4.typedef);
+<i>96</i>&nbsp;            this.stream.println(&quot;  private &quot; + Util.javaName(var4.typedef) + &quot; ___&quot; + var4.typedef.name() + &quot;;&quot;);
+<b class="nc"><i>97</i>&nbsp;        }</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        this.stream.println(&quot;  private &quot; + Util.javaName(this.utype) + &quot; __discriminator;&quot;);
+<i>100</i>&nbsp;        this.stream.println(&quot;  private boolean __uninitialized = true;&quot;);
+<i>101</i>&nbsp;        this.stream.println();
+<i>102</i>&nbsp;        this.stream.println(&quot;  public &quot; + this.u.name() + &quot; ()&quot;);
+<i>103</i>&nbsp;        this.stream.println(&quot;  {&quot;);
+<i>104</i>&nbsp;        this.stream.println(&quot;  }&quot;);
+<b class="nc"><i>105</i>&nbsp;        this.stream.println();</b>
+<i>106</i>&nbsp;        this.stream.println(&quot;  public &quot; + Util.javaName(this.utype) + &quot; &quot; + this.safeName(this.u, &quot;discriminator&quot;) + &quot; ()&quot;);
+<i>107</i>&nbsp;        this.stream.println(&quot;  {&quot;);
+<i>108</i>&nbsp;        this.stream.println(&quot;    if (__uninitialized)&quot;);
+<i>109</i>&nbsp;        this.stream.println(&quot;      throw new org.omg.CORBA.BAD_OPERATION ();&quot;);
+<i>110</i>&nbsp;        this.stream.println(&quot;    return __discriminator;&quot;);
+<i>111</i>&nbsp;        this.stream.println(&quot;  }&quot;);
+<i>112</i>&nbsp;        var2 = this.u.branches().elements();
+<b class="nc"><i>113</i>&nbsp;        var3 = 0;</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;        while(var2.hasMoreElements()) {
+<i>116</i>&nbsp;            var4 = (UnionBranch)var2.nextElement();
+<i>117</i>&nbsp;            this.writeBranchMethods(this.stream, this.u, var4, var3++);
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;        if(this.u.defaultBranch() == null &amp;&amp; !this.coversAll(this.u)) {
+<i>121</i>&nbsp;            this.stream.println();
+<b class="nc"><i>122</i>&nbsp;            this.stream.println(&quot;  public void _default ()&quot;);</b>
+<b class="nc"><i>123</i>&nbsp;            this.stream.println(&quot;  {&quot;);</b>
+<i>124</i>&nbsp;            this.stream.println(&quot;    __discriminator = &quot; + this.defaultDiscriminator(this.u) + &#39;;&#39;);
+<b class="nc"><i>125</i>&nbsp;            this.stream.println(&quot;    __uninitialized = false;&quot;);</b>
+<i>126</i>&nbsp;            this.stream.println(&quot;  }&quot;);
+<b class="nc"><i>127</i>&nbsp;            this.stream.println();</b>
+<b class="nc"><i>128</i>&nbsp;            this.stream.println(&quot;  public void _default (&quot; + Util.javaName(this.utype) + &quot; discriminator)&quot;);</b>
+<i>129</i>&nbsp;            this.stream.println(&quot;  {&quot;);
+<b class="nc"><i>130</i>&nbsp;            this.stream.println(&quot;    verifyDefault( discriminator ) ;&quot;);</b>
+<b class="nc"><i>131</i>&nbsp;            this.stream.println(&quot;    __discriminator = discriminator ;&quot;);</b>
+<b class="nc"><i>132</i>&nbsp;            this.stream.println(&quot;    __uninitialized = false;&quot;);</b>
+<i>133</i>&nbsp;            this.stream.println(&quot;  }&quot;);
+<i>134</i>&nbsp;            this.writeVerifyDefault();
+<i>135</i>&nbsp;        }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;        this.stream.println();
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    protected void writeClosing() {
+<b class="nc"><i>141</i>&nbsp;        this.stream.println(&quot;} // class &quot; + this.u.name());</b>
+<b class="nc"><i>142</i>&nbsp;    }</b>
+<b class="nc"><i>143</i>&nbsp;</b>
+<b class="nc"><i>144</i>&nbsp;    protected void closeStream() {</b>
+<i>145</i>&nbsp;        this.stream.close();
+<b class="nc"><i>146</i>&nbsp;    }</b>
+<b class="nc"><i>147</i>&nbsp;</b>
+<i>148</i>&nbsp;    protected void generateContainedTypes() {
+<i>149</i>&nbsp;        Enumeration var1 = this.u.contained().elements();
+<b class="nc"><i>150</i>&nbsp;</b>
+<b class="nc"><i>151</i>&nbsp;        while(var1.hasMoreElements()) {</b>
+<b class="nc"><i>152</i>&nbsp;            SymtabEntry var2 = (SymtabEntry)var1.nextElement();</b>
+<b class="nc"><i>153</i>&nbsp;            if(!(var2 instanceof SequenceEntry)) {</b>
+<b class="nc"><i>154</i>&nbsp;                var2.generate(this.symbolTable, this.stream);</b>
+<i>155</i>&nbsp;            }
+<i>156</i>&nbsp;        }
+<b class="nc"><i>157</i>&nbsp;</b>
+<b class="nc"><i>158</i>&nbsp;    }</b>
+<b class="nc"><i>159</i>&nbsp;</b>
+<b class="nc"><i>160</i>&nbsp;    private void writeVerifyDefault() {</b>
+<i>161</i>&nbsp;        Vector var1 = this.vectorizeLabels(this.u.branches(), true);
+<i>162</i>&nbsp;        if(Util.javaName(this.utype).equals(&quot;boolean&quot;)) {
+<b class="nc"><i>163</i>&nbsp;            this.stream.println(&quot;&quot;);</b>
+<b class="nc"><i>164</i>&nbsp;            this.stream.println(&quot;  private void verifyDefault (boolean discriminator)&quot;);</b>
+<b class="nc"><i>165</i>&nbsp;            this.stream.println(&quot;  {&quot;);</b>
+<b class="nc"><i>166</i>&nbsp;            if(var1.contains(&quot;true&quot;)) {</b>
+<b class="nc"><i>167</i>&nbsp;                this.stream.println(&quot;    if ( discriminator )&quot;);</b>
+<b class="nc"><i>168</i>&nbsp;            } else {</b>
+<b class="nc"><i>169</i>&nbsp;                this.stream.println(&quot;    if ( !discriminator )&quot;);</b>
+<i>170</i>&nbsp;            }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;            this.stream.println(&quot;        throw new org.omg.CORBA.BAD_OPERATION();&quot;);
+<i>173</i>&nbsp;            this.stream.println(&quot;  }&quot;);
+<i>174</i>&nbsp;        } else {
+<b class="nc"><i>175</i>&nbsp;            this.stream.println(&quot;&quot;);</b>
+<b class="nc"><i>176</i>&nbsp;            this.stream.println(&quot;  private void verifyDefault( &quot; + Util.javaName(this.utype) + &quot; value )&quot;);</b>
+<b class="nc"><i>177</i>&nbsp;            this.stream.println(&quot;  {&quot;);</b>
+<i>178</i>&nbsp;            if(this.unionIsEnum) {
+<b class="nc"><i>179</i>&nbsp;                this.stream.println(&quot;    switch (value.value()) {&quot;);</b>
+<b class="nc"><i>180</i>&nbsp;            } else {</b>
+<b class="nc"><i>181</i>&nbsp;                this.stream.println(&quot;    switch (value) {&quot;);</b>
+<b class="nc"><i>182</i>&nbsp;            }</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;            Enumeration var2 = var1.elements();</b>
+<b class="nc"><i>185</i>&nbsp;</b>
+<b class="nc"><i>186</i>&nbsp;            while(var2.hasMoreElements()) {</b>
+<b class="nc"><i>187</i>&nbsp;                String var3 = (String)((String)var2.nextElement());</b>
+<b class="nc"><i>188</i>&nbsp;                this.stream.println(&quot;      case &quot; + var3 + &quot;:&quot;);</b>
+<b class="nc"><i>189</i>&nbsp;            }</b>
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;            this.stream.println(&quot;        throw new org.omg.CORBA.BAD_OPERATION() ;&quot;);</b>
+<b class="nc"><i>192</i>&nbsp;            this.stream.println(&quot;&quot;);</b>
+<i>193</i>&nbsp;            this.stream.println(&quot;      default:&quot;);
+<b class="nc"><i>194</i>&nbsp;            this.stream.println(&quot;        return;&quot;);</b>
+<b class="nc"><i>195</i>&nbsp;            this.stream.println(&quot;    }&quot;);</b>
+<b class="nc"><i>196</i>&nbsp;            this.stream.println(&quot;  }&quot;);</b>
+<b class="nc"><i>197</i>&nbsp;        }</b>
+<b class="nc"><i>198</i>&nbsp;    }</b>
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;    private String defaultDiscriminator(UnionEntry var1) {</b>
+<i>201</i>&nbsp;        Vector var2 = this.vectorizeLabels(var1.branches(), false);
+<b class="nc"><i>202</i>&nbsp;        String var3 = null;</b>
+<i>203</i>&nbsp;        SymtabEntry var4 = Util.typeOf(var1.type());
+<i>204</i>&nbsp;        if(var4 instanceof PrimitiveEntry &amp;&amp; var4.name().equals(&quot;boolean&quot;)) {
+<i>205</i>&nbsp;            if(var2.contains(&quot;true&quot;)) {
+<i>206</i>&nbsp;                var3 = &quot;false&quot;;
+<i>207</i>&nbsp;            } else {
+<i>208</i>&nbsp;                var3 = &quot;true&quot;;
+<i>209</i>&nbsp;            }
+<b class="nc"><i>210</i>&nbsp;        } else {</b>
+<i>211</i>&nbsp;            int var5;
+<i>212</i>&nbsp;            if(var4.name().equals(&quot;char&quot;)) {
+<i>213</i>&nbsp;                var5 = 0;
+<i>214</i>&nbsp;                String var6 = &quot;\&#39;\\u0000\&#39;&quot;;
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;                while(var5 != &#39;\uffff&#39; &amp;&amp; var2.contains(var6)) {
+<i>217</i>&nbsp;                    ++var5;
+<b class="nc"><i>218</i>&nbsp;                    if(var5 / 16 == 0) {</b>
+<i>219</i>&nbsp;                        var6 = &quot;\&#39;\\u000&quot; + var5 + &quot;\&#39;&quot;;
+<i>220</i>&nbsp;                    } else if(var5 / 256 == 0) {
+<i>221</i>&nbsp;                        var6 = &quot;\\u00&quot; + var5 + &quot;\&#39;&quot;;
+<i>222</i>&nbsp;                    } else if(var5 / 4096 == 0) {
+<i>223</i>&nbsp;                        var6 = &quot;\\u0&quot; + var5 + &quot;\&#39;&quot;;
+<i>224</i>&nbsp;                    } else {
+<i>225</i>&nbsp;                        var6 = &quot;\\u&quot; + var5 + &quot;\&#39;&quot;;
+<b class="nc"><i>226</i>&nbsp;                    }</b>
+<b class="nc"><i>227</i>&nbsp;                }</b>
+<i>228</i>&nbsp;
+<b class="nc"><i>229</i>&nbsp;                var3 = var6;</b>
+<i>230</i>&nbsp;            } else if(var4 instanceof EnumEntry) {
+<i>231</i>&nbsp;                Enumeration var9 = var2.elements();
+<i>232</i>&nbsp;                EnumEntry var11 = (EnumEntry)var4;
+<i>233</i>&nbsp;                Vector var7 = (Vector)var11.elements().clone();
+<i>234</i>&nbsp;
+<b class="nc"><i>235</i>&nbsp;                while(var9.hasMoreElements()) {</b>
+<b class="nc"><i>236</i>&nbsp;                    var7.removeElement(var9.nextElement());</b>
+<b class="nc"><i>237</i>&nbsp;                }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;                if(var7.size() == 0) {
+<i>240</i>&nbsp;                    var3 = this.typePackage + (String)var11.elements().lastElement();
+<i>241</i>&nbsp;                } else {
+<b class="nc"><i>242</i>&nbsp;                    var3 = this.typePackage + (String)var7.firstElement();</b>
+<i>243</i>&nbsp;                }
+<b class="nc"><i>244</i>&nbsp;            } else {</b>
+<b class="nc"><i>245</i>&nbsp;                short var8;</b>
+<b class="nc"><i>246</i>&nbsp;                if(var4.name().equals(&quot;octet&quot;)) {</b>
+<b class="nc"><i>247</i>&nbsp;                    for(var8 = -128; var8 != 127 &amp;&amp; var2.contains(Integer.toString(var8)); ++var8) {</b>
+<b class="nc"><i>248</i>&nbsp;                        ;</b>
+<b class="nc"><i>249</i>&nbsp;                    }</b>
+<i>250</i>&nbsp;
+<b class="nc"><i>251</i>&nbsp;                    var3 = Integer.toString(var8);</b>
+<b class="nc"><i>252</i>&nbsp;                } else if(var4.name().equals(&quot;short&quot;)) {</b>
+<b class="nc"><i>253</i>&nbsp;                    for(var8 = -32768; var8 != 32767 &amp;&amp; var2.contains(Integer.toString(var8)); ++var8) {</b>
+<i>254</i>&nbsp;                        ;
+<i>255</i>&nbsp;                    }
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;                    var3 = Integer.toString(var8);</b>
+<b class="nc"><i>258</i>&nbsp;                } else if(var4.name().equals(&quot;long&quot;)) {</b>
+<i>259</i>&nbsp;                    for(var5 = -2147483648; var5 != 2147483647 &amp;&amp; var2.contains(Integer.toString(var5)); ++var5) {
+<b class="nc"><i>260</i>&nbsp;                        ;</b>
+<i>261</i>&nbsp;                    }
+<b class="nc"><i>262</i>&nbsp;</b>
+<b class="nc"><i>263</i>&nbsp;                    var3 = Integer.toString(var5);</b>
+<i>264</i>&nbsp;                } else {
+<b class="nc"><i>265</i>&nbsp;                    long var10;</b>
+<i>266</i>&nbsp;                    if(var4.name().equals(&quot;long long&quot;)) {
+<b class="nc"><i>267</i>&nbsp;                        for(var10 = -9223372036854775808L; var10 != 9223372036854775807L &amp;&amp; var2.contains(Long.toString(var10)); ++var10) {</b>
+<b class="nc"><i>268</i>&nbsp;                            ;</b>
+<b class="nc"><i>269</i>&nbsp;                        }</b>
+<b class="nc"><i>270</i>&nbsp;</b>
+<b class="nc"><i>271</i>&nbsp;                        var3 = Long.toString(var10);</b>
+<i>272</i>&nbsp;                    } else if(var4.name().equals(&quot;unsigned short&quot;)) {
+<b class="nc"><i>273</i>&nbsp;                        for(var8 = 0; var8 != 32767 &amp;&amp; var2.contains(Integer.toString(var8)); ++var8) {</b>
+<b class="nc"><i>274</i>&nbsp;                            ;</b>
+<b class="nc"><i>275</i>&nbsp;                        }</b>
+<b class="nc"><i>276</i>&nbsp;</b>
+<b class="nc"><i>277</i>&nbsp;                        var3 = Integer.toString(var8);</b>
+<b class="nc"><i>278</i>&nbsp;                    } else if(var4.name().equals(&quot;unsigned long&quot;)) {</b>
+<i>279</i>&nbsp;                        for(var5 = 0; var5 != 2147483647 &amp;&amp; var2.contains(Integer.toString(var5)); ++var5) {
+<i>280</i>&nbsp;                            ;
+<i>281</i>&nbsp;                        }
+<i>282</i>&nbsp;
+<b class="nc"><i>283</i>&nbsp;                        var3 = Integer.toString(var5);</b>
+<b class="nc"><i>284</i>&nbsp;                    } else if(var4.name().equals(&quot;unsigned long long&quot;)) {</b>
+<b class="nc"><i>285</i>&nbsp;                        for(var10 = 0L; var10 != 9223372036854775807L &amp;&amp; var2.contains(Long.toString(var10)); ++var10) {</b>
+<b class="nc"><i>286</i>&nbsp;                            ;</b>
+<i>287</i>&nbsp;                        }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;                        var3 = Long.toString(var10);
+<b class="nc"><i>290</i>&nbsp;                    }</b>
+<b class="nc"><i>291</i>&nbsp;                }</b>
+<i>292</i>&nbsp;            }
+<b class="nc"><i>293</i>&nbsp;        }</b>
+<b class="nc"><i>294</i>&nbsp;</b>
+<i>295</i>&nbsp;        return var3;
+<i>296</i>&nbsp;    }
+<b class="nc"><i>297</i>&nbsp;</b>
+<b class="nc"><i>298</i>&nbsp;    private Vector vectorizeLabels(Vector var1, boolean var2) {</b>
+<b class="nc"><i>299</i>&nbsp;        Vector var3 = new Vector();</b>
+<b class="nc"><i>300</i>&nbsp;        Enumeration var4 = var1.elements();</b>
+<b class="nc"><i>301</i>&nbsp;</b>
+<b class="nc"><i>302</i>&nbsp;        while(var4.hasMoreElements()) {</b>
+<b class="nc"><i>303</i>&nbsp;            UnionBranch var5 = (UnionBranch)var4.nextElement();</b>
+<b class="nc"><i>304</i>&nbsp;</b>
+<b class="nc"><i>305</i>&nbsp;            String var8;</b>
+<i>306</i>&nbsp;            for(Enumeration var6 = var5.labels.elements(); var6.hasMoreElements(); var3.addElement(var8)) {
+<b class="nc"><i>307</i>&nbsp;                Expression var7 = (Expression)var6.nextElement();</b>
+<b class="nc"><i>308</i>&nbsp;                if(this.unionIsEnum) {</b>
+<b class="nc"><i>309</i>&nbsp;                    if(var2) {</b>
+<b class="nc"><i>310</i>&nbsp;                        var8 = this.typePackage + &quot;_&quot; + Util.parseExpression(var7);</b>
+<b class="nc"><i>311</i>&nbsp;                    } else {</b>
+<b class="nc"><i>312</i>&nbsp;                        var8 = this.typePackage + Util.parseExpression(var7);</b>
+<i>313</i>&nbsp;                    }
+<i>314</i>&nbsp;                } else {
+<b class="nc"><i>315</i>&nbsp;                    var8 = Util.parseExpression(var7);</b>
+<b class="nc"><i>316</i>&nbsp;                }</b>
+<i>317</i>&nbsp;            }
+<i>318</i>&nbsp;        }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;        return var3;
+<i>321</i>&nbsp;    }
+<b class="nc"><i>322</i>&nbsp;</b>
+<b class="nc"><i>323</i>&nbsp;    private String safeName(UnionEntry var1, String var2) {</b>
+<i>324</i>&nbsp;        Enumeration var3 = var1.branches().elements();
+<b class="nc"><i>325</i>&nbsp;</b>
+<b class="nc"><i>326</i>&nbsp;        while(var3.hasMoreElements()) {</b>
+<b class="nc"><i>327</i>&nbsp;            if(((UnionBranch)var3.nextElement()).typedef.name().equals(var2)) {</b>
+<b class="nc"><i>328</i>&nbsp;                var2 = &#39;_&#39; + var2;</b>
+<b class="nc"><i>329</i>&nbsp;                break;</b>
+<b class="nc"><i>330</i>&nbsp;            }</b>
+<b class="nc"><i>331</i>&nbsp;        }</b>
+<b class="nc"><i>332</i>&nbsp;</b>
+<b class="nc"><i>333</i>&nbsp;        return var2;</b>
+<b class="nc"><i>334</i>&nbsp;    }</b>
+<b class="nc"><i>335</i>&nbsp;</b>
+<b class="nc"><i>336</i>&nbsp;    private boolean coversAll(UnionEntry var1) {</b>
+<b class="nc"><i>337</i>&nbsp;        SymtabEntry var2 = Util.typeOf(var1.type());</b>
+<b class="nc"><i>338</i>&nbsp;        boolean var3 = false;</b>
+<b class="nc"><i>339</i>&nbsp;        if(var2.name().equals(&quot;boolean&quot;)) {</b>
+<b class="nc"><i>340</i>&nbsp;            if(var1.branches().size() == 2) {</b>
+<b class="nc"><i>341</i>&nbsp;                var3 = true;</b>
+<b class="nc"><i>342</i>&nbsp;            }</b>
+<b class="nc"><i>343</i>&nbsp;        } else if(var2 instanceof EnumEntry) {</b>
+<b class="nc"><i>344</i>&nbsp;            Vector var4 = this.vectorizeLabels(var1.branches(), true);</b>
+<b class="nc"><i>345</i>&nbsp;            if(var4.size() == ((EnumEntry)var2).elements().size()) {</b>
+<b class="nc"><i>346</i>&nbsp;                var3 = true;</b>
+<b class="nc"><i>347</i>&nbsp;            }</b>
+<b class="nc"><i>348</i>&nbsp;        }</b>
+<b class="nc"><i>349</i>&nbsp;</b>
+<b class="nc"><i>350</i>&nbsp;        return var3;</b>
+<b class="nc"><i>351</i>&nbsp;    }</b>
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;    private void writeBranchMethods(PrintWriter var1, UnionEntry var2, UnionBranch var3, int var4) {</b>
+<b class="nc"><i>354</i>&nbsp;        var1.println();</b>
+<b class="nc"><i>355</i>&nbsp;        var1.println(&quot;  public &quot; + Util.javaName(var3.typedef) + &quot; &quot; + var3.typedef.name() + &quot; ()&quot;);</b>
+<b class="nc"><i>356</i>&nbsp;        var1.println(&quot;  {&quot;);</b>
+<b class="nc"><i>357</i>&nbsp;        var1.println(&quot;    if (__uninitialized)&quot;);</b>
+<b class="nc"><i>358</i>&nbsp;        var1.println(&quot;      throw new org.omg.CORBA.BAD_OPERATION ();&quot;);</b>
+<b class="nc"><i>359</i>&nbsp;        var1.println(&quot;    verify&quot; + var3.typedef.name() + &quot; (__discriminator);&quot;);</b>
+<b class="nc"><i>360</i>&nbsp;        var1.println(&quot;    return ___&quot; + var3.typedef.name() + &quot;;&quot;);</b>
+<i>361</i>&nbsp;        var1.println(&quot;  }&quot;);
+<i>362</i>&nbsp;        var1.println();
+<b class="nc"><i>363</i>&nbsp;        var1.println(&quot;  public void &quot; + var3.typedef.name() + &quot; (&quot; + Util.javaName(var3.typedef) + &quot; value)&quot;);</b>
+<i>364</i>&nbsp;        var1.println(&quot;  {&quot;);
+<i>365</i>&nbsp;        if(var3.labels.size() == 0) {
+<i>366</i>&nbsp;            var1.println(&quot;    __discriminator = &quot; + this.defaultDiscriminator(var2) + &quot;;&quot;);
+<i>367</i>&nbsp;        } else if(this.unionIsEnum) {
+<i>368</i>&nbsp;            var1.println(&quot;    __discriminator = &quot; + this.typePackage + Util.parseExpression((Expression)var3.labels.firstElement()) + &quot;;&quot;);
+<i>369</i>&nbsp;        } else {
+<i>370</i>&nbsp;            var1.println(&quot;    __discriminator = &quot; + this.cast((Expression)var3.labels.firstElement(), var2.type()) + &quot;;&quot;);
+<b class="nc"><i>371</i>&nbsp;        }</b>
+<b class="nc"><i>372</i>&nbsp;</b>
+<b class="nc"><i>373</i>&nbsp;        var1.println(&quot;    ___&quot; + var3.typedef.name() + &quot; = value;&quot;);</b>
+<i>374</i>&nbsp;        var1.println(&quot;    __uninitialized = false;&quot;);
+<b class="nc"><i>375</i>&nbsp;        var1.println(&quot;  }&quot;);</b>
+<b class="nc"><i>376</i>&nbsp;        SymtabEntry var5 = Util.typeOf(var2.type());</b>
+<b class="nc"><i>377</i>&nbsp;        if(var3.labels.size() &gt; 0 || var3.isDefault) {</b>
+<i>378</i>&nbsp;            var1.println();
+<b class="nc"><i>379</i>&nbsp;            var1.println(&quot;  public void &quot; + var3.typedef.name() + &quot; (&quot; + Util.javaName(var5) + &quot; discriminator, &quot; + Util.javaName(var3.typedef) + &quot; value)&quot;);</b>
+<i>380</i>&nbsp;            var1.println(&quot;  {&quot;);
+<i>381</i>&nbsp;            var1.println(&quot;    verify&quot; + var3.typedef.name() + &quot; (discriminator);&quot;);
+<b class="nc"><i>382</i>&nbsp;            var1.println(&quot;    __discriminator = discriminator;&quot;);</b>
+<b class="nc"><i>383</i>&nbsp;            var1.println(&quot;    ___&quot; + var3.typedef.name() + &quot; = value;&quot;);</b>
+<b class="nc"><i>384</i>&nbsp;            var1.println(&quot;    __uninitialized = false;&quot;);</b>
+<i>385</i>&nbsp;            var1.println(&quot;  }&quot;);
+<b class="nc"><i>386</i>&nbsp;        }</b>
+<i>387</i>&nbsp;
+<b class="nc"><i>388</i>&nbsp;        var1.println();</b>
+<i>389</i>&nbsp;        var1.println(&quot;  private void verify&quot; + var3.typedef.name() + &quot; (&quot; + Util.javaName(var5) + &quot; discriminator)&quot;);
+<b class="nc"><i>390</i>&nbsp;        var1.println(&quot;  {&quot;);</b>
+<b class="nc"><i>391</i>&nbsp;        boolean var6 = true;</b>
+<b class="nc"><i>392</i>&nbsp;        if(!var3.isDefault || var2.branches().size() != 1) {</b>
+<b class="nc"><i>393</i>&nbsp;            var1.print(&quot;    if (&quot;);</b>
+<i>394</i>&nbsp;            Enumeration var7;
+<i>395</i>&nbsp;            if(var3.isDefault) {
+<i>396</i>&nbsp;                var7 = var2.branches().elements();
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;                while(var7.hasMoreElements()) {
+<i>399</i>&nbsp;                    UnionBranch var8 = (UnionBranch)var7.nextElement();
+<i>400</i>&nbsp;                    if(var8 != var3) {
+<b class="nc"><i>401</i>&nbsp;                        for(Enumeration var9 = var8.labels.elements(); var9.hasMoreElements(); var6 = false) {</b>
+<b class="nc"><i>402</i>&nbsp;                            Expression var10 = (Expression)var9.nextElement();</b>
+<b class="nc"><i>403</i>&nbsp;                            if(!var6) {</b>
+<i>404</i>&nbsp;                                var1.print(&quot; || &quot;);
+<b class="nc"><i>405</i>&nbsp;                            }</b>
+<b class="nc"><i>406</i>&nbsp;</b>
+<i>407</i>&nbsp;                            if(this.unionIsEnum) {
+<b class="nc"><i>408</i>&nbsp;                                var1.print(&quot;discriminator == &quot; + this.typePackage + Util.parseExpression(var10));</b>
+<i>409</i>&nbsp;                            } else {
+<i>410</i>&nbsp;                                var1.print(&quot;discriminator == &quot; + Util.parseExpression(var10));
+<i>411</i>&nbsp;                            }
+<i>412</i>&nbsp;                        }
+<i>413</i>&nbsp;                    }
+<i>414</i>&nbsp;                }
+<i>415</i>&nbsp;            } else {
+<i>416</i>&nbsp;                for(var7 = var3.labels.elements(); var7.hasMoreElements(); var6 = false) {
+<i>417</i>&nbsp;                    Expression var11 = (Expression)var7.nextElement();
+<i>418</i>&nbsp;                    if(!var6) {
+<i>419</i>&nbsp;                        var1.print(&quot; &amp;&amp; &quot;);
+<i>420</i>&nbsp;                    }
+<b class="nc"><i>421</i>&nbsp;</b>
+<i>422</i>&nbsp;                    if(this.unionIsEnum) {
+<b class="nc"><i>423</i>&nbsp;                        var1.print(&quot;discriminator != &quot; + this.typePackage + Util.parseExpression(var11));</b>
+<b class="nc"><i>424</i>&nbsp;                    } else {</b>
+<b class="nc"><i>425</i>&nbsp;                        var1.print(&quot;discriminator != &quot; + Util.parseExpression(var11));</b>
+<b class="nc"><i>426</i>&nbsp;                    }</b>
+<b class="nc"><i>427</i>&nbsp;                }</b>
+<b class="nc"><i>428</i>&nbsp;            }</b>
+<b class="nc"><i>429</i>&nbsp;</b>
+<b class="nc"><i>430</i>&nbsp;            var1.println(&quot;)&quot;);</b>
+<i>431</i>&nbsp;            var1.println(&quot;      throw new org.omg.CORBA.BAD_OPERATION ();&quot;);
+<i>432</i>&nbsp;        }
+<b class="nc"><i>433</i>&nbsp;</b>
+<i>434</i>&nbsp;        var1.println(&quot;  }&quot;);
+<i>435</i>&nbsp;    }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;    private int unionLabelSize(UnionEntry var1) {
+<i>438</i>&nbsp;        int var2 = 0;
+<i>439</i>&nbsp;        Vector var3 = var1.branches();
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;        for(int var4 = 0; var4 &lt; var3.size(); ++var4) {
+<b class="nc"><i>442</i>&nbsp;            UnionBranch var5 = (UnionBranch)((UnionBranch)var3.get(var4));</b>
+<i>443</i>&nbsp;            int var6 = var5.labels.size();
+<i>444</i>&nbsp;            var2 += var6 == 0?1:var6;
+<b class="nc"><i>445</i>&nbsp;        }</b>
+<b class="nc"><i>446</i>&nbsp;</b>
+<b class="nc"><i>447</i>&nbsp;        return var2;</b>
+<b class="nc"><i>448</i>&nbsp;    }</b>
+<b class="nc"><i>449</i>&nbsp;</b>
+<b class="nc"><i>450</i>&nbsp;    public int helperType(int var1, String var2, TCOffsets var3, String var4, SymtabEntry var5, PrintWriter var6) {</b>
+<b class="nc"><i>451</i>&nbsp;        TCOffsets var7 = new TCOffsets();</b>
+<i>452</i>&nbsp;        UnionEntry var8 = (UnionEntry)var5;
+<i>453</i>&nbsp;        String var9 = &quot;_disTypeCode&quot; + var1;
+<b class="nc"><i>454</i>&nbsp;        String var10 = &quot;_members&quot; + var1;</b>
+<i>455</i>&nbsp;        var6.println(var2 + &quot;org.omg.CORBA.TypeCode &quot; + var9 + &#39;;&#39;);
+<i>456</i>&nbsp;        var1 = ((JavaGenerator)var8.type().generator()).type(var1 + 1, var2, var7, var9, var8.type(), var6);
+<b class="nc"><i>457</i>&nbsp;        var3.bumpCurrentOffset(var7.currentOffset());</b>
+<b class="nc"><i>458</i>&nbsp;        var6.println(var2 + &quot;org.omg.CORBA.UnionMember[] &quot; + var10 + &quot; = new org.omg.CORBA.UnionMember [&quot; + this.unionLabelSize(var8) + &quot;];&quot;);</b>
+<b class="nc"><i>459</i>&nbsp;        String var11 = &quot;_tcOf&quot; + var10;</b>
+<i>460</i>&nbsp;        String var12 = &quot;_anyOf&quot; + var10;
+<i>461</i>&nbsp;        var6.println(var2 + &quot;org.omg.CORBA.TypeCode &quot; + var11 + &#39;;&#39;);
+<b class="nc"><i>462</i>&nbsp;        var6.println(var2 + &quot;org.omg.CORBA.Any &quot; + var12 + &#39;;&#39;);</b>
+<i>463</i>&nbsp;        var7 = new TCOffsets();
+<i>464</i>&nbsp;        var7.set(var5);
+<i>465</i>&nbsp;        int var13 = var7.currentOffset();
+<i>466</i>&nbsp;
+<b class="nc"><i>467</i>&nbsp;        for(int var14 = 0; var14 &lt; var8.branches().size(); ++var14) {</b>
+<b class="nc"><i>468</i>&nbsp;            UnionBranch var15 = (UnionBranch)var8.branches().elementAt(var14);</b>
+<i>469</i>&nbsp;            TypedefEntry var16 = var15.typedef;
+<b class="nc"><i>470</i>&nbsp;            Vector var17 = var15.labels;</b>
+<i>471</i>&nbsp;            String var18 = Util.stripLeadingUnderscores(var16.name());
+<b class="nc"><i>472</i>&nbsp;            if(var17.size() == 0) {</b>
+<b class="nc"><i>473</i>&nbsp;                var6.println();</b>
+<b class="nc"><i>474</i>&nbsp;                var6.println(var2 + &quot;// Branch for &quot; + var18 + &quot; (Default case)&quot;);</b>
+<i>475</i>&nbsp;                SymtabEntry var19 = Util.typeOf(var8.type());
+<b class="nc"><i>476</i>&nbsp;                var6.println(var2 + var12 + &quot; = org.omg.CORBA.ORB.init ().create_any ();&quot;);</b>
+<i>477</i>&nbsp;                var6.println(var2 + var12 + &quot;.insert_octet ((byte)0); // default member label&quot;);
+<i>478</i>&nbsp;                var7.bumpCurrentOffset(4);
+<i>479</i>&nbsp;                var1 = ((JavaGenerator)var16.generator()).type(var1, var2, var7, var11, var16, var6);
+<b class="nc"><i>480</i>&nbsp;                int var20 = var7.currentOffset();</b>
+<i>481</i>&nbsp;                var7 = new TCOffsets();
+<b class="nc"><i>482</i>&nbsp;                var7.set(var5);</b>
+<i>483</i>&nbsp;                var7.bumpCurrentOffset(var20 - var13);
+<i>484</i>&nbsp;                var6.println(var2 + var10 + &#39;[&#39; + var14 + &quot;] = new org.omg.CORBA.UnionMember (&quot;);
+<b class="nc"><i>485</i>&nbsp;                var6.println(var2 + &quot;  \&quot;&quot; + var18 + &quot;\&quot;,&quot;);</b>
+<b class="nc"><i>486</i>&nbsp;                var6.println(var2 + &quot;  &quot; + var12 + &#39;,&#39;);</b>
+<b class="nc"><i>487</i>&nbsp;                var6.println(var2 + &quot;  &quot; + var11 + &#39;,&#39;);</b>
+<b class="nc"><i>488</i>&nbsp;                var6.println(var2 + &quot;  null);&quot;);</b>
+<b class="nc"><i>489</i>&nbsp;            } else {</b>
+<b class="nc"><i>490</i>&nbsp;                Enumeration var24 = var17.elements();</b>
+<b class="nc"><i>491</i>&nbsp;</b>
+<i>492</i>&nbsp;                while(var24.hasMoreElements()) {
+<i>493</i>&nbsp;                    Expression var25 = (Expression)((Expression)var24.nextElement());
+<i>494</i>&nbsp;                    String var21 = Util.parseExpression(var25);
+<b class="nc"><i>495</i>&nbsp;                    var6.println();</b>
+<b class="nc"><i>496</i>&nbsp;                    var6.println(var2 + &quot;// Branch for &quot; + var18 + &quot; (case label &quot; + var21 + &quot;)&quot;);</b>
+<b class="nc"><i>497</i>&nbsp;                    SymtabEntry var22 = Util.typeOf(var8.type());</b>
+<i>498</i>&nbsp;                    var6.println(var2 + var12 + &quot; = org.omg.CORBA.ORB.init ().create_any ();&quot;);
+<b class="nc"><i>499</i>&nbsp;                    if(var22 instanceof PrimitiveEntry) {</b>
+<i>500</i>&nbsp;                        var6.println(var2 + var12 + &quot;.insert_&quot; + Util.collapseName(var22.name()) + &quot; ((&quot; + Util.javaName(var22) + &#39;)&#39; + var21 + &quot;);&quot;);
+<b class="nc"><i>501</i>&nbsp;                    } else {</b>
+<b class="nc"><i>502</i>&nbsp;                        String var23 = Util.javaName(var22);</b>
+<i>503</i>&nbsp;                        var6.println(var2 + Util.helperName(var22, false) + &quot;.insert (&quot; + var12 + &quot;, &quot; + var23 + &#39;.&#39; + var21 + &quot;);&quot;);
+<i>504</i>&nbsp;                    }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;                    var7.bumpCurrentOffset(4);
+<i>507</i>&nbsp;                    var1 = ((JavaGenerator)var16.generator()).type(var1, var2, var7, var11, var16, var6);
+<b class="nc"><i>508</i>&nbsp;                    int var26 = var7.currentOffset();</b>
+<b class="nc"><i>509</i>&nbsp;                    var7 = new TCOffsets();</b>
+<i>510</i>&nbsp;                    var7.set(var5);
+<b class="nc"><i>511</i>&nbsp;                    var7.bumpCurrentOffset(var26 - var13);</b>
+<b class="nc"><i>512</i>&nbsp;                    var6.println(var2 + var10 + &#39;[&#39; + var14 + &quot;] = new org.omg.CORBA.UnionMember (&quot;);</b>
+<i>513</i>&nbsp;                    var6.println(var2 + &quot;  \&quot;&quot; + var18 + &quot;\&quot;,&quot;);
+<b class="nc"><i>514</i>&nbsp;                    var6.println(var2 + &quot;  &quot; + var12 + &#39;,&#39;);</b>
+<b class="nc"><i>515</i>&nbsp;                    var6.println(var2 + &quot;  &quot; + var11 + &#39;,&#39;);</b>
+<i>516</i>&nbsp;                    var6.println(var2 + &quot;  null);&quot;);
+<b class="nc"><i>517</i>&nbsp;                }</b>
+<b class="nc"><i>518</i>&nbsp;            }</b>
+<i>519</i>&nbsp;        }
+<b class="nc"><i>520</i>&nbsp;</b>
+<b class="nc"><i>521</i>&nbsp;        var3.bumpCurrentOffset(var7.currentOffset());</b>
+<b class="nc"><i>522</i>&nbsp;        var6.println(var2 + var4 + &quot; = org.omg.CORBA.ORB.init ().create_union_tc (&quot; + Util.helperName(var8, true) + &quot;.id (), \&quot;&quot; + var5.name() + &quot;\&quot;, &quot; + var9 + &quot;, &quot; + var10 + &quot;);&quot;);</b>
+<b class="nc"><i>523</i>&nbsp;        return var1;</b>
+<b class="nc"><i>524</i>&nbsp;    }</b>
+<i>525</i>&nbsp;
+<b class="nc"><i>526</i>&nbsp;    public int type(int var1, String var2, TCOffsets var3, String var4, SymtabEntry var5, PrintWriter var6) {</b>
+<b class="nc"><i>527</i>&nbsp;        var6.println(var2 + var4 + &quot; = &quot; + Util.helperName(var5, true) + &quot;.type ();&quot;);</b>
+<b class="nc"><i>528</i>&nbsp;        return var1;</b>
+<i>529</i>&nbsp;    }
+<b class="nc"><i>530</i>&nbsp;</b>
+<b class="nc"><i>531</i>&nbsp;    public void helperRead(String var1, SymtabEntry var2, PrintWriter var3) {</b>
+<i>532</i>&nbsp;        var3.println(&quot;    &quot; + var1 + &quot; value = new &quot; + var1 + &quot; ();&quot;);
+<i>533</i>&nbsp;        this.read(0, &quot;    &quot;, &quot;value&quot;, var2, var3);
+<b class="nc"><i>534</i>&nbsp;        var3.println(&quot;    return value;&quot;);</b>
+<b class="nc"><i>535</i>&nbsp;    }</b>
+<i>536</i>&nbsp;
+<b class="nc"><i>537</i>&nbsp;    public void helperWrite(SymtabEntry var1, PrintWriter var2) {</b>
+<b class="nc"><i>538</i>&nbsp;        this.write(0, &quot;    &quot;, &quot;value&quot;, var1, var2);</b>
+<b class="nc"><i>539</i>&nbsp;    }</b>
+<b class="nc"><i>540</i>&nbsp;</b>
+<b class="nc"><i>541</i>&nbsp;    public int read(int var1, String var2, String var3, SymtabEntry var4, PrintWriter var5) {</b>
+<i>542</i>&nbsp;        UnionEntry var6 = (UnionEntry)var4;
+<b class="nc"><i>543</i>&nbsp;        String var7 = &quot;_dis&quot; + var1++;</b>
+<b class="nc"><i>544</i>&nbsp;        SymtabEntry var8 = Util.typeOf(var6.type());</b>
+<b class="nc"><i>545</i>&nbsp;        Util.writeInitializer(var2, var7, &quot;&quot;, var8, var5);</b>
+<i>546</i>&nbsp;        if(var8 instanceof PrimitiveEntry) {
+<b class="nc"><i>547</i>&nbsp;            var1 = ((JavaGenerator)var8.generator()).read(var1, var2, var7, var8, var5);</b>
+<b class="nc"><i>548</i>&nbsp;        } else {</b>
+<i>549</i>&nbsp;            var5.println(var2 + var7 + &quot; = &quot; + Util.helperName(var8, true) + &quot;.read (istream);&quot;);
+<b class="nc"><i>550</i>&nbsp;        }</b>
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;        if(var8.name().equals(&quot;boolean&quot;)) {
+<i>553</i>&nbsp;            var1 = this.readBoolean(var7, var1, var2, var3, var6, var5);
+<i>554</i>&nbsp;        } else {
+<i>555</i>&nbsp;            var1 = this.readNonBoolean(var7, var1, var2, var3, var6, var5);
+<i>556</i>&nbsp;        }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;        return var1;
+<i>559</i>&nbsp;    }
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;    private int readBoolean(String var1, int var2, String var3, String var4, UnionEntry var5, PrintWriter var6) {
+<i>562</i>&nbsp;        UnionBranch var7 = (UnionBranch)var5.branches().firstElement();
+<i>563</i>&nbsp;        UnionBranch var8;
+<i>564</i>&nbsp;        if(var5.branches().size() == 2) {
+<i>565</i>&nbsp;            var8 = (UnionBranch)var5.branches().lastElement();
+<b class="nc"><i>566</i>&nbsp;        } else {</b>
+<b class="nc"><i>567</i>&nbsp;            var8 = null;</b>
+<b class="nc"><i>568</i>&nbsp;        }</b>
+<b class="nc"><i>569</i>&nbsp;</b>
+<b class="nc"><i>570</i>&nbsp;        boolean var9 = false;</b>
+<b class="nc"><i>571</i>&nbsp;        boolean var10 = false;</b>
+<i>572</i>&nbsp;
+<b class="nc"><i>573</i>&nbsp;        try {</b>
+<i>574</i>&nbsp;            if(var5.branches().size() == 1 &amp;&amp; (var5.defaultBranch() != null || var7.labels.size() == 2)) {
+<i>575</i>&nbsp;                var10 = true;
+<i>576</i>&nbsp;            } else {
+<i>577</i>&nbsp;                Expression var11 = (Expression)((Expression)var7.labels.firstElement());
+<i>578</i>&nbsp;                Boolean var12 = (Boolean)((Boolean)var11.evaluate());
+<b class="nc"><i>579</i>&nbsp;                var9 = var12.booleanValue();</b>
+<b class="nc"><i>580</i>&nbsp;            }</b>
+<b class="nc"><i>581</i>&nbsp;        } catch (EvaluationException var13) {</b>
+<b class="nc"><i>582</i>&nbsp;            ;</b>
+<i>583</i>&nbsp;        }
+<i>584</i>&nbsp;
+<b class="nc"><i>585</i>&nbsp;        if(var10) {</b>
+<b class="nc"><i>586</i>&nbsp;            var2 = this.readBranch(var2, var3, var7.typedef.name(), &quot;&quot;, var7.typedef, var6);</b>
+<i>587</i>&nbsp;        } else {
+<b class="nc"><i>588</i>&nbsp;            if(!var9) {</b>
+<i>589</i>&nbsp;                UnionBranch var14 = var7;
+<b class="nc"><i>590</i>&nbsp;                var7 = var8;</b>
+<i>591</i>&nbsp;                var8 = var14;
+<b class="nc"><i>592</i>&nbsp;            }</b>
+<b class="nc"><i>593</i>&nbsp;</b>
+<b class="nc"><i>594</i>&nbsp;            var6.println(var3 + &quot;if (&quot; + var1 + &#39;)&#39;);</b>
+<b class="nc"><i>595</i>&nbsp;            if(var7 == null) {</b>
+<i>596</i>&nbsp;                var6.println(var3 + &quot;  value._default(&quot; + var1 + &quot;);&quot;);
+<b class="nc"><i>597</i>&nbsp;            } else {</b>
+<b class="nc"><i>598</i>&nbsp;                var6.println(var3 + &#39;{&#39;);</b>
+<b class="nc"><i>599</i>&nbsp;                var2 = this.readBranch(var2, var3 + &quot;  &quot;, var7.typedef.name(), var1, var7.typedef, var6);</b>
+<b class="nc"><i>600</i>&nbsp;                var6.println(var3 + &#39;}&#39;);</b>
+<b class="nc"><i>601</i>&nbsp;            }</b>
+<b class="nc"><i>602</i>&nbsp;</b>
+<b class="nc"><i>603</i>&nbsp;            var6.println(var3 + &quot;else&quot;);</b>
+<b class="nc"><i>604</i>&nbsp;            if(var8 == null) {</b>
+<i>605</i>&nbsp;                var6.println(var3 + &quot;  value._default(&quot; + var1 + &quot;);&quot;);
+<b class="nc"><i>606</i>&nbsp;            } else {</b>
+<b class="nc"><i>607</i>&nbsp;                var6.println(var3 + &#39;{&#39;);</b>
+<b class="nc"><i>608</i>&nbsp;                var2 = this.readBranch(var2, var3 + &quot;  &quot;, var8.typedef.name(), var1, var8.typedef, var6);</b>
+<i>609</i>&nbsp;                var6.println(var3 + &#39;}&#39;);
+<b class="nc"><i>610</i>&nbsp;            }</b>
+<b class="nc"><i>611</i>&nbsp;        }</b>
+<i>612</i>&nbsp;
+<b class="nc"><i>613</i>&nbsp;        return var2;</b>
+<i>614</i>&nbsp;    }
+<i>615</i>&nbsp;
+<b class="nc"><i>616</i>&nbsp;    private int readNonBoolean(String var1, int var2, String var3, String var4, UnionEntry var5, PrintWriter var6) {</b>
+<b class="nc"><i>617</i>&nbsp;        SymtabEntry var7 = Util.typeOf(var5.type());</b>
+<b class="nc"><i>618</i>&nbsp;        if(var7 instanceof EnumEntry) {</b>
+<b class="nc"><i>619</i>&nbsp;            var6.println(var3 + &quot;switch (&quot; + var1 + &quot;.value ())&quot;);</b>
+<b class="nc"><i>620</i>&nbsp;        } else {</b>
+<b class="nc"><i>621</i>&nbsp;            var6.println(var3 + &quot;switch (&quot; + var1 + &#39;)&#39;);</b>
+<i>622</i>&nbsp;        }
+<i>623</i>&nbsp;
+<b class="nc"><i>624</i>&nbsp;        var6.println(var3 + &#39;{&#39;);</b>
+<b class="nc"><i>625</i>&nbsp;        String var8 = Util.javaQualifiedName(var7) + &#39;.&#39;;</b>
+<b class="nc"><i>626</i>&nbsp;        Enumeration var9 = var5.branches().elements();</b>
+<b class="nc"><i>627</i>&nbsp;</b>
+<b class="nc"><i>628</i>&nbsp;        while(var9.hasMoreElements()) {</b>
+<b class="nc"><i>629</i>&nbsp;            UnionBranch var10 = (UnionBranch)var9.nextElement();</b>
+<b class="nc"><i>630</i>&nbsp;            Enumeration var11 = var10.labels.elements();</b>
+<b class="nc"><i>631</i>&nbsp;</b>
+<b class="nc"><i>632</i>&nbsp;            while(var11.hasMoreElements()) {</b>
+<b class="nc"><i>633</i>&nbsp;                Expression var12 = (Expression)var11.nextElement();</b>
+<i>634</i>&nbsp;                if(var7 instanceof EnumEntry) {
+<b class="nc"><i>635</i>&nbsp;                    String var13 = Util.parseExpression(var12);</b>
+<b class="nc"><i>636</i>&nbsp;                    var6.println(var3 + &quot;  case &quot; + var8 + &#39;_&#39; + var13 + &#39;:&#39;);</b>
+<i>637</i>&nbsp;                } else {
+<i>638</i>&nbsp;                    var6.println(var3 + &quot;  case &quot; + this.cast(var12, var7) + &#39;:&#39;);
+<b class="nc"><i>639</i>&nbsp;                }</b>
+<i>640</i>&nbsp;            }
+<i>641</i>&nbsp;
+<b class="nc"><i>642</i>&nbsp;            if(!var10.typedef.equals(var5.defaultBranch())) {</b>
+<i>643</i>&nbsp;                var2 = this.readBranch(var2, var3 + &quot;    &quot;, var10.typedef.name(), var10.labels.size() &gt; 1?var1:&quot;&quot;, var10.typedef, var6);
+<b class="nc"><i>644</i>&nbsp;                var6.println(var3 + &quot;    break;&quot;);</b>
+<b class="nc"><i>645</i>&nbsp;            }</b>
+<i>646</i>&nbsp;        }
+<i>647</i>&nbsp;
+<i>648</i>&nbsp;        if(!this.coversAll(var5)) {
+<b class="nc"><i>649</i>&nbsp;            var6.println(var3 + &quot;  default:&quot;);</b>
+<b class="nc"><i>650</i>&nbsp;            if(var5.defaultBranch() == null) {</b>
+<i>651</i>&nbsp;                var6.println(var3 + &quot;    value._default( &quot; + var1 + &quot; ) ;&quot;);
+<i>652</i>&nbsp;            } else {
+<i>653</i>&nbsp;                var2 = this.readBranch(var2, var3 + &quot;    &quot;, var5.defaultBranch().name(), var1, var5.defaultBranch(), var6);
+<i>654</i>&nbsp;            }
+<b class="nc"><i>655</i>&nbsp;</b>
+<b class="nc"><i>656</i>&nbsp;            var6.println(var3 + &quot;    break;&quot;);</b>
+<b class="nc"><i>657</i>&nbsp;        }</b>
+<b class="nc"><i>658</i>&nbsp;</b>
+<b class="nc"><i>659</i>&nbsp;        var6.println(var3 + &#39;}&#39;);</b>
+<b class="nc"><i>660</i>&nbsp;        return var2;</b>
+<i>661</i>&nbsp;    }
+<i>662</i>&nbsp;
+<b class="nc"><i>663</i>&nbsp;    private int readBranch(int var1, String var2, String var3, String var4, TypedefEntry var5, PrintWriter var6) {</b>
+<b class="nc"><i>664</i>&nbsp;        SymtabEntry var7 = var5.type();</b>
+<b class="nc"><i>665</i>&nbsp;        Util.writeInitializer(var2, &#39;_&#39; + var3, &quot;&quot;, var5, var6);</b>
+<b class="nc"><i>666</i>&nbsp;        if(var5.arrayInfo().isEmpty() &amp;&amp; !(var7 instanceof SequenceEntry) &amp;&amp; !(var7 instanceof PrimitiveEntry) &amp;&amp; !(var7 instanceof StringEntry)) {</b>
+<b class="nc"><i>667</i>&nbsp;            var6.println(var2 + &#39;_&#39; + var3 + &quot; = &quot; + Util.helperName(var7, true) + &quot;.read (istream);&quot;);</b>
+<b class="nc"><i>668</i>&nbsp;        } else {</b>
+<i>669</i>&nbsp;            var1 = ((JavaGenerator)var5.generator()).read(var1, var2, &#39;_&#39; + var3, var5, var6);
+<i>670</i>&nbsp;        }
+<i>671</i>&nbsp;
+<b class="nc"><i>672</i>&nbsp;        var6.print(var2 + &quot;value.&quot; + var3 + &quot; (&quot;);</b>
+<i>673</i>&nbsp;        if(var4 == &quot;&quot;) {
+<i>674</i>&nbsp;            var6.println(&quot;_&quot; + var3 + &quot;);&quot;);
+<b class="nc"><i>675</i>&nbsp;        } else {</b>
+<i>676</i>&nbsp;            var6.println(var4 + &quot;, &quot; + &quot;_&quot; + var3 + &quot;);&quot;);
+<i>677</i>&nbsp;        }
+<b class="nc"><i>678</i>&nbsp;</b>
+<i>679</i>&nbsp;        return var1;
+<i>680</i>&nbsp;    }
+<i>681</i>&nbsp;
+<i>682</i>&nbsp;    public int write(int var1, String var2, String var3, SymtabEntry var4, PrintWriter var5) {
+<i>683</i>&nbsp;        UnionEntry var6 = (UnionEntry)var4;
+<b class="nc"><i>684</i>&nbsp;        SymtabEntry var7 = Util.typeOf(var6.type());</b>
+<b class="nc"><i>685</i>&nbsp;        if(var7 instanceof PrimitiveEntry) {</b>
+<i>686</i>&nbsp;            var1 = ((JavaGenerator)var7.generator()).write(var1, var2, var3 + &quot;.discriminator ()&quot;, var7, var5);
+<i>687</i>&nbsp;        } else {
+<i>688</i>&nbsp;            var5.println(var2 + Util.helperName(var7, true) + &quot;.write (ostream, &quot; + var3 + &quot;.discriminator ());&quot;);
+<i>689</i>&nbsp;        }
+<b class="nc"><i>690</i>&nbsp;</b>
+<b class="nc"><i>691</i>&nbsp;        if(var7.name().equals(&quot;boolean&quot;)) {</b>
+<b class="nc"><i>692</i>&nbsp;            var1 = this.writeBoolean(var3 + &quot;.discriminator ()&quot;, var1, var2, var3, var6, var5);</b>
+<i>693</i>&nbsp;        } else {
+<i>694</i>&nbsp;            var1 = this.writeNonBoolean(var3 + &quot;.discriminator ()&quot;, var1, var2, var3, var6, var5);
+<i>695</i>&nbsp;        }
+<i>696</i>&nbsp;
+<b class="nc"><i>697</i>&nbsp;        return var1;</b>
+<i>698</i>&nbsp;    }
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;    private int writeBoolean(String var1, int var2, String var3, String var4, UnionEntry var5, PrintWriter var6) {
+<i>701</i>&nbsp;        SymtabEntry var7 = Util.typeOf(var5.type());
+<i>702</i>&nbsp;        UnionBranch var8 = (UnionBranch)var5.branches().firstElement();
+<b class="nc"><i>703</i>&nbsp;        UnionBranch var9;</b>
+<b class="nc"><i>704</i>&nbsp;        if(var5.branches().size() == 2) {</b>
+<b class="nc"><i>705</i>&nbsp;            var9 = (UnionBranch)var5.branches().lastElement();</b>
+<b class="nc"><i>706</i>&nbsp;        } else {</b>
+<i>707</i>&nbsp;            var9 = null;
+<b class="nc"><i>708</i>&nbsp;        }</b>
+<b class="nc"><i>709</i>&nbsp;</b>
+<i>710</i>&nbsp;        boolean var10 = false;
+<b class="nc"><i>711</i>&nbsp;        boolean var11 = false;</b>
+<i>712</i>&nbsp;
+<b class="nc"><i>713</i>&nbsp;        try {</b>
+<b class="nc"><i>714</i>&nbsp;            if(var5.branches().size() == 1 &amp;&amp; (var5.defaultBranch() != null || var8.labels.size() == 2)) {</b>
+<i>715</i>&nbsp;                var11 = true;
+<b class="nc"><i>716</i>&nbsp;            } else {</b>
+<i>717</i>&nbsp;                var10 = ((Boolean)((Expression)var8.labels.firstElement()).evaluate()).booleanValue();
+<b class="nc"><i>718</i>&nbsp;            }</b>
+<i>719</i>&nbsp;        } catch (EvaluationException var13) {
+<i>720</i>&nbsp;            ;
+<i>721</i>&nbsp;        }
+<i>722</i>&nbsp;
+<i>723</i>&nbsp;        if(var11) {
+<b class="nc"><i>724</i>&nbsp;            var2 = this.writeBranch(var2, var3, var4, var8.typedef, var6);</b>
+<i>725</i>&nbsp;        } else {
+<i>726</i>&nbsp;            if(!var10) {
+<b class="nc"><i>727</i>&nbsp;                UnionBranch var12 = var8;</b>
+<b class="nc"><i>728</i>&nbsp;                var8 = var9;</b>
+<i>729</i>&nbsp;                var9 = var12;
+<b class="nc"><i>730</i>&nbsp;            }</b>
+<i>731</i>&nbsp;
+<b class="nc"><i>732</i>&nbsp;            if(var8 != null &amp;&amp; var9 != null) {</b>
+<b class="nc"><i>733</i>&nbsp;                var6.println(var3 + &quot;if (&quot; + var1 + &#39;)&#39;);</b>
+<i>734</i>&nbsp;                var6.println(var3 + &#39;{&#39;);
+<b class="nc"><i>735</i>&nbsp;                var2 = this.writeBranch(var2, var3 + &quot;  &quot;, var4, var8.typedef, var6);</b>
+<i>736</i>&nbsp;                var6.println(var3 + &#39;}&#39;);
+<b class="nc"><i>737</i>&nbsp;                var6.println(var3 + &quot;else&quot;);</b>
+<i>738</i>&nbsp;                var6.println(var3 + &#39;{&#39;);
+<b class="nc"><i>739</i>&nbsp;                var2 = this.writeBranch(var2, var3 + &quot;  &quot;, var4, var9.typedef, var6);</b>
+<b class="nc"><i>740</i>&nbsp;                var6.println(var3 + &#39;}&#39;);</b>
+<b class="nc"><i>741</i>&nbsp;            } else if(var8 != null) {</b>
+<i>742</i>&nbsp;                var6.println(var3 + &quot;if (&quot; + var1 + &#39;)&#39;);
+<b class="nc"><i>743</i>&nbsp;                var6.println(var3 + &#39;{&#39;);</b>
+<i>744</i>&nbsp;                var2 = this.writeBranch(var2, var3 + &quot;  &quot;, var4, var8.typedef, var6);
+<b class="nc"><i>745</i>&nbsp;                var6.println(var3 + &#39;}&#39;);</b>
+<i>746</i>&nbsp;            } else {
+<b class="nc"><i>747</i>&nbsp;                var6.println(var3 + &quot;if (!&quot; + var1 + &#39;)&#39;);</b>
+<i>748</i>&nbsp;                var6.println(var3 + &#39;{&#39;);
+<i>749</i>&nbsp;                var2 = this.writeBranch(var2, var3 + &quot;  &quot;, var4, var9.typedef, var6);
+<b class="nc"><i>750</i>&nbsp;                var6.println(var3 + &#39;}&#39;);</b>
+<i>751</i>&nbsp;            }
+<i>752</i>&nbsp;        }
+<b class="nc"><i>753</i>&nbsp;</b>
+<b class="nc"><i>754</i>&nbsp;        return var2;</b>
+<b class="nc"><i>755</i>&nbsp;    }</b>
+<b class="nc"><i>756</i>&nbsp;</b>
+<i>757</i>&nbsp;    private int writeNonBoolean(String var1, int var2, String var3, String var4, UnionEntry var5, PrintWriter var6) {
+<i>758</i>&nbsp;        SymtabEntry var7 = Util.typeOf(var5.type());
+<b class="nc"><i>759</i>&nbsp;        if(var7 instanceof EnumEntry) {</b>
+<i>760</i>&nbsp;            var6.println(var3 + &quot;switch (&quot; + var4 + &quot;.discriminator ().value ())&quot;);
+<b class="nc"><i>761</i>&nbsp;        } else {</b>
+<b class="nc"><i>762</i>&nbsp;            var6.println(var3 + &quot;switch (&quot; + var4 + &quot;.discriminator ())&quot;);</b>
+<i>763</i>&nbsp;        }
+<b class="nc"><i>764</i>&nbsp;</b>
+<b class="nc"><i>765</i>&nbsp;        var6.println(var3 + &quot;{&quot;);</b>
+<i>766</i>&nbsp;        String var8 = Util.javaQualifiedName(var7) + &#39;.&#39;;
+<b class="nc"><i>767</i>&nbsp;        Enumeration var9 = var5.branches().elements();</b>
+<i>768</i>&nbsp;
+<i>769</i>&nbsp;        while(var9.hasMoreElements()) {
+<b class="nc"><i>770</i>&nbsp;            UnionBranch var10 = (UnionBranch)var9.nextElement();</b>
+<i>771</i>&nbsp;            Enumeration var11 = var10.labels.elements();
+<b class="nc"><i>772</i>&nbsp;</b>
+<b class="nc"><i>773</i>&nbsp;            while(var11.hasMoreElements()) {</b>
+<i>774</i>&nbsp;                Expression var12 = (Expression)var11.nextElement();
+<b class="nc"><i>775</i>&nbsp;                if(var7 instanceof EnumEntry) {</b>
+<b class="nc"><i>776</i>&nbsp;                    String var13 = Util.parseExpression(var12);</b>
+<i>777</i>&nbsp;                    var6.println(var3 + &quot;  case &quot; + var8 + &#39;_&#39; + var13 + &quot;:&quot;);
+<b class="nc"><i>778</i>&nbsp;                } else {</b>
+<i>779</i>&nbsp;                    var6.println(var3 + &quot;  case &quot; + this.cast(var12, var7) + &#39;:&#39;);
+<i>780</i>&nbsp;                }
+<i>781</i>&nbsp;            }
+<b class="nc"><i>782</i>&nbsp;</b>
+<i>783</i>&nbsp;            if(!var10.typedef.equals(var5.defaultBranch())) {
+<i>784</i>&nbsp;                var2 = this.writeBranch(var2, var3 + &quot;    &quot;, var4, var10.typedef, var6);
+<i>785</i>&nbsp;                var6.println(var3 + &quot;    break;&quot;);
+<i>786</i>&nbsp;            }
+<i>787</i>&nbsp;        }
+<b class="nc"><i>788</i>&nbsp;</b>
+<i>789</i>&nbsp;        if(var5.defaultBranch() != null) {
+<b class="nc"><i>790</i>&nbsp;            var6.println(var3 + &quot;  default:&quot;);</b>
+<b class="nc"><i>791</i>&nbsp;            var2 = this.writeBranch(var2, var3 + &quot;    &quot;, var4, var5.defaultBranch(), var6);</b>
+<i>792</i>&nbsp;            var6.println(var3 + &quot;    break;&quot;);
+<b class="nc"><i>793</i>&nbsp;        }</b>
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;        var6.println(var3 + &quot;}&quot;);</b>
+<b class="nc"><i>796</i>&nbsp;        return var2;</b>
+<i>797</i>&nbsp;    }
+<b class="nc"><i>798</i>&nbsp;</b>
+<b class="nc"><i>799</i>&nbsp;    private int writeBranch(int var1, String var2, String var3, TypedefEntry var4, PrintWriter var5) {</b>
+<b class="nc"><i>800</i>&nbsp;        SymtabEntry var6 = var4.type();</b>
+<b class="nc"><i>801</i>&nbsp;        if(var4.arrayInfo().isEmpty() &amp;&amp; !(var6 instanceof SequenceEntry) &amp;&amp; !(var6 instanceof PrimitiveEntry) &amp;&amp; !(var6 instanceof StringEntry)) {</b>
+<i>802</i>&nbsp;            var5.println(var2 + Util.helperName(var6, true) + &quot;.write (ostream, &quot; + var3 + &#39;.&#39; + var4.name() + &quot; ());&quot;);
+<b class="nc"><i>803</i>&nbsp;        } else {</b>
+<b class="nc"><i>804</i>&nbsp;            var1 = ((JavaGenerator)var4.generator()).write(var1, var2, var3 + &#39;.&#39; + var4.name() + &quot; ()&quot;, var4, var5);</b>
+<i>805</i>&nbsp;        }
+<b class="nc"><i>806</i>&nbsp;</b>
+<b class="nc"><i>807</i>&nbsp;        return var1;</b>
+<b class="nc"><i>808</i>&nbsp;    }</b>
+<b class="nc"><i>809</i>&nbsp;</b>
+<b class="nc"><i>810</i>&nbsp;    private String cast(Expression var1, SymtabEntry var2) {</b>
+<b class="nc"><i>811</i>&nbsp;        String var3 = Util.parseExpression(var1);</b>
+<i>812</i>&nbsp;        long var4;
+<b class="nc"><i>813</i>&nbsp;        int var6;</b>
+<b class="nc"><i>814</i>&nbsp;        if(var2.name().indexOf(&quot;short&quot;) &gt;= 0) {</b>
+<i>815</i>&nbsp;            if(var1.value() instanceof Long) {
+<i>816</i>&nbsp;                var4 = ((Long)var1.value()).longValue();
+<b class="nc"><i>817</i>&nbsp;                if(var4 &gt; 32767L) {</b>
+<i>818</i>&nbsp;                    var3 = &quot;(short)(&quot; + var3 + &#39;)&#39;;
+<b class="nc"><i>819</i>&nbsp;                }</b>
+<i>820</i>&nbsp;            } else if(var1.value() instanceof Integer) {
+<i>821</i>&nbsp;                var6 = ((Integer)var1.value()).intValue();
+<i>822</i>&nbsp;                if(var6 &gt; 32767) {
+<b class="nc"><i>823</i>&nbsp;                    var3 = &quot;(short)(&quot; + var3 + &#39;)&#39;;</b>
+<b class="nc"><i>824</i>&nbsp;                }</b>
+<i>825</i>&nbsp;            }
+<b class="nc"><i>826</i>&nbsp;        } else if(var2.name().indexOf(&quot;long&quot;) &gt;= 0) {</b>
+<i>827</i>&nbsp;            if(var1.value() instanceof Long) {
+<i>828</i>&nbsp;                var4 = ((Long)var1.value()).longValue();
+<b class="nc"><i>829</i>&nbsp;                if(var4 &gt; 2147483647L || var4 == -2147483648L) {</b>
+<i>830</i>&nbsp;                    var3 = &quot;(int)(&quot; + var3 + &#39;)&#39;;
+<b class="nc"><i>831</i>&nbsp;                }</b>
+<i>832</i>&nbsp;            } else if(var1.value() instanceof Integer) {
+<i>833</i>&nbsp;                var6 = ((Integer)var1.value()).intValue();
+<i>834</i>&nbsp;                if(var6 &gt; 2147483647 || var6 == -2147483648) {
+<b class="nc"><i>835</i>&nbsp;                    var3 = &quot;(int)(&quot; + var3 + &#39;)&#39;;</b>
+<i>836</i>&nbsp;                }
+<i>837</i>&nbsp;            }
+<b class="nc"><i>838</i>&nbsp;        }</b>
+<i>839</i>&nbsp;
+<b class="nc"><i>840</i>&nbsp;        return var3;</b>
+<i>841</i>&nbsp;    }
+<i>842</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

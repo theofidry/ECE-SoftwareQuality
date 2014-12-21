@@ -1,0 +1,813 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UnixPrintService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.print</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UnixPrintService (sun.print)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UnixPrintService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 415)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.print;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.File;
+<i>9</i>&nbsp;import java.net.URI;
+<i>10</i>&nbsp;import java.net.URISyntaxException;
+<i>11</i>&nbsp;import java.security.AccessController;
+<i>12</i>&nbsp;import java.util.Locale;
+<i>13</i>&nbsp;import javax.print.DocFlavor;
+<i>14</i>&nbsp;import javax.print.DocPrintJob;
+<i>15</i>&nbsp;import javax.print.PrintService;
+<i>16</i>&nbsp;import javax.print.ServiceUIFactory;
+<i>17</i>&nbsp;import javax.print.DocFlavor.BYTE_ARRAY;
+<i>18</i>&nbsp;import javax.print.DocFlavor.CHAR_ARRAY;
+<i>19</i>&nbsp;import javax.print.DocFlavor.INPUT_STREAM;
+<i>20</i>&nbsp;import javax.print.DocFlavor.READER;
+<i>21</i>&nbsp;import javax.print.DocFlavor.SERVICE_FORMATTED;
+<i>22</i>&nbsp;import javax.print.DocFlavor.STRING;
+<i>23</i>&nbsp;import javax.print.DocFlavor.URL;
+<i>24</i>&nbsp;import javax.print.attribute.Attribute;
+<i>25</i>&nbsp;import javax.print.attribute.AttributeSet;
+<i>26</i>&nbsp;import javax.print.attribute.AttributeSetUtilities;
+<i>27</i>&nbsp;import javax.print.attribute.HashAttributeSet;
+<i>28</i>&nbsp;import javax.print.attribute.HashPrintServiceAttributeSet;
+<i>29</i>&nbsp;import javax.print.attribute.PrintServiceAttribute;
+<i>30</i>&nbsp;import javax.print.attribute.PrintServiceAttributeSet;
+<i>31</i>&nbsp;import javax.print.attribute.standard.Chromaticity;
+<i>32</i>&nbsp;import javax.print.attribute.standard.Copies;
+<i>33</i>&nbsp;import javax.print.attribute.standard.CopiesSupported;
+<i>34</i>&nbsp;import javax.print.attribute.standard.Destination;
+<i>35</i>&nbsp;import javax.print.attribute.standard.Fidelity;
+<i>36</i>&nbsp;import javax.print.attribute.standard.JobName;
+<i>37</i>&nbsp;import javax.print.attribute.standard.JobSheets;
+<i>38</i>&nbsp;import javax.print.attribute.standard.Media;
+<i>39</i>&nbsp;import javax.print.attribute.standard.MediaPrintableArea;
+<i>40</i>&nbsp;import javax.print.attribute.standard.MediaSize;
+<i>41</i>&nbsp;import javax.print.attribute.standard.MediaSizeName;
+<i>42</i>&nbsp;import javax.print.attribute.standard.OrientationRequested;
+<i>43</i>&nbsp;import javax.print.attribute.standard.PageRanges;
+<i>44</i>&nbsp;import javax.print.attribute.standard.PrinterIsAcceptingJobs;
+<i>45</i>&nbsp;import javax.print.attribute.standard.PrinterName;
+<i>46</i>&nbsp;import javax.print.attribute.standard.PrinterState;
+<i>47</i>&nbsp;import javax.print.attribute.standard.PrinterStateReason;
+<i>48</i>&nbsp;import javax.print.attribute.standard.PrinterStateReasons;
+<i>49</i>&nbsp;import javax.print.attribute.standard.QueuedJobCount;
+<i>50</i>&nbsp;import javax.print.attribute.standard.RequestingUserName;
+<i>51</i>&nbsp;import javax.print.attribute.standard.Severity;
+<i>52</i>&nbsp;import javax.print.attribute.standard.SheetCollate;
+<i>53</i>&nbsp;import javax.print.attribute.standard.Sides;
+<b class="nc"><i>54</i>&nbsp;import javax.print.attribute.standard.MediaSize.ISO;</b>
+<i>55</i>&nbsp;import javax.print.attribute.standard.MediaSize.NA;
+<i>56</i>&nbsp;import javax.print.event.PrintServiceAttributeListener;
+<i>57</i>&nbsp;import sun.print.AttributeUpdater;
+<i>58</i>&nbsp;import sun.print.PSPrinterJob;
+<i>59</i>&nbsp;import sun.print.ServiceNotifier;
+<b class="nc"><i>60</i>&nbsp;import sun.print.SunPrinterJobService;</b>
+<i>61</i>&nbsp;import sun.print.UnixPrintJob;
+<i>62</i>&nbsp;import sun.print.UnixPrintServiceLookup;
+<b class="nc"><i>63</i>&nbsp;import sun.security.action.GetPropertyAction;</b>
+<b class="nc"><i>64</i>&nbsp;</b>
+<i>65</i>&nbsp;public class UnixPrintService implements PrintService, AttributeUpdater, SunPrinterJobService {
+<i>66</i>&nbsp;    private static String encoding = &quot;ISO8859_1&quot;;
+<i>67</i>&nbsp;    private static DocFlavor textByteFlavor;
+<i>68</i>&nbsp;    private static DocFlavor[] supportedDocFlavors = null;
+<i>69</i>&nbsp;    private static final DocFlavor[] supportedDocFlavorsInit;
+<i>70</i>&nbsp;    private static final DocFlavor[] supportedHostDocFlavors;
+<i>71</i>&nbsp;    String[] lpcStatusCom = new String[]{&quot;&quot;, &quot;| grep -E \&#39;^[ 0-9a-zA-Z_-]*@\&#39; | awk \&#39;{print $2, $3}\&#39;&quot;};
+<i>72</i>&nbsp;    String[] lpcQueueCom = new String[]{&quot;&quot;, &quot;| grep -E \&#39;^[ 0-9a-zA-Z_-]*@\&#39; | awk \&#39;{print $4}\&#39;&quot;};
+<i>73</i>&nbsp;    private static final Class[] serviceAttrCats;
+<i>74</i>&nbsp;    private static final Class[] otherAttrCats;
+<i>75</i>&nbsp;    private static int MAXCOPIES;
+<i>76</i>&nbsp;    private static final MediaSizeName[] mediaSizes;
+<i>77</i>&nbsp;    private String printer;
+<i>78</i>&nbsp;    private PrinterName name;
+<i>79</i>&nbsp;    private boolean isInvalid;
+<i>80</i>&nbsp;    private transient PrintServiceAttributeSet lastSet;
+<i>81</i>&nbsp;    private transient ServiceNotifier notifier = null;
+<i>82</i>&nbsp;    private static MediaPrintableArea[] mpas;
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    UnixPrintService(String var1) {
+<i>85</i>&nbsp;        if(var1 == null) {
+<i>86</i>&nbsp;            throw new IllegalArgumentException(&quot;null printer name&quot;);
+<i>87</i>&nbsp;        } else {
+<i>88</i>&nbsp;            this.printer = var1;
+<i>89</i>&nbsp;            this.isInvalid = false;
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public void invalidateService() {
+<i>94</i>&nbsp;        this.isInvalid = true;
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public String getName() {
+<i>98</i>&nbsp;        return this.printer;
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    private PrinterName getPrinterName() {
+<i>102</i>&nbsp;        if(this.name == null) {
+<i>103</i>&nbsp;            this.name = new PrinterName(this.printer, (Locale)null);
+<i>104</i>&nbsp;        }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;        return this.name;
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    private PrinterIsAcceptingJobs getPrinterIsAcceptingJobsSysV() {
+<b class="nc"><i>110</i>&nbsp;        String var1 = &quot;/usr/bin/lpstat -a &quot; + this.printer;</b>
+<i>111</i>&nbsp;        String[] var2 = UnixPrintServiceLookup.execCmd(var1);
+<i>112</i>&nbsp;        if(var2 != null &amp;&amp; var2.length &gt; 0) {
+<i>113</i>&nbsp;            if(var2[0].startsWith(this.printer + &quot; accepting requests&quot;)) {
+<i>114</i>&nbsp;                return PrinterIsAcceptingJobs.ACCEPTING_JOBS;
+<i>115</i>&nbsp;            }
+<b class="nc"><i>116</i>&nbsp;</b>
+<i>117</i>&nbsp;            if(var2[0].startsWith(this.printer)) {
+<i>118</i>&nbsp;                int var3 = this.printer.length();
+<i>119</i>&nbsp;                String var4 = var2[0];
+<i>120</i>&nbsp;                if(var4.length() &gt; var3 &amp;&amp; var4.charAt(var3) == 64 &amp;&amp; var4.indexOf(&quot; accepting requests&quot;, var3) &gt; 0 &amp;&amp; var4.indexOf(&quot; not accepting requests&quot;, var3) == -1) {
+<b class="nc"><i>121</i>&nbsp;                    return PrinterIsAcceptingJobs.ACCEPTING_JOBS;</b>
+<i>122</i>&nbsp;                }
+<i>123</i>&nbsp;            }
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        return PrinterIsAcceptingJobs.NOT_ACCEPTING_JOBS;
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    private PrinterIsAcceptingJobs getPrinterIsAcceptingJobsBSD() {
+<i>130</i>&nbsp;        if(UnixPrintServiceLookup.cmdIndex == -1) {
+<i>131</i>&nbsp;            UnixPrintServiceLookup.cmdIndex = UnixPrintServiceLookup.getBSDCommandIndex();
+<i>132</i>&nbsp;        }
+<b class="nc"><i>133</i>&nbsp;</b>
+<i>134</i>&nbsp;        String var1 = &quot;/usr/sbin/lpc status &quot; + this.printer + this.lpcStatusCom[UnixPrintServiceLookup.cmdIndex];
+<i>135</i>&nbsp;        String[] var2 = UnixPrintServiceLookup.execCmd(var1);
+<i>136</i>&nbsp;        if(var2 != null &amp;&amp; var2.length &gt; 0) {
+<i>137</i>&nbsp;            if(UnixPrintServiceLookup.cmdIndex == 1) {
+<i>138</i>&nbsp;                if(var2[0].startsWith(&quot;enabled enabled&quot;)) {
+<i>139</i>&nbsp;                    return PrinterIsAcceptingJobs.ACCEPTING_JOBS;
+<i>140</i>&nbsp;                }
+<i>141</i>&nbsp;            } else if(var2[1].trim().startsWith(&quot;queuing is enabled&quot;) &amp;&amp; var2[2].trim().startsWith(&quot;printing is enabled&quot;) || var2.length &gt;= 4 &amp;&amp; var2[2].trim().startsWith(&quot;queuing is enabled&quot;) &amp;&amp; var2[3].trim().startsWith(&quot;printing is enabled&quot;)) {
+<b class="nc"><i>142</i>&nbsp;                return PrinterIsAcceptingJobs.ACCEPTING_JOBS;</b>
+<i>143</i>&nbsp;            }
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;        return PrinterIsAcceptingJobs.NOT_ACCEPTING_JOBS;
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    private PrinterIsAcceptingJobs getPrinterIsAcceptingJobs() {
+<i>150</i>&nbsp;        return UnixPrintServiceLookup.isSysV()?this.getPrinterIsAcceptingJobsSysV():(UnixPrintServiceLookup.isBSD()?this.getPrinterIsAcceptingJobsBSD():PrinterIsAcceptingJobs.ACCEPTING_JOBS);
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    private PrinterState getPrinterState() {
+<i>154</i>&nbsp;        return this.isInvalid?PrinterState.STOPPED:null;
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    private PrinterStateReasons getPrinterStateReasons() {
+<b class="nc"><i>158</i>&nbsp;        if(this.isInvalid) {</b>
+<i>159</i>&nbsp;            PrinterStateReasons var1 = new PrinterStateReasons();
+<b class="nc"><i>160</i>&nbsp;            var1.put(PrinterStateReason.SHUTDOWN, Severity.ERROR);</b>
+<i>161</i>&nbsp;            return var1;
+<i>162</i>&nbsp;        } else {
+<i>163</i>&nbsp;            return null;
+<i>164</i>&nbsp;        }
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    private QueuedJobCount getQueuedJobCountSysV() {
+<i>168</i>&nbsp;        String var1 = &quot;/usr/bin/lpstat -R &quot; + this.printer;
+<i>169</i>&nbsp;        String[] var2 = UnixPrintServiceLookup.execCmd(var1);
+<i>170</i>&nbsp;        int var3 = var2 == null?0:var2.length;
+<i>171</i>&nbsp;        return new QueuedJobCount(var3);
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    private QueuedJobCount getQueuedJobCountBSD() {
+<i>175</i>&nbsp;        if(UnixPrintServiceLookup.cmdIndex == -1) {
+<i>176</i>&nbsp;            UnixPrintServiceLookup.cmdIndex = UnixPrintServiceLookup.getBSDCommandIndex();
+<i>177</i>&nbsp;        }
+<b class="nc"><i>178</i>&nbsp;</b>
+<i>179</i>&nbsp;        int var1 = 0;
+<b class="nc"><i>180</i>&nbsp;        String var2 = &quot;/usr/sbin/lpc status &quot; + this.printer + this.lpcQueueCom[UnixPrintServiceLookup.cmdIndex];</b>
+<b class="nc"><i>181</i>&nbsp;        String[] var3 = UnixPrintServiceLookup.execCmd(var2);</b>
+<b class="nc"><i>182</i>&nbsp;        if(var3 != null &amp;&amp; var3.length &gt; 0) {</b>
+<i>183</i>&nbsp;            String var4;
+<b class="nc"><i>184</i>&nbsp;            if(UnixPrintServiceLookup.cmdIndex == 1) {</b>
+<b class="nc"><i>185</i>&nbsp;                var4 = var3[0];</b>
+<i>186</i>&nbsp;            } else {
+<i>187</i>&nbsp;                var4 = var3[3].trim();
+<i>188</i>&nbsp;                if(var4.startsWith(&quot;no&quot;)) {
+<b class="nc"><i>189</i>&nbsp;                    return new QueuedJobCount(0);</b>
+<i>190</i>&nbsp;                }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;                var4 = var4.substring(0, var4.indexOf(32));
+<b class="nc"><i>193</i>&nbsp;            }</b>
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;            try {
+<i>196</i>&nbsp;                var1 = Integer.parseInt(var4);
+<b class="nc"><i>197</i>&nbsp;            } catch (NumberFormatException var6) {</b>
+<b class="nc"><i>198</i>&nbsp;                ;</b>
+<i>199</i>&nbsp;            }
+<b class="nc"><i>200</i>&nbsp;        }</b>
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;        return new QueuedJobCount(var1);
+<i>203</i>&nbsp;    }
+<b class="nc"><i>204</i>&nbsp;</b>
+<b class="nc"><i>205</i>&nbsp;    private QueuedJobCount getQueuedJobCount() {</b>
+<i>206</i>&nbsp;        return UnixPrintServiceLookup.isSysV()?this.getQueuedJobCountSysV():(UnixPrintServiceLookup.isBSD()?this.getQueuedJobCountBSD():new QueuedJobCount(0));
+<b class="nc"><i>207</i>&nbsp;    }</b>
+<i>208</i>&nbsp;
+<b class="nc"><i>209</i>&nbsp;    private PrintServiceAttributeSet getSysVServiceAttributes() {</b>
+<i>210</i>&nbsp;        HashPrintServiceAttributeSet var1 = new HashPrintServiceAttributeSet();
+<b class="nc"><i>211</i>&nbsp;        var1.add(this.getQueuedJobCountSysV());</b>
+<i>212</i>&nbsp;        var1.add(this.getPrinterIsAcceptingJobsSysV());
+<i>213</i>&nbsp;        return var1;
+<i>214</i>&nbsp;    }
+<i>215</i>&nbsp;
+<b class="nc"><i>216</i>&nbsp;    private PrintServiceAttributeSet getBSDServiceAttributes() {</b>
+<i>217</i>&nbsp;        HashPrintServiceAttributeSet var1 = new HashPrintServiceAttributeSet();
+<i>218</i>&nbsp;        var1.add(this.getQueuedJobCountBSD());
+<b class="nc"><i>219</i>&nbsp;        var1.add(this.getPrinterIsAcceptingJobsBSD());</b>
+<i>220</i>&nbsp;        return var1;
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;    private boolean isSupportedCopies(Copies var1) {</b>
+<i>224</i>&nbsp;        int var2 = var1.getValue();
+<b class="nc"><i>225</i>&nbsp;        return var2 &gt; 0 &amp;&amp; var2 &lt; MAXCOPIES;</b>
+<i>226</i>&nbsp;    }
+<b class="nc"><i>227</i>&nbsp;</b>
+<b class="nc"><i>228</i>&nbsp;    private boolean isSupportedMedia(MediaSizeName var1) {</b>
+<i>229</i>&nbsp;        for(int var2 = 0; var2 &lt; mediaSizes.length; ++var2) {
+<b class="nc"><i>230</i>&nbsp;            if(var1.equals(mediaSizes[var2])) {</b>
+<b class="nc"><i>231</i>&nbsp;                return true;</b>
+<i>232</i>&nbsp;            }
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;</b>
+<i>235</i>&nbsp;        return false;
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    public DocPrintJob createPrintJob() {
+<b class="nc"><i>239</i>&nbsp;        SecurityManager var1 = System.getSecurityManager();</b>
+<i>240</i>&nbsp;        if(var1 != null) {
+<i>241</i>&nbsp;            var1.checkPrintJobAccess();
+<i>242</i>&nbsp;        }
+<b class="nc"><i>243</i>&nbsp;</b>
+<i>244</i>&nbsp;        return new UnixPrintJob(this);
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<b class="nc"><i>247</i>&nbsp;    private PrintServiceAttributeSet getDynamicAttributes() {</b>
+<b class="nc"><i>248</i>&nbsp;        return UnixPrintServiceLookup.isSysV()?this.getSysVServiceAttributes():this.getBSDServiceAttributes();</b>
+<b class="nc"><i>249</i>&nbsp;    }</b>
+<b class="nc"><i>250</i>&nbsp;</b>
+<i>251</i>&nbsp;    public PrintServiceAttributeSet getUpdatedAttributes() {
+<b class="nc"><i>252</i>&nbsp;        PrintServiceAttributeSet var1 = this.getDynamicAttributes();</b>
+<i>253</i>&nbsp;        if(this.lastSet == null) {
+<i>254</i>&nbsp;            this.lastSet = var1;
+<i>255</i>&nbsp;            return AttributeSetUtilities.unmodifiableView(var1);
+<i>256</i>&nbsp;        } else {
+<b class="nc"><i>257</i>&nbsp;            HashPrintServiceAttributeSet var2 = new HashPrintServiceAttributeSet();</b>
+<b class="nc"><i>258</i>&nbsp;            Attribute[] var3 = var1.toArray();</b>
+<i>259</i>&nbsp;
+<b class="nc"><i>260</i>&nbsp;            for(int var5 = 0; var5 &lt; var3.length; ++var5) {</b>
+<i>261</i>&nbsp;                Attribute var4 = var3[var5];
+<i>262</i>&nbsp;                if(!this.lastSet.containsValue(var4)) {
+<i>263</i>&nbsp;                    var2.add(var4);
+<i>264</i>&nbsp;                }
+<b class="nc"><i>265</i>&nbsp;            }</b>
+<b class="nc"><i>266</i>&nbsp;</b>
+<b class="nc"><i>267</i>&nbsp;            this.lastSet = var1;</b>
+<b class="nc"><i>268</i>&nbsp;            return AttributeSetUtilities.unmodifiableView(var2);</b>
+<i>269</i>&nbsp;        }
+<b class="nc"><i>270</i>&nbsp;    }</b>
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    public void wakeNotifier() {
+<i>273</i>&nbsp;        synchronized(this) {
+<i>274</i>&nbsp;            if(this.notifier != null) {
+<b class="nc"><i>275</i>&nbsp;                this.notifier.wake();</b>
+<b class="nc"><i>276</i>&nbsp;            }</b>
+<b class="nc"><i>277</i>&nbsp;</b>
+<i>278</i>&nbsp;        }
+<b class="nc"><i>279</i>&nbsp;    }</b>
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    public void addPrintServiceAttributeListener(PrintServiceAttributeListener var1) {
+<i>282</i>&nbsp;        synchronized(this) {
+<b class="nc"><i>283</i>&nbsp;            if(var1 != null) {</b>
+<i>284</i>&nbsp;                if(this.notifier == null) {
+<i>285</i>&nbsp;                    this.notifier = new ServiceNotifier(this);
+<b class="nc"><i>286</i>&nbsp;                }</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;                this.notifier.addListener(var1);
+<i>289</i>&nbsp;            }
+<b class="nc"><i>290</i>&nbsp;        }</b>
+<b class="nc"><i>291</i>&nbsp;    }</b>
+<i>292</i>&nbsp;
+<b class="nc"><i>293</i>&nbsp;    public void removePrintServiceAttributeListener(PrintServiceAttributeListener var1) {</b>
+<i>294</i>&nbsp;        synchronized(this) {
+<b class="nc"><i>295</i>&nbsp;            if(var1 != null &amp;&amp; this.notifier != null) {</b>
+<i>296</i>&nbsp;                this.notifier.removeListener(var1);
+<b class="nc"><i>297</i>&nbsp;                if(this.notifier.isEmpty()) {</b>
+<i>298</i>&nbsp;                    this.notifier.stopNotifier();
+<b class="nc"><i>299</i>&nbsp;                    this.notifier = null;</b>
+<i>300</i>&nbsp;                }
+<b class="nc"><i>301</i>&nbsp;</b>
+<b class="nc"><i>302</i>&nbsp;            }</b>
+<b class="nc"><i>303</i>&nbsp;        }</b>
+<i>304</i>&nbsp;    }
+<b class="nc"><i>305</i>&nbsp;</b>
+<i>306</i>&nbsp;    public &lt;T extends PrintServiceAttribute&gt; T getAttribute(Class&lt;T&gt; var1) {
+<i>307</i>&nbsp;        if(var1 == null) {
+<i>308</i>&nbsp;            throw new NullPointerException(&quot;category&quot;);
+<i>309</i>&nbsp;        } else if(!PrintServiceAttribute.class.isAssignableFrom(var1)) {
+<b class="nc"><i>310</i>&nbsp;            throw new IllegalArgumentException(&quot;Not a PrintServiceAttribute&quot;);</b>
+<b class="nc"><i>311</i>&nbsp;        } else {</b>
+<b class="nc"><i>312</i>&nbsp;            return (PrintServiceAttribute)(var1 == PrinterName.class?this.getPrinterName():(var1 == PrinterState.class?this.getPrinterState():(var1 == PrinterStateReasons.class?this.getPrinterStateReasons():(var1 == QueuedJobCount.class?this.getQueuedJobCount():(var1 == PrinterIsAcceptingJobs.class?this.getPrinterIsAcceptingJobs():null)))));</b>
+<i>313</i>&nbsp;        }
+<i>314</i>&nbsp;    }
+<b class="nc"><i>315</i>&nbsp;</b>
+<i>316</i>&nbsp;    public PrintServiceAttributeSet getAttributes() {
+<i>317</i>&nbsp;        HashPrintServiceAttributeSet var1 = new HashPrintServiceAttributeSet();
+<i>318</i>&nbsp;        var1.add(this.getPrinterName());
+<b class="nc"><i>319</i>&nbsp;        var1.add(this.getPrinterIsAcceptingJobs());</b>
+<b class="nc"><i>320</i>&nbsp;        PrinterState var2 = this.getPrinterState();</b>
+<b class="nc"><i>321</i>&nbsp;        if(var2 != null) {</b>
+<b class="nc"><i>322</i>&nbsp;            var1.add(var2);</b>
+<i>323</i>&nbsp;        }
+<b class="nc"><i>324</i>&nbsp;</b>
+<i>325</i>&nbsp;        PrinterStateReasons var3 = this.getPrinterStateReasons();
+<i>326</i>&nbsp;        if(var3 != null) {
+<i>327</i>&nbsp;            var1.add(var3);
+<i>328</i>&nbsp;        }
+<b class="nc"><i>329</i>&nbsp;</b>
+<b class="nc"><i>330</i>&nbsp;        var1.add(this.getQueuedJobCount());</b>
+<b class="nc"><i>331</i>&nbsp;        return AttributeSetUtilities.unmodifiableView(var1);</b>
+<b class="nc"><i>332</i>&nbsp;    }</b>
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    private void initSupportedDocFlavors() {
+<i>335</i>&nbsp;        String var1 = DocFlavor.hostEncoding.toLowerCase(Locale.ENGLISH);
+<b class="nc"><i>336</i>&nbsp;        if(!var1.equals(&quot;utf-8&quot;) &amp;&amp; !var1.equals(&quot;utf-16&quot;) &amp;&amp; !var1.equals(&quot;utf-16be&quot;) &amp;&amp; !var1.equals(&quot;utf-16le&quot;) &amp;&amp; !var1.equals(&quot;us-ascii&quot;)) {</b>
+<b class="nc"><i>337</i>&nbsp;            int var2 = supportedDocFlavorsInit.length;</b>
+<b class="nc"><i>338</i>&nbsp;            DocFlavor[] var3 = new DocFlavor[var2 + supportedHostDocFlavors.length];</b>
+<b class="nc"><i>339</i>&nbsp;            System.arraycopy(supportedHostDocFlavors, 0, var3, var2, supportedHostDocFlavors.length);</b>
+<i>340</i>&nbsp;            System.arraycopy(supportedDocFlavorsInit, 0, var3, 0, var2);
+<i>341</i>&nbsp;            supportedDocFlavors = var3;
+<i>342</i>&nbsp;        } else {
+<b class="nc"><i>343</i>&nbsp;            supportedDocFlavors = supportedDocFlavorsInit;</b>
+<b class="nc"><i>344</i>&nbsp;        }</b>
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;    public DocFlavor[] getSupportedDocFlavors() {</b>
+<b class="nc"><i>349</i>&nbsp;        if(supportedDocFlavors == null) {</b>
+<b class="nc"><i>350</i>&nbsp;            this.initSupportedDocFlavors();</b>
+<i>351</i>&nbsp;        }
+<i>352</i>&nbsp;
+<b class="nc"><i>353</i>&nbsp;        int var1 = supportedDocFlavors.length;</b>
+<i>354</i>&nbsp;        DocFlavor[] var2 = new DocFlavor[var1];
+<i>355</i>&nbsp;        System.arraycopy(supportedDocFlavors, 0, var2, 0, var1);
+<i>356</i>&nbsp;        return var2;
+<b class="nc"><i>357</i>&nbsp;    }</b>
+<b class="nc"><i>358</i>&nbsp;</b>
+<b class="nc"><i>359</i>&nbsp;    public boolean isDocFlavorSupported(DocFlavor var1) {</b>
+<i>360</i>&nbsp;        if(supportedDocFlavors == null) {
+<b class="nc"><i>361</i>&nbsp;            this.initSupportedDocFlavors();</b>
+<i>362</i>&nbsp;        }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;        for(int var2 = 0; var2 &lt; supportedDocFlavors.length; ++var2) {
+<b class="nc"><i>365</i>&nbsp;            if(var1.equals(supportedDocFlavors[var2])) {</b>
+<b class="nc"><i>366</i>&nbsp;                return true;</b>
+<i>367</i>&nbsp;            }
+<b class="nc"><i>368</i>&nbsp;        }</b>
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;        return false;
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<b class="nc"><i>373</i>&nbsp;    public Class[] getSupportedAttributeCategories() {</b>
+<b class="nc"><i>374</i>&nbsp;        int var1 = otherAttrCats.length;</b>
+<b class="nc"><i>375</i>&nbsp;        Class[] var2 = new Class[var1];</b>
+<b class="nc"><i>376</i>&nbsp;        System.arraycopy(otherAttrCats, 0, var2, 0, otherAttrCats.length);</b>
+<i>377</i>&nbsp;        return var2;
+<b class="nc"><i>378</i>&nbsp;    }</b>
+<i>379</i>&nbsp;
+<b class="nc"><i>380</i>&nbsp;    public boolean isAttributeCategorySupported(Class&lt;? extends Attribute&gt; var1) {</b>
+<i>381</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>382</i>&nbsp;            throw new NullPointerException(&quot;null category&quot;);</b>
+<b class="nc"><i>383</i>&nbsp;        } else if(!Attribute.class.isAssignableFrom(var1)) {</b>
+<b class="nc"><i>384</i>&nbsp;            throw new IllegalArgumentException(var1 + &quot; is not an Attribute&quot;);</b>
+<b class="nc"><i>385</i>&nbsp;        } else {</b>
+<i>386</i>&nbsp;            for(int var2 = 0; var2 &lt; otherAttrCats.length; ++var2) {
+<i>387</i>&nbsp;                if(var1 == otherAttrCats[var2]) {
+<b class="nc"><i>388</i>&nbsp;                    return true;</b>
+<b class="nc"><i>389</i>&nbsp;                }</b>
+<i>390</i>&nbsp;            }
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;            return false;
+<i>393</i>&nbsp;        }
+<b class="nc"><i>394</i>&nbsp;    }</b>
+<b class="nc"><i>395</i>&nbsp;</b>
+<b class="nc"><i>396</i>&nbsp;    public Object getDefaultAttributeValue(Class&lt;? extends Attribute&gt; var1) {</b>
+<i>397</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>398</i>&nbsp;            throw new NullPointerException(&quot;null category&quot;);</b>
+<i>399</i>&nbsp;        } else if(!Attribute.class.isAssignableFrom(var1)) {
+<i>400</i>&nbsp;            throw new IllegalArgumentException(var1 + &quot; is not an Attribute&quot;);
+<i>401</i>&nbsp;        } else if(!this.isAttributeCategorySupported(var1)) {
+<i>402</i>&nbsp;            return null;
+<b class="nc"><i>403</i>&nbsp;        } else if(var1 == Copies.class) {</b>
+<b class="nc"><i>404</i>&nbsp;            return new Copies(1);</b>
+<b class="nc"><i>405</i>&nbsp;        } else if(var1 == Chromaticity.class) {</b>
+<i>406</i>&nbsp;            return Chromaticity.COLOR;
+<b class="nc"><i>407</i>&nbsp;        } else if(var1 == Destination.class) {</b>
+<b class="nc"><i>408</i>&nbsp;            try {</b>
+<i>409</i>&nbsp;                return new Destination((new File(&quot;out.ps&quot;)).toURI());
+<b class="nc"><i>410</i>&nbsp;            } catch (SecurityException var6) {</b>
+<b class="nc"><i>411</i>&nbsp;                try {</b>
+<i>412</i>&nbsp;                    return new Destination(new URI(&quot;file:out.ps&quot;));
+<i>413</i>&nbsp;                } catch (URISyntaxException var5) {
+<i>414</i>&nbsp;                    return null;
+<i>415</i>&nbsp;                }
+<b class="nc"><i>416</i>&nbsp;            }</b>
+<b class="nc"><i>417</i>&nbsp;        } else if(var1 == Fidelity.class) {</b>
+<b class="nc"><i>418</i>&nbsp;            return Fidelity.FIDELITY_FALSE;</b>
+<i>419</i>&nbsp;        } else if(var1 == JobName.class) {
+<b class="nc"><i>420</i>&nbsp;            return new JobName(&quot;Java Printing&quot;, (Locale)null);</b>
+<b class="nc"><i>421</i>&nbsp;        } else if(var1 == JobSheets.class) {</b>
+<b class="nc"><i>422</i>&nbsp;            return JobSheets.STANDARD;</b>
+<b class="nc"><i>423</i>&nbsp;        } else {</b>
+<i>424</i>&nbsp;            String var2;
+<b class="nc"><i>425</i>&nbsp;            if(var1 == Media.class) {</b>
+<i>426</i>&nbsp;                var2 = Locale.getDefault().getCountry();
+<i>427</i>&nbsp;                return var2 != null &amp;&amp; (var2.equals(&quot;&quot;) || var2.equals(Locale.US.getCountry()) || var2.equals(Locale.CANADA.getCountry()))?MediaSizeName.NA_LETTER:MediaSizeName.ISO_A4;
+<i>428</i>&nbsp;            } else if(var1 != MediaPrintableArea.class) {
+<i>429</i>&nbsp;                if(var1 == OrientationRequested.class) {
+<i>430</i>&nbsp;                    return OrientationRequested.PORTRAIT;
+<b class="nc"><i>431</i>&nbsp;                } else if(var1 == PageRanges.class) {</b>
+<b class="nc"><i>432</i>&nbsp;                    return new PageRanges(1, 2147483647);</b>
+<i>433</i>&nbsp;                } else if(var1 == RequestingUserName.class) {
+<b class="nc"><i>434</i>&nbsp;                    var2 = &quot;&quot;;</b>
+<b class="nc"><i>435</i>&nbsp;</b>
+<i>436</i>&nbsp;                    try {
+<i>437</i>&nbsp;                        var2 = System.getProperty(&quot;user.name&quot;, &quot;&quot;);
+<b class="nc"><i>438</i>&nbsp;                    } catch (SecurityException var7) {</b>
+<b class="nc"><i>439</i>&nbsp;                        ;</b>
+<b class="nc"><i>440</i>&nbsp;                    }</b>
+<b class="nc"><i>441</i>&nbsp;</b>
+<b class="nc"><i>442</i>&nbsp;                    return new RequestingUserName(var2, (Locale)null);</b>
+<b class="nc"><i>443</i>&nbsp;                } else {</b>
+<b class="nc"><i>444</i>&nbsp;                    return var1 == SheetCollate.class?SheetCollate.UNCOLLATED:(var1 == Sides.class?Sides.ONE_SIDED:null);</b>
+<b class="nc"><i>445</i>&nbsp;                }</b>
+<b class="nc"><i>446</i>&nbsp;            } else {</b>
+<b class="nc"><i>447</i>&nbsp;                var2 = Locale.getDefault().getCountry();</b>
+<i>448</i>&nbsp;                float var3;
+<b class="nc"><i>449</i>&nbsp;                float var4;</b>
+<i>450</i>&nbsp;                if(var2 != null &amp;&amp; (var2.equals(&quot;&quot;) || var2.equals(Locale.US.getCountry()) || var2.equals(Locale.CANADA.getCountry()))) {
+<i>451</i>&nbsp;                    var3 = NA.LETTER.getX(25400) - 0.5F;
+<i>452</i>&nbsp;                    var4 = NA.LETTER.getY(25400) - 0.5F;
+<i>453</i>&nbsp;                } else {
+<b class="nc"><i>454</i>&nbsp;                    var3 = ISO.A4.getX(25400) - 0.5F;</b>
+<b class="nc"><i>455</i>&nbsp;                    var4 = ISO.A4.getY(25400) - 0.5F;</b>
+<b class="nc"><i>456</i>&nbsp;                }</b>
+<b class="nc"><i>457</i>&nbsp;</b>
+<b class="nc"><i>458</i>&nbsp;                return new MediaPrintableArea(0.25F, 0.25F, var3, var4, 25400);</b>
+<b class="nc"><i>459</i>&nbsp;            }</b>
+<i>460</i>&nbsp;        }
+<b class="nc"><i>461</i>&nbsp;    }</b>
+<b class="nc"><i>462</i>&nbsp;</b>
+<b class="nc"><i>463</i>&nbsp;    private boolean isAutoSense(DocFlavor var1) {</b>
+<i>464</i>&nbsp;        return var1.equals(BYTE_ARRAY.AUTOSENSE) || var1.equals(INPUT_STREAM.AUTOSENSE) || var1.equals(URL.AUTOSENSE);
+<b class="nc"><i>465</i>&nbsp;    }</b>
+<b class="nc"><i>466</i>&nbsp;</b>
+<i>467</i>&nbsp;    public Object getSupportedAttributeValues(Class&lt;? extends Attribute&gt; var1, DocFlavor var2, AttributeSet var3) {
+<i>468</i>&nbsp;        if(var1 == null) {
+<i>469</i>&nbsp;            throw new NullPointerException(&quot;null category&quot;);
+<b class="nc"><i>470</i>&nbsp;        } else if(!Attribute.class.isAssignableFrom(var1)) {</b>
+<b class="nc"><i>471</i>&nbsp;            throw new IllegalArgumentException(var1 + &quot; does not implement Attribute&quot;);</b>
+<i>472</i>&nbsp;        } else {
+<i>473</i>&nbsp;            if(var2 != null) {
+<i>474</i>&nbsp;                if(!this.isDocFlavorSupported(var2)) {
+<b class="nc"><i>475</i>&nbsp;                    throw new IllegalArgumentException(var2 + &quot; is an unsupported flavor&quot;);</b>
+<b class="nc"><i>476</i>&nbsp;                }</b>
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;                if(this.isAutoSense(var2)) {
+<b class="nc"><i>479</i>&nbsp;                    return null;</b>
+<i>480</i>&nbsp;                }
+<b class="nc"><i>481</i>&nbsp;            }</b>
+<i>482</i>&nbsp;
+<b class="nc"><i>483</i>&nbsp;            if(!this.isAttributeCategorySupported(var1)) {</b>
+<b class="nc"><i>484</i>&nbsp;                return null;</b>
+<b class="nc"><i>485</i>&nbsp;            } else if(var1 == Chromaticity.class) {</b>
+<i>486</i>&nbsp;                if(var2 != null &amp;&amp; !this.isServiceFormattedFlavor(var2)) {
+<i>487</i>&nbsp;                    return null;
+<i>488</i>&nbsp;                } else {
+<i>489</i>&nbsp;                    Chromaticity[] var18 = new Chromaticity[]{Chromaticity.COLOR};
+<b class="nc"><i>490</i>&nbsp;                    return var18;</b>
+<b class="nc"><i>491</i>&nbsp;                }</b>
+<i>492</i>&nbsp;            } else if(var1 == Destination.class) {
+<b class="nc"><i>493</i>&nbsp;                try {</b>
+<b class="nc"><i>494</i>&nbsp;                    return new Destination((new File(&quot;out.ps&quot;)).toURI());</b>
+<b class="nc"><i>495</i>&nbsp;                } catch (SecurityException var9) {</b>
+<i>496</i>&nbsp;                    try {
+<b class="nc"><i>497</i>&nbsp;                        return new Destination(new URI(&quot;file:out.ps&quot;));</b>
+<i>498</i>&nbsp;                    } catch (URISyntaxException var8) {
+<i>499</i>&nbsp;                        return null;
+<i>500</i>&nbsp;                    }
+<b class="nc"><i>501</i>&nbsp;                }</b>
+<b class="nc"><i>502</i>&nbsp;            } else if(var1 == JobName.class) {</b>
+<i>503</i>&nbsp;                return new JobName(&quot;Java Printing&quot;, (Locale)null);
+<b class="nc"><i>504</i>&nbsp;            } else if(var1 == JobSheets.class) {</b>
+<b class="nc"><i>505</i>&nbsp;                JobSheets[] var19 = new JobSheets[]{JobSheets.NONE, JobSheets.STANDARD};</b>
+<b class="nc"><i>506</i>&nbsp;                return var19;</b>
+<i>507</i>&nbsp;            } else if(var1 == RequestingUserName.class) {
+<i>508</i>&nbsp;                String var16 = &quot;&quot;;
+<b class="nc"><i>509</i>&nbsp;</b>
+<i>510</i>&nbsp;                try {
+<i>511</i>&nbsp;                    var16 = System.getProperty(&quot;user.name&quot;, &quot;&quot;);
+<i>512</i>&nbsp;                } catch (SecurityException var10) {
+<b class="nc"><i>513</i>&nbsp;                    ;</b>
+<b class="nc"><i>514</i>&nbsp;                }</b>
+<b class="nc"><i>515</i>&nbsp;</b>
+<b class="nc"><i>516</i>&nbsp;                return new RequestingUserName(var16, (Locale)null);</b>
+<i>517</i>&nbsp;            } else if(var1 == OrientationRequested.class) {
+<i>518</i>&nbsp;                if(var2 != null &amp;&amp; !this.isServiceFormattedFlavor(var2)) {
+<i>519</i>&nbsp;                    return null;
+<i>520</i>&nbsp;                } else {
+<i>521</i>&nbsp;                    OrientationRequested[] var17 = new OrientationRequested[]{OrientationRequested.PORTRAIT, OrientationRequested.LANDSCAPE, OrientationRequested.REVERSE_LANDSCAPE};
+<b class="nc"><i>522</i>&nbsp;                    return var17;</b>
+<b class="nc"><i>523</i>&nbsp;                }</b>
+<i>524</i>&nbsp;            } else if(var1 != Copies.class &amp;&amp; var1 != CopiesSupported.class) {
+<b class="nc"><i>525</i>&nbsp;                if(var1 == Media.class) {</b>
+<b class="nc"><i>526</i>&nbsp;                    Media[] var14 = new Media[mediaSizes.length];</b>
+<i>527</i>&nbsp;                    System.arraycopy(mediaSizes, 0, var14, 0, mediaSizes.length);
+<i>528</i>&nbsp;                    return var14;
+<i>529</i>&nbsp;                } else if(var1 == Fidelity.class) {
+<b class="nc"><i>530</i>&nbsp;                    Fidelity[] var15 = new Fidelity[]{Fidelity.FIDELITY_FALSE, Fidelity.FIDELITY_TRUE};</b>
+<b class="nc"><i>531</i>&nbsp;                    return var15;</b>
+<b class="nc"><i>532</i>&nbsp;                } else if(var1 == MediaPrintableArea.class) {</b>
+<i>533</i>&nbsp;                    if(var3 == null) {
+<i>534</i>&nbsp;                        return this.getAllPrintableAreas();
+<b class="nc"><i>535</i>&nbsp;                    } else {</b>
+<i>536</i>&nbsp;                        MediaSize var13 = (MediaSize)var3.get(MediaSize.class);
+<i>537</i>&nbsp;                        Media var5 = (Media)var3.get(Media.class);
+<i>538</i>&nbsp;                        MediaPrintableArea[] var6 = new MediaPrintableArea[1];
+<i>539</i>&nbsp;                        if(var13 == null) {
+<i>540</i>&nbsp;                            if(!(var5 instanceof MediaSizeName)) {
+<i>541</i>&nbsp;                                return this.getAllPrintableAreas();
+<i>542</i>&nbsp;                            }
+<i>543</i>&nbsp;
+<b class="nc"><i>544</i>&nbsp;                            MediaSizeName var7 = (MediaSizeName)var5;</b>
+<b class="nc"><i>545</i>&nbsp;                            var13 = MediaSize.getMediaSizeForName(var7);</b>
+<i>546</i>&nbsp;                            if(var13 == null) {
+<b class="nc"><i>547</i>&nbsp;                                var5 = (Media)this.getDefaultAttributeValue(Media.class);</b>
+<b class="nc"><i>548</i>&nbsp;                                if(var5 instanceof MediaSizeName) {</b>
+<i>549</i>&nbsp;                                    var7 = (MediaSizeName)var5;
+<i>550</i>&nbsp;                                    var13 = MediaSize.getMediaSizeForName(var7);
+<i>551</i>&nbsp;                                }
+<b class="nc"><i>552</i>&nbsp;</b>
+<b class="nc"><i>553</i>&nbsp;                                if(var13 == null) {</b>
+<i>554</i>&nbsp;                                    var6[0] = new MediaPrintableArea(0.25F, 0.25F, 8.0F, 10.5F, 25400);
+<i>555</i>&nbsp;                                    return var6;
+<b class="nc"><i>556</i>&nbsp;                                }</b>
+<b class="nc"><i>557</i>&nbsp;                            }</b>
+<b class="nc"><i>558</i>&nbsp;                        }</b>
+<b class="nc"><i>559</i>&nbsp;</b>
+<b class="nc"><i>560</i>&nbsp;                        assert var13 != null;</b>
+<i>561</i>&nbsp;
+<b class="nc"><i>562</i>&nbsp;                        var6[0] = new MediaPrintableArea(0.25F, 0.25F, var13.getX(25400) - 0.5F, var13.getY(25400) - 0.5F, 25400);</b>
+<b class="nc"><i>563</i>&nbsp;                        return var6;</b>
+<i>564</i>&nbsp;                    }
+<b class="nc"><i>565</i>&nbsp;                } else if(var1 == PageRanges.class) {</b>
+<b class="nc"><i>566</i>&nbsp;                    if(var2 != null &amp;&amp; !var2.equals(SERVICE_FORMATTED.PAGEABLE) &amp;&amp; !var2.equals(SERVICE_FORMATTED.PRINTABLE)) {</b>
+<b class="nc"><i>567</i>&nbsp;                        return null;</b>
+<i>568</i>&nbsp;                    } else {
+<i>569</i>&nbsp;                        PageRanges[] var12 = new PageRanges[]{new PageRanges(1, 2147483647)};
+<b class="nc"><i>570</i>&nbsp;                        return var12;</b>
+<b class="nc"><i>571</i>&nbsp;                    }</b>
+<b class="nc"><i>572</i>&nbsp;                } else if(var1 == SheetCollate.class) {</b>
+<b class="nc"><i>573</i>&nbsp;                    if(var2 != null &amp;&amp; !var2.equals(SERVICE_FORMATTED.PAGEABLE) &amp;&amp; !var2.equals(SERVICE_FORMATTED.PRINTABLE)) {</b>
+<b class="nc"><i>574</i>&nbsp;                        return null;</b>
+<b class="nc"><i>575</i>&nbsp;                    } else {</b>
+<b class="nc"><i>576</i>&nbsp;                        SheetCollate[] var11 = new SheetCollate[]{SheetCollate.UNCOLLATED, SheetCollate.COLLATED};</b>
+<b class="nc"><i>577</i>&nbsp;                        return var11;</b>
+<b class="nc"><i>578</i>&nbsp;                    }</b>
+<i>579</i>&nbsp;                } else if(var1 == Sides.class) {
+<i>580</i>&nbsp;                    if(var2 != null &amp;&amp; !var2.equals(SERVICE_FORMATTED.PAGEABLE) &amp;&amp; !var2.equals(SERVICE_FORMATTED.PRINTABLE)) {
+<i>581</i>&nbsp;                        return null;
+<b class="nc"><i>582</i>&nbsp;                    } else {</b>
+<i>583</i>&nbsp;                        Sides[] var4 = new Sides[]{Sides.ONE_SIDED, Sides.TWO_SIDED_LONG_EDGE, Sides.TWO_SIDED_SHORT_EDGE};
+<b class="nc"><i>584</i>&nbsp;                        return var4;</b>
+<i>585</i>&nbsp;                    }
+<b class="nc"><i>586</i>&nbsp;                } else {</b>
+<b class="nc"><i>587</i>&nbsp;                    return null;</b>
+<i>588</i>&nbsp;                }
+<b class="nc"><i>589</i>&nbsp;            } else {</b>
+<i>590</i>&nbsp;                return var2 != null &amp;&amp; (var2.equals(INPUT_STREAM.POSTSCRIPT) || var2.equals(URL.POSTSCRIPT) || var2.equals(BYTE_ARRAY.POSTSCRIPT))?null:new CopiesSupported(1, MAXCOPIES);
+<i>591</i>&nbsp;            }
+<i>592</i>&nbsp;        }
+<b class="nc"><i>593</i>&nbsp;    }</b>
+<b class="nc"><i>594</i>&nbsp;</b>
+<i>595</i>&nbsp;    private MediaPrintableArea[] getAllPrintableAreas() {
+<b class="nc"><i>596</i>&nbsp;        if(mpas == null) {</b>
+<b class="nc"><i>597</i>&nbsp;            Media[] var1 = (Media[])((Media[])this.getSupportedAttributeValues(Media.class, (DocFlavor)null, (AttributeSet)null));</b>
+<i>598</i>&nbsp;            mpas = new MediaPrintableArea[var1.length];
+<b class="nc"><i>599</i>&nbsp;</b>
+<i>600</i>&nbsp;            for(int var2 = 0; var2 &lt; mpas.length; ++var2) {
+<b class="nc"><i>601</i>&nbsp;                if(var1[var2] instanceof MediaSizeName) {</b>
+<b class="nc"><i>602</i>&nbsp;                    MediaSizeName var3 = (MediaSizeName)var1[var2];</b>
+<b class="nc"><i>603</i>&nbsp;                    MediaSize var4 = MediaSize.getMediaSizeForName(var3);</b>
+<b class="nc"><i>604</i>&nbsp;                    if(var4 == null) {</b>
+<b class="nc"><i>605</i>&nbsp;                        mpas[var2] = (MediaPrintableArea)this.getDefaultAttributeValue(MediaPrintableArea.class);</b>
+<b class="nc"><i>606</i>&nbsp;                    } else {</b>
+<i>607</i>&nbsp;                        mpas[var2] = new MediaPrintableArea(0.25F, 0.25F, var4.getX(25400) - 0.5F, var4.getY(25400) - 0.5F, 25400);
+<b class="nc"><i>608</i>&nbsp;                    }</b>
+<b class="nc"><i>609</i>&nbsp;                }</b>
+<b class="nc"><i>610</i>&nbsp;            }</b>
+<b class="nc"><i>611</i>&nbsp;        }</b>
+<b class="nc"><i>612</i>&nbsp;</b>
+<b class="nc"><i>613</i>&nbsp;        MediaPrintableArea[] var5 = new MediaPrintableArea[mpas.length];</b>
+<b class="nc"><i>614</i>&nbsp;        System.arraycopy(mpas, 0, var5, 0, mpas.length);</b>
+<b class="nc"><i>615</i>&nbsp;        return var5;</b>
+<i>616</i>&nbsp;    }
+<b class="nc"><i>617</i>&nbsp;</b>
+<i>618</i>&nbsp;    private boolean isServiceFormattedFlavor(DocFlavor var1) {
+<i>619</i>&nbsp;        return var1.equals(SERVICE_FORMATTED.PAGEABLE) || var1.equals(SERVICE_FORMATTED.PRINTABLE) || var1.equals(BYTE_ARRAY.GIF) || var1.equals(INPUT_STREAM.GIF) || var1.equals(URL.GIF) || var1.equals(BYTE_ARRAY.JPEG) || var1.equals(INPUT_STREAM.JPEG) || var1.equals(URL.JPEG) || var1.equals(BYTE_ARRAY.PNG) || var1.equals(INPUT_STREAM.PNG) || var1.equals(URL.PNG);
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<b class="nc"><i>622</i>&nbsp;    public boolean isAttributeValueSupported(Attribute var1, DocFlavor var2, AttributeSet var3) {</b>
+<i>623</i>&nbsp;        if(var1 == null) {
+<i>624</i>&nbsp;            throw new NullPointerException(&quot;null attribute&quot;);
+<b class="nc"><i>625</i>&nbsp;        } else {</b>
+<i>626</i>&nbsp;            if(var2 != null) {
+<i>627</i>&nbsp;                if(!this.isDocFlavorSupported(var2)) {
+<b class="nc"><i>628</i>&nbsp;                    throw new IllegalArgumentException(var2 + &quot; is an unsupported flavor&quot;);</b>
+<i>629</i>&nbsp;                }
+<i>630</i>&nbsp;
+<i>631</i>&nbsp;                if(this.isAutoSense(var2)) {
+<i>632</i>&nbsp;                    return false;
+<i>633</i>&nbsp;                }
+<i>634</i>&nbsp;            }
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;            Class var4 = var1.getCategory();
+<i>637</i>&nbsp;            if(!this.isAttributeCategorySupported(var4)) {
+<b class="nc"><i>638</i>&nbsp;                return false;</b>
+<b class="nc"><i>639</i>&nbsp;            } else if(var1.getCategory() == Chromaticity.class) {</b>
+<i>640</i>&nbsp;                return var2 != null &amp;&amp; !this.isServiceFormattedFlavor(var2)?false:var1 == Chromaticity.COLOR;
+<b class="nc"><i>641</i>&nbsp;            } else if(var1.getCategory() == Copies.class) {</b>
+<b class="nc"><i>642</i>&nbsp;                return (var2 == null || !var2.equals(INPUT_STREAM.POSTSCRIPT) &amp;&amp; !var2.equals(URL.POSTSCRIPT) &amp;&amp; !var2.equals(BYTE_ARRAY.POSTSCRIPT)) &amp;&amp; this.isSupportedCopies((Copies)var1);</b>
+<i>643</i>&nbsp;            } else if(var1.getCategory() == Destination.class) {
+<i>644</i>&nbsp;                URI var5 = ((Destination)var1).getURI();
+<b class="nc"><i>645</i>&nbsp;                return &quot;file&quot;.equals(var5.getScheme()) &amp;&amp; !var5.getSchemeSpecificPart().equals(&quot;&quot;);</b>
+<b class="nc"><i>646</i>&nbsp;            } else if(var1.getCategory() == Media.class) {</b>
+<b class="nc"><i>647</i>&nbsp;                return var1 instanceof MediaSizeName?this.isSupportedMedia((MediaSizeName)var1):false;</b>
+<i>648</i>&nbsp;            } else {
+<b class="nc"><i>649</i>&nbsp;                if(var1.getCategory() == OrientationRequested.class) {</b>
+<b class="nc"><i>650</i>&nbsp;                    if(var1 == OrientationRequested.REVERSE_PORTRAIT || var2 != null &amp;&amp; !this.isServiceFormattedFlavor(var2)) {</b>
+<i>651</i>&nbsp;                        return false;
+<i>652</i>&nbsp;                    }
+<i>653</i>&nbsp;                } else if(var1.getCategory() == PageRanges.class) {
+<b class="nc"><i>654</i>&nbsp;                    if(var2 != null &amp;&amp; !var2.equals(SERVICE_FORMATTED.PAGEABLE) &amp;&amp; !var2.equals(SERVICE_FORMATTED.PRINTABLE)) {</b>
+<b class="nc"><i>655</i>&nbsp;                        return false;</b>
+<i>656</i>&nbsp;                    }
+<i>657</i>&nbsp;                } else if(var1.getCategory() == SheetCollate.class) {
+<b class="nc"><i>658</i>&nbsp;                    if(var2 != null &amp;&amp; !var2.equals(SERVICE_FORMATTED.PAGEABLE) &amp;&amp; !var2.equals(SERVICE_FORMATTED.PRINTABLE)) {</b>
+<b class="nc"><i>659</i>&nbsp;                        return false;</b>
+<i>660</i>&nbsp;                    }
+<i>661</i>&nbsp;                } else if(var1.getCategory() == Sides.class &amp;&amp; var2 != null &amp;&amp; !var2.equals(SERVICE_FORMATTED.PAGEABLE) &amp;&amp; !var2.equals(SERVICE_FORMATTED.PRINTABLE)) {
+<i>662</i>&nbsp;                    return false;
+<i>663</i>&nbsp;                }
+<i>664</i>&nbsp;
+<i>665</i>&nbsp;                return true;
+<i>666</i>&nbsp;            }
+<i>667</i>&nbsp;        }
+<i>668</i>&nbsp;    }
+<i>669</i>&nbsp;
+<i>670</i>&nbsp;    public AttributeSet getUnsupportedAttributes(DocFlavor var1, AttributeSet var2) {
+<i>671</i>&nbsp;        if(var1 != null &amp;&amp; !this.isDocFlavorSupported(var1)) {
+<b class="nc"><i>672</i>&nbsp;            throw new IllegalArgumentException(&quot;flavor &quot; + var1 + &quot;is not supported&quot;);</b>
+<b class="nc"><i>673</i>&nbsp;        } else if(var2 == null) {</b>
+<b class="nc"><i>674</i>&nbsp;            return null;</b>
+<i>675</i>&nbsp;        } else {
+<b class="nc"><i>676</i>&nbsp;            HashAttributeSet var4 = new HashAttributeSet();</b>
+<i>677</i>&nbsp;            Attribute[] var5 = var2.toArray();
+<b class="nc"><i>678</i>&nbsp;</b>
+<i>679</i>&nbsp;            for(int var6 = 0; var6 &lt; var5.length; ++var6) {
+<b class="nc"><i>680</i>&nbsp;                try {</b>
+<b class="nc"><i>681</i>&nbsp;                    Attribute var3 = var5[var6];</b>
+<i>682</i>&nbsp;                    if(!this.isAttributeCategorySupported(var3.getCategory())) {
+<b class="nc"><i>683</i>&nbsp;                        var4.add(var3);</b>
+<b class="nc"><i>684</i>&nbsp;                    } else if(!this.isAttributeValueSupported(var3, var1, var2)) {</b>
+<b class="nc"><i>685</i>&nbsp;                        var4.add(var3);</b>
+<i>686</i>&nbsp;                    }
+<i>687</i>&nbsp;                } catch (ClassCastException var8) {
+<b class="nc"><i>688</i>&nbsp;                    ;</b>
+<b class="nc"><i>689</i>&nbsp;                }</b>
+<b class="nc"><i>690</i>&nbsp;            }</b>
+<b class="nc"><i>691</i>&nbsp;</b>
+<b class="nc"><i>692</i>&nbsp;            if(var4.isEmpty()) {</b>
+<b class="nc"><i>693</i>&nbsp;                return null;</b>
+<b class="nc"><i>694</i>&nbsp;            } else {</b>
+<b class="nc"><i>695</i>&nbsp;                return var4;</b>
+<b class="nc"><i>696</i>&nbsp;            }</b>
+<i>697</i>&nbsp;        }
+<b class="nc"><i>698</i>&nbsp;    }</b>
+<b class="nc"><i>699</i>&nbsp;</b>
+<b class="nc"><i>700</i>&nbsp;    public ServiceUIFactory getServiceUIFactory() {</b>
+<b class="nc"><i>701</i>&nbsp;        return null;</b>
+<b class="nc"><i>702</i>&nbsp;    }</b>
+<b class="nc"><i>703</i>&nbsp;</b>
+<i>704</i>&nbsp;    public String toString() {
+<i>705</i>&nbsp;        return &quot;Unix Printer : &quot; + this.getName();
+<i>706</i>&nbsp;    }
+<i>707</i>&nbsp;
+<i>708</i>&nbsp;    public boolean equals(Object var1) {
+<i>709</i>&nbsp;        return var1 == this || var1 instanceof UnixPrintService &amp;&amp; ((UnixPrintService)var1).getName().equals(this.getName());
+<i>710</i>&nbsp;    }
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;    public int hashCode() {
+<i>713</i>&nbsp;        return this.getClass().hashCode() + this.getName().hashCode();
+<i>714</i>&nbsp;    }
+<b class="nc"><i>715</i>&nbsp;</b>
+<b class="nc"><i>716</i>&nbsp;    public boolean usesClass(Class var1) {</b>
+<b class="nc"><i>717</i>&nbsp;        return var1 == PSPrinterJob.class;</b>
+<b class="nc"><i>718</i>&nbsp;    }</b>
+<b class="nc"><i>719</i>&nbsp;</b>
+<i>720</i>&nbsp;    static {
+<b class="nc"><i>721</i>&nbsp;        supportedDocFlavorsInit = new DocFlavor[]{BYTE_ARRAY.POSTSCRIPT, INPUT_STREAM.POSTSCRIPT, URL.POSTSCRIPT, BYTE_ARRAY.GIF, INPUT_STREAM.GIF, URL.GIF, BYTE_ARRAY.JPEG, INPUT_STREAM.JPEG, URL.JPEG, BYTE_ARRAY.PNG, INPUT_STREAM.PNG, URL.PNG, CHAR_ARRAY.TEXT_PLAIN, READER.TEXT_PLAIN, STRING.TEXT_PLAIN, BYTE_ARRAY.TEXT_PLAIN_UTF_8, BYTE_ARRAY.TEXT_PLAIN_UTF_16, BYTE_ARRAY.TEXT_PLAIN_UTF_16BE, BYTE_ARRAY.TEXT_PLAIN_UTF_16LE, BYTE_ARRAY.TEXT_PLAIN_US_ASCII, INPUT_STREAM.TEXT_PLAIN_UTF_8, INPUT_STREAM.TEXT_PLAIN_UTF_16, INPUT_STREAM.TEXT_PLAIN_UTF_16BE, INPUT_STREAM.TEXT_PLAIN_UTF_16LE, INPUT_STREAM.TEXT_PLAIN_US_ASCII, URL.TEXT_PLAIN_UTF_8, URL.TEXT_PLAIN_UTF_16, URL.TEXT_PLAIN_UTF_16BE, URL.TEXT_PLAIN_UTF_16LE, URL.TEXT_PLAIN_US_ASCII, SERVICE_FORMATTED.PAGEABLE, SERVICE_FORMATTED.PRINTABLE, BYTE_ARRAY.AUTOSENSE, URL.AUTOSENSE, INPUT_STREAM.AUTOSENSE};</b>
+<i>722</i>&nbsp;        supportedHostDocFlavors = new DocFlavor[]{BYTE_ARRAY.TEXT_PLAIN_HOST, INPUT_STREAM.TEXT_PLAIN_HOST, URL.TEXT_PLAIN_HOST};
+<b class="nc"><i>723</i>&nbsp;        encoding = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;file.encoding&quot;));</b>
+<i>724</i>&nbsp;        serviceAttrCats = new Class[]{PrinterName.class, PrinterIsAcceptingJobs.class, QueuedJobCount.class};
+<b class="nc"><i>725</i>&nbsp;        otherAttrCats = new Class[]{Chromaticity.class, Copies.class, Destination.class, Fidelity.class, JobName.class, JobSheets.class, Media.class, MediaPrintableArea.class, OrientationRequested.class, PageRanges.class, RequestingUserName.class, SheetCollate.class, Sides.class};</b>
+<b class="nc"><i>726</i>&nbsp;        MAXCOPIES = 1000;</b>
+<b class="nc"><i>727</i>&nbsp;        mediaSizes = new MediaSizeName[]{MediaSizeName.NA_LETTER, MediaSizeName.TABLOID, MediaSizeName.LEDGER, MediaSizeName.NA_LEGAL, MediaSizeName.EXECUTIVE, MediaSizeName.ISO_A3, MediaSizeName.ISO_A4, MediaSizeName.ISO_A5, MediaSizeName.ISO_B4, MediaSizeName.ISO_B5};</b>
+<b class="nc"><i>728</i>&nbsp;        mpas = null;</b>
+<b class="nc"><i>729</i>&nbsp;    }</b>
+<b class="nc"><i>730</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

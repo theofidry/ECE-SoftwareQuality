@@ -1,0 +1,657 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DataFlavor</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.awt.datatransfer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DataFlavor (java.awt.datatransfer)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DataFlavor</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 49)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 248)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DataFlavor$TextFlavorComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 258)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.awt.datatransfer;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.datatransfer.MimeType;
+<i>9</i>&nbsp;import java.awt.datatransfer.MimeTypeParameterList;
+<i>10</i>&nbsp;import java.awt.datatransfer.MimeTypeParseException;
+<i>11</i>&nbsp;import java.awt.datatransfer.Transferable;
+<i>12</i>&nbsp;import java.awt.datatransfer.UnsupportedFlavorException;
+<i>13</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>14</i>&nbsp;import java.io.CharArrayReader;
+<i>15</i>&nbsp;import java.io.Externalizable;
+<i>16</i>&nbsp;import java.io.IOException;
+<i>17</i>&nbsp;import java.io.InputStream;
+<i>18</i>&nbsp;import java.io.InputStreamReader;
+<i>19</i>&nbsp;import java.io.ObjectInput;
+<i>20</i>&nbsp;import java.io.ObjectOutput;
+<i>21</i>&nbsp;import java.io.OptionalDataException;
+<i>22</i>&nbsp;import java.io.Reader;
+<i>23</i>&nbsp;import java.io.Serializable;
+<i>24</i>&nbsp;import java.io.StringReader;
+<i>25</i>&nbsp;import java.nio.ByteBuffer;
+<i>26</i>&nbsp;import java.nio.CharBuffer;
+<i>27</i>&nbsp;import java.util.Arrays;
+<i>28</i>&nbsp;import java.util.Collections;
+<i>29</i>&nbsp;import java.util.Comparator;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import sun.awt.datatransfer.DataTransferer;
+<i>32</i>&nbsp;import sun.awt.datatransfer.DataTransferer.DataFlavorComparator;
+<i>33</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>34</i>&nbsp;import sun.security.util.SecurityConstants;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;public class DataFlavor implements Externalizable, Cloneable {
+<i>37</i>&nbsp;    private static final long serialVersionUID = 8367026044764648243L;
+<i>38</i>&nbsp;    private static final Class ioInputStreamClass = InputStream.class;
+<i>39</i>&nbsp;    public static final DataFlavor stringFlavor = createConstant((Class)String.class, &quot;Unicode String&quot;);
+<i>40</i>&nbsp;    public static final DataFlavor imageFlavor = createConstant((String)&quot;image/x-java-image; class=java.awt.Image&quot;, &quot;Image&quot;);
+<i>41</i>&nbsp;    /** @deprecated */
+<i>42</i>&nbsp;    @Deprecated
+<i>43</i>&nbsp;    public static final DataFlavor plainTextFlavor = createConstant((String)&quot;text/plain; charset=unicode; class=java.io.InputStream&quot;, &quot;Plain Text&quot;);
+<i>44</i>&nbsp;    public static final String javaSerializedObjectMimeType = &quot;application/x-java-serialized-object&quot;;
+<i>45</i>&nbsp;    public static final DataFlavor javaFileListFlavor = createConstant((String)&quot;application/x-java-file-list;class=java.util.List&quot;, (String)null);
+<i>46</i>&nbsp;    public static final String javaJVMLocalObjectMimeType = &quot;application/x-java-jvm-local-objectref&quot;;
+<i>47</i>&nbsp;    public static final String javaRemoteObjectMimeType = &quot;application/x-java-remote-object&quot;;
+<i>48</i>&nbsp;    private static Comparator textFlavorComparator;
+<i>49</i>&nbsp;    transient int atom;
+<i>50</i>&nbsp;    MimeType mimeType;
+<i>51</i>&nbsp;    private String humanPresentableName;
+<i>52</i>&nbsp;    private Class representationClass;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    protected static final Class&lt;?&gt; tryToLoadClass(String var0, ClassLoader var1) throws ClassNotFoundException {
+<i>55</i>&nbsp;        ReflectUtil.checkPackageAccess(var0);
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;        try {
+<i>58</i>&nbsp;            SecurityManager var2 = System.getSecurityManager();
+<i>59</i>&nbsp;            if(var2 != null) {
+<i>60</i>&nbsp;                var2.checkPermission(SecurityConstants.GET_CLASSLOADER_PERMISSION);
+<i>61</i>&nbsp;            }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;            ClassLoader var3 = ClassLoader.getSystemClassLoader();
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;            try {
+<i>66</i>&nbsp;                return Class.forName(var0, true, var3);
+<i>67</i>&nbsp;            } catch (ClassNotFoundException var7) {
+<i>68</i>&nbsp;                var3 = Thread.currentThread().getContextClassLoader();
+<i>69</i>&nbsp;                if(var3 != null) {
+<i>70</i>&nbsp;                    try {
+<i>71</i>&nbsp;                        return Class.forName(var0, true, var3);
+<i>72</i>&nbsp;                    } catch (ClassNotFoundException var6) {
+<i>73</i>&nbsp;                        ;
+<i>74</i>&nbsp;                    }
+<i>75</i>&nbsp;                }
+<i>76</i>&nbsp;            }
+<i>77</i>&nbsp;        } catch (SecurityException var8) {
+<i>78</i>&nbsp;            ;
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;        return Class.forName(var0, true, var1);
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    private static DataFlavor createConstant(Class var0, String var1) {
+<i>85</i>&nbsp;        try {
+<i>86</i>&nbsp;            return new DataFlavor(var0, var1);
+<i>87</i>&nbsp;        } catch (Exception var3) {
+<i>88</i>&nbsp;            return null;
+<i>89</i>&nbsp;        }
+<b class="nc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    private static DataFlavor createConstant(String var0, String var1) {
+<i>93</i>&nbsp;        try {
+<i>94</i>&nbsp;            return new DataFlavor(var0, var1);
+<i>95</i>&nbsp;        } catch (Exception var3) {
+<i>96</i>&nbsp;            return null;
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public DataFlavor() {
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    private DataFlavor(String var1, String var2, MimeTypeParameterList var3, Class var4, String var5) {
+<i>104</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>105</i>&nbsp;            throw new NullPointerException(&quot;primaryType&quot;);</b>
+<i>106</i>&nbsp;        } else if(var2 == null) {
+<b class="nc"><i>107</i>&nbsp;            throw new NullPointerException(&quot;subType&quot;);</b>
+<b class="nc"><i>108</i>&nbsp;        } else if(var4 == null) {</b>
+<b class="nc"><i>109</i>&nbsp;            throw new NullPointerException(&quot;representationClass&quot;);</b>
+<i>110</i>&nbsp;        } else {
+<b class="nc"><i>111</i>&nbsp;            if(var3 == null) {</b>
+<i>112</i>&nbsp;                var3 = new MimeTypeParameterList();
+<i>113</i>&nbsp;            }
+<b class="nc"><i>114</i>&nbsp;</b>
+<i>115</i>&nbsp;            var3.set(&quot;class&quot;, var4.getName());
+<b class="nc"><i>116</i>&nbsp;            if(var5 == null) {</b>
+<i>117</i>&nbsp;                var5 = var3.get(&quot;humanPresentableName&quot;);
+<b class="nc"><i>118</i>&nbsp;                if(var5 == null) {</b>
+<b class="nc"><i>119</i>&nbsp;                    var5 = var1 + &quot;/&quot; + var2;</b>
+<i>120</i>&nbsp;                }
+<b class="nc"><i>121</i>&nbsp;            }</b>
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;            try {</b>
+<i>124</i>&nbsp;                this.mimeType = new MimeType(var1, var2, var3);
+<i>125</i>&nbsp;            } catch (MimeTypeParseException var7) {
+<i>126</i>&nbsp;                throw new IllegalArgumentException(&quot;MimeType Parse Exception: &quot; + var7.getMessage());
+<i>127</i>&nbsp;            }
+<b class="nc"><i>128</i>&nbsp;</b>
+<i>129</i>&nbsp;            this.representationClass = var4;
+<b class="nc"><i>130</i>&nbsp;            this.humanPresentableName = var5;</b>
+<b class="nc"><i>131</i>&nbsp;            this.mimeType.removeParameter(&quot;humanPresentableName&quot;);</b>
+<i>132</i>&nbsp;        }
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    public DataFlavor(Class&lt;?&gt; var1, String var2) {
+<i>136</i>&nbsp;        this(&quot;application&quot;, &quot;x-java-serialized-object&quot;, (MimeTypeParameterList)null, var1, var2);
+<i>137</i>&nbsp;        if(var1 == null) {
+<i>138</i>&nbsp;            throw new NullPointerException(&quot;representationClass&quot;);
+<b class="nc"><i>139</i>&nbsp;        }</b>
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<b class="nc"><i>141</i>&nbsp;</b>
+<i>142</i>&nbsp;    public DataFlavor(String var1, String var2) {
+<i>143</i>&nbsp;        if(var1 == null) {
+<i>144</i>&nbsp;            throw new NullPointerException(&quot;mimeType&quot;);
+<i>145</i>&nbsp;        } else {
+<i>146</i>&nbsp;            try {
+<i>147</i>&nbsp;                this.initialize(var1, var2, this.getClass().getClassLoader());
+<i>148</i>&nbsp;            } catch (MimeTypeParseException var4) {
+<i>149</i>&nbsp;                throw new IllegalArgumentException(&quot;failed to parse:&quot; + var1);
+<b class="nc"><i>150</i>&nbsp;            } catch (ClassNotFoundException var5) {</b>
+<b class="nc"><i>151</i>&nbsp;                throw new IllegalArgumentException(&quot;can\&#39;t find specified class: &quot; + var5.getMessage());</b>
+<b class="nc"><i>152</i>&nbsp;            }</b>
+<i>153</i>&nbsp;        }
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    public DataFlavor(String var1, String var2, ClassLoader var3) throws ClassNotFoundException {
+<i>157</i>&nbsp;        if(var1 == null) {
+<i>158</i>&nbsp;            throw new NullPointerException(&quot;mimeType&quot;);
+<i>159</i>&nbsp;        } else {
+<i>160</i>&nbsp;            try {
+<i>161</i>&nbsp;                this.initialize(var1, var2, var3);
+<i>162</i>&nbsp;            } catch (MimeTypeParseException var5) {
+<i>163</i>&nbsp;                throw new IllegalArgumentException(&quot;failed to parse:&quot; + var1);
+<b class="nc"><i>164</i>&nbsp;            }</b>
+<i>165</i>&nbsp;        }
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    public DataFlavor(String var1) throws ClassNotFoundException {
+<i>169</i>&nbsp;        if(var1 == null) {
+<i>170</i>&nbsp;            throw new NullPointerException(&quot;mimeType&quot;);
+<i>171</i>&nbsp;        } else {
+<i>172</i>&nbsp;            try {
+<i>173</i>&nbsp;                this.initialize(var1, (String)null, this.getClass().getClassLoader());
+<b class="nc"><i>174</i>&nbsp;            } catch (MimeTypeParseException var3) {</b>
+<i>175</i>&nbsp;                throw new IllegalArgumentException(&quot;failed to parse:&quot; + var1);
+<i>176</i>&nbsp;            }
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    private void initialize(String var1, String var2, ClassLoader var3) throws MimeTypeParseException, ClassNotFoundException {
+<i>181</i>&nbsp;        if(var1 == null) {
+<i>182</i>&nbsp;            throw new NullPointerException(&quot;mimeType&quot;);
+<i>183</i>&nbsp;        } else {
+<i>184</i>&nbsp;            this.mimeType = new MimeType(var1);
+<i>185</i>&nbsp;            String var4 = this.getParameter(&quot;class&quot;);
+<i>186</i>&nbsp;            if(var4 == null) {
+<i>187</i>&nbsp;                if(&quot;application/x-java-serialized-object&quot;.equals(this.mimeType.getBaseType())) {
+<i>188</i>&nbsp;                    throw new IllegalArgumentException(&quot;no representation class specified for:&quot; + var1);
+<i>189</i>&nbsp;                }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;                this.representationClass = InputStream.class;
+<i>192</i>&nbsp;            } else {
+<b class="nc"><i>193</i>&nbsp;                this.representationClass = tryToLoadClass(var4, var3);</b>
+<i>194</i>&nbsp;            }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;            this.mimeType.setParameter(&quot;class&quot;, this.representationClass.getName());
+<i>197</i>&nbsp;            if(var2 == null) {
+<i>198</i>&nbsp;                var2 = this.mimeType.getParameter(&quot;humanPresentableName&quot;);
+<i>199</i>&nbsp;                if(var2 == null) {
+<i>200</i>&nbsp;                    var2 = this.mimeType.getPrimaryType() + &quot;/&quot; + this.mimeType.getSubType();
+<i>201</i>&nbsp;                }
+<i>202</i>&nbsp;            }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;            this.humanPresentableName = var2;
+<i>205</i>&nbsp;            this.mimeType.removeParameter(&quot;humanPresentableName&quot;);
+<i>206</i>&nbsp;        }
+<i>207</i>&nbsp;    }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    public String toString() {
+<i>210</i>&nbsp;        String var1 = this.getClass().getName();
+<i>211</i>&nbsp;        var1 = var1 + &quot;[&quot; + this.paramString() + &quot;]&quot;;
+<b class="nc"><i>212</i>&nbsp;        return var1;</b>
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    private String paramString() {
+<i>216</i>&nbsp;        String var1 = &quot;&quot;;
+<i>217</i>&nbsp;        var1 = var1 + &quot;mimetype=&quot;;
+<i>218</i>&nbsp;        if(this.mimeType == null) {
+<i>219</i>&nbsp;            var1 = var1 + &quot;null&quot;;
+<i>220</i>&nbsp;        } else {
+<i>221</i>&nbsp;            var1 = var1 + this.mimeType.getBaseType();
+<i>222</i>&nbsp;        }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;        var1 = var1 + &quot;;representationclass=&quot;;
+<i>225</i>&nbsp;        if(this.representationClass == null) {
+<i>226</i>&nbsp;            var1 = var1 + &quot;null&quot;;
+<i>227</i>&nbsp;        } else {
+<i>228</i>&nbsp;            var1 = var1 + this.representationClass.getName();
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        if(DataTransferer.isFlavorCharsetTextType(this) &amp;&amp; (this.isRepresentationClassInputStream() || this.isRepresentationClassByteBuffer() || DataTransferer.byteArrayClass.equals(this.representationClass))) {
+<i>232</i>&nbsp;            var1 = var1 + &quot;;charset=&quot; + DataTransferer.getTextCharset(this);
+<i>233</i>&nbsp;        }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;        return var1;
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    public static final DataFlavor getTextPlainUnicodeFlavor() {
+<i>239</i>&nbsp;        String var0 = null;
+<i>240</i>&nbsp;        DataTransferer var1 = DataTransferer.getInstance();
+<i>241</i>&nbsp;        if(var1 != null) {
+<i>242</i>&nbsp;            var0 = var1.getDefaultUnicodeEncoding();
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;        return new DataFlavor(&quot;text/plain;charset=&quot; + var0 + &quot;;class=java.io.InputStream&quot;, &quot;Plain Text&quot;);
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<b class="nc"><i>248</i>&nbsp;    public static final DataFlavor selectBestTextFlavor(DataFlavor[] var0) {</b>
+<i>249</i>&nbsp;        if(var0 != null &amp;&amp; var0.length != 0) {
+<i>250</i>&nbsp;            if(textFlavorComparator == null) {
+<i>251</i>&nbsp;                textFlavorComparator = new DataFlavor.TextFlavorComparator();
+<i>252</i>&nbsp;            }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;            DataFlavor var1 = (DataFlavor)Collections.max(Arrays.asList(var0), textFlavorComparator);
+<i>255</i>&nbsp;            return !var1.isFlavorTextType()?null:var1;
+<i>256</i>&nbsp;        } else {
+<i>257</i>&nbsp;            return null;
+<b class="nc"><i>258</i>&nbsp;        }</b>
+<b class="nc"><i>259</i>&nbsp;    }</b>
+<b class="nc"><i>260</i>&nbsp;</b>
+<i>261</i>&nbsp;    public Reader getReaderForText(Transferable var1) throws UnsupportedFlavorException, IOException {
+<b class="nc"><i>262</i>&nbsp;        Object var2 = var1.getTransferData(this);</b>
+<b class="nc"><i>263</i>&nbsp;        if(var2 == null) {</b>
+<i>264</i>&nbsp;            throw new IllegalArgumentException(&quot;getTransferData() returned null&quot;);
+<b class="nc"><i>265</i>&nbsp;        } else if(var2 instanceof Reader) {</b>
+<b class="nc"><i>266</i>&nbsp;            return (Reader)var2;</b>
+<i>267</i>&nbsp;        } else if(var2 instanceof String) {
+<i>268</i>&nbsp;            return new StringReader((String)var2);
+<b class="nc"><i>269</i>&nbsp;        } else if(var2 instanceof CharBuffer) {</b>
+<i>270</i>&nbsp;            CharBuffer var9 = (CharBuffer)var2;
+<b class="nc"><i>271</i>&nbsp;            int var8 = var9.remaining();</b>
+<i>272</i>&nbsp;            char[] var10 = new char[var8];
+<b class="nc"><i>273</i>&nbsp;            var9.get(var10, 0, var8);</b>
+<b class="nc"><i>274</i>&nbsp;            return new CharArrayReader(var10);</b>
+<i>275</i>&nbsp;        } else if(var2 instanceof char[]) {
+<b class="nc"><i>276</i>&nbsp;            return new CharArrayReader((char[])((char[])var2));</b>
+<b class="nc"><i>277</i>&nbsp;        } else {</b>
+<i>278</i>&nbsp;            Object var3 = null;
+<i>279</i>&nbsp;            if(var2 instanceof InputStream) {
+<i>280</i>&nbsp;                var3 = (InputStream)var2;
+<b class="nc"><i>281</i>&nbsp;            } else if(var2 instanceof ByteBuffer) {</b>
+<b class="nc"><i>282</i>&nbsp;                ByteBuffer var4 = (ByteBuffer)var2;</b>
+<b class="nc"><i>283</i>&nbsp;                int var5 = var4.remaining();</b>
+<b class="nc"><i>284</i>&nbsp;                byte[] var6 = new byte[var5];</b>
+<i>285</i>&nbsp;                var4.get(var6, 0, var5);
+<b class="nc"><i>286</i>&nbsp;                var3 = new ByteArrayInputStream(var6);</b>
+<b class="nc"><i>287</i>&nbsp;            } else if(var2 instanceof byte[]) {</b>
+<i>288</i>&nbsp;                var3 = new ByteArrayInputStream((byte[])((byte[])var2));
+<b class="nc"><i>289</i>&nbsp;            }</b>
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;            if(var3 == null) {
+<i>292</i>&nbsp;                throw new IllegalArgumentException(&quot;transfer data is not Reader, String, CharBuffer, char array, InputStream, ByteBuffer, or byte array&quot;);
+<i>293</i>&nbsp;            } else {
+<i>294</i>&nbsp;                String var7 = this.getParameter(&quot;charset&quot;);
+<i>295</i>&nbsp;                return var7 == null?new InputStreamReader((InputStream)var3):new InputStreamReader((InputStream)var3, var7);
+<i>296</i>&nbsp;            }
+<i>297</i>&nbsp;        }
+<i>298</i>&nbsp;    }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;    public String getMimeType() {
+<i>301</i>&nbsp;        return this.mimeType != null?this.mimeType.toString():null;
+<i>302</i>&nbsp;    }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    public Class&lt;?&gt; getRepresentationClass() {
+<i>305</i>&nbsp;        return this.representationClass;
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;    public String getHumanPresentableName() {</b>
+<b class="nc"><i>309</i>&nbsp;        return this.humanPresentableName;</b>
+<b class="nc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    public String getPrimaryType() {
+<i>313</i>&nbsp;        return this.mimeType != null?this.mimeType.getPrimaryType():null;
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    public String getSubType() {
+<i>317</i>&nbsp;        return this.mimeType != null?this.mimeType.getSubType():null;
+<i>318</i>&nbsp;    }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;    public String getParameter(String var1) {
+<i>321</i>&nbsp;        return var1.equals(&quot;humanPresentableName&quot;)?this.humanPresentableName:(this.mimeType != null?this.mimeType.getParameter(var1):null);
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    public void setHumanPresentableName(String var1) {
+<i>325</i>&nbsp;        this.humanPresentableName = var1;
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    public boolean equals(Object var1) {
+<i>329</i>&nbsp;        return var1 instanceof DataFlavor &amp;&amp; this.equals((DataFlavor)((DataFlavor)var1));
+<i>330</i>&nbsp;    }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    public boolean equals(DataFlavor var1) {
+<i>333</i>&nbsp;        if(var1 == null) {
+<i>334</i>&nbsp;            return false;
+<i>335</i>&nbsp;        } else if(this == var1) {
+<i>336</i>&nbsp;            return true;
+<i>337</i>&nbsp;        } else {
+<i>338</i>&nbsp;            if(this.representationClass == null) {
+<i>339</i>&nbsp;                if(var1.getRepresentationClass() != null) {
+<i>340</i>&nbsp;                    return false;
+<i>341</i>&nbsp;                }
+<i>342</i>&nbsp;            } else if(!this.representationClass.equals(var1.getRepresentationClass())) {
+<i>343</i>&nbsp;                return false;
+<b class="nc"><i>344</i>&nbsp;            }</b>
+<b class="nc"><i>345</i>&nbsp;</b>
+<b class="nc"><i>346</i>&nbsp;            if(this.mimeType == null) {</b>
+<i>347</i>&nbsp;                if(var1.mimeType != null) {
+<i>348</i>&nbsp;                    return false;
+<b class="nc"><i>349</i>&nbsp;                }</b>
+<b class="nc"><i>350</i>&nbsp;            } else {</b>
+<b class="nc"><i>351</i>&nbsp;                if(!this.mimeType.match(var1.mimeType)) {</b>
+<b class="nc"><i>352</i>&nbsp;                    return false;</b>
+<b class="nc"><i>353</i>&nbsp;                }</b>
+<b class="nc"><i>354</i>&nbsp;</b>
+<i>355</i>&nbsp;                if(&quot;text&quot;.equals(this.getPrimaryType()) &amp;&amp; DataTransferer.doesSubtypeSupportCharset(this) &amp;&amp; this.representationClass != null &amp;&amp; !this.isRepresentationClassReader() &amp;&amp; !String.class.equals(this.representationClass) &amp;&amp; !this.isRepresentationClassCharBuffer() &amp;&amp; !DataTransferer.charArrayClass.equals(this.representationClass)) {
+<i>356</i>&nbsp;                    String var2 = DataTransferer.canonicalName(this.getParameter(&quot;charset&quot;));
+<i>357</i>&nbsp;                    String var3 = DataTransferer.canonicalName(var1.getParameter(&quot;charset&quot;));
+<i>358</i>&nbsp;                    if(var2 == null) {
+<i>359</i>&nbsp;                        if(var3 != null) {
+<i>360</i>&nbsp;                            return false;
+<i>361</i>&nbsp;                        }
+<i>362</i>&nbsp;                    } else if(!var2.equals(var3)) {
+<i>363</i>&nbsp;                        return false;
+<i>364</i>&nbsp;                    }
+<i>365</i>&nbsp;                }
+<i>366</i>&nbsp;            }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;            return true;
+<i>369</i>&nbsp;        }
+<i>370</i>&nbsp;    }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    /** @deprecated */
+<i>373</i>&nbsp;    @Deprecated
+<i>374</i>&nbsp;    public boolean equals(String var1) {
+<i>375</i>&nbsp;        return var1 != null &amp;&amp; this.mimeType != null?this.isMimeTypeEqual((String)var1):false;
+<i>376</i>&nbsp;    }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;    public int hashCode() {
+<i>379</i>&nbsp;        int var1 = 0;
+<i>380</i>&nbsp;        if(this.representationClass != null) {
+<i>381</i>&nbsp;            var1 += this.representationClass.hashCode();
+<i>382</i>&nbsp;        }
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;        if(this.mimeType != null) {</b>
+<b class="nc"><i>385</i>&nbsp;            String var2 = this.mimeType.getPrimaryType();</b>
+<b class="nc"><i>386</i>&nbsp;            if(var2 != null) {</b>
+<i>387</i>&nbsp;                var1 += var2.hashCode();
+<i>388</i>&nbsp;            }
+<b class="nc"><i>389</i>&nbsp;</b>
+<b class="nc"><i>390</i>&nbsp;            if(&quot;text&quot;.equals(var2) &amp;&amp; DataTransferer.doesSubtypeSupportCharset(this) &amp;&amp; this.representationClass != null &amp;&amp; !this.isRepresentationClassReader() &amp;&amp; !String.class.equals(this.representationClass) &amp;&amp; !this.isRepresentationClassCharBuffer() &amp;&amp; !DataTransferer.charArrayClass.equals(this.representationClass)) {</b>
+<b class="nc"><i>391</i>&nbsp;                String var3 = DataTransferer.canonicalName(this.getParameter(&quot;charset&quot;));</b>
+<b class="nc"><i>392</i>&nbsp;                if(var3 != null) {</b>
+<i>393</i>&nbsp;                    var1 += var3.hashCode();
+<i>394</i>&nbsp;                }
+<i>395</i>&nbsp;            }
+<i>396</i>&nbsp;        }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;        return var1;
+<i>399</i>&nbsp;    }
+<i>400</i>&nbsp;
+<i>401</i>&nbsp;    public boolean match(DataFlavor var1) {
+<i>402</i>&nbsp;        return this.equals((DataFlavor)var1);
+<i>403</i>&nbsp;    }
+<i>404</i>&nbsp;
+<i>405</i>&nbsp;    public boolean isMimeTypeEqual(String var1) {
+<i>406</i>&nbsp;        if(var1 == null) {
+<i>407</i>&nbsp;            throw new NullPointerException(&quot;mimeType&quot;);
+<i>408</i>&nbsp;        } else if(this.mimeType == null) {
+<i>409</i>&nbsp;            return false;
+<i>410</i>&nbsp;        } else {
+<i>411</i>&nbsp;            try {
+<b class="nc"><i>412</i>&nbsp;                return this.mimeType.match(new MimeType(var1));</b>
+<b class="nc"><i>413</i>&nbsp;            } catch (MimeTypeParseException var3) {</b>
+<b class="nc"><i>414</i>&nbsp;                return false;</b>
+<i>415</i>&nbsp;            }
+<i>416</i>&nbsp;        }
+<b class="nc"><i>417</i>&nbsp;    }</b>
+<b class="nc"><i>418</i>&nbsp;</b>
+<b class="nc"><i>419</i>&nbsp;    public final boolean isMimeTypeEqual(DataFlavor var1) {</b>
+<b class="nc"><i>420</i>&nbsp;        return this.isMimeTypeEqual((MimeType)var1.mimeType);</b>
+<i>421</i>&nbsp;    }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    private boolean isMimeTypeEqual(MimeType var1) {
+<i>424</i>&nbsp;        return this.mimeType == null?var1 == null:this.mimeType.match(var1);
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    public boolean isMimeTypeSerializedObject() {
+<i>428</i>&nbsp;        return this.isMimeTypeEqual((String)&quot;application/x-java-serialized-object&quot;);
+<i>429</i>&nbsp;    }
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;    public final Class&lt;?&gt; getDefaultRepresentationClass() {
+<i>432</i>&nbsp;        return ioInputStreamClass;
+<i>433</i>&nbsp;    }
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;    public final String getDefaultRepresentationClassAsString() {
+<i>436</i>&nbsp;        return this.getDefaultRepresentationClass().getName();
+<i>437</i>&nbsp;    }
+<b class="nc"><i>438</i>&nbsp;</b>
+<b class="nc"><i>439</i>&nbsp;    public boolean isRepresentationClassInputStream() {</b>
+<i>440</i>&nbsp;        return ioInputStreamClass.isAssignableFrom(this.representationClass);
+<i>441</i>&nbsp;    }
+<b class="nc"><i>442</i>&nbsp;</b>
+<i>443</i>&nbsp;    public boolean isRepresentationClassReader() {
+<b class="nc"><i>444</i>&nbsp;        return Reader.class.isAssignableFrom(this.representationClass);</b>
+<i>445</i>&nbsp;    }
+<b class="nc"><i>446</i>&nbsp;</b>
+<b class="nc"><i>447</i>&nbsp;    public boolean isRepresentationClassCharBuffer() {</b>
+<i>448</i>&nbsp;        return CharBuffer.class.isAssignableFrom(this.representationClass);
+<b class="nc"><i>449</i>&nbsp;    }</b>
+<i>450</i>&nbsp;
+<b class="nc"><i>451</i>&nbsp;    public boolean isRepresentationClassByteBuffer() {</b>
+<i>452</i>&nbsp;        return ByteBuffer.class.isAssignableFrom(this.representationClass);
+<b class="nc"><i>453</i>&nbsp;    }</b>
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;    public boolean isRepresentationClassSerializable() {
+<b class="nc"><i>456</i>&nbsp;        return Serializable.class.isAssignableFrom(this.representationClass);</b>
+<i>457</i>&nbsp;    }
+<b class="nc"><i>458</i>&nbsp;</b>
+<b class="nc"><i>459</i>&nbsp;    public boolean isRepresentationClassRemote() {</b>
+<b class="nc"><i>460</i>&nbsp;        return DataTransferer.isRemote(this.representationClass);</b>
+<b class="nc"><i>461</i>&nbsp;    }</b>
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    public boolean isFlavorSerializedObjectType() {
+<b class="nc"><i>464</i>&nbsp;        return this.isRepresentationClassSerializable() &amp;&amp; this.isMimeTypeEqual((String)&quot;application/x-java-serialized-object&quot;);</b>
+<i>465</i>&nbsp;    }
+<b class="nc"><i>466</i>&nbsp;</b>
+<i>467</i>&nbsp;    public boolean isFlavorRemoteObjectType() {
+<i>468</i>&nbsp;        return this.isRepresentationClassRemote() &amp;&amp; this.isRepresentationClassSerializable() &amp;&amp; this.isMimeTypeEqual((String)&quot;application/x-java-remote-object&quot;);
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    public boolean isFlavorJavaFileListType() {
+<i>472</i>&nbsp;        return this.mimeType != null &amp;&amp; this.representationClass != null?List.class.isAssignableFrom(this.representationClass) &amp;&amp; this.mimeType.match(javaFileListFlavor.mimeType):false;
+<i>473</i>&nbsp;    }
+<i>474</i>&nbsp;
+<i>475</i>&nbsp;    public boolean isFlavorTextType() {
+<i>476</i>&nbsp;        return DataTransferer.isFlavorCharsetTextType(this) || DataTransferer.isFlavorNoncharsetTextType(this);
+<i>477</i>&nbsp;    }
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;    public synchronized void writeExternal(ObjectOutput var1) throws IOException {
+<i>480</i>&nbsp;        if(this.mimeType != null) {
+<i>481</i>&nbsp;            this.mimeType.setParameter(&quot;humanPresentableName&quot;, this.humanPresentableName);
+<b class="nc"><i>482</i>&nbsp;            var1.writeObject(this.mimeType);</b>
+<b class="nc"><i>483</i>&nbsp;            this.mimeType.removeParameter(&quot;humanPresentableName&quot;);</b>
+<b class="nc"><i>484</i>&nbsp;        } else {</b>
+<i>485</i>&nbsp;            var1.writeObject((Object)null);
+<i>486</i>&nbsp;        }
+<i>487</i>&nbsp;
+<b class="nc"><i>488</i>&nbsp;        var1.writeObject(this.representationClass);</b>
+<b class="nc"><i>489</i>&nbsp;    }</b>
+<b class="nc"><i>490</i>&nbsp;</b>
+<b class="nc"><i>491</i>&nbsp;    public synchronized void readExternal(ObjectInput var1) throws IOException, ClassNotFoundException {</b>
+<i>492</i>&nbsp;        String var2 = null;
+<b class="nc"><i>493</i>&nbsp;        this.mimeType = (MimeType)var1.readObject();</b>
+<i>494</i>&nbsp;        if(this.mimeType != null) {
+<b class="nc"><i>495</i>&nbsp;            this.humanPresentableName = this.mimeType.getParameter(&quot;humanPresentableName&quot;);</b>
+<b class="nc"><i>496</i>&nbsp;            this.mimeType.removeParameter(&quot;humanPresentableName&quot;);</b>
+<b class="nc"><i>497</i>&nbsp;            var2 = this.mimeType.getParameter(&quot;class&quot;);</b>
+<i>498</i>&nbsp;            if(var2 == null) {
+<b class="nc"><i>499</i>&nbsp;                throw new IOException(&quot;no class parameter specified in: &quot; + this.mimeType);</b>
+<i>500</i>&nbsp;            }
+<b class="nc"><i>501</i>&nbsp;        }</b>
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;        try {
+<i>504</i>&nbsp;            this.representationClass = (Class)var1.readObject();
+<i>505</i>&nbsp;        } catch (OptionalDataException var4) {
+<b class="nc"><i>506</i>&nbsp;            if(!var4.eof || var4.length != 0) {</b>
+<i>507</i>&nbsp;                throw var4;
+<b class="nc"><i>508</i>&nbsp;            }</b>
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;            if(var2 != null) {
+<i>511</i>&nbsp;                this.representationClass = tryToLoadClass(var2, this.getClass().getClassLoader());
+<i>512</i>&nbsp;            }
+<i>513</i>&nbsp;        }
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;    }
+<i>516</i>&nbsp;
+<i>517</i>&nbsp;    public Object clone() throws CloneNotSupportedException {
+<i>518</i>&nbsp;        Object var1 = super.clone();
+<i>519</i>&nbsp;        if(this.mimeType != null) {
+<i>520</i>&nbsp;            ((DataFlavor)var1).mimeType = (MimeType)this.mimeType.clone();
+<i>521</i>&nbsp;        }
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;        return var1;
+<i>524</i>&nbsp;    }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;    /** @deprecated */
+<i>527</i>&nbsp;    @Deprecated
+<b class="nc"><i>528</i>&nbsp;    protected String normalizeMimeTypeParameter(String var1, String var2) {</b>
+<b class="nc"><i>529</i>&nbsp;        return var2;</b>
+<b class="nc"><i>530</i>&nbsp;    }</b>
+<b class="nc"><i>531</i>&nbsp;</b>
+<i>532</i>&nbsp;    /** @deprecated */
+<b class="nc"><i>533</i>&nbsp;    @Deprecated</b>
+<i>534</i>&nbsp;    protected String normalizeMimeType(String var1) {
+<i>535</i>&nbsp;        return var1;
+<i>536</i>&nbsp;    }
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;    static class TextFlavorComparator extends DataFlavorComparator {
+<i>539</i>&nbsp;        TextFlavorComparator() {
+<i>540</i>&nbsp;        }
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;        public int compare(Object var1, Object var2) {
+<i>543</i>&nbsp;            DataFlavor var3 = (DataFlavor)var1;
+<i>544</i>&nbsp;            DataFlavor var4 = (DataFlavor)var2;
+<i>545</i>&nbsp;            return var3.isFlavorTextType()?(var4.isFlavorTextType()?super.compare(var1, var2):1):(var4.isFlavorTextType()?-1:0);
+<i>546</i>&nbsp;        }
+<i>547</i>&nbsp;    }
+<i>548</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

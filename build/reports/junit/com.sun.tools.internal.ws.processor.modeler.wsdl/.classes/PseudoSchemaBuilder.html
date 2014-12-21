@@ -1,0 +1,319 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PseudoSchemaBuilder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.ws.processor.modeler.wsdl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PseudoSchemaBuilder (com.sun.tools.internal.ws.processor.modeler.wsdl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PseudoSchemaBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 94)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.ws.processor.modeler.wsdl;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.internal.ws.processor.generator.Names;
+<i>9</i>&nbsp;import com.sun.tools.internal.ws.processor.modeler.wsdl.WSDLModeler;
+<i>10</i>&nbsp;import com.sun.tools.internal.ws.processor.modeler.wsdl.WSDLModelerBase;
+<i>11</i>&nbsp;import com.sun.tools.internal.ws.wscompile.ErrorReceiver;
+<i>12</i>&nbsp;import com.sun.tools.internal.ws.wscompile.WsimportOptions;
+<i>13</i>&nbsp;import com.sun.tools.internal.ws.wscompile.Options.Target;
+<i>14</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.Binding;
+<i>15</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.BindingOperation;
+<i>16</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.Message;
+<i>17</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.MessagePart;
+<i>18</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.Operation;
+<i>19</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.Port;
+<i>20</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.PortType;
+<i>21</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.Service;
+<i>22</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.WSDLDocument;
+<i>23</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.jaxws.JAXWSBinding;
+<i>24</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.schema.SchemaKinds;
+<i>25</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.soap.SOAP12Binding;
+<i>26</i>&nbsp;import com.sun.tools.internal.ws.wsdl.document.soap.SOAPBinding;
+<i>27</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>28</i>&nbsp;import java.io.StringReader;
+<i>29</i>&nbsp;import java.io.StringWriter;
+<i>30</i>&nbsp;import java.text.MessageFormat;
+<i>31</i>&nbsp;import java.util.ArrayList;
+<i>32</i>&nbsp;import java.util.HashMap;
+<i>33</i>&nbsp;import java.util.HashSet;
+<i>34</i>&nbsp;import java.util.Iterator;
+<i>35</i>&nbsp;import java.util.List;
+<i>36</i>&nbsp;import java.util.Set;
+<i>37</i>&nbsp;import javax.xml.namespace.QName;
+<i>38</i>&nbsp;import org.xml.sax.InputSource;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;public class PseudoSchemaBuilder {
+<i>41</i>&nbsp;    private final StringWriter buf = new StringWriter();
+<i>42</i>&nbsp;    private final WSDLDocument wsdlDocument;
+<i>43</i>&nbsp;    private WSDLModeler wsdlModeler;
+<i>44</i>&nbsp;    private final List&lt;InputSource&gt; schemas = new ArrayList();
+<i>45</i>&nbsp;    private final HashMap&lt;QName, Port&gt; bindingNameToPortMap = new HashMap();
+<i>46</i>&nbsp;    private static final String w3ceprSchemaBinding = &quot;&lt;bindings\n  xmlns=\&quot;http://java.sun.com/xml/ns/jaxb\&quot;\n  xmlns:wsa=\&quot;http://www.w3.org/2005/08/addressing\&quot;\n  xmlns:xjc=\&quot;http://java.sun.com/xml/ns/jaxb/xjc\&quot;\n  version=\&quot;2.1\&quot;&gt;\n  \n  &lt;bindings scd=\&quot;x-schema::wsa\&quot; if-exists=\&quot;true\&quot;&gt;\n    &lt;bindings scd=\&quot;wsa:EndpointReference\&quot;&gt;\n      &lt;class ref=\&quot;javax.xml.ws.wsaddressing.W3CEndpointReference\&quot; xjc:recursive=\&quot;true\&quot;/&gt;\n    &lt;/bindings&gt;\n    &lt;bindings scd=\&quot;~wsa:EndpointReferenceType\&quot;&gt;\n      &lt;class ref=\&quot;javax.xml.ws.wsaddressing.W3CEndpointReference\&quot; xjc:recursive=\&quot;true\&quot;/&gt;\n    &lt;/bindings&gt;\n  &lt;/bindings&gt;\n&lt;/bindings&gt;&quot;;
+<i>47</i>&nbsp;    private static final String memberSubmissionEPR = &quot;&lt;bindings\n  xmlns=\&quot;http://java.sun.com/xml/ns/jaxb\&quot;\n  xmlns:wsa=\&quot;http://schemas.xmlsoap.org/ws/2004/08/addressing\&quot;\n  version=\&quot;2.1\&quot;&gt;\n  \n  &lt;bindings scd=\&quot;x-schema::wsa\&quot; if-exists=\&quot;true\&quot;&gt;\n    &lt;bindings scd=\&quot;wsa:EndpointReference\&quot;&gt;\n      &lt;class ref=\&quot;com.sun.xml.internal.ws.developer.MemberSubmissionEndpointReference\&quot;/&gt;\n    &lt;/bindings&gt;\n    &lt;bindings scd=\&quot;~wsa:EndpointReferenceType\&quot;&gt;\n      &lt;class ref=\&quot;com.sun.xml.internal.ws.developer.MemberSubmissionEndpointReference\&quot;/&gt;\n    &lt;/bindings&gt;\n  &lt;/bindings&gt;\n&lt;/bindings&gt;&quot;;
+<i>48</i>&nbsp;    private static final String sysId = &quot;http://dummy.pseudo-schema#schema&quot;;
+<i>49</i>&nbsp;    private WsimportOptions options;
+<i>50</i>&nbsp;    boolean asyncRespBeanBinding = false;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public static List&lt;InputSource&gt; build(WSDLModeler wsdlModeler, WsimportOptions options, ErrorReceiver errReceiver) {
+<i>53</i>&nbsp;        PseudoSchemaBuilder b = new PseudoSchemaBuilder(wsdlModeler.document);
+<b class="nc"><i>54</i>&nbsp;        b.wsdlModeler = wsdlModeler;</b>
+<i>55</i>&nbsp;        b.options = options;
+<i>56</i>&nbsp;        b.build();
+<b class="nc"><i>57</i>&nbsp;</b>
+<b class="nc"><i>58</i>&nbsp;        int i;</b>
+<i>59</i>&nbsp;        InputSource is;
+<i>60</i>&nbsp;        for(i = 0; i &lt; b.schemas.size(); ++i) {
+<i>61</i>&nbsp;            is = (InputSource)b.schemas.get(i);
+<i>62</i>&nbsp;            is.setSystemId(&quot;http://dummy.pseudo-schema#schema&quot; + (i + 1));
+<i>63</i>&nbsp;        }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;        if(!options.noAddressingBbinding &amp;&amp; options.target.isLaterThan(Target.V2_1)) {
+<i>66</i>&nbsp;            is = new InputSource(new ByteArrayInputStream(&quot;&lt;bindings\n  xmlns=\&quot;http://java.sun.com/xml/ns/jaxb\&quot;\n  xmlns:wsa=\&quot;http://www.w3.org/2005/08/addressing\&quot;\n  xmlns:xjc=\&quot;http://java.sun.com/xml/ns/jaxb/xjc\&quot;\n  version=\&quot;2.1\&quot;&gt;\n  \n  &lt;bindings scd=\&quot;x-schema::wsa\&quot; if-exists=\&quot;true\&quot;&gt;\n    &lt;bindings scd=\&quot;wsa:EndpointReference\&quot;&gt;\n      &lt;class ref=\&quot;javax.xml.ws.wsaddressing.W3CEndpointReference\&quot; xjc:recursive=\&quot;true\&quot;/&gt;\n    &lt;/bindings&gt;\n    &lt;bindings scd=\&quot;~wsa:EndpointReferenceType\&quot;&gt;\n      &lt;class ref=\&quot;javax.xml.ws.wsaddressing.W3CEndpointReference\&quot; xjc:recursive=\&quot;true\&quot;/&gt;\n    &lt;/bindings&gt;\n  &lt;/bindings&gt;\n&lt;/bindings&gt;&quot;.getBytes()));
+<i>67</i>&nbsp;            StringBuilder var10001 = (new StringBuilder()).append(&quot;http://dummy.pseudo-schema#schema&quot;);
+<i>68</i>&nbsp;            ++i;
+<i>69</i>&nbsp;            is.setSystemId(var10001.append(i + 1).toString());
+<i>70</i>&nbsp;            b.schemas.add(is);
+<i>71</i>&nbsp;        }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;        return b.schemas;
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    private PseudoSchemaBuilder(WSDLDocument _wsdl) {
+<i>77</i>&nbsp;        this.wsdlDocument = _wsdl;
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    private void build() {
+<i>81</i>&nbsp;        Iterator itr = this.wsdlDocument.getDefinitions().services();
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;        while(itr.hasNext()) {
+<i>84</i>&nbsp;            this.build((Service)((Service)itr.next()));
+<i>85</i>&nbsp;        }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    private void build(Service service) {
+<i>90</i>&nbsp;        Iterator itr = service.ports();
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;        while(itr.hasNext()) {
+<i>93</i>&nbsp;            this.build((Port)((Port)itr.next()));
+<i>94</i>&nbsp;        }
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;    }</b>
+<b class="nc"><i>97</i>&nbsp;</b>
+<b class="nc"><i>98</i>&nbsp;    private void build(Port port) {</b>
+<i>99</i>&nbsp;        if(!this.wsdlModeler.isProvider(port)) {
+<b class="nc"><i>100</i>&nbsp;            Binding binding = port.resolveBinding(this.wsdlDocument);</b>
+<b class="nc"><i>101</i>&nbsp;            SOAPBinding soapBinding = (SOAPBinding)WSDLModelerBase.getExtensionOfType(binding, SOAPBinding.class);</b>
+<b class="nc"><i>102</i>&nbsp;            if(soapBinding == null) {</b>
+<i>103</i>&nbsp;                soapBinding = (SOAPBinding)WSDLModelerBase.getExtensionOfType(binding, SOAP12Binding.class);
+<i>104</i>&nbsp;            }
+<b class="nc"><i>105</i>&nbsp;</b>
+<b class="nc"><i>106</i>&nbsp;            if(soapBinding != null) {</b>
+<b class="nc"><i>107</i>&nbsp;                PortType portType = binding.resolvePortType(this.wsdlDocument);</b>
+<b class="nc"><i>108</i>&nbsp;                QName bindingName = WSDLModelerBase.getQNameOf(binding);</b>
+<i>109</i>&nbsp;                if(!this.bindingNameToPortMap.containsKey(bindingName)) {
+<i>110</i>&nbsp;                    this.bindingNameToPortMap.put(bindingName, port);
+<i>111</i>&nbsp;                    Iterator itr = binding.operations();
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;                    while(itr.hasNext()) {
+<i>114</i>&nbsp;                        BindingOperation bindingOperation = (BindingOperation)itr.next();
+<i>115</i>&nbsp;                        Set boundedOps = portType.getOperationsNamed(bindingOperation.getName());
+<i>116</i>&nbsp;                        if(boundedOps.size() == 1) {
+<i>117</i>&nbsp;                            Operation operation = (Operation)boundedOps.iterator().next();
+<b class="nc"><i>118</i>&nbsp;                            if(this.wsdlModeler.isAsync(portType, operation)) {</b>
+<i>119</i>&nbsp;                                this.buildAsync(portType, operation, bindingOperation);
+<i>120</i>&nbsp;                            }
+<i>121</i>&nbsp;                        }
+<b class="nc"><i>122</i>&nbsp;                    }</b>
+<b class="nc"><i>123</i>&nbsp;</b>
+<i>124</i>&nbsp;                }
+<i>125</i>&nbsp;            }
+<i>126</i>&nbsp;        }
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<b class="nc"><i>128</i>&nbsp;</b>
+<i>129</i>&nbsp;    private void buildAsync(PortType portType, Operation operation, BindingOperation bindingOperation) {
+<i>130</i>&nbsp;        String operationName = this.getCustomizedOperationName(operation);
+<i>131</i>&nbsp;        if(operationName != null) {
+<b class="nc"><i>132</i>&nbsp;            Message outputMessage = null;</b>
+<b class="nc"><i>133</i>&nbsp;            if(operation.getOutput() != null) {</b>
+<i>134</i>&nbsp;                outputMessage = operation.getOutput().resolveMessage(this.wsdlDocument);
+<i>135</i>&nbsp;            }
+<i>136</i>&nbsp;
+<b class="nc"><i>137</i>&nbsp;            if(outputMessage != null) {</b>
+<i>138</i>&nbsp;                ArrayList allParts = new ArrayList(outputMessage.getParts());
+<b class="nc"><i>139</i>&nbsp;                if(this.options.additionalHeaders) {</b>
+<i>140</i>&nbsp;                    List addtionalHeaderParts = this.wsdlModeler.getAdditionHeaderParts(bindingOperation, outputMessage, false);
+<b class="nc"><i>141</i>&nbsp;                    allParts.addAll(addtionalHeaderParts);</b>
+<i>142</i>&nbsp;                }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;                if(allParts.size() &gt; 1) {
+<b class="nc"><i>145</i>&nbsp;                    this.build(this.getOperationName(operationName), allParts);</b>
+<b class="nc"><i>146</i>&nbsp;                }</b>
+<i>147</i>&nbsp;            }
+<i>148</i>&nbsp;
+<b class="nc"><i>149</i>&nbsp;        }</b>
+<i>150</i>&nbsp;    }
+<b class="nc"><i>151</i>&nbsp;</b>
+<i>152</i>&nbsp;    private String getCustomizedOperationName(Operation operation) {
+<b class="nc"><i>153</i>&nbsp;        JAXWSBinding jaxwsCustomization = (JAXWSBinding)WSDLModelerBase.getExtensionOfType(operation, JAXWSBinding.class);</b>
+<i>154</i>&nbsp;        String operationName = jaxwsCustomization != null?(jaxwsCustomization.getMethodName() != null?jaxwsCustomization.getMethodName().getName():null):null;
+<i>155</i>&nbsp;        return operationName != null?(Names.isJavaReservedWord(operationName)?null:operationName):operation.getName();
+<b class="nc"><i>156</i>&nbsp;    }</b>
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    private void writeImports(QName elementName, List&lt;MessagePart&gt; parts) {
+<b class="nc"><i>159</i>&nbsp;        HashSet uris = new HashSet();</b>
+<i>160</i>&nbsp;        Iterator i$ = parts.iterator();
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;        while(i$.hasNext()) {</b>
+<b class="nc"><i>163</i>&nbsp;            MessagePart p = (MessagePart)i$.next();</b>
+<i>164</i>&nbsp;            String ns = p.getDescriptor().getNamespaceURI();
+<i>165</i>&nbsp;            if(!uris.contains(ns) &amp;&amp; !ns.equals(&quot;http://www.w3.org/2001/XMLSchema&quot;) &amp;&amp; !ns.equals(elementName.getNamespaceURI())) {
+<b class="nc"><i>166</i>&nbsp;                this.print(&quot;&lt;xs:import namespace=\&#39;\&#39;{0}\&#39;\&#39;/&gt;&quot;, (Object)ns);</b>
+<b class="nc"><i>167</i>&nbsp;                uris.add(ns);</b>
+<b class="nc"><i>168</i>&nbsp;            }</b>
+<b class="nc"><i>169</i>&nbsp;        }</b>
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    }
+<b class="nc"><i>172</i>&nbsp;</b>
+<b class="nc"><i>173</i>&nbsp;    private void build(QName elementName, List&lt;MessagePart&gt; allParts) {</b>
+<i>174</i>&nbsp;        this.print(&quot;&lt;xs:schema xmlns:xs=\&#39;\&#39;http://www.w3.org/2001/XMLSchema\&#39;\&#39;           xmlns:jaxb=\&#39;\&#39;http://java.sun.com/xml/ns/jaxb\&#39;\&#39;           xmlns:xjc=\&#39;\&#39;http://java.sun.com/xml/ns/jaxb/xjc\&#39;\&#39;           jaxb:extensionBindingPrefixes=\&#39;\&#39;xjc\&#39;\&#39;           jaxb:version=\&#39;\&#39;1.0\&#39;\&#39;           targetNamespace=\&#39;\&#39;{0}\&#39;\&#39;&gt;&quot;, (Object)elementName.getNamespaceURI());
+<b class="nc"><i>175</i>&nbsp;        this.writeImports(elementName, allParts);</b>
+<i>176</i>&nbsp;        if(!this.asyncRespBeanBinding) {
+<i>177</i>&nbsp;            this.print(&quot;&lt;xs:annotation&gt;&lt;xs:appinfo&gt;  &lt;jaxb:schemaBindings&gt;    &lt;jaxb:package name=\&#39;\&#39;{0}\&#39;\&#39; /&gt;  &lt;/jaxb:schemaBindings&gt;&lt;/xs:appinfo&gt;&lt;/xs:annotation&gt;&quot;, (Object)this.wsdlModeler.getJavaPackage());
+<i>178</i>&nbsp;            this.asyncRespBeanBinding = true;
+<i>179</i>&nbsp;        }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;        this.print(&quot;&lt;xs:element name=\&#39;\&#39;{0}\&#39;\&#39;&gt;&quot;, (Object)elementName.getLocalPart());
+<i>182</i>&nbsp;        this.print(&quot;&lt;xs:complexType&gt;&quot;);
+<i>183</i>&nbsp;        this.print(&quot;&lt;xs:sequence&gt;&quot;);
+<b class="nc"><i>184</i>&nbsp;        Iterator is = allParts.iterator();</b>
+<b class="nc"><i>185</i>&nbsp;</b>
+<i>186</i>&nbsp;        while(is.hasNext()) {
+<b class="nc"><i>187</i>&nbsp;            MessagePart p = (MessagePart)is.next();</b>
+<b class="nc"><i>188</i>&nbsp;            if(p.getDescriptorKind() == SchemaKinds.XSD_ELEMENT) {</b>
+<b class="nc"><i>189</i>&nbsp;                this.print(&quot;&lt;xs:element ref=\&#39;\&#39;types:{0}\&#39;\&#39; xmlns:types=\&#39;\&#39;{1}\&#39;\&#39;/&gt;&quot;, p.getDescriptor().getLocalPart(), p.getDescriptor().getNamespaceURI());</b>
+<b class="nc"><i>190</i>&nbsp;            } else {</b>
+<b class="nc"><i>191</i>&nbsp;                this.print(&quot;&lt;xs:element name=\&#39;\&#39;{0}\&#39;\&#39; type=\&#39;\&#39;{1}\&#39;\&#39; xmlns=\&#39;\&#39;{2}\&#39;\&#39; /&gt;&quot;, p.getName(), p.getDescriptor().getLocalPart(), p.getDescriptor().getNamespaceURI());</b>
+<b class="nc"><i>192</i>&nbsp;            }</b>
+<b class="nc"><i>193</i>&nbsp;        }</b>
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;        this.print(&quot;&lt;/xs:sequence&gt;&quot;);
+<i>196</i>&nbsp;        this.print(&quot;&lt;/xs:complexType&gt;&quot;);
+<i>197</i>&nbsp;        this.print(&quot;&lt;/xs:element&gt;&quot;);
+<i>198</i>&nbsp;        this.print(&quot;&lt;/xs:schema&gt;&quot;);
+<b class="nc"><i>199</i>&nbsp;        if(this.buf.toString().length() &gt; 0) {</b>
+<b class="nc"><i>200</i>&nbsp;            InputSource is1 = new InputSource(new StringReader(this.buf.toString()));</b>
+<b class="nc"><i>201</i>&nbsp;            this.schemas.add(is1);</b>
+<b class="nc"><i>202</i>&nbsp;            this.buf.getBuffer().setLength(0);</b>
+<b class="nc"><i>203</i>&nbsp;        }</b>
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    }
+<b class="nc"><i>206</i>&nbsp;</b>
+<i>207</i>&nbsp;    private QName getOperationName(String operationName) {
+<b class="nc"><i>208</i>&nbsp;        if(operationName == null) {</b>
+<i>209</i>&nbsp;            return null;
+<i>210</i>&nbsp;        } else {
+<i>211</i>&nbsp;            String namespaceURI = &quot;&quot;;
+<b class="nc"><i>212</i>&nbsp;            return new QName(namespaceURI, operationName + &quot;Response&quot;);</b>
+<b class="nc"><i>213</i>&nbsp;        }</b>
+<b class="nc"><i>214</i>&nbsp;    }</b>
+<b class="nc"><i>215</i>&nbsp;</b>
+<b class="nc"><i>216</i>&nbsp;    private void print(String msg) {</b>
+<b class="nc"><i>217</i>&nbsp;        this.print(msg, (Object[])(new Object[0]));</b>
+<i>218</i>&nbsp;    }
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;    private void print(String msg, Object arg1) {
+<i>221</i>&nbsp;        this.print(msg, (Object[])(new Object[]{arg1}));
+<b class="nc"><i>222</i>&nbsp;    }</b>
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    private void print(String msg, Object arg1, Object arg2) {
+<b class="nc"><i>225</i>&nbsp;        this.print(msg, (Object[])(new Object[]{arg1, arg2}));</b>
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    private void print(String msg, Object arg1, Object arg2, Object arg3) {
+<i>229</i>&nbsp;        this.print(msg, (Object[])(new Object[]{arg1, arg2, arg3}));
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    private void print(String msg, Object[] args) {
+<i>233</i>&nbsp;        this.buf.write(MessageFormat.format(msg, args));
+<b class="nc"><i>234</i>&nbsp;        this.buf.write(10);</b>
+<i>235</i>&nbsp;    }
+<b class="nc"><i>236</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,579 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DOMValidatorHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.jaxp.validation</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DOMValidatorHelper (com.sun.org.apache.xerces.internal.jaxp.validation)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DOMValidatorHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 172)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DOMValidatorHelper$DOMNamespaceContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 48)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 220)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.jaxp.validation;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.XMLErrorReporter;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.validation.EntityState;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.validation.ValidationManager;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.XMLSchemaValidator;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.impl.xs.util.SimpleLocator;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl;
+<i>14</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.validation.DOMDocumentHandler;
+<i>15</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.validation.DOMResultAugmentor;
+<i>16</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.validation.DOMResultBuilder;
+<i>17</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.validation.JAXPValidationMessageFormatter;
+<i>18</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.validation.Util;
+<i>19</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.validation.ValidatorHelper;
+<i>20</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaValidatorComponentManager;
+<i>21</i>&nbsp;import com.sun.org.apache.xerces.internal.util.NamespaceSupport;
+<i>22</i>&nbsp;import com.sun.org.apache.xerces.internal.util.SymbolTable;
+<i>23</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLAttributesImpl;
+<i>24</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLSymbols;
+<i>25</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.Augmentations;
+<i>26</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.NamespaceContext;
+<i>27</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.QName;
+<i>28</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLDocumentHandler;
+<i>29</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLString;
+<i>30</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XNIException;
+<i>31</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
+<i>32</i>&nbsp;import java.io.IOException;
+<i>33</i>&nbsp;import java.util.Enumeration;
+<i>34</i>&nbsp;import javax.xml.parsers.DocumentBuilder;
+<i>35</i>&nbsp;import javax.xml.parsers.DocumentBuilderFactory;
+<i>36</i>&nbsp;import javax.xml.parsers.ParserConfigurationException;
+<i>37</i>&nbsp;import javax.xml.transform.Result;
+<i>38</i>&nbsp;import javax.xml.transform.Source;
+<i>39</i>&nbsp;import javax.xml.transform.dom.DOMResult;
+<i>40</i>&nbsp;import javax.xml.transform.dom.DOMSource;
+<i>41</i>&nbsp;import org.w3c.dom.Attr;
+<i>42</i>&nbsp;import org.w3c.dom.CDATASection;
+<i>43</i>&nbsp;import org.w3c.dom.Comment;
+<i>44</i>&nbsp;import org.w3c.dom.Document;
+<i>45</i>&nbsp;import org.w3c.dom.DocumentType;
+<i>46</i>&nbsp;import org.w3c.dom.Entity;
+<i>47</i>&nbsp;import org.w3c.dom.NamedNodeMap;
+<i>48</i>&nbsp;import org.w3c.dom.Node;
+<i>49</i>&nbsp;import org.w3c.dom.ProcessingInstruction;
+<i>50</i>&nbsp;import org.w3c.dom.Text;
+<i>51</i>&nbsp;import org.xml.sax.SAXException;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;final class DOMValidatorHelper implements ValidatorHelper, EntityState {
+<i>54</i>&nbsp;    private static final int CHUNK_SIZE = 1024;
+<i>55</i>&nbsp;    private static final int CHUNK_MASK = 1023;
+<i>56</i>&nbsp;    private static final String ERROR_REPORTER = &quot;http://apache.org/xml/properties/internal/error-reporter&quot;;
+<i>57</i>&nbsp;    private static final String NAMESPACE_CONTEXT = &quot;http://apache.org/xml/properties/internal/namespace-context&quot;;
+<i>58</i>&nbsp;    private static final String SCHEMA_VALIDATOR = &quot;http://apache.org/xml/properties/internal/validator/schema&quot;;
+<i>59</i>&nbsp;    private static final String SYMBOL_TABLE = &quot;http://apache.org/xml/properties/internal/symbol-table&quot;;
+<i>60</i>&nbsp;    private static final String VALIDATION_MANAGER = &quot;http://apache.org/xml/properties/internal/validation-manager&quot;;
+<i>61</i>&nbsp;    private XMLErrorReporter fErrorReporter;
+<i>62</i>&nbsp;    private NamespaceSupport fNamespaceContext;
+<i>63</i>&nbsp;    private DOMValidatorHelper.DOMNamespaceContext fDOMNamespaceContext = new DOMValidatorHelper.DOMNamespaceContext();
+<i>64</i>&nbsp;    private XMLSchemaValidator fSchemaValidator;
+<b class="nc"><i>65</i>&nbsp;    private SymbolTable fSymbolTable;</b>
+<i>66</i>&nbsp;    private ValidationManager fValidationManager;
+<i>67</i>&nbsp;    private XMLSchemaValidatorComponentManager fComponentManager;
+<i>68</i>&nbsp;    private final SimpleLocator fXMLLocator = new SimpleLocator((String)null, (String)null, -1, -1, -1);
+<i>69</i>&nbsp;    private DOMDocumentHandler fDOMValidatorHandler;
+<i>70</i>&nbsp;    private final DOMResultAugmentor fDOMResultAugmentor = new DOMResultAugmentor(this);
+<i>71</i>&nbsp;    private final DOMResultBuilder fDOMResultBuilder = new DOMResultBuilder();
+<i>72</i>&nbsp;    private NamedNodeMap fEntities = null;
+<i>73</i>&nbsp;    private char[] fCharBuffer = new char[1024];
+<i>74</i>&nbsp;    private Node fRoot;
+<i>75</i>&nbsp;    private Node fCurrentElement;
+<i>76</i>&nbsp;    final QName fElementQName = new QName();
+<i>77</i>&nbsp;    final QName fAttributeQName = new QName();
+<i>78</i>&nbsp;    final XMLAttributesImpl fAttributes = new XMLAttributesImpl();
+<i>79</i>&nbsp;    final XMLString fTempString = new XMLString();
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public DOMValidatorHelper(XMLSchemaValidatorComponentManager componentManager) {
+<i>82</i>&nbsp;        this.fComponentManager = componentManager;
+<i>83</i>&nbsp;        this.fErrorReporter = (XMLErrorReporter)this.fComponentManager.getProperty(&quot;http://apache.org/xml/properties/internal/error-reporter&quot;);
+<i>84</i>&nbsp;        this.fNamespaceContext = (NamespaceSupport)this.fComponentManager.getProperty(&quot;http://apache.org/xml/properties/internal/namespace-context&quot;);
+<i>85</i>&nbsp;        this.fSchemaValidator = (XMLSchemaValidator)this.fComponentManager.getProperty(&quot;http://apache.org/xml/properties/internal/validator/schema&quot;);
+<i>86</i>&nbsp;        this.fSymbolTable = (SymbolTable)this.fComponentManager.getProperty(&quot;http://apache.org/xml/properties/internal/symbol-table&quot;);
+<i>87</i>&nbsp;        this.fValidationManager = (ValidationManager)this.fComponentManager.getProperty(&quot;http://apache.org/xml/properties/internal/validation-manager&quot;);
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public void validate(Source source, Result result) throws SAXException, IOException {
+<i>91</i>&nbsp;        if(!(result instanceof DOMResult) &amp;&amp; result != null) {
+<i>92</i>&nbsp;            throw new IllegalArgumentException(JAXPValidationMessageFormatter.formatMessage(this.fComponentManager.getLocale(), &quot;SourceResultMismatch&quot;, new Object[]{source.getClass().getName(), result.getClass().getName()}));
+<i>93</i>&nbsp;        } else {
+<i>94</i>&nbsp;            DOMSource domSource = (DOMSource)source;
+<i>95</i>&nbsp;            DOMResult domResult = (DOMResult)result;
+<i>96</i>&nbsp;            Node node = domSource.getNode();
+<i>97</i>&nbsp;            this.fRoot = node;
+<i>98</i>&nbsp;            if(node != null) {
+<i>99</i>&nbsp;                this.fComponentManager.reset();
+<i>100</i>&nbsp;                this.fValidationManager.setEntityState(this);
+<i>101</i>&nbsp;                this.fDOMNamespaceContext.reset();
+<i>102</i>&nbsp;                String systemId = domSource.getSystemId();
+<i>103</i>&nbsp;                this.fXMLLocator.setLiteralSystemId(systemId);
+<i>104</i>&nbsp;                this.fXMLLocator.setExpandedSystemId(systemId);
+<i>105</i>&nbsp;                this.fErrorReporter.setDocumentLocator(this.fXMLLocator);
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;                try {
+<i>108</i>&nbsp;                    this.setupEntityMap(node.getNodeType() == 9?(Document)node:node.getOwnerDocument());
+<i>109</i>&nbsp;                    this.setupDOMResultHandler(domSource, domResult);
+<b class="nc"><i>110</i>&nbsp;                    this.fSchemaValidator.startDocument(this.fXMLLocator, (String)null, this.fDOMNamespaceContext, (Augmentations)null);</b>
+<i>111</i>&nbsp;                    this.validate(node);
+<i>112</i>&nbsp;                    this.fSchemaValidator.endDocument((Augmentations)null);
+<i>113</i>&nbsp;                } catch (XMLParseException var12) {
+<i>114</i>&nbsp;                    throw Util.toSAXParseException(var12);
+<i>115</i>&nbsp;                } catch (XNIException var13) {
+<i>116</i>&nbsp;                    throw Util.toSAXException(var13);
+<i>117</i>&nbsp;                } finally {
+<i>118</i>&nbsp;                    this.fRoot = null;
+<i>119</i>&nbsp;                    this.fEntities = null;
+<i>120</i>&nbsp;                    if(this.fDOMValidatorHandler != null) {
+<i>121</i>&nbsp;                        this.fDOMValidatorHandler.setDOMResult((DOMResult)null);
+<i>122</i>&nbsp;                    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;                }
+<b class="nc"><i>125</i>&nbsp;            }</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;        }
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public boolean isEntityDeclared(String name) {
+<b class="nc"><i>131</i>&nbsp;        return false;</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<b class="nc"><i>134</i>&nbsp;    public boolean isEntityUnparsed(String name) {</b>
+<i>135</i>&nbsp;        if(this.fEntities != null) {
+<i>136</i>&nbsp;            Entity entity = (Entity)this.fEntities.getNamedItem(name);
+<b class="nc"><i>137</i>&nbsp;            if(entity != null) {</b>
+<i>138</i>&nbsp;                return entity.getNotationName() != null;
+<i>139</i>&nbsp;            }
+<b class="nc"><i>140</i>&nbsp;        }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;        return false;
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    private void validate(Node node) {
+<i>146</i>&nbsp;        Node top = node;
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;        while(node != null) {
+<b class="nc"><i>149</i>&nbsp;            this.beginNode(node);</b>
+<b class="nc"><i>150</i>&nbsp;            Node next = node.getFirstChild();</b>
+<b class="nc"><i>151</i>&nbsp;</b>
+<b class="nc"><i>152</i>&nbsp;            while(true) {</b>
+<i>153</i>&nbsp;                if(next == null) {
+<b class="nc"><i>154</i>&nbsp;                    this.finishNode(node);</b>
+<b class="nc"><i>155</i>&nbsp;                    if(top != node) {</b>
+<b class="nc"><i>156</i>&nbsp;                        next = node.getNextSibling();</b>
+<b class="nc"><i>157</i>&nbsp;                        if(next != null) {</b>
+<b class="nc"><i>158</i>&nbsp;                            continue;</b>
+<b class="nc"><i>159</i>&nbsp;                        }</b>
+<b class="nc"><i>160</i>&nbsp;</b>
+<i>161</i>&nbsp;                        node = node.getParentNode();
+<i>162</i>&nbsp;                        if(node != null &amp;&amp; top != node) {
+<i>163</i>&nbsp;                            continue;
+<i>164</i>&nbsp;                        }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;                        if(node != null) {
+<i>167</i>&nbsp;                            this.finishNode(node);
+<i>168</i>&nbsp;                        }
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;                        next = null;</b>
+<b class="nc"><i>171</i>&nbsp;                    }</b>
+<b class="nc"><i>172</i>&nbsp;                }</b>
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;                node = next;</b>
+<b class="nc"><i>175</i>&nbsp;                break;</b>
+<b class="nc"><i>176</i>&nbsp;            }</b>
+<b class="nc"><i>177</i>&nbsp;        }</b>
+<b class="nc"><i>178</i>&nbsp;</b>
+<b class="nc"><i>179</i>&nbsp;    }</b>
+<b class="nc"><i>180</i>&nbsp;</b>
+<b class="nc"><i>181</i>&nbsp;    private void beginNode(Node node) {</b>
+<i>182</i>&nbsp;        switch(node.getNodeType()) {
+<i>183</i>&nbsp;        case 1:
+<b class="nc"><i>184</i>&nbsp;            this.fCurrentElement = node;</b>
+<b class="nc"><i>185</i>&nbsp;            this.fNamespaceContext.pushContext();</b>
+<b class="nc"><i>186</i>&nbsp;            this.fillQName(this.fElementQName, node);</b>
+<b class="nc"><i>187</i>&nbsp;            this.processAttributes(node.getAttributes());</b>
+<b class="nc"><i>188</i>&nbsp;            this.fSchemaValidator.startElement(this.fElementQName, this.fAttributes, (Augmentations)null);</b>
+<i>189</i>&nbsp;        case 2:
+<b class="nc"><i>190</i>&nbsp;        case 5:</b>
+<b class="nc"><i>191</i>&nbsp;        case 6:</b>
+<i>192</i>&nbsp;        case 9:
+<b class="nc"><i>193</i>&nbsp;        default:</b>
+<b class="nc"><i>194</i>&nbsp;            break;</b>
+<i>195</i>&nbsp;        case 3:
+<i>196</i>&nbsp;            if(this.fDOMValidatorHandler != null) {
+<i>197</i>&nbsp;                this.fDOMValidatorHandler.setIgnoringCharacters(true);
+<b class="nc"><i>198</i>&nbsp;                this.sendCharactersToValidator(node.getNodeValue());</b>
+<i>199</i>&nbsp;                this.fDOMValidatorHandler.setIgnoringCharacters(false);
+<b class="nc"><i>200</i>&nbsp;                this.fDOMValidatorHandler.characters((Text)node);</b>
+<b class="nc"><i>201</i>&nbsp;            } else {</b>
+<b class="nc"><i>202</i>&nbsp;                this.sendCharactersToValidator(node.getNodeValue());</b>
+<i>203</i>&nbsp;            }
+<i>204</i>&nbsp;            break;
+<i>205</i>&nbsp;        case 4:
+<i>206</i>&nbsp;            if(this.fDOMValidatorHandler != null) {
+<i>207</i>&nbsp;                this.fDOMValidatorHandler.setIgnoringCharacters(true);
+<b class="nc"><i>208</i>&nbsp;                this.fSchemaValidator.startCDATA((Augmentations)null);</b>
+<i>209</i>&nbsp;                this.sendCharactersToValidator(node.getNodeValue());
+<i>210</i>&nbsp;                this.fSchemaValidator.endCDATA((Augmentations)null);
+<i>211</i>&nbsp;                this.fDOMValidatorHandler.setIgnoringCharacters(false);
+<i>212</i>&nbsp;                this.fDOMValidatorHandler.cdata((CDATASection)node);
+<i>213</i>&nbsp;            } else {
+<i>214</i>&nbsp;                this.fSchemaValidator.startCDATA((Augmentations)null);
+<i>215</i>&nbsp;                this.sendCharactersToValidator(node.getNodeValue());
+<i>216</i>&nbsp;                this.fSchemaValidator.endCDATA((Augmentations)null);
+<i>217</i>&nbsp;            }
+<b class="nc"><i>218</i>&nbsp;            break;</b>
+<i>219</i>&nbsp;        case 7:
+<i>220</i>&nbsp;            if(this.fDOMValidatorHandler != null) {
+<i>221</i>&nbsp;                this.fDOMValidatorHandler.processingInstruction((ProcessingInstruction)node);
+<b class="nc"><i>222</i>&nbsp;            }</b>
+<b class="nc"><i>223</i>&nbsp;            break;</b>
+<b class="nc"><i>224</i>&nbsp;        case 8:</b>
+<b class="nc"><i>225</i>&nbsp;            if(this.fDOMValidatorHandler != null) {</b>
+<i>226</i>&nbsp;                this.fDOMValidatorHandler.comment((Comment)node);
+<i>227</i>&nbsp;            }
+<b class="nc"><i>228</i>&nbsp;            break;</b>
+<i>229</i>&nbsp;        case 10:
+<i>230</i>&nbsp;            if(this.fDOMValidatorHandler != null) {
+<i>231</i>&nbsp;                this.fDOMValidatorHandler.doctypeDecl((DocumentType)node);
+<i>232</i>&nbsp;            }
+<i>233</i>&nbsp;        }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<b class="nc"><i>237</i>&nbsp;    private void finishNode(Node node) {</b>
+<i>238</i>&nbsp;        if(node.getNodeType() == 1) {
+<i>239</i>&nbsp;            this.fCurrentElement = node;
+<b class="nc"><i>240</i>&nbsp;            this.fillQName(this.fElementQName, node);</b>
+<b class="nc"><i>241</i>&nbsp;            this.fSchemaValidator.endElement(this.fElementQName, (Augmentations)null);</b>
+<b class="nc"><i>242</i>&nbsp;            this.fNamespaceContext.popContext();</b>
+<b class="nc"><i>243</i>&nbsp;        }</b>
+<b class="nc"><i>244</i>&nbsp;</b>
+<b class="nc"><i>245</i>&nbsp;    }</b>
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;    private void setupEntityMap(Document doc) {
+<b class="nc"><i>248</i>&nbsp;        if(doc != null) {</b>
+<b class="nc"><i>249</i>&nbsp;            DocumentType docType = doc.getDoctype();</b>
+<b class="nc"><i>250</i>&nbsp;            if(docType != null) {</b>
+<b class="nc"><i>251</i>&nbsp;                this.fEntities = docType.getEntities();</b>
+<b class="nc"><i>252</i>&nbsp;                return;</b>
+<b class="nc"><i>253</i>&nbsp;            }</b>
+<i>254</i>&nbsp;        }
+<b class="nc"><i>255</i>&nbsp;</b>
+<b class="nc"><i>256</i>&nbsp;        this.fEntities = null;</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    private void setupDOMResultHandler(DOMSource source, DOMResult result) throws SAXException {
+<b class="nc"><i>260</i>&nbsp;        if(result == null) {</b>
+<b class="nc"><i>261</i>&nbsp;            this.fDOMValidatorHandler = null;</b>
+<i>262</i>&nbsp;            this.fSchemaValidator.setDocumentHandler((XMLDocumentHandler)null);
+<i>263</i>&nbsp;        } else {
+<i>264</i>&nbsp;            Node nodeResult = result.getNode();
+<i>265</i>&nbsp;            if(source.getNode() == nodeResult) {
+<b class="nc"><i>266</i>&nbsp;                this.fDOMValidatorHandler = this.fDOMResultAugmentor;</b>
+<i>267</i>&nbsp;                this.fDOMResultAugmentor.setDOMResult(result);
+<b class="nc"><i>268</i>&nbsp;                this.fSchemaValidator.setDocumentHandler(this.fDOMResultAugmentor);</b>
+<i>269</i>&nbsp;            } else {
+<b class="nc"><i>270</i>&nbsp;                if(result.getNode() == null) {</b>
+<i>271</i>&nbsp;                    try {
+<b class="nc"><i>272</i>&nbsp;                        Object e = this.fComponentManager.getFeature(&quot;http://www.oracle.com/feature/use-service-mechanism&quot;)?DocumentBuilderFactory.newInstance():new DocumentBuilderFactoryImpl();</b>
+<b class="nc"><i>273</i>&nbsp;                        ((DocumentBuilderFactory)e).setNamespaceAware(true);</b>
+<b class="nc"><i>274</i>&nbsp;                        DocumentBuilder builder = ((DocumentBuilderFactory)e).newDocumentBuilder();</b>
+<b class="nc"><i>275</i>&nbsp;                        result.setNode(builder.newDocument());</b>
+<i>276</i>&nbsp;                    } catch (ParserConfigurationException var6) {
+<b class="nc"><i>277</i>&nbsp;                        throw new SAXException(var6);</b>
+<b class="nc"><i>278</i>&nbsp;                    }</b>
+<b class="nc"><i>279</i>&nbsp;                }</b>
+<b class="nc"><i>280</i>&nbsp;</b>
+<b class="nc"><i>281</i>&nbsp;                this.fDOMValidatorHandler = this.fDOMResultBuilder;</b>
+<i>282</i>&nbsp;                this.fDOMResultBuilder.setDOMResult(result);
+<i>283</i>&nbsp;                this.fSchemaValidator.setDocumentHandler(this.fDOMResultBuilder);
+<b class="nc"><i>284</i>&nbsp;            }</b>
+<i>285</i>&nbsp;        }
+<b class="nc"><i>286</i>&nbsp;    }</b>
+<i>287</i>&nbsp;
+<b class="nc"><i>288</i>&nbsp;    private void fillQName(QName toFill, Node node) {</b>
+<b class="nc"><i>289</i>&nbsp;        String prefix = node.getPrefix();</b>
+<b class="nc"><i>290</i>&nbsp;        String localName = node.getLocalName();</b>
+<b class="nc"><i>291</i>&nbsp;        String rawName = node.getNodeName();</b>
+<b class="nc"><i>292</i>&nbsp;        String namespace = node.getNamespaceURI();</b>
+<b class="nc"><i>293</i>&nbsp;        toFill.uri = namespace != null &amp;&amp; namespace.length() &gt; 0?this.fSymbolTable.addSymbol(namespace):null;</b>
+<b class="nc"><i>294</i>&nbsp;        toFill.rawname = rawName != null?this.fSymbolTable.addSymbol(rawName):XMLSymbols.EMPTY_STRING;</b>
+<i>295</i>&nbsp;        if(localName == null) {
+<i>296</i>&nbsp;            int k = rawName.indexOf(58);
+<b class="nc"><i>297</i>&nbsp;            if(k &gt; 0) {</b>
+<b class="nc"><i>298</i>&nbsp;                toFill.prefix = this.fSymbolTable.addSymbol(rawName.substring(0, k));</b>
+<b class="nc"><i>299</i>&nbsp;                toFill.localpart = this.fSymbolTable.addSymbol(rawName.substring(k + 1));</b>
+<i>300</i>&nbsp;            } else {
+<b class="nc"><i>301</i>&nbsp;                toFill.prefix = XMLSymbols.EMPTY_STRING;</b>
+<i>302</i>&nbsp;                toFill.localpart = toFill.rawname;
+<i>303</i>&nbsp;            }
+<i>304</i>&nbsp;        } else {
+<i>305</i>&nbsp;            toFill.prefix = prefix != null?this.fSymbolTable.addSymbol(prefix):XMLSymbols.EMPTY_STRING;
+<i>306</i>&nbsp;            toFill.localpart = localName != null?this.fSymbolTable.addSymbol(localName):XMLSymbols.EMPTY_STRING;
+<b class="nc"><i>307</i>&nbsp;        }</b>
+<b class="nc"><i>308</i>&nbsp;</b>
+<i>309</i>&nbsp;    }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    private void processAttributes(NamedNodeMap attrMap) {
+<i>312</i>&nbsp;        int attrCount = attrMap.getLength();
+<i>313</i>&nbsp;        this.fAttributes.removeAllAttributes();
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;        for(int i = 0; i &lt; attrCount; ++i) {
+<b class="nc"><i>316</i>&nbsp;            Attr attr = (Attr)attrMap.item(i);</b>
+<b class="nc"><i>317</i>&nbsp;            String value = attr.getValue();</b>
+<i>318</i>&nbsp;            if(value == null) {
+<i>319</i>&nbsp;                value = XMLSymbols.EMPTY_STRING;
+<i>320</i>&nbsp;            }
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;            this.fillQName(this.fAttributeQName, attr);
+<i>323</i>&nbsp;            this.fAttributes.addAttributeNS(this.fAttributeQName, XMLSymbols.fCDATASymbol, value);
+<b class="nc"><i>324</i>&nbsp;            this.fAttributes.setSpecified(i, attr.getSpecified());</b>
+<b class="nc"><i>325</i>&nbsp;            if(this.fAttributeQName.uri == NamespaceContext.XMLNS_URI) {</b>
+<i>326</i>&nbsp;                if(this.fAttributeQName.prefix == XMLSymbols.PREFIX_XMLNS) {
+<i>327</i>&nbsp;                    this.fNamespaceContext.declarePrefix(this.fAttributeQName.localpart, value.length() != 0?this.fSymbolTable.addSymbol(value):null);
+<i>328</i>&nbsp;                } else {
+<i>329</i>&nbsp;                    this.fNamespaceContext.declarePrefix(XMLSymbols.EMPTY_STRING, value.length() != 0?this.fSymbolTable.addSymbol(value):null);
+<i>330</i>&nbsp;                }
+<i>331</i>&nbsp;            }
+<i>332</i>&nbsp;        }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    }
+<b class="nc"><i>335</i>&nbsp;</b>
+<b class="nc"><i>336</i>&nbsp;    private void sendCharactersToValidator(String str) {</b>
+<i>337</i>&nbsp;        if(str != null) {
+<b class="nc"><i>338</i>&nbsp;            int length = str.length();</b>
+<b class="nc"><i>339</i>&nbsp;            int remainder = length &amp; 1023;</b>
+<i>340</i>&nbsp;            if(remainder &gt; 0) {
+<b class="nc"><i>341</i>&nbsp;                str.getChars(0, remainder, this.fCharBuffer, 0);</b>
+<i>342</i>&nbsp;                this.fTempString.setValues(this.fCharBuffer, 0, remainder);
+<i>343</i>&nbsp;                this.fSchemaValidator.characters(this.fTempString, (Augmentations)null);
+<i>344</i>&nbsp;            }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;            int i = remainder;
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;            while(i &lt; length) {
+<i>349</i>&nbsp;                int var10001 = i;
+<i>350</i>&nbsp;                i += 1024;
+<b class="nc"><i>351</i>&nbsp;                str.getChars(var10001, i, this.fCharBuffer, 0);</b>
+<b class="nc"><i>352</i>&nbsp;                this.fTempString.setValues(this.fCharBuffer, 0, 1024);</b>
+<b class="nc"><i>353</i>&nbsp;                this.fSchemaValidator.characters(this.fTempString, (Augmentations)null);</b>
+<b class="nc"><i>354</i>&nbsp;            }</b>
+<i>355</i>&nbsp;        }
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    }
+<b class="nc"><i>358</i>&nbsp;</b>
+<i>359</i>&nbsp;    Node getCurrentElement() {
+<i>360</i>&nbsp;        return this.fCurrentElement;
+<i>361</i>&nbsp;    }
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;    final class DOMNamespaceContext implements NamespaceContext {
+<i>364</i>&nbsp;        protected String[] fNamespace = new String[32];
+<i>365</i>&nbsp;        protected int fNamespaceSize = 0;
+<b class="nc"><i>366</i>&nbsp;        protected boolean fDOMContextBuilt = false;</b>
+<b class="nc"><i>367</i>&nbsp;</b>
+<b class="nc"><i>368</i>&nbsp;        DOMNamespaceContext() {</b>
+<i>369</i>&nbsp;        }
+<i>370</i>&nbsp;
+<b class="nc"><i>371</i>&nbsp;        public void pushContext() {</b>
+<i>372</i>&nbsp;            DOMValidatorHelper.this.fNamespaceContext.pushContext();
+<i>373</i>&nbsp;        }
+<b class="nc"><i>374</i>&nbsp;</b>
+<b class="nc"><i>375</i>&nbsp;        public void popContext() {</b>
+<b class="nc"><i>376</i>&nbsp;            DOMValidatorHelper.this.fNamespaceContext.popContext();</b>
+<b class="nc"><i>377</i>&nbsp;        }</b>
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;        public boolean declarePrefix(String prefix, String uri) {
+<b class="nc"><i>380</i>&nbsp;            return DOMValidatorHelper.this.fNamespaceContext.declarePrefix(prefix, uri);</b>
+<i>381</i>&nbsp;        }
+<b class="nc"><i>382</i>&nbsp;</b>
+<i>383</i>&nbsp;        public String getURI(String prefix) {
+<b class="nc"><i>384</i>&nbsp;            String uri = DOMValidatorHelper.this.fNamespaceContext.getURI(prefix);</b>
+<b class="nc"><i>385</i>&nbsp;            if(uri == null) {</b>
+<b class="nc"><i>386</i>&nbsp;                if(!this.fDOMContextBuilt) {</b>
+<i>387</i>&nbsp;                    this.fillNamespaceContext();
+<b class="nc"><i>388</i>&nbsp;                    this.fDOMContextBuilt = true;</b>
+<b class="nc"><i>389</i>&nbsp;                }</b>
+<b class="nc"><i>390</i>&nbsp;</b>
+<i>391</i>&nbsp;                if(this.fNamespaceSize &gt; 0 &amp;&amp; !DOMValidatorHelper.this.fNamespaceContext.containsPrefix(prefix)) {
+<b class="nc"><i>392</i>&nbsp;                    uri = this.getURI0(prefix);</b>
+<b class="nc"><i>393</i>&nbsp;                }</b>
+<b class="nc"><i>394</i>&nbsp;            }</b>
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;            return uri;
+<i>397</i>&nbsp;        }
+<b class="nc"><i>398</i>&nbsp;</b>
+<b class="nc"><i>399</i>&nbsp;        public String getPrefix(String uri) {</b>
+<b class="nc"><i>400</i>&nbsp;            return DOMValidatorHelper.this.fNamespaceContext.getPrefix(uri);</b>
+<b class="nc"><i>401</i>&nbsp;        }</b>
+<i>402</i>&nbsp;
+<b class="nc"><i>403</i>&nbsp;        public int getDeclaredPrefixCount() {</b>
+<b class="nc"><i>404</i>&nbsp;            return DOMValidatorHelper.this.fNamespaceContext.getDeclaredPrefixCount();</b>
+<i>405</i>&nbsp;        }
+<i>406</i>&nbsp;
+<b class="nc"><i>407</i>&nbsp;        public String getDeclaredPrefixAt(int index) {</b>
+<b class="nc"><i>408</i>&nbsp;            return DOMValidatorHelper.this.fNamespaceContext.getDeclaredPrefixAt(index);</b>
+<b class="nc"><i>409</i>&nbsp;        }</b>
+<b class="nc"><i>410</i>&nbsp;</b>
+<b class="nc"><i>411</i>&nbsp;        public Enumeration getAllPrefixes() {</b>
+<i>412</i>&nbsp;            return DOMValidatorHelper.this.fNamespaceContext.getAllPrefixes();
+<i>413</i>&nbsp;        }
+<b class="nc"><i>414</i>&nbsp;</b>
+<b class="nc"><i>415</i>&nbsp;        public void reset() {</b>
+<i>416</i>&nbsp;            this.fDOMContextBuilt = false;
+<b class="nc"><i>417</i>&nbsp;            this.fNamespaceSize = 0;</b>
+<i>418</i>&nbsp;        }
+<b class="nc"><i>419</i>&nbsp;</b>
+<b class="nc"><i>420</i>&nbsp;        private void fillNamespaceContext() {</b>
+<i>421</i>&nbsp;            if(DOMValidatorHelper.this.fRoot != null) {
+<i>422</i>&nbsp;                for(Node currentNode = DOMValidatorHelper.this.fRoot.getParentNode(); currentNode != null; currentNode = currentNode.getParentNode()) {
+<i>423</i>&nbsp;                    if(1 == currentNode.getNodeType()) {
+<i>424</i>&nbsp;                        NamedNodeMap attributes = currentNode.getAttributes();
+<b class="nc"><i>425</i>&nbsp;                        int attrCount = attributes.getLength();</b>
+<b class="nc"><i>426</i>&nbsp;</b>
+<b class="nc"><i>427</i>&nbsp;                        for(int i = 0; i &lt; attrCount; ++i) {</b>
+<b class="nc"><i>428</i>&nbsp;                            Attr attr = (Attr)attributes.item(i);</b>
+<b class="nc"><i>429</i>&nbsp;                            String value = attr.getValue();</b>
+<b class="nc"><i>430</i>&nbsp;                            if(value == null) {</b>
+<b class="nc"><i>431</i>&nbsp;                                value = XMLSymbols.EMPTY_STRING;</b>
+<i>432</i>&nbsp;                            }
+<b class="nc"><i>433</i>&nbsp;</b>
+<i>434</i>&nbsp;                            DOMValidatorHelper.this.fillQName(DOMValidatorHelper.this.fAttributeQName, attr);
+<b class="nc"><i>435</i>&nbsp;                            if(DOMValidatorHelper.this.fAttributeQName.uri == NamespaceContext.XMLNS_URI) {</b>
+<b class="nc"><i>436</i>&nbsp;                                if(DOMValidatorHelper.this.fAttributeQName.prefix == XMLSymbols.PREFIX_XMLNS) {</b>
+<i>437</i>&nbsp;                                    this.declarePrefix0(DOMValidatorHelper.this.fAttributeQName.localpart, value.length() != 0?DOMValidatorHelper.this.fSymbolTable.addSymbol(value):null);
+<i>438</i>&nbsp;                                } else {
+<i>439</i>&nbsp;                                    this.declarePrefix0(XMLSymbols.EMPTY_STRING, value.length() != 0?DOMValidatorHelper.this.fSymbolTable.addSymbol(value):null);
+<b class="nc"><i>440</i>&nbsp;                                }</b>
+<i>441</i>&nbsp;                            }
+<b class="nc"><i>442</i>&nbsp;                        }</b>
+<b class="nc"><i>443</i>&nbsp;                    }</b>
+<i>444</i>&nbsp;                }
+<i>445</i>&nbsp;            }
+<b class="nc"><i>446</i>&nbsp;</b>
+<i>447</i>&nbsp;        }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;        private void declarePrefix0(String prefix, String uri) {
+<i>450</i>&nbsp;            if(this.fNamespaceSize == this.fNamespace.length) {
+<i>451</i>&nbsp;                String[] namespacearray = new String[this.fNamespaceSize * 2];
+<i>452</i>&nbsp;                System.arraycopy(this.fNamespace, 0, namespacearray, 0, this.fNamespaceSize);
+<b class="nc"><i>453</i>&nbsp;                this.fNamespace = namespacearray;</b>
+<b class="nc"><i>454</i>&nbsp;            }</b>
+<b class="nc"><i>455</i>&nbsp;</b>
+<b class="nc"><i>456</i>&nbsp;            this.fNamespace[this.fNamespaceSize++] = prefix;</b>
+<b class="nc"><i>457</i>&nbsp;            this.fNamespace[this.fNamespaceSize++] = uri;</b>
+<b class="nc"><i>458</i>&nbsp;        }</b>
+<b class="nc"><i>459</i>&nbsp;</b>
+<i>460</i>&nbsp;        private String getURI0(String prefix) {
+<b class="nc"><i>461</i>&nbsp;            for(int i = 0; i &lt; this.fNamespaceSize; i += 2) {</b>
+<b class="nc"><i>462</i>&nbsp;                if(this.fNamespace[i] == prefix) {</b>
+<b class="nc"><i>463</i>&nbsp;                    return this.fNamespace[i + 1];</b>
+<b class="nc"><i>464</i>&nbsp;                }</b>
+<b class="nc"><i>465</i>&nbsp;            }</b>
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;            return null;
+<i>468</i>&nbsp;        }
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

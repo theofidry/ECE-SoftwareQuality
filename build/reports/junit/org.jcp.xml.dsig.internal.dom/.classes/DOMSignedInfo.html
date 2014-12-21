@@ -1,0 +1,286 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DOMSignedInfo</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.jcp.xml.dsig.internal.dom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DOMSignedInfo (org.jcp.xml.dsig.internal.dom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DOMSignedInfo</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 83)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package org.jcp.xml.dsig.internal.dom;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xml.internal.security.utils.Base64;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.security.utils.UnsyncBufferedOutputStream;
+<i>10</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>11</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.io.InputStream;
+<i>14</i>&nbsp;import java.io.InputStreamReader;
+<i>15</i>&nbsp;import java.security.Provider;
+<i>16</i>&nbsp;import java.util.ArrayList;
+<i>17</i>&nbsp;import java.util.Collections;
+<i>18</i>&nbsp;import java.util.List;
+<i>19</i>&nbsp;import java.util.logging.Level;
+<i>20</i>&nbsp;import java.util.logging.Logger;
+<i>21</i>&nbsp;import javax.xml.crypto.MarshalException;
+<i>22</i>&nbsp;import javax.xml.crypto.XMLCryptoContext;
+<i>23</i>&nbsp;import javax.xml.crypto.dom.DOMCryptoContext;
+<i>24</i>&nbsp;import javax.xml.crypto.dsig.CanonicalizationMethod;
+<i>25</i>&nbsp;import javax.xml.crypto.dsig.Reference;
+<i>26</i>&nbsp;import javax.xml.crypto.dsig.SignatureMethod;
+<i>27</i>&nbsp;import javax.xml.crypto.dsig.SignedInfo;
+<i>28</i>&nbsp;import javax.xml.crypto.dsig.TransformException;
+<i>29</i>&nbsp;import javax.xml.crypto.dsig.XMLSignatureException;
+<i>30</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMCanonicalizationMethod;
+<i>31</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMReference;
+<i>32</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMSignatureMethod;
+<i>33</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMStructure;
+<i>34</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMSubTreeData;
+<i>35</i>&nbsp;import org.jcp.xml.dsig.internal.dom.DOMUtils;
+<i>36</i>&nbsp;import org.jcp.xml.dsig.internal.dom.Utils;
+<i>37</i>&nbsp;import org.w3c.dom.Document;
+<i>38</i>&nbsp;import org.w3c.dom.Element;
+<i>39</i>&nbsp;import org.w3c.dom.Node;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
+<i>42</i>&nbsp;    public static final int MAXIMUM_REFERENCE_COUNT = 30;
+<i>43</i>&nbsp;    private static Logger log = Logger.getLogger(&quot;org.jcp.xml.dsig.internal.dom&quot;);
+<i>44</i>&nbsp;    private static final String ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5 = &quot;http://www.w3.org/2001/04/xmldsig-more#rsa-md5&quot;;
+<i>45</i>&nbsp;    private static final String ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5 = &quot;http://www.w3.org/2001/04/xmldsig-more#hmac-md5&quot;;
+<i>46</i>&nbsp;    private List references;
+<i>47</i>&nbsp;    private CanonicalizationMethod canonicalizationMethod;
+<i>48</i>&nbsp;    private SignatureMethod signatureMethod;
+<i>49</i>&nbsp;    private String id;
+<i>50</i>&nbsp;    private Document ownerDoc;
+<i>51</i>&nbsp;    private Element localSiElem;
+<i>52</i>&nbsp;    private InputStream canonData;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public DOMSignedInfo(CanonicalizationMethod var1, SignatureMethod var2, List var3) {
+<i>55</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null &amp;&amp; var3 != null) {
+<i>56</i>&nbsp;            this.canonicalizationMethod = var1;
+<i>57</i>&nbsp;            this.signatureMethod = var2;
+<i>58</i>&nbsp;            this.references = Collections.unmodifiableList(new ArrayList(var3));
+<i>59</i>&nbsp;            if(this.references.isEmpty()) {
+<i>60</i>&nbsp;                throw new IllegalArgumentException(&quot;list of references must contain at least one entry&quot;);
+<i>61</i>&nbsp;            } else {
+<i>62</i>&nbsp;                int var4 = 0;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;                for(int var5 = this.references.size(); var4 &lt; var5; ++var4) {
+<b class="nc"><i>65</i>&nbsp;                    Object var6 = this.references.get(var4);</b>
+<i>66</i>&nbsp;                    if(!(var6 instanceof Reference)) {
+<i>67</i>&nbsp;                        throw new ClassCastException(&quot;list of references contains an illegal type&quot;);
+<i>68</i>&nbsp;                    }
+<i>69</i>&nbsp;                }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;        } else {
+<i>73</i>&nbsp;            throw new NullPointerException();
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public DOMSignedInfo(CanonicalizationMethod var1, SignatureMethod var2, List var3, String var4) {
+<i>78</i>&nbsp;        this((CanonicalizationMethod)var1, (SignatureMethod)var2, (List)var3);
+<i>79</i>&nbsp;        this.id = var4;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public DOMSignedInfo(Element var1, XMLCryptoContext var2, Provider var3) throws MarshalException {
+<i>83</i>&nbsp;        this.localSiElem = var1;
+<i>84</i>&nbsp;        this.ownerDoc = var1.getOwnerDocument();
+<i>85</i>&nbsp;        this.id = DOMUtils.getAttributeValue(var1, &quot;Id&quot;);
+<i>86</i>&nbsp;        Element var4 = DOMUtils.getFirstChildElement(var1);
+<i>87</i>&nbsp;        this.canonicalizationMethod = new DOMCanonicalizationMethod(var4, var2, var3);
+<i>88</i>&nbsp;        Element var5 = DOMUtils.getNextSiblingElement(var4);
+<i>89</i>&nbsp;        this.signatureMethod = DOMSignatureMethod.unmarshal(var5);
+<i>90</i>&nbsp;        boolean var6 = Utils.secureValidation(var2);
+<i>91</i>&nbsp;        String var7 = this.signatureMethod.getAlgorithm();
+<i>92</i>&nbsp;        if(var6 &amp;&amp; (&quot;http://www.w3.org/2001/04/xmldsig-more#hmac-md5&quot;.equals(var7) || &quot;http://www.w3.org/2001/04/xmldsig-more#rsa-md5&quot;.equals(var7))) {
+<i>93</i>&nbsp;            throw new MarshalException(&quot;It is forbidden to use algorithm &quot; + this.signatureMethod + &quot; when secure validation is enabled&quot;);
+<i>94</i>&nbsp;        } else {
+<i>95</i>&nbsp;            ArrayList var8 = new ArrayList(5);
+<i>96</i>&nbsp;            Element var9 = DOMUtils.getNextSiblingElement(var5);
+<i>97</i>&nbsp;            int var10 = 0;
+<b class="nc"><i>98</i>&nbsp;</b>
+<b class="nc"><i>99</i>&nbsp;            do {</b>
+<b class="nc"><i>100</i>&nbsp;                if(var9 == null) {</b>
+<i>101</i>&nbsp;                    this.references = Collections.unmodifiableList(var8);
+<b class="nc"><i>102</i>&nbsp;                    return;</b>
+<b class="nc"><i>103</i>&nbsp;                }</b>
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;                var8.add(new DOMReference(var9, var2, var3));
+<b class="nc"><i>106</i>&nbsp;                var9 = DOMUtils.getNextSiblingElement(var9);</b>
+<b class="nc"><i>107</i>&nbsp;                ++var10;</b>
+<i>108</i>&nbsp;            } while(!var6 || var10 &lt;= 30);
+<i>109</i>&nbsp;
+<b class="nc"><i>110</i>&nbsp;            String var11 = &quot;A maxiumum of 30 references per SignedInfo are allowed with secure validation&quot;;</b>
+<b class="nc"><i>111</i>&nbsp;            throw new MarshalException(var11);</b>
+<b class="nc"><i>112</i>&nbsp;        }</b>
+<b class="nc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public CanonicalizationMethod getCanonicalizationMethod() {
+<i>116</i>&nbsp;        return this.canonicalizationMethod;
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public SignatureMethod getSignatureMethod() {
+<i>120</i>&nbsp;        return this.signatureMethod;
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public String getId() {
+<i>124</i>&nbsp;        return this.id;
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public List getReferences() {
+<i>128</i>&nbsp;        return this.references;
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public InputStream getCanonicalizedData() {
+<i>132</i>&nbsp;        return this.canonData;
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    public void canonicalize(XMLCryptoContext var1, ByteArrayOutputStream var2) throws XMLSignatureException {
+<b class="nc"><i>136</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>137</i>&nbsp;            throw new NullPointerException(&quot;context cannot be null&quot;);</b>
+<i>138</i>&nbsp;        } else {
+<i>139</i>&nbsp;            UnsyncBufferedOutputStream var3 = new UnsyncBufferedOutputStream(var2);
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;            try {
+<i>142</i>&nbsp;                var3.close();
+<i>143</i>&nbsp;            } catch (IOException var11) {
+<i>144</i>&nbsp;                ;
+<i>145</i>&nbsp;            }
+<b class="nc"><i>146</i>&nbsp;</b>
+<b class="nc"><i>147</i>&nbsp;            DOMSubTreeData var4 = new DOMSubTreeData(this.localSiElem, true);</b>
+<b class="nc"><i>148</i>&nbsp;</b>
+<i>149</i>&nbsp;            try {
+<i>150</i>&nbsp;                ((DOMCanonicalizationMethod)this.canonicalizationMethod).canonicalize(var4, var1, var3);
+<b class="nc"><i>151</i>&nbsp;            } catch (TransformException var10) {</b>
+<i>152</i>&nbsp;                throw new XMLSignatureException(var10);
+<i>153</i>&nbsp;            }
+<b class="nc"><i>154</i>&nbsp;</b>
+<b class="nc"><i>155</i>&nbsp;            byte[] var5 = var2.toByteArray();</b>
+<i>156</i>&nbsp;            if(log.isLoggable(Level.FINE)) {
+<i>157</i>&nbsp;                InputStreamReader var6 = new InputStreamReader(new ByteArrayInputStream(var5));
+<i>158</i>&nbsp;                char[] var7 = new char[var5.length];
+<b class="nc"><i>159</i>&nbsp;</b>
+<b class="nc"><i>160</i>&nbsp;                try {</b>
+<i>161</i>&nbsp;                    var6.read(var7);
+<b class="nc"><i>162</i>&nbsp;                    log.log(Level.FINE, &quot;Canonicalized SignedInfo:\n&quot; + new String(var7));</b>
+<b class="nc"><i>163</i>&nbsp;                } catch (IOException var9) {</b>
+<b class="nc"><i>164</i>&nbsp;                    log.log(Level.FINE, &quot;IOException reading SignedInfo bytes&quot;);</b>
+<i>165</i>&nbsp;                }
+<i>166</i>&nbsp;
+<b class="nc"><i>167</i>&nbsp;                log.log(Level.FINE, &quot;Data to be signed/verified:&quot; + Base64.encode(var5));</b>
+<i>168</i>&nbsp;            }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;            this.canonData = new ByteArrayInputStream(var5);
+<i>171</i>&nbsp;        }
+<i>172</i>&nbsp;    }
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;    public void marshal(Node var1, String var2, DOMCryptoContext var3) throws MarshalException {</b>
+<b class="nc"><i>175</i>&nbsp;        this.ownerDoc = DOMUtils.getOwnerDocument(var1);</b>
+<b class="nc"><i>176</i>&nbsp;        Element var4 = DOMUtils.createElement(this.ownerDoc, &quot;SignedInfo&quot;, &quot;http://www.w3.org/2000/09/xmldsig#&quot;, var2);</b>
+<b class="nc"><i>177</i>&nbsp;        DOMCanonicalizationMethod var5 = (DOMCanonicalizationMethod)this.canonicalizationMethod;</b>
+<b class="nc"><i>178</i>&nbsp;        var5.marshal(var4, var2, var3);</b>
+<i>179</i>&nbsp;        ((DOMSignatureMethod)this.signatureMethod).marshal(var4, var2, var3);
+<b class="nc"><i>180</i>&nbsp;        int var6 = 0;</b>
+<b class="nc"><i>181</i>&nbsp;</b>
+<b class="nc"><i>182</i>&nbsp;        for(int var7 = this.references.size(); var6 &lt; var7; ++var6) {</b>
+<i>183</i>&nbsp;            DOMReference var8 = (DOMReference)this.references.get(var6);
+<i>184</i>&nbsp;            var8.marshal(var4, var2, var3);
+<b class="nc"><i>185</i>&nbsp;        }</b>
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;        DOMUtils.setAttributeID(var4, &quot;Id&quot;, this.id);
+<b class="nc"><i>188</i>&nbsp;        var1.appendChild(var4);</b>
+<i>189</i>&nbsp;        this.localSiElem = var4;
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;    public boolean equals(Object var1) {</b>
+<i>193</i>&nbsp;        if(this == var1) {
+<i>194</i>&nbsp;            return true;
+<i>195</i>&nbsp;        } else if(!(var1 instanceof SignedInfo)) {
+<b class="nc"><i>196</i>&nbsp;            return false;</b>
+<i>197</i>&nbsp;        } else {
+<i>198</i>&nbsp;            SignedInfo var2 = (SignedInfo)var1;
+<i>199</i>&nbsp;            boolean var3 = this.id == null?var2.getId() == null:this.id.equals(var2.getId());
+<b class="nc"><i>200</i>&nbsp;            return this.canonicalizationMethod.equals(var2.getCanonicalizationMethod()) &amp;&amp; this.signatureMethod.equals(var2.getSignatureMethod()) &amp;&amp; this.references.equals(var2.getReferences()) &amp;&amp; var3;</b>
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

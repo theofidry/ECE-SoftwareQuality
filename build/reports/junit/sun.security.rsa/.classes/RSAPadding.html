@@ -1,0 +1,442 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RSAPadding</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.rsa</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RSAPadding (sun.security.rsa)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RSAPadding</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 163)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.rsa;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.security.DigestException;
+<i>9</i>&nbsp;import java.security.InvalidAlgorithmParameterException;
+<i>10</i>&nbsp;import java.security.InvalidKeyException;
+<i>11</i>&nbsp;import java.security.MessageDigest;
+<i>12</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>13</i>&nbsp;import java.security.SecureRandom;
+<i>14</i>&nbsp;import java.security.spec.MGF1ParameterSpec;
+<i>15</i>&nbsp;import java.util.Collections;
+<i>16</i>&nbsp;import java.util.HashMap;
+<i>17</i>&nbsp;import java.util.Map;
+<i>18</i>&nbsp;import javax.crypto.BadPaddingException;
+<i>19</i>&nbsp;import javax.crypto.spec.OAEPParameterSpec;
+<i>20</i>&nbsp;import javax.crypto.spec.PSource;
+<i>21</i>&nbsp;import javax.crypto.spec.PSource.PSpecified;
+<i>22</i>&nbsp;import sun.security.jca.JCAUtil;
+<i>23</i>&nbsp;import sun.security.rsa.RSACore;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;public final class RSAPadding {
+<i>26</i>&nbsp;    public static final int PAD_BLOCKTYPE_1 = 1;
+<i>27</i>&nbsp;    public static final int PAD_BLOCKTYPE_2 = 2;
+<i>28</i>&nbsp;    public static final int PAD_NONE = 3;
+<i>29</i>&nbsp;    public static final int PAD_OAEP_MGF1 = 4;
+<i>30</i>&nbsp;    private final int type;
+<i>31</i>&nbsp;    private final int paddedSize;
+<i>32</i>&nbsp;    private SecureRandom random;
+<i>33</i>&nbsp;    private final int maxDataSize;
+<i>34</i>&nbsp;    private MessageDigest md;
+<i>35</i>&nbsp;    private MessageDigest mgfMd;
+<i>36</i>&nbsp;    private byte[] lHash;
+<i>37</i>&nbsp;    private static final Map&lt;String, byte[]&gt; emptyHashes = Collections.synchronizedMap(new HashMap());
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public static RSAPadding getInstance(int var0, int var1) throws InvalidKeyException, InvalidAlgorithmParameterException {
+<i>40</i>&nbsp;        return new RSAPadding(var0, var1, (SecureRandom)null, (OAEPParameterSpec)null);
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public static RSAPadding getInstance(int var0, int var1, SecureRandom var2) throws InvalidKeyException, InvalidAlgorithmParameterException {
+<i>44</i>&nbsp;        return new RSAPadding(var0, var1, var2, (OAEPParameterSpec)null);
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public static RSAPadding getInstance(int var0, int var1, SecureRandom var2, OAEPParameterSpec var3) throws InvalidKeyException, InvalidAlgorithmParameterException {
+<i>48</i>&nbsp;        return new RSAPadding(var0, var1, var2, var3);
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private RSAPadding(int var1, int var2, SecureRandom var3, OAEPParameterSpec var4) throws InvalidKeyException, InvalidAlgorithmParameterException {
+<i>52</i>&nbsp;        this.type = var1;
+<i>53</i>&nbsp;        this.paddedSize = var2;
+<i>54</i>&nbsp;        this.random = var3;
+<i>55</i>&nbsp;        if(var2 &lt; 64) {
+<i>56</i>&nbsp;            throw new InvalidKeyException(&quot;Padded size must be at least 64&quot;);
+<i>57</i>&nbsp;        } else {
+<i>58</i>&nbsp;            switch(var1) {
+<i>59</i>&nbsp;            case 1:
+<i>60</i>&nbsp;            case 2:
+<i>61</i>&nbsp;                this.maxDataSize = var2 - 11;
+<i>62</i>&nbsp;                break;
+<i>63</i>&nbsp;            case 3:
+<i>64</i>&nbsp;                this.maxDataSize = var2;
+<i>65</i>&nbsp;                break;
+<i>66</i>&nbsp;            case 4:
+<i>67</i>&nbsp;                String var5 = &quot;SHA-1&quot;;
+<i>68</i>&nbsp;                String var6 = &quot;SHA-1&quot;;
+<i>69</i>&nbsp;                byte[] var7 = null;
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;                try {
+<i>72</i>&nbsp;                    if(var4 != null) {
+<i>73</i>&nbsp;                        var5 = var4.getDigestAlgorithm();
+<i>74</i>&nbsp;                        String var8 = var4.getMGFAlgorithm();
+<i>75</i>&nbsp;                        if(!var8.equalsIgnoreCase(&quot;MGF1&quot;)) {
+<i>76</i>&nbsp;                            throw new InvalidAlgorithmParameterException(&quot;Unsupported MGF algo: &quot; + var8);
+<i>77</i>&nbsp;                        }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;                        var6 = ((MGF1ParameterSpec)var4.getMGFParameters()).getDigestAlgorithm();
+<i>80</i>&nbsp;                        PSource var9 = var4.getPSource();
+<i>81</i>&nbsp;                        String var10 = var9.getAlgorithm();
+<i>82</i>&nbsp;                        if(!var10.equalsIgnoreCase(&quot;PSpecified&quot;)) {
+<i>83</i>&nbsp;                            throw new InvalidAlgorithmParameterException(&quot;Unsupported pSource algo: &quot; + var10);
+<i>84</i>&nbsp;                        }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;                        var7 = ((PSpecified)var9).getValue();
+<i>87</i>&nbsp;                    }
+<b class="nc"><i>88</i>&nbsp;</b>
+<i>89</i>&nbsp;                    this.md = MessageDigest.getInstance(var5);
+<i>90</i>&nbsp;                    this.mgfMd = MessageDigest.getInstance(var6);
+<i>91</i>&nbsp;                } catch (NoSuchAlgorithmException var11) {
+<i>92</i>&nbsp;                    throw new InvalidKeyException(&quot;Digest &quot; + var5 + &quot; not available&quot;, var11);
+<i>93</i>&nbsp;                }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;                this.lHash = getInitialHash(this.md, var7);
+<i>96</i>&nbsp;                int var12 = this.lHash.length;
+<i>97</i>&nbsp;                this.maxDataSize = var2 - 2 - 2 * var12;
+<b class="nc"><i>98</i>&nbsp;                if(this.maxDataSize &lt;= 0) {</b>
+<i>99</i>&nbsp;                    throw new InvalidKeyException(&quot;Key is too short for encryption using OAEPPadding with &quot; + var5 + &quot; and MGF1&quot; + var6);
+<i>100</i>&nbsp;                }
+<i>101</i>&nbsp;                break;
+<i>102</i>&nbsp;            default:
+<i>103</i>&nbsp;                throw new InvalidKeyException(&quot;Invalid padding: &quot; + var1);
+<i>104</i>&nbsp;            }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;        }
+<i>107</i>&nbsp;    }
+<b class="nc"><i>108</i>&nbsp;</b>
+<i>109</i>&nbsp;    private static byte[] getInitialHash(MessageDigest var0, byte[] var1) {
+<i>110</i>&nbsp;        byte[] var2;
+<i>111</i>&nbsp;        if(var1 != null &amp;&amp; var1.length != 0) {
+<i>112</i>&nbsp;            var2 = var0.digest(var1);
+<i>113</i>&nbsp;        } else {
+<b class="nc"><i>114</i>&nbsp;            String var3 = var0.getAlgorithm();</b>
+<b class="nc"><i>115</i>&nbsp;            var2 = (byte[])emptyHashes.get(var3);</b>
+<b class="nc"><i>116</i>&nbsp;            if(var2 == null) {</b>
+<b class="nc"><i>117</i>&nbsp;                var2 = var0.digest();</b>
+<b class="nc"><i>118</i>&nbsp;                emptyHashes.put(var3, var2);</b>
+<i>119</i>&nbsp;            }
+<b class="nc"><i>120</i>&nbsp;        }</b>
+<i>121</i>&nbsp;
+<b class="nc"><i>122</i>&nbsp;        return var2;</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<b class="nc"><i>125</i>&nbsp;    public int getMaxDataSize() {</b>
+<b class="nc"><i>126</i>&nbsp;        return this.maxDataSize;</b>
+<i>127</i>&nbsp;    }
+<b class="nc"><i>128</i>&nbsp;</b>
+<b class="nc"><i>129</i>&nbsp;    public byte[] pad(byte[] var1, int var2, int var3) throws BadPaddingException {</b>
+<i>130</i>&nbsp;        return this.pad(RSACore.convert(var1, var2, var3));
+<b class="nc"><i>131</i>&nbsp;    }</b>
+<b class="nc"><i>132</i>&nbsp;</b>
+<b class="nc"><i>133</i>&nbsp;    public byte[] pad(byte[] var1) throws BadPaddingException {</b>
+<i>134</i>&nbsp;        if(var1.length &gt; this.maxDataSize) {
+<b class="nc"><i>135</i>&nbsp;            throw new BadPaddingException(&quot;Data must be shorter than &quot; + (this.maxDataSize + 1) + &quot; bytes&quot;);</b>
+<b class="nc"><i>136</i>&nbsp;        } else {</b>
+<b class="nc"><i>137</i>&nbsp;            switch(this.type) {</b>
+<b class="nc"><i>138</i>&nbsp;            case 1:</b>
+<b class="nc"><i>139</i>&nbsp;            case 2:</b>
+<i>140</i>&nbsp;                return this.padV15(var1);
+<i>141</i>&nbsp;            case 3:
+<b class="nc"><i>142</i>&nbsp;                return var1;</b>
+<b class="nc"><i>143</i>&nbsp;            case 4:</b>
+<b class="nc"><i>144</i>&nbsp;                return this.padOAEP(var1);</b>
+<b class="nc"><i>145</i>&nbsp;            default:</b>
+<b class="nc"><i>146</i>&nbsp;                throw new AssertionError();</b>
+<i>147</i>&nbsp;            }
+<i>148</i>&nbsp;        }
+<b class="nc"><i>149</i>&nbsp;    }</b>
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;    public byte[] unpad(byte[] var1, int var2, int var3) throws BadPaddingException {</b>
+<b class="nc"><i>152</i>&nbsp;        return this.unpad(RSACore.convert(var1, var2, var3));</b>
+<b class="nc"><i>153</i>&nbsp;    }</b>
+<b class="nc"><i>154</i>&nbsp;</b>
+<i>155</i>&nbsp;    public byte[] unpad(byte[] var1) throws BadPaddingException {
+<b class="nc"><i>156</i>&nbsp;        if(var1.length != this.paddedSize) {</b>
+<b class="nc"><i>157</i>&nbsp;            throw new BadPaddingException(&quot;Decryption error&quot;);</b>
+<b class="nc"><i>158</i>&nbsp;        } else {</b>
+<b class="nc"><i>159</i>&nbsp;            switch(this.type) {</b>
+<b class="nc"><i>160</i>&nbsp;            case 1:</b>
+<b class="nc"><i>161</i>&nbsp;            case 2:</b>
+<i>162</i>&nbsp;                return this.unpadV15(var1);
+<i>163</i>&nbsp;            case 3:
+<i>164</i>&nbsp;                return var1;
+<i>165</i>&nbsp;            case 4:
+<i>166</i>&nbsp;                return this.unpadOAEP(var1);
+<b class="nc"><i>167</i>&nbsp;            default:</b>
+<i>168</i>&nbsp;                throw new AssertionError();
+<i>169</i>&nbsp;            }
+<i>170</i>&nbsp;        }
+<i>171</i>&nbsp;    }
+<b class="nc"><i>172</i>&nbsp;</b>
+<i>173</i>&nbsp;    private byte[] padV15(byte[] var1) throws BadPaddingException {
+<i>174</i>&nbsp;        byte[] var2 = new byte[this.paddedSize];
+<i>175</i>&nbsp;        System.arraycopy(var1, 0, var2, this.paddedSize - var1.length, var1.length);
+<i>176</i>&nbsp;        int var3 = this.paddedSize - 3 - var1.length;
+<i>177</i>&nbsp;        byte var4 = 0;
+<i>178</i>&nbsp;        int var9 = var4 + 1;
+<i>179</i>&nbsp;        var2[var4] = 0;
+<i>180</i>&nbsp;        var2[var9++] = (byte)this.type;
+<i>181</i>&nbsp;        if(this.type == 1) {
+<i>182</i>&nbsp;            while(var3-- &gt; 0) {
+<i>183</i>&nbsp;                var2[var9++] = -1;
+<b class="nc"><i>184</i>&nbsp;            }</b>
+<b class="nc"><i>185</i>&nbsp;        } else {</b>
+<b class="nc"><i>186</i>&nbsp;            if(this.random == null) {</b>
+<b class="nc"><i>187</i>&nbsp;                this.random = JCAUtil.getSecureRandom();</b>
+<b class="nc"><i>188</i>&nbsp;            }</b>
+<b class="nc"><i>189</i>&nbsp;</b>
+<b class="nc"><i>190</i>&nbsp;            byte[] var5 = new byte[64];</b>
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;            int var7;</b>
+<b class="nc"><i>193</i>&nbsp;            for(int var6 = -1; var3-- &gt; 0; var2[var9++] = (byte)var7) {</b>
+<i>194</i>&nbsp;                do {
+<b class="nc"><i>195</i>&nbsp;                    if(var6 &lt; 0) {</b>
+<i>196</i>&nbsp;                        this.random.nextBytes(var5);
+<i>197</i>&nbsp;                        var6 = var5.length - 1;
+<i>198</i>&nbsp;                    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;                    var7 = var5[var6--] &amp; 255;
+<i>201</i>&nbsp;                } while(var7 == 0);
+<i>202</i>&nbsp;            }
+<b class="nc"><i>203</i>&nbsp;        }</b>
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;        return var2;
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    private byte[] unpadV15(byte[] var1) throws BadPaddingException {
+<i>209</i>&nbsp;        byte var2 = 0;
+<i>210</i>&nbsp;        boolean var3 = false;
+<b class="nc"><i>211</i>&nbsp;        int var9 = var2 + 1;</b>
+<i>212</i>&nbsp;        if(var1[var2] != 0) {
+<i>213</i>&nbsp;            var3 = true;
+<i>214</i>&nbsp;        }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        if(var1[var9++] != this.type) {
+<i>217</i>&nbsp;            var3 = true;
+<b class="nc"><i>218</i>&nbsp;        }</b>
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;        int var4 = 0;
+<i>221</i>&nbsp;
+<b class="nc"><i>222</i>&nbsp;        int var5;</b>
+<i>223</i>&nbsp;        while(var9 &lt; var1.length) {
+<b class="nc"><i>224</i>&nbsp;            var5 = var1[var9++] &amp; 255;</b>
+<i>225</i>&nbsp;            if(var5 == 0 &amp;&amp; var4 == 0) {
+<i>226</i>&nbsp;                var4 = var9;
+<b class="nc"><i>227</i>&nbsp;            }</b>
+<i>228</i>&nbsp;
+<b class="nc"><i>229</i>&nbsp;            if(var9 == var1.length &amp;&amp; var4 == 0) {</b>
+<i>230</i>&nbsp;                var3 = true;
+<b class="nc"><i>231</i>&nbsp;            }</b>
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;            if(this.type == 1 &amp;&amp; var5 != 255 &amp;&amp; var4 == 0) {
+<i>234</i>&nbsp;                var3 = true;
+<i>235</i>&nbsp;            }
+<i>236</i>&nbsp;        }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;        var5 = var1.length - var4;
+<i>239</i>&nbsp;        if(var5 &gt; this.maxDataSize) {
+<b class="nc"><i>240</i>&nbsp;            var3 = true;</b>
+<i>241</i>&nbsp;        }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;        byte[] var6 = new byte[var4];
+<i>244</i>&nbsp;        System.arraycopy(var1, 0, var6, 0, var4);
+<i>245</i>&nbsp;        byte[] var7 = new byte[var5];
+<i>246</i>&nbsp;        System.arraycopy(var1, var4, var7, 0, var5);
+<b class="nc"><i>247</i>&nbsp;        BadPaddingException var8 = new BadPaddingException(&quot;Decryption error&quot;);</b>
+<b class="nc"><i>248</i>&nbsp;        if(var3) {</b>
+<i>249</i>&nbsp;            throw var8;
+<b class="nc"><i>250</i>&nbsp;        } else {</b>
+<i>251</i>&nbsp;            return var7;
+<b class="nc"><i>252</i>&nbsp;        }</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<b class="nc"><i>255</i>&nbsp;    private byte[] padOAEP(byte[] var1) throws BadPaddingException {</b>
+<i>256</i>&nbsp;        if(this.random == null) {
+<b class="nc"><i>257</i>&nbsp;            this.random = JCAUtil.getSecureRandom();</b>
+<i>258</i>&nbsp;        }
+<b class="nc"><i>259</i>&nbsp;</b>
+<i>260</i>&nbsp;        int var2 = this.lHash.length;
+<i>261</i>&nbsp;        byte[] var3 = new byte[var2];
+<i>262</i>&nbsp;        this.random.nextBytes(var3);
+<i>263</i>&nbsp;        byte[] var4 = new byte[this.paddedSize];
+<i>264</i>&nbsp;        byte var5 = 1;
+<i>265</i>&nbsp;        System.arraycopy(var3, 0, var4, var5, var2);
+<i>266</i>&nbsp;        int var7 = var2 + 1;
+<b class="nc"><i>267</i>&nbsp;        int var8 = var4.length - var7;</b>
+<b class="nc"><i>268</i>&nbsp;        int var9 = this.paddedSize - var1.length;</b>
+<b class="nc"><i>269</i>&nbsp;        System.arraycopy(this.lHash, 0, var4, var7, var2);</b>
+<b class="nc"><i>270</i>&nbsp;        var4[var9 - 1] = 1;</b>
+<b class="nc"><i>271</i>&nbsp;        System.arraycopy(var1, 0, var4, var9, var1.length);</b>
+<b class="nc"><i>272</i>&nbsp;        this.mgf1(var4, var5, var2, var4, var7, var8);</b>
+<b class="nc"><i>273</i>&nbsp;        this.mgf1(var4, var7, var8, var4, var5, var2);</b>
+<i>274</i>&nbsp;        return var4;
+<b class="nc"><i>275</i>&nbsp;    }</b>
+<b class="nc"><i>276</i>&nbsp;</b>
+<i>277</i>&nbsp;    private byte[] unpadOAEP(byte[] var1) throws BadPaddingException {
+<i>278</i>&nbsp;        byte[] var2 = var1;
+<i>279</i>&nbsp;        boolean var3 = false;
+<b class="nc"><i>280</i>&nbsp;        int var4 = this.lHash.length;</b>
+<b class="nc"><i>281</i>&nbsp;        if(var1[0] != 0) {</b>
+<i>282</i>&nbsp;            var3 = true;
+<i>283</i>&nbsp;        }
+<i>284</i>&nbsp;
+<b class="nc"><i>285</i>&nbsp;        byte var5 = 1;</b>
+<b class="nc"><i>286</i>&nbsp;        int var7 = var4 + 1;</b>
+<b class="nc"><i>287</i>&nbsp;        int var8 = var1.length - var7;</b>
+<i>288</i>&nbsp;        this.mgf1(var1, var7, var8, var1, var5, var4);
+<i>289</i>&nbsp;        this.mgf1(var1, var5, var4, var1, var7, var8);
+<b class="nc"><i>290</i>&nbsp;</b>
+<b class="nc"><i>291</i>&nbsp;        int var9;</b>
+<b class="nc"><i>292</i>&nbsp;        for(var9 = 0; var9 &lt; var4; ++var9) {</b>
+<i>293</i>&nbsp;            if(this.lHash[var9] != var2[var7 + var9]) {
+<b class="nc"><i>294</i>&nbsp;                var3 = true;</b>
+<b class="nc"><i>295</i>&nbsp;            }</b>
+<b class="nc"><i>296</i>&nbsp;        }</b>
+<b class="nc"><i>297</i>&nbsp;</b>
+<i>298</i>&nbsp;        var9 = var7 + var4;
+<b class="nc"><i>299</i>&nbsp;        int var10 = -1;</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;        int var11;
+<i>302</i>&nbsp;        for(var11 = var9; var11 &lt; var2.length; ++var11) {
+<i>303</i>&nbsp;            byte var12 = var2[var11];
+<i>304</i>&nbsp;            if(var10 == -1 &amp;&amp; var12 != 0) {
+<i>305</i>&nbsp;                if(var12 == 1) {
+<b class="nc"><i>306</i>&nbsp;                    var10 = var11;</b>
+<b class="nc"><i>307</i>&nbsp;                } else {</b>
+<b class="nc"><i>308</i>&nbsp;                    var3 = true;</b>
+<i>309</i>&nbsp;                }
+<b class="nc"><i>310</i>&nbsp;            }</b>
+<b class="nc"><i>311</i>&nbsp;        }</b>
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;        if(var10 == -1) {
+<b class="nc"><i>314</i>&nbsp;            var3 = true;</b>
+<b class="nc"><i>315</i>&nbsp;            var10 = var2.length - 1;</b>
+<b class="nc"><i>316</i>&nbsp;        }</b>
+<i>317</i>&nbsp;
+<b class="nc"><i>318</i>&nbsp;        var11 = var10 + 1;</b>
+<b class="nc"><i>319</i>&nbsp;        byte[] var15 = new byte[var11 - var9];</b>
+<i>320</i>&nbsp;        System.arraycopy(var2, var9, var15, 0, var15.length);
+<b class="nc"><i>321</i>&nbsp;        byte[] var13 = new byte[var2.length - var11];</b>
+<b class="nc"><i>322</i>&nbsp;        System.arraycopy(var2, var11, var13, 0, var13.length);</b>
+<i>323</i>&nbsp;        BadPaddingException var14 = new BadPaddingException(&quot;Decryption error&quot;);
+<b class="nc"><i>324</i>&nbsp;        if(var3) {</b>
+<b class="nc"><i>325</i>&nbsp;            throw var14;</b>
+<b class="nc"><i>326</i>&nbsp;        } else {</b>
+<b class="nc"><i>327</i>&nbsp;            return var13;</b>
+<i>328</i>&nbsp;        }
+<b class="nc"><i>329</i>&nbsp;    }</b>
+<b class="nc"><i>330</i>&nbsp;</b>
+<b class="nc"><i>331</i>&nbsp;    private void mgf1(byte[] var1, int var2, int var3, byte[] var4, int var5, int var6) throws BadPaddingException {</b>
+<i>332</i>&nbsp;        byte[] var7 = new byte[4];
+<i>333</i>&nbsp;        byte[] var8 = new byte[this.mgfMd.getDigestLength()];
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;        while(var6 &gt; 0) {
+<i>336</i>&nbsp;            this.mgfMd.update(var1, var2, var3);
+<i>337</i>&nbsp;            this.mgfMd.update(var7);
+<i>338</i>&nbsp;
+<b class="nc"><i>339</i>&nbsp;            try {</b>
+<b class="nc"><i>340</i>&nbsp;                this.mgfMd.digest(var8, 0, var8.length);</b>
+<i>341</i>&nbsp;            } catch (DigestException var10) {
+<b class="nc"><i>342</i>&nbsp;                throw new BadPaddingException(var10.toString());</b>
+<i>343</i>&nbsp;            }
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;            int var9;
+<b class="nc"><i>346</i>&nbsp;            for(var9 = 0; var9 &lt; var8.length &amp;&amp; var6 &gt; 0; --var6) {</b>
+<b class="nc"><i>347</i>&nbsp;                int var10001 = var5++;</b>
+<i>348</i>&nbsp;                var4[var10001] ^= var8[var9++];
+<i>349</i>&nbsp;            }
+<b class="nc"><i>350</i>&nbsp;</b>
+<i>351</i>&nbsp;            if(var6 &gt; 0) {
+<i>352</i>&nbsp;                for(var9 = var7.length - 1; ++var7[var9] == 0 &amp;&amp; var9 &gt; 0; --var9) {
+<b class="nc"><i>353</i>&nbsp;                    ;</b>
+<b class="nc"><i>354</i>&nbsp;                }</b>
+<i>355</i>&nbsp;            }
+<i>356</i>&nbsp;        }
+<b class="nc"><i>357</i>&nbsp;</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

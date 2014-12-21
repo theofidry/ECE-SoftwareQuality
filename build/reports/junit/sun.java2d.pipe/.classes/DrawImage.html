@@ -1,0 +1,742 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DrawImage</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.java2d.pipe</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DrawImage (sun.java2d.pipe)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DrawImage</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 374)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.java2d.pipe;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.AlphaComposite;
+<i>9</i>&nbsp;import java.awt.Color;
+<i>10</i>&nbsp;import java.awt.Image;
+<i>11</i>&nbsp;import java.awt.geom.AffineTransform;
+<i>12</i>&nbsp;import java.awt.geom.NoninvertibleTransformException;
+<i>13</i>&nbsp;import java.awt.image.AffineTransformOp;
+<i>14</i>&nbsp;import java.awt.image.BufferedImage;
+<i>15</i>&nbsp;import java.awt.image.BufferedImageOp;
+<i>16</i>&nbsp;import java.awt.image.ColorModel;
+<i>17</i>&nbsp;import java.awt.image.ImageObserver;
+<i>18</i>&nbsp;import java.awt.image.IndexColorModel;
+<i>19</i>&nbsp;import java.awt.image.VolatileImage;
+<i>20</i>&nbsp;import java.awt.image.WritableRaster;
+<i>21</i>&nbsp;import sun.awt.image.BytePackedRaster;
+<i>22</i>&nbsp;import sun.awt.image.ImageRepresentation;
+<i>23</i>&nbsp;import sun.awt.image.SurfaceManager;
+<i>24</i>&nbsp;import sun.awt.image.ToolkitImage;
+<i>25</i>&nbsp;import sun.java2d.InvalidPipeException;
+<i>26</i>&nbsp;import sun.java2d.SunGraphics2D;
+<i>27</i>&nbsp;import sun.java2d.SurfaceData;
+<i>28</i>&nbsp;import sun.java2d.loops.Blit;
+<i>29</i>&nbsp;import sun.java2d.loops.BlitBg;
+<i>30</i>&nbsp;import sun.java2d.loops.CompositeType;
+<i>31</i>&nbsp;import sun.java2d.loops.MaskBlit;
+<i>32</i>&nbsp;import sun.java2d.loops.ScaledBlit;
+<i>33</i>&nbsp;import sun.java2d.loops.SurfaceType;
+<i>34</i>&nbsp;import sun.java2d.loops.TransformHelper;
+<i>35</i>&nbsp;import sun.java2d.pipe.DrawImagePipe;
+<i>36</i>&nbsp;import sun.java2d.pipe.Region;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;public class DrawImage implements DrawImagePipe {
+<i>39</i>&nbsp;    private static final double MAX_TX_ERROR = 1.0E-4D;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public DrawImage() {
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public boolean copyImage(SunGraphics2D var1, Image var2, int var3, int var4, Color var5) {
+<b class="nc"><i>45</i>&nbsp;        int var6 = var2.getWidth((ImageObserver)null);</b>
+<i>46</i>&nbsp;        int var7 = var2.getHeight((ImageObserver)null);
+<i>47</i>&nbsp;        if(isSimpleTranslate(var1)) {
+<i>48</i>&nbsp;            return this.renderImageCopy(var1, var2, var5, var3 + var1.transX, var4 + var1.transY, 0, 0, var6, var7);
+<i>49</i>&nbsp;        } else {
+<i>50</i>&nbsp;            AffineTransform var8 = var1.transform;
+<b class="nc"><i>51</i>&nbsp;            if((var3 | var4) != 0) {</b>
+<b class="nc"><i>52</i>&nbsp;                var8 = new AffineTransform(var8);</b>
+<b class="nc"><i>53</i>&nbsp;                var8.translate((double)var3, (double)var4);</b>
+<b class="nc"><i>54</i>&nbsp;            }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;            this.transformImage(var1, var2, var8, var1.interpolationType, 0, 0, var6, var7, var5);
+<i>57</i>&nbsp;            return true;
+<b class="nc"><i>58</i>&nbsp;        }</b>
+<b class="nc"><i>59</i>&nbsp;    }</b>
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;    public boolean copyImage(SunGraphics2D var1, Image var2, int var3, int var4, int var5, int var6, int var7, int var8, Color var9) {</b>
+<i>62</i>&nbsp;        if(isSimpleTranslate(var1)) {
+<b class="nc"><i>63</i>&nbsp;            return this.renderImageCopy(var1, var2, var9, var3 + var1.transX, var4 + var1.transY, var5, var6, var7, var8);</b>
+<i>64</i>&nbsp;        } else {
+<b class="nc"><i>65</i>&nbsp;            this.scaleImage(var1, var2, var3, var4, var3 + var7, var4 + var8, var5, var6, var5 + var7, var6 + var8, var9);</b>
+<i>66</i>&nbsp;            return true;
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public boolean scaleImage(SunGraphics2D var1, Image var2, int var3, int var4, int var5, int var6, Color var7) {
+<i>71</i>&nbsp;        int var8 = var2.getWidth((ImageObserver)null);
+<b class="nc"><i>72</i>&nbsp;        int var9 = var2.getHeight((ImageObserver)null);</b>
+<b class="nc"><i>73</i>&nbsp;        if(var5 &gt; 0 &amp;&amp; var6 &gt; 0 &amp;&amp; isSimpleTranslate(var1)) {</b>
+<i>74</i>&nbsp;            double var10 = (double)(var3 + var1.transX);
+<i>75</i>&nbsp;            double var12 = (double)(var4 + var1.transY);
+<i>76</i>&nbsp;            double var14 = var10 + (double)var5;
+<b class="nc"><i>77</i>&nbsp;            double var16 = var12 + (double)var6;</b>
+<i>78</i>&nbsp;            if(this.renderImageScale(var1, var2, var7, var1.interpolationType, 0, 0, var8, var9, var10, var12, var14, var16)) {
+<b class="nc"><i>79</i>&nbsp;                return true;</b>
+<i>80</i>&nbsp;            }
+<i>81</i>&nbsp;        }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;        AffineTransform var18 = var1.transform;
+<i>84</i>&nbsp;        if((var3 | var4) != 0 || var5 != var8 || var6 != var9) {
+<i>85</i>&nbsp;            var18 = new AffineTransform(var18);
+<b class="nc"><i>86</i>&nbsp;            var18.translate((double)var3, (double)var4);</b>
+<b class="nc"><i>87</i>&nbsp;            var18.scale((double)var5 / (double)var8, (double)var6 / (double)var9);</b>
+<i>88</i>&nbsp;        }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;        this.transformImage(var1, var2, var18, var1.interpolationType, 0, 0, var8, var9, var7);
+<i>91</i>&nbsp;        return true;
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<b class="nc"><i>93</i>&nbsp;</b>
+<b class="nc"><i>94</i>&nbsp;    protected void transformImage(SunGraphics2D var1, Image var2, int var3, int var4, AffineTransform var5, int var6) {</b>
+<b class="nc"><i>95</i>&nbsp;        int var7 = var5.getType();</b>
+<b class="nc"><i>96</i>&nbsp;        int var8 = var2.getWidth((ImageObserver)null);</b>
+<b class="nc"><i>97</i>&nbsp;        int var9 = var2.getHeight((ImageObserver)null);</b>
+<i>98</i>&nbsp;        boolean var10;
+<i>99</i>&nbsp;        if(var1.transformState &lt;= 2 &amp;&amp; (var7 == 0 || var7 == 1)) {
+<i>100</i>&nbsp;            double var17 = var5.getTranslateX();
+<b class="nc"><i>101</i>&nbsp;            double var13 = var5.getTranslateY();</b>
+<i>102</i>&nbsp;            var17 += var1.transform.getTranslateX();
+<i>103</i>&nbsp;            var13 += var1.transform.getTranslateY();
+<i>104</i>&nbsp;            int var15 = (int)Math.floor(var17 + 0.5D);
+<b class="nc"><i>105</i>&nbsp;            int var16 = (int)Math.floor(var13 + 0.5D);</b>
+<b class="nc"><i>106</i>&nbsp;            if(var6 == 1 || closeToInteger(var15, var17) &amp;&amp; closeToInteger(var16, var13)) {</b>
+<b class="nc"><i>107</i>&nbsp;                this.renderImageCopy(var1, var2, (Color)null, var3 + var15, var4 + var16, 0, 0, var8, var9);</b>
+<b class="nc"><i>108</i>&nbsp;                return;</b>
+<b class="nc"><i>109</i>&nbsp;            }</b>
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;            var10 = false;</b>
+<i>112</i>&nbsp;        } else if(var1.transformState &lt;= 3 &amp;&amp; (var7 &amp; 120) == 0) {
+<b class="nc"><i>113</i>&nbsp;            double[] var11 = new double[]{0.0D, 0.0D, (double)var8, (double)var9};</b>
+<i>114</i>&nbsp;            var5.transform(var11, 0, var11, 0, 2);
+<i>115</i>&nbsp;            var11[0] += (double)var3;
+<i>116</i>&nbsp;            var11[1] += (double)var4;
+<i>117</i>&nbsp;            var11[2] += (double)var3;
+<i>118</i>&nbsp;            var11[3] += (double)var4;
+<i>119</i>&nbsp;            var1.transform.transform(var11, 0, var11, 0, 2);
+<i>120</i>&nbsp;            if(this.tryCopyOrScale(var1, var2, 0, 0, var8, var9, (Color)null, var6, var11)) {
+<i>121</i>&nbsp;                return;
+<i>122</i>&nbsp;            }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;            var10 = false;
+<i>125</i>&nbsp;        } else {
+<i>126</i>&nbsp;            var10 = true;
+<b class="nc"><i>127</i>&nbsp;        }</b>
+<b class="nc"><i>128</i>&nbsp;</b>
+<b class="nc"><i>129</i>&nbsp;        AffineTransform var18 = new AffineTransform(var1.transform);</b>
+<i>130</i>&nbsp;        var18.translate((double)var3, (double)var4);
+<i>131</i>&nbsp;        var18.concatenate(var5);
+<b class="nc"><i>132</i>&nbsp;        if(var10) {</b>
+<i>133</i>&nbsp;            this.transformImage(var1, var2, var18, var6, 0, 0, var8, var9, (Color)null);
+<i>134</i>&nbsp;        } else {
+<i>135</i>&nbsp;            this.renderImageXform(var1, var2, var18, var6, 0, 0, var8, var9, (Color)null);
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    }
+<b class="nc"><i>139</i>&nbsp;</b>
+<b class="nc"><i>140</i>&nbsp;    protected void transformImage(SunGraphics2D var1, Image var2, AffineTransform var3, int var4, int var5, int var6, int var7, int var8, Color var9) {</b>
+<b class="nc"><i>141</i>&nbsp;        double[] var10 = new double[6];</b>
+<b class="nc"><i>142</i>&nbsp;        var10[2] = (double)(var7 - var5);</b>
+<b class="nc"><i>143</i>&nbsp;        var10[3] = var10[5] = (double)(var8 - var6);</b>
+<b class="nc"><i>144</i>&nbsp;        var3.transform(var10, 0, var10, 0, 3);</b>
+<b class="nc"><i>145</i>&nbsp;        if(Math.abs(var10[0] - var10[4]) &gt;= 1.0E-4D || Math.abs(var10[3] - var10[5]) &gt;= 1.0E-4D || !this.tryCopyOrScale(var1, var2, var5, var6, var7, var8, var9, var4, var10)) {</b>
+<i>146</i>&nbsp;            this.renderImageXform(var1, var2, var3, var4, var5, var6, var7, var8, var9);
+<i>147</i>&nbsp;        }
+<b class="nc"><i>148</i>&nbsp;    }</b>
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    protected boolean tryCopyOrScale(SunGraphics2D var1, Image var2, int var3, int var4, int var5, int var6, Color var7, int var8, double[] var9) {
+<b class="nc"><i>151</i>&nbsp;        double var10 = var9[0];</b>
+<b class="nc"><i>152</i>&nbsp;        double var12 = var9[1];</b>
+<i>153</i>&nbsp;        double var14 = var9[2] - var10;
+<i>154</i>&nbsp;        double var16 = var9[3] - var12;
+<i>155</i>&nbsp;        if(closeToInteger(var5 - var3, var14) &amp;&amp; closeToInteger(var6 - var4, var16)) {
+<i>156</i>&nbsp;            int var18 = (int)Math.floor(var10 + 0.5D);
+<i>157</i>&nbsp;            int var19 = (int)Math.floor(var12 + 0.5D);
+<i>158</i>&nbsp;            if(var8 == 1 || closeToInteger(var18, var10) &amp;&amp; closeToInteger(var19, var12)) {
+<i>159</i>&nbsp;                this.renderImageCopy(var1, var2, var7, var18, var19, var3, var4, var5 - var3, var6 - var4);
+<i>160</i>&nbsp;                return true;
+<i>161</i>&nbsp;            }
+<i>162</i>&nbsp;        }
+<i>163</i>&nbsp;
+<b class="nc"><i>164</i>&nbsp;        return var14 &gt; 0.0D &amp;&amp; var16 &gt; 0.0D &amp;&amp; this.renderImageScale(var1, var2, var7, var8, var3, var4, var5, var6, var9[0], var9[1], var9[2], var9[3]);</b>
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<b class="nc"><i>167</i>&nbsp;    BufferedImage makeBufferedImage(Image var1, Color var2, int var3, int var4, int var5, int var6, int var7) {</b>
+<b class="nc"><i>168</i>&nbsp;        int var8 = var6 - var4;</b>
+<b class="nc"><i>169</i>&nbsp;        int var9 = var7 - var5;</b>
+<b class="nc"><i>170</i>&nbsp;        BufferedImage var10 = new BufferedImage(var8, var9, var3);</b>
+<b class="nc"><i>171</i>&nbsp;        SunGraphics2D var11 = (SunGraphics2D)var10.createGraphics();</b>
+<b class="nc"><i>172</i>&nbsp;        var11.setComposite(AlphaComposite.Src);</b>
+<i>173</i>&nbsp;        if(var2 != null) {
+<b class="nc"><i>174</i>&nbsp;            var11.setColor(var2);</b>
+<i>175</i>&nbsp;            var11.fillRect(0, 0, var8, var9);
+<i>176</i>&nbsp;            var11.setComposite(AlphaComposite.SrcOver);
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;
+<b class="nc"><i>179</i>&nbsp;        var11.copyImage(var1, 0, 0, var4, var5, var8, var9, (Color)null, (ImageObserver)null);</b>
+<b class="nc"><i>180</i>&nbsp;        var11.dispose();</b>
+<b class="nc"><i>181</i>&nbsp;        return var10;</b>
+<i>182</i>&nbsp;    }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    protected void renderImageXform(SunGraphics2D var1, Image var2, AffineTransform var3, int var4, int var5, int var6, int var7, int var8, Color var9) {
+<b class="nc"><i>185</i>&nbsp;        Region var10 = var1.getCompClip();</b>
+<b class="nc"><i>186</i>&nbsp;        SurfaceData var11 = var1.surfaceData;</b>
+<b class="nc"><i>187</i>&nbsp;        SurfaceData var12 = var11.getSourceSurfaceData((Image)var2, 4, var1.imageComp, var9);</b>
+<i>188</i>&nbsp;        if(var12 == null) {
+<i>189</i>&nbsp;            var2 = this.getBufferedImage((Image)var2);
+<i>190</i>&nbsp;            var12 = var11.getSourceSurfaceData((Image)var2, 4, var1.imageComp, var9);
+<i>191</i>&nbsp;            if(var12 == null) {
+<b class="nc"><i>192</i>&nbsp;                return;</b>
+<i>193</i>&nbsp;            }
+<i>194</i>&nbsp;        }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;        if(isBgOperation(var12, var9)) {
+<b class="nc"><i>197</i>&nbsp;            var2 = this.makeBufferedImage((Image)var2, var9, 1, var5, var6, var7, var8);</b>
+<i>198</i>&nbsp;            var7 -= var5;
+<b class="nc"><i>199</i>&nbsp;            var8 -= var6;</b>
+<i>200</i>&nbsp;            var6 = 0;
+<i>201</i>&nbsp;            var5 = 0;
+<i>202</i>&nbsp;            var12 = var11.getSourceSurfaceData((Image)var2, 4, var1.imageComp, var9);
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;        SurfaceType var13 = var12.getSurfaceType();
+<i>206</i>&nbsp;        TransformHelper var14 = TransformHelper.getFromCache(var13);
+<i>207</i>&nbsp;        if(var14 == null) {
+<i>208</i>&nbsp;            int var15 = var12.getTransparency() == 1?1:2;
+<i>209</i>&nbsp;            BufferedImage var42 = this.makeBufferedImage((Image)var2, (Color)null, var15, var5, var6, var7, var8);
+<i>210</i>&nbsp;            var7 -= var5;
+<i>211</i>&nbsp;            var8 -= var6;
+<i>212</i>&nbsp;            var6 = 0;
+<i>213</i>&nbsp;            var5 = 0;
+<i>214</i>&nbsp;            var12 = var11.getSourceSurfaceData(var42, 4, var1.imageComp, (Color)null);
+<i>215</i>&nbsp;            var13 = var12.getSurfaceType();
+<i>216</i>&nbsp;            var14 = TransformHelper.getFromCache(var13);
+<i>217</i>&nbsp;        }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;        AffineTransform var43;
+<i>220</i>&nbsp;        try {
+<i>221</i>&nbsp;            var43 = var3.createInverse();
+<i>222</i>&nbsp;        } catch (NoninvertibleTransformException var41) {
+<i>223</i>&nbsp;            return;
+<i>224</i>&nbsp;        }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;        double[] var16 = new double[8];
+<i>227</i>&nbsp;        var16[2] = var16[6] = (double)(var7 - var5);
+<i>228</i>&nbsp;        var16[5] = var16[7] = (double)(var8 - var6);
+<i>229</i>&nbsp;        var3.transform(var16, 0, var16, 0, 4);
+<i>230</i>&nbsp;        double var21;
+<b class="nc"><i>231</i>&nbsp;        double var17 = var21 = var16[0];</b>
+<i>232</i>&nbsp;        double var23;
+<i>233</i>&nbsp;        double var19 = var23 = var16[1];
+<b class="nc"><i>234</i>&nbsp;</b>
+<b class="nc"><i>235</i>&nbsp;        int var25;</b>
+<b class="nc"><i>236</i>&nbsp;        for(var25 = 2; var25 &lt; var16.length; var25 += 2) {</b>
+<i>237</i>&nbsp;            double var26 = var16[var25];
+<i>238</i>&nbsp;            if(var17 &gt; var26) {
+<i>239</i>&nbsp;                var17 = var26;
+<i>240</i>&nbsp;            } else if(var21 &lt; var26) {
+<i>241</i>&nbsp;                var21 = var26;
+<i>242</i>&nbsp;            }
+<b class="nc"><i>243</i>&nbsp;</b>
+<i>244</i>&nbsp;            var26 = var16[var25 + 1];
+<i>245</i>&nbsp;            if(var19 &gt; var26) {
+<i>246</i>&nbsp;                var19 = var26;
+<i>247</i>&nbsp;            } else if(var23 &lt; var26) {
+<i>248</i>&nbsp;                var23 = var26;
+<i>249</i>&nbsp;            }
+<i>250</i>&nbsp;        }
+<b class="nc"><i>251</i>&nbsp;</b>
+<i>252</i>&nbsp;        var25 = (int)Math.floor(var17);
+<i>253</i>&nbsp;        int var44 = (int)Math.floor(var19);
+<i>254</i>&nbsp;        int var27 = (int)Math.ceil(var21);
+<i>255</i>&nbsp;        int var28 = (int)Math.ceil(var23);
+<i>256</i>&nbsp;        SurfaceType var29 = var11.getSurfaceType();
+<i>257</i>&nbsp;        Blit var31;
+<i>258</i>&nbsp;        MaskBlit var30;
+<i>259</i>&nbsp;        if(var1.compositeState &lt;= 1) {
+<i>260</i>&nbsp;            var30 = MaskBlit.getFromCache(SurfaceType.IntArgbPre, var1.imageComp, var29);
+<i>261</i>&nbsp;            if(var30.getNativePrim() != 0L) {
+<i>262</i>&nbsp;                var14.Transform(var30, var12, var11, var1.composite, var10, var43, var4, var5, var6, var7, var8, var25, var44, var27, var28, (int[])null, 0, 0);
+<i>263</i>&nbsp;                return;
+<i>264</i>&nbsp;            }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;            var31 = null;
+<i>267</i>&nbsp;        } else {
+<b class="nc"><i>268</i>&nbsp;            var30 = null;</b>
+<b class="nc"><i>269</i>&nbsp;            var31 = Blit.getFromCache(SurfaceType.IntArgbPre, var1.imageComp, var29);</b>
+<b class="nc"><i>270</i>&nbsp;        }</b>
+<b class="nc"><i>271</i>&nbsp;</b>
+<i>272</i>&nbsp;        BufferedImage var32 = new BufferedImage(var27 - var25, var28 - var44, 2);
+<b class="nc"><i>273</i>&nbsp;        SurfaceData var33 = SurfaceData.getPrimarySurfaceData(var32);</b>
+<i>274</i>&nbsp;        SurfaceType var34 = var33.getSurfaceType();
+<i>275</i>&nbsp;        MaskBlit var35 = MaskBlit.getFromCache(SurfaceType.IntArgbPre, CompositeType.SrcNoEa, var34);
+<b class="nc"><i>276</i>&nbsp;        int[] var36 = new int[(var28 - var44) * 2 + 2];</b>
+<b class="nc"><i>277</i>&nbsp;        var14.Transform(var35, var12, var33, AlphaComposite.Src, (Region)null, var43, var4, var5, var6, var7, var8, 0, 0, var27 - var25, var28 - var44, var36, var25, var44);</b>
+<b class="nc"><i>278</i>&nbsp;        int var37 = 2;</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;        for(int var38 = var36[0]; var38 &lt; var36[1]; ++var38) {
+<b class="nc"><i>281</i>&nbsp;            int var39 = var36[var37++];</b>
+<i>282</i>&nbsp;            int var40 = var36[var37++];
+<i>283</i>&nbsp;            if(var39 &lt; var40) {
+<b class="nc"><i>284</i>&nbsp;                if(var30 != null) {</b>
+<i>285</i>&nbsp;                    var30.MaskBlit(var33, var11, var1.composite, var10, var39, var38, var25 + var39, var44 + var38, var40 - var39, 1, (byte[])null, 0, 0);
+<i>286</i>&nbsp;                } else {
+<i>287</i>&nbsp;                    var31.Blit(var33, var11, var1.composite, var10, var39, var38, var25 + var39, var44 + var38, var40 - var39, 1);
+<i>288</i>&nbsp;                }
+<b class="nc"><i>289</i>&nbsp;            }</b>
+<b class="nc"><i>290</i>&nbsp;        }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;    protected boolean renderImageCopy(SunGraphics2D var1, Image var2, Color var3, int var4, int var5, int var6, int var7, int var8, int var9) {</b>
+<i>295</i>&nbsp;        Region var10 = var1.getCompClip();
+<i>296</i>&nbsp;        SurfaceData var11 = var1.surfaceData;
+<b class="nc"><i>297</i>&nbsp;        int var12 = 0;</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;        while(true) {
+<i>300</i>&nbsp;            SurfaceData var13 = var11.getSourceSurfaceData(var2, 0, var1.imageComp, var3);
+<i>301</i>&nbsp;            if(var13 == null) {
+<i>302</i>&nbsp;                return false;
+<i>303</i>&nbsp;            }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;            try {
+<i>306</i>&nbsp;                SurfaceType var14 = var13.getSurfaceType();
+<i>307</i>&nbsp;                SurfaceType var15 = var11.getSurfaceType();
+<i>308</i>&nbsp;                this.blitSurfaceData(var1, var10, var13, var11, var14, var15, var6, var7, var4, var5, var8, var9, var3);
+<b class="nc"><i>309</i>&nbsp;                return true;</b>
+<b class="nc"><i>310</i>&nbsp;            } catch (NullPointerException var16) {</b>
+<b class="nc"><i>311</i>&nbsp;                if(!SurfaceData.isNull(var11) &amp;&amp; !SurfaceData.isNull(var13)) {</b>
+<b class="nc"><i>312</i>&nbsp;                    throw var16;</b>
+<b class="nc"><i>313</i>&nbsp;                }</b>
+<b class="nc"><i>314</i>&nbsp;</b>
+<b class="nc"><i>315</i>&nbsp;                return false;</b>
+<i>316</i>&nbsp;            } catch (InvalidPipeException var17) {
+<b class="nc"><i>317</i>&nbsp;                ++var12;</b>
+<b class="nc"><i>318</i>&nbsp;                var10 = var1.getCompClip();</b>
+<b class="nc"><i>319</i>&nbsp;                var11 = var1.surfaceData;</b>
+<i>320</i>&nbsp;                if(SurfaceData.isNull(var11) || SurfaceData.isNull(var13) || var12 &gt; 1) {
+<i>321</i>&nbsp;                    return false;
+<i>322</i>&nbsp;                }
+<i>323</i>&nbsp;            }
+<i>324</i>&nbsp;        }
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<b class="nc"><i>327</i>&nbsp;    protected boolean renderImageScale(SunGraphics2D var1, Image var2, Color var3, int var4, int var5, int var6, int var7, int var8, double var9, double var11, double var13, double var15) {</b>
+<i>328</i>&nbsp;        if(var4 != 1) {
+<i>329</i>&nbsp;            return false;
+<i>330</i>&nbsp;        } else {
+<b class="nc"><i>331</i>&nbsp;            Region var17 = var1.getCompClip();</b>
+<b class="nc"><i>332</i>&nbsp;            SurfaceData var18 = var1.surfaceData;</b>
+<b class="nc"><i>333</i>&nbsp;            int var19 = 0;</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;            while(true) {
+<b class="nc"><i>336</i>&nbsp;                SurfaceData var20 = var18.getSourceSurfaceData(var2, 3, var1.imageComp, var3);</b>
+<i>337</i>&nbsp;                if(var20 != null &amp;&amp; !isBgOperation(var20, var3)) {
+<i>338</i>&nbsp;                    try {
+<i>339</i>&nbsp;                        SurfaceType var21 = var20.getSurfaceType();
+<i>340</i>&nbsp;                        SurfaceType var22 = var18.getSurfaceType();
+<i>341</i>&nbsp;                        return this.scaleSurfaceData(var1, var17, var20, var18, var21, var22, var5, var6, var7, var8, var9, var11, var13, var15);
+<b class="nc"><i>342</i>&nbsp;                    } catch (NullPointerException var23) {</b>
+<i>343</i>&nbsp;                        if(!SurfaceData.isNull(var18)) {
+<i>344</i>&nbsp;                            throw var23;
+<i>345</i>&nbsp;                        }
+<b class="nc"><i>346</i>&nbsp;</b>
+<i>347</i>&nbsp;                        return false;
+<i>348</i>&nbsp;                    } catch (InvalidPipeException var24) {
+<b class="nc"><i>349</i>&nbsp;                        ++var19;</b>
+<b class="nc"><i>350</i>&nbsp;                        var17 = var1.getCompClip();</b>
+<b class="nc"><i>351</i>&nbsp;                        var18 = var1.surfaceData;</b>
+<i>352</i>&nbsp;                        if(!SurfaceData.isNull(var18) &amp;&amp; !SurfaceData.isNull(var20) &amp;&amp; var19 &lt;= 1) {
+<b class="nc"><i>353</i>&nbsp;                            continue;</b>
+<i>354</i>&nbsp;                        }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;                        return false;
+<i>357</i>&nbsp;                    }
+<b class="nc"><i>358</i>&nbsp;                }</b>
+<b class="nc"><i>359</i>&nbsp;</b>
+<i>360</i>&nbsp;                return false;
+<b class="nc"><i>361</i>&nbsp;            }</b>
+<i>362</i>&nbsp;        }
+<i>363</i>&nbsp;    }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    public boolean scaleImage(SunGraphics2D var1, Image var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9, int var10, Color var11) {
+<i>366</i>&nbsp;        boolean var20 = false;
+<i>367</i>&nbsp;        boolean var21 = false;
+<i>368</i>&nbsp;        boolean var22 = false;
+<b class="nc"><i>369</i>&nbsp;        boolean var23 = false;</b>
+<i>370</i>&nbsp;        int var12;
+<i>371</i>&nbsp;        int var16;
+<b class="nc"><i>372</i>&nbsp;        if(var9 &gt; var7) {</b>
+<i>373</i>&nbsp;            var12 = var9 - var7;
+<b class="nc"><i>374</i>&nbsp;            var16 = var7;</b>
+<b class="nc"><i>375</i>&nbsp;        } else {</b>
+<b class="nc"><i>376</i>&nbsp;            var20 = true;</b>
+<i>377</i>&nbsp;            var12 = var7 - var9;
+<b class="nc"><i>378</i>&nbsp;            var16 = var9;</b>
+<i>379</i>&nbsp;        }
+<i>380</i>&nbsp;
+<b class="nc"><i>381</i>&nbsp;        int var13;</b>
+<b class="nc"><i>382</i>&nbsp;        int var17;</b>
+<i>383</i>&nbsp;        if(var10 &gt; var8) {
+<i>384</i>&nbsp;            var13 = var10 - var8;
+<i>385</i>&nbsp;            var17 = var8;
+<i>386</i>&nbsp;        } else {
+<i>387</i>&nbsp;            var21 = true;
+<b class="nc"><i>388</i>&nbsp;            var13 = var8 - var10;</b>
+<b class="nc"><i>389</i>&nbsp;            var17 = var10;</b>
+<i>390</i>&nbsp;        }
+<i>391</i>&nbsp;
+<b class="nc"><i>392</i>&nbsp;        int var14;</b>
+<i>393</i>&nbsp;        int var18;
+<i>394</i>&nbsp;        if(var5 &gt; var3) {
+<i>395</i>&nbsp;            var14 = var5 - var3;
+<i>396</i>&nbsp;            var18 = var3;
+<i>397</i>&nbsp;        } else {
+<i>398</i>&nbsp;            var14 = var3 - var5;
+<i>399</i>&nbsp;            var22 = true;
+<i>400</i>&nbsp;            var18 = var5;
+<i>401</i>&nbsp;        }
+<i>402</i>&nbsp;
+<b class="nc"><i>403</i>&nbsp;        int var15;</b>
+<i>404</i>&nbsp;        int var19;
+<i>405</i>&nbsp;        if(var6 &gt; var4) {
+<i>406</i>&nbsp;            var15 = var6 - var4;
+<b class="nc"><i>407</i>&nbsp;            var19 = var4;</b>
+<b class="nc"><i>408</i>&nbsp;        } else {</b>
+<b class="nc"><i>409</i>&nbsp;            var15 = var4 - var6;</b>
+<i>410</i>&nbsp;            var23 = true;
+<b class="nc"><i>411</i>&nbsp;            var19 = var6;</b>
+<b class="nc"><i>412</i>&nbsp;        }</b>
+<b class="nc"><i>413</i>&nbsp;</b>
+<b class="nc"><i>414</i>&nbsp;        if(var12 &gt; 0 &amp;&amp; var13 &gt; 0) {</b>
+<b class="nc"><i>415</i>&nbsp;            if(var20 == var22 &amp;&amp; var21 == var23 &amp;&amp; isSimpleTranslate(var1)) {</b>
+<b class="nc"><i>416</i>&nbsp;                double var24 = (double)(var18 + var1.transX);</b>
+<b class="nc"><i>417</i>&nbsp;                double var26 = (double)(var19 + var1.transY);</b>
+<b class="nc"><i>418</i>&nbsp;                double var28 = var24 + (double)var14;</b>
+<b class="nc"><i>419</i>&nbsp;                double var30 = var26 + (double)var15;</b>
+<i>420</i>&nbsp;                if(this.renderImageScale(var1, var2, var11, var1.interpolationType, var16, var17, var16 + var12, var17 + var13, var24, var26, var28, var30)) {
+<b class="nc"><i>421</i>&nbsp;                    return true;</b>
+<b class="nc"><i>422</i>&nbsp;                }</b>
+<b class="nc"><i>423</i>&nbsp;            }</b>
+<b class="nc"><i>424</i>&nbsp;</b>
+<i>425</i>&nbsp;            AffineTransform var32 = new AffineTransform(var1.transform);
+<b class="nc"><i>426</i>&nbsp;            var32.translate((double)var3, (double)var4);</b>
+<b class="nc"><i>427</i>&nbsp;            double var25 = (double)(var5 - var3) / (double)(var9 - var7);</b>
+<i>428</i>&nbsp;            double var27 = (double)(var6 - var4) / (double)(var10 - var8);
+<i>429</i>&nbsp;            var32.scale(var25, var27);
+<b class="nc"><i>430</i>&nbsp;            var32.translate((double)(var16 - var7), (double)(var17 - var8));</b>
+<i>431</i>&nbsp;            int var29 = SurfaceManager.getImageScale(var2);
+<i>432</i>&nbsp;            int var33 = var2.getWidth((ImageObserver)null) * var29;
+<i>433</i>&nbsp;            int var31 = var2.getHeight((ImageObserver)null) * var29;
+<b class="nc"><i>434</i>&nbsp;            var12 += var16;</b>
+<i>435</i>&nbsp;            var13 += var17;
+<i>436</i>&nbsp;            if(var12 &gt; var33) {
+<i>437</i>&nbsp;                var12 = var33;
+<i>438</i>&nbsp;            }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;            if(var13 &gt; var31) {
+<i>441</i>&nbsp;                var13 = var31;
+<i>442</i>&nbsp;            }
+<i>443</i>&nbsp;
+<b class="nc"><i>444</i>&nbsp;            if(var16 &lt; 0) {</b>
+<i>445</i>&nbsp;                var32.translate((double)(-var16), 0.0D);
+<b class="nc"><i>446</i>&nbsp;                var16 = 0;</b>
+<i>447</i>&nbsp;            }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;            if(var17 &lt; 0) {
+<i>450</i>&nbsp;                var32.translate(0.0D, (double)(-var17));
+<i>451</i>&nbsp;                var17 = 0;
+<i>452</i>&nbsp;            }
+<i>453</i>&nbsp;
+<b class="nc"><i>454</i>&nbsp;            if(var16 &lt; var12 &amp;&amp; var17 &lt; var13) {</b>
+<i>455</i>&nbsp;                this.transformImage(var1, var2, var32, var1.interpolationType, var16, var17, var12, var13, var11);
+<i>456</i>&nbsp;                return true;
+<i>457</i>&nbsp;            } else {
+<i>458</i>&nbsp;                return true;
+<b class="nc"><i>459</i>&nbsp;            }</b>
+<b class="nc"><i>460</i>&nbsp;        } else {</b>
+<i>461</i>&nbsp;            return true;
+<i>462</i>&nbsp;        }
+<i>463</i>&nbsp;    }
+<i>464</i>&nbsp;
+<i>465</i>&nbsp;    public static boolean closeToInteger(int var0, double var1) {
+<i>466</i>&nbsp;        return Math.abs(var1 - (double)var0) &lt; 1.0E-4D;
+<b class="nc"><i>467</i>&nbsp;    }</b>
+<i>468</i>&nbsp;
+<b class="nc"><i>469</i>&nbsp;    public static boolean isSimpleTranslate(SunGraphics2D var0) {</b>
+<b class="nc"><i>470</i>&nbsp;        int var1 = var0.transformState;</b>
+<b class="nc"><i>471</i>&nbsp;        return var1 &lt;= 1?true:(var1 &gt;= 3?false:var0.interpolationType == 1);</b>
+<i>472</i>&nbsp;    }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;    protected static boolean isBgOperation(SurfaceData var0, Color var1) {
+<i>475</i>&nbsp;        return var0 == null || var1 != null &amp;&amp; var0.getTransparency() != 1;
+<i>476</i>&nbsp;    }
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;    protected BufferedImage getBufferedImage(Image var1) {
+<i>479</i>&nbsp;        return var1 instanceof BufferedImage?(BufferedImage)var1:((VolatileImage)var1).getSnapshot();
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    private ColorModel getTransformColorModel(SunGraphics2D var1, BufferedImage var2, AffineTransform var3) {
+<i>483</i>&nbsp;        ColorModel var4 = var2.getColorModel();
+<i>484</i>&nbsp;        Object var5 = var4;
+<i>485</i>&nbsp;        if(var3.isIdentity()) {
+<i>486</i>&nbsp;            return var4;
+<i>487</i>&nbsp;        } else {
+<i>488</i>&nbsp;            int var6 = var3.getType();
+<b class="nc"><i>489</i>&nbsp;            boolean var7 = (var6 &amp; (24 | 32)) != 0;</b>
+<i>490</i>&nbsp;            if(!var7 &amp;&amp; var6 != 1 &amp;&amp; var6 != 0) {
+<i>491</i>&nbsp;                double[] var8 = new double[4];
+<i>492</i>&nbsp;                var3.getMatrix(var8);
+<b class="nc"><i>493</i>&nbsp;                var7 = var8[0] != (double)((int)var8[0]) || var8[3] != (double)((int)var8[3]);</b>
+<i>494</i>&nbsp;            }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;            if(var1.renderHint != 2) {
+<i>497</i>&nbsp;                if(var4 instanceof IndexColorModel) {
+<i>498</i>&nbsp;                    WritableRaster var13 = var2.getRaster();
+<i>499</i>&nbsp;                    IndexColorModel var9 = (IndexColorModel)var4;
+<i>500</i>&nbsp;                    if(var7 &amp;&amp; var4.getTransparency() == 1) {
+<i>501</i>&nbsp;                        if(var13 instanceof BytePackedRaster) {
+<i>502</i>&nbsp;                            var5 = ColorModel.getRGBdefault();
+<i>503</i>&nbsp;                        } else {
+<b class="nc"><i>504</i>&nbsp;                            double[] var10 = new double[6];</b>
+<b class="nc"><i>505</i>&nbsp;                            var3.getMatrix(var10);</b>
+<b class="nc"><i>506</i>&nbsp;                            if(var10[1] != 0.0D || var10[2] != 0.0D || var10[4] != 0.0D || var10[5] != 0.0D) {</b>
+<b class="nc"><i>507</i>&nbsp;                                int var11 = var9.getMapSize();</b>
+<b class="nc"><i>508</i>&nbsp;                                if(var11 &lt; 256) {</b>
+<b class="nc"><i>509</i>&nbsp;                                    int[] var12 = new int[var11 + 1];</b>
+<i>510</i>&nbsp;                                    var9.getRGBs(var12);
+<b class="nc"><i>511</i>&nbsp;                                    var12[var11] = 0;</b>
+<b class="nc"><i>512</i>&nbsp;                                    var5 = new IndexColorModel(var9.getPixelSize(), var11 + 1, var12, 0, true, var11, 0);</b>
+<i>513</i>&nbsp;                                } else {
+<i>514</i>&nbsp;                                    var5 = ColorModel.getRGBdefault();
+<i>515</i>&nbsp;                                }
+<i>516</i>&nbsp;                            }
+<i>517</i>&nbsp;                        }
+<i>518</i>&nbsp;                    }
+<b class="nc"><i>519</i>&nbsp;                } else if(var7 &amp;&amp; var4.getTransparency() == 1) {</b>
+<i>520</i>&nbsp;                    var5 = ColorModel.getRGBdefault();
+<i>521</i>&nbsp;                }
+<i>522</i>&nbsp;            } else if(var4 instanceof IndexColorModel || var7 &amp;&amp; var4.getTransparency() == 1) {
+<i>523</i>&nbsp;                var5 = ColorModel.getRGBdefault();
+<i>524</i>&nbsp;            }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;            return (ColorModel)var5;
+<i>527</i>&nbsp;        }
+<i>528</i>&nbsp;    }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;    protected void blitSurfaceData(SunGraphics2D var1, Region var2, SurfaceData var3, SurfaceData var4, SurfaceType var5, SurfaceType var6, int var7, int var8, int var9, int var10, int var11, int var12, Color var13) {
+<i>531</i>&nbsp;        if(var11 &gt; 0 &amp;&amp; var12 &gt; 0) {
+<i>532</i>&nbsp;            CompositeType var14 = var1.imageComp;
+<i>533</i>&nbsp;            if(CompositeType.SrcOverNoEa.equals(var14) &amp;&amp; (var3.getTransparency() == 1 || var13 != null &amp;&amp; var13.getTransparency() == 1)) {
+<i>534</i>&nbsp;                var14 = CompositeType.SrcNoEa;
+<i>535</i>&nbsp;            }
+<b class="nc"><i>536</i>&nbsp;</b>
+<b class="nc"><i>537</i>&nbsp;            if(!isBgOperation(var3, var13)) {</b>
+<i>538</i>&nbsp;                Blit var15 = Blit.getFromCache(var5, var14, var6);
+<i>539</i>&nbsp;                var15.Blit(var3, var4, var1.composite, var2, var7, var8, var9, var10, var11, var12);
+<i>540</i>&nbsp;            } else {
+<b class="nc"><i>541</i>&nbsp;                BlitBg var16 = BlitBg.getFromCache(var5, var14, var6);</b>
+<b class="nc"><i>542</i>&nbsp;                var16.BlitBg(var3, var4, var1.composite, var2, var13.getRGB(), var7, var8, var9, var10, var11, var12);</b>
+<i>543</i>&nbsp;            }
+<i>544</i>&nbsp;
+<b class="nc"><i>545</i>&nbsp;        }</b>
+<i>546</i>&nbsp;    }
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;    protected boolean scaleSurfaceData(SunGraphics2D var1, Region var2, SurfaceData var3, SurfaceData var4, SurfaceType var5, SurfaceType var6, int var7, int var8, int var9, int var10, double var11, double var13, double var15, double var17) {
+<i>549</i>&nbsp;        CompositeType var19 = var1.imageComp;
+<i>550</i>&nbsp;        if(CompositeType.SrcOverNoEa.equals(var19) &amp;&amp; var3.getTransparency() == 1) {
+<b class="nc"><i>551</i>&nbsp;            var19 = CompositeType.SrcNoEa;</b>
+<b class="nc"><i>552</i>&nbsp;        }</b>
+<b class="nc"><i>553</i>&nbsp;</b>
+<i>554</i>&nbsp;        ScaledBlit var20 = ScaledBlit.getFromCache(var5, var19, var6);
+<i>555</i>&nbsp;        if(var20 != null) {
+<b class="nc"><i>556</i>&nbsp;            var20.Scale(var3, var4, var1.composite, var2, var7, var8, var9, var10, var11, var13, var15, var17);</b>
+<b class="nc"><i>557</i>&nbsp;            return true;</b>
+<b class="nc"><i>558</i>&nbsp;        } else {</b>
+<i>559</i>&nbsp;            return false;
+<i>560</i>&nbsp;        }
+<i>561</i>&nbsp;    }
+<b class="nc"><i>562</i>&nbsp;</b>
+<i>563</i>&nbsp;    protected static boolean imageReady(ToolkitImage var0, ImageObserver var1) {
+<b class="nc"><i>564</i>&nbsp;        if(var0.hasError()) {</b>
+<i>565</i>&nbsp;            if(var1 != null) {
+<b class="nc"><i>566</i>&nbsp;                var1.imageUpdate(var0, 192, -1, -1, -1, -1);</b>
+<i>567</i>&nbsp;            }
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;            return false;
+<b class="nc"><i>570</i>&nbsp;        } else {</b>
+<b class="nc"><i>571</i>&nbsp;            return true;</b>
+<b class="nc"><i>572</i>&nbsp;        }</b>
+<b class="nc"><i>573</i>&nbsp;    }</b>
+<i>574</i>&nbsp;
+<i>575</i>&nbsp;    public boolean copyImage(SunGraphics2D var1, Image var2, int var3, int var4, Color var5, ImageObserver var6) {
+<b class="nc"><i>576</i>&nbsp;        if(!(var2 instanceof ToolkitImage)) {</b>
+<i>577</i>&nbsp;            return this.copyImage(var1, var2, var3, var4, var5);
+<b class="nc"><i>578</i>&nbsp;        } else {</b>
+<i>579</i>&nbsp;            ToolkitImage var7 = (ToolkitImage)var2;
+<i>580</i>&nbsp;            if(!imageReady(var7, var6)) {
+<i>581</i>&nbsp;                return false;
+<i>582</i>&nbsp;            } else {
+<i>583</i>&nbsp;                ImageRepresentation var8 = var7.getImageRep();
+<i>584</i>&nbsp;                return var8.drawToBufImage(var1, var7, var3, var4, var5, var6);
+<i>585</i>&nbsp;            }
+<i>586</i>&nbsp;        }
+<i>587</i>&nbsp;    }
+<i>588</i>&nbsp;
+<i>589</i>&nbsp;    public boolean copyImage(SunGraphics2D var1, Image var2, int var3, int var4, int var5, int var6, int var7, int var8, Color var9, ImageObserver var10) {
+<i>590</i>&nbsp;        if(!(var2 instanceof ToolkitImage)) {
+<i>591</i>&nbsp;            return this.copyImage(var1, var2, var3, var4, var5, var6, var7, var8, var9);
+<b class="nc"><i>592</i>&nbsp;        } else {</b>
+<b class="nc"><i>593</i>&nbsp;            ToolkitImage var11 = (ToolkitImage)var2;</b>
+<i>594</i>&nbsp;            if(!imageReady(var11, var10)) {
+<i>595</i>&nbsp;                return false;
+<b class="nc"><i>596</i>&nbsp;            } else {</b>
+<b class="nc"><i>597</i>&nbsp;                ImageRepresentation var12 = var11.getImageRep();</b>
+<i>598</i>&nbsp;                return var12.drawToBufImage(var1, var11, var3, var4, var3 + var7, var4 + var8, var5, var6, var5 + var7, var6 + var8, var9, var10);
+<i>599</i>&nbsp;            }
+<i>600</i>&nbsp;        }
+<i>601</i>&nbsp;    }
+<b class="nc"><i>602</i>&nbsp;</b>
+<b class="nc"><i>603</i>&nbsp;    public boolean scaleImage(SunGraphics2D var1, Image var2, int var3, int var4, int var5, int var6, Color var7, ImageObserver var8) {</b>
+<i>604</i>&nbsp;        if(!(var2 instanceof ToolkitImage)) {
+<i>605</i>&nbsp;            return this.scaleImage(var1, var2, var3, var4, var5, var6, var7);
+<b class="nc"><i>606</i>&nbsp;        } else {</b>
+<i>607</i>&nbsp;            ToolkitImage var9 = (ToolkitImage)var2;
+<i>608</i>&nbsp;            if(!imageReady(var9, var8)) {
+<i>609</i>&nbsp;                return false;
+<i>610</i>&nbsp;            } else {
+<i>611</i>&nbsp;                ImageRepresentation var10 = var9.getImageRep();
+<b class="nc"><i>612</i>&nbsp;                return var10.drawToBufImage(var1, var9, var3, var4, var5, var6, var7, var8);</b>
+<b class="nc"><i>613</i>&nbsp;            }</b>
+<b class="nc"><i>614</i>&nbsp;        }</b>
+<i>615</i>&nbsp;    }
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;    public boolean scaleImage(SunGraphics2D var1, Image var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9, int var10, Color var11, ImageObserver var12) {
+<b class="nc"><i>618</i>&nbsp;        if(!(var2 instanceof ToolkitImage)) {</b>
+<b class="nc"><i>619</i>&nbsp;            return this.scaleImage(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11);</b>
+<i>620</i>&nbsp;        } else {
+<b class="nc"><i>621</i>&nbsp;            ToolkitImage var13 = (ToolkitImage)var2;</b>
+<i>622</i>&nbsp;            if(!imageReady(var13, var12)) {
+<b class="nc"><i>623</i>&nbsp;                return false;</b>
+<i>624</i>&nbsp;            } else {
+<b class="nc"><i>625</i>&nbsp;                ImageRepresentation var14 = var13.getImageRep();</b>
+<i>626</i>&nbsp;                return var14.drawToBufImage(var1, var13, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12);
+<i>627</i>&nbsp;            }
+<i>628</i>&nbsp;        }
+<b class="nc"><i>629</i>&nbsp;    }</b>
+<b class="nc"><i>630</i>&nbsp;</b>
+<b class="nc"><i>631</i>&nbsp;    public boolean transformImage(SunGraphics2D var1, Image var2, AffineTransform var3, ImageObserver var4) {</b>
+<b class="nc"><i>632</i>&nbsp;        if(!(var2 instanceof ToolkitImage)) {</b>
+<i>633</i>&nbsp;            this.transformImage(var1, var2, 0, 0, var3, var1.interpolationType);
+<i>634</i>&nbsp;            return true;
+<b class="nc"><i>635</i>&nbsp;        } else {</b>
+<i>636</i>&nbsp;            ToolkitImage var5 = (ToolkitImage)var2;
+<b class="nc"><i>637</i>&nbsp;            if(!imageReady(var5, var4)) {</b>
+<i>638</i>&nbsp;                return false;
+<i>639</i>&nbsp;            } else {
+<i>640</i>&nbsp;                ImageRepresentation var6 = var5.getImageRep();
+<i>641</i>&nbsp;                return var6.drawToBufImage(var1, var5, var3, var4);
+<i>642</i>&nbsp;            }
+<i>643</i>&nbsp;        }
+<i>644</i>&nbsp;    }
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;    public void transformImage(SunGraphics2D var1, BufferedImage var2, BufferedImageOp var3, int var4, int var5) {
+<i>647</i>&nbsp;        if(var3 != null) {
+<b class="nc"><i>648</i>&nbsp;            if(var3 instanceof AffineTransformOp) {</b>
+<b class="nc"><i>649</i>&nbsp;                AffineTransformOp var6 = (AffineTransformOp)var3;</b>
+<b class="nc"><i>650</i>&nbsp;                this.transformImage(var1, var2, var4, var5, var6.getTransform(), var6.getInterpolationType());</b>
+<b class="nc"><i>651</i>&nbsp;                return;</b>
+<i>652</i>&nbsp;            }
+<b class="nc"><i>653</i>&nbsp;</b>
+<b class="nc"><i>654</i>&nbsp;            var2 = var3.filter(var2, (BufferedImage)null);</b>
+<b class="nc"><i>655</i>&nbsp;        }</b>
+<i>656</i>&nbsp;
+<b class="nc"><i>657</i>&nbsp;        this.copyImage(var1, var2, var4, var5, (Color)null);</b>
+<b class="nc"><i>658</i>&nbsp;    }</b>
+<b class="nc"><i>659</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

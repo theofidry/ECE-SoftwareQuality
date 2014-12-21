@@ -1,0 +1,559 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SocketOrChannelAcceptorImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.corba.se.impl.transport</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SocketOrChannelAcceptorImpl (com.sun.corba.se.impl.transport)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SocketOrChannelAcceptorImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 169)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.corba.se.impl.transport;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.corba.se.impl.encoding.CDRInputObject;
+<i>9</i>&nbsp;import com.sun.corba.se.impl.logging.ORBUtilSystemException;
+<i>10</i>&nbsp;import com.sun.corba.se.impl.oa.poa.Policies;
+<i>11</i>&nbsp;import com.sun.corba.se.impl.orbutil.ORBUtility;
+<i>12</i>&nbsp;import com.sun.corba.se.impl.transport.EventHandlerBase;
+<i>13</i>&nbsp;import com.sun.corba.se.impl.transport.SocketOrChannelConnectionImpl;
+<i>14</i>&nbsp;import com.sun.corba.se.impl.transport.SocketOrChannelContactInfoImpl;
+<i>15</i>&nbsp;import com.sun.corba.se.pept.broker.Broker;
+<i>16</i>&nbsp;import com.sun.corba.se.pept.encoding.InputObject;
+<i>17</i>&nbsp;import com.sun.corba.se.pept.encoding.OutputObject;
+<i>18</i>&nbsp;import com.sun.corba.se.pept.protocol.MessageMediator;
+<i>19</i>&nbsp;import com.sun.corba.se.pept.transport.Acceptor;
+<i>20</i>&nbsp;import com.sun.corba.se.pept.transport.Connection;
+<i>21</i>&nbsp;import com.sun.corba.se.pept.transport.EventHandler;
+<i>22</i>&nbsp;import com.sun.corba.se.pept.transport.InboundConnectionCache;
+<i>23</i>&nbsp;import com.sun.corba.se.pept.transport.Selector;
+<i>24</i>&nbsp;import com.sun.corba.se.spi.extension.RequestPartitioningPolicy;
+<i>25</i>&nbsp;import com.sun.corba.se.spi.ior.IORTemplate;
+<i>26</i>&nbsp;import com.sun.corba.se.spi.ior.TaggedProfileTemplate;
+<i>27</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.AlternateIIOPAddressComponent;
+<i>28</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.GIOPVersion;
+<i>29</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.IIOPAddress;
+<i>30</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.IIOPFactories;
+<i>31</i>&nbsp;import com.sun.corba.se.spi.ior.iiop.IIOPProfileTemplate;
+<i>32</i>&nbsp;import com.sun.corba.se.spi.legacy.connection.LegacyServerSocketEndPointInfo;
+<i>33</i>&nbsp;import com.sun.corba.se.spi.orb.ORB;
+<i>34</i>&nbsp;import com.sun.corba.se.spi.orbutil.threadpool.Work;
+<i>35</i>&nbsp;import com.sun.corba.se.spi.protocol.CorbaMessageMediator;
+<i>36</i>&nbsp;import com.sun.corba.se.spi.transport.CorbaAcceptor;
+<i>37</i>&nbsp;import com.sun.corba.se.spi.transport.CorbaConnection;
+<i>38</i>&nbsp;import com.sun.corba.se.spi.transport.SocketInfo;
+<i>39</i>&nbsp;import com.sun.corba.se.spi.transport.SocketOrChannelAcceptor;
+<i>40</i>&nbsp;import java.io.IOException;
+<i>41</i>&nbsp;import java.net.InetSocketAddress;
+<i>42</i>&nbsp;import java.net.ServerSocket;
+<i>43</i>&nbsp;import java.net.Socket;
+<i>44</i>&nbsp;import java.nio.channels.SelectableChannel;
+<i>45</i>&nbsp;import java.nio.channels.ServerSocketChannel;
+<i>46</i>&nbsp;import java.nio.channels.SocketChannel;
+<i>47</i>&nbsp;import java.util.Iterator;
+<i>48</i>&nbsp;import sun.corba.OutputStreamFactory;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;public class SocketOrChannelAcceptorImpl extends EventHandlerBase implements CorbaAcceptor, SocketOrChannelAcceptor, Work, SocketInfo, LegacyServerSocketEndPointInfo {
+<i>51</i>&nbsp;    protected ServerSocketChannel serverSocketChannel;
+<i>52</i>&nbsp;    protected ServerSocket serverSocket;
+<i>53</i>&nbsp;    protected int port;
+<i>54</i>&nbsp;    protected long enqueueTime;
+<i>55</i>&nbsp;    protected boolean initialized;
+<i>56</i>&nbsp;    protected ORBUtilSystemException wrapper;
+<i>57</i>&nbsp;    protected InboundConnectionCache connectionCache;
+<i>58</i>&nbsp;    protected String type;
+<i>59</i>&nbsp;    protected String name;
+<i>60</i>&nbsp;    protected String hostname;
+<i>61</i>&nbsp;    protected int locatorPort;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public SocketOrChannelAcceptorImpl(ORB var1) {
+<i>64</i>&nbsp;        this.type = &quot;&quot;;
+<i>65</i>&nbsp;        this.name = &quot;&quot;;
+<i>66</i>&nbsp;        this.orb = var1;
+<i>67</i>&nbsp;        this.wrapper = ORBUtilSystemException.get(var1, &quot;rpc.transport&quot;);
+<i>68</i>&nbsp;        this.setWork(this);
+<i>69</i>&nbsp;        this.initialized = false;
+<i>70</i>&nbsp;        this.hostname = var1.getORBData().getORBServerHost();
+<i>71</i>&nbsp;        this.name = &quot;NO_NAME&quot;;
+<i>72</i>&nbsp;        this.locatorPort = -1;
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    public SocketOrChannelAcceptorImpl(ORB var1, int var2) {
+<i>76</i>&nbsp;        this(var1);
+<i>77</i>&nbsp;        this.port = var2;
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public SocketOrChannelAcceptorImpl(ORB var1, int var2, String var3, String var4) {
+<b class="nc"><i>81</i>&nbsp;        this(var1, var2);</b>
+<b class="nc"><i>82</i>&nbsp;        this.name = var3;</b>
+<i>83</i>&nbsp;        this.type = var4;
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public boolean initialize() {
+<i>87</i>&nbsp;        if(this.initialized) {
+<b class="nc"><i>88</i>&nbsp;            return false;</b>
+<b class="nc"><i>89</i>&nbsp;        } else {</b>
+<b class="nc"><i>90</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<i>91</i>&nbsp;                this.dprint(&quot;.initialize: &quot; + this);
+<i>92</i>&nbsp;            }
+<b class="nc"><i>93</i>&nbsp;</b>
+<b class="nc"><i>94</i>&nbsp;            InetSocketAddress var1 = null;</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;            try {
+<b class="nc"><i>97</i>&nbsp;                if(this.orb.getORBData().getListenOnAllInterfaces().equals(&quot;com.sun.CORBA.INTERNAL USE ONLY: listen on all interfaces&quot;)) {</b>
+<b class="nc"><i>98</i>&nbsp;                    var1 = new InetSocketAddress(this.port);</b>
+<b class="nc"><i>99</i>&nbsp;                } else {</b>
+<i>100</i>&nbsp;                    String var2 = this.orb.getORBData().getORBServerHost();
+<i>101</i>&nbsp;                    var1 = new InetSocketAddress(var2, this.port);
+<i>102</i>&nbsp;                }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;                this.serverSocket = this.orb.getORBData().getSocketFactory().createServerSocket(this.type, var1);
+<b class="nc"><i>105</i>&nbsp;                this.internalInitialize();</b>
+<b class="nc"><i>106</i>&nbsp;            } catch (Throwable var3) {</b>
+<i>107</i>&nbsp;                throw this.wrapper.createListenerFailed(var3, Integer.toString(this.port));
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;            this.initialized = true;
+<i>111</i>&nbsp;            return true;
+<i>112</i>&nbsp;        }
+<b class="nc"><i>113</i>&nbsp;    }</b>
+<b class="nc"><i>114</i>&nbsp;</b>
+<b class="nc"><i>115</i>&nbsp;    protected void internalInitialize() throws Exception {</b>
+<i>116</i>&nbsp;        this.port = this.serverSocket.getLocalPort();
+<i>117</i>&nbsp;        this.orb.getCorbaTransportManager().getInboundConnectionCache(this);
+<i>118</i>&nbsp;        this.serverSocketChannel = this.serverSocket.getChannel();
+<i>119</i>&nbsp;        if(this.serverSocketChannel != null) {
+<i>120</i>&nbsp;            this.setUseSelectThreadToWait(this.orb.getORBData().acceptorSocketUseSelectThreadToWait());
+<i>121</i>&nbsp;            this.serverSocketChannel.configureBlocking(!this.orb.getORBData().acceptorSocketUseSelectThreadToWait());
+<i>122</i>&nbsp;        } else {
+<i>123</i>&nbsp;            this.setUseSelectThreadToWait(false);
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;        this.setUseWorkerThreadForEvent(this.orb.getORBData().acceptorSocketUseWorkerThreadForEvent());</b>
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<b class="nc"><i>129</i>&nbsp;    public boolean initialized() {</b>
+<b class="nc"><i>130</i>&nbsp;        return this.initialized;</b>
+<i>131</i>&nbsp;    }
+<b class="nc"><i>132</i>&nbsp;</b>
+<i>133</i>&nbsp;    public String getConnectionCacheType() {
+<b class="nc"><i>134</i>&nbsp;        return this.getClass().toString();</b>
+<b class="nc"><i>135</i>&nbsp;    }</b>
+<i>136</i>&nbsp;
+<b class="nc"><i>137</i>&nbsp;    public void setConnectionCache(InboundConnectionCache var1) {</b>
+<b class="nc"><i>138</i>&nbsp;        this.connectionCache = var1;</b>
+<i>139</i>&nbsp;    }
+<b class="nc"><i>140</i>&nbsp;</b>
+<i>141</i>&nbsp;    public InboundConnectionCache getConnectionCache() {
+<b class="nc"><i>142</i>&nbsp;        return this.connectionCache;</b>
+<b class="nc"><i>143</i>&nbsp;    }</b>
+<b class="nc"><i>144</i>&nbsp;</b>
+<b class="nc"><i>145</i>&nbsp;    public boolean shouldRegisterAcceptEvent() {</b>
+<b class="nc"><i>146</i>&nbsp;        return true;</b>
+<b class="nc"><i>147</i>&nbsp;    }</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    public void accept() {
+<i>150</i>&nbsp;        try {
+<i>151</i>&nbsp;            SocketChannel var1 = null;
+<i>152</i>&nbsp;            Socket var2 = null;
+<i>153</i>&nbsp;            if(this.serverSocketChannel == null) {
+<i>154</i>&nbsp;                var2 = this.serverSocket.accept();
+<i>155</i>&nbsp;            } else {
+<i>156</i>&nbsp;                var1 = this.serverSocketChannel.accept();
+<b class="nc"><i>157</i>&nbsp;                var2 = var1.socket();</b>
+<i>158</i>&nbsp;            }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;            this.orb.getORBData().getSocketFactory().setAcceptedSocketOptions(this, this.serverSocket, var2);
+<b class="nc"><i>161</i>&nbsp;            if(this.orb.transportDebugFlag) {</b>
+<i>162</i>&nbsp;                this.dprint(&quot;.accept: &quot; + (this.serverSocketChannel == null?this.serverSocket.toString():this.serverSocketChannel.toString()));
+<i>163</i>&nbsp;            }
+<i>164</i>&nbsp;
+<b class="nc"><i>165</i>&nbsp;            SocketOrChannelConnectionImpl var3 = new SocketOrChannelConnectionImpl(this.orb, this, var2);</b>
+<i>166</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<b class="nc"><i>167</i>&nbsp;                this.dprint(&quot;.accept: new: &quot; + var3);</b>
+<b class="nc"><i>168</i>&nbsp;            }</b>
+<i>169</i>&nbsp;
+<b class="nc"><i>170</i>&nbsp;            this.getConnectionCache().put(this, var3);</b>
+<i>171</i>&nbsp;            if(var3.shouldRegisterServerReadEvent()) {
+<i>172</i>&nbsp;                Selector var4 = this.orb.getTransportManager().getSelector(0);
+<i>173</i>&nbsp;                var4.registerForEvent(var3.getEventHandler());
+<b class="nc"><i>174</i>&nbsp;            }</b>
+<i>175</i>&nbsp;
+<b class="nc"><i>176</i>&nbsp;            this.getConnectionCache().reclaim();</b>
+<i>177</i>&nbsp;        } catch (IOException var5) {
+<i>178</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>179</i>&nbsp;                this.dprint(&quot;.accept:&quot;, var5);
+<i>180</i>&nbsp;            }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;            this.orb.getTransportManager().getSelector(0).unregisterForEvent(this);
+<b class="nc"><i>183</i>&nbsp;            this.orb.getTransportManager().getSelector(0).registerForEvent(this);</b>
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<b class="nc"><i>188</i>&nbsp;    public void close() {</b>
+<i>189</i>&nbsp;        try {
+<i>190</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>191</i>&nbsp;                this.dprint(&quot;.close-&gt;:&quot;);
+<i>192</i>&nbsp;            }
+<b class="nc"><i>193</i>&nbsp;</b>
+<i>194</i>&nbsp;            Selector var1 = this.orb.getTransportManager().getSelector(0);
+<i>195</i>&nbsp;            var1.unregisterForEvent(this);
+<i>196</i>&nbsp;            if(this.serverSocketChannel != null) {
+<i>197</i>&nbsp;                this.serverSocketChannel.close();
+<b class="nc"><i>198</i>&nbsp;            }</b>
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;            if(this.serverSocket != null) {
+<i>201</i>&nbsp;                this.serverSocket.close();
+<i>202</i>&nbsp;            }
+<b class="nc"><i>203</i>&nbsp;        } catch (IOException var5) {</b>
+<i>204</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<i>205</i>&nbsp;                this.dprint(&quot;.close:&quot;, var5);
+<i>206</i>&nbsp;            }
+<i>207</i>&nbsp;        } finally {
+<i>208</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<b class="nc"><i>209</i>&nbsp;                this.dprint(&quot;.close&lt;-:&quot;);</b>
+<b class="nc"><i>210</i>&nbsp;            }</b>
+<b class="nc"><i>211</i>&nbsp;</b>
+<b class="nc"><i>212</i>&nbsp;        }</b>
+<i>213</i>&nbsp;
+<b class="nc"><i>214</i>&nbsp;    }</b>
+<b class="nc"><i>215</i>&nbsp;</b>
+<i>216</i>&nbsp;    public EventHandler getEventHandler() {
+<b class="nc"><i>217</i>&nbsp;        return this;</b>
+<i>218</i>&nbsp;    }
+<b class="nc"><i>219</i>&nbsp;</b>
+<b class="nc"><i>220</i>&nbsp;    public String getObjectAdapterId() {</b>
+<i>221</i>&nbsp;        return null;
+<i>222</i>&nbsp;    }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    public String getObjectAdapterManagerId() {
+<i>225</i>&nbsp;        return null;
+<b class="nc"><i>226</i>&nbsp;    }</b>
+<i>227</i>&nbsp;
+<b class="nc"><i>228</i>&nbsp;    public void addToIORTemplate(IORTemplate var1, Policies var2, String var3) {</b>
+<b class="nc"><i>229</i>&nbsp;        Iterator var4 = var1.iteratorById(0);</b>
+<i>230</i>&nbsp;        String var5 = this.orb.getORBData().getORBServerHost();
+<i>231</i>&nbsp;        if(var4.hasNext()) {
+<i>232</i>&nbsp;            IIOPAddress var6 = IIOPFactories.makeIIOPAddress(this.orb, var5, this.port);
+<i>233</i>&nbsp;            AlternateIIOPAddressComponent var7 = IIOPFactories.makeAlternateIIOPAddressComponent(var6);
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;            while(var4.hasNext()) {
+<b class="nc"><i>236</i>&nbsp;                TaggedProfileTemplate var8 = (TaggedProfileTemplate)var4.next();</b>
+<i>237</i>&nbsp;                var8.add(var7);
+<b class="nc"><i>238</i>&nbsp;            }</b>
+<b class="nc"><i>239</i>&nbsp;        } else {</b>
+<b class="nc"><i>240</i>&nbsp;            GIOPVersion var11 = this.orb.getORBData().getGIOPVersion();</b>
+<i>241</i>&nbsp;            int var12;
+<i>242</i>&nbsp;            if(var2.forceZeroPort()) {
+<b class="nc"><i>243</i>&nbsp;                var12 = 0;</b>
+<i>244</i>&nbsp;            } else if(var2.isTransient()) {
+<b class="nc"><i>245</i>&nbsp;                var12 = this.port;</b>
+<b class="nc"><i>246</i>&nbsp;            } else {</b>
+<b class="nc"><i>247</i>&nbsp;                var12 = this.orb.getLegacyServerSocketManager().legacyGetPersistentServerPort(&quot;IIOP_CLEAR_TEXT&quot;);</b>
+<i>248</i>&nbsp;            }
+<b class="nc"><i>249</i>&nbsp;</b>
+<i>250</i>&nbsp;            IIOPAddress var13 = IIOPFactories.makeIIOPAddress(this.orb, var5, var12);
+<b class="nc"><i>251</i>&nbsp;            IIOPProfileTemplate var9 = IIOPFactories.makeIIOPProfileTemplate(this.orb, var11, var13);</b>
+<i>252</i>&nbsp;            if(var11.supportsIORIIOPProfileComponents()) {
+<i>253</i>&nbsp;                var9.add(IIOPFactories.makeCodeSetsComponent(this.orb));
+<i>254</i>&nbsp;                var9.add(IIOPFactories.makeMaxStreamFormatVersionComponent());
+<b class="nc"><i>255</i>&nbsp;                RequestPartitioningPolicy var10 = (RequestPartitioningPolicy)var2.get_effective_policy(1398079491);</b>
+<i>256</i>&nbsp;                if(var10 != null) {
+<i>257</i>&nbsp;                    var9.add(IIOPFactories.makeRequestPartitioningComponent(var10.getValue()));
+<i>258</i>&nbsp;                }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;                if(var3 != null &amp;&amp; var3 != &quot;&quot;) {
+<b class="nc"><i>261</i>&nbsp;                    var9.add(IIOPFactories.makeJavaCodebaseComponent(var3));</b>
+<b class="nc"><i>262</i>&nbsp;                }</b>
+<i>263</i>&nbsp;
+<b class="nc"><i>264</i>&nbsp;                if(this.orb.getORBData().isJavaSerializationEnabled()) {</b>
+<b class="nc"><i>265</i>&nbsp;                    var9.add(IIOPFactories.makeJavaSerializationComponent());</b>
+<b class="nc"><i>266</i>&nbsp;                }</b>
+<b class="nc"><i>267</i>&nbsp;            }</b>
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;            var1.add(var9);</b>
+<b class="nc"><i>270</i>&nbsp;        }</b>
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;    }</b>
+<b class="nc"><i>273</i>&nbsp;</b>
+<b class="nc"><i>274</i>&nbsp;    public String getMonitoringName() {</b>
+<i>275</i>&nbsp;        return &quot;AcceptedConnections&quot;;
+<i>276</i>&nbsp;    }
+<b class="nc"><i>277</i>&nbsp;</b>
+<b class="nc"><i>278</i>&nbsp;    public SelectableChannel getChannel() {</b>
+<i>279</i>&nbsp;        return this.serverSocketChannel;
+<i>280</i>&nbsp;    }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    public int getInterestOps() {
+<i>283</i>&nbsp;        return 16;
+<i>284</i>&nbsp;    }
+<b class="nc"><i>285</i>&nbsp;</b>
+<i>286</i>&nbsp;    public Acceptor getAcceptor() {
+<i>287</i>&nbsp;        return this;
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    public Connection getConnection() {
+<i>291</i>&nbsp;        throw new RuntimeException(&quot;Should not happen.&quot;);
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    public void doWork() {
+<b class="nc"><i>295</i>&nbsp;        boolean var9 = false;</b>
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;        Selector var1;
+<i>298</i>&nbsp;        label159: {
+<i>299</i>&nbsp;            label160: {
+<b class="nc"><i>300</i>&nbsp;                label161: {</b>
+<i>301</i>&nbsp;                    try {
+<i>302</i>&nbsp;                        var9 = true;
+<i>303</i>&nbsp;                        if(this.orb.transportDebugFlag) {
+<i>304</i>&nbsp;                            this.dprint(&quot;.doWork-&gt;: &quot; + this);
+<i>305</i>&nbsp;                        }
+<i>306</i>&nbsp;
+<b class="nc"><i>307</i>&nbsp;                        if(this.selectionKey.isAcceptable()) {</b>
+<i>308</i>&nbsp;                            this.accept();
+<i>309</i>&nbsp;                            var9 = false;
+<b class="nc"><i>310</i>&nbsp;                        } else if(this.orb.transportDebugFlag) {</b>
+<i>311</i>&nbsp;                            this.dprint(&quot;.doWork: ! selectionKey.isAcceptable: &quot; + this);
+<b class="nc"><i>312</i>&nbsp;                            var9 = false;</b>
+<i>313</i>&nbsp;                        } else {
+<b class="nc"><i>314</i>&nbsp;                            var9 = false;</b>
+<i>315</i>&nbsp;                        }
+<b class="nc"><i>316</i>&nbsp;                        break label159;</b>
+<i>317</i>&nbsp;                    } catch (SecurityException var10) {
+<i>318</i>&nbsp;                        if(this.orb.transportDebugFlag) {
+<b class="nc"><i>319</i>&nbsp;                            this.dprint(&quot;.doWork: ignoring SecurityException: &quot; + var10 + &quot; &quot; + this);</b>
+<b class="nc"><i>320</i>&nbsp;                        }</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;                        String var2 = ORBUtility.getClassSecurityInfo(this.getClass());</b>
+<b class="nc"><i>323</i>&nbsp;                        this.wrapper.securityExceptionInAccept(var10, var2);</b>
+<b class="nc"><i>324</i>&nbsp;                        var9 = false;</b>
+<b class="nc"><i>325</i>&nbsp;                        break label160;</b>
+<i>326</i>&nbsp;                    } catch (Exception var11) {
+<b class="nc"><i>327</i>&nbsp;                        if(this.orb.transportDebugFlag) {</b>
+<b class="nc"><i>328</i>&nbsp;                            this.dprint(&quot;.doWork: ignoring Exception: &quot; + var11 + &quot; &quot; + this);</b>
+<b class="nc"><i>329</i>&nbsp;                        }</b>
+<b class="nc"><i>330</i>&nbsp;</b>
+<i>331</i>&nbsp;                        this.wrapper.exceptionInAccept(var11);
+<b class="nc"><i>332</i>&nbsp;                        var9 = false;</b>
+<i>333</i>&nbsp;                    } catch (Throwable var12) {
+<i>334</i>&nbsp;                        if(this.orb.transportDebugFlag) {
+<b class="nc"><i>335</i>&nbsp;                            this.dprint(&quot;.doWork: ignoring Throwable: &quot; + var12 + &quot; &quot; + this);</b>
+<i>336</i>&nbsp;                            var9 = false;
+<b class="nc"><i>337</i>&nbsp;                            break label161;</b>
+<i>338</i>&nbsp;                        }
+<b class="nc"><i>339</i>&nbsp;</b>
+<b class="nc"><i>340</i>&nbsp;                        var9 = false;</b>
+<b class="nc"><i>341</i>&nbsp;                        break label161;</b>
+<b class="nc"><i>342</i>&nbsp;                    } finally {</b>
+<i>343</i>&nbsp;                        if(var9) {
+<i>344</i>&nbsp;                            Selector var4 = this.orb.getTransportManager().getSelector(0);
+<b class="nc"><i>345</i>&nbsp;                            var4.registerInterestOps(this);</b>
+<b class="nc"><i>346</i>&nbsp;                            if(this.orb.transportDebugFlag) {</b>
+<i>347</i>&nbsp;                                this.dprint(&quot;.doWork&lt;-:&quot; + this);
+<i>348</i>&nbsp;                            }
+<i>349</i>&nbsp;
+<b class="nc"><i>350</i>&nbsp;                        }</b>
+<b class="nc"><i>351</i>&nbsp;                    }</b>
+<i>352</i>&nbsp;
+<b class="nc"><i>353</i>&nbsp;                    var1 = this.orb.getTransportManager().getSelector(0);</b>
+<b class="nc"><i>354</i>&nbsp;                    var1.registerInterestOps(this);</b>
+<i>355</i>&nbsp;                    if(this.orb.transportDebugFlag) {
+<i>356</i>&nbsp;                        this.dprint(&quot;.doWork&lt;-:&quot; + this);
+<i>357</i>&nbsp;                    }
+<b class="nc"><i>358</i>&nbsp;</b>
+<i>359</i>&nbsp;                    return;
+<i>360</i>&nbsp;                }
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;                var1 = this.orb.getTransportManager().getSelector(0);
+<i>363</i>&nbsp;                var1.registerInterestOps(this);
+<b class="nc"><i>364</i>&nbsp;                if(this.orb.transportDebugFlag) {</b>
+<i>365</i>&nbsp;                    this.dprint(&quot;.doWork&lt;-:&quot; + this);
+<i>366</i>&nbsp;                }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;                return;
+<i>369</i>&nbsp;            }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;            var1 = this.orb.getTransportManager().getSelector(0);
+<i>372</i>&nbsp;            var1.registerInterestOps(this);
+<i>373</i>&nbsp;            if(this.orb.transportDebugFlag) {
+<b class="nc"><i>374</i>&nbsp;                this.dprint(&quot;.doWork&lt;-:&quot; + this);</b>
+<i>375</i>&nbsp;            }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;            return;
+<i>378</i>&nbsp;        }
+<b class="nc"><i>379</i>&nbsp;</b>
+<i>380</i>&nbsp;        var1 = this.orb.getTransportManager().getSelector(0);
+<i>381</i>&nbsp;        var1.registerInterestOps(this);
+<i>382</i>&nbsp;        if(this.orb.transportDebugFlag) {
+<i>383</i>&nbsp;            this.dprint(&quot;.doWork&lt;-:&quot; + this);
+<b class="nc"><i>384</i>&nbsp;        }</b>
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;    public void setEnqueueTime(long var1) {
+<b class="nc"><i>389</i>&nbsp;        this.enqueueTime = var1;</b>
+<i>390</i>&nbsp;    }
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    public long getEnqueueTime() {
+<i>393</i>&nbsp;        return this.enqueueTime;
+<i>394</i>&nbsp;    }
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;    public MessageMediator createMessageMediator(Broker var1, Connection var2) {
+<i>397</i>&nbsp;        SocketOrChannelContactInfoImpl var3 = new SocketOrChannelContactInfoImpl();
+<i>398</i>&nbsp;        return var3.createMessageMediator(var1, var2);
+<i>399</i>&nbsp;    }
+<i>400</i>&nbsp;
+<i>401</i>&nbsp;    public MessageMediator finishCreatingMessageMediator(Broker var1, Connection var2, MessageMediator var3) {
+<i>402</i>&nbsp;        SocketOrChannelContactInfoImpl var4 = new SocketOrChannelContactInfoImpl();
+<i>403</i>&nbsp;        return var4.finishCreatingMessageMediator(var1, var2, var3);
+<i>404</i>&nbsp;    }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    public InputObject createInputObject(Broker var1, MessageMediator var2) {
+<b class="nc"><i>407</i>&nbsp;        CorbaMessageMediator var3 = (CorbaMessageMediator)var2;</b>
+<b class="nc"><i>408</i>&nbsp;        return new CDRInputObject((ORB)var1, (CorbaConnection)var2.getConnection(), var3.getDispatchBuffer(), var3.getDispatchHeader());</b>
+<i>409</i>&nbsp;    }
+<b class="nc"><i>410</i>&nbsp;</b>
+<b class="nc"><i>411</i>&nbsp;    public OutputObject createOutputObject(Broker var1, MessageMediator var2) {</b>
+<i>412</i>&nbsp;        CorbaMessageMediator var3 = (CorbaMessageMediator)var2;
+<b class="nc"><i>413</i>&nbsp;        return OutputStreamFactory.newCDROutputObject((ORB)var1, var3, var3.getReplyHeader(), var3.getStreamFormatVersion());</b>
+<b class="nc"><i>414</i>&nbsp;    }</b>
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    public ServerSocket getServerSocket() {
+<b class="nc"><i>417</i>&nbsp;        return this.serverSocket;</b>
+<b class="nc"><i>418</i>&nbsp;    }</b>
+<b class="nc"><i>419</i>&nbsp;</b>
+<i>420</i>&nbsp;    public String toString() {
+<i>421</i>&nbsp;        String var1;
+<i>422</i>&nbsp;        if(this.serverSocketChannel == null) {
+<b class="nc"><i>423</i>&nbsp;            if(this.serverSocket == null) {</b>
+<b class="nc"><i>424</i>&nbsp;                var1 = &quot;(not initialized)&quot;;</b>
+<b class="nc"><i>425</i>&nbsp;            } else {</b>
+<b class="nc"><i>426</i>&nbsp;                var1 = this.serverSocket.toString();</b>
+<b class="nc"><i>427</i>&nbsp;            }</b>
+<i>428</i>&nbsp;        } else {
+<i>429</i>&nbsp;            var1 = this.serverSocketChannel.toString();
+<i>430</i>&nbsp;        }
+<b class="nc"><i>431</i>&nbsp;</b>
+<b class="nc"><i>432</i>&nbsp;        return this.toStringName() + &quot;[&quot; + var1 + &quot; &quot; + this.type + &quot; &quot; + this.shouldUseSelectThreadToWait() + &quot; &quot; + this.shouldUseWorkerThreadForEvent() + &quot;]&quot;;</b>
+<b class="nc"><i>433</i>&nbsp;    }</b>
+<b class="nc"><i>434</i>&nbsp;</b>
+<i>435</i>&nbsp;    protected String toStringName() {
+<i>436</i>&nbsp;        return &quot;SocketOrChannelAcceptorImpl&quot;;
+<i>437</i>&nbsp;    }
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;    protected void dprint(String var1) {
+<i>440</i>&nbsp;        ORBUtility.dprint(this.toStringName(), var1);
+<i>441</i>&nbsp;    }
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;    protected void dprint(String var1, Throwable var2) {
+<i>444</i>&nbsp;        this.dprint(var1);
+<i>445</i>&nbsp;        var2.printStackTrace(System.out);
+<i>446</i>&nbsp;    }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    public String getType() {
+<i>449</i>&nbsp;        return this.type;
+<i>450</i>&nbsp;    }
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;    public String getHostName() {
+<i>453</i>&nbsp;        return this.hostname;
+<i>454</i>&nbsp;    }
+<b class="nc"><i>455</i>&nbsp;</b>
+<b class="nc"><i>456</i>&nbsp;    public String getHost() {</b>
+<i>457</i>&nbsp;        return this.hostname;
+<b class="nc"><i>458</i>&nbsp;    }</b>
+<b class="nc"><i>459</i>&nbsp;</b>
+<i>460</i>&nbsp;    public int getPort() {
+<b class="nc"><i>461</i>&nbsp;        return this.port;</b>
+<i>462</i>&nbsp;    }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;    public int getLocatorPort() {
+<i>465</i>&nbsp;        return this.locatorPort;
+<b class="nc"><i>466</i>&nbsp;    }</b>
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    public void setLocatorPort(int var1) {
+<i>469</i>&nbsp;        this.locatorPort = var1;
+<i>470</i>&nbsp;    }
+<b class="nc"><i>471</i>&nbsp;</b>
+<i>472</i>&nbsp;    public String getName() {
+<i>473</i>&nbsp;        String var1 = this.name.equals(&quot;NO_NAME&quot;)?this.toString():this.name;
+<i>474</i>&nbsp;        return var1;
+<i>475</i>&nbsp;    }
+<i>476</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

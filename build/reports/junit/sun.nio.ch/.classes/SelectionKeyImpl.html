@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SelectionKeyImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.nio.ch</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SelectionKeyImpl (sun.nio.ch)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SelectionKeyImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.nio.ch;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.nio.channels.CancelledKeyException;
+<i>9</i>&nbsp;import java.nio.channels.SelectableChannel;
+<i>10</i>&nbsp;import java.nio.channels.SelectionKey;
+<i>11</i>&nbsp;import java.nio.channels.Selector;
+<i>12</i>&nbsp;import java.nio.channels.spi.AbstractSelectionKey;
+<i>13</i>&nbsp;import sun.nio.ch.SelChImpl;
+<i>14</i>&nbsp;import sun.nio.ch.SelectorImpl;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;class SelectionKeyImpl extends AbstractSelectionKey {
+<i>17</i>&nbsp;    final SelChImpl channel;
+<i>18</i>&nbsp;    final SelectorImpl selector;
+<i>19</i>&nbsp;    private int index;
+<i>20</i>&nbsp;    private volatile int interestOps;
+<i>21</i>&nbsp;    private int readyOps;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    SelectionKeyImpl(SelChImpl var1, SelectorImpl var2) {
+<i>24</i>&nbsp;        this.channel = var1;
+<i>25</i>&nbsp;        this.selector = var2;
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public SelectableChannel channel() {
+<i>29</i>&nbsp;        return (SelectableChannel)this.channel;
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<b class="nc"><i>32</i>&nbsp;    public Selector selector() {</b>
+<b class="nc"><i>33</i>&nbsp;        return this.selector;</b>
+<b class="nc"><i>34</i>&nbsp;    }</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    int getIndex() {
+<i>37</i>&nbsp;        return this.index;
+<b class="nc"><i>38</i>&nbsp;    }</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    void setIndex(int var1) {
+<i>41</i>&nbsp;        this.index = var1;
+<b class="nc"><i>42</i>&nbsp;    }</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    private void ensureValid() {
+<i>45</i>&nbsp;        if(!this.isValid()) {
+<b class="nc"><i>46</i>&nbsp;            throw new CancelledKeyException();</b>
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<b class="nc"><i>50</i>&nbsp;    public int interestOps() {</b>
+<i>51</i>&nbsp;        this.ensureValid();
+<i>52</i>&nbsp;        return this.interestOps;
+<i>53</i>&nbsp;    }
+<b class="nc"><i>54</i>&nbsp;</b>
+<b class="nc"><i>55</i>&nbsp;    public SelectionKey interestOps(int var1) {</b>
+<i>56</i>&nbsp;        this.ensureValid();
+<i>57</i>&nbsp;        return this.nioInterestOps(var1);
+<i>58</i>&nbsp;    }
+<b class="nc"><i>59</i>&nbsp;</b>
+<b class="nc"><i>60</i>&nbsp;    public int readyOps() {</b>
+<i>61</i>&nbsp;        this.ensureValid();
+<i>62</i>&nbsp;        return this.readyOps;
+<i>63</i>&nbsp;    }
+<b class="nc"><i>64</i>&nbsp;</b>
+<b class="nc"><i>65</i>&nbsp;    void nioReadyOps(int var1) {</b>
+<i>66</i>&nbsp;        this.readyOps = var1;
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<b class="nc"><i>69</i>&nbsp;    int nioReadyOps() {</b>
+<b class="nc"><i>70</i>&nbsp;        return this.readyOps;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    SelectionKey nioInterestOps(int var1) {
+<i>74</i>&nbsp;        if((var1 &amp; ~this.channel().validOps()) != 0) {
+<i>75</i>&nbsp;            throw new IllegalArgumentException();
+<i>76</i>&nbsp;        } else {
+<b class="nc"><i>77</i>&nbsp;            this.channel.translateAndSetInterestOps(var1, this);</b>
+<i>78</i>&nbsp;            this.interestOps = var1;
+<i>79</i>&nbsp;            return this;
+<i>80</i>&nbsp;        }
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    int nioInterestOps() {
+<i>84</i>&nbsp;        return this.interestOps;
+<b class="nc"><i>85</i>&nbsp;    }</b>
+<b class="nc"><i>86</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,329 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Annotate</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.javac.comp</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Annotate (com.sun.tools.javac.comp)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Annotate</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 104)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.javac.comp;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.javac.code.Attribute;
+<i>9</i>&nbsp;import com.sun.tools.javac.code.Kinds;
+<i>10</i>&nbsp;import com.sun.tools.javac.code.Symbol;
+<i>11</i>&nbsp;import com.sun.tools.javac.code.Symtab;
+<i>12</i>&nbsp;import com.sun.tools.javac.code.Type;
+<i>13</i>&nbsp;import com.sun.tools.javac.code.Types;
+<i>14</i>&nbsp;import com.sun.tools.javac.code.Attribute.Array;
+<i>15</i>&nbsp;import com.sun.tools.javac.code.Attribute.Class;
+<i>16</i>&nbsp;import com.sun.tools.javac.code.Attribute.Compound;
+<i>17</i>&nbsp;import com.sun.tools.javac.code.Attribute.Constant;
+<i>18</i>&nbsp;import com.sun.tools.javac.code.Attribute.Enum;
+<i>19</i>&nbsp;import com.sun.tools.javac.code.Attribute.Error;
+<i>20</i>&nbsp;import com.sun.tools.javac.code.Symbol.CompletionFailure;
+<i>21</i>&nbsp;import com.sun.tools.javac.code.Symbol.MethodSymbol;
+<i>22</i>&nbsp;import com.sun.tools.javac.code.Symbol.VarSymbol;
+<i>23</i>&nbsp;import com.sun.tools.javac.comp.Attr;
+<i>24</i>&nbsp;import com.sun.tools.javac.comp.AttrContext;
+<i>25</i>&nbsp;import com.sun.tools.javac.comp.Check;
+<i>26</i>&nbsp;import com.sun.tools.javac.comp.ConstFold;
+<i>27</i>&nbsp;import com.sun.tools.javac.comp.Env;
+<i>28</i>&nbsp;import com.sun.tools.javac.comp.Resolve;
+<i>29</i>&nbsp;import com.sun.tools.javac.tree.JCTree;
+<b class="nc"><i>30</i>&nbsp;import com.sun.tools.javac.tree.TreeInfo;</b>
+<i>31</i>&nbsp;import com.sun.tools.javac.tree.TreeMaker;
+<i>32</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCAnnotation;
+<i>33</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCAssign;
+<b class="nc"><i>34</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCExpression;</b>
+<b class="nc"><i>35</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCFieldAccess;</b>
+<b class="nc"><i>36</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCIdent;</b>
+<b class="nc"><i>37</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCNewArray;</b>
+<i>38</i>&nbsp;import com.sun.tools.javac.util.Context;
+<i>39</i>&nbsp;import com.sun.tools.javac.util.List;
+<i>40</i>&nbsp;import com.sun.tools.javac.util.ListBuffer;
+<i>41</i>&nbsp;import com.sun.tools.javac.util.Log;
+<i>42</i>&nbsp;import com.sun.tools.javac.util.Names;
+<i>43</i>&nbsp;import com.sun.tools.javac.util.Pair;
+<i>44</i>&nbsp;import com.sun.tools.javac.util.Context.Key;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;public class Annotate {
+<i>47</i>&nbsp;    protected static final Key&lt;Annotate&gt; annotateKey = new Key();
+<i>48</i>&nbsp;    final Attr attr;
+<i>49</i>&nbsp;    final TreeMaker make;
+<b class="nc"><i>50</i>&nbsp;    final Log log;</b>
+<b class="nc"><i>51</i>&nbsp;    final Symtab syms;</b>
+<b class="nc"><i>52</i>&nbsp;    final Names names;</b>
+<b class="nc"><i>53</i>&nbsp;    final Resolve rs;</b>
+<b class="nc"><i>54</i>&nbsp;    final Types types;</b>
+<b class="nc"><i>55</i>&nbsp;    final ConstFold cfolder;</b>
+<b class="nc"><i>56</i>&nbsp;    final Check chk;</b>
+<b class="nc"><i>57</i>&nbsp;    private int enterCount = 0;</b>
+<b class="nc"><i>58</i>&nbsp;    ListBuffer&lt;Annotate.Annotator&gt; q = new ListBuffer();</b>
+<b class="nc"><i>59</i>&nbsp;</b>
+<b class="nc"><i>60</i>&nbsp;    public static Annotate instance(Context var0) {</b>
+<i>61</i>&nbsp;        Annotate var1 = (Annotate)var0.get(annotateKey);
+<i>62</i>&nbsp;        if(var1 == null) {
+<i>63</i>&nbsp;            var1 = new Annotate(var0);
+<i>64</i>&nbsp;        }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;        return var1;
+<b class="nc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<b class="nc"><i>69</i>&nbsp;    protected Annotate(Context var1) {</b>
+<i>70</i>&nbsp;        var1.put(annotateKey, this);
+<i>71</i>&nbsp;        this.attr = Attr.instance(var1);
+<b class="nc"><i>72</i>&nbsp;        this.make = TreeMaker.instance(var1);</b>
+<i>73</i>&nbsp;        this.log = Log.instance(var1);
+<i>74</i>&nbsp;        this.syms = Symtab.instance(var1);
+<i>75</i>&nbsp;        this.names = Names.instance(var1);
+<b class="nc"><i>76</i>&nbsp;        this.rs = Resolve.instance(var1);</b>
+<i>77</i>&nbsp;        this.types = Types.instance(var1);
+<i>78</i>&nbsp;        this.cfolder = ConstFold.instance(var1);
+<i>79</i>&nbsp;        this.chk = Check.instance(var1);
+<i>80</i>&nbsp;    }
+<b class="nc"><i>81</i>&nbsp;</b>
+<i>82</i>&nbsp;    public void later(Annotate.Annotator var1) {
+<i>83</i>&nbsp;        this.q.append(var1);
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<b class="nc"><i>86</i>&nbsp;    public void earlier(Annotate.Annotator var1) {</b>
+<b class="nc"><i>87</i>&nbsp;        this.q.prepend(var1);</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public void enterStart() {
+<b class="nc"><i>91</i>&nbsp;        ++this.enterCount;</b>
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;    public void enterDone() {</b>
+<b class="nc"><i>95</i>&nbsp;        --this.enterCount;</b>
+<i>96</i>&nbsp;        this.flush();
+<b class="nc"><i>97</i>&nbsp;    }</b>
+<b class="nc"><i>98</i>&nbsp;</b>
+<i>99</i>&nbsp;    public void flush() {
+<i>100</i>&nbsp;        if(this.enterCount == 0) {
+<i>101</i>&nbsp;            ++this.enterCount;
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;            try {
+<i>104</i>&nbsp;                while(this.q.nonEmpty()) {
+<i>105</i>&nbsp;                    ((Annotate.Annotator)this.q.next()).enterAnnotation();
+<i>106</i>&nbsp;                }
+<i>107</i>&nbsp;            } finally {
+<i>108</i>&nbsp;                --this.enterCount;
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;        }
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    Compound enterAnnotation(JCAnnotation var1, Type var2, Env&lt;AttrContext&gt; var3) {
+<i>115</i>&nbsp;        Type var4 = var1.annotationType.type != null?var1.annotationType.type:this.attr.attribType(var1.annotationType, var3);
+<i>116</i>&nbsp;        var1.type = this.chk.checkType(var1.annotationType.pos(), var4, var2);
+<i>117</i>&nbsp;        if(var1.type.isErroneous()) {
+<i>118</i>&nbsp;            return new Compound(var1.type, List.nil());
+<i>119</i>&nbsp;        } else if((var1.type.tsym.flags() &amp; 8192L) == 0L) {
+<i>120</i>&nbsp;            this.log.error(var1.annotationType.pos(), &quot;not.annotation.type&quot;, new Object[]{var1.type.toString()});
+<i>121</i>&nbsp;            return new Compound(var1.type, List.nil());
+<i>122</i>&nbsp;        } else {
+<i>123</i>&nbsp;            List var5 = var1.args;
+<i>124</i>&nbsp;            if(var5.length() == 1 &amp;&amp; ((JCExpression)var5.head).getTag() != 30) {
+<i>125</i>&nbsp;                var5.head = this.make.at(((JCExpression)var5.head).pos).Assign(this.make.Ident(this.names.value), (JCExpression)var5.head);
+<b class="nc"><i>126</i>&nbsp;            }</b>
+<i>127</i>&nbsp;
+<b class="nc"><i>128</i>&nbsp;            ListBuffer var6 = new ListBuffer();</b>
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;            for(List var7 = var5; var7.nonEmpty(); var7 = var7.tail) {</b>
+<b class="nc"><i>131</i>&nbsp;                JCExpression var8 = (JCExpression)var7.head;</b>
+<b class="nc"><i>132</i>&nbsp;                if(var8.getTag() != 30) {</b>
+<i>133</i>&nbsp;                    this.log.error(var8.pos(), &quot;annotation.value.must.be.name.value&quot;, new Object[0]);
+<b class="nc"><i>134</i>&nbsp;                } else {</b>
+<i>135</i>&nbsp;                    JCAssign var9 = (JCAssign)var8;
+<b class="nc"><i>136</i>&nbsp;                    if(var9.lhs.getTag() != 35) {</b>
+<b class="nc"><i>137</i>&nbsp;                        this.log.error(var8.pos(), &quot;annotation.value.must.be.name.value&quot;, new Object[0]);</b>
+<i>138</i>&nbsp;                    } else {
+<b class="nc"><i>139</i>&nbsp;                        JCIdent var10 = (JCIdent)var9.lhs;</b>
+<i>140</i>&nbsp;                        Symbol var11 = this.rs.resolveQualifiedMethod(var10.pos(), var3, var1.type, var10.name, List.nil(), (List)null);
+<i>141</i>&nbsp;                        var10.sym = var11;
+<b class="nc"><i>142</i>&nbsp;                        var10.type = var11.type;</b>
+<i>143</i>&nbsp;                        if(var11.owner != var1.type.tsym) {
+<b class="nc"><i>144</i>&nbsp;                            this.log.error(var10.pos(), &quot;no.annotation.member&quot;, new Object[]{var10.name, var1.type});</b>
+<b class="nc"><i>145</i>&nbsp;                        }</b>
+<b class="nc"><i>146</i>&nbsp;</b>
+<b class="nc"><i>147</i>&nbsp;                        Type var12 = var11.type.getReturnType();</b>
+<b class="nc"><i>148</i>&nbsp;                        Attribute var13 = this.enterAttributeValue(var12, var9.rhs, var3);</b>
+<i>149</i>&nbsp;                        if(!var11.type.isErroneous()) {
+<b class="nc"><i>150</i>&nbsp;                            var6.append(new Pair((MethodSymbol)var11, var13));</b>
+<b class="nc"><i>151</i>&nbsp;                        }</b>
+<b class="nc"><i>152</i>&nbsp;</b>
+<b class="nc"><i>153</i>&nbsp;                        var8.type = var12;</b>
+<i>154</i>&nbsp;                    }
+<b class="nc"><i>155</i>&nbsp;                }</b>
+<b class="nc"><i>156</i>&nbsp;            }</b>
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;            return new Compound(var1.type, var6.toList());
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;    Attribute enterAttributeValue(Type var1, JCExpression var2, Env&lt;AttrContext&gt; var3) {</b>
+<b class="nc"><i>163</i>&nbsp;        try {</b>
+<b class="nc"><i>164</i>&nbsp;            var1.tsym.complete();</b>
+<b class="nc"><i>165</i>&nbsp;        } catch (CompletionFailure var7) {</b>
+<b class="nc"><i>166</i>&nbsp;            this.log.error(((JCExpression)var2).pos(), &quot;cant.resolve&quot;, new Object[]{Kinds.kindName(var7.sym), var7.sym});</b>
+<b class="nc"><i>167</i>&nbsp;            return new Error(var1);</b>
+<b class="nc"><i>168</i>&nbsp;        }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<i>170</i>&nbsp;        Type var4;
+<i>171</i>&nbsp;        if(!var1.isPrimitive() &amp;&amp; !this.types.isSameType(var1, this.syms.stringType)) {
+<b class="nc"><i>172</i>&nbsp;            if(var1.tsym == this.syms.classType.tsym) {</b>
+<i>173</i>&nbsp;                var4 = this.attr.attribExpr((JCTree)var2, var3, var1);
+<i>174</i>&nbsp;                if(var4.isErroneous()) {
+<i>175</i>&nbsp;                    return new Error(var1);
+<i>176</i>&nbsp;                } else if(TreeInfo.name((JCTree)var2) != this.names._class) {
+<i>177</i>&nbsp;                    this.log.error(((JCExpression)var2).pos(), &quot;annotation.value.must.be.class.literal&quot;, new Object[0]);
+<b class="nc"><i>178</i>&nbsp;                    return new Error(var1);</b>
+<b class="nc"><i>179</i>&nbsp;                } else {</b>
+<b class="nc"><i>180</i>&nbsp;                    return new Class(this.types, ((JCFieldAccess)var2).selected.type);</b>
+<b class="nc"><i>181</i>&nbsp;                }</b>
+<b class="nc"><i>182</i>&nbsp;            } else if((var1.tsym.flags() &amp; 8192L) != 0L) {</b>
+<b class="nc"><i>183</i>&nbsp;                if(((JCExpression)var2).getTag() != 44) {</b>
+<b class="nc"><i>184</i>&nbsp;                    this.log.error(((JCExpression)var2).pos(), &quot;annotation.value.must.be.annotation&quot;, new Object[0]);</b>
+<i>185</i>&nbsp;                    var1 = this.syms.errorType;
+<b class="nc"><i>186</i>&nbsp;                }</b>
+<b class="nc"><i>187</i>&nbsp;</b>
+<i>188</i>&nbsp;                return this.enterAnnotation((JCAnnotation)var2, var1, var3);
+<b class="nc"><i>189</i>&nbsp;            } else if(var1.tag != 11) {</b>
+<b class="nc"><i>190</i>&nbsp;                if(var1.tag == 10 &amp;&amp; (var1.tsym.flags() &amp; 16384L) != 0L) {</b>
+<b class="nc"><i>191</i>&nbsp;                    this.attr.attribExpr((JCTree)var2, var3, var1);</b>
+<b class="nc"><i>192</i>&nbsp;                    Symbol var10 = TreeInfo.symbol((JCTree)var2);</b>
+<b class="nc"><i>193</i>&nbsp;                    if(var10 != null &amp;&amp; !TreeInfo.nonstaticSelect((JCTree)var2) &amp;&amp; var10.kind == 4 &amp;&amp; (var10.flags() &amp; 16384L) != 0L) {</b>
+<b class="nc"><i>194</i>&nbsp;                        VarSymbol var9 = (VarSymbol)var10;</b>
+<b class="nc"><i>195</i>&nbsp;                        return new Enum(var1, var9);</b>
+<i>196</i>&nbsp;                    } else {
+<b class="nc"><i>197</i>&nbsp;                        this.log.error(((JCExpression)var2).pos(), &quot;enum.annotation.must.be.enum.constant&quot;, new Object[0]);</b>
+<i>198</i>&nbsp;                        return new Error(var1);
+<i>199</i>&nbsp;                    }
+<b class="nc"><i>200</i>&nbsp;                } else {</b>
+<b class="nc"><i>201</i>&nbsp;                    if(!var1.isErroneous()) {</b>
+<b class="nc"><i>202</i>&nbsp;                        this.log.error(((JCExpression)var2).pos(), &quot;annotation.value.not.allowable.type&quot;, new Object[0]);</b>
+<b class="nc"><i>203</i>&nbsp;                    }</b>
+<i>204</i>&nbsp;
+<b class="nc"><i>205</i>&nbsp;                    return new Error(this.attr.attribExpr((JCTree)var2, var3, var1));</b>
+<i>206</i>&nbsp;                }
+<b class="nc"><i>207</i>&nbsp;            } else {</b>
+<b class="nc"><i>208</i>&nbsp;                if(((JCExpression)var2).getTag() != 28) {</b>
+<b class="nc"><i>209</i>&nbsp;                    var2 = this.make.at(((JCExpression)var2).pos).NewArray((JCExpression)null, List.nil(), List.of(var2));</b>
+<i>210</i>&nbsp;                }
+<i>211</i>&nbsp;
+<b class="nc"><i>212</i>&nbsp;                JCNewArray var8 = (JCNewArray)var2;</b>
+<b class="nc"><i>213</i>&nbsp;                if(var8.elemtype != null) {</b>
+<b class="nc"><i>214</i>&nbsp;                    this.log.error(var8.elemtype.pos(), &quot;new.not.allowed.in.annotation&quot;, new Object[0]);</b>
+<b class="nc"><i>215</i>&nbsp;                    return new Error(var1);</b>
+<i>216</i>&nbsp;                } else {
+<b class="nc"><i>217</i>&nbsp;                    ListBuffer var5 = new ListBuffer();</b>
+<b class="nc"><i>218</i>&nbsp;</b>
+<b class="nc"><i>219</i>&nbsp;                    for(List var6 = var8.elems; var6.nonEmpty(); var6 = var6.tail) {</b>
+<i>220</i>&nbsp;                        var5.append(this.enterAttributeValue(this.types.elemtype(var1), (JCExpression)var6.head, var3));
+<i>221</i>&nbsp;                    }
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;                    var8.type = var1;</b>
+<i>224</i>&nbsp;                    return new Array(var1, (Attribute[])var5.toArray(new Attribute[var5.length()]));
+<i>225</i>&nbsp;                }
+<b class="nc"><i>226</i>&nbsp;            }</b>
+<i>227</i>&nbsp;        } else {
+<b class="nc"><i>228</i>&nbsp;            var4 = this.attr.attribExpr((JCTree)var2, var3, var1);</b>
+<b class="nc"><i>229</i>&nbsp;            if(var4.isErroneous()) {</b>
+<b class="nc"><i>230</i>&nbsp;                return new Error(var1);</b>
+<i>231</i>&nbsp;            } else if(var4.constValue() == null) {
+<i>232</i>&nbsp;                this.log.error(((JCExpression)var2).pos(), &quot;attribute.value.must.be.constant&quot;, new Object[0]);
+<i>233</i>&nbsp;                return new Error(var1);
+<b class="nc"><i>234</i>&nbsp;            } else {</b>
+<b class="nc"><i>235</i>&nbsp;                var4 = this.cfolder.coerce(var4, var1);</b>
+<i>236</i>&nbsp;                return new Constant(var1, var4.constValue());
+<b class="nc"><i>237</i>&nbsp;            }</b>
+<b class="nc"><i>238</i>&nbsp;        }</b>
+<i>239</i>&nbsp;    }
+<b class="nc"><i>240</i>&nbsp;</b>
+<b class="nc"><i>241</i>&nbsp;    public interface Annotator {</b>
+<b class="nc"><i>242</i>&nbsp;        void enterAnnotation();</b>
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        String toString();
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

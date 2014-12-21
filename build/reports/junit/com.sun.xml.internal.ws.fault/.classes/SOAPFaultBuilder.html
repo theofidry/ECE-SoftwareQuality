@@ -1,0 +1,602 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SOAPFaultBuilder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.fault</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SOAPFaultBuilder (com.sun.xml.internal.ws.fault)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SOAPFaultBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 220)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SOAPFaultBuilder$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 221)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.fault;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.istack.internal.NotNull;
+<i>9</i>&nbsp;import com.sun.istack.internal.Nullable;
+<i>10</i>&nbsp;import com.sun.xml.internal.bind.api.Bridge;
+<i>11</i>&nbsp;import com.sun.xml.internal.bind.api.JAXBRIContext;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.api.SOAPVersion;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.api.message.Message;
+<i>14</i>&nbsp;import com.sun.xml.internal.ws.api.model.CheckedException;
+<i>15</i>&nbsp;import com.sun.xml.internal.ws.api.model.ExceptionType;
+<i>16</i>&nbsp;import com.sun.xml.internal.ws.encoding.soap.SerializationException;
+<i>17</i>&nbsp;import com.sun.xml.internal.ws.fault.CodeType;
+<i>18</i>&nbsp;import com.sun.xml.internal.ws.fault.DetailType;
+<i>19</i>&nbsp;import com.sun.xml.internal.ws.fault.ExceptionBean;
+<i>20</i>&nbsp;import com.sun.xml.internal.ws.fault.ReasonType;
+<i>21</i>&nbsp;import com.sun.xml.internal.ws.fault.SOAP11Fault;
+<i>22</i>&nbsp;import com.sun.xml.internal.ws.fault.SOAP12Fault;
+<i>23</i>&nbsp;import com.sun.xml.internal.ws.fault.SubcodeType;
+<i>24</i>&nbsp;import com.sun.xml.internal.ws.message.FaultMessage;
+<i>25</i>&nbsp;import com.sun.xml.internal.ws.message.jaxb.JAXBMessage;
+<i>26</i>&nbsp;import com.sun.xml.internal.ws.model.CheckedExceptionImpl;
+<i>27</i>&nbsp;import com.sun.xml.internal.ws.util.DOMUtil;
+<i>28</i>&nbsp;import com.sun.xml.internal.ws.util.StringUtils;
+<i>29</i>&nbsp;import java.lang.reflect.Constructor;
+<i>30</i>&nbsp;import java.lang.reflect.Field;
+<i>31</i>&nbsp;import java.lang.reflect.Method;
+<i>32</i>&nbsp;import java.lang.reflect.ReflectPermission;
+<i>33</i>&nbsp;import java.security.AccessControlContext;
+<i>34</i>&nbsp;import java.security.AccessController;
+<i>35</i>&nbsp;import java.security.CodeSource;
+<i>36</i>&nbsp;import java.security.Permissions;
+<i>37</i>&nbsp;import java.security.PrivilegedAction;
+<i>38</i>&nbsp;import java.security.ProtectionDomain;
+<i>39</i>&nbsp;import java.util.Iterator;
+<i>40</i>&nbsp;import java.util.Map;
+<i>41</i>&nbsp;import java.util.logging.Level;
+<i>42</i>&nbsp;import java.util.logging.Logger;
+<i>43</i>&nbsp;import javax.xml.bind.JAXBContext;
+<i>44</i>&nbsp;import javax.xml.bind.JAXBException;
+<i>45</i>&nbsp;import javax.xml.namespace.QName;
+<i>46</i>&nbsp;import javax.xml.soap.Detail;
+<i>47</i>&nbsp;import javax.xml.soap.DetailEntry;
+<i>48</i>&nbsp;import javax.xml.soap.SOAPFault;
+<i>49</i>&nbsp;import javax.xml.transform.dom.DOMResult;
+<i>50</i>&nbsp;import javax.xml.ws.ProtocolException;
+<i>51</i>&nbsp;import javax.xml.ws.WebServiceException;
+<i>52</i>&nbsp;import javax.xml.ws.soap.SOAPFaultException;
+<i>53</i>&nbsp;import org.w3c.dom.Document;
+<i>54</i>&nbsp;import org.w3c.dom.Element;
+<i>55</i>&nbsp;import org.w3c.dom.Node;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;public abstract class SOAPFaultBuilder {
+<i>58</i>&nbsp;    private static final JAXBRIContext JAXB_CONTEXT;
+<i>59</i>&nbsp;    private static final Logger logger = Logger.getLogger(SOAPFaultBuilder.class.getName());
+<i>60</i>&nbsp;    public static boolean captureStackTrace;
+<i>61</i>&nbsp;    static final String CAPTURE_STACK_TRACE_PROPERTY = SOAPFaultBuilder.class.getName() + &quot;.captureStackTrace&quot;;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public SOAPFaultBuilder() {
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    abstract DetailType getDetail();
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    abstract void setDetail(DetailType var1);
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    @Nullable
+<i>71</i>&nbsp;    public QName getFirstDetailEntryName() {
+<i>72</i>&nbsp;        DetailType dt = this.getDetail();
+<b class="nc"><i>73</i>&nbsp;        if(dt != null) {</b>
+<i>74</i>&nbsp;            Node entry = dt.getDetail(0);
+<i>75</i>&nbsp;            if(entry != null) {
+<i>76</i>&nbsp;                return new QName(entry.getNamespaceURI(), entry.getLocalName());
+<i>77</i>&nbsp;            }
+<i>78</i>&nbsp;        }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;        return null;
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    abstract String getFaultString();
+<b class="nc"><i>84</i>&nbsp;</b>
+<b class="nc"><i>85</i>&nbsp;    public Throwable createException(Map&lt;QName, CheckedExceptionImpl&gt; exceptions) throws JAXBException {</b>
+<b class="nc"><i>86</i>&nbsp;        DetailType dt = this.getDetail();</b>
+<b class="nc"><i>87</i>&nbsp;        Node detail = null;</b>
+<b class="nc"><i>88</i>&nbsp;        if(dt != null) {</b>
+<i>89</i>&nbsp;            detail = dt.getDetail(0);
+<i>90</i>&nbsp;        }
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;        if(detail != null &amp;&amp; exceptions != null) {
+<i>93</i>&nbsp;            QName detailName = new QName(detail.getNamespaceURI(), detail.getLocalName());
+<i>94</i>&nbsp;            CheckedExceptionImpl ce = (CheckedExceptionImpl)exceptions.get(detailName);
+<i>95</i>&nbsp;            if(ce == null) {
+<i>96</i>&nbsp;                return this.attachServerException(this.getProtocolException());
+<i>97</i>&nbsp;            } else if(ce.getExceptionType().equals(ExceptionType.UserDefined)) {
+<i>98</i>&nbsp;                return this.attachServerException(this.createUserDefinedException(ce));
+<i>99</i>&nbsp;            } else {
+<i>100</i>&nbsp;                Class exceptionClass = ce.getExceptionClass();
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;                try {
+<b class="nc"><i>103</i>&nbsp;                    Constructor e = exceptionClass.getConstructor(new Class[]{String.class, (Class)ce.getDetailType().type});</b>
+<b class="nc"><i>104</i>&nbsp;                    Exception exception = (Exception)e.newInstance(new Object[]{this.getFaultString(), this.getJAXBObject(detail, ce)});</b>
+<b class="nc"><i>105</i>&nbsp;                    return this.attachServerException(exception);</b>
+<i>106</i>&nbsp;                } catch (Exception var9) {
+<i>107</i>&nbsp;                    throw new WebServiceException(var9);
+<b class="nc"><i>108</i>&nbsp;                }</b>
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;        } else {
+<b class="nc"><i>111</i>&nbsp;            return this.attachServerException(this.getProtocolException());</b>
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<b class="nc"><i>115</i>&nbsp;    @NotNull</b>
+<b class="nc"><i>116</i>&nbsp;    public static Message createSOAPFaultMessage(@NotNull SOAPVersion soapVersion, @NotNull ProtocolException ex, @Nullable QName faultcode) {</b>
+<b class="nc"><i>117</i>&nbsp;        Object detail = getFaultDetail((CheckedExceptionImpl)null, ex);</b>
+<i>118</i>&nbsp;        return soapVersion == SOAPVersion.SOAP_12?createSOAP12Fault(soapVersion, ex, detail, (CheckedExceptionImpl)null, faultcode):createSOAP11Fault(soapVersion, ex, detail, (CheckedExceptionImpl)null, faultcode);
+<b class="nc"><i>119</i>&nbsp;    }</b>
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    public static Message createSOAPFaultMessage(SOAPVersion soapVersion, CheckedExceptionImpl ceModel, Throwable ex) {
+<i>122</i>&nbsp;        return createSOAPFaultMessage(soapVersion, (CheckedExceptionImpl)ceModel, (Throwable)ex, (QName)null);
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<b class="nc"><i>124</i>&nbsp;</b>
+<i>125</i>&nbsp;    public static Message createSOAPFaultMessage(SOAPVersion soapVersion, CheckedExceptionImpl ceModel, Throwable ex, QName faultCode) {
+<i>126</i>&nbsp;        Object detail = getFaultDetail(ceModel, ex);
+<b class="nc"><i>127</i>&nbsp;        return soapVersion == SOAPVersion.SOAP_12?createSOAP12Fault(soapVersion, ex, detail, ceModel, faultCode):createSOAP11Fault(soapVersion, ex, detail, ceModel, faultCode);</b>
+<i>128</i>&nbsp;    }
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;    public static Message createSOAPFaultMessage(SOAPVersion soapVersion, String faultString, QName faultCode) {</b>
+<b class="nc"><i>131</i>&nbsp;        if(faultCode == null) {</b>
+<b class="nc"><i>132</i>&nbsp;            faultCode = getDefaultFaultCode(soapVersion);</b>
+<b class="nc"><i>133</i>&nbsp;        }</b>
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;        return createSOAPFaultMessage(soapVersion, (String)faultString, (QName)faultCode, (Element)null);
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public static Message createSOAPFaultMessage(SOAPVersion soapVersion, SOAPFault fault) {
+<i>139</i>&nbsp;        switch(SOAPFaultBuilder.SyntheticClass_1.$SwitchMap$com$sun$xml$internal$ws$api$SOAPVersion[soapVersion.ordinal()]) {
+<i>140</i>&nbsp;        case 1:
+<i>141</i>&nbsp;            return JAXBMessage.create(JAXB_CONTEXT, new SOAP11Fault(fault), soapVersion);
+<i>142</i>&nbsp;        case 2:
+<i>143</i>&nbsp;            return JAXBMessage.create(JAXB_CONTEXT, new SOAP12Fault(fault), soapVersion);
+<i>144</i>&nbsp;        default:
+<i>145</i>&nbsp;            throw new AssertionError();
+<i>146</i>&nbsp;        }
+<b class="nc"><i>147</i>&nbsp;    }</b>
+<b class="nc"><i>148</i>&nbsp;</b>
+<b class="nc"><i>149</i>&nbsp;    private static Message createSOAPFaultMessage(SOAPVersion soapVersion, String faultString, QName faultCode, Element detail) {</b>
+<b class="nc"><i>150</i>&nbsp;        switch(SOAPFaultBuilder.SyntheticClass_1.$SwitchMap$com$sun$xml$internal$ws$api$SOAPVersion[soapVersion.ordinal()]) {</b>
+<i>151</i>&nbsp;        case 1:
+<i>152</i>&nbsp;            return JAXBMessage.create(JAXB_CONTEXT, new SOAP11Fault(faultCode, faultString, (String)null, detail), soapVersion);
+<i>153</i>&nbsp;        case 2:
+<i>154</i>&nbsp;            return JAXBMessage.create(JAXB_CONTEXT, new SOAP12Fault(faultCode, faultString, detail), soapVersion);
+<i>155</i>&nbsp;        default:
+<i>156</i>&nbsp;            throw new AssertionError();
+<i>157</i>&nbsp;        }
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    final void captureStackTrace(@Nullable Throwable t) {
+<i>161</i>&nbsp;        if(t != null) {
+<i>162</i>&nbsp;            if(captureStackTrace) {
+<i>163</i>&nbsp;                try {
+<i>164</i>&nbsp;                    Document e = DOMUtil.createDom();
+<i>165</i>&nbsp;                    ExceptionBean.marshal(t, e);
+<i>166</i>&nbsp;                    DetailType detail = this.getDetail();
+<i>167</i>&nbsp;                    if(detail == null) {
+<i>168</i>&nbsp;                        this.setDetail(detail = new DetailType());
+<i>169</i>&nbsp;                    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;                    detail.getDetails().add(e.getDocumentElement());
+<i>172</i>&nbsp;                } catch (JAXBException var4) {
+<b class="nc"><i>173</i>&nbsp;                    logger.log(Level.WARNING, &quot;Unable to capture the stack trace into XML&quot;, var4);</b>
+<b class="nc"><i>174</i>&nbsp;                }</b>
+<b class="nc"><i>175</i>&nbsp;</b>
+<b class="nc"><i>176</i>&nbsp;            }</b>
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    private &lt;T extends Throwable&gt; T attachServerException(T t) {
+<i>181</i>&nbsp;        DetailType detail = this.getDetail();
+<i>182</i>&nbsp;        if(detail == null) {
+<i>183</i>&nbsp;            return t;
+<i>184</i>&nbsp;        } else {
+<i>185</i>&nbsp;            Iterator i$ = detail.getDetails().iterator();
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;            Element n;
+<i>188</i>&nbsp;            do {
+<i>189</i>&nbsp;                if(!i$.hasNext()) {
+<i>190</i>&nbsp;                    return t;
+<i>191</i>&nbsp;                }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;                n = (Element)i$.next();
+<i>194</i>&nbsp;            } while(!ExceptionBean.isStackTraceXml(n));
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;            try {
+<i>197</i>&nbsp;                t.initCause(ExceptionBean.unmarshal(n));
+<i>198</i>&nbsp;            } catch (JAXBException var6) {
+<i>199</i>&nbsp;                logger.log(Level.WARNING, &quot;Unable to read the capture stack trace in the fault&quot;, var6);
+<i>200</i>&nbsp;            }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;            return t;
+<b class="nc"><i>203</i>&nbsp;        }</b>
+<b class="nc"><i>204</i>&nbsp;    }</b>
+<b class="nc"><i>205</i>&nbsp;</b>
+<i>206</i>&nbsp;    protected abstract Throwable getProtocolException();
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    private Object getJAXBObject(Node jaxbBean, CheckedException ce) throws JAXBException {
+<b class="nc"><i>209</i>&nbsp;        Bridge bridge = ce.getBridge();</b>
+<i>210</i>&nbsp;        return bridge.unmarshal(jaxbBean);
+<b class="nc"><i>211</i>&nbsp;    }</b>
+<i>212</i>&nbsp;
+<b class="nc"><i>213</i>&nbsp;    private Exception createUserDefinedException(CheckedExceptionImpl ce) {</b>
+<i>214</i>&nbsp;        Class exceptionClass = ce.getExceptionClass();
+<b class="nc"><i>215</i>&nbsp;        Class detailBean = ce.getDetailBean();</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        try {
+<i>218</i>&nbsp;            Node e = (Node)this.getDetail().getDetails().get(0);
+<i>219</i>&nbsp;            Object jaxbDetail = this.getJAXBObject(e, ce);
+<b class="nc"><i>220</i>&nbsp;</b>
+<i>221</i>&nbsp;            Constructor exConstructor;
+<b class="nc"><i>222</i>&nbsp;            try {</b>
+<i>223</i>&nbsp;                exConstructor = exceptionClass.getConstructor(new Class[]{String.class, detailBean});
+<b class="nc"><i>224</i>&nbsp;                return (Exception)exConstructor.newInstance(new Object[]{this.getFaultString(), jaxbDetail});</b>
+<i>225</i>&nbsp;            } catch (NoSuchMethodException var8) {
+<b class="nc"><i>226</i>&nbsp;                exConstructor = exceptionClass.getConstructor(new Class[]{String.class});</b>
+<i>227</i>&nbsp;                return (Exception)exConstructor.newInstance(new Object[]{this.getFaultString()});
+<i>228</i>&nbsp;            }
+<i>229</i>&nbsp;        } catch (Exception var9) {
+<i>230</i>&nbsp;            throw new WebServiceException(var9);
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    private static String getWriteMethod(Field f) {
+<b class="nc"><i>235</i>&nbsp;        return &quot;set&quot; + StringUtils.capitalize(f.getName());</b>
+<b class="nc"><i>236</i>&nbsp;    }</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    private static Object getFaultDetail(CheckedExceptionImpl ce, Throwable exception) {
+<b class="nc"><i>239</i>&nbsp;        if(ce == null) {</b>
+<b class="nc"><i>240</i>&nbsp;            return null;</b>
+<i>241</i>&nbsp;        } else if(ce.getExceptionType().equals(ExceptionType.UserDefined)) {
+<b class="nc"><i>242</i>&nbsp;            return createDetailFromUserDefinedException(ce, exception);</b>
+<b class="nc"><i>243</i>&nbsp;        } else {</b>
+<b class="nc"><i>244</i>&nbsp;            try {</b>
+<i>245</i>&nbsp;                Method e = exception.getClass().getMethod(&quot;getFaultInfo&quot;, new Class[0]);
+<b class="nc"><i>246</i>&nbsp;                return e.invoke(exception, new Object[0]);</b>
+<b class="nc"><i>247</i>&nbsp;            } catch (Exception var3) {</b>
+<i>248</i>&nbsp;                throw new SerializationException(var3);
+<b class="nc"><i>249</i>&nbsp;            }</b>
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    private static Object createDetailFromUserDefinedException(CheckedExceptionImpl ce, Object exception) {
+<i>254</i>&nbsp;        Class detailBean = ce.getDetailBean();
+<i>255</i>&nbsp;        Field[] fields = detailBean.getDeclaredFields();
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;        try {</b>
+<b class="nc"><i>258</i>&nbsp;            Object e = detailBean.newInstance();</b>
+<i>259</i>&nbsp;            Field[] arr$ = fields;
+<b class="nc"><i>260</i>&nbsp;            int len$ = fields.length;</b>
+<b class="nc"><i>261</i>&nbsp;</b>
+<i>262</i>&nbsp;            for(int i$ = 0; i$ &lt; len$; ++i$) {
+<b class="nc"><i>263</i>&nbsp;                Field f = arr$[i$];</b>
+<b class="nc"><i>264</i>&nbsp;                Method em = exception.getClass().getMethod(getReadMethod(f), new Class[0]);</b>
+<i>265</i>&nbsp;
+<b class="nc"><i>266</i>&nbsp;                try {</b>
+<b class="nc"><i>267</i>&nbsp;                    Method ne = detailBean.getMethod(getWriteMethod(f), new Class[]{em.getReturnType()});</b>
+<b class="nc"><i>268</i>&nbsp;                    ne.invoke(e, new Object[]{em.invoke(exception, new Object[0])});</b>
+<i>269</i>&nbsp;                } catch (NoSuchMethodException var12) {
+<i>270</i>&nbsp;                    Field sf = detailBean.getField(f.getName());
+<i>271</i>&nbsp;                    sf.set(e, em.invoke(exception, new Object[0]));
+<b class="nc"><i>272</i>&nbsp;                }</b>
+<i>273</i>&nbsp;            }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;            return e;
+<i>276</i>&nbsp;        } catch (Exception var13) {
+<i>277</i>&nbsp;            throw new SerializationException(var13);
+<b class="nc"><i>278</i>&nbsp;        }</b>
+<b class="nc"><i>279</i>&nbsp;    }</b>
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    private static String getReadMethod(Field f) {
+<i>282</i>&nbsp;        return f.getType().isAssignableFrom(Boolean.TYPE)?&quot;is&quot; + StringUtils.capitalize(f.getName()):&quot;get&quot; + StringUtils.capitalize(f.getName());
+<b class="nc"><i>283</i>&nbsp;    }</b>
+<b class="nc"><i>284</i>&nbsp;</b>
+<i>285</i>&nbsp;    private static Message createSOAP11Fault(SOAPVersion soapVersion, Throwable e, Object detail, CheckedExceptionImpl ce, QName faultCode) {
+<b class="nc"><i>286</i>&nbsp;        SOAPFaultException soapFaultException = null;</b>
+<b class="nc"><i>287</i>&nbsp;        String faultString = null;</b>
+<i>288</i>&nbsp;        String faultActor = null;
+<i>289</i>&nbsp;        Throwable cause = e.getCause();
+<b class="nc"><i>290</i>&nbsp;        if(e instanceof SOAPFaultException) {</b>
+<b class="nc"><i>291</i>&nbsp;            soapFaultException = (SOAPFaultException)e;</b>
+<b class="nc"><i>292</i>&nbsp;        } else if(cause != null &amp;&amp; cause instanceof SOAPFaultException) {</b>
+<b class="nc"><i>293</i>&nbsp;            soapFaultException = (SOAPFaultException)e.getCause();</b>
+<b class="nc"><i>294</i>&nbsp;        }</b>
+<i>295</i>&nbsp;
+<b class="nc"><i>296</i>&nbsp;        if(soapFaultException != null) {</b>
+<b class="nc"><i>297</i>&nbsp;            QName detailNode = soapFaultException.getFault().getFaultCodeAsQName();</b>
+<i>298</i>&nbsp;            if(detailNode != null) {
+<i>299</i>&nbsp;                faultCode = detailNode;
+<i>300</i>&nbsp;            }
+<i>301</i>&nbsp;
+<b class="nc"><i>302</i>&nbsp;            faultString = soapFaultException.getFault().getFaultString();</b>
+<i>303</i>&nbsp;            faultActor = soapFaultException.getFault().getFaultActor();
+<i>304</i>&nbsp;        }
+<i>305</i>&nbsp;
+<b class="nc"><i>306</i>&nbsp;        if(faultCode == null) {</b>
+<b class="nc"><i>307</i>&nbsp;            faultCode = getDefaultFaultCode(soapVersion);</b>
+<b class="nc"><i>308</i>&nbsp;        }</b>
+<b class="nc"><i>309</i>&nbsp;</b>
+<i>310</i>&nbsp;        if(faultString == null) {
+<i>311</i>&nbsp;            faultString = e.getMessage();
+<b class="nc"><i>312</i>&nbsp;            if(faultString == null) {</b>
+<b class="nc"><i>313</i>&nbsp;                faultString = e.toString();</b>
+<b class="nc"><i>314</i>&nbsp;            }</b>
+<b class="nc"><i>315</i>&nbsp;        }</b>
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;        Object detailNode1 = null;
+<i>318</i>&nbsp;        QName firstEntry = null;
+<i>319</i>&nbsp;        if(detail == null &amp;&amp; soapFaultException != null) {
+<b class="nc"><i>320</i>&nbsp;            detailNode1 = soapFaultException.getFault().getDetail();</b>
+<b class="nc"><i>321</i>&nbsp;            firstEntry = getFirstDetailEntryName((Detail)((Detail)detailNode1));</b>
+<i>322</i>&nbsp;        } else if(ce != null) {
+<b class="nc"><i>323</i>&nbsp;            try {</b>
+<b class="nc"><i>324</i>&nbsp;                DOMResult soap11Fault = new DOMResult();</b>
+<b class="nc"><i>325</i>&nbsp;                ce.getBridge().marshal(detail, soap11Fault);</b>
+<i>326</i>&nbsp;                detailNode1 = (Element)soap11Fault.getNode().getFirstChild();
+<b class="nc"><i>327</i>&nbsp;                firstEntry = getFirstDetailEntryName((Element)detailNode1);</b>
+<b class="nc"><i>328</i>&nbsp;            } catch (JAXBException var13) {</b>
+<b class="nc"><i>329</i>&nbsp;                faultString = e.getMessage();</b>
+<i>330</i>&nbsp;                faultCode = getDefaultFaultCode(soapVersion);
+<b class="nc"><i>331</i>&nbsp;            }</b>
+<b class="nc"><i>332</i>&nbsp;        }</b>
+<b class="nc"><i>333</i>&nbsp;</b>
+<i>334</i>&nbsp;        SOAP11Fault soap11Fault1 = new SOAP11Fault(faultCode, faultString, faultActor, (Element)detailNode1);
+<b class="nc"><i>335</i>&nbsp;        if(ce == null) {</b>
+<b class="nc"><i>336</i>&nbsp;            soap11Fault1.captureStackTrace(e);</b>
+<b class="nc"><i>337</i>&nbsp;        }</b>
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;        Message msg = JAXBMessage.create(JAXB_CONTEXT, soap11Fault1, soapVersion);
+<i>340</i>&nbsp;        return new FaultMessage(msg, firstEntry);
+<i>341</i>&nbsp;    }
+<b class="nc"><i>342</i>&nbsp;</b>
+<b class="nc"><i>343</i>&nbsp;    @Nullable</b>
+<b class="nc"><i>344</i>&nbsp;    private static QName getFirstDetailEntryName(@Nullable Detail detail) {</b>
+<i>345</i>&nbsp;        if(detail != null) {
+<i>346</i>&nbsp;            Iterator it = detail.getDetailEntries();
+<i>347</i>&nbsp;            if(it.hasNext()) {
+<b class="nc"><i>348</i>&nbsp;                DetailEntry entry = (DetailEntry)it.next();</b>
+<b class="nc"><i>349</i>&nbsp;                return getFirstDetailEntryName((Element)entry);</b>
+<b class="nc"><i>350</i>&nbsp;            }</b>
+<b class="nc"><i>351</i>&nbsp;        }</b>
+<b class="nc"><i>352</i>&nbsp;</b>
+<b class="nc"><i>353</i>&nbsp;        return null;</b>
+<b class="nc"><i>354</i>&nbsp;    }</b>
+<b class="nc"><i>355</i>&nbsp;</b>
+<i>356</i>&nbsp;    @NotNull
+<b class="nc"><i>357</i>&nbsp;    private static QName getFirstDetailEntryName(@NotNull Element entry) {</b>
+<b class="nc"><i>358</i>&nbsp;        return new QName(entry.getNamespaceURI(), entry.getLocalName());</b>
+<b class="nc"><i>359</i>&nbsp;    }</b>
+<b class="nc"><i>360</i>&nbsp;</b>
+<i>361</i>&nbsp;    private static Message createSOAP12Fault(SOAPVersion soapVersion, Throwable e, Object detail, CheckedExceptionImpl ce, QName faultCode) {
+<b class="nc"><i>362</i>&nbsp;        SOAPFaultException soapFaultException = null;</b>
+<b class="nc"><i>363</i>&nbsp;        CodeType code = null;</b>
+<i>364</i>&nbsp;        String faultString = null;
+<i>365</i>&nbsp;        String faultRole = null;
+<b class="nc"><i>366</i>&nbsp;        String faultNode = null;</b>
+<b class="nc"><i>367</i>&nbsp;        Throwable cause = e.getCause();</b>
+<i>368</i>&nbsp;        if(e instanceof SOAPFaultException) {
+<i>369</i>&nbsp;            soapFaultException = (SOAPFaultException)e;
+<b class="nc"><i>370</i>&nbsp;        } else if(cause != null &amp;&amp; cause instanceof SOAPFaultException) {</b>
+<b class="nc"><i>371</i>&nbsp;            soapFaultException = (SOAPFaultException)e.getCause();</b>
+<b class="nc"><i>372</i>&nbsp;        }</b>
+<b class="nc"><i>373</i>&nbsp;</b>
+<i>374</i>&nbsp;        if(soapFaultException != null) {
+<i>375</i>&nbsp;            SOAPFault reason = soapFaultException.getFault();
+<b class="nc"><i>376</i>&nbsp;            QName detailNode = reason.getFaultCodeAsQName();</b>
+<b class="nc"><i>377</i>&nbsp;            if(detailNode != null) {</b>
+<b class="nc"><i>378</i>&nbsp;                faultCode = detailNode;</b>
+<b class="nc"><i>379</i>&nbsp;                code = new CodeType(detailNode);</b>
+<b class="nc"><i>380</i>&nbsp;                Iterator firstEntry = reason.getFaultSubcodes();</b>
+<b class="nc"><i>381</i>&nbsp;                boolean soap12Fault = true;</b>
+<i>382</i>&nbsp;                SubcodeType msg = null;
+<b class="nc"><i>383</i>&nbsp;</b>
+<b class="nc"><i>384</i>&nbsp;                while(firstEntry.hasNext()) {</b>
+<b class="nc"><i>385</i>&nbsp;                    QName value = (QName)firstEntry.next();</b>
+<b class="nc"><i>386</i>&nbsp;                    if(soap12Fault) {</b>
+<b class="nc"><i>387</i>&nbsp;                        SubcodeType sct = new SubcodeType(value);</b>
+<i>388</i>&nbsp;                        code.setSubcode(sct);
+<b class="nc"><i>389</i>&nbsp;                        msg = sct;</b>
+<b class="nc"><i>390</i>&nbsp;                        soap12Fault = false;</b>
+<b class="nc"><i>391</i>&nbsp;                    } else {</b>
+<i>392</i>&nbsp;                        msg = fillSubcodes(msg, value);
+<b class="nc"><i>393</i>&nbsp;                    }</b>
+<b class="nc"><i>394</i>&nbsp;                }</b>
+<i>395</i>&nbsp;            }
+<b class="nc"><i>396</i>&nbsp;</b>
+<b class="nc"><i>397</i>&nbsp;            faultString = soapFaultException.getFault().getFaultString();</b>
+<i>398</i>&nbsp;            faultRole = soapFaultException.getFault().getFaultActor();
+<i>399</i>&nbsp;            faultNode = soapFaultException.getFault().getFaultNode();
+<i>400</i>&nbsp;        }
+<b class="nc"><i>401</i>&nbsp;</b>
+<b class="nc"><i>402</i>&nbsp;        if(faultCode == null) {</b>
+<b class="nc"><i>403</i>&nbsp;            faultCode = getDefaultFaultCode(soapVersion);</b>
+<b class="nc"><i>404</i>&nbsp;            code = new CodeType(faultCode);</b>
+<b class="nc"><i>405</i>&nbsp;        } else if(code == null) {</b>
+<i>406</i>&nbsp;            code = new CodeType(faultCode);
+<i>407</i>&nbsp;        }
+<b class="nc"><i>408</i>&nbsp;</b>
+<i>409</i>&nbsp;        if(faultString == null) {
+<i>410</i>&nbsp;            faultString = e.getMessage();
+<i>411</i>&nbsp;            if(faultString == null) {
+<b class="nc"><i>412</i>&nbsp;                faultString = e.toString();</b>
+<i>413</i>&nbsp;            }
+<i>414</i>&nbsp;        }
+<i>415</i>&nbsp;
+<b class="nc"><i>416</i>&nbsp;        ReasonType reason1 = new ReasonType(faultString);</b>
+<b class="nc"><i>417</i>&nbsp;        Object detailNode1 = null;</b>
+<b class="nc"><i>418</i>&nbsp;        QName firstEntry1 = null;</b>
+<b class="nc"><i>419</i>&nbsp;        if(detail == null &amp;&amp; soapFaultException != null) {</b>
+<b class="nc"><i>420</i>&nbsp;            detailNode1 = soapFaultException.getFault().getDetail();</b>
+<b class="nc"><i>421</i>&nbsp;            firstEntry1 = getFirstDetailEntryName((Detail)((Detail)detailNode1));</b>
+<b class="nc"><i>422</i>&nbsp;        } else if(detail != null) {</b>
+<b class="nc"><i>423</i>&nbsp;            try {</b>
+<b class="nc"><i>424</i>&nbsp;                DOMResult soap12Fault2 = new DOMResult();</b>
+<i>425</i>&nbsp;                ce.getBridge().marshal(detail, soap12Fault2);
+<b class="nc"><i>426</i>&nbsp;                detailNode1 = (Element)soap12Fault2.getNode().getFirstChild();</b>
+<b class="nc"><i>427</i>&nbsp;                firstEntry1 = getFirstDetailEntryName((Element)detailNode1);</b>
+<b class="nc"><i>428</i>&nbsp;            } catch (JAXBException var18) {</b>
+<b class="nc"><i>429</i>&nbsp;                faultString = e.getMessage();</b>
+<b class="nc"><i>430</i>&nbsp;                faultCode = getDefaultFaultCode(soapVersion);</b>
+<b class="nc"><i>431</i>&nbsp;            }</b>
+<b class="nc"><i>432</i>&nbsp;        }</b>
+<b class="nc"><i>433</i>&nbsp;</b>
+<b class="nc"><i>434</i>&nbsp;        SOAP12Fault soap12Fault1 = new SOAP12Fault(code, reason1, faultNode, faultRole, (Element)detailNode1);</b>
+<b class="nc"><i>435</i>&nbsp;        if(ce == null) {</b>
+<b class="nc"><i>436</i>&nbsp;            soap12Fault1.captureStackTrace(e);</b>
+<b class="nc"><i>437</i>&nbsp;        }</b>
+<b class="nc"><i>438</i>&nbsp;</b>
+<b class="nc"><i>439</i>&nbsp;        Message msg1 = JAXBMessage.create(JAXB_CONTEXT, soap12Fault1, soapVersion);</b>
+<b class="nc"><i>440</i>&nbsp;        return new FaultMessage(msg1, firstEntry1);</b>
+<b class="nc"><i>441</i>&nbsp;    }</b>
+<b class="nc"><i>442</i>&nbsp;</b>
+<i>443</i>&nbsp;    private static SubcodeType fillSubcodes(SubcodeType parent, QName value) {
+<b class="nc"><i>444</i>&nbsp;        SubcodeType newCode = new SubcodeType(value);</b>
+<b class="nc"><i>445</i>&nbsp;        parent.setSubcode(newCode);</b>
+<i>446</i>&nbsp;        return newCode;
+<b class="nc"><i>447</i>&nbsp;    }</b>
+<b class="nc"><i>448</i>&nbsp;</b>
+<i>449</i>&nbsp;    private static QName getDefaultFaultCode(SOAPVersion soapVersion) {
+<i>450</i>&nbsp;        return soapVersion.faultCodeServer;
+<b class="nc"><i>451</i>&nbsp;    }</b>
+<b class="nc"><i>452</i>&nbsp;</b>
+<b class="nc"><i>453</i>&nbsp;    public static SOAPFaultBuilder create(Message msg) throws JAXBException {</b>
+<b class="nc"><i>454</i>&nbsp;        return (SOAPFaultBuilder)msg.readPayloadAsJAXB(JAXB_CONTEXT.createUnmarshaller());</b>
+<b class="nc"><i>455</i>&nbsp;    }</b>
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;    private static JAXBRIContext createJAXBContext() {
+<b class="nc"><i>458</i>&nbsp;        if(isJDKRuntime()) {</b>
+<b class="nc"><i>459</i>&nbsp;            Permissions e = new Permissions();</b>
+<b class="nc"><i>460</i>&nbsp;            e.add(new RuntimePermission(&quot;accessClassInPackage.com.sun.xml.internal.ws.fault&quot;));</b>
+<b class="nc"><i>461</i>&nbsp;            e.add(new ReflectPermission(&quot;suppressAccessChecks&quot;));</b>
+<i>462</i>&nbsp;            return (JAXBRIContext)AccessController.doPrivileged(new PrivilegedAction() {
+<i>463</i>&nbsp;                public JAXBRIContext run() {
+<i>464</i>&nbsp;                    try {
+<b class="nc"><i>465</i>&nbsp;                        return (JAXBRIContext)JAXBContext.newInstance(new Class[]{SOAP11Fault.class, SOAP12Fault.class});</b>
+<b class="nc"><i>466</i>&nbsp;                    } catch (JAXBException var2) {</b>
+<b class="nc"><i>467</i>&nbsp;                        throw new Error(var2);</b>
+<b class="nc"><i>468</i>&nbsp;                    }</b>
+<b class="nc"><i>469</i>&nbsp;                }</b>
+<b class="nc"><i>470</i>&nbsp;            }, new AccessControlContext(new ProtectionDomain[]{new ProtectionDomain((CodeSource)null, e)}));</b>
+<b class="nc"><i>471</i>&nbsp;        } else {</b>
+<i>472</i>&nbsp;            try {
+<b class="nc"><i>473</i>&nbsp;                return (JAXBRIContext)JAXBContext.newInstance(new Class[]{SOAP11Fault.class, SOAP12Fault.class});</b>
+<b class="nc"><i>474</i>&nbsp;            } catch (JAXBException var1) {</b>
+<b class="nc"><i>475</i>&nbsp;                throw new Error(var1);</b>
+<b class="nc"><i>476</i>&nbsp;            }</b>
+<b class="nc"><i>477</i>&nbsp;        }</b>
+<i>478</i>&nbsp;    }
+<b class="nc"><i>479</i>&nbsp;</b>
+<b class="nc"><i>480</i>&nbsp;    private static boolean isJDKRuntime() {</b>
+<b class="nc"><i>481</i>&nbsp;        return SOAPFaultBuilder.class.getName().contains(&quot;internal&quot;);</b>
+<i>482</i>&nbsp;    }
+<i>483</i>&nbsp;
+<b class="nc"><i>484</i>&nbsp;    static {</b>
+<b class="nc"><i>485</i>&nbsp;        try {</b>
+<i>486</i>&nbsp;            captureStackTrace = Boolean.getBoolean(CAPTURE_STACK_TRACE_PROPERTY);
+<b class="nc"><i>487</i>&nbsp;        } catch (SecurityException var1) {</b>
+<b class="nc"><i>488</i>&nbsp;            ;</b>
+<i>489</i>&nbsp;        }
+<i>490</i>&nbsp;
+<i>491</i>&nbsp;        JAXB_CONTEXT = createJAXBContext();
+<b class="nc"><i>492</i>&nbsp;    }</b>
+<b class="nc"><i>493</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

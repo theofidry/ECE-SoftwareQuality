@@ -1,0 +1,1397 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Flow</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.javac.comp</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Flow (com.sun.tools.javac.comp)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Flow</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 611)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Flow$PendingExit</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 53)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 618)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.javac.comp;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.javac.code.Lint;
+<i>9</i>&nbsp;import com.sun.tools.javac.code.Scope;
+<i>10</i>&nbsp;import com.sun.tools.javac.code.Source;
+<i>11</i>&nbsp;import com.sun.tools.javac.code.Symbol;
+<i>12</i>&nbsp;import com.sun.tools.javac.code.Symtab;
+<i>13</i>&nbsp;import com.sun.tools.javac.code.Type;
+<i>14</i>&nbsp;import com.sun.tools.javac.code.Types;
+<i>15</i>&nbsp;import com.sun.tools.javac.code.Lint.LintCategory;
+<i>16</i>&nbsp;import com.sun.tools.javac.code.Symbol.ClassSymbol;
+<i>17</i>&nbsp;import com.sun.tools.javac.code.Symbol.VarSymbol;
+<i>18</i>&nbsp;import com.sun.tools.javac.comp.AttrContext;
+<i>19</i>&nbsp;import com.sun.tools.javac.comp.Check;
+<i>20</i>&nbsp;import com.sun.tools.javac.comp.Env;
+<i>21</i>&nbsp;import com.sun.tools.javac.comp.Resolve;
+<i>22</i>&nbsp;import com.sun.tools.javac.tree.JCTree;
+<i>23</i>&nbsp;import com.sun.tools.javac.tree.TreeInfo;
+<i>24</i>&nbsp;import com.sun.tools.javac.tree.TreeMaker;
+<i>25</i>&nbsp;import com.sun.tools.javac.tree.TreeScanner;
+<i>26</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCAssert;
+<i>27</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCAssign;
+<i>28</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCAssignOp;
+<i>29</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCBinary;
+<i>30</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCBlock;
+<i>31</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCBreak;
+<i>32</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCCase;
+<i>33</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCCatch;
+<i>34</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+<i>35</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+<i>36</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCConditional;
+<i>37</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCContinue;
+<i>38</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
+<i>39</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
+<i>40</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCExpression;
+<i>41</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCForLoop;
+<i>42</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCIdent;
+<i>43</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCIf;
+<i>44</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCLabeledStatement;
+<i>45</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+<i>46</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
+<i>47</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCNewArray;
+<i>48</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCNewClass;
+<i>49</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCReturn;
+<i>50</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCStatement;
+<i>51</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCSwitch;
+<i>52</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCThrow;
+<i>53</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCTry;
+<i>54</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCTypeCast;
+<i>55</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCTypeUnion;
+<i>56</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCUnary;
+<i>57</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
+<i>58</i>&nbsp;import com.sun.tools.javac.tree.JCTree.JCWhileLoop;
+<i>59</i>&nbsp;import com.sun.tools.javac.util.Assert;
+<i>60</i>&nbsp;import com.sun.tools.javac.util.Bits;
+<i>61</i>&nbsp;import com.sun.tools.javac.util.Context;
+<i>62</i>&nbsp;import com.sun.tools.javac.util.List;
+<i>63</i>&nbsp;import com.sun.tools.javac.util.ListBuffer;
+<i>64</i>&nbsp;import com.sun.tools.javac.util.Log;
+<i>65</i>&nbsp;import com.sun.tools.javac.util.Names;
+<i>66</i>&nbsp;import com.sun.tools.javac.util.Context.Key;
+<i>67</i>&nbsp;import com.sun.tools.javac.util.JCDiagnostic.DiagnosticPosition;
+<i>68</i>&nbsp;import java.util.HashMap;
+<i>69</i>&nbsp;import java.util.Iterator;
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;public class Flow extends TreeScanner {
+<i>72</i>&nbsp;    protected static final Key&lt;Flow&gt; flowKey = new Key();
+<i>73</i>&nbsp;    private final Names names;
+<i>74</i>&nbsp;    private final Log log;
+<i>75</i>&nbsp;    private final Symtab syms;
+<i>76</i>&nbsp;    private final Types types;
+<i>77</i>&nbsp;    private final Check chk;
+<i>78</i>&nbsp;    private TreeMaker make;
+<i>79</i>&nbsp;    private final Resolve rs;
+<i>80</i>&nbsp;    private Env&lt;AttrContext&gt; attrEnv;
+<i>81</i>&nbsp;    private Lint lint;
+<i>82</i>&nbsp;    private final boolean allowImprovedRethrowAnalysis;
+<i>83</i>&nbsp;    private final boolean allowImprovedCatchAnalysis;
+<i>84</i>&nbsp;    private boolean alive;
+<i>85</i>&nbsp;    Bits inits;
+<i>86</i>&nbsp;    Bits uninits;
+<i>87</i>&nbsp;    HashMap&lt;Symbol, List&lt;Type&gt;&gt; preciseRethrowTypes;
+<i>88</i>&nbsp;    Bits uninitsTry;
+<i>89</i>&nbsp;    Bits initsWhenTrue;
+<i>90</i>&nbsp;    Bits initsWhenFalse;
+<i>91</i>&nbsp;    Bits uninitsWhenTrue;
+<i>92</i>&nbsp;    Bits uninitsWhenFalse;
+<i>93</i>&nbsp;    VarSymbol[] vars;
+<i>94</i>&nbsp;    JCClassDecl classDef;
+<i>95</i>&nbsp;    int firstadr;
+<i>96</i>&nbsp;    int nextadr;
+<i>97</i>&nbsp;    List&lt;Type&gt; thrown;
+<i>98</i>&nbsp;    List&lt;Type&gt; caught;
+<i>99</i>&nbsp;    Scope unrefdResources;
+<i>100</i>&nbsp;    boolean loopPassTwo = false;
+<i>101</i>&nbsp;    ListBuffer&lt;Flow.PendingExit&gt; pendingExits;
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public static Flow instance(Context var0) {
+<i>104</i>&nbsp;        Flow var1 = (Flow)var0.get(flowKey);
+<i>105</i>&nbsp;        if(var1 == null) {
+<i>106</i>&nbsp;            var1 = new Flow(var0);
+<i>107</i>&nbsp;        }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;        return var1;
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    protected Flow(Context var1) {
+<i>113</i>&nbsp;        var1.put(flowKey, this);
+<i>114</i>&nbsp;        this.names = Names.instance(var1);
+<i>115</i>&nbsp;        this.log = Log.instance(var1);
+<i>116</i>&nbsp;        this.syms = Symtab.instance(var1);
+<i>117</i>&nbsp;        this.types = Types.instance(var1);
+<i>118</i>&nbsp;        this.chk = Check.instance(var1);
+<i>119</i>&nbsp;        this.lint = Lint.instance(var1);
+<i>120</i>&nbsp;        this.rs = Resolve.instance(var1);
+<i>121</i>&nbsp;        Source var2 = Source.instance(var1);
+<i>122</i>&nbsp;        this.allowImprovedRethrowAnalysis = var2.allowImprovedRethrowAnalysis();
+<i>123</i>&nbsp;        this.allowImprovedCatchAnalysis = var2.allowImprovedCatchAnalysis();
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    void errorUncaught() {
+<i>127</i>&nbsp;        for(Flow.PendingExit var1 = (Flow.PendingExit)this.pendingExits.next(); var1 != null; var1 = (Flow.PendingExit)this.pendingExits.next()) {
+<i>128</i>&nbsp;            if(this.classDef != null &amp;&amp; this.classDef.pos == var1.tree.pos) {
+<i>129</i>&nbsp;                this.log.error(var1.tree.pos(), &quot;unreported.exception.default.constructor&quot;, new Object[]{var1.thrown});
+<i>130</i>&nbsp;            } else if(var1.tree.getTag() == 5 &amp;&amp; ((JCVariableDecl)var1.tree).sym.isResourceVariable()) {
+<i>131</i>&nbsp;                this.log.error(var1.tree.pos(), &quot;unreported.exception.implicit.close&quot;, new Object[]{var1.thrown, ((JCVariableDecl)var1.tree).sym.name});
+<i>132</i>&nbsp;            } else {
+<i>133</i>&nbsp;                this.log.error(var1.tree.pos(), &quot;unreported.exception.need.to.catch.or.throw&quot;, new Object[]{var1.thrown});
+<i>134</i>&nbsp;            }
+<i>135</i>&nbsp;        }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    void markThrown(JCTree var1, Type var2) {
+<i>140</i>&nbsp;        if(!this.chk.isUnchecked(var1.pos(), var2)) {
+<i>141</i>&nbsp;            if(!this.chk.isHandled(var2, this.caught)) {
+<i>142</i>&nbsp;                this.pendingExits.append(new Flow.PendingExit(var1, var2));
+<i>143</i>&nbsp;            }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;            this.thrown = this.chk.incl(var2, this.thrown);
+<i>146</i>&nbsp;        }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    boolean trackable(VarSymbol var1) {
+<i>151</i>&nbsp;        return var1.owner.kind == 16 || (var1.flags() &amp; 8590196752L) == 16L &amp;&amp; this.classDef.sym.isEnclosedBy((ClassSymbol)var1.owner);
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    void newVar(VarSymbol var1) {
+<i>155</i>&nbsp;        if(this.nextadr == this.vars.length) {
+<i>156</i>&nbsp;            VarSymbol[] var2 = new VarSymbol[this.nextadr * 2];
+<i>157</i>&nbsp;            System.arraycopy(this.vars, 0, var2, 0, this.nextadr);
+<i>158</i>&nbsp;            this.vars = var2;
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;        var1.adr = this.nextadr;</b>
+<i>162</i>&nbsp;        this.vars[this.nextadr] = var1;
+<b class="nc"><i>163</i>&nbsp;        this.inits.excl(this.nextadr);</b>
+<i>164</i>&nbsp;        this.uninits.incl(this.nextadr);
+<i>165</i>&nbsp;        ++this.nextadr;
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    void letInit(DiagnosticPosition var1, VarSymbol var2) {
+<i>169</i>&nbsp;        if(var2.adr &gt;= this.firstadr &amp;&amp; this.trackable(var2)) {
+<i>170</i>&nbsp;            if((var2.flags() &amp; 16L) != 0L) {
+<i>171</i>&nbsp;                if((var2.flags() &amp; 8589934592L) != 0L) {
+<i>172</i>&nbsp;                    if((var2.flags() &amp; 549755813888L) != 0L) {
+<i>173</i>&nbsp;                        this.log.error(var1, &quot;multicatch.parameter.may.not.be.assigned&quot;, new Object[]{var2});
+<i>174</i>&nbsp;                    } else {
+<b class="nc"><i>175</i>&nbsp;                        this.log.error(var1, &quot;final.parameter.may.not.be.assigned&quot;, new Object[]{var2});</b>
+<b class="nc"><i>176</i>&nbsp;                    }</b>
+<b class="nc"><i>177</i>&nbsp;                } else if(!this.uninits.isMember(var2.adr)) {</b>
+<b class="nc"><i>178</i>&nbsp;                    this.log.error(var1, this.loopPassTwo?&quot;var.might.be.assigned.in.loop&quot;:&quot;var.might.already.be.assigned&quot;, new Object[]{var2});</b>
+<i>179</i>&nbsp;                } else if(!this.inits.isMember(var2.adr)) {
+<i>180</i>&nbsp;                    this.uninits.excl(var2.adr);
+<b class="nc"><i>181</i>&nbsp;                    this.uninitsTry.excl(var2.adr);</b>
+<b class="nc"><i>182</i>&nbsp;                } else {</b>
+<i>183</i>&nbsp;                    this.uninits.excl(var2.adr);
+<b class="nc"><i>184</i>&nbsp;                }</b>
+<b class="nc"><i>185</i>&nbsp;            }</b>
+<b class="nc"><i>186</i>&nbsp;</b>
+<b class="nc"><i>187</i>&nbsp;            this.inits.incl(var2.adr);</b>
+<b class="nc"><i>188</i>&nbsp;        } else if((var2.flags() &amp; 16L) != 0L) {</b>
+<b class="nc"><i>189</i>&nbsp;            this.log.error(var1, &quot;var.might.already.be.assigned&quot;, new Object[]{var2});</b>
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    void letInit(JCTree var1) {
+<i>195</i>&nbsp;        var1 = TreeInfo.skipParens(var1);
+<i>196</i>&nbsp;        if(var1.getTag() == 35 || var1.getTag() == 34) {
+<i>197</i>&nbsp;            Symbol var2 = TreeInfo.symbol(var1);
+<i>198</i>&nbsp;            if(var2.kind == 4) {
+<i>199</i>&nbsp;                this.letInit(var1.pos(), (VarSymbol)var2);
+<i>200</i>&nbsp;            }
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    void checkInit(DiagnosticPosition var1, VarSymbol var2) {
+<i>206</i>&nbsp;        if((var2.adr &gt;= this.firstadr || var2.owner.kind != 2) &amp;&amp; this.trackable(var2) &amp;&amp; !this.inits.isMember(var2.adr)) {
+<i>207</i>&nbsp;            this.log.error(var1, &quot;var.might.not.have.been.initialized&quot;, new Object[]{var2});
+<i>208</i>&nbsp;            this.inits.incl(var2.adr);
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    void recordExit(JCTree var1) {
+<i>214</i>&nbsp;        this.pendingExits.append(new Flow.PendingExit(var1, this.inits, this.uninits));
+<i>215</i>&nbsp;        this.markDead();
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    boolean resolveBreaks(JCTree var1, ListBuffer&lt;Flow.PendingExit&gt; var2) {
+<i>219</i>&nbsp;        boolean var3 = false;
+<i>220</i>&nbsp;        List var4 = this.pendingExits.toList();
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;        for(this.pendingExits = var2; var4.nonEmpty(); var4 = var4.tail) {
+<i>223</i>&nbsp;            Flow.PendingExit var5 = (Flow.PendingExit)var4.head;
+<i>224</i>&nbsp;            if(var5.tree.getTag() == 21 &amp;&amp; ((JCBreak)var5.tree).target == var1) {
+<i>225</i>&nbsp;                this.inits.andSet(var5.inits);
+<i>226</i>&nbsp;                this.uninits.andSet(var5.uninits);
+<i>227</i>&nbsp;                var3 = true;
+<i>228</i>&nbsp;            } else {
+<i>229</i>&nbsp;                this.pendingExits.append(var5);
+<i>230</i>&nbsp;            }
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;        return var3;
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    boolean resolveContinues(JCTree var1) {
+<i>237</i>&nbsp;        boolean var2 = false;
+<i>238</i>&nbsp;        List var3 = this.pendingExits.toList();
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;        for(this.pendingExits = new ListBuffer(); var3.nonEmpty(); var3 = var3.tail) {
+<i>241</i>&nbsp;            Flow.PendingExit var4 = (Flow.PendingExit)var3.head;
+<i>242</i>&nbsp;            if(var4.tree.getTag() == 22 &amp;&amp; ((JCContinue)var4.tree).target == var1) {
+<i>243</i>&nbsp;                this.inits.andSet(var4.inits);
+<i>244</i>&nbsp;                this.uninits.andSet(var4.uninits);
+<i>245</i>&nbsp;                var2 = true;
+<i>246</i>&nbsp;            } else {
+<i>247</i>&nbsp;                this.pendingExits.append(var4);
+<i>248</i>&nbsp;            }
+<b class="nc"><i>249</i>&nbsp;        }</b>
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;        return var2;
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    void markDead() {
+<i>255</i>&nbsp;        this.inits.inclRange(this.firstadr, this.nextadr);
+<i>256</i>&nbsp;        this.uninits.inclRange(this.firstadr, this.nextadr);
+<i>257</i>&nbsp;        this.alive = false;
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    void split(boolean var1) {
+<i>261</i>&nbsp;        this.initsWhenFalse = this.inits.dup();
+<i>262</i>&nbsp;        this.uninitsWhenFalse = this.uninits.dup();
+<i>263</i>&nbsp;        this.initsWhenTrue = this.inits;
+<b class="nc"><i>264</i>&nbsp;        this.uninitsWhenTrue = this.uninits;</b>
+<b class="nc"><i>265</i>&nbsp;        if(var1) {</b>
+<b class="nc"><i>266</i>&nbsp;            this.inits = this.uninits = null;</b>
+<b class="nc"><i>267</i>&nbsp;        }</b>
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;    }</b>
+<b class="nc"><i>270</i>&nbsp;</b>
+<b class="nc"><i>271</i>&nbsp;    void merge() {</b>
+<i>272</i>&nbsp;        this.inits = this.initsWhenFalse.andSet(this.initsWhenTrue);
+<i>273</i>&nbsp;        this.uninits = this.uninitsWhenFalse.andSet(this.uninitsWhenTrue);
+<i>274</i>&nbsp;    }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    void scanDef(JCTree var1) {
+<i>277</i>&nbsp;        this.scanStat(var1);
+<i>278</i>&nbsp;        if(var1 != null &amp;&amp; var1.getTag() == 7 &amp;&amp; !this.alive) {
+<i>279</i>&nbsp;            this.log.error(var1.pos(), &quot;initializer.must.be.able.to.complete.normally&quot;, new Object[0]);
+<i>280</i>&nbsp;        }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    }
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;    void scanStat(JCTree var1) {
+<b class="nc"><i>285</i>&nbsp;        if(!this.alive &amp;&amp; var1 != null) {</b>
+<b class="nc"><i>286</i>&nbsp;            this.log.error(var1.pos(), &quot;unreachable.stmt&quot;, new Object[0]);</b>
+<b class="nc"><i>287</i>&nbsp;            if(var1.getTag() != 6) {</b>
+<b class="nc"><i>288</i>&nbsp;                this.alive = true;</b>
+<i>289</i>&nbsp;            }
+<b class="nc"><i>290</i>&nbsp;        }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;        this.scan(var1);
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    void scanStats(List&lt;? extends JCStatement&gt; var1) {
+<i>296</i>&nbsp;        if(var1 != null) {
+<i>297</i>&nbsp;            for(List var2 = var1; var2.nonEmpty(); var2 = var2.tail) {
+<i>298</i>&nbsp;                this.scanStat((JCTree)var2.head);
+<i>299</i>&nbsp;            }
+<i>300</i>&nbsp;        }
+<i>301</i>&nbsp;
+<b class="nc"><i>302</i>&nbsp;    }</b>
+<b class="nc"><i>303</i>&nbsp;</b>
+<b class="nc"><i>304</i>&nbsp;    void scanExpr(JCTree var1) {</b>
+<b class="nc"><i>305</i>&nbsp;        if(var1 != null) {</b>
+<i>306</i>&nbsp;            this.scan(var1);
+<i>307</i>&nbsp;            if(this.inits == null) {
+<i>308</i>&nbsp;                this.merge();
+<i>309</i>&nbsp;            }
+<i>310</i>&nbsp;        }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    void scanExprs(List&lt;? extends JCExpression&gt; var1) {
+<b class="nc"><i>315</i>&nbsp;        if(var1 != null) {</b>
+<i>316</i>&nbsp;            for(List var2 = var1; var2.nonEmpty(); var2 = var2.tail) {
+<i>317</i>&nbsp;                this.scanExpr((JCTree)var2.head);
+<i>318</i>&nbsp;            }
+<i>319</i>&nbsp;        }
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;    }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    void scanCond(JCTree var1) {
+<i>324</i>&nbsp;        if(var1.type.isFalse()) {
+<i>325</i>&nbsp;            if(this.inits == null) {
+<b class="nc"><i>326</i>&nbsp;                this.merge();</b>
+<b class="nc"><i>327</i>&nbsp;            }</b>
+<b class="nc"><i>328</i>&nbsp;</b>
+<b class="nc"><i>329</i>&nbsp;            this.initsWhenTrue = this.inits.dup();</b>
+<i>330</i>&nbsp;            this.initsWhenTrue.inclRange(this.firstadr, this.nextadr);
+<b class="nc"><i>331</i>&nbsp;            this.uninitsWhenTrue = this.uninits.dup();</b>
+<b class="nc"><i>332</i>&nbsp;            this.uninitsWhenTrue.inclRange(this.firstadr, this.nextadr);</b>
+<b class="nc"><i>333</i>&nbsp;            this.initsWhenFalse = this.inits;</b>
+<b class="nc"><i>334</i>&nbsp;            this.uninitsWhenFalse = this.uninits;</b>
+<b class="nc"><i>335</i>&nbsp;        } else if(var1.type.isTrue()) {</b>
+<i>336</i>&nbsp;            if(this.inits == null) {
+<i>337</i>&nbsp;                this.merge();
+<i>338</i>&nbsp;            }
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;            this.initsWhenFalse = this.inits.dup();
+<b class="nc"><i>341</i>&nbsp;            this.initsWhenFalse.inclRange(this.firstadr, this.nextadr);</b>
+<b class="nc"><i>342</i>&nbsp;            this.uninitsWhenFalse = this.uninits.dup();</b>
+<b class="nc"><i>343</i>&nbsp;            this.uninitsWhenFalse.inclRange(this.firstadr, this.nextadr);</b>
+<b class="nc"><i>344</i>&nbsp;            this.initsWhenTrue = this.inits;</b>
+<i>345</i>&nbsp;            this.uninitsWhenTrue = this.uninits;
+<b class="nc"><i>346</i>&nbsp;        } else {</b>
+<b class="nc"><i>347</i>&nbsp;            this.scan(var1);</b>
+<i>348</i>&nbsp;            if(this.inits != null) {
+<i>349</i>&nbsp;                this.split(var1.type != this.syms.unknownType);
+<i>350</i>&nbsp;            }
+<i>351</i>&nbsp;        }
+<b class="nc"><i>352</i>&nbsp;</b>
+<i>353</i>&nbsp;        if(var1.type != this.syms.unknownType) {
+<b class="nc"><i>354</i>&nbsp;            this.inits = this.uninits = null;</b>
+<b class="nc"><i>355</i>&nbsp;        }</b>
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    }
+<b class="nc"><i>358</i>&nbsp;</b>
+<i>359</i>&nbsp;    public void visitClassDef(JCClassDecl var1) {
+<i>360</i>&nbsp;        if(var1.sym != null) {
+<b class="nc"><i>361</i>&nbsp;            JCClassDecl var2 = this.classDef;</b>
+<b class="nc"><i>362</i>&nbsp;            List var3 = this.thrown;</b>
+<b class="nc"><i>363</i>&nbsp;            List var4 = this.caught;</b>
+<i>364</i>&nbsp;            boolean var5 = this.alive;
+<i>365</i>&nbsp;            int var6 = this.firstadr;
+<i>366</i>&nbsp;            int var7 = this.nextadr;
+<i>367</i>&nbsp;            ListBuffer var8 = this.pendingExits;
+<i>368</i>&nbsp;            Lint var9 = this.lint;
+<i>369</i>&nbsp;            this.pendingExits = new ListBuffer();
+<i>370</i>&nbsp;            if(var1.name != this.names.empty) {
+<i>371</i>&nbsp;                this.caught = List.nil();
+<b class="nc"><i>372</i>&nbsp;                this.firstadr = this.nextadr;</b>
+<b class="nc"><i>373</i>&nbsp;            }</b>
+<b class="nc"><i>374</i>&nbsp;</b>
+<b class="nc"><i>375</i>&nbsp;            this.classDef = var1;</b>
+<i>376</i>&nbsp;            this.thrown = List.nil();
+<i>377</i>&nbsp;            this.lint = this.lint.augment(var1.sym.attributes_field);
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;            try {
+<i>380</i>&nbsp;                List var10;
+<i>381</i>&nbsp;                JCVariableDecl var11;
+<b class="nc"><i>382</i>&nbsp;                VarSymbol var12;</b>
+<i>383</i>&nbsp;                for(var10 = var1.defs; var10.nonEmpty(); var10 = var10.tail) {
+<i>384</i>&nbsp;                    if(((JCTree)var10.head).getTag() == 5) {
+<b class="nc"><i>385</i>&nbsp;                        var11 = (JCVariableDecl)var10.head;</b>
+<i>386</i>&nbsp;                        if((var11.mods.flags &amp; 8L) != 0L) {
+<b class="nc"><i>387</i>&nbsp;                            var12 = var11.sym;</b>
+<i>388</i>&nbsp;                            if(this.trackable(var12)) {
+<i>389</i>&nbsp;                                this.newVar(var12);
+<i>390</i>&nbsp;                            }
+<i>391</i>&nbsp;                        }
+<i>392</i>&nbsp;                    }
+<i>393</i>&nbsp;                }
+<i>394</i>&nbsp;
+<b class="nc"><i>395</i>&nbsp;                for(var10 = var1.defs; var10.nonEmpty(); var10 = var10.tail) {</b>
+<b class="nc"><i>396</i>&nbsp;                    if(((JCTree)var10.head).getTag() != 4 &amp;&amp; (TreeInfo.flags((JCTree)var10.head) &amp; 8L) != 0L) {</b>
+<i>397</i>&nbsp;                        this.scanDef((JCTree)var10.head);
+<i>398</i>&nbsp;                        this.errorUncaught();
+<i>399</i>&nbsp;                    }
+<i>400</i>&nbsp;                }
+<i>401</i>&nbsp;
+<b class="nc"><i>402</i>&nbsp;                if(var1.name != this.names.empty) {</b>
+<b class="nc"><i>403</i>&nbsp;                    boolean var17 = true;</b>
+<b class="nc"><i>404</i>&nbsp;</b>
+<b class="nc"><i>405</i>&nbsp;                    for(List var16 = var1.defs; var16.nonEmpty(); var16 = var16.tail) {</b>
+<b class="nc"><i>406</i>&nbsp;                        if(TreeInfo.isInitialConstructor((JCTree)var16.head)) {</b>
+<b class="nc"><i>407</i>&nbsp;                            List var18 = ((JCMethodDecl)var16.head).sym.type.getThrownTypes();</b>
+<i>408</i>&nbsp;                            if(var17) {
+<b class="nc"><i>409</i>&nbsp;                                this.caught = var18;</b>
+<b class="nc"><i>410</i>&nbsp;                                var17 = false;</b>
+<b class="nc"><i>411</i>&nbsp;                            } else {</b>
+<i>412</i>&nbsp;                                this.caught = this.chk.intersect(var18, this.caught);
+<b class="nc"><i>413</i>&nbsp;                            }</b>
+<i>414</i>&nbsp;                        }
+<i>415</i>&nbsp;                    }
+<b class="nc"><i>416</i>&nbsp;                }</b>
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;                for(var10 = var1.defs; var10.nonEmpty(); var10 = var10.tail) {
+<i>419</i>&nbsp;                    if(((JCTree)var10.head).getTag() == 5) {
+<i>420</i>&nbsp;                        var11 = (JCVariableDecl)var10.head;
+<b class="nc"><i>421</i>&nbsp;                        if((var11.mods.flags &amp; 8L) == 0L) {</b>
+<b class="nc"><i>422</i>&nbsp;                            var12 = var11.sym;</b>
+<b class="nc"><i>423</i>&nbsp;                            if(this.trackable(var12)) {</b>
+<b class="nc"><i>424</i>&nbsp;                                this.newVar(var12);</b>
+<b class="nc"><i>425</i>&nbsp;                            }</b>
+<b class="nc"><i>426</i>&nbsp;                        }</b>
+<i>427</i>&nbsp;                    }
+<b class="nc"><i>428</i>&nbsp;                }</b>
+<b class="nc"><i>429</i>&nbsp;</b>
+<b class="nc"><i>430</i>&nbsp;                for(var10 = var1.defs; var10.nonEmpty(); var10 = var10.tail) {</b>
+<i>431</i>&nbsp;                    if(((JCTree)var10.head).getTag() != 4 &amp;&amp; (TreeInfo.flags((JCTree)var10.head) &amp; 8L) == 0L) {
+<b class="nc"><i>432</i>&nbsp;                        this.scanDef((JCTree)var10.head);</b>
+<i>433</i>&nbsp;                        this.errorUncaught();
+<i>434</i>&nbsp;                    }
+<b class="nc"><i>435</i>&nbsp;                }</b>
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;                if(var1.name == this.names.empty) {
+<i>438</i>&nbsp;                    for(var10 = var1.defs; var10.nonEmpty(); var10 = var10.tail) {
+<i>439</i>&nbsp;                        if(TreeInfo.isInitialConstructor((JCTree)var10.head)) {
+<i>440</i>&nbsp;                            JCMethodDecl var19 = (JCMethodDecl)var10.head;
+<b class="nc"><i>441</i>&nbsp;                            var19.thrown = this.make.Types(this.thrown);</b>
+<b class="nc"><i>442</i>&nbsp;                            var19.sym.type = this.types.createMethodTypeWithThrown(var19.sym.type, this.thrown);</b>
+<b class="nc"><i>443</i>&nbsp;                        }</b>
+<i>444</i>&nbsp;                    }
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;                    var3 = this.chk.union(this.thrown, var3);
+<i>447</i>&nbsp;                }
+<i>448</i>&nbsp;
+<b class="nc"><i>449</i>&nbsp;                for(var10 = var1.defs; var10.nonEmpty(); var10 = var10.tail) {</b>
+<b class="nc"><i>450</i>&nbsp;                    if(((JCTree)var10.head).getTag() == 4) {</b>
+<b class="nc"><i>451</i>&nbsp;                        this.scan((JCTree)var10.head);</b>
+<b class="nc"><i>452</i>&nbsp;                        this.errorUncaught();</b>
+<b class="nc"><i>453</i>&nbsp;                    }</b>
+<i>454</i>&nbsp;                }
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;                this.thrown = var3;
+<i>457</i>&nbsp;            } finally {
+<i>458</i>&nbsp;                this.pendingExits = var8;
+<b class="nc"><i>459</i>&nbsp;                this.alive = var5;</b>
+<b class="nc"><i>460</i>&nbsp;                this.nextadr = var7;</b>
+<i>461</i>&nbsp;                this.firstadr = var6;
+<i>462</i>&nbsp;                this.caught = var4;
+<i>463</i>&nbsp;                this.classDef = var2;
+<i>464</i>&nbsp;                this.lint = var9;
+<i>465</i>&nbsp;            }
+<i>466</i>&nbsp;        }
+<i>467</i>&nbsp;    }
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;    public void visitMethodDef(JCMethodDecl var1) {
+<b class="nc"><i>470</i>&nbsp;        if(var1.body != null) {</b>
+<b class="nc"><i>471</i>&nbsp;            List var2 = this.caught;</b>
+<b class="nc"><i>472</i>&nbsp;            List var3 = var1.sym.type.getThrownTypes();</b>
+<i>473</i>&nbsp;            Bits var4 = this.inits.dup();
+<i>474</i>&nbsp;            Bits var5 = this.uninits.dup();
+<i>475</i>&nbsp;            int var6 = this.nextadr;
+<i>476</i>&nbsp;            int var7 = this.firstadr;
+<i>477</i>&nbsp;            Lint var8 = this.lint;
+<i>478</i>&nbsp;            this.lint = this.lint.augment(var1.sym.attributes_field);
+<i>479</i>&nbsp;            Assert.check(this.pendingExits.isEmpty());
+<b class="nc"><i>480</i>&nbsp;</b>
+<b class="nc"><i>481</i>&nbsp;            try {</b>
+<b class="nc"><i>482</i>&nbsp;                boolean var9 = TreeInfo.isInitialConstructor(var1);</b>
+<i>483</i>&nbsp;                if(!var9) {
+<b class="nc"><i>484</i>&nbsp;                    this.firstadr = this.nextadr;</b>
+<i>485</i>&nbsp;                }
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;                List var10;
+<i>488</i>&nbsp;                for(var10 = var1.params; var10.nonEmpty(); var10 = var10.tail) {
+<i>489</i>&nbsp;                    JCVariableDecl var11 = (JCVariableDecl)var10.head;
+<b class="nc"><i>490</i>&nbsp;                    this.scan(var11);</b>
+<b class="nc"><i>491</i>&nbsp;                    this.inits.incl(var11.sym.adr);</b>
+<b class="nc"><i>492</i>&nbsp;                    this.uninits.excl(var11.sym.adr);</b>
+<i>493</i>&nbsp;                }
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;                if(var9) {
+<i>496</i>&nbsp;                    this.caught = this.chk.union(this.caught, var3);
+<i>497</i>&nbsp;                } else if((var1.sym.flags() &amp; 1048584L) != 1048576L) {
+<i>498</i>&nbsp;                    this.caught = var3;
+<b class="nc"><i>499</i>&nbsp;                }</b>
+<b class="nc"><i>500</i>&nbsp;</b>
+<b class="nc"><i>501</i>&nbsp;                this.alive = true;</b>
+<i>502</i>&nbsp;                this.scanStat(var1.body);
+<i>503</i>&nbsp;                if(this.alive &amp;&amp; var1.sym.type.getReturnType().tag != 9) {
+<i>504</i>&nbsp;                    this.log.error(TreeInfo.diagEndPos(var1.body), &quot;missing.ret.stmt&quot;, new Object[0]);
+<i>505</i>&nbsp;                }
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;                if(var9) {
+<b class="nc"><i>508</i>&nbsp;                    for(int var17 = this.firstadr; var17 &lt; this.nextadr; ++var17) {</b>
+<b class="nc"><i>509</i>&nbsp;                        if(this.vars[var17].owner == this.classDef.sym) {</b>
+<b class="nc"><i>510</i>&nbsp;                            this.checkInit(TreeInfo.diagEndPos(var1.body), this.vars[var17]);</b>
+<i>511</i>&nbsp;                        }
+<i>512</i>&nbsp;                    }
+<i>513</i>&nbsp;                }
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;                var10 = this.pendingExits.toList();
+<i>516</i>&nbsp;                this.pendingExits = new ListBuffer();
+<b class="nc"><i>517</i>&nbsp;</b>
+<b class="nc"><i>518</i>&nbsp;                while(var10.nonEmpty()) {</b>
+<b class="nc"><i>519</i>&nbsp;                    Flow.PendingExit var16 = (Flow.PendingExit)var10.head;</b>
+<b class="nc"><i>520</i>&nbsp;                    var10 = var10.tail;</b>
+<b class="nc"><i>521</i>&nbsp;                    if(var16.thrown == null) {</b>
+<b class="nc"><i>522</i>&nbsp;                        Assert.check(var16.tree.getTag() == 23);</b>
+<b class="nc"><i>523</i>&nbsp;                        if(var9) {</b>
+<b class="nc"><i>524</i>&nbsp;                            this.inits = var16.inits;</b>
+<b class="nc"><i>525</i>&nbsp;</b>
+<b class="nc"><i>526</i>&nbsp;                            for(int var12 = this.firstadr; var12 &lt; this.nextadr; ++var12) {</b>
+<b class="nc"><i>527</i>&nbsp;                                this.checkInit(var16.tree.pos(), this.vars[var12]);</b>
+<b class="nc"><i>528</i>&nbsp;                            }</b>
+<b class="nc"><i>529</i>&nbsp;                        }</b>
+<b class="nc"><i>530</i>&nbsp;                    } else {</b>
+<b class="nc"><i>531</i>&nbsp;                        this.pendingExits.append(var16);</b>
+<b class="nc"><i>532</i>&nbsp;                    }</b>
+<i>533</i>&nbsp;                }
+<b class="nc"><i>534</i>&nbsp;            } finally {</b>
+<b class="nc"><i>535</i>&nbsp;                this.inits = var4;</b>
+<i>536</i>&nbsp;                this.uninits = var5;
+<b class="nc"><i>537</i>&nbsp;                this.nextadr = var6;</b>
+<i>538</i>&nbsp;                this.firstadr = var7;
+<i>539</i>&nbsp;                this.caught = var2;
+<i>540</i>&nbsp;                this.lint = var8;
+<i>541</i>&nbsp;            }
+<i>542</i>&nbsp;
+<b class="nc"><i>543</i>&nbsp;        }</b>
+<i>544</i>&nbsp;    }
+<b class="nc"><i>545</i>&nbsp;</b>
+<b class="nc"><i>546</i>&nbsp;    public void visitVarDef(JCVariableDecl var1) {</b>
+<b class="nc"><i>547</i>&nbsp;        boolean var2 = this.trackable(var1.sym);</b>
+<b class="nc"><i>548</i>&nbsp;        if(var2 &amp;&amp; var1.sym.owner.kind == 16) {</b>
+<b class="nc"><i>549</i>&nbsp;            this.newVar(var1.sym);</b>
+<b class="nc"><i>550</i>&nbsp;        }</b>
+<b class="nc"><i>551</i>&nbsp;</b>
+<b class="nc"><i>552</i>&nbsp;        if(var1.init != null) {</b>
+<i>553</i>&nbsp;            Lint var3 = this.lint;
+<b class="nc"><i>554</i>&nbsp;            this.lint = this.lint.augment(var1.sym.attributes_field);</b>
+<b class="nc"><i>555</i>&nbsp;</b>
+<b class="nc"><i>556</i>&nbsp;            try {</b>
+<b class="nc"><i>557</i>&nbsp;                this.scanExpr(var1.init);</b>
+<i>558</i>&nbsp;                if(var2) {
+<b class="nc"><i>559</i>&nbsp;                    this.letInit(var1.pos(), var1.sym);</b>
+<b class="nc"><i>560</i>&nbsp;                }</b>
+<b class="nc"><i>561</i>&nbsp;            } finally {</b>
+<i>562</i>&nbsp;                this.lint = var3;
+<i>563</i>&nbsp;            }
+<i>564</i>&nbsp;        }
+<b class="nc"><i>565</i>&nbsp;</b>
+<b class="nc"><i>566</i>&nbsp;    }</b>
+<b class="nc"><i>567</i>&nbsp;</b>
+<b class="nc"><i>568</i>&nbsp;    public void visitBlock(JCBlock var1) {</b>
+<b class="nc"><i>569</i>&nbsp;        int var2 = this.nextadr;</b>
+<b class="nc"><i>570</i>&nbsp;        this.scanStats(var1.stats);</b>
+<b class="nc"><i>571</i>&nbsp;        this.nextadr = var2;</b>
+<i>572</i>&nbsp;    }
+<i>573</i>&nbsp;
+<i>574</i>&nbsp;    public void visitDoLoop(JCDoWhileLoop var1) {
+<i>575</i>&nbsp;        ListBuffer var2 = this.pendingExits;
+<i>576</i>&nbsp;        boolean var3 = this.loopPassTwo;
+<b class="nc"><i>577</i>&nbsp;        this.pendingExits = new ListBuffer();</b>
+<b class="nc"><i>578</i>&nbsp;        int var4 = this.log.nerrors;</b>
+<i>579</i>&nbsp;
+<b class="nc"><i>580</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>581</i>&nbsp;            Bits var5 = this.uninits.dup();</b>
+<i>582</i>&nbsp;            var5.excludeFrom(this.nextadr);
+<i>583</i>&nbsp;            this.scanStat(var1.body);
+<i>584</i>&nbsp;            this.alive |= this.resolveContinues(var1);
+<i>585</i>&nbsp;            this.scanCond(var1.cond);
+<i>586</i>&nbsp;            if(this.log.nerrors != var4 || this.loopPassTwo || var5.dup().diffSet(this.uninitsWhenTrue).nextBit(this.firstadr) == -1) {
+<b class="nc"><i>587</i>&nbsp;                this.loopPassTwo = var3;</b>
+<b class="nc"><i>588</i>&nbsp;                this.inits = this.initsWhenFalse;</b>
+<b class="nc"><i>589</i>&nbsp;                this.uninits = this.uninitsWhenFalse;</b>
+<b class="nc"><i>590</i>&nbsp;                this.alive = this.alive &amp;&amp; !var1.cond.type.isTrue();</b>
+<b class="nc"><i>591</i>&nbsp;                this.alive |= this.resolveBreaks(var1, var2);</b>
+<i>592</i>&nbsp;                return;
+<b class="nc"><i>593</i>&nbsp;            }</b>
+<b class="nc"><i>594</i>&nbsp;</b>
+<b class="nc"><i>595</i>&nbsp;            this.inits = this.initsWhenTrue;</b>
+<i>596</i>&nbsp;            this.uninits = var5.andSet(this.uninitsWhenTrue);
+<b class="nc"><i>597</i>&nbsp;            this.loopPassTwo = true;</b>
+<i>598</i>&nbsp;            this.alive = true;
+<i>599</i>&nbsp;        }
+<i>600</i>&nbsp;    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    public void visitWhileLoop(JCWhileLoop var1) {
+<i>603</i>&nbsp;        ListBuffer var2 = this.pendingExits;
+<b class="nc"><i>604</i>&nbsp;        boolean var3 = this.loopPassTwo;</b>
+<b class="nc"><i>605</i>&nbsp;        this.pendingExits = new ListBuffer();</b>
+<b class="nc"><i>606</i>&nbsp;        int var6 = this.log.nerrors;</b>
+<b class="nc"><i>607</i>&nbsp;</b>
+<b class="nc"><i>608</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>609</i>&nbsp;            Bits var7 = this.uninits.dup();</b>
+<b class="nc"><i>610</i>&nbsp;            var7.excludeFrom(this.nextadr);</b>
+<i>611</i>&nbsp;            this.scanCond(var1.cond);
+<i>612</i>&nbsp;            Bits var4 = this.initsWhenFalse;
+<i>613</i>&nbsp;            Bits var5 = this.uninitsWhenFalse;
+<i>614</i>&nbsp;            this.inits = this.initsWhenTrue;
+<i>615</i>&nbsp;            this.uninits = this.uninitsWhenTrue;
+<b class="nc"><i>616</i>&nbsp;            this.alive = !var1.cond.type.isFalse();</b>
+<b class="nc"><i>617</i>&nbsp;            this.scanStat(var1.body);</b>
+<i>618</i>&nbsp;            this.alive |= this.resolveContinues(var1);
+<b class="nc"><i>619</i>&nbsp;            if(this.log.nerrors != var6 || this.loopPassTwo || var7.dup().diffSet(this.uninits).nextBit(this.firstadr) == -1) {</b>
+<b class="nc"><i>620</i>&nbsp;                this.loopPassTwo = var3;</b>
+<i>621</i>&nbsp;                this.inits = var4;
+<i>622</i>&nbsp;                this.uninits = var5;
+<i>623</i>&nbsp;                this.alive = this.resolveBreaks(var1, var2) || !var1.cond.type.isTrue();
+<i>624</i>&nbsp;                return;
+<i>625</i>&nbsp;            }
+<i>626</i>&nbsp;
+<b class="nc"><i>627</i>&nbsp;            this.uninits = var7.andSet(this.uninits);</b>
+<b class="nc"><i>628</i>&nbsp;            this.loopPassTwo = true;</b>
+<b class="nc"><i>629</i>&nbsp;            this.alive = true;</b>
+<b class="nc"><i>630</i>&nbsp;        }</b>
+<b class="nc"><i>631</i>&nbsp;    }</b>
+<b class="nc"><i>632</i>&nbsp;</b>
+<i>633</i>&nbsp;    public void visitForLoop(JCForLoop var1) {
+<i>634</i>&nbsp;        ListBuffer var2 = this.pendingExits;
+<b class="nc"><i>635</i>&nbsp;        boolean var3 = this.loopPassTwo;</b>
+<i>636</i>&nbsp;        int var4 = this.nextadr;
+<i>637</i>&nbsp;        this.scanStats(var1.init);
+<i>638</i>&nbsp;        this.pendingExits = new ListBuffer();
+<b class="nc"><i>639</i>&nbsp;        int var7 = this.log.nerrors;</b>
+<b class="nc"><i>640</i>&nbsp;</b>
+<b class="nc"><i>641</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>642</i>&nbsp;            Bits var8 = this.uninits.dup();</b>
+<i>643</i>&nbsp;            var8.excludeFrom(this.nextadr);
+<i>644</i>&nbsp;            Bits var5;
+<i>645</i>&nbsp;            Bits var6;
+<b class="nc"><i>646</i>&nbsp;            if(var1.cond != null) {</b>
+<b class="nc"><i>647</i>&nbsp;                this.scanCond(var1.cond);</b>
+<b class="nc"><i>648</i>&nbsp;                var5 = this.initsWhenFalse;</b>
+<b class="nc"><i>649</i>&nbsp;                var6 = this.uninitsWhenFalse;</b>
+<b class="nc"><i>650</i>&nbsp;                this.inits = this.initsWhenTrue;</b>
+<b class="nc"><i>651</i>&nbsp;                this.uninits = this.uninitsWhenTrue;</b>
+<b class="nc"><i>652</i>&nbsp;                this.alive = !var1.cond.type.isFalse();</b>
+<b class="nc"><i>653</i>&nbsp;            } else {</b>
+<b class="nc"><i>654</i>&nbsp;                var5 = this.inits.dup();</b>
+<b class="nc"><i>655</i>&nbsp;                var5.inclRange(this.firstadr, this.nextadr);</b>
+<i>656</i>&nbsp;                var6 = this.uninits.dup();
+<i>657</i>&nbsp;                var6.inclRange(this.firstadr, this.nextadr);
+<i>658</i>&nbsp;                this.alive = true;
+<b class="nc"><i>659</i>&nbsp;            }</b>
+<i>660</i>&nbsp;
+<b class="nc"><i>661</i>&nbsp;            this.scanStat(var1.body);</b>
+<b class="nc"><i>662</i>&nbsp;            this.alive |= this.resolveContinues(var1);</b>
+<b class="nc"><i>663</i>&nbsp;            this.scan(var1.step);</b>
+<b class="nc"><i>664</i>&nbsp;            if(this.log.nerrors != var7 || this.loopPassTwo || var8.dup().diffSet(this.uninits).nextBit(this.firstadr) == -1) {</b>
+<b class="nc"><i>665</i>&nbsp;                this.loopPassTwo = var3;</b>
+<b class="nc"><i>666</i>&nbsp;                this.inits = var5;</b>
+<b class="nc"><i>667</i>&nbsp;                this.uninits = var6;</b>
+<i>668</i>&nbsp;                this.alive = this.resolveBreaks(var1, var2) || var1.cond != null &amp;&amp; !var1.cond.type.isTrue();
+<b class="nc"><i>669</i>&nbsp;                this.nextadr = var4;</b>
+<i>670</i>&nbsp;                return;
+<b class="nc"><i>671</i>&nbsp;            }</b>
+<i>672</i>&nbsp;
+<i>673</i>&nbsp;            this.uninits = var8.andSet(this.uninits);
+<b class="nc"><i>674</i>&nbsp;            this.loopPassTwo = true;</b>
+<i>675</i>&nbsp;            this.alive = true;
+<i>676</i>&nbsp;        }
+<b class="nc"><i>677</i>&nbsp;    }</b>
+<b class="nc"><i>678</i>&nbsp;</b>
+<b class="nc"><i>679</i>&nbsp;    public void visitForeachLoop(JCEnhancedForLoop var1) {</b>
+<b class="nc"><i>680</i>&nbsp;        this.visitVarDef(var1.var);</b>
+<b class="nc"><i>681</i>&nbsp;        ListBuffer var2 = this.pendingExits;</b>
+<b class="nc"><i>682</i>&nbsp;        boolean var3 = this.loopPassTwo;</b>
+<b class="nc"><i>683</i>&nbsp;        int var4 = this.nextadr;</b>
+<i>684</i>&nbsp;        this.scan(var1.expr);
+<b class="nc"><i>685</i>&nbsp;        Bits var5 = this.inits.dup();</b>
+<b class="nc"><i>686</i>&nbsp;        Bits var6 = this.uninits.dup();</b>
+<b class="nc"><i>687</i>&nbsp;        this.letInit(var1.pos(), var1.var.sym);</b>
+<b class="nc"><i>688</i>&nbsp;        this.pendingExits = new ListBuffer();</b>
+<i>689</i>&nbsp;        int var7 = this.log.nerrors;
+<i>690</i>&nbsp;
+<i>691</i>&nbsp;        while(true) {
+<b class="nc"><i>692</i>&nbsp;            Bits var8 = this.uninits.dup();</b>
+<b class="nc"><i>693</i>&nbsp;            var8.excludeFrom(this.nextadr);</b>
+<i>694</i>&nbsp;            this.scanStat(var1.body);
+<b class="nc"><i>695</i>&nbsp;            this.alive |= this.resolveContinues(var1);</b>
+<b class="nc"><i>696</i>&nbsp;            if(this.log.nerrors != var7 || this.loopPassTwo || var8.dup().diffSet(this.uninits).nextBit(this.firstadr) == -1) {</b>
+<i>697</i>&nbsp;                this.loopPassTwo = var3;
+<b class="nc"><i>698</i>&nbsp;                this.inits = var5;</b>
+<b class="nc"><i>699</i>&nbsp;                this.uninits = var6.andSet(this.uninits);</b>
+<b class="nc"><i>700</i>&nbsp;                this.resolveBreaks(var1, var2);</b>
+<b class="nc"><i>701</i>&nbsp;                this.alive = true;</b>
+<i>702</i>&nbsp;                this.nextadr = var4;
+<b class="nc"><i>703</i>&nbsp;                return;</b>
+<b class="nc"><i>704</i>&nbsp;            }</b>
+<b class="nc"><i>705</i>&nbsp;</b>
+<b class="nc"><i>706</i>&nbsp;            this.uninits = var8.andSet(this.uninits);</b>
+<b class="nc"><i>707</i>&nbsp;            this.loopPassTwo = true;</b>
+<b class="nc"><i>708</i>&nbsp;            this.alive = true;</b>
+<b class="nc"><i>709</i>&nbsp;        }</b>
+<b class="nc"><i>710</i>&nbsp;    }</b>
+<b class="nc"><i>711</i>&nbsp;</b>
+<b class="nc"><i>712</i>&nbsp;    public void visitLabelled(JCLabeledStatement var1) {</b>
+<b class="nc"><i>713</i>&nbsp;        ListBuffer var2 = this.pendingExits;</b>
+<i>714</i>&nbsp;        this.pendingExits = new ListBuffer();
+<i>715</i>&nbsp;        this.scanStat(var1.body);
+<i>716</i>&nbsp;        this.alive |= this.resolveBreaks(var1, var2);
+<b class="nc"><i>717</i>&nbsp;    }</b>
+<i>718</i>&nbsp;
+<b class="nc"><i>719</i>&nbsp;    public void visitSwitch(JCSwitch var1) {</b>
+<b class="nc"><i>720</i>&nbsp;        ListBuffer var2 = this.pendingExits;</b>
+<b class="nc"><i>721</i>&nbsp;        this.pendingExits = new ListBuffer();</b>
+<b class="nc"><i>722</i>&nbsp;        int var3 = this.nextadr;</b>
+<b class="nc"><i>723</i>&nbsp;        this.scanExpr(var1.selector);</b>
+<b class="nc"><i>724</i>&nbsp;        Bits var4 = this.inits;</b>
+<b class="nc"><i>725</i>&nbsp;        Bits var5 = this.uninits.dup();</b>
+<b class="nc"><i>726</i>&nbsp;        boolean var6 = false;</b>
+<b class="nc"><i>727</i>&nbsp;</b>
+<i>728</i>&nbsp;        for(List var7 = var1.cases; var7.nonEmpty(); var7 = var7.tail) {
+<i>729</i>&nbsp;            this.alive = true;
+<i>730</i>&nbsp;            this.inits = var4.dup();
+<b class="nc"><i>731</i>&nbsp;            this.uninits = this.uninits.andSet(var5);</b>
+<b class="nc"><i>732</i>&nbsp;            JCCase var8 = (JCCase)var7.head;</b>
+<b class="nc"><i>733</i>&nbsp;            if(var8.pat == null) {</b>
+<b class="nc"><i>734</i>&nbsp;                var6 = true;</b>
+<b class="nc"><i>735</i>&nbsp;            } else {</b>
+<i>736</i>&nbsp;                this.scanExpr(var8.pat);
+<b class="nc"><i>737</i>&nbsp;            }</b>
+<b class="nc"><i>738</i>&nbsp;</b>
+<b class="nc"><i>739</i>&nbsp;            this.scanStats(var8.stats);</b>
+<b class="nc"><i>740</i>&nbsp;            addVars(var8.stats, var4, var5);</b>
+<b class="nc"><i>741</i>&nbsp;            if(!this.loopPassTwo &amp;&amp; this.alive &amp;&amp; this.lint.isEnabled(LintCategory.FALLTHROUGH) &amp;&amp; var8.stats.nonEmpty() &amp;&amp; var7.tail.nonEmpty()) {</b>
+<i>742</i>&nbsp;                this.log.warning(LintCategory.FALLTHROUGH, ((JCCase)var7.tail.head).pos(), &quot;possible.fall-through.into.case&quot;, new Object[0]);
+<i>743</i>&nbsp;            }
+<i>744</i>&nbsp;        }
+<i>745</i>&nbsp;
+<b class="nc"><i>746</i>&nbsp;        if(!var6) {</b>
+<b class="nc"><i>747</i>&nbsp;            this.inits.andSet(var4);</b>
+<b class="nc"><i>748</i>&nbsp;            this.alive = true;</b>
+<i>749</i>&nbsp;        }
+<i>750</i>&nbsp;
+<i>751</i>&nbsp;        this.alive |= this.resolveBreaks(var1, var2);
+<b class="nc"><i>752</i>&nbsp;        this.nextadr = var3;</b>
+<b class="nc"><i>753</i>&nbsp;    }</b>
+<b class="nc"><i>754</i>&nbsp;</b>
+<i>755</i>&nbsp;    private static void addVars(List&lt;JCStatement&gt; var0, Bits var1, Bits var2) {
+<b class="nc"><i>756</i>&nbsp;        for(; var0.nonEmpty(); var0 = var0.tail) {</b>
+<b class="nc"><i>757</i>&nbsp;            JCTree var3 = (JCTree)var0.head;</b>
+<b class="nc"><i>758</i>&nbsp;            if(var3.getTag() == 5) {</b>
+<b class="nc"><i>759</i>&nbsp;                int var4 = ((JCVariableDecl)var3).sym.adr;</b>
+<b class="nc"><i>760</i>&nbsp;                var1.excl(var4);</b>
+<i>761</i>&nbsp;                var2.incl(var4);
+<i>762</i>&nbsp;            }
+<b class="nc"><i>763</i>&nbsp;        }</b>
+<b class="nc"><i>764</i>&nbsp;</b>
+<b class="nc"><i>765</i>&nbsp;    }</b>
+<b class="nc"><i>766</i>&nbsp;</b>
+<b class="nc"><i>767</i>&nbsp;    public void visitTry(JCTry var1) {</b>
+<b class="nc"><i>768</i>&nbsp;        List var2 = this.caught;</b>
+<b class="nc"><i>769</i>&nbsp;        List var3 = this.thrown;</b>
+<b class="nc"><i>770</i>&nbsp;        this.thrown = List.nil();</b>
+<b class="nc"><i>771</i>&nbsp;</b>
+<b class="nc"><i>772</i>&nbsp;        for(List var4 = var1.catchers; var4.nonEmpty(); var4 = var4.tail) {</b>
+<b class="nc"><i>773</i>&nbsp;            List var5 = TreeInfo.isMultiCatch((JCCatch)var4.head)?((JCTypeUnion)((JCCatch)var4.head).param.vartype).alternatives:List.of(((JCCatch)var4.head).param.vartype);</b>
+<i>774</i>&nbsp;
+<i>775</i>&nbsp;            JCExpression var7;
+<i>776</i>&nbsp;            for(Iterator var6 = var5.iterator(); var6.hasNext(); this.caught = this.chk.incl(var7.type, this.caught)) {
+<b class="nc"><i>777</i>&nbsp;                var7 = (JCExpression)var6.next();</b>
+<b class="nc"><i>778</i>&nbsp;            }</b>
+<i>779</i>&nbsp;        }
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;        ListBuffer var22 = ListBuffer.lb();</b>
+<i>782</i>&nbsp;        Bits var23 = this.uninitsTry;
+<b class="nc"><i>783</i>&nbsp;        ListBuffer var24 = this.pendingExits;</b>
+<b class="nc"><i>784</i>&nbsp;        this.pendingExits = new ListBuffer();</b>
+<b class="nc"><i>785</i>&nbsp;        Bits var25 = this.inits.dup();</b>
+<b class="nc"><i>786</i>&nbsp;        this.uninitsTry = this.uninits.dup();</b>
+<b class="nc"><i>787</i>&nbsp;        Iterator var8 = var1.resources.iterator();</b>
+<b class="nc"><i>788</i>&nbsp;</b>
+<b class="nc"><i>789</i>&nbsp;        JCTree var9;</b>
+<b class="nc"><i>790</i>&nbsp;        while(var8.hasNext()) {</b>
+<b class="nc"><i>791</i>&nbsp;            var9 = (JCTree)var8.next();</b>
+<b class="nc"><i>792</i>&nbsp;            if(var9 instanceof JCVariableDecl) {</b>
+<i>793</i>&nbsp;                JCVariableDecl var10 = (JCVariableDecl)var9;
+<i>794</i>&nbsp;                this.visitVarDef(var10);
+<b class="nc"><i>795</i>&nbsp;                this.unrefdResources.enter(var10.sym);</b>
+<b class="nc"><i>796</i>&nbsp;                var22.append(var10);</b>
+<b class="nc"><i>797</i>&nbsp;            } else {</b>
+<b class="nc"><i>798</i>&nbsp;                if(!(var9 instanceof JCExpression)) {</b>
+<b class="nc"><i>799</i>&nbsp;                    throw new AssertionError(var1);</b>
+<b class="nc"><i>800</i>&nbsp;                }</b>
+<b class="nc"><i>801</i>&nbsp;</b>
+<b class="nc"><i>802</i>&nbsp;                this.scanExpr((JCExpression)var9);</b>
+<b class="nc"><i>803</i>&nbsp;            }</b>
+<i>804</i>&nbsp;        }
+<i>805</i>&nbsp;
+<i>806</i>&nbsp;        var8 = var1.resources.iterator();
+<i>807</i>&nbsp;
+<b class="nc"><i>808</i>&nbsp;        while(var8.hasNext()) {</b>
+<b class="nc"><i>809</i>&nbsp;            var9 = (JCTree)var8.next();</b>
+<b class="nc"><i>810</i>&nbsp;            List var29 = var9.type.isCompound()?this.types.interfaces(var9.type).prepend(this.types.supertype(var9.type)):List.of(var9.type);</b>
+<b class="nc"><i>811</i>&nbsp;            Iterator var11 = var29.iterator();</b>
+<i>812</i>&nbsp;
+<i>813</i>&nbsp;            while(var11.hasNext()) {
+<b class="nc"><i>814</i>&nbsp;                Type var12 = (Type)var11.next();</b>
+<i>815</i>&nbsp;                if(this.types.asSuper(var12, this.syms.autoCloseableType.tsym) != null) {
+<b class="nc"><i>816</i>&nbsp;                    Symbol var13 = this.rs.resolveQualifiedMethod(var1, this.attrEnv, var12, this.names.close, List.nil(), List.nil());</b>
+<b class="nc"><i>817</i>&nbsp;                    Type var14 = this.types.memberType(var9.type, var13);</b>
+<b class="nc"><i>818</i>&nbsp;                    if(var13.kind == 16) {</b>
+<b class="nc"><i>819</i>&nbsp;                        Iterator var15 = var14.getThrownTypes().iterator();</b>
+<b class="nc"><i>820</i>&nbsp;</b>
+<b class="nc"><i>821</i>&nbsp;                        while(var15.hasNext()) {</b>
+<b class="nc"><i>822</i>&nbsp;                            Type var16 = (Type)var15.next();</b>
+<b class="nc"><i>823</i>&nbsp;                            this.markThrown(var9, var16);</b>
+<i>824</i>&nbsp;                        }
+<b class="nc"><i>825</i>&nbsp;                    }</b>
+<b class="nc"><i>826</i>&nbsp;                }</b>
+<b class="nc"><i>827</i>&nbsp;            }</b>
+<b class="nc"><i>828</i>&nbsp;        }</b>
+<b class="nc"><i>829</i>&nbsp;</b>
+<i>830</i>&nbsp;        this.scanStat(var1.body);
+<b class="nc"><i>831</i>&nbsp;        List var26 = this.allowImprovedCatchAnalysis?this.chk.union(this.thrown, List.of(this.syms.runtimeExceptionType, this.syms.errorType)):this.thrown;</b>
+<b class="nc"><i>832</i>&nbsp;        this.thrown = var3;</b>
+<b class="nc"><i>833</i>&nbsp;        this.caught = var2;</b>
+<b class="nc"><i>834</i>&nbsp;        boolean var27 = this.alive;</b>
+<i>835</i>&nbsp;        this.uninitsTry.andSet(this.uninits);
+<i>836</i>&nbsp;        Bits var30 = this.inits;
+<b class="nc"><i>837</i>&nbsp;        Bits var28 = this.uninits;</b>
+<b class="nc"><i>838</i>&nbsp;        int var31 = this.nextadr;</b>
+<b class="nc"><i>839</i>&nbsp;        if(!var22.isEmpty() &amp;&amp; this.lint.isEnabled(LintCategory.TRY)) {</b>
+<b class="nc"><i>840</i>&nbsp;            Iterator var33 = var22.iterator();</b>
+<b class="nc"><i>841</i>&nbsp;</b>
+<b class="nc"><i>842</i>&nbsp;            while(var33.hasNext()) {</b>
+<b class="nc"><i>843</i>&nbsp;                JCVariableDecl var35 = (JCVariableDecl)var33.next();</b>
+<b class="nc"><i>844</i>&nbsp;                if(this.unrefdResources.includes(var35.sym)) {</b>
+<b class="nc"><i>845</i>&nbsp;                    this.log.warning(LintCategory.TRY, var35.pos(), &quot;try.resource.not.referenced&quot;, new Object[]{var35.sym});</b>
+<i>846</i>&nbsp;                    this.unrefdResources.remove(var35.sym);
+<b class="nc"><i>847</i>&nbsp;                }</b>
+<i>848</i>&nbsp;            }
+<i>849</i>&nbsp;        }
+<i>850</i>&nbsp;
+<b class="nc"><i>851</i>&nbsp;        List var32 = List.nil();</b>
+<i>852</i>&nbsp;
+<b class="nc"><i>853</i>&nbsp;        List var36;</b>
+<b class="nc"><i>854</i>&nbsp;        for(var36 = var1.catchers; var36.nonEmpty(); var36 = var36.tail) {</b>
+<b class="nc"><i>855</i>&nbsp;            this.alive = true;</b>
+<b class="nc"><i>856</i>&nbsp;            JCVariableDecl var34 = ((JCCatch)var36.head).param;</b>
+<b class="nc"><i>857</i>&nbsp;            List var38 = TreeInfo.isMultiCatch((JCCatch)var36.head)?((JCTypeUnion)((JCCatch)var36.head).param.vartype).alternatives:List.of(((JCCatch)var36.head).param.vartype);</b>
+<b class="nc"><i>858</i>&nbsp;            List var17 = List.nil();</b>
+<i>859</i>&nbsp;            List var18 = this.chk.diff(var26, var32);
+<b class="nc"><i>860</i>&nbsp;            Iterator var19 = var38.iterator();</b>
+<b class="nc"><i>861</i>&nbsp;</b>
+<i>862</i>&nbsp;            while(var19.hasNext()) {
+<b class="nc"><i>863</i>&nbsp;                JCExpression var20 = (JCExpression)var19.next();</b>
+<b class="nc"><i>864</i>&nbsp;                Type var21 = var20.type;</b>
+<b class="nc"><i>865</i>&nbsp;                if(var21 != this.syms.unknownType) {</b>
+<b class="nc"><i>866</i>&nbsp;                    var17 = var17.append(var21);</b>
+<i>867</i>&nbsp;                    if(!this.types.isSameType(var21, this.syms.objectType)) {
+<i>868</i>&nbsp;                        this.checkCaughtType(((JCCatch)var36.head).pos(), var21, var26, var32);
+<b class="nc"><i>869</i>&nbsp;                        var32 = this.chk.incl(var21, var32);</b>
+<b class="nc"><i>870</i>&nbsp;                    }</b>
+<b class="nc"><i>871</i>&nbsp;                }</b>
+<b class="nc"><i>872</i>&nbsp;            }</b>
+<b class="nc"><i>873</i>&nbsp;</b>
+<b class="nc"><i>874</i>&nbsp;            this.inits = var25.dup();</b>
+<b class="nc"><i>875</i>&nbsp;            this.uninits = this.uninitsTry.dup();</b>
+<b class="nc"><i>876</i>&nbsp;            this.scan(var34);</b>
+<b class="nc"><i>877</i>&nbsp;            this.inits.incl(var34.sym.adr);</b>
+<b class="nc"><i>878</i>&nbsp;            this.uninits.excl(var34.sym.adr);</b>
+<b class="nc"><i>879</i>&nbsp;            this.preciseRethrowTypes.put(var34.sym, this.chk.intersect(var17, var18));</b>
+<i>880</i>&nbsp;            this.scanStat(((JCCatch)var36.head).body);
+<i>881</i>&nbsp;            var30.andSet(this.inits);
+<i>882</i>&nbsp;            var28.andSet(this.uninits);
+<b class="nc"><i>883</i>&nbsp;            this.nextadr = var31;</b>
+<b class="nc"><i>884</i>&nbsp;            this.preciseRethrowTypes.remove(var34.sym);</b>
+<b class="nc"><i>885</i>&nbsp;            var27 |= this.alive;</b>
+<b class="nc"><i>886</i>&nbsp;        }</b>
+<i>887</i>&nbsp;
+<i>888</i>&nbsp;        if(var1.finalizer != null) {
+<i>889</i>&nbsp;            var36 = this.thrown;
+<b class="nc"><i>890</i>&nbsp;            this.thrown = List.nil();</b>
+<b class="nc"><i>891</i>&nbsp;            this.inits = var25.dup();</b>
+<b class="nc"><i>892</i>&nbsp;            this.uninits = this.uninitsTry.dup();</b>
+<b class="nc"><i>893</i>&nbsp;            ListBuffer var40 = this.pendingExits;</b>
+<b class="nc"><i>894</i>&nbsp;            this.pendingExits = var24;</b>
+<b class="nc"><i>895</i>&nbsp;            this.alive = true;</b>
+<b class="nc"><i>896</i>&nbsp;            this.scanStat(var1.finalizer);</b>
+<b class="nc"><i>897</i>&nbsp;            if(!this.alive) {</b>
+<b class="nc"><i>898</i>&nbsp;                this.thrown = this.chk.union(this.thrown, var3);</b>
+<b class="nc"><i>899</i>&nbsp;                if(!this.loopPassTwo &amp;&amp; this.lint.isEnabled(LintCategory.FINALLY)) {</b>
+<b class="nc"><i>900</i>&nbsp;                    this.log.warning(LintCategory.FINALLY, TreeInfo.diagEndPos(var1.finalizer), &quot;finally.cannot.complete&quot;, new Object[0]);</b>
+<b class="nc"><i>901</i>&nbsp;                }</b>
+<b class="nc"><i>902</i>&nbsp;            } else {</b>
+<b class="nc"><i>903</i>&nbsp;                this.thrown = this.chk.union(this.thrown, this.chk.diff(var26, var32));</b>
+<i>904</i>&nbsp;                this.thrown = this.chk.union(this.thrown, var36);
+<b class="nc"><i>905</i>&nbsp;                this.uninits.andSet(var28);</b>
+<b class="nc"><i>906</i>&nbsp;</b>
+<b class="nc"><i>907</i>&nbsp;                Flow.PendingExit var37;</b>
+<i>908</i>&nbsp;                for(; var40.nonEmpty(); this.pendingExits.append(var37)) {
+<b class="nc"><i>909</i>&nbsp;                    var37 = (Flow.PendingExit)var40.next();</b>
+<i>910</i>&nbsp;                    if(var37.inits != null) {
+<i>911</i>&nbsp;                        var37.inits.orSet(this.inits);
+<i>912</i>&nbsp;                        var37.uninits.andSet(this.uninits);
+<b class="nc"><i>913</i>&nbsp;                    }</b>
+<i>914</i>&nbsp;                }
+<i>915</i>&nbsp;
+<b class="nc"><i>916</i>&nbsp;                this.inits.orSet(var30);</b>
+<b class="nc"><i>917</i>&nbsp;                this.alive = var27;</b>
+<b class="nc"><i>918</i>&nbsp;            }</b>
+<i>919</i>&nbsp;        } else {
+<b class="nc"><i>920</i>&nbsp;            this.thrown = this.chk.union(this.thrown, this.chk.diff(var26, var32));</b>
+<b class="nc"><i>921</i>&nbsp;            this.inits = var30;</b>
+<i>922</i>&nbsp;            this.uninits = var28;
+<i>923</i>&nbsp;            this.alive = var27;
+<i>924</i>&nbsp;            ListBuffer var39 = this.pendingExits;
+<i>925</i>&nbsp;            this.pendingExits = var24;
+<i>926</i>&nbsp;
+<b class="nc"><i>927</i>&nbsp;            while(var39.nonEmpty()) {</b>
+<b class="nc"><i>928</i>&nbsp;                this.pendingExits.append(var39.next());</b>
+<b class="nc"><i>929</i>&nbsp;            }</b>
+<b class="nc"><i>930</i>&nbsp;        }</b>
+<b class="nc"><i>931</i>&nbsp;</b>
+<b class="nc"><i>932</i>&nbsp;        this.uninitsTry.andSet(var23).andSet(this.uninits);</b>
+<i>933</i>&nbsp;    }
+<i>934</i>&nbsp;
+<i>935</i>&nbsp;    void checkCaughtType(DiagnosticPosition var1, Type var2, List&lt;Type&gt; var3, List&lt;Type&gt; var4) {
+<i>936</i>&nbsp;        if(this.chk.subset(var2, var4)) {
+<i>937</i>&nbsp;            this.log.error(var1, &quot;except.already.caught&quot;, new Object[]{var2});
+<b class="nc"><i>938</i>&nbsp;        } else if(!this.chk.isUnchecked(var1, var2) &amp;&amp; !this.isExceptionOrThrowable(var2) &amp;&amp; !this.chk.intersects(var2, var3)) {</b>
+<b class="nc"><i>939</i>&nbsp;            this.log.error(var1, &quot;except.never.thrown.in.try&quot;, new Object[]{var2});</b>
+<b class="nc"><i>940</i>&nbsp;        } else if(this.allowImprovedCatchAnalysis) {</b>
+<b class="nc"><i>941</i>&nbsp;            List var5 = this.chk.intersect(List.of(var2), var3);</b>
+<b class="nc"><i>942</i>&nbsp;            if(this.chk.diff(var5, var4).isEmpty() &amp;&amp; !this.isExceptionOrThrowable(var2)) {</b>
+<b class="nc"><i>943</i>&nbsp;                String var6 = var5.length() == 1?&quot;unreachable.catch&quot;:&quot;unreachable.catch.1&quot;;</b>
+<b class="nc"><i>944</i>&nbsp;                this.log.warning(var1, var6, new Object[]{var5});</b>
+<b class="nc"><i>945</i>&nbsp;            }</b>
+<b class="nc"><i>946</i>&nbsp;        }</b>
+<b class="nc"><i>947</i>&nbsp;</b>
+<b class="nc"><i>948</i>&nbsp;    }</b>
+<b class="nc"><i>949</i>&nbsp;</b>
+<b class="nc"><i>950</i>&nbsp;    private boolean isExceptionOrThrowable(Type var1) {</b>
+<b class="nc"><i>951</i>&nbsp;        return var1.tsym == this.syms.throwableType.tsym || var1.tsym == this.syms.exceptionType.tsym;</b>
+<b class="nc"><i>952</i>&nbsp;    }</b>
+<b class="nc"><i>953</i>&nbsp;</b>
+<b class="nc"><i>954</i>&nbsp;    public void visitConditional(JCConditional var1) {</b>
+<b class="nc"><i>955</i>&nbsp;        this.scanCond(var1.cond);</b>
+<b class="nc"><i>956</i>&nbsp;        Bits var2 = this.initsWhenFalse;</b>
+<i>957</i>&nbsp;        Bits var3 = this.uninitsWhenFalse;
+<b class="nc"><i>958</i>&nbsp;        this.inits = this.initsWhenTrue;</b>
+<b class="nc"><i>959</i>&nbsp;        this.uninits = this.uninitsWhenTrue;</b>
+<b class="nc"><i>960</i>&nbsp;        Bits var4;</b>
+<b class="nc"><i>961</i>&nbsp;        Bits var5;</b>
+<b class="nc"><i>962</i>&nbsp;        if(var1.truepart.type.tag == 8 &amp;&amp; var1.falsepart.type.tag == 8) {</b>
+<b class="nc"><i>963</i>&nbsp;            this.scanCond(var1.truepart);</b>
+<b class="nc"><i>964</i>&nbsp;            var4 = this.initsWhenTrue.dup();</b>
+<i>965</i>&nbsp;            var5 = this.initsWhenFalse.dup();
+<b class="nc"><i>966</i>&nbsp;            Bits var6 = this.uninitsWhenTrue.dup();</b>
+<i>967</i>&nbsp;            Bits var7 = this.uninitsWhenFalse.dup();
+<i>968</i>&nbsp;            this.inits = var2;
+<i>969</i>&nbsp;            this.uninits = var3;
+<b class="nc"><i>970</i>&nbsp;            this.scanCond(var1.falsepart);</b>
+<i>971</i>&nbsp;            this.initsWhenTrue.andSet(var4);
+<i>972</i>&nbsp;            this.initsWhenFalse.andSet(var5);
+<b class="nc"><i>973</i>&nbsp;            this.uninitsWhenTrue.andSet(var6);</b>
+<b class="nc"><i>974</i>&nbsp;            this.uninitsWhenFalse.andSet(var7);</b>
+<b class="nc"><i>975</i>&nbsp;        } else {</b>
+<b class="nc"><i>976</i>&nbsp;            this.scanExpr(var1.truepart);</b>
+<b class="nc"><i>977</i>&nbsp;            var4 = this.inits.dup();</b>
+<b class="nc"><i>978</i>&nbsp;            var5 = this.uninits.dup();</b>
+<b class="nc"><i>979</i>&nbsp;            this.inits = var2;</b>
+<b class="nc"><i>980</i>&nbsp;            this.uninits = var3;</b>
+<b class="nc"><i>981</i>&nbsp;            this.scanExpr(var1.falsepart);</b>
+<b class="nc"><i>982</i>&nbsp;            this.inits.andSet(var4);</b>
+<b class="nc"><i>983</i>&nbsp;            this.uninits.andSet(var5);</b>
+<i>984</i>&nbsp;        }
+<b class="nc"><i>985</i>&nbsp;</b>
+<b class="nc"><i>986</i>&nbsp;    }</b>
+<b class="nc"><i>987</i>&nbsp;</b>
+<b class="nc"><i>988</i>&nbsp;    public void visitIf(JCIf var1) {</b>
+<b class="nc"><i>989</i>&nbsp;        this.scanCond(var1.cond);</b>
+<b class="nc"><i>990</i>&nbsp;        Bits var2 = this.initsWhenFalse;</b>
+<b class="nc"><i>991</i>&nbsp;        Bits var3 = this.uninitsWhenFalse;</b>
+<b class="nc"><i>992</i>&nbsp;        this.inits = this.initsWhenTrue;</b>
+<b class="nc"><i>993</i>&nbsp;        this.uninits = this.uninitsWhenTrue;</b>
+<b class="nc"><i>994</i>&nbsp;        this.scanStat(var1.thenpart);</b>
+<i>995</i>&nbsp;        if(var1.elsepart != null) {
+<b class="nc"><i>996</i>&nbsp;            boolean var4 = this.alive;</b>
+<b class="nc"><i>997</i>&nbsp;            this.alive = true;</b>
+<i>998</i>&nbsp;            Bits var5 = this.inits.dup();
+<b class="nc"><i>999</i>&nbsp;            Bits var6 = this.uninits.dup();</b>
+<i>1000</i>&nbsp;            this.inits = var2;
+<i>1001</i>&nbsp;            this.uninits = var3;
+<i>1002</i>&nbsp;            this.scanStat(var1.elsepart);
+<b class="nc"><i>1003</i>&nbsp;            this.inits.andSet(var5);</b>
+<b class="nc"><i>1004</i>&nbsp;            this.uninits.andSet(var6);</b>
+<b class="nc"><i>1005</i>&nbsp;            this.alive |= var4;</b>
+<i>1006</i>&nbsp;        } else {
+<i>1007</i>&nbsp;            this.inits.andSet(var2);
+<b class="nc"><i>1008</i>&nbsp;            this.uninits.andSet(var3);</b>
+<b class="nc"><i>1009</i>&nbsp;            this.alive = true;</b>
+<b class="nc"><i>1010</i>&nbsp;        }</b>
+<b class="nc"><i>1011</i>&nbsp;</b>
+<b class="nc"><i>1012</i>&nbsp;    }</b>
+<i>1013</i>&nbsp;
+<b class="nc"><i>1014</i>&nbsp;    public void visitBreak(JCBreak var1) {</b>
+<b class="nc"><i>1015</i>&nbsp;        this.recordExit(var1);</b>
+<b class="nc"><i>1016</i>&nbsp;    }</b>
+<b class="nc"><i>1017</i>&nbsp;</b>
+<i>1018</i>&nbsp;    public void visitContinue(JCContinue var1) {
+<b class="nc"><i>1019</i>&nbsp;        this.recordExit(var1);</b>
+<b class="nc"><i>1020</i>&nbsp;    }</b>
+<b class="nc"><i>1021</i>&nbsp;</b>
+<b class="nc"><i>1022</i>&nbsp;    public void visitReturn(JCReturn var1) {</b>
+<b class="nc"><i>1023</i>&nbsp;        this.scanExpr(var1.expr);</b>
+<b class="nc"><i>1024</i>&nbsp;        this.recordExit(var1);</b>
+<b class="nc"><i>1025</i>&nbsp;    }</b>
+<b class="nc"><i>1026</i>&nbsp;</b>
+<i>1027</i>&nbsp;    public void visitThrow(JCThrow var1) {
+<b class="nc"><i>1028</i>&nbsp;        this.scanExpr(var1.expr);</b>
+<i>1029</i>&nbsp;        Symbol var2 = TreeInfo.symbol(var1.expr);
+<i>1030</i>&nbsp;        if(var2 != null &amp;&amp; var2.kind == 4 &amp;&amp; (var2.flags() &amp; 4398046511120L) != 0L &amp;&amp; this.preciseRethrowTypes.get(var2) != null &amp;&amp; this.allowImprovedRethrowAnalysis) {
+<i>1031</i>&nbsp;            Iterator var3 = ((List)this.preciseRethrowTypes.get(var2)).iterator();
+<b class="nc"><i>1032</i>&nbsp;</b>
+<b class="nc"><i>1033</i>&nbsp;            while(var3.hasNext()) {</b>
+<b class="nc"><i>1034</i>&nbsp;                Type var4 = (Type)var3.next();</b>
+<b class="nc"><i>1035</i>&nbsp;                this.markThrown(var1, var4);</b>
+<b class="nc"><i>1036</i>&nbsp;            }</b>
+<b class="nc"><i>1037</i>&nbsp;        } else {</b>
+<i>1038</i>&nbsp;            this.markThrown(var1, var1.expr.type);
+<i>1039</i>&nbsp;        }
+<i>1040</i>&nbsp;
+<i>1041</i>&nbsp;        this.markDead();
+<i>1042</i>&nbsp;    }
+<b class="nc"><i>1043</i>&nbsp;</b>
+<b class="nc"><i>1044</i>&nbsp;    public void visitApply(JCMethodInvocation var1) {</b>
+<b class="nc"><i>1045</i>&nbsp;        this.scanExpr(var1.meth);</b>
+<b class="nc"><i>1046</i>&nbsp;        this.scanExprs(var1.args);</b>
+<b class="nc"><i>1047</i>&nbsp;</b>
+<b class="nc"><i>1048</i>&nbsp;        for(List var2 = var1.meth.type.getThrownTypes(); var2.nonEmpty(); var2 = var2.tail) {</b>
+<b class="nc"><i>1049</i>&nbsp;            this.markThrown(var1, (Type)var2.head);</b>
+<b class="nc"><i>1050</i>&nbsp;        }</b>
+<b class="nc"><i>1051</i>&nbsp;</b>
+<b class="nc"><i>1052</i>&nbsp;    }</b>
+<b class="nc"><i>1053</i>&nbsp;</b>
+<b class="nc"><i>1054</i>&nbsp;    public void visitNewClass(JCNewClass var1) {</b>
+<b class="nc"><i>1055</i>&nbsp;        this.scanExpr(var1.encl);</b>
+<b class="nc"><i>1056</i>&nbsp;        this.scanExprs(var1.args);</b>
+<b class="nc"><i>1057</i>&nbsp;</b>
+<b class="nc"><i>1058</i>&nbsp;        List var2;</b>
+<b class="nc"><i>1059</i>&nbsp;        for(var2 = var1.constructorType.getThrownTypes(); var2.nonEmpty(); var2 = var2.tail) {</b>
+<b class="nc"><i>1060</i>&nbsp;            this.markThrown(var1, (Type)var2.head);</b>
+<b class="nc"><i>1061</i>&nbsp;        }</b>
+<b class="nc"><i>1062</i>&nbsp;</b>
+<b class="nc"><i>1063</i>&nbsp;        var2 = this.caught;</b>
+<i>1064</i>&nbsp;
+<i>1065</i>&nbsp;        try {
+<i>1066</i>&nbsp;            if(var1.def != null) {
+<i>1067</i>&nbsp;                for(List var3 = var1.constructor.type.getThrownTypes(); var3.nonEmpty(); var3 = var3.tail) {
+<b class="nc"><i>1068</i>&nbsp;                    this.caught = this.chk.incl((Type)var3.head, this.caught);</b>
+<b class="nc"><i>1069</i>&nbsp;                }</b>
+<b class="nc"><i>1070</i>&nbsp;            }</b>
+<b class="nc"><i>1071</i>&nbsp;</b>
+<b class="nc"><i>1072</i>&nbsp;            this.scan(var1.def);</b>
+<b class="nc"><i>1073</i>&nbsp;        } finally {</b>
+<b class="nc"><i>1074</i>&nbsp;            this.caught = var2;</b>
+<b class="nc"><i>1075</i>&nbsp;        }</b>
+<b class="nc"><i>1076</i>&nbsp;</b>
+<b class="nc"><i>1077</i>&nbsp;    }</b>
+<b class="nc"><i>1078</i>&nbsp;</b>
+<b class="nc"><i>1079</i>&nbsp;    public void visitNewArray(JCNewArray var1) {</b>
+<b class="nc"><i>1080</i>&nbsp;        this.scanExprs(var1.dims);</b>
+<b class="nc"><i>1081</i>&nbsp;        this.scanExprs(var1.elems);</b>
+<b class="nc"><i>1082</i>&nbsp;    }</b>
+<b class="nc"><i>1083</i>&nbsp;</b>
+<b class="nc"><i>1084</i>&nbsp;    public void visitAssert(JCAssert var1) {</b>
+<b class="nc"><i>1085</i>&nbsp;        Bits var2 = this.inits.dup();</b>
+<b class="nc"><i>1086</i>&nbsp;        Bits var3 = this.uninits.dup();</b>
+<b class="nc"><i>1087</i>&nbsp;        this.scanCond(var1.cond);</b>
+<b class="nc"><i>1088</i>&nbsp;        var3.andSet(this.uninitsWhenTrue);</b>
+<i>1089</i>&nbsp;        if(var1.detail != null) {
+<i>1090</i>&nbsp;            this.inits = this.initsWhenFalse;
+<i>1091</i>&nbsp;            this.uninits = this.uninitsWhenFalse;
+<i>1092</i>&nbsp;            this.scanExpr(var1.detail);
+<i>1093</i>&nbsp;        }
+<i>1094</i>&nbsp;
+<b class="nc"><i>1095</i>&nbsp;        this.inits = var2;</b>
+<i>1096</i>&nbsp;        this.uninits = var3;
+<i>1097</i>&nbsp;    }
+<i>1098</i>&nbsp;
+<b class="nc"><i>1099</i>&nbsp;    public void visitAssign(JCAssign var1) {</b>
+<i>1100</i>&nbsp;        JCExpression var2 = TreeInfo.skipParens(var1.lhs);
+<i>1101</i>&nbsp;        if(!(var2 instanceof JCIdent)) {
+<i>1102</i>&nbsp;            this.scanExpr(var2);
+<b class="nc"><i>1103</i>&nbsp;        }</b>
+<i>1104</i>&nbsp;
+<b class="nc"><i>1105</i>&nbsp;        this.scanExpr(var1.rhs);</b>
+<i>1106</i>&nbsp;        this.letInit(var2);
+<i>1107</i>&nbsp;    }
+<i>1108</i>&nbsp;
+<b class="nc"><i>1109</i>&nbsp;    public void visitAssignop(JCAssignOp var1) {</b>
+<b class="nc"><i>1110</i>&nbsp;        this.scanExpr(var1.lhs);</b>
+<b class="nc"><i>1111</i>&nbsp;        this.scanExpr(var1.rhs);</b>
+<i>1112</i>&nbsp;        this.letInit(var1.lhs);
+<i>1113</i>&nbsp;    }
+<i>1114</i>&nbsp;
+<b class="nc"><i>1115</i>&nbsp;    public void visitUnary(JCUnary var1) {</b>
+<b class="nc"><i>1116</i>&nbsp;        switch(var1.getTag()) {</b>
+<b class="nc"><i>1117</i>&nbsp;        case 50:</b>
+<b class="nc"><i>1118</i>&nbsp;            this.scanCond(var1.arg);</b>
+<i>1119</i>&nbsp;            Bits var2 = this.initsWhenFalse;
+<i>1120</i>&nbsp;            this.initsWhenFalse = this.initsWhenTrue;
+<i>1121</i>&nbsp;            this.initsWhenTrue = var2;
+<b class="nc"><i>1122</i>&nbsp;            var2 = this.uninitsWhenFalse;</b>
+<b class="nc"><i>1123</i>&nbsp;            this.uninitsWhenFalse = this.uninitsWhenTrue;</b>
+<i>1124</i>&nbsp;            this.uninitsWhenTrue = var2;
+<b class="nc"><i>1125</i>&nbsp;            break;</b>
+<b class="nc"><i>1126</i>&nbsp;        case 51:</b>
+<b class="nc"><i>1127</i>&nbsp;        default:</b>
+<b class="nc"><i>1128</i>&nbsp;            this.scanExpr(var1.arg);</b>
+<b class="nc"><i>1129</i>&nbsp;            break;</b>
+<i>1130</i>&nbsp;        case 52:
+<i>1131</i>&nbsp;        case 53:
+<i>1132</i>&nbsp;        case 54:
+<b class="nc"><i>1133</i>&nbsp;        case 55:</b>
+<b class="nc"><i>1134</i>&nbsp;            this.scanExpr(var1.arg);</b>
+<i>1135</i>&nbsp;            this.letInit(var1.arg);
+<i>1136</i>&nbsp;        }
+<i>1137</i>&nbsp;
+<b class="nc"><i>1138</i>&nbsp;    }</b>
+<b class="nc"><i>1139</i>&nbsp;</b>
+<b class="nc"><i>1140</i>&nbsp;    public void visitBinary(JCBinary var1) {</b>
+<b class="nc"><i>1141</i>&nbsp;        switch(var1.getTag()) {</b>
+<b class="nc"><i>1142</i>&nbsp;        case 57:</b>
+<b class="nc"><i>1143</i>&nbsp;            this.scanCond(var1.lhs);</b>
+<b class="nc"><i>1144</i>&nbsp;            Bits var4 = this.initsWhenTrue;</b>
+<b class="nc"><i>1145</i>&nbsp;            Bits var5 = this.uninitsWhenTrue;</b>
+<i>1146</i>&nbsp;            this.inits = this.initsWhenFalse;
+<b class="nc"><i>1147</i>&nbsp;            this.uninits = this.uninitsWhenFalse;</b>
+<b class="nc"><i>1148</i>&nbsp;            this.scanCond(var1.rhs);</b>
+<i>1149</i>&nbsp;            this.initsWhenTrue.andSet(var4);
+<i>1150</i>&nbsp;            this.uninitsWhenTrue.andSet(var5);
+<i>1151</i>&nbsp;            break;
+<b class="nc"><i>1152</i>&nbsp;        case 58:</b>
+<b class="nc"><i>1153</i>&nbsp;            this.scanCond(var1.lhs);</b>
+<b class="nc"><i>1154</i>&nbsp;            Bits var2 = this.initsWhenFalse;</b>
+<b class="nc"><i>1155</i>&nbsp;            Bits var3 = this.uninitsWhenFalse;</b>
+<i>1156</i>&nbsp;            this.inits = this.initsWhenTrue;
+<i>1157</i>&nbsp;            this.uninits = this.uninitsWhenTrue;
+<i>1158</i>&nbsp;            this.scanCond(var1.rhs);
+<b class="nc"><i>1159</i>&nbsp;            this.initsWhenFalse.andSet(var2);</b>
+<b class="nc"><i>1160</i>&nbsp;            this.uninitsWhenFalse.andSet(var3);</b>
+<b class="nc"><i>1161</i>&nbsp;            break;</b>
+<i>1162</i>&nbsp;        default:
+<i>1163</i>&nbsp;            this.scanExpr(var1.lhs);
+<i>1164</i>&nbsp;            this.scanExpr(var1.rhs);
+<b class="nc"><i>1165</i>&nbsp;        }</b>
+<i>1166</i>&nbsp;
+<b class="nc"><i>1167</i>&nbsp;    }</b>
+<b class="nc"><i>1168</i>&nbsp;</b>
+<b class="nc"><i>1169</i>&nbsp;    public void visitIdent(JCIdent var1) {</b>
+<b class="nc"><i>1170</i>&nbsp;        if(var1.sym.kind == 4) {</b>
+<b class="nc"><i>1171</i>&nbsp;            this.checkInit(var1.pos(), (VarSymbol)var1.sym);</b>
+<b class="nc"><i>1172</i>&nbsp;            this.referenced(var1.sym);</b>
+<b class="nc"><i>1173</i>&nbsp;        }</b>
+<b class="nc"><i>1174</i>&nbsp;</b>
+<i>1175</i>&nbsp;    }
+<i>1176</i>&nbsp;
+<b class="nc"><i>1177</i>&nbsp;    void referenced(Symbol var1) {</b>
+<b class="nc"><i>1178</i>&nbsp;        this.unrefdResources.remove(var1);</b>
+<b class="nc"><i>1179</i>&nbsp;    }</b>
+<i>1180</i>&nbsp;
+<b class="nc"><i>1181</i>&nbsp;    public void visitTypeCast(JCTypeCast var1) {</b>
+<i>1182</i>&nbsp;        super.visitTypeCast(var1);
+<i>1183</i>&nbsp;        if(!var1.type.isErroneous() &amp;&amp; this.lint.isEnabled(LintCategory.CAST) &amp;&amp; this.types.isSameType(var1.expr.type, var1.clazz.type) &amp;&amp; !this.is292targetTypeCast(var1)) {
+<i>1184</i>&nbsp;            this.log.warning(LintCategory.CAST, var1.pos(), &quot;redundant.cast&quot;, new Object[]{var1.expr.type});
+<i>1185</i>&nbsp;        }
+<b class="nc"><i>1186</i>&nbsp;</b>
+<i>1187</i>&nbsp;    }
+<b class="nc"><i>1188</i>&nbsp;</b>
+<b class="nc"><i>1189</i>&nbsp;    private boolean is292targetTypeCast(JCTypeCast var1) {</b>
+<b class="nc"><i>1190</i>&nbsp;        boolean var2 = false;</b>
+<b class="nc"><i>1191</i>&nbsp;        JCExpression var3 = TreeInfo.skipParens(var1.expr);</b>
+<b class="nc"><i>1192</i>&nbsp;        if(var3.getTag() == 26) {</b>
+<b class="nc"><i>1193</i>&nbsp;            JCMethodInvocation var4 = (JCMethodInvocation)var3;</b>
+<b class="nc"><i>1194</i>&nbsp;            Symbol var5 = TreeInfo.symbol(var4.meth);</b>
+<b class="nc"><i>1195</i>&nbsp;            var2 = var5 != null &amp;&amp; var5.kind == 16 &amp;&amp; (var5.flags() &amp; 1099511627776L) != 0L;</b>
+<b class="nc"><i>1196</i>&nbsp;        }</b>
+<i>1197</i>&nbsp;
+<b class="nc"><i>1198</i>&nbsp;        return var2;</b>
+<b class="nc"><i>1199</i>&nbsp;    }</b>
+<b class="nc"><i>1200</i>&nbsp;</b>
+<b class="nc"><i>1201</i>&nbsp;    public void visitTopLevel(JCCompilationUnit var1) {</b>
+<b class="nc"><i>1202</i>&nbsp;    }</b>
+<b class="nc"><i>1203</i>&nbsp;</b>
+<b class="nc"><i>1204</i>&nbsp;    public void analyzeTree(Env&lt;AttrContext&gt; var1, TreeMaker var2) {</b>
+<b class="nc"><i>1205</i>&nbsp;        boolean var8 = false;</b>
+<b class="nc"><i>1206</i>&nbsp;</b>
+<i>1207</i>&nbsp;        try {
+<b class="nc"><i>1208</i>&nbsp;            var8 = true;</b>
+<b class="nc"><i>1209</i>&nbsp;            this.attrEnv = var1;</b>
+<i>1210</i>&nbsp;            JCTree var3 = var1.tree;
+<i>1211</i>&nbsp;            this.make = var2;
+<i>1212</i>&nbsp;            this.inits = new Bits();
+<i>1213</i>&nbsp;            this.uninits = new Bits();
+<b class="nc"><i>1214</i>&nbsp;            this.uninitsTry = new Bits();</b>
+<b class="nc"><i>1215</i>&nbsp;            this.initsWhenTrue = this.initsWhenFalse = this.uninitsWhenTrue = this.uninitsWhenFalse = null;</b>
+<i>1216</i>&nbsp;            if(this.vars == null) {
+<i>1217</i>&nbsp;                this.vars = new VarSymbol[32];
+<i>1218</i>&nbsp;            } else {
+<b class="nc"><i>1219</i>&nbsp;                for(int var4 = 0; var4 &lt; this.vars.length; ++var4) {</b>
+<b class="nc"><i>1220</i>&nbsp;                    this.vars[var4] = null;</b>
+<i>1221</i>&nbsp;                }
+<i>1222</i>&nbsp;            }
+<b class="nc"><i>1223</i>&nbsp;</b>
+<i>1224</i>&nbsp;            this.firstadr = 0;
+<i>1225</i>&nbsp;            this.nextadr = 0;
+<i>1226</i>&nbsp;            this.pendingExits = new ListBuffer();
+<i>1227</i>&nbsp;            this.preciseRethrowTypes = new HashMap();
+<i>1228</i>&nbsp;            this.alive = true;
+<i>1229</i>&nbsp;            this.thrown = this.caught = null;
+<i>1230</i>&nbsp;            this.classDef = null;
+<i>1231</i>&nbsp;            this.unrefdResources = new Scope(var1.enclClass.sym);
+<i>1232</i>&nbsp;            this.scan(var3);
+<i>1233</i>&nbsp;            var8 = false;
+<i>1234</i>&nbsp;        } finally {
+<i>1235</i>&nbsp;            if(var8) {
+<i>1236</i>&nbsp;                this.inits = this.uninits = this.uninitsTry = null;
+<i>1237</i>&nbsp;                this.initsWhenTrue = this.initsWhenFalse = this.uninitsWhenTrue = this.uninitsWhenFalse = null;
+<i>1238</i>&nbsp;                if(this.vars != null) {
+<b class="nc"><i>1239</i>&nbsp;                    for(int var6 = 0; var6 &lt; this.vars.length; ++var6) {</b>
+<b class="nc"><i>1240</i>&nbsp;                        this.vars[var6] = null;</b>
+<b class="nc"><i>1241</i>&nbsp;                    }</b>
+<b class="nc"><i>1242</i>&nbsp;                }</b>
+<b class="nc"><i>1243</i>&nbsp;</b>
+<i>1244</i>&nbsp;                this.firstadr = 0;
+<b class="nc"><i>1245</i>&nbsp;                this.nextadr = 0;</b>
+<b class="nc"><i>1246</i>&nbsp;                this.pendingExits = null;</b>
+<i>1247</i>&nbsp;                this.make = null;
+<b class="nc"><i>1248</i>&nbsp;                this.thrown = this.caught = null;</b>
+<b class="nc"><i>1249</i>&nbsp;                this.classDef = null;</b>
+<b class="nc"><i>1250</i>&nbsp;                this.unrefdResources = null;</b>
+<b class="nc"><i>1251</i>&nbsp;            }</b>
+<b class="nc"><i>1252</i>&nbsp;        }</b>
+<b class="nc"><i>1253</i>&nbsp;</b>
+<b class="nc"><i>1254</i>&nbsp;        this.inits = this.uninits = this.uninitsTry = null;</b>
+<b class="nc"><i>1255</i>&nbsp;        this.initsWhenTrue = this.initsWhenFalse = this.uninitsWhenTrue = this.uninitsWhenFalse = null;</b>
+<b class="nc"><i>1256</i>&nbsp;        if(this.vars != null) {</b>
+<b class="nc"><i>1257</i>&nbsp;            for(int var10 = 0; var10 &lt; this.vars.length; ++var10) {</b>
+<i>1258</i>&nbsp;                this.vars[var10] = null;
+<b class="nc"><i>1259</i>&nbsp;            }</b>
+<b class="nc"><i>1260</i>&nbsp;        }</b>
+<i>1261</i>&nbsp;
+<b class="nc"><i>1262</i>&nbsp;        this.firstadr = 0;</b>
+<b class="nc"><i>1263</i>&nbsp;        this.nextadr = 0;</b>
+<b class="nc"><i>1264</i>&nbsp;        this.pendingExits = null;</b>
+<b class="nc"><i>1265</i>&nbsp;        this.make = null;</b>
+<b class="nc"><i>1266</i>&nbsp;        this.thrown = this.caught = null;</b>
+<b class="nc"><i>1267</i>&nbsp;        this.classDef = null;</b>
+<b class="nc"><i>1268</i>&nbsp;        this.unrefdResources = null;</b>
+<b class="nc"><i>1269</i>&nbsp;    }</b>
+<b class="nc"><i>1270</i>&nbsp;</b>
+<i>1271</i>&nbsp;    static class PendingExit {
+<i>1272</i>&nbsp;        JCTree tree;
+<i>1273</i>&nbsp;        Bits inits;
+<i>1274</i>&nbsp;        Bits uninits;
+<i>1275</i>&nbsp;        Type thrown;
+<i>1276</i>&nbsp;
+<i>1277</i>&nbsp;        PendingExit(JCTree var1, Bits var2, Bits var3) {
+<i>1278</i>&nbsp;            this.tree = var1;
+<i>1279</i>&nbsp;            this.inits = var2.dup();
+<i>1280</i>&nbsp;            this.uninits = var3.dup();
+<i>1281</i>&nbsp;        }
+<i>1282</i>&nbsp;
+<i>1283</i>&nbsp;        PendingExit(JCTree var1, Type var2) {
+<i>1284</i>&nbsp;            this.tree = var1;
+<i>1285</i>&nbsp;            this.thrown = var2;
+<i>1286</i>&nbsp;        }
+<i>1287</i>&nbsp;    }
+<i>1288</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

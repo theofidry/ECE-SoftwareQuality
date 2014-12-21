@@ -1,0 +1,373 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CharBuffer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.nio</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CharBuffer (java.nio)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CharBuffer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 108)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.nio;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.nio.Buffer;
+<i>10</i>&nbsp;import java.nio.BufferOverflowException;
+<i>11</i>&nbsp;import java.nio.BufferUnderflowException;
+<i>12</i>&nbsp;import java.nio.ByteOrder;
+<i>13</i>&nbsp;import java.nio.HeapCharBuffer;
+<i>14</i>&nbsp;import java.nio.ReadOnlyBufferException;
+<i>15</i>&nbsp;import java.nio.StringCharBuffer;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;public abstract class CharBuffer extends Buffer implements Comparable&lt;CharBuffer&gt;, Appendable, CharSequence, Readable {
+<i>18</i>&nbsp;    final char[] hb;
+<i>19</i>&nbsp;    final int offset;
+<i>20</i>&nbsp;    boolean isReadOnly;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    CharBuffer(int var1, int var2, int var3, int var4, char[] var5, int var6) {
+<i>23</i>&nbsp;        super(var1, var2, var3, var4);
+<i>24</i>&nbsp;        this.hb = var5;
+<i>25</i>&nbsp;        this.offset = var6;
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    CharBuffer(int var1, int var2, int var3, int var4) {
+<i>29</i>&nbsp;        this(var1, var2, var3, var4, (char[])null, 0);
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public static CharBuffer allocate(int var0) {
+<i>33</i>&nbsp;        if(var0 &lt; 0) {
+<i>34</i>&nbsp;            throw new IllegalArgumentException();
+<i>35</i>&nbsp;        } else {
+<i>36</i>&nbsp;            return new HeapCharBuffer(var0, var0);
+<i>37</i>&nbsp;        }
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public static CharBuffer wrap(char[] var0, int var1, int var2) {
+<i>41</i>&nbsp;        try {
+<i>42</i>&nbsp;            return new HeapCharBuffer(var0, var1, var2);
+<i>43</i>&nbsp;        } catch (IllegalArgumentException var4) {
+<i>44</i>&nbsp;            throw new IndexOutOfBoundsException();
+<i>45</i>&nbsp;        }
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public static CharBuffer wrap(char[] var0) {
+<i>49</i>&nbsp;        return wrap((char[])var0, 0, var0.length);
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public int read(CharBuffer var1) throws IOException {
+<i>53</i>&nbsp;        int var2 = var1.remaining();
+<i>54</i>&nbsp;        int var3 = this.remaining();
+<i>55</i>&nbsp;        if(var3 == 0) {
+<i>56</i>&nbsp;            return -1;
+<i>57</i>&nbsp;        } else {
+<i>58</i>&nbsp;            int var4 = Math.min(var3, var2);
+<i>59</i>&nbsp;            int var5 = this.limit();
+<i>60</i>&nbsp;            if(var2 &lt; var3) {
+<i>61</i>&nbsp;                this.limit(this.position() + var4);
+<i>62</i>&nbsp;            }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;            try {
+<i>65</i>&nbsp;                if(var4 &gt; 0) {
+<i>66</i>&nbsp;                    var1.put((CharBuffer)this);
+<i>67</i>&nbsp;                }
+<i>68</i>&nbsp;            } finally {
+<i>69</i>&nbsp;                this.limit(var5);
+<i>70</i>&nbsp;            }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;            return var4;
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public static CharBuffer wrap(CharSequence var0, int var1, int var2) {
+<i>77</i>&nbsp;        try {
+<i>78</i>&nbsp;            return new StringCharBuffer(var0, var1, var2);
+<i>79</i>&nbsp;        } catch (IllegalArgumentException var4) {
+<i>80</i>&nbsp;            throw new IndexOutOfBoundsException();
+<i>81</i>&nbsp;        }
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public static CharBuffer wrap(CharSequence var0) {
+<i>85</i>&nbsp;        return wrap((CharSequence)var0, 0, var0.length());
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public abstract CharBuffer slice();
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public abstract CharBuffer duplicate();
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public abstract CharBuffer asReadOnlyBuffer();
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public abstract char get();
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public abstract CharBuffer put(char var1);
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public abstract char get(int var1);
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public abstract CharBuffer put(int var1, char var2);
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public CharBuffer get(char[] var1, int var2, int var3) {
+<i>103</i>&nbsp;        checkBounds(var2, var3, var1.length);
+<i>104</i>&nbsp;        if(var3 &gt; this.remaining()) {
+<i>105</i>&nbsp;            throw new BufferUnderflowException();
+<i>106</i>&nbsp;        } else {
+<i>107</i>&nbsp;            int var4 = var2 + var3;
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;            for(int var5 = var2; var5 &lt; var4; ++var5) {
+<i>110</i>&nbsp;                var1[var5] = this.get();
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;            return this;
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public CharBuffer get(char[] var1) {
+<i>118</i>&nbsp;        return this.get(var1, 0, var1.length);
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    public CharBuffer put(CharBuffer var1) {
+<i>122</i>&nbsp;        if(var1 == this) {
+<i>123</i>&nbsp;            throw new IllegalArgumentException();
+<i>124</i>&nbsp;        } else {
+<i>125</i>&nbsp;            int var2 = var1.remaining();
+<i>126</i>&nbsp;            if(var2 &gt; this.remaining()) {
+<i>127</i>&nbsp;                throw new BufferOverflowException();
+<i>128</i>&nbsp;            } else {
+<i>129</i>&nbsp;                for(int var3 = 0; var3 &lt; var2; ++var3) {
+<i>130</i>&nbsp;                    this.put(var1.get());
+<i>131</i>&nbsp;                }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;                return this;
+<i>134</i>&nbsp;            }
+<i>135</i>&nbsp;        }
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public CharBuffer put(char[] var1, int var2, int var3) {
+<i>139</i>&nbsp;        checkBounds(var2, var3, var1.length);
+<i>140</i>&nbsp;        if(var3 &gt; this.remaining()) {
+<i>141</i>&nbsp;            throw new BufferOverflowException();
+<i>142</i>&nbsp;        } else {
+<i>143</i>&nbsp;            int var4 = var2 + var3;
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;            for(int var5 = var2; var5 &lt; var4; ++var5) {
+<i>146</i>&nbsp;                this.put(var1[var5]);
+<i>147</i>&nbsp;            }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;            return this;
+<i>150</i>&nbsp;        }
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    public final CharBuffer put(char[] var1) {
+<i>154</i>&nbsp;        return this.put((char[])var1, 0, var1.length);
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    public CharBuffer put(String var1, int var2, int var3) {
+<i>158</i>&nbsp;        checkBounds(var2, var3 - var2, var1.length());
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;        for(int var4 = var2; var4 &lt; var3; ++var4) {
+<i>161</i>&nbsp;            this.put(var1.charAt(var4));
+<i>162</i>&nbsp;        }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;        return this;
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    public final CharBuffer put(String var1) {
+<i>168</i>&nbsp;        return this.put((String)var1, 0, var1.length());
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    public final boolean hasArray() {
+<i>172</i>&nbsp;        return this.hb != null &amp;&amp; !this.isReadOnly;
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    public final char[] array() {
+<i>176</i>&nbsp;        if(this.hb == null) {
+<i>177</i>&nbsp;            throw new UnsupportedOperationException();
+<i>178</i>&nbsp;        } else if(this.isReadOnly) {
+<i>179</i>&nbsp;            throw new ReadOnlyBufferException();
+<i>180</i>&nbsp;        } else {
+<i>181</i>&nbsp;            return this.hb;
+<i>182</i>&nbsp;        }
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    public final int arrayOffset() {
+<i>186</i>&nbsp;        if(this.hb == null) {
+<i>187</i>&nbsp;            throw new UnsupportedOperationException();
+<i>188</i>&nbsp;        } else if(this.isReadOnly) {
+<i>189</i>&nbsp;            throw new ReadOnlyBufferException();
+<i>190</i>&nbsp;        } else {
+<i>191</i>&nbsp;            return this.offset;
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public abstract CharBuffer compact();
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    public abstract boolean isDirect();
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    public int hashCode() {
+<i>200</i>&nbsp;        int var1 = 1;
+<i>201</i>&nbsp;        int var2 = this.position();
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;        for(int var3 = this.limit() - 1; var3 &gt;= var2; --var3) {
+<i>204</i>&nbsp;            var1 = 31 * var1 + this.get(var3);
+<i>205</i>&nbsp;        }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;        return var1;
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public boolean equals(Object var1) {
+<i>211</i>&nbsp;        if(this == var1) {
+<i>212</i>&nbsp;            return true;
+<i>213</i>&nbsp;        } else if(!(var1 instanceof CharBuffer)) {
+<i>214</i>&nbsp;            return false;
+<i>215</i>&nbsp;        } else {
+<i>216</i>&nbsp;            CharBuffer var2 = (CharBuffer)var1;
+<i>217</i>&nbsp;            if(this.remaining() != var2.remaining()) {
+<i>218</i>&nbsp;                return false;
+<i>219</i>&nbsp;            } else {
+<i>220</i>&nbsp;                int var3 = this.position();
+<i>221</i>&nbsp;                int var4 = this.limit() - 1;
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;                for(int var5 = var2.limit() - 1; var4 &gt;= var3; --var5) {
+<i>224</i>&nbsp;                    if(!equals(this.get(var4), var2.get(var5))) {
+<i>225</i>&nbsp;                        return false;
+<i>226</i>&nbsp;                    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;                    --var4;
+<i>229</i>&nbsp;                }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;                return true;
+<i>232</i>&nbsp;            }
+<i>233</i>&nbsp;        }
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    private static boolean equals(char var0, char var1) {
+<i>237</i>&nbsp;        return var0 == var1;
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    public int compareTo(CharBuffer var1) {
+<i>241</i>&nbsp;        int var2 = this.position() + Math.min(this.remaining(), var1.remaining());
+<i>242</i>&nbsp;        int var3 = this.position();
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        for(int var4 = var1.position(); var3 &lt; var2; ++var4) {
+<i>245</i>&nbsp;            int var5 = compare(this.get(var3), var1.get(var4));
+<i>246</i>&nbsp;            if(var5 != 0) {
+<i>247</i>&nbsp;                return var5;
+<i>248</i>&nbsp;            }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;            ++var3;
+<i>251</i>&nbsp;        }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;        return this.remaining() - var1.remaining();
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    private static int compare(char var0, char var1) {
+<i>257</i>&nbsp;        return Character.compare(var0, var1);
+<i>258</i>&nbsp;    }
+<b class="nc"><i>259</i>&nbsp;</b>
+<b class="nc"><i>260</i>&nbsp;    public String toString() {</b>
+<b class="nc"><i>261</i>&nbsp;        return this.toString(this.position(), this.limit());</b>
+<i>262</i>&nbsp;    }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;    abstract String toString(int var1, int var2);
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    public final int length() {
+<b class="nc"><i>267</i>&nbsp;        return this.remaining();</b>
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public final char charAt(int var1) {
+<i>271</i>&nbsp;        return this.get(this.position() + this.checkIndex(var1, 1));
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    public abstract CharBuffer subSequence(int var1, int var2);
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    public CharBuffer append(CharSequence var1) {
+<i>277</i>&nbsp;        return var1 == null?this.put((String)&quot;null&quot;):this.put((String)var1.toString());
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    public CharBuffer append(CharSequence var1, int var2, int var3) {
+<i>281</i>&nbsp;        Object var4 = var1 == null?&quot;null&quot;:var1;
+<i>282</i>&nbsp;        return this.put((String)((CharSequence)var4).subSequence(var2, var3).toString());
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    public CharBuffer append(char var1) {
+<i>286</i>&nbsp;        return this.put(var1);
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    public abstract ByteOrder order();
+<i>290</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

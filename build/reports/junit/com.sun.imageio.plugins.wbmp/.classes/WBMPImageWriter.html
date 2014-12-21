@@ -1,0 +1,332 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WBMPImageWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.imageio.plugins.wbmp</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WBMPImageWriter (com.sun.imageio.plugins.wbmp)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WBMPImageWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 127)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.imageio.plugins.wbmp;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.imageio.plugins.common.I18N;
+<i>9</i>&nbsp;import com.sun.imageio.plugins.wbmp.WBMPMetadata;
+<i>10</i>&nbsp;import java.awt.Point;
+<i>11</i>&nbsp;import java.awt.Rectangle;
+<i>12</i>&nbsp;import java.awt.image.DataBufferByte;
+<i>13</i>&nbsp;import java.awt.image.IndexColorModel;
+<i>14</i>&nbsp;import java.awt.image.MultiPixelPackedSampleModel;
+<i>15</i>&nbsp;import java.awt.image.Raster;
+<i>16</i>&nbsp;import java.awt.image.RenderedImage;
+<i>17</i>&nbsp;import java.awt.image.SampleModel;
+<i>18</i>&nbsp;import java.awt.image.WritableRaster;
+<i>19</i>&nbsp;import java.io.IOException;
+<i>20</i>&nbsp;import javax.imageio.IIOImage;
+<i>21</i>&nbsp;import javax.imageio.ImageTypeSpecifier;
+<i>22</i>&nbsp;import javax.imageio.ImageWriteParam;
+<i>23</i>&nbsp;import javax.imageio.ImageWriter;
+<i>24</i>&nbsp;import javax.imageio.metadata.IIOMetadata;
+<i>25</i>&nbsp;import javax.imageio.spi.ImageWriterSpi;
+<i>26</i>&nbsp;import javax.imageio.stream.ImageOutputStream;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;public class WBMPImageWriter extends ImageWriter {
+<i>29</i>&nbsp;    private ImageOutputStream stream = null;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    private static int getNumBits(int var0) {
+<i>32</i>&nbsp;        int var1 = 32;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;        for(int var2 = -2147483648; var2 != 0 &amp;&amp; (var0 &amp; var2) == 0; var2 &gt;&gt;&gt;= 1) {
+<i>35</i>&nbsp;            --var1;
+<i>36</i>&nbsp;        }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;        return var1;
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    private static byte[] intToMultiByte(int var0) {
+<i>42</i>&nbsp;        int var1 = getNumBits(var0);
+<i>43</i>&nbsp;        byte[] var2 = new byte[(var1 + 6) / 7];
+<i>44</i>&nbsp;        int var3 = var2.length - 1;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        for(int var4 = 0; var4 &lt;= var3; ++var4) {
+<i>47</i>&nbsp;            var2[var4] = (byte)(var0 &gt;&gt;&gt; (var3 - var4) * 7 &amp; 127);
+<b class="nc"><i>48</i>&nbsp;            if(var4 != var3) {</b>
+<i>49</i>&nbsp;                var2[var4] |= -128;
+<i>50</i>&nbsp;            }
+<i>51</i>&nbsp;        }
+<b class="nc"><i>52</i>&nbsp;</b>
+<b class="nc"><i>53</i>&nbsp;        return var2;</b>
+<b class="nc"><i>54</i>&nbsp;    }</b>
+<b class="nc"><i>55</i>&nbsp;</b>
+<b class="nc"><i>56</i>&nbsp;    public WBMPImageWriter(ImageWriterSpi var1) {</b>
+<i>57</i>&nbsp;        super(var1);
+<b class="nc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public void setOutput(Object var1) {
+<i>61</i>&nbsp;        super.setOutput(var1);
+<i>62</i>&nbsp;        if(var1 != null) {
+<b class="nc"><i>63</i>&nbsp;            if(!(var1 instanceof ImageOutputStream)) {</b>
+<b class="nc"><i>64</i>&nbsp;                throw new IllegalArgumentException(I18N.getString(&quot;WBMPImageWriter&quot;));</b>
+<i>65</i>&nbsp;            }
+<b class="nc"><i>66</i>&nbsp;</b>
+<b class="nc"><i>67</i>&nbsp;            this.stream = (ImageOutputStream)var1;</b>
+<b class="nc"><i>68</i>&nbsp;        } else {</b>
+<b class="nc"><i>69</i>&nbsp;            this.stream = null;</b>
+<b class="nc"><i>70</i>&nbsp;        }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam var1) {</b>
+<i>75</i>&nbsp;        return null;
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier var1, ImageWriteParam var2) {
+<i>79</i>&nbsp;        WBMPMetadata var3 = new WBMPMetadata();
+<i>80</i>&nbsp;        var3.wbmpType = 0;
+<b class="nc"><i>81</i>&nbsp;        return var3;</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public IIOMetadata convertStreamMetadata(IIOMetadata var1, ImageWriteParam var2) {
+<b class="nc"><i>85</i>&nbsp;        return null;</b>
+<b class="nc"><i>86</i>&nbsp;    }</b>
+<b class="nc"><i>87</i>&nbsp;</b>
+<b class="nc"><i>88</i>&nbsp;    public IIOMetadata convertImageMetadata(IIOMetadata var1, ImageTypeSpecifier var2, ImageWriteParam var3) {</b>
+<b class="nc"><i>89</i>&nbsp;        return null;</b>
+<i>90</i>&nbsp;    }
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;    public boolean canWriteRasters() {
+<i>93</i>&nbsp;        return true;
+<i>94</i>&nbsp;    }
+<b class="nc"><i>95</i>&nbsp;</b>
+<i>96</i>&nbsp;    public void write(IIOMetadata var1, IIOImage var2, ImageWriteParam var3) throws IOException {
+<i>97</i>&nbsp;        if(this.stream == null) {
+<i>98</i>&nbsp;            throw new IllegalStateException(I18N.getString(&quot;WBMPImageWriter3&quot;));
+<i>99</i>&nbsp;        } else if(var2 == null) {
+<b class="nc"><i>100</i>&nbsp;            throw new IllegalArgumentException(I18N.getString(&quot;WBMPImageWriter4&quot;));</b>
+<b class="nc"><i>101</i>&nbsp;        } else {</b>
+<b class="nc"><i>102</i>&nbsp;            this.clearAbortRequest();</b>
+<i>103</i>&nbsp;            this.processImageStarted(0);
+<i>104</i>&nbsp;            if(var3 == null) {
+<i>105</i>&nbsp;                var3 = this.getDefaultWriteParam();
+<i>106</i>&nbsp;            }
+<b class="nc"><i>107</i>&nbsp;</b>
+<i>108</i>&nbsp;            RenderedImage var4 = null;
+<i>109</i>&nbsp;            Object var5 = null;
+<i>110</i>&nbsp;            boolean var6 = var2.hasRaster();
+<i>111</i>&nbsp;            Rectangle var7 = var3.getSourceRegion();
+<i>112</i>&nbsp;            SampleModel var8 = null;
+<b class="nc"><i>113</i>&nbsp;            if(var6) {</b>
+<i>114</i>&nbsp;                var5 = var2.getRaster();
+<i>115</i>&nbsp;                var8 = ((Raster)var5).getSampleModel();
+<i>116</i>&nbsp;            } else {
+<b class="nc"><i>117</i>&nbsp;                var4 = var2.getRenderedImage();</b>
+<i>118</i>&nbsp;                var8 = var4.getSampleModel();
+<i>119</i>&nbsp;                var5 = var4.getData();
+<i>120</i>&nbsp;            }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;            this.checkSampleModel(var8);
+<i>123</i>&nbsp;            if(var7 == null) {
+<b class="nc"><i>124</i>&nbsp;                var7 = ((Raster)var5).getBounds();</b>
+<b class="nc"><i>125</i>&nbsp;            } else {</b>
+<i>126</i>&nbsp;                var7 = var7.intersection(((Raster)var5).getBounds());
+<i>127</i>&nbsp;            }
+<b class="nc"><i>128</i>&nbsp;</b>
+<b class="nc"><i>129</i>&nbsp;            if(var7.isEmpty()) {</b>
+<i>130</i>&nbsp;                throw new RuntimeException(I18N.getString(&quot;WBMPImageWriter1&quot;));
+<i>131</i>&nbsp;            } else {
+<b class="nc"><i>132</i>&nbsp;                int var9 = var3.getSourceXSubsampling();</b>
+<b class="nc"><i>133</i>&nbsp;                int var10 = var3.getSourceYSubsampling();</b>
+<b class="nc"><i>134</i>&nbsp;                int var11 = var3.getSubsamplingXOffset();</b>
+<b class="nc"><i>135</i>&nbsp;                int var12 = var3.getSubsamplingYOffset();</b>
+<i>136</i>&nbsp;                var7.translate(var11, var12);
+<b class="nc"><i>137</i>&nbsp;                var7.width -= var11;</b>
+<b class="nc"><i>138</i>&nbsp;                var7.height -= var12;</b>
+<b class="nc"><i>139</i>&nbsp;                int var13 = var7.x / var9;</b>
+<b class="nc"><i>140</i>&nbsp;                int var14 = var7.y / var10;</b>
+<b class="nc"><i>141</i>&nbsp;                int var15 = (var7.width + var9 - 1) / var9;</b>
+<i>142</i>&nbsp;                int var16 = (var7.height + var10 - 1) / var10;
+<b class="nc"><i>143</i>&nbsp;                Rectangle var17 = new Rectangle(var13, var14, var15, var16);</b>
+<b class="nc"><i>144</i>&nbsp;                var8 = var8.createCompatibleSampleModel(var15, var16);</b>
+<b class="nc"><i>145</i>&nbsp;                Object var18 = var8;</b>
+<i>146</i>&nbsp;                if(var8.getDataType() != 0 || !(var8 instanceof MultiPixelPackedSampleModel) || ((MultiPixelPackedSampleModel)var8).getDataBitOffset() != 0) {
+<b class="nc"><i>147</i>&nbsp;                    var18 = new MultiPixelPackedSampleModel(0, var15, var16, 1, var15 + 7 &gt;&gt; 3, 0);</b>
+<b class="nc"><i>148</i>&nbsp;                }</b>
+<i>149</i>&nbsp;
+<b class="nc"><i>150</i>&nbsp;                WritableRaster var19;</b>
+<i>151</i>&nbsp;                int var21;
+<i>152</i>&nbsp;                int var23;
+<b class="nc"><i>153</i>&nbsp;                int var25;</b>
+<b class="nc"><i>154</i>&nbsp;                int var24;</b>
+<b class="nc"><i>155</i>&nbsp;                int var26;</b>
+<i>156</i>&nbsp;                if(!var17.equals(var7)) {
+<b class="nc"><i>157</i>&nbsp;                    if(var9 == 1 &amp;&amp; var10 == 1) {</b>
+<i>158</i>&nbsp;                        var5 = ((Raster)var5).createChild(((Raster)var5).getMinX(), ((Raster)var5).getMinY(), var15, var16, var13, var14, (int[])null);
+<b class="nc"><i>159</i>&nbsp;                    } else {</b>
+<b class="nc"><i>160</i>&nbsp;                        var19 = Raster.createWritableRaster((SampleModel)var18, new Point(var13, var14));</b>
+<i>161</i>&nbsp;                        byte[] var20 = ((DataBufferByte)var19.getDataBuffer()).getData();
+<b class="nc"><i>162</i>&nbsp;                        var21 = var14;</b>
+<b class="nc"><i>163</i>&nbsp;                        int var22 = var7.y;</b>
+<b class="nc"><i>164</i>&nbsp;</b>
+<b class="nc"><i>165</i>&nbsp;                        for(var23 = 0; var21 &lt; var14 + var16; var22 += var10) {</b>
+<i>166</i>&nbsp;                            var24 = 0;
+<b class="nc"><i>167</i>&nbsp;</b>
+<b class="nc"><i>168</i>&nbsp;                            for(var25 = var7.x; var24 &lt; var15; var25 += var9) {</b>
+<b class="nc"><i>169</i>&nbsp;                                var26 = ((Raster)var5).getSample(var25, var22, 0);</b>
+<i>170</i>&nbsp;                                var20[var23 + (var24 &gt;&gt; 3)] = (byte)(var20[var23 + (var24 &gt;&gt; 3)] | var26 &lt;&lt; 7 - (var24 &amp; 7));
+<b class="nc"><i>171</i>&nbsp;                                ++var24;</b>
+<b class="nc"><i>172</i>&nbsp;                            }</b>
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;                            var23 += var15 + 7 &gt;&gt; 3;</b>
+<i>175</i>&nbsp;                            ++var21;
+<b class="nc"><i>176</i>&nbsp;                        }</b>
+<b class="nc"><i>177</i>&nbsp;</b>
+<i>178</i>&nbsp;                        var5 = var19;
+<b class="nc"><i>179</i>&nbsp;                    }</b>
+<i>180</i>&nbsp;                }
+<i>181</i>&nbsp;
+<b class="nc"><i>182</i>&nbsp;                if(!var18.equals(((Raster)var5).getSampleModel())) {</b>
+<i>183</i>&nbsp;                    var19 = Raster.createWritableRaster((SampleModel)var18, new Point(((Raster)var5).getMinX(), ((Raster)var5).getMinY()));
+<i>184</i>&nbsp;                    var19.setRect((Raster)var5);
+<b class="nc"><i>185</i>&nbsp;                    var5 = var19;</b>
+<i>186</i>&nbsp;                }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;                boolean var29 = false;
+<i>189</i>&nbsp;                if(!var6 &amp;&amp; var4.getColorModel() instanceof IndexColorModel) {
+<i>190</i>&nbsp;                    IndexColorModel var28 = (IndexColorModel)var4.getColorModel();
+<b class="nc"><i>191</i>&nbsp;                    var29 = var28.getRed(0) &gt; var28.getRed(1);</b>
+<b class="nc"><i>192</i>&nbsp;                }</b>
+<b class="nc"><i>193</i>&nbsp;</b>
+<i>194</i>&nbsp;                int var27 = ((MultiPixelPackedSampleModel)var18).getScanlineStride();
+<i>195</i>&nbsp;                var21 = (var15 + 7) / 8;
+<i>196</i>&nbsp;                byte[] var30 = ((DataBufferByte)((Raster)var5).getDataBuffer()).getData();
+<b class="nc"><i>197</i>&nbsp;                this.stream.write(0);</b>
+<i>198</i>&nbsp;                this.stream.write(0);
+<i>199</i>&nbsp;                this.stream.write(intToMultiByte(var15));
+<b class="nc"><i>200</i>&nbsp;                this.stream.write(intToMultiByte(var16));</b>
+<i>201</i>&nbsp;                if(!var29 &amp;&amp; var27 == var21) {
+<b class="nc"><i>202</i>&nbsp;                    this.stream.write(var30, 0, var16 * var21);</b>
+<b class="nc"><i>203</i>&nbsp;                    this.processImageProgress(100.0F);</b>
+<i>204</i>&nbsp;                } else {
+<b class="nc"><i>205</i>&nbsp;                    var23 = 0;</b>
+<b class="nc"><i>206</i>&nbsp;                    if(!var29) {</b>
+<b class="nc"><i>207</i>&nbsp;                        for(var24 = 0; var24 &lt; var16 &amp;&amp; !this.abortRequested(); ++var24) {</b>
+<b class="nc"><i>208</i>&nbsp;                            this.stream.write(var30, var23, var21);</b>
+<i>209</i>&nbsp;                            var23 += var27;
+<b class="nc"><i>210</i>&nbsp;                            this.processImageProgress(100.0F * (float)var24 / (float)var16);</b>
+<i>211</i>&nbsp;                        }
+<b class="nc"><i>212</i>&nbsp;                    } else {</b>
+<i>213</i>&nbsp;                        byte[] var31 = new byte[var21];
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;                        for(var25 = 0; var25 &lt; var16 &amp;&amp; !this.abortRequested(); ++var25) {
+<i>216</i>&nbsp;                            for(var26 = 0; var26 &lt; var21; ++var26) {
+<b class="nc"><i>217</i>&nbsp;                                var31[var26] = (byte)(~var30[var26 + var23]);</b>
+<b class="nc"><i>218</i>&nbsp;                            }</b>
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;                            this.stream.write(var31, 0, var21);
+<i>221</i>&nbsp;                            var23 += var27;
+<b class="nc"><i>222</i>&nbsp;                            this.processImageProgress(100.0F * (float)var25 / (float)var16);</b>
+<b class="nc"><i>223</i>&nbsp;                        }</b>
+<i>224</i>&nbsp;                    }
+<i>225</i>&nbsp;                }
+<i>226</i>&nbsp;
+<b class="nc"><i>227</i>&nbsp;                if(this.abortRequested()) {</b>
+<b class="nc"><i>228</i>&nbsp;                    this.processWriteAborted();</b>
+<b class="nc"><i>229</i>&nbsp;                } else {</b>
+<b class="nc"><i>230</i>&nbsp;                    this.processImageComplete();</b>
+<i>231</i>&nbsp;                    this.stream.flushBefore(this.stream.getStreamPosition());
+<i>232</i>&nbsp;                }
+<i>233</i>&nbsp;
+<b class="nc"><i>234</i>&nbsp;            }</b>
+<i>235</i>&nbsp;        }
+<b class="nc"><i>236</i>&nbsp;    }</b>
+<b class="nc"><i>237</i>&nbsp;</b>
+<i>238</i>&nbsp;    public void reset() {
+<i>239</i>&nbsp;        super.reset();
+<b class="nc"><i>240</i>&nbsp;        this.stream = null;</b>
+<b class="nc"><i>241</i>&nbsp;    }</b>
+<b class="nc"><i>242</i>&nbsp;</b>
+<b class="nc"><i>243</i>&nbsp;    private void checkSampleModel(SampleModel var1) {</b>
+<i>244</i>&nbsp;        int var2 = var1.getDataType();
+<i>245</i>&nbsp;        if(var2 &lt; 0 || var2 &gt; 3 || var1.getNumBands() != 1 || var1.getSampleSize(0) != 1) {
+<b class="nc"><i>246</i>&nbsp;            throw new IllegalArgumentException(I18N.getString(&quot;WBMPImageWriter2&quot;));</b>
+<i>247</i>&nbsp;        }
+<b class="nc"><i>248</i>&nbsp;    }</b>
+<b class="nc"><i>249</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

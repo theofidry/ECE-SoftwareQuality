@@ -1,0 +1,397 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DTDGrammarUtil</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.stream.dtd</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DTDGrammarUtil (com.sun.xml.internal.stream.dtd)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DTDGrammarUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 172)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.stream.dtd;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.util.NamespaceSupport;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.util.SymbolTable;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLChar;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.util.XMLSymbols;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.Augmentations;
+<i>13</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.NamespaceContext;
+<i>14</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.QName;
+<i>15</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLAttributes;
+<i>16</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLString;
+<i>17</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XNIException;
+<i>18</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLComponentManager;
+<i>19</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.parser.XMLConfigurationException;
+<i>20</i>&nbsp;import com.sun.xml.internal.stream.dtd.nonvalidating.DTDGrammar;
+<i>21</i>&nbsp;import com.sun.xml.internal.stream.dtd.nonvalidating.XMLAttributeDecl;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public class DTDGrammarUtil {
+<i>24</i>&nbsp;    protected static final String SYMBOL_TABLE = &quot;http://apache.org/xml/properties/internal/symbol-table&quot;;
+<i>25</i>&nbsp;    protected static final String NAMESPACES = &quot;http://xml.org/sax/features/namespaces&quot;;
+<i>26</i>&nbsp;    private static final boolean DEBUG_ATTRIBUTES = false;
+<i>27</i>&nbsp;    private static final boolean DEBUG_ELEMENT_CHILDREN = false;
+<i>28</i>&nbsp;    protected DTDGrammar fDTDGrammar = null;
+<i>29</i>&nbsp;    protected boolean fNamespaces;
+<i>30</i>&nbsp;    protected SymbolTable fSymbolTable = null;
+<i>31</i>&nbsp;    private int fCurrentElementIndex = -1;
+<i>32</i>&nbsp;    private int fCurrentContentSpecType = -1;
+<i>33</i>&nbsp;    private boolean[] fElementContentState = new boolean[8];
+<i>34</i>&nbsp;    private int fElementDepth = -1;
+<i>35</i>&nbsp;    private boolean fInElementContent = false;
+<i>36</i>&nbsp;    private XMLAttributeDecl fTempAttDecl = new XMLAttributeDecl();
+<i>37</i>&nbsp;    private QName fTempQName = new QName();
+<i>38</i>&nbsp;    private StringBuffer fBuffer = new StringBuffer();
+<i>39</i>&nbsp;    private NamespaceContext fNamespaceContext = null;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public DTDGrammarUtil(SymbolTable symbolTable) {
+<i>42</i>&nbsp;        this.fSymbolTable = symbolTable;
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public DTDGrammarUtil(DTDGrammar grammar, SymbolTable symbolTable) {
+<i>46</i>&nbsp;        this.fDTDGrammar = grammar;
+<i>47</i>&nbsp;        this.fSymbolTable = symbolTable;
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public DTDGrammarUtil(DTDGrammar grammar, SymbolTable symbolTable, NamespaceContext namespaceContext) {
+<i>51</i>&nbsp;        this.fDTDGrammar = grammar;
+<i>52</i>&nbsp;        this.fSymbolTable = symbolTable;
+<i>53</i>&nbsp;        this.fNamespaceContext = namespaceContext;
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public void reset(XMLComponentManager componentManager) throws XMLConfigurationException {
+<i>57</i>&nbsp;        this.fDTDGrammar = null;
+<i>58</i>&nbsp;        this.fInElementContent = false;
+<i>59</i>&nbsp;        this.fCurrentElementIndex = -1;
+<i>60</i>&nbsp;        this.fCurrentContentSpecType = -1;
+<i>61</i>&nbsp;        this.fNamespaces = componentManager.getFeature(&quot;http://xml.org/sax/features/namespaces&quot;, true);
+<i>62</i>&nbsp;        this.fSymbolTable = (SymbolTable)componentManager.getProperty(&quot;http://apache.org/xml/properties/internal/symbol-table&quot;);
+<i>63</i>&nbsp;        this.fElementDepth = -1;
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public void startElement(QName element, XMLAttributes attributes) throws XNIException {
+<i>67</i>&nbsp;        this.handleStartElement(element, attributes);
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public void endElement(QName element) throws XNIException {
+<i>71</i>&nbsp;        this.handleEndElement(element);
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public void startCDATA(Augmentations augs) throws XNIException {
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public void endCDATA(Augmentations augs) throws XNIException {
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public void addDTDDefaultAttrs(QName elementName, XMLAttributes attributes) throws XNIException {
+<i>81</i>&nbsp;        int elementIndex = this.fDTDGrammar.getElementDeclIndex(elementName);
+<i>82</i>&nbsp;        if(elementIndex != -1 &amp;&amp; this.fDTDGrammar != null) {
+<i>83</i>&nbsp;            String attrRawName;
+<i>84</i>&nbsp;            String type;
+<i>85</i>&nbsp;            boolean changedByNormalization;
+<i>86</i>&nbsp;            for(int attlistIndex = this.fDTDGrammar.getFirstAttributeDeclIndex(elementIndex); attlistIndex != -1; attlistIndex = this.fDTDGrammar.getNextAttributeDeclIndex(attlistIndex)) {
+<i>87</i>&nbsp;                this.fDTDGrammar.getAttributeDecl(attlistIndex, this.fTempAttDecl);
+<i>88</i>&nbsp;                String attrCount = this.fTempAttDecl.name.prefix;
+<i>89</i>&nbsp;                String i = this.fTempAttDecl.name.localpart;
+<i>90</i>&nbsp;                attrRawName = this.fTempAttDecl.name.rawname;
+<i>91</i>&nbsp;                String declared = this.getAttributeTypeName(this.fTempAttDecl);
+<i>92</i>&nbsp;                short position = this.fTempAttDecl.simpleType.defaultType;
+<b class="nc"><i>93</i>&nbsp;                type = null;</b>
+<i>94</i>&nbsp;                if(this.fTempAttDecl.simpleType.defaultValue != null) {
+<i>95</i>&nbsp;                    type = this.fTempAttDecl.simpleType.defaultValue;
+<i>96</i>&nbsp;                }
+<i>97</i>&nbsp;
+<b class="nc"><i>98</i>&nbsp;                changedByNormalization = false;</b>
+<i>99</i>&nbsp;                boolean required = position == 2;
+<i>100</i>&nbsp;                boolean cdata = declared == XMLSymbols.fCDATASymbol;
+<b class="nc"><i>101</i>&nbsp;                int newAttr;</b>
+<i>102</i>&nbsp;                if(!cdata || required || type != null) {
+<i>103</i>&nbsp;                    int i1;
+<b class="nc"><i>104</i>&nbsp;                    if(this.fNamespaceContext != null &amp;&amp; attrRawName.startsWith(&quot;xmlns&quot;)) {</b>
+<i>105</i>&nbsp;                        String var20 = &quot;&quot;;
+<i>106</i>&nbsp;                        i1 = attrRawName.indexOf(58);
+<b class="nc"><i>107</i>&nbsp;                        if(i1 != -1) {</b>
+<i>108</i>&nbsp;                            var20 = attrRawName.substring(0, i1);
+<i>109</i>&nbsp;                        } else {
+<b class="nc"><i>110</i>&nbsp;                            var20 = attrRawName;</b>
+<i>111</i>&nbsp;                        }
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;                        var20 = this.fSymbolTable.addSymbol(var20);</b>
+<i>114</i>&nbsp;                        if(!((NamespaceSupport)this.fNamespaceContext).containsPrefixInCurrentContext(var20)) {
+<i>115</i>&nbsp;                            this.fNamespaceContext.declarePrefix(var20, type);
+<b class="nc"><i>116</i>&nbsp;                        }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;                        changedByNormalization = true;
+<b class="nc"><i>119</i>&nbsp;                    } else {</b>
+<i>120</i>&nbsp;                        newAttr = attributes.getLength();
+<i>121</i>&nbsp;
+<b class="nc"><i>122</i>&nbsp;                        for(i1 = 0; i1 &lt; newAttr; ++i1) {</b>
+<i>123</i>&nbsp;                            if(attributes.getQName(i1) == attrRawName) {
+<b class="nc"><i>124</i>&nbsp;                                changedByNormalization = true;</b>
+<i>125</i>&nbsp;                                break;
+<i>126</i>&nbsp;                            }
+<b class="nc"><i>127</i>&nbsp;                        }</b>
+<b class="nc"><i>128</i>&nbsp;                    }</b>
+<i>129</i>&nbsp;                }
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;                if(!changedByNormalization &amp;&amp; type != null) {</b>
+<b class="nc"><i>132</i>&nbsp;                    if(this.fNamespaces) {</b>
+<b class="nc"><i>133</i>&nbsp;                        newAttr = attrRawName.indexOf(58);</b>
+<i>134</i>&nbsp;                        if(newAttr != -1) {
+<i>135</i>&nbsp;                            attrCount = attrRawName.substring(0, newAttr);
+<i>136</i>&nbsp;                            attrCount = this.fSymbolTable.addSymbol(attrCount);
+<b class="nc"><i>137</i>&nbsp;                            i = attrRawName.substring(newAttr + 1);</b>
+<b class="nc"><i>138</i>&nbsp;                            i = this.fSymbolTable.addSymbol(i);</b>
+<b class="nc"><i>139</i>&nbsp;                        }</b>
+<b class="nc"><i>140</i>&nbsp;                    }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;                    this.fTempQName.setValues(attrCount, i, attrRawName, this.fTempAttDecl.name.uri);
+<i>143</i>&nbsp;                    attributes.addAttribute(this.fTempQName, declared, type);
+<i>144</i>&nbsp;                }
+<i>145</i>&nbsp;            }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;            int var16 = attributes.getLength();
+<i>148</i>&nbsp;            int var17 = 0;
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;            while(var17 &lt; var16) {
+<i>151</i>&nbsp;                attrRawName = attributes.getQName(var17);
+<i>152</i>&nbsp;                boolean var18 = false;
+<i>153</i>&nbsp;                int var19 = this.fDTDGrammar.getFirstAttributeDeclIndex(elementIndex);
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;                while(true) {
+<i>156</i>&nbsp;                    if(var19 != -1) {
+<i>157</i>&nbsp;                        this.fDTDGrammar.getAttributeDecl(var19, this.fTempAttDecl);
+<i>158</i>&nbsp;                        if(this.fTempAttDecl.name.rawname != attrRawName) {
+<i>159</i>&nbsp;                            var19 = this.fDTDGrammar.getNextAttributeDeclIndex(var19);
+<b class="nc"><i>160</i>&nbsp;                            continue;</b>
+<b class="nc"><i>161</i>&nbsp;                        }</b>
+<b class="nc"><i>162</i>&nbsp;</b>
+<b class="nc"><i>163</i>&nbsp;                        var18 = true;</b>
+<i>164</i>&nbsp;                    }
+<b class="nc"><i>165</i>&nbsp;</b>
+<b class="nc"><i>166</i>&nbsp;                    if(var18) {</b>
+<b class="nc"><i>167</i>&nbsp;                        type = this.getAttributeTypeName(this.fTempAttDecl);</b>
+<b class="nc"><i>168</i>&nbsp;                        attributes.setType(var17, type);</b>
+<b class="nc"><i>169</i>&nbsp;                        changedByNormalization = false;</b>
+<i>170</i>&nbsp;                        if(attributes.isSpecified(var17) &amp;&amp; type != XMLSymbols.fCDATASymbol) {
+<b class="nc"><i>171</i>&nbsp;                            this.normalizeAttrValue(attributes, var17);</b>
+<i>172</i>&nbsp;                        }
+<i>173</i>&nbsp;                    }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;                    ++var17;
+<i>176</i>&nbsp;                    break;
+<i>177</i>&nbsp;                }
+<i>178</i>&nbsp;            }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;        }
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    private boolean normalizeAttrValue(XMLAttributes attributes, int index) {
+<i>184</i>&nbsp;        boolean leadingSpace = true;
+<b class="nc"><i>185</i>&nbsp;        boolean spaceStart = false;</b>
+<i>186</i>&nbsp;        boolean readingNonSpace = false;
+<i>187</i>&nbsp;        int count = 0;
+<i>188</i>&nbsp;        int eaten = 0;
+<i>189</i>&nbsp;        String attrValue = attributes.getValue(index);
+<i>190</i>&nbsp;        char[] attValue = new char[attrValue.length()];
+<i>191</i>&nbsp;        this.fBuffer.setLength(0);
+<i>192</i>&nbsp;        attrValue.getChars(0, attrValue.length(), attValue, 0);
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;        for(int newValue = 0; newValue &lt; attValue.length; ++newValue) {
+<i>195</i>&nbsp;            if(attValue[newValue] == 32) {
+<i>196</i>&nbsp;                if(readingNonSpace) {
+<b class="nc"><i>197</i>&nbsp;                    spaceStart = true;</b>
+<i>198</i>&nbsp;                    readingNonSpace = false;
+<i>199</i>&nbsp;                }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;                if(spaceStart &amp;&amp; !leadingSpace) {
+<i>202</i>&nbsp;                    spaceStart = false;
+<i>203</i>&nbsp;                    this.fBuffer.append(attValue[newValue]);
+<i>204</i>&nbsp;                    ++count;
+<i>205</i>&nbsp;                } else if(leadingSpace || !spaceStart) {
+<i>206</i>&nbsp;                    ++eaten;
+<i>207</i>&nbsp;                }
+<i>208</i>&nbsp;            } else {
+<i>209</i>&nbsp;                readingNonSpace = true;
+<i>210</i>&nbsp;                spaceStart = false;
+<i>211</i>&nbsp;                leadingSpace = false;
+<i>212</i>&nbsp;                this.fBuffer.append(attValue[newValue]);
+<i>213</i>&nbsp;                ++count;
+<i>214</i>&nbsp;            }
+<i>215</i>&nbsp;        }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        if(count &gt; 0 &amp;&amp; this.fBuffer.charAt(count - 1) == 32) {
+<i>218</i>&nbsp;            this.fBuffer.setLength(count - 1);
+<i>219</i>&nbsp;        }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;        String var11 = this.fBuffer.toString();
+<i>222</i>&nbsp;        attributes.setValue(index, var11);
+<i>223</i>&nbsp;        return !attrValue.equals(var11);
+<i>224</i>&nbsp;    }
+<b class="nc"><i>225</i>&nbsp;</b>
+<i>226</i>&nbsp;    private String getAttributeTypeName(XMLAttributeDecl attrDecl) {
+<b class="nc"><i>227</i>&nbsp;        switch(attrDecl.simpleType.type) {</b>
+<i>228</i>&nbsp;        case 1:
+<i>229</i>&nbsp;            return attrDecl.simpleType.list?XMLSymbols.fENTITIESSymbol:XMLSymbols.fENTITYSymbol;
+<i>230</i>&nbsp;        case 2:
+<i>231</i>&nbsp;            StringBuffer buffer = new StringBuffer();
+<i>232</i>&nbsp;            buffer.append(&#39;(&#39;);
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;            for(int i = 0; i &lt; attrDecl.simpleType.enumeration.length; ++i) {
+<i>235</i>&nbsp;                if(i &gt; 0) {
+<b class="nc"><i>236</i>&nbsp;                    buffer.append(&quot;|&quot;);</b>
+<i>237</i>&nbsp;                }
+<b class="nc"><i>238</i>&nbsp;</b>
+<i>239</i>&nbsp;                buffer.append(attrDecl.simpleType.enumeration[i]);
+<b class="nc"><i>240</i>&nbsp;            }</b>
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;            buffer.append(&#39;)&#39;);
+<i>243</i>&nbsp;            return this.fSymbolTable.addSymbol(buffer.toString());
+<i>244</i>&nbsp;        case 3:
+<i>245</i>&nbsp;            return XMLSymbols.fIDSymbol;
+<i>246</i>&nbsp;        case 4:
+<i>247</i>&nbsp;            return attrDecl.simpleType.list?XMLSymbols.fIDREFSSymbol:XMLSymbols.fIDREFSymbol;
+<i>248</i>&nbsp;        case 5:
+<i>249</i>&nbsp;            return attrDecl.simpleType.list?XMLSymbols.fNMTOKENSSymbol:XMLSymbols.fNMTOKENSymbol;
+<i>250</i>&nbsp;        case 6:
+<i>251</i>&nbsp;            return XMLSymbols.fNOTATIONSymbol;
+<i>252</i>&nbsp;        default:
+<i>253</i>&nbsp;            return XMLSymbols.fCDATASymbol;
+<i>254</i>&nbsp;        }
+<i>255</i>&nbsp;    }
+<b class="nc"><i>256</i>&nbsp;</b>
+<b class="nc"><i>257</i>&nbsp;    private void ensureStackCapacity(int newElementDepth) {</b>
+<b class="nc"><i>258</i>&nbsp;        if(newElementDepth == this.fElementContentState.length) {</b>
+<b class="nc"><i>259</i>&nbsp;            boolean[] newStack = new boolean[newElementDepth * 2];</b>
+<b class="nc"><i>260</i>&nbsp;            System.arraycopy(this.fElementContentState, 0, newStack, 0, newElementDepth);</b>
+<b class="nc"><i>261</i>&nbsp;            this.fElementContentState = newStack;</b>
+<i>262</i>&nbsp;        }
+<b class="nc"><i>263</i>&nbsp;</b>
+<b class="nc"><i>264</i>&nbsp;    }</b>
+<i>265</i>&nbsp;
+<b class="nc"><i>266</i>&nbsp;    protected void handleStartElement(QName element, XMLAttributes attributes) throws XNIException {</b>
+<b class="nc"><i>267</i>&nbsp;        if(this.fDTDGrammar == null) {</b>
+<b class="nc"><i>268</i>&nbsp;            this.fCurrentElementIndex = -1;</b>
+<i>269</i>&nbsp;            this.fCurrentContentSpecType = -1;
+<b class="nc"><i>270</i>&nbsp;            this.fInElementContent = false;</b>
+<i>271</i>&nbsp;        } else {
+<i>272</i>&nbsp;            this.fCurrentElementIndex = this.fDTDGrammar.getElementDeclIndex(element);
+<b class="nc"><i>273</i>&nbsp;            this.fCurrentContentSpecType = this.fDTDGrammar.getContentSpecType(this.fCurrentElementIndex);</b>
+<b class="nc"><i>274</i>&nbsp;            this.addDTDDefaultAttrs(element, attributes);</b>
+<b class="nc"><i>275</i>&nbsp;            this.fInElementContent = this.fCurrentContentSpecType == 3;</b>
+<b class="nc"><i>276</i>&nbsp;            ++this.fElementDepth;</b>
+<b class="nc"><i>277</i>&nbsp;            this.ensureStackCapacity(this.fElementDepth);</b>
+<i>278</i>&nbsp;            this.fElementContentState[this.fElementDepth] = this.fInElementContent;
+<b class="nc"><i>279</i>&nbsp;        }</b>
+<i>280</i>&nbsp;    }
+<b class="nc"><i>281</i>&nbsp;</b>
+<b class="nc"><i>282</i>&nbsp;    protected void handleEndElement(QName element) throws XNIException {</b>
+<i>283</i>&nbsp;        if(this.fDTDGrammar != null) {
+<i>284</i>&nbsp;            --this.fElementDepth;
+<b class="nc"><i>285</i>&nbsp;            if(this.fElementDepth &lt; -1) {</b>
+<i>286</i>&nbsp;                throw new RuntimeException(&quot;FWK008 Element stack underflow&quot;);
+<b class="nc"><i>287</i>&nbsp;            } else if(this.fElementDepth &lt; 0) {</b>
+<b class="nc"><i>288</i>&nbsp;                this.fCurrentElementIndex = -1;</b>
+<i>289</i>&nbsp;                this.fCurrentContentSpecType = -1;
+<b class="nc"><i>290</i>&nbsp;                this.fInElementContent = false;</b>
+<b class="nc"><i>291</i>&nbsp;            } else {</b>
+<b class="nc"><i>292</i>&nbsp;                this.fInElementContent = this.fElementContentState[this.fElementDepth];</b>
+<b class="nc"><i>293</i>&nbsp;            }</b>
+<b class="nc"><i>294</i>&nbsp;        }</b>
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;    public boolean isInElementContent() {
+<i>298</i>&nbsp;        return this.fInElementContent;
+<i>299</i>&nbsp;    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    public boolean isIgnorableWhiteSpace(XMLString text) {
+<b class="nc"><i>302</i>&nbsp;        if(this.isInElementContent()) {</b>
+<b class="nc"><i>303</i>&nbsp;            for(int i = text.offset; i &lt; text.offset + text.length; ++i) {</b>
+<b class="nc"><i>304</i>&nbsp;                if(!XMLChar.isSpace(text.ch[i])) {</b>
+<b class="nc"><i>305</i>&nbsp;                    return false;</b>
+<b class="nc"><i>306</i>&nbsp;                }</b>
+<b class="nc"><i>307</i>&nbsp;            }</b>
+<b class="nc"><i>308</i>&nbsp;</b>
+<b class="nc"><i>309</i>&nbsp;            return true;</b>
+<b class="nc"><i>310</i>&nbsp;        } else {</b>
+<i>311</i>&nbsp;            return false;
+<i>312</i>&nbsp;        }
+<b class="nc"><i>313</i>&nbsp;    }</b>
+<i>314</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

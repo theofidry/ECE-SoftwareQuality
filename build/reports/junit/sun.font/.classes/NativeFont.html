@@ -1,0 +1,365 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NativeFont</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NativeFont (sun.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NativeFont</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.font;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.FontFormatException;
+<i>9</i>&nbsp;import java.awt.GraphicsEnvironment;
+<i>10</i>&nbsp;import java.awt.font.FontRenderContext;
+<i>11</i>&nbsp;import java.awt.geom.GeneralPath;
+<i>12</i>&nbsp;import java.awt.geom.Rectangle2D;
+<i>13</i>&nbsp;import java.awt.geom.Rectangle2D.Float;
+<i>14</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>15</i>&nbsp;import java.util.Locale;
+<i>16</i>&nbsp;import sun.font.CharToGlyphMapper;
+<i>17</i>&nbsp;import sun.font.DelegateStrike;
+<i>18</i>&nbsp;import sun.font.FontStrike;
+<i>19</i>&nbsp;import sun.font.FontStrikeDesc;
+<i>20</i>&nbsp;import sun.font.NativeGlyphMapper;
+<i>21</i>&nbsp;import sun.font.NativeStrike;
+<i>22</i>&nbsp;import sun.font.PhysicalFont;
+<i>23</i>&nbsp;import sun.font.StrikeMetrics;
+<i>24</i>&nbsp;import sun.font.SunFontManager;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;public class NativeFont extends PhysicalFont {
+<i>27</i>&nbsp;    String encoding;
+<i>28</i>&nbsp;    private int numGlyphs = -1;
+<b class="nc"><i>29</i>&nbsp;    boolean isBitmapDelegate;</b>
+<i>30</i>&nbsp;    PhysicalFont delegateFont;
+<b class="nc"><i>31</i>&nbsp;</b>
+<i>32</i>&nbsp;    public NativeFont(String var1, boolean var2) throws FontFormatException {
+<i>33</i>&nbsp;        super(var1, (Object)null);
+<i>34</i>&nbsp;        this.isBitmapDelegate = var2;
+<b class="nc"><i>35</i>&nbsp;        if(GraphicsEnvironment.isHeadless()) {</b>
+<i>36</i>&nbsp;            throw new FontFormatException(&quot;Native font in headless toolkit&quot;);
+<i>37</i>&nbsp;        } else {
+<i>38</i>&nbsp;            this.fontRank = 5;
+<b class="nc"><i>39</i>&nbsp;            this.initNames();</b>
+<i>40</i>&nbsp;            if(this.getNumGlyphs() == 0) {
+<i>41</i>&nbsp;                throw new FontFormatException(&quot;Couldn\&#39;t locate font&quot; + var1);
+<i>42</i>&nbsp;            }
+<b class="nc"><i>43</i>&nbsp;        }</b>
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    private void initNames() throws FontFormatException {
+<b class="nc"><i>47</i>&nbsp;        int[] var1 = new int[14];</b>
+<i>48</i>&nbsp;        int var2 = 1;
+<i>49</i>&nbsp;        int var3 = 1;
+<i>50</i>&nbsp;        String var4 = this.platName.toLowerCase(Locale.ENGLISH);
+<b class="nc"><i>51</i>&nbsp;        if(var4.startsWith(&quot;-&quot;)) {</b>
+<i>52</i>&nbsp;            while(var3 != -1 &amp;&amp; var2 &lt; 14) {
+<i>53</i>&nbsp;                var3 = var4.indexOf(45, var3);
+<i>54</i>&nbsp;                if(var3 != -1) {
+<b class="nc"><i>55</i>&nbsp;                    var1[var2++] = var3++;</b>
+<i>56</i>&nbsp;                }
+<i>57</i>&nbsp;            }
+<i>58</i>&nbsp;        }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;        if(var2 == 14 &amp;&amp; var3 != -1) {
+<b class="nc"><i>61</i>&nbsp;            String var5 = var4.substring(var1[1] + 1, var1[2]);</b>
+<i>62</i>&nbsp;            StringBuilder var6 = new StringBuilder(var5);
+<i>63</i>&nbsp;            char var7 = Character.toUpperCase(var6.charAt(0));
+<i>64</i>&nbsp;            var6.replace(0, 1, String.valueOf(var7));
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;            for(int var8 = 1; var8 &lt; var6.length() - 1; ++var8) {
+<b class="nc"><i>67</i>&nbsp;                if(var6.charAt(var8) == 32) {</b>
+<i>68</i>&nbsp;                    var7 = Character.toUpperCase(var6.charAt(var8 + 1));
+<i>69</i>&nbsp;                    var6.replace(var8 + 1, var8 + 2, String.valueOf(var7));
+<i>70</i>&nbsp;                }
+<i>71</i>&nbsp;            }
+<b class="nc"><i>72</i>&nbsp;</b>
+<i>73</i>&nbsp;            this.familyName = var6.toString();
+<i>74</i>&nbsp;            String var11 = var4.substring(var1[2] + 1, var1[3]);
+<i>75</i>&nbsp;            String var9 = var4.substring(var1[3] + 1, var1[4]);
+<i>76</i>&nbsp;            String var10 = null;
+<i>77</i>&nbsp;            if(var11.indexOf(&quot;bold&quot;) &gt;= 0 || var11.indexOf(&quot;demi&quot;) &gt;= 0) {
+<i>78</i>&nbsp;                this.style |= 1;
+<i>79</i>&nbsp;                var10 = &quot;Bold&quot;;
+<i>80</i>&nbsp;            }
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;            if(!var9.equals(&quot;i&quot;) &amp;&amp; var9.indexOf(&quot;italic&quot;) &lt; 0) {</b>
+<i>83</i>&nbsp;                if(var9.equals(&quot;o&quot;) || var9.indexOf(&quot;oblique&quot;) &gt;= 0) {
+<i>84</i>&nbsp;                    this.style |= 2;
+<i>85</i>&nbsp;                    if(var10 == null) {
+<i>86</i>&nbsp;                        var10 = &quot;Oblique&quot;;
+<b class="nc"><i>87</i>&nbsp;                    } else {</b>
+<i>88</i>&nbsp;                        var10 = var10 + &quot; Oblique&quot;;
+<i>89</i>&nbsp;                    }
+<i>90</i>&nbsp;                }
+<i>91</i>&nbsp;            } else {
+<i>92</i>&nbsp;                this.style |= 2;
+<i>93</i>&nbsp;                if(var10 == null) {
+<i>94</i>&nbsp;                    var10 = &quot;Italic&quot;;
+<i>95</i>&nbsp;                } else {
+<i>96</i>&nbsp;                    var10 = var10 + &quot; Italic&quot;;
+<i>97</i>&nbsp;                }
+<i>98</i>&nbsp;            }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;            if(var10 == null) {
+<i>101</i>&nbsp;                this.fullName = this.familyName;
+<i>102</i>&nbsp;            } else {
+<i>103</i>&nbsp;                this.fullName = this.familyName + &quot; &quot; + var10;
+<i>104</i>&nbsp;            }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;            this.encoding = var4.substring(var1[12] + 1);
+<i>107</i>&nbsp;            if(this.encoding.startsWith(&quot;-&quot;)) {
+<i>108</i>&nbsp;                this.encoding = var4.substring(var1[13] + 1);
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;            if(this.encoding.indexOf(&quot;fontspecific&quot;) &gt;= 0) {
+<i>112</i>&nbsp;                if(var5.indexOf(&quot;dingbats&quot;) &gt;= 0) {
+<i>113</i>&nbsp;                    this.encoding = &quot;dingbats&quot;;
+<i>114</i>&nbsp;                } else if(var5.indexOf(&quot;symbol&quot;) &gt;= 0) {
+<i>115</i>&nbsp;                    this.encoding = &quot;symbol&quot;;
+<i>116</i>&nbsp;                } else {
+<i>117</i>&nbsp;                    this.encoding = &quot;iso8859-1&quot;;
+<i>118</i>&nbsp;                }
+<i>119</i>&nbsp;            }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        } else {
+<i>122</i>&nbsp;            throw new FontFormatException(&quot;Bad native name &quot; + this.platName);
+<i>123</i>&nbsp;        }
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    static boolean hasExternalBitmaps(String var0) {
+<i>127</i>&nbsp;        StringBuilder var1 = new StringBuilder(var0);
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;        for(int var2 = var1.indexOf(&quot;-0-&quot;); var2 &gt;= 0; var2 = var1.indexOf(&quot;-0-&quot;, var2)) {
+<i>130</i>&nbsp;            var1.replace(var2 + 1, var2 + 2, &quot;*&quot;);
+<i>131</i>&nbsp;        }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;        String var3 = var1.toString();
+<i>134</i>&nbsp;        Object var4 = null;
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;        byte[] var7;
+<i>137</i>&nbsp;        try {
+<i>138</i>&nbsp;            var7 = var3.getBytes(&quot;UTF-8&quot;);
+<i>139</i>&nbsp;        } catch (UnsupportedEncodingException var6) {
+<i>140</i>&nbsp;            var7 = var3.getBytes();
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;        return haveBitmapFonts(var7);
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    public static boolean fontExists(String var0) {
+<i>147</i>&nbsp;        Object var1 = null;
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;        byte[] var4;
+<i>150</i>&nbsp;        try {
+<i>151</i>&nbsp;            var4 = var0.getBytes(&quot;UTF-8&quot;);
+<i>152</i>&nbsp;        } catch (UnsupportedEncodingException var3) {
+<i>153</i>&nbsp;            var4 = var0.getBytes();
+<i>154</i>&nbsp;        }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;        return fontExists((byte[])var4);
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    private static native boolean haveBitmapFonts(byte[] var0);
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    private static native boolean fontExists(byte[] var0);
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    public CharToGlyphMapper getMapper() {
+<i>164</i>&nbsp;        if(this.mapper == null) {
+<i>165</i>&nbsp;            if(this.isBitmapDelegate) {
+<i>166</i>&nbsp;                this.mapper = new NativeGlyphMapper(this);
+<i>167</i>&nbsp;            } else {
+<i>168</i>&nbsp;                SunFontManager var1 = SunFontManager.getInstance();
+<i>169</i>&nbsp;                this.delegateFont = var1.getDefaultPhysicalFont();
+<i>170</i>&nbsp;                this.mapper = this.delegateFont.getMapper();
+<i>171</i>&nbsp;            }
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;        return this.mapper;
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    FontStrike createStrike(FontStrikeDesc var1) {
+<i>178</i>&nbsp;        if(this.isBitmapDelegate) {
+<i>179</i>&nbsp;            return new NativeStrike(this, var1);
+<i>180</i>&nbsp;        } else {
+<i>181</i>&nbsp;            if(this.delegateFont == null) {
+<i>182</i>&nbsp;                SunFontManager var2 = SunFontManager.getInstance();
+<i>183</i>&nbsp;                this.delegateFont = var2.getDefaultPhysicalFont();
+<i>184</i>&nbsp;            }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;            if(this.delegateFont instanceof NativeFont) {
+<i>187</i>&nbsp;                return new NativeStrike((NativeFont)this.delegateFont, var1);
+<i>188</i>&nbsp;            } else {
+<i>189</i>&nbsp;                FontStrike var3 = this.delegateFont.createStrike(var1);
+<i>190</i>&nbsp;                return new DelegateStrike(this, var1, var3);
+<i>191</i>&nbsp;            }
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public Rectangle2D getMaxCharBounds(FontRenderContext var1) {
+<i>196</i>&nbsp;        return null;
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    native StrikeMetrics getFontMetrics(long var1);
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;    native float getGlyphAdvance(long var1, int var3);
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    Float getGlyphOutlineBounds(long var1, int var3) {
+<i>204</i>&nbsp;        return new Float(0.0F, 0.0F, 0.0F, 0.0F);
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    public GeneralPath getGlyphOutline(long var1, int var3, float var4, float var5) {
+<i>208</i>&nbsp;        return null;
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    native long getGlyphImage(long var1, int var3);
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    native long getGlyphImageNoDefault(long var1, int var3);
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    void getGlyphMetrics(long var1, int var3, java.awt.geom.Point2D.Float var4) {
+<i>216</i>&nbsp;        throw new RuntimeException(&quot;this should be called on the strike&quot;);
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    public GeneralPath getGlyphVectorOutline(long var1, int[] var3, int var4, float var5, float var6) {
+<i>220</i>&nbsp;        return null;
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    private native int countGlyphs(byte[] var1, int var2);
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    public int getNumGlyphs() {
+<i>226</i>&nbsp;        if(this.numGlyphs == -1) {
+<i>227</i>&nbsp;            byte[] var1 = this.getPlatformNameBytes(8);
+<i>228</i>&nbsp;            this.numGlyphs = this.countGlyphs(var1, 8);
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        return this.numGlyphs;
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    PhysicalFont getDelegateFont() {
+<i>235</i>&nbsp;        if(this.delegateFont == null) {
+<i>236</i>&nbsp;            SunFontManager var1 = SunFontManager.getInstance();
+<i>237</i>&nbsp;            this.delegateFont = var1.getDefaultPhysicalFont();
+<i>238</i>&nbsp;        }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;        return this.delegateFont;
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    byte[] getPlatformNameBytes(int var1) {
+<i>244</i>&nbsp;        int[] var2 = new int[14];
+<i>245</i>&nbsp;        int var3 = 1;
+<i>246</i>&nbsp;        int var4 = 1;
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;        while(var4 != -1 &amp;&amp; var3 &lt; 14) {
+<i>249</i>&nbsp;            var4 = this.platName.indexOf(45, var4);
+<i>250</i>&nbsp;            if(var4 != -1) {
+<i>251</i>&nbsp;                var2[var3++] = var4++;
+<i>252</i>&nbsp;            }
+<i>253</i>&nbsp;        }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;        String var5 = Integer.toString(Math.abs(var1) * 10);
+<i>256</i>&nbsp;        StringBuilder var6 = new StringBuilder(this.platName);
+<i>257</i>&nbsp;        var6.replace(var2[11] + 1, var2[12], &quot;*&quot;);
+<i>258</i>&nbsp;        var6.replace(var2[9] + 1, var2[10], &quot;72&quot;);
+<i>259</i>&nbsp;        var6.replace(var2[8] + 1, var2[9], &quot;72&quot;);
+<i>260</i>&nbsp;        var6.replace(var2[7] + 1, var2[8], var5);
+<i>261</i>&nbsp;        var6.replace(var2[6] + 1, var2[7], &quot;*&quot;);
+<i>262</i>&nbsp;        if(var2[0] == 0 &amp;&amp; var2[1] == 1) {
+<i>263</i>&nbsp;            var6.replace(var2[0] + 1, var2[1], &quot;*&quot;);
+<i>264</i>&nbsp;        }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;        String var7 = var6.toString();
+<i>267</i>&nbsp;        Object var8 = null;
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;        byte[] var11;
+<i>270</i>&nbsp;        try {
+<i>271</i>&nbsp;            var11 = var7.getBytes(&quot;UTF-8&quot;);
+<i>272</i>&nbsp;        } catch (UnsupportedEncodingException var10) {
+<i>273</i>&nbsp;            var11 = var7.getBytes();
+<i>274</i>&nbsp;        }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;        return var11;
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    public String toString() {
+<i>280</i>&nbsp;        return &quot; ** Native Font: Family=&quot; + this.familyName + &quot; Name=&quot; + this.fullName + &quot; style=&quot; + this.style + &quot; nativeName=&quot; + this.platName;
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

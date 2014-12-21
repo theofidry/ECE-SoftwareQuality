@@ -1,0 +1,393 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KeyPairGenerator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.security</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KeyPairGenerator (java.security)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeyPairGenerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">KeyPairGenerator$Delegate</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 83)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 117)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.security;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.security.InvalidAlgorithmParameterException;
+<i>9</i>&nbsp;import java.security.KeyPair;
+<i>10</i>&nbsp;import java.security.KeyPairGeneratorSpi;
+<i>11</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>12</i>&nbsp;import java.security.NoSuchProviderException;
+<i>13</i>&nbsp;import java.security.Provider;
+<i>14</i>&nbsp;import java.security.SecureRandom;
+<i>15</i>&nbsp;import java.security.Provider.Service;
+<i>16</i>&nbsp;import java.security.spec.AlgorithmParameterSpec;
+<i>17</i>&nbsp;import java.util.Iterator;
+<i>18</i>&nbsp;import java.util.List;
+<i>19</i>&nbsp;import sun.security.jca.GetInstance;
+<i>20</i>&nbsp;import sun.security.jca.JCAUtil;
+<i>21</i>&nbsp;import sun.security.jca.GetInstance.Instance;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
+<i>24</i>&nbsp;    private final String algorithm;
+<i>25</i>&nbsp;    Provider provider;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    protected KeyPairGenerator(String var1) {
+<i>28</i>&nbsp;        this.algorithm = var1;
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public String getAlgorithm() {
+<i>32</i>&nbsp;        return this.algorithm;
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    private static KeyPairGenerator getInstance(Instance var0, String var1) {
+<i>36</i>&nbsp;        Object var2;
+<i>37</i>&nbsp;        if(var0.impl instanceof KeyPairGenerator) {
+<i>38</i>&nbsp;            var2 = (KeyPairGenerator)var0.impl;
+<i>39</i>&nbsp;        } else {
+<i>40</i>&nbsp;            KeyPairGeneratorSpi var3 = (KeyPairGeneratorSpi)var0.impl;
+<i>41</i>&nbsp;            var2 = new KeyPairGenerator.Delegate(var3, var1);
+<i>42</i>&nbsp;        }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;        ((KeyPairGenerator)var2).provider = var0.provider;
+<i>45</i>&nbsp;        return (KeyPairGenerator)var2;
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public static KeyPairGenerator getInstance(String var0) throws NoSuchAlgorithmException {
+<i>49</i>&nbsp;        List var1 = GetInstance.getServices(&quot;KeyPairGenerator&quot;, var0);
+<i>50</i>&nbsp;        Iterator var2 = var1.iterator();
+<i>51</i>&nbsp;        if(!var2.hasNext()) {
+<i>52</i>&nbsp;            throw new NoSuchAlgorithmException(var0 + &quot; KeyPairGenerator not available&quot;);
+<i>53</i>&nbsp;        } else {
+<i>54</i>&nbsp;            NoSuchAlgorithmException var3 = null;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;            while(true) {
+<i>57</i>&nbsp;                Service var4 = (Service)var2.next();
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;                try {
+<i>60</i>&nbsp;                    Instance var5 = GetInstance.getInstance(var4, KeyPairGeneratorSpi.class);
+<i>61</i>&nbsp;                    if(var5.impl instanceof KeyPairGenerator) {
+<i>62</i>&nbsp;                        return getInstance((Instance)var5, (String)var0);
+<i>63</i>&nbsp;                    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;                    return new KeyPairGenerator.Delegate(var5, var2, var0);
+<i>66</i>&nbsp;                } catch (NoSuchAlgorithmException var6) {
+<i>67</i>&nbsp;                    if(var3 == null) {
+<i>68</i>&nbsp;                        var3 = var6;
+<i>69</i>&nbsp;                    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;                    if(!var2.hasNext()) {
+<i>72</i>&nbsp;                        throw var3;
+<i>73</i>&nbsp;                    }
+<i>74</i>&nbsp;                }
+<i>75</i>&nbsp;            }
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public static KeyPairGenerator getInstance(String var0, String var1) throws NoSuchAlgorithmException, NoSuchProviderException {
+<i>80</i>&nbsp;        Instance var2 = GetInstance.getInstance(&quot;KeyPairGenerator&quot;, KeyPairGeneratorSpi.class, var0, var1);
+<i>81</i>&nbsp;        return getInstance((Instance)var2, (String)var0);
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public static KeyPairGenerator getInstance(String var0, Provider var1) throws NoSuchAlgorithmException {
+<i>85</i>&nbsp;        Instance var2 = GetInstance.getInstance(&quot;KeyPairGenerator&quot;, KeyPairGeneratorSpi.class, var0, var1);
+<i>86</i>&nbsp;        return getInstance((Instance)var2, (String)var0);
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public final Provider getProvider() {
+<i>90</i>&nbsp;        this.disableFailover();
+<i>91</i>&nbsp;        return this.provider;
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    void disableFailover() {
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public void initialize(int var1) {
+<i>98</i>&nbsp;        this.initialize(var1, JCAUtil.getSecureRandom());
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public void initialize(int var1, SecureRandom var2) {
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public void initialize(AlgorithmParameterSpec var1) throws InvalidAlgorithmParameterException {
+<i>105</i>&nbsp;        this.initialize(var1, JCAUtil.getSecureRandom());
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public void initialize(AlgorithmParameterSpec var1, SecureRandom var2) throws InvalidAlgorithmParameterException {
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public final KeyPair genKeyPair() {
+<i>112</i>&nbsp;        return this.generateKeyPair();
+<b class="nc"><i>113</i>&nbsp;    }</b>
+<b class="nc"><i>114</i>&nbsp;</b>
+<i>115</i>&nbsp;    public KeyPair generateKeyPair() {
+<i>116</i>&nbsp;        return null;
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    private static final class Delegate extends KeyPairGenerator {
+<i>120</i>&nbsp;        private volatile KeyPairGeneratorSpi spi;
+<i>121</i>&nbsp;        private final Object lock = new Object();
+<i>122</i>&nbsp;        private Iterator&lt;Service&gt; serviceIterator;
+<i>123</i>&nbsp;        private static final int I_NONE = 1;
+<i>124</i>&nbsp;        private static final int I_SIZE = 2;
+<i>125</i>&nbsp;        private static final int I_PARAMS = 3;
+<i>126</i>&nbsp;        private int initType;
+<b class="nc"><i>127</i>&nbsp;        private int initKeySize;</b>
+<i>128</i>&nbsp;        private AlgorithmParameterSpec initParams;
+<i>129</i>&nbsp;        private SecureRandom initRandom;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;        Delegate(KeyPairGeneratorSpi var1, String var2) {
+<i>132</i>&nbsp;            super(var2);
+<b class="nc"><i>133</i>&nbsp;            this.spi = var1;</b>
+<b class="nc"><i>134</i>&nbsp;        }</b>
+<i>135</i>&nbsp;
+<b class="nc"><i>136</i>&nbsp;        Delegate(Instance var1, Iterator&lt;Service&gt; var2, String var3) {</b>
+<b class="nc"><i>137</i>&nbsp;            super(var3);</b>
+<i>138</i>&nbsp;            this.spi = (KeyPairGeneratorSpi)var1.impl;
+<b class="nc"><i>139</i>&nbsp;            this.provider = var1.provider;</b>
+<b class="nc"><i>140</i>&nbsp;            this.serviceIterator = var2;</b>
+<i>141</i>&nbsp;            this.initType = 1;
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;        private KeyPairGeneratorSpi nextSpi(KeyPairGeneratorSpi var1, boolean var2) {
+<i>145</i>&nbsp;            Object var3 = this.lock;
+<i>146</i>&nbsp;            synchronized(this.lock) {
+<i>147</i>&nbsp;                if(var1 != null &amp;&amp; var1 != this.spi) {
+<i>148</i>&nbsp;                    return this.spi;
+<i>149</i>&nbsp;                } else if(this.serviceIterator == null) {
+<i>150</i>&nbsp;                    return null;
+<i>151</i>&nbsp;                } else {
+<i>152</i>&nbsp;                    while(true) {
+<i>153</i>&nbsp;                        if(this.serviceIterator.hasNext()) {
+<i>154</i>&nbsp;                            Service var4 = (Service)this.serviceIterator.next();
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;                            KeyPairGeneratorSpi var10000;
+<i>157</i>&nbsp;                            try {
+<i>158</i>&nbsp;                                Object var5 = var4.newInstance((Object)null);
+<i>159</i>&nbsp;                                if(!(var5 instanceof KeyPairGeneratorSpi) || var5 instanceof KeyPairGenerator) {
+<i>160</i>&nbsp;                                    continue;
+<i>161</i>&nbsp;                                }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;                                KeyPairGeneratorSpi var6 = (KeyPairGeneratorSpi)var5;
+<i>164</i>&nbsp;                                if(var2) {
+<i>165</i>&nbsp;                                    if(this.initType == 2) {
+<i>166</i>&nbsp;                                        var6.initialize(this.initKeySize, this.initRandom);
+<i>167</i>&nbsp;                                    } else if(this.initType == 3) {
+<i>168</i>&nbsp;                                        var6.initialize(this.initParams, this.initRandom);
+<i>169</i>&nbsp;                                    } else if(this.initType != 1) {
+<i>170</i>&nbsp;                                        throw new AssertionError(&quot;KeyPairGenerator initType: &quot; + this.initType);
+<i>171</i>&nbsp;                                    }
+<b class="nc"><i>172</i>&nbsp;                                }</b>
+<i>173</i>&nbsp;
+<b class="nc"><i>174</i>&nbsp;                                this.provider = var4.getProvider();</b>
+<b class="nc"><i>175</i>&nbsp;                                this.spi = var6;</b>
+<b class="nc"><i>176</i>&nbsp;                                var10000 = var6;</b>
+<i>177</i>&nbsp;                            } catch (Exception var8) {
+<i>178</i>&nbsp;                                continue;
+<i>179</i>&nbsp;                            }
+<b class="nc"><i>180</i>&nbsp;</b>
+<i>181</i>&nbsp;                            return var10000;
+<b class="nc"><i>182</i>&nbsp;                        }</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;                        this.disableFailover();</b>
+<i>185</i>&nbsp;                        return null;
+<b class="nc"><i>186</i>&nbsp;                    }</b>
+<b class="nc"><i>187</i>&nbsp;                }</b>
+<i>188</i>&nbsp;            }
+<b class="nc"><i>189</i>&nbsp;        }</b>
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;        void disableFailover() {</b>
+<b class="nc"><i>192</i>&nbsp;            this.serviceIterator = null;</b>
+<b class="nc"><i>193</i>&nbsp;            this.initType = 0;</b>
+<i>194</i>&nbsp;            this.initParams = null;
+<i>195</i>&nbsp;            this.initRandom = null;
+<b class="nc"><i>196</i>&nbsp;        }</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<i>198</i>&nbsp;        public void initialize(int var1, SecureRandom var2) {
+<i>199</i>&nbsp;            if(this.serviceIterator == null) {
+<i>200</i>&nbsp;                this.spi.initialize(var1, var2);
+<i>201</i>&nbsp;            } else {
+<i>202</i>&nbsp;                RuntimeException var3 = null;
+<i>203</i>&nbsp;                KeyPairGeneratorSpi var4 = this.spi;
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;                while(true) {
+<i>206</i>&nbsp;                    try {
+<i>207</i>&nbsp;                        var4.initialize(var1, var2);
+<i>208</i>&nbsp;                        this.initType = 2;
+<i>209</i>&nbsp;                        this.initKeySize = var1;
+<i>210</i>&nbsp;                        this.initParams = null;
+<i>211</i>&nbsp;                        this.initRandom = var2;
+<i>212</i>&nbsp;                        return;
+<i>213</i>&nbsp;                    } catch (RuntimeException var6) {
+<i>214</i>&nbsp;                        if(var3 == null) {
+<i>215</i>&nbsp;                            var3 = var6;
+<i>216</i>&nbsp;                        }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;                        var4 = this.nextSpi(var4, false);
+<i>219</i>&nbsp;                        if(var4 == null) {
+<i>220</i>&nbsp;                            throw var3;
+<i>221</i>&nbsp;                        }
+<i>222</i>&nbsp;                    }
+<i>223</i>&nbsp;                }
+<i>224</i>&nbsp;            }
+<i>225</i>&nbsp;        }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;        public void initialize(AlgorithmParameterSpec var1, SecureRandom var2) throws InvalidAlgorithmParameterException {
+<i>228</i>&nbsp;            if(this.serviceIterator == null) {
+<i>229</i>&nbsp;                this.spi.initialize(var1, var2);
+<i>230</i>&nbsp;            } else {
+<i>231</i>&nbsp;                Exception var3 = null;
+<i>232</i>&nbsp;                KeyPairGeneratorSpi var4 = this.spi;
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;                while(true) {
+<i>235</i>&nbsp;                    try {
+<i>236</i>&nbsp;                        var4.initialize(var1, var2);
+<b class="nc"><i>237</i>&nbsp;                        this.initType = 3;</b>
+<i>238</i>&nbsp;                        this.initKeySize = 0;
+<b class="nc"><i>239</i>&nbsp;                        this.initParams = var1;</b>
+<i>240</i>&nbsp;                        this.initRandom = var2;
+<i>241</i>&nbsp;                        return;
+<i>242</i>&nbsp;                    } catch (Exception var6) {
+<i>243</i>&nbsp;                        if(var3 == null) {
+<i>244</i>&nbsp;                            var3 = var6;
+<i>245</i>&nbsp;                        }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;                        var4 = this.nextSpi(var4, false);
+<i>248</i>&nbsp;                        if(var4 == null) {
+<i>249</i>&nbsp;                            if(var3 instanceof RuntimeException) {
+<i>250</i>&nbsp;                                throw (RuntimeException)var3;
+<i>251</i>&nbsp;                            }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;                            throw (InvalidAlgorithmParameterException)var3;
+<i>254</i>&nbsp;                        }
+<i>255</i>&nbsp;                    }
+<i>256</i>&nbsp;                }
+<i>257</i>&nbsp;            }
+<i>258</i>&nbsp;        }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;        public KeyPair generateKeyPair() {
+<i>261</i>&nbsp;            if(this.serviceIterator == null) {
+<i>262</i>&nbsp;                return this.spi.generateKeyPair();
+<i>263</i>&nbsp;            } else {
+<i>264</i>&nbsp;                RuntimeException var1 = null;
+<i>265</i>&nbsp;                KeyPairGeneratorSpi var2 = this.spi;
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;                while(true) {
+<i>268</i>&nbsp;                    try {
+<i>269</i>&nbsp;                        return var2.generateKeyPair();
+<i>270</i>&nbsp;                    } catch (RuntimeException var4) {
+<i>271</i>&nbsp;                        if(var1 == null) {
+<i>272</i>&nbsp;                            var1 = var4;
+<b class="nc"><i>273</i>&nbsp;                        }</b>
+<i>274</i>&nbsp;
+<b class="nc"><i>275</i>&nbsp;                        var2 = this.nextSpi(var2, true);</b>
+<i>276</i>&nbsp;                        if(var2 == null) {
+<i>277</i>&nbsp;                            throw var1;
+<i>278</i>&nbsp;                        }
+<i>279</i>&nbsp;                    }
+<i>280</i>&nbsp;                }
+<i>281</i>&nbsp;            }
+<i>282</i>&nbsp;        }
+<i>283</i>&nbsp;    }
+<b class="nc"><i>284</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

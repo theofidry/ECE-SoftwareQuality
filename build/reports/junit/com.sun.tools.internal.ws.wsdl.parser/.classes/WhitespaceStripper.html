@@ -1,0 +1,175 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WhitespaceStripper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.ws.wsdl.parser</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WhitespaceStripper (com.sun.tools.internal.ws.wsdl.parser)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WhitespaceStripper</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.ws.wsdl.parser;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.bind.WhiteSpaceProcessor;
+<i>9</i>&nbsp;import org.xml.sax.Attributes;
+<i>10</i>&nbsp;import org.xml.sax.ContentHandler;
+<i>11</i>&nbsp;import org.xml.sax.EntityResolver;
+<i>12</i>&nbsp;import org.xml.sax.ErrorHandler;
+<i>13</i>&nbsp;import org.xml.sax.SAXException;
+<i>14</i>&nbsp;import org.xml.sax.XMLReader;
+<i>15</i>&nbsp;import org.xml.sax.helpers.XMLFilterImpl;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;class WhitespaceStripper extends XMLFilterImpl {
+<i>18</i>&nbsp;    private int state = 0;
+<i>19</i>&nbsp;    private char[] buf = new char[1024];
+<i>20</i>&nbsp;    private int bufLen = 0;
+<i>21</i>&nbsp;    private static final int AFTER_START_ELEMENT = 1;
+<i>22</i>&nbsp;    private static final int AFTER_END_ELEMENT = 2;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public WhitespaceStripper(XMLReader reader) {
+<i>25</i>&nbsp;        this.setParent(reader);
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public WhitespaceStripper(ContentHandler handler, ErrorHandler eh, EntityResolver er) {
+<i>29</i>&nbsp;        this.setContentHandler(handler);
+<i>30</i>&nbsp;        if(eh != null) {
+<i>31</i>&nbsp;            this.setErrorHandler(eh);
+<i>32</i>&nbsp;        }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;        if(er != null) {
+<i>35</i>&nbsp;            this.setEntityResolver(er);
+<i>36</i>&nbsp;        }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public void characters(char[] ch, int start, int length) throws SAXException {
+<i>41</i>&nbsp;        switch(this.state) {
+<i>42</i>&nbsp;        case 1:
+<i>43</i>&nbsp;            if(this.bufLen + length &gt; this.buf.length) {
+<i>44</i>&nbsp;                char[] var6 = new char[Math.max(this.bufLen + length, this.buf.length * 2)];
+<i>45</i>&nbsp;                System.arraycopy(this.buf, 0, var6, 0, this.bufLen);
+<b class="nc"><i>46</i>&nbsp;                this.buf = var6;</b>
+<i>47</i>&nbsp;            }
+<b class="nc"><i>48</i>&nbsp;</b>
+<b class="nc"><i>49</i>&nbsp;            System.arraycopy(ch, start, this.buf, this.bufLen, length);</b>
+<i>50</i>&nbsp;            this.bufLen += length;
+<i>51</i>&nbsp;            break;
+<i>52</i>&nbsp;        case 2:
+<i>53</i>&nbsp;            int len = start + length;
+<b class="nc"><i>54</i>&nbsp;</b>
+<b class="nc"><i>55</i>&nbsp;            for(int i = start; i &lt; len; ++i) {</b>
+<i>56</i>&nbsp;                if(!WhiteSpaceProcessor.isWhiteSpace(ch[i])) {
+<i>57</i>&nbsp;                    super.characters(ch, start, length);
+<b class="nc"><i>58</i>&nbsp;                    return;</b>
+<b class="nc"><i>59</i>&nbsp;                }</b>
+<b class="nc"><i>60</i>&nbsp;            }</b>
+<b class="nc"><i>61</i>&nbsp;        }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {</b>
+<i>66</i>&nbsp;        this.processPendingText();
+<i>67</i>&nbsp;        super.startElement(uri, localName, qName, atts);
+<i>68</i>&nbsp;        this.state = 1;
+<i>69</i>&nbsp;        this.bufLen = 0;
+<i>70</i>&nbsp;    }
+<b class="nc"><i>71</i>&nbsp;</b>
+<i>72</i>&nbsp;    public void endElement(String uri, String localName, String qName) throws SAXException {
+<b class="nc"><i>73</i>&nbsp;        this.processPendingText();</b>
+<b class="nc"><i>74</i>&nbsp;        super.endElement(uri, localName, qName);</b>
+<b class="nc"><i>75</i>&nbsp;        this.state = 2;</b>
+<i>76</i>&nbsp;    }
+<b class="nc"><i>77</i>&nbsp;</b>
+<b class="nc"><i>78</i>&nbsp;    private void processPendingText() throws SAXException {</b>
+<b class="nc"><i>79</i>&nbsp;        if(this.state == 1) {</b>
+<i>80</i>&nbsp;            for(int i = this.bufLen - 1; i &gt;= 0; --i) {
+<i>81</i>&nbsp;                if(!WhiteSpaceProcessor.isWhiteSpace(this.buf[i])) {
+<b class="nc"><i>82</i>&nbsp;                    super.characters(this.buf, 0, this.bufLen);</b>
+<b class="nc"><i>83</i>&nbsp;                    return;</b>
+<b class="nc"><i>84</i>&nbsp;                }</b>
+<b class="nc"><i>85</i>&nbsp;            }</b>
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

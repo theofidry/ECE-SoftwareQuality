@@ -1,0 +1,195 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PlainClient</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.security.sasl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PlainClient (com.sun.security.sasl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PlainClient</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 47)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.security.sasl;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>9</i>&nbsp;import javax.security.sasl.SaslClient;
+<i>10</i>&nbsp;import javax.security.sasl.SaslException;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;final class PlainClient implements SaslClient {
+<i>13</i>&nbsp;    private boolean completed = false;
+<i>14</i>&nbsp;    private byte[] pw;
+<i>15</i>&nbsp;    private String authorizationID;
+<i>16</i>&nbsp;    private String authenticationID;
+<i>17</i>&nbsp;    private static byte SEP = 0;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    PlainClient(String var1, String var2, byte[] var3) throws SaslException {
+<b class="nc"><i>20</i>&nbsp;        if(var2 != null &amp;&amp; var3 != null) {</b>
+<i>21</i>&nbsp;            this.authorizationID = var1;
+<i>22</i>&nbsp;            this.authenticationID = var2;
+<i>23</i>&nbsp;            this.pw = var3;
+<b class="nc"><i>24</i>&nbsp;        } else {</b>
+<i>25</i>&nbsp;            throw new SaslException(&quot;PLAIN: authorization ID and password must be specified&quot;);
+<i>26</i>&nbsp;        }
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public String getMechanismName() {
+<i>30</i>&nbsp;        return &quot;PLAIN&quot;;
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public boolean hasInitialResponse() {
+<i>34</i>&nbsp;        return true;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public void dispose() throws SaslException {
+<b class="nc"><i>38</i>&nbsp;        this.clearPassword();</b>
+<b class="nc"><i>39</i>&nbsp;    }</b>
+<b class="nc"><i>40</i>&nbsp;</b>
+<i>41</i>&nbsp;    public byte[] evaluateChallenge(byte[] var1) throws SaslException {
+<i>42</i>&nbsp;        if(this.completed) {
+<i>43</i>&nbsp;            throw new IllegalStateException(&quot;PLAIN authentication already completed&quot;);
+<b class="nc"><i>44</i>&nbsp;        } else {</b>
+<b class="nc"><i>45</i>&nbsp;            this.completed = true;</b>
+<b class="nc"><i>46</i>&nbsp;</b>
+<i>47</i>&nbsp;            try {
+<i>48</i>&nbsp;                byte[] var2 = this.authorizationID != null?this.authorizationID.getBytes(&quot;UTF8&quot;):null;
+<i>49</i>&nbsp;                byte[] var3 = this.authenticationID.getBytes(&quot;UTF8&quot;);
+<i>50</i>&nbsp;                byte[] var4 = new byte[this.pw.length + var3.length + 2 + (var2 == null?0:var2.length)];
+<i>51</i>&nbsp;                int var5 = 0;
+<i>52</i>&nbsp;                if(var2 != null) {
+<i>53</i>&nbsp;                    System.arraycopy(var2, 0, var4, 0, var2.length);
+<i>54</i>&nbsp;                    var5 = var2.length;
+<i>55</i>&nbsp;                }
+<b class="nc"><i>56</i>&nbsp;</b>
+<i>57</i>&nbsp;                var4[var5++] = SEP;
+<i>58</i>&nbsp;                System.arraycopy(var3, 0, var4, var5, var3.length);
+<i>59</i>&nbsp;                var5 += var3.length;
+<b class="nc"><i>60</i>&nbsp;                var4[var5++] = SEP;</b>
+<i>61</i>&nbsp;                System.arraycopy(this.pw, 0, var4, var5, this.pw.length);
+<i>62</i>&nbsp;                this.clearPassword();
+<i>63</i>&nbsp;                return var4;
+<b class="nc"><i>64</i>&nbsp;            } catch (UnsupportedEncodingException var6) {</b>
+<i>65</i>&nbsp;                throw new SaslException(&quot;Cannot get UTF-8 encoding of ids&quot;, var6);
+<i>66</i>&nbsp;            }
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public boolean isComplete() {
+<i>71</i>&nbsp;        return this.completed;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public byte[] unwrap(byte[] var1, int var2, int var3) throws SaslException {
+<i>75</i>&nbsp;        if(this.completed) {
+<i>76</i>&nbsp;            throw new SaslException(&quot;PLAIN supports neither integrity nor privacy&quot;);
+<i>77</i>&nbsp;        } else {
+<b class="nc"><i>78</i>&nbsp;            throw new IllegalStateException(&quot;PLAIN authentication not completed&quot;);</b>
+<b class="nc"><i>79</i>&nbsp;        }</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;    public byte[] wrap(byte[] var1, int var2, int var3) throws SaslException {</b>
+<i>83</i>&nbsp;        if(this.completed) {
+<i>84</i>&nbsp;            throw new SaslException(&quot;PLAIN supports neither integrity nor privacy&quot;);
+<b class="nc"><i>85</i>&nbsp;        } else {</b>
+<i>86</i>&nbsp;            throw new IllegalStateException(&quot;PLAIN authentication not completed&quot;);
+<i>87</i>&nbsp;        }
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<b class="nc"><i>90</i>&nbsp;    public Object getNegotiatedProperty(String var1) {</b>
+<i>91</i>&nbsp;        if(this.completed) {
+<i>92</i>&nbsp;            return var1.equals(&quot;javax.security.sasl.qop&quot;)?&quot;auth&quot;:null;
+<b class="nc"><i>93</i>&nbsp;        } else {</b>
+<b class="nc"><i>94</i>&nbsp;            throw new IllegalStateException(&quot;PLAIN authentication not completed&quot;);</b>
+<b class="nc"><i>95</i>&nbsp;        }</b>
+<b class="nc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;
+<b class="nc"><i>98</i>&nbsp;    private void clearPassword() {</b>
+<b class="nc"><i>99</i>&nbsp;        if(this.pw != null) {</b>
+<i>100</i>&nbsp;            for(int var1 = 0; var1 &lt; this.pw.length; ++var1) {
+<b class="nc"><i>101</i>&nbsp;                this.pw[var1] = 0;</b>
+<b class="nc"><i>102</i>&nbsp;            }</b>
+<i>103</i>&nbsp;
+<b class="nc"><i>104</i>&nbsp;            this.pw = null;</b>
+<i>105</i>&nbsp;        }
+<b class="nc"><i>106</i>&nbsp;</b>
+<b class="nc"><i>107</i>&nbsp;    }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<b class="nc"><i>109</i>&nbsp;    protected void finalize() {</b>
+<i>110</i>&nbsp;        this.clearPassword();
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,2037 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ScriptableObject</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.org.mozilla.javascript.internal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ScriptableObject (sun.org.mozilla.javascript.internal)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScriptableObject</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 69)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 555)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ScriptableObject$GetterSlot</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ScriptableObject$Slot</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 71)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 557)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.org.mozilla.javascript.internal;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.lang.annotation.Annotation;
+<i>9</i>&nbsp;import java.lang.reflect.AccessibleObject;
+<i>10</i>&nbsp;import java.lang.reflect.Constructor;
+<i>11</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>12</i>&nbsp;import java.lang.reflect.Member;
+<i>13</i>&nbsp;import java.lang.reflect.Method;
+<i>14</i>&nbsp;import java.lang.reflect.Modifier;
+<i>15</i>&nbsp;import java.util.HashMap;
+<i>16</i>&nbsp;import java.util.HashSet;
+<i>17</i>&nbsp;import java.util.Map;
+<i>18</i>&nbsp;import sun.org.mozilla.javascript.internal.BaseFunction;
+<i>19</i>&nbsp;import sun.org.mozilla.javascript.internal.Callable;
+<i>20</i>&nbsp;import sun.org.mozilla.javascript.internal.ConstProperties;
+<i>21</i>&nbsp;import sun.org.mozilla.javascript.internal.Context;
+<i>22</i>&nbsp;import sun.org.mozilla.javascript.internal.ContextFactory;
+<i>23</i>&nbsp;import sun.org.mozilla.javascript.internal.Function;
+<i>24</i>&nbsp;import sun.org.mozilla.javascript.internal.FunctionObject;
+<i>25</i>&nbsp;import sun.org.mozilla.javascript.internal.Kit;
+<i>26</i>&nbsp;import sun.org.mozilla.javascript.internal.LazilyLoadedCtor;
+<i>27</i>&nbsp;import sun.org.mozilla.javascript.internal.MemberBox;
+<i>28</i>&nbsp;import sun.org.mozilla.javascript.internal.NativeObject;
+<i>29</i>&nbsp;import sun.org.mozilla.javascript.internal.ObjToIntMap;
+<i>30</i>&nbsp;import sun.org.mozilla.javascript.internal.ScriptRuntime;
+<i>31</i>&nbsp;import sun.org.mozilla.javascript.internal.Scriptable;
+<i>32</i>&nbsp;import sun.org.mozilla.javascript.internal.Undefined;
+<i>33</i>&nbsp;import sun.org.mozilla.javascript.internal.Wrapper;
+<i>34</i>&nbsp;import sun.org.mozilla.javascript.internal.annotations.JSConstructor;
+<i>35</i>&nbsp;import sun.org.mozilla.javascript.internal.annotations.JSFunction;
+<i>36</i>&nbsp;import sun.org.mozilla.javascript.internal.annotations.JSGetter;
+<i>37</i>&nbsp;import sun.org.mozilla.javascript.internal.annotations.JSSetter;
+<i>38</i>&nbsp;import sun.org.mozilla.javascript.internal.annotations.JSStaticFunction;
+<i>39</i>&nbsp;import sun.org.mozilla.javascript.internal.debug.DebuggableObject;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;public abstract class ScriptableObject implements Scriptable, DebuggableObject, ConstProperties {
+<i>42</i>&nbsp;    public static final int EMPTY = 0;
+<i>43</i>&nbsp;    public static final int READONLY = 1;
+<i>44</i>&nbsp;    public static final int DONTENUM = 2;
+<i>45</i>&nbsp;    public static final int PERMANENT = 4;
+<i>46</i>&nbsp;    public static final int UNINITIALIZED_CONST = 8;
+<i>47</i>&nbsp;    public static final int CONST = 13;
+<i>48</i>&nbsp;    private Scriptable prototypeObject;
+<i>49</i>&nbsp;    private Scriptable parentScopeObject;
+<i>50</i>&nbsp;    private static final ScriptableObject.Slot REMOVED = new ScriptableObject.Slot((String)null, 0, 1);
+<i>51</i>&nbsp;    private transient ScriptableObject.Slot[] slots;
+<i>52</i>&nbsp;    private int count;
+<i>53</i>&nbsp;    private transient ScriptableObject.Slot firstAdded;
+<i>54</i>&nbsp;    private transient ScriptableObject.Slot lastAdded;
+<i>55</i>&nbsp;    private transient ScriptableObject.Slot lastAccess;
+<i>56</i>&nbsp;    private volatile Map&lt;Object, Object&gt; associatedValues;
+<i>57</i>&nbsp;    private static final int SLOT_QUERY = 1;
+<i>58</i>&nbsp;    private static final int SLOT_MODIFY = 2;
+<i>59</i>&nbsp;    private static final int SLOT_REMOVE = 3;
+<i>60</i>&nbsp;    private static final int SLOT_MODIFY_GETTER_SETTER = 4;
+<i>61</i>&nbsp;    private static final int SLOT_MODIFY_CONST = 5;
+<i>62</i>&nbsp;    private static final int SLOT_CONVERT_ACCESSOR_TO_DATA = 6;
+<i>63</i>&nbsp;    private boolean isExtensible;
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    protected static ScriptableObject buildDataDescriptor(Scriptable var0, Object var1, int var2) {
+<i>66</i>&nbsp;        NativeObject var3 = new NativeObject();
+<i>67</i>&nbsp;        ScriptRuntime.setObjectProtoAndParent(var3, var0);
+<i>68</i>&nbsp;        var3.defineProperty(&quot;value&quot;, (Object)var1, 0);
+<i>69</i>&nbsp;        var3.defineProperty(&quot;writable&quot;, (Object)Boolean.valueOf((var2 &amp; 1) == 0), 0);
+<i>70</i>&nbsp;        var3.defineProperty(&quot;enumerable&quot;, (Object)Boolean.valueOf((var2 &amp; 2) == 0), 0);
+<i>71</i>&nbsp;        var3.defineProperty(&quot;configurable&quot;, (Object)Boolean.valueOf((var2 &amp; 4) == 0), 0);
+<i>72</i>&nbsp;        return var3;
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    static void checkValidAttributes(int var0) {
+<i>76</i>&nbsp;        if((var0 &amp; -16) != 0) {
+<i>77</i>&nbsp;            throw new IllegalArgumentException(String.valueOf(var0));
+<i>78</i>&nbsp;        }
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public ScriptableObject() {
+<i>82</i>&nbsp;        this.lastAccess = REMOVED;
+<i>83</i>&nbsp;        this.isExtensible = true;
+<i>84</i>&nbsp;        Context.checkRhinoDisabled();
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    public ScriptableObject(Scriptable var1, Scriptable var2) {
+<i>88</i>&nbsp;        this.lastAccess = REMOVED;
+<i>89</i>&nbsp;        this.isExtensible = true;
+<i>90</i>&nbsp;        Context.checkRhinoDisabled();
+<i>91</i>&nbsp;        if(var1 == null) {
+<i>92</i>&nbsp;            throw new IllegalArgumentException();
+<i>93</i>&nbsp;        } else {
+<i>94</i>&nbsp;            this.parentScopeObject = var1;
+<i>95</i>&nbsp;            this.prototypeObject = var2;
+<b class="nc"><i>96</i>&nbsp;        }</b>
+<b class="nc"><i>97</i>&nbsp;    }</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    public String getTypeOf() {
+<i>100</i>&nbsp;        return this.avoidObjectDetection()?&quot;undefined&quot;:&quot;object&quot;;
+<i>101</i>&nbsp;    }
+<b class="nc"><i>102</i>&nbsp;</b>
+<i>103</i>&nbsp;    public abstract String getClassName();
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public boolean has(String var1, Scriptable var2) {
+<b class="nc"><i>106</i>&nbsp;        return null != this.getSlot(var1, 0, 1);</b>
+<b class="nc"><i>107</i>&nbsp;    }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<i>109</i>&nbsp;    public boolean has(int var1, Scriptable var2) {
+<b class="nc"><i>110</i>&nbsp;        return null != this.getSlot((String)null, var1, 1);</b>
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    public Object get(String var1, Scriptable var2) {
+<i>114</i>&nbsp;        return this.getImpl(var1, 0, var2);
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public Object get(int var1, Scriptable var2) {
+<i>118</i>&nbsp;        return this.getImpl((String)null, var1, var2);
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    public void put(String var1, Scriptable var2, Object var3) {
+<i>122</i>&nbsp;        if(!this.putImpl(var1, 0, var2, var3, 0)) {
+<i>123</i>&nbsp;            if(var2 == this) {
+<i>124</i>&nbsp;                throw Kit.codeBug();
+<i>125</i>&nbsp;            } else {
+<i>126</i>&nbsp;                var2.put(var1, var2, var3);
+<i>127</i>&nbsp;            }
+<i>128</i>&nbsp;        }
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public void put(int var1, Scriptable var2, Object var3) {
+<b class="nc"><i>132</i>&nbsp;        if(!this.putImpl((String)null, var1, var2, var3, 0)) {</b>
+<i>133</i>&nbsp;            if(var2 == this) {
+<i>134</i>&nbsp;                throw Kit.codeBug();
+<i>135</i>&nbsp;            } else {
+<i>136</i>&nbsp;                var2.put(var1, var2, var3);
+<i>137</i>&nbsp;            }
+<i>138</i>&nbsp;        }
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public void delete(String var1) {
+<i>142</i>&nbsp;        this.checkNotSealed(var1, 0);
+<i>143</i>&nbsp;        this.accessSlot(var1, 0, 3);
+<b class="nc"><i>144</i>&nbsp;    }</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    public void delete(int var1) {
+<i>147</i>&nbsp;        this.checkNotSealed((String)null, var1);
+<i>148</i>&nbsp;        this.accessSlot((String)null, var1, 3);
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public void putConst(String var1, Scriptable var2, Object var3) {
+<i>152</i>&nbsp;        if(!this.putImpl(var1, 0, var2, var3, 1)) {
+<i>153</i>&nbsp;            if(var2 == this) {
+<i>154</i>&nbsp;                throw Kit.codeBug();
+<i>155</i>&nbsp;            } else {
+<i>156</i>&nbsp;                if(var2 instanceof ConstProperties) {
+<i>157</i>&nbsp;                    ((ConstProperties)var2).putConst(var1, var2, var3);
+<i>158</i>&nbsp;                } else {
+<b class="nc"><i>159</i>&nbsp;                    var2.put(var1, var2, var3);</b>
+<b class="nc"><i>160</i>&nbsp;                }</b>
+<b class="nc"><i>161</i>&nbsp;</b>
+<i>162</i>&nbsp;            }
+<b class="nc"><i>163</i>&nbsp;        }</b>
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<b class="nc"><i>165</i>&nbsp;</b>
+<b class="nc"><i>166</i>&nbsp;    public void defineConst(String var1, Scriptable var2) {</b>
+<i>167</i>&nbsp;        if(!this.putImpl(var1, 0, var2, Undefined.instance, 8)) {
+<i>168</i>&nbsp;            if(var2 == this) {
+<i>169</i>&nbsp;                throw Kit.codeBug();
+<b class="nc"><i>170</i>&nbsp;            } else {</b>
+<i>171</i>&nbsp;                if(var2 instanceof ConstProperties) {
+<i>172</i>&nbsp;                    ((ConstProperties)var2).defineConst(var1, var2);
+<i>173</i>&nbsp;                }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;            }
+<i>176</i>&nbsp;        }
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public boolean isConst(String var1) {
+<i>180</i>&nbsp;        ScriptableObject.Slot var2 = this.getSlot(var1, 0, 1);
+<i>181</i>&nbsp;        return var2 == null?false:(var2.getAttributes() &amp; 5) == 5;
+<b class="nc"><i>182</i>&nbsp;    }</b>
+<b class="nc"><i>183</i>&nbsp;</b>
+<b class="nc"><i>184</i>&nbsp;    /** @deprecated */</b>
+<i>185</i>&nbsp;    public final int getAttributes(String var1, Scriptable var2) {
+<b class="nc"><i>186</i>&nbsp;        return this.getAttributes(var1);</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /** @deprecated */
+<i>190</i>&nbsp;    public final int getAttributes(int var1, Scriptable var2) {
+<i>191</i>&nbsp;        return this.getAttributes(var1);
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    /** @deprecated */
+<i>195</i>&nbsp;    public final void setAttributes(String var1, Scriptable var2, int var3) {
+<i>196</i>&nbsp;        this.setAttributes(var1, var3);
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    /** @deprecated */
+<i>200</i>&nbsp;    public void setAttributes(int var1, Scriptable var2, int var3) {
+<i>201</i>&nbsp;        this.setAttributes(var1, var3);
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    public int getAttributes(String var1) {
+<i>205</i>&nbsp;        return this.findAttributeSlot(var1, 0, 1).getAttributes();
+<b class="nc"><i>206</i>&nbsp;    }</b>
+<b class="nc"><i>207</i>&nbsp;</b>
+<b class="nc"><i>208</i>&nbsp;    public int getAttributes(int var1) {</b>
+<b class="nc"><i>209</i>&nbsp;        return this.findAttributeSlot((String)null, var1, 1).getAttributes();</b>
+<b class="nc"><i>210</i>&nbsp;    }</b>
+<b class="nc"><i>211</i>&nbsp;</b>
+<b class="nc"><i>212</i>&nbsp;    public void setAttributes(String var1, int var2) {</b>
+<i>213</i>&nbsp;        this.checkNotSealed(var1, 0);
+<i>214</i>&nbsp;        this.findAttributeSlot(var1, 0, 2).setAttributes(var2);
+<b class="nc"><i>215</i>&nbsp;    }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    public void setAttributes(int var1, int var2) {
+<i>218</i>&nbsp;        this.checkNotSealed((String)null, var1);
+<b class="nc"><i>219</i>&nbsp;        this.findAttributeSlot((String)null, var1, 2).setAttributes(var2);</b>
+<b class="nc"><i>220</i>&nbsp;    }</b>
+<i>221</i>&nbsp;
+<b class="nc"><i>222</i>&nbsp;    public void setGetterOrSetter(String var1, int var2, Callable var3, boolean var4) {</b>
+<i>223</i>&nbsp;        this.setGetterOrSetter(var1, var2, var3, var4, false);
+<i>224</i>&nbsp;    }
+<b class="nc"><i>225</i>&nbsp;</b>
+<b class="nc"><i>226</i>&nbsp;    private void setGetterOrSetter(String var1, int var2, Callable var3, boolean var4, boolean var5) {</b>
+<b class="nc"><i>227</i>&nbsp;        if(var1 != null &amp;&amp; var2 != 0) {</b>
+<b class="nc"><i>228</i>&nbsp;            throw new IllegalArgumentException(var1);</b>
+<i>229</i>&nbsp;        } else {
+<i>230</i>&nbsp;            if(!var5) {
+<i>231</i>&nbsp;                this.checkNotSealed(var1, var2);
+<b class="nc"><i>232</i>&nbsp;            }</b>
+<b class="nc"><i>233</i>&nbsp;</b>
+<i>234</i>&nbsp;            ScriptableObject.GetterSlot var6;
+<b class="nc"><i>235</i>&nbsp;            if(this.isExtensible()) {</b>
+<i>236</i>&nbsp;                var6 = (ScriptableObject.GetterSlot)this.getSlot(var1, var2, 4);
+<i>237</i>&nbsp;            } else {
+<i>238</i>&nbsp;                var6 = (ScriptableObject.GetterSlot)this.getSlot(var1, var2, 1);
+<i>239</i>&nbsp;                if(var6 == null) {
+<i>240</i>&nbsp;                    return;
+<i>241</i>&nbsp;                }
+<i>242</i>&nbsp;            }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;            if(!var5) {
+<i>245</i>&nbsp;                var6.checkNotReadonly();
+<i>246</i>&nbsp;            }
+<i>247</i>&nbsp;
+<b class="nc"><i>248</i>&nbsp;            if(var4) {</b>
+<b class="nc"><i>249</i>&nbsp;                var6.setter = var3;</b>
+<b class="nc"><i>250</i>&nbsp;            } else {</b>
+<b class="nc"><i>251</i>&nbsp;                var6.getter = var3;</b>
+<i>252</i>&nbsp;            }
+<i>253</i>&nbsp;
+<b class="nc"><i>254</i>&nbsp;            var6.value = Undefined.instance;</b>
+<i>255</i>&nbsp;        }
+<b class="nc"><i>256</i>&nbsp;    }</b>
+<b class="nc"><i>257</i>&nbsp;</b>
+<i>258</i>&nbsp;    public Object getGetterOrSetter(String var1, int var2, boolean var3) {
+<i>259</i>&nbsp;        if(var1 != null &amp;&amp; var2 != 0) {
+<b class="nc"><i>260</i>&nbsp;            throw new IllegalArgumentException(var1);</b>
+<i>261</i>&nbsp;        } else {
+<i>262</i>&nbsp;            ScriptableObject.Slot var4 = this.getSlot(var1, var2, 1);
+<b class="nc"><i>263</i>&nbsp;            if(var4 == null) {</b>
+<b class="nc"><i>264</i>&nbsp;                return null;</b>
+<i>265</i>&nbsp;            } else if(var4 instanceof ScriptableObject.GetterSlot) {
+<b class="nc"><i>266</i>&nbsp;                ScriptableObject.GetterSlot var5 = (ScriptableObject.GetterSlot)var4;</b>
+<i>267</i>&nbsp;                Object var6 = var3?var5.setter:var5.getter;
+<i>268</i>&nbsp;                return var6 != null?var6:Undefined.instance;
+<i>269</i>&nbsp;            } else {
+<i>270</i>&nbsp;                return Undefined.instance;
+<i>271</i>&nbsp;            }
+<i>272</i>&nbsp;        }
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    protected boolean isGetterOrSetter(String var1, int var2, boolean var3) {
+<i>276</i>&nbsp;        ScriptableObject.Slot var4 = this.getSlot(var1, var2, 1);
+<i>277</i>&nbsp;        if(var4 instanceof ScriptableObject.GetterSlot) {
+<i>278</i>&nbsp;            if(var3 &amp;&amp; ((ScriptableObject.GetterSlot)var4).setter != null) {
+<b class="nc"><i>279</i>&nbsp;                return true;</b>
+<i>280</i>&nbsp;            }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;            if(!var3 &amp;&amp; ((ScriptableObject.GetterSlot)var4).getter != null) {
+<i>283</i>&nbsp;                return true;
+<i>284</i>&nbsp;            }
+<i>285</i>&nbsp;        }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;        return false;
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    void addLazilyInitializedValue(String var1, int var2, LazilyLoadedCtor var3, int var4) {
+<b class="nc"><i>291</i>&nbsp;        if(var1 != null &amp;&amp; var2 != 0) {</b>
+<i>292</i>&nbsp;            throw new IllegalArgumentException(var1);
+<i>293</i>&nbsp;        } else {
+<i>294</i>&nbsp;            this.checkNotSealed(var1, var2);
+<i>295</i>&nbsp;            ScriptableObject.GetterSlot var5 = (ScriptableObject.GetterSlot)this.getSlot(var1, var2, 4);
+<i>296</i>&nbsp;            var5.setAttributes(var4);
+<i>297</i>&nbsp;            var5.getter = null;
+<i>298</i>&nbsp;            var5.setter = null;
+<i>299</i>&nbsp;            var5.value = var3;
+<b class="nc"><i>300</i>&nbsp;        }</b>
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    public Scriptable getPrototype() {
+<i>304</i>&nbsp;        return this.prototypeObject;
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    public void setPrototype(Scriptable var1) {
+<i>308</i>&nbsp;        this.prototypeObject = var1;
+<b class="nc"><i>309</i>&nbsp;    }</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    public Scriptable getParentScope() {
+<i>312</i>&nbsp;        return this.parentScopeObject;
+<i>313</i>&nbsp;    }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    public void setParentScope(Scriptable var1) {
+<i>316</i>&nbsp;        this.parentScopeObject = var1;
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<b class="nc"><i>319</i>&nbsp;    public Object[] getIds() {</b>
+<i>320</i>&nbsp;        return this.getIds(false);
+<i>321</i>&nbsp;    }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    public Object[] getAllIds() {
+<i>324</i>&nbsp;        return this.getIds(true);
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;    public Object getDefaultValue(Class&lt;?&gt; var1) {
+<i>328</i>&nbsp;        return getDefaultValue(this, var1);
+<b class="nc"><i>329</i>&nbsp;    }</b>
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    public static Object getDefaultValue(Scriptable var0, Class&lt;?&gt; var1) {
+<i>332</i>&nbsp;        Context var2 = null;
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;        for(int var3 = 0; var3 &lt; 2; ++var3) {
+<i>335</i>&nbsp;            boolean var4;
+<i>336</i>&nbsp;            if(var1 == ScriptRuntime.StringClass) {
+<i>337</i>&nbsp;                var4 = var3 == 0;
+<i>338</i>&nbsp;            } else {
+<i>339</i>&nbsp;                var4 = var3 == 1;
+<i>340</i>&nbsp;            }
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;            String var5;
+<i>343</i>&nbsp;            Object[] var6;
+<i>344</i>&nbsp;            if(var4) {
+<i>345</i>&nbsp;                var5 = &quot;toString&quot;;
+<i>346</i>&nbsp;                var6 = ScriptRuntime.emptyArgs;
+<i>347</i>&nbsp;            } else {
+<i>348</i>&nbsp;                var5 = &quot;valueOf&quot;;
+<b class="nc"><i>349</i>&nbsp;                var6 = new Object[1];</b>
+<b class="nc"><i>350</i>&nbsp;                String var7;</b>
+<b class="nc"><i>351</i>&nbsp;                if(var1 == null) {</b>
+<i>352</i>&nbsp;                    var7 = &quot;undefined&quot;;
+<b class="nc"><i>353</i>&nbsp;                } else if(var1 == ScriptRuntime.StringClass) {</b>
+<i>354</i>&nbsp;                    var7 = &quot;string&quot;;
+<i>355</i>&nbsp;                } else if(var1 == ScriptRuntime.ScriptableClass) {
+<i>356</i>&nbsp;                    var7 = &quot;object&quot;;
+<i>357</i>&nbsp;                } else if(var1 == ScriptRuntime.FunctionClass) {
+<i>358</i>&nbsp;                    var7 = &quot;function&quot;;
+<i>359</i>&nbsp;                } else if(var1 != ScriptRuntime.BooleanClass &amp;&amp; var1 != Boolean.TYPE) {
+<i>360</i>&nbsp;                    if(var1 != ScriptRuntime.NumberClass &amp;&amp; var1 != ScriptRuntime.ByteClass &amp;&amp; var1 != Byte.TYPE &amp;&amp; var1 != ScriptRuntime.ShortClass &amp;&amp; var1 != Short.TYPE &amp;&amp; var1 != ScriptRuntime.IntegerClass &amp;&amp; var1 != Integer.TYPE &amp;&amp; var1 != ScriptRuntime.FloatClass &amp;&amp; var1 != Float.TYPE &amp;&amp; var1 != ScriptRuntime.DoubleClass &amp;&amp; var1 != Double.TYPE) {
+<i>361</i>&nbsp;                        throw Context.reportRuntimeError1(&quot;msg.invalid.type&quot;, var1.toString());
+<i>362</i>&nbsp;                    }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;                    var7 = &quot;number&quot;;
+<i>365</i>&nbsp;                } else {
+<i>366</i>&nbsp;                    var7 = &quot;boolean&quot;;
+<i>367</i>&nbsp;                }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;                var6[0] = var7;
+<i>370</i>&nbsp;            }
+<b class="nc"><i>371</i>&nbsp;</b>
+<b class="nc"><i>372</i>&nbsp;            Object var11 = getProperty(var0, var5);</b>
+<b class="nc"><i>373</i>&nbsp;            if(var11 instanceof Function) {</b>
+<i>374</i>&nbsp;                Function var8 = (Function)var11;
+<i>375</i>&nbsp;                if(var2 == null) {
+<b class="nc"><i>376</i>&nbsp;                    var2 = Context.getContext();</b>
+<i>377</i>&nbsp;                }
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;                var11 = var8.call(var2, var8.getParentScope(), var0, var6);
+<i>380</i>&nbsp;                if(var11 != null) {
+<i>381</i>&nbsp;                    if(!(var11 instanceof Scriptable)) {
+<i>382</i>&nbsp;                        return var11;
+<i>383</i>&nbsp;                    }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;                    if(var1 == ScriptRuntime.ScriptableClass || var1 == ScriptRuntime.FunctionClass) {
+<i>386</i>&nbsp;                        return var11;
+<i>387</i>&nbsp;                    }
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;                    if(var4 &amp;&amp; var11 instanceof Wrapper) {
+<i>390</i>&nbsp;                        Object var9 = ((Wrapper)var11).unwrap();
+<i>391</i>&nbsp;                        if(var9 instanceof String) {
+<i>392</i>&nbsp;                            return var9;
+<i>393</i>&nbsp;                        }
+<i>394</i>&nbsp;                    }
+<i>395</i>&nbsp;                }
+<i>396</i>&nbsp;            }
+<i>397</i>&nbsp;        }
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;        String var10 = var1 == null?&quot;undefined&quot;:var1.getName();
+<i>400</i>&nbsp;        throw ScriptRuntime.typeError1(&quot;msg.default.value&quot;, var10);
+<i>401</i>&nbsp;    }
+<b class="nc"><i>402</i>&nbsp;</b>
+<b class="nc"><i>403</i>&nbsp;    public boolean hasInstance(Scriptable var1) {</b>
+<b class="nc"><i>404</i>&nbsp;        return ScriptRuntime.jsDelegatesTo(var1, this);</b>
+<b class="nc"><i>405</i>&nbsp;    }</b>
+<i>406</i>&nbsp;
+<b class="nc"><i>407</i>&nbsp;    public boolean avoidObjectDetection() {</b>
+<i>408</i>&nbsp;        return false;
+<i>409</i>&nbsp;    }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    protected Object equivalentValues(Object var1) {
+<i>412</i>&nbsp;        return this == var1?Boolean.TRUE:Scriptable.NOT_FOUND;
+<i>413</i>&nbsp;    }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;    public static &lt;T extends Scriptable&gt; void defineClass(Scriptable var0, Class&lt;T&gt; var1) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+<i>416</i>&nbsp;        defineClass(var0, var1, false, false);
+<i>417</i>&nbsp;    }
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;    public static &lt;T extends Scriptable&gt; void defineClass(Scriptable var0, Class&lt;T&gt; var1, boolean var2) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+<i>420</i>&nbsp;        defineClass(var0, var1, var2, false);
+<i>421</i>&nbsp;    }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    public static &lt;T extends Scriptable&gt; String defineClass(Scriptable var0, Class&lt;T&gt; var1, boolean var2, boolean var3) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+<b class="nc"><i>424</i>&nbsp;        BaseFunction var4 = buildClassCtor(var0, var1, var2, var3);</b>
+<b class="nc"><i>425</i>&nbsp;        if(var4 == null) {</b>
+<b class="nc"><i>426</i>&nbsp;            return null;</b>
+<b class="nc"><i>427</i>&nbsp;        } else {</b>
+<i>428</i>&nbsp;            String var5 = var4.getClassPrototype().getClassName();
+<i>429</i>&nbsp;            defineProperty(var0, var5, var4, 2);
+<b class="nc"><i>430</i>&nbsp;            return var5;</b>
+<i>431</i>&nbsp;        }
+<i>432</i>&nbsp;    }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    static &lt;T extends Scriptable&gt; BaseFunction buildClassCtor(Scriptable var0, Class&lt;T&gt; var1, boolean var2, boolean var3) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+<i>435</i>&nbsp;        Method[] var4 = FunctionObject.getMethodList(var1);
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;        for(int var5 = 0; var5 &lt; var4.length; ++var5) {
+<b class="nc"><i>438</i>&nbsp;            Method var6 = var4[var5];</b>
+<i>439</i>&nbsp;            if(var6.getName().equals(&quot;init&quot;)) {
+<i>440</i>&nbsp;                Class[] var7 = var6.getParameterTypes();
+<i>441</i>&nbsp;                Object[] var8;
+<i>442</i>&nbsp;                if(var7.length == 3 &amp;&amp; var7[0] == ScriptRuntime.ContextClass &amp;&amp; var7[1] == ScriptRuntime.ScriptableClass &amp;&amp; var7[2] == Boolean.TYPE &amp;&amp; Modifier.isStatic(var6.getModifiers())) {
+<i>443</i>&nbsp;                    var8 = new Object[]{Context.getContext(), var0, var2?Boolean.TRUE:Boolean.FALSE};
+<i>444</i>&nbsp;                    var6.invoke((Object)null, var8);
+<i>445</i>&nbsp;                    return null;
+<b class="nc"><i>446</i>&nbsp;                }</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;                if(var7.length == 1 &amp;&amp; var7[0] == ScriptRuntime.ScriptableClass &amp;&amp; Modifier.isStatic(var6.getModifiers())) {
+<i>449</i>&nbsp;                    var8 = new Object[]{var0};
+<i>450</i>&nbsp;                    var6.invoke((Object)null, var8);
+<i>451</i>&nbsp;                    return null;
+<i>452</i>&nbsp;                }
+<i>453</i>&nbsp;            }
+<b class="nc"><i>454</i>&nbsp;        }</b>
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;        Constructor[] var29 = var1.getConstructors();
+<i>457</i>&nbsp;        Constructor var30 = null;
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;        for(int var31 = 0; var31 &lt; var29.length; ++var31) {
+<i>460</i>&nbsp;            if(var29[var31].getParameterTypes().length == 0) {
+<i>461</i>&nbsp;                var30 = var29[var31];
+<b class="nc"><i>462</i>&nbsp;                break;</b>
+<i>463</i>&nbsp;            }
+<i>464</i>&nbsp;        }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;        if(var30 == null) {
+<i>467</i>&nbsp;            throw Context.reportRuntimeError1(&quot;msg.zero.arg.ctor&quot;, var1.getName());
+<i>468</i>&nbsp;        } else {
+<i>469</i>&nbsp;            Scriptable var32 = (Scriptable)var30.newInstance(ScriptRuntime.emptyArgs);
+<i>470</i>&nbsp;            String var33 = var32.getClassName();
+<i>471</i>&nbsp;            Scriptable var9 = null;
+<i>472</i>&nbsp;            if(var3) {
+<i>473</i>&nbsp;                Class var10 = var1.getSuperclass();
+<i>474</i>&nbsp;                if(ScriptRuntime.ScriptableClass.isAssignableFrom(var10) &amp;&amp; !Modifier.isAbstract(var10.getModifiers())) {
+<i>475</i>&nbsp;                    Class var11 = extendsScriptable(var10);
+<i>476</i>&nbsp;                    String var12 = defineClass(var0, var11, var2, var3);
+<b class="nc"><i>477</i>&nbsp;                    if(var12 != null) {</b>
+<i>478</i>&nbsp;                        var9 = getClassPrototype(var0, var12);
+<i>479</i>&nbsp;                    }
+<i>480</i>&nbsp;                }
+<i>481</i>&nbsp;            }
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;            if(var9 == null) {
+<i>484</i>&nbsp;                var9 = getObjectPrototype(var0);
+<i>485</i>&nbsp;            }
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;            var32.setPrototype(var9);
+<i>488</i>&nbsp;            Object var15 = findAnnotatedMember(var4, JSConstructor.class);
+<i>489</i>&nbsp;            if(var15 == null) {
+<i>490</i>&nbsp;                var15 = findAnnotatedMember(var29, JSConstructor.class);
+<i>491</i>&nbsp;            }
+<b class="nc"><i>492</i>&nbsp;</b>
+<i>493</i>&nbsp;            if(var15 == null) {
+<i>494</i>&nbsp;                var15 = FunctionObject.findSingleMethod(var4, &quot;jsConstructor&quot;);
+<i>495</i>&nbsp;            }
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;            if(var15 == null) {
+<i>498</i>&nbsp;                if(var29.length == 1) {
+<i>499</i>&nbsp;                    var15 = var29[0];
+<i>500</i>&nbsp;                } else if(var29.length == 2) {
+<i>501</i>&nbsp;                    if(var29[0].getParameterTypes().length == 0) {
+<i>502</i>&nbsp;                        var15 = var29[1];
+<i>503</i>&nbsp;                    } else if(var29[1].getParameterTypes().length == 0) {
+<i>504</i>&nbsp;                        var15 = var29[0];
+<i>505</i>&nbsp;                    }
+<i>506</i>&nbsp;                }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;                if(var15 == null) {
+<i>509</i>&nbsp;                    throw Context.reportRuntimeError1(&quot;msg.ctor.multiple.parms&quot;, var1.getName());
+<i>510</i>&nbsp;                }
+<b class="nc"><i>511</i>&nbsp;            }</b>
+<b class="nc"><i>512</i>&nbsp;</b>
+<i>513</i>&nbsp;            FunctionObject var16 = new FunctionObject(var33, (Member)var15, var0);
+<b class="nc"><i>514</i>&nbsp;            if(var16.isVarArgsMethod()) {</b>
+<b class="nc"><i>515</i>&nbsp;                throw Context.reportRuntimeError1(&quot;msg.varargs.ctor&quot;, ((Member)var15).getName());</b>
+<i>516</i>&nbsp;            } else {
+<b class="nc"><i>517</i>&nbsp;                var16.initAsConstructor(var0, var32);</b>
+<i>518</i>&nbsp;                Method var17 = null;
+<i>519</i>&nbsp;                HashSet var18 = new HashSet(var4.length);
+<i>520</i>&nbsp;                Method[] var19 = var4;
+<i>521</i>&nbsp;                int var20 = var4.length;
+<b class="nc"><i>522</i>&nbsp;</b>
+<b class="nc"><i>523</i>&nbsp;                for(int var21 = 0; var21 &lt; var20; ++var21) {</b>
+<b class="nc"><i>524</i>&nbsp;                    Method var22 = var19[var21];</b>
+<i>525</i>&nbsp;                    if(var22 != var15) {
+<b class="nc"><i>526</i>&nbsp;                        String var23 = var22.getName();</b>
+<b class="nc"><i>527</i>&nbsp;                        if(var23.equals(&quot;finishInit&quot;)) {</b>
+<i>528</i>&nbsp;                            Class[] var24 = var22.getParameterTypes();
+<b class="nc"><i>529</i>&nbsp;                            if(var24.length == 3 &amp;&amp; var24[0] == ScriptRuntime.ScriptableClass &amp;&amp; var24[1] == FunctionObject.class &amp;&amp; var24[2] == ScriptRuntime.ScriptableClass &amp;&amp; Modifier.isStatic(var22.getModifiers())) {</b>
+<b class="nc"><i>530</i>&nbsp;                                var17 = var22;</b>
+<b class="nc"><i>531</i>&nbsp;                                continue;</b>
+<b class="nc"><i>532</i>&nbsp;                            }</b>
+<b class="nc"><i>533</i>&nbsp;                        }</b>
+<b class="nc"><i>534</i>&nbsp;</b>
+<b class="nc"><i>535</i>&nbsp;                        if(var23.indexOf(36) == -1 &amp;&amp; !var23.equals(&quot;jsConstructor&quot;)) {</b>
+<b class="nc"><i>536</i>&nbsp;                            Annotation var35 = null;</b>
+<b class="nc"><i>537</i>&nbsp;                            String var25 = null;</b>
+<i>538</i>&nbsp;                            if(var22.isAnnotationPresent(JSFunction.class)) {
+<i>539</i>&nbsp;                                var35 = var22.getAnnotation(JSFunction.class);
+<b class="nc"><i>540</i>&nbsp;                            } else if(var22.isAnnotationPresent(JSStaticFunction.class)) {</b>
+<b class="nc"><i>541</i>&nbsp;                                var35 = var22.getAnnotation(JSStaticFunction.class);</b>
+<i>542</i>&nbsp;                            } else if(var22.isAnnotationPresent(JSGetter.class)) {
+<i>543</i>&nbsp;                                var35 = var22.getAnnotation(JSGetter.class);
+<i>544</i>&nbsp;                            } else if(var22.isAnnotationPresent(JSSetter.class)) {
+<i>545</i>&nbsp;                                continue;
+<i>546</i>&nbsp;                            }
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;                            if(var35 == null) {
+<i>549</i>&nbsp;                                if(var23.startsWith(&quot;jsFunction_&quot;)) {
+<i>550</i>&nbsp;                                    var25 = &quot;jsFunction_&quot;;
+<i>551</i>&nbsp;                                } else if(var23.startsWith(&quot;jsStaticFunction_&quot;)) {
+<i>552</i>&nbsp;                                    var25 = &quot;jsStaticFunction_&quot;;
+<b class="nc"><i>553</i>&nbsp;                                } else if(var23.startsWith(&quot;jsGet_&quot;)) {</b>
+<i>554</i>&nbsp;                                    var25 = &quot;jsGet_&quot;;
+<b class="nc"><i>555</i>&nbsp;                                } else if(var35 == null) {</b>
+<i>556</i>&nbsp;                                    continue;
+<i>557</i>&nbsp;                                }
+<b class="nc"><i>558</i>&nbsp;                            }</b>
+<i>559</i>&nbsp;
+<b class="nc"><i>560</i>&nbsp;                            String var26 = getPropertyName(var23, var25, var35);</b>
+<b class="nc"><i>561</i>&nbsp;                            if(var18.contains(var26)) {</b>
+<b class="nc"><i>562</i>&nbsp;                                throw Context.reportRuntimeError2(&quot;duplicate.defineClass.name&quot;, var23, var26);</b>
+<b class="nc"><i>563</i>&nbsp;                            }</b>
+<b class="nc"><i>564</i>&nbsp;</b>
+<b class="nc"><i>565</i>&nbsp;                            var18.add(var26);</b>
+<b class="nc"><i>566</i>&nbsp;                            if(!(var35 instanceof JSGetter) &amp;&amp; var25 != &quot;jsGet_&quot;) {</b>
+<b class="nc"><i>567</i>&nbsp;                                boolean var37 = var35 instanceof JSStaticFunction || var25 == &quot;jsStaticFunction_&quot;;</b>
+<b class="nc"><i>568</i>&nbsp;                                if(var37 &amp;&amp; !Modifier.isStatic(var22.getModifiers())) {</b>
+<b class="nc"><i>569</i>&nbsp;                                    throw Context.reportRuntimeError(&quot;jsStaticFunction must be used with static method.&quot;);</b>
+<i>570</i>&nbsp;                                }
+<b class="nc"><i>571</i>&nbsp;</b>
+<i>572</i>&nbsp;                                FunctionObject var36 = new FunctionObject(var26, var22, var32);
+<i>573</i>&nbsp;                                if(var36.isVarArgsConstructor()) {
+<b class="nc"><i>574</i>&nbsp;                                    throw Context.reportRuntimeError1(&quot;msg.varargs.fun&quot;, ((Member)var15).getName());</b>
+<i>575</i>&nbsp;                                }
+<b class="nc"><i>576</i>&nbsp;</b>
+<i>577</i>&nbsp;                                defineProperty((Scriptable)(var37?var16:var32), var26, var36, 2);
+<i>578</i>&nbsp;                                if(var2) {
+<b class="nc"><i>579</i>&nbsp;                                    var36.sealObject();</b>
+<b class="nc"><i>580</i>&nbsp;                                }</b>
+<b class="nc"><i>581</i>&nbsp;                            } else {</b>
+<i>582</i>&nbsp;                                if(!(var32 instanceof ScriptableObject)) {
+<i>583</i>&nbsp;                                    throw Context.reportRuntimeError2(&quot;msg.extend.scriptable&quot;, var32.getClass().toString(), var26);
+<i>584</i>&nbsp;                                }
+<i>585</i>&nbsp;
+<b class="nc"><i>586</i>&nbsp;                                Method var27 = findSetterMethod(var4, var26, &quot;jsSet_&quot;);</b>
+<b class="nc"><i>587</i>&nbsp;                                int var28 = 6 | (var27 != null?0:1);</b>
+<i>588</i>&nbsp;                                ((ScriptableObject)var32).defineProperty(var26, (Object)null, var22, var27, var28);
+<i>589</i>&nbsp;                            }
+<i>590</i>&nbsp;                        }
+<i>591</i>&nbsp;                    }
+<i>592</i>&nbsp;                }
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;                if(var17 != null) {
+<i>595</i>&nbsp;                    Object[] var34 = new Object[]{var0, var16, var32};
+<i>596</i>&nbsp;                    var17.invoke((Object)null, var34);
+<i>597</i>&nbsp;                }
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;                if(var2) {
+<i>600</i>&nbsp;                    var16.sealObject();
+<i>601</i>&nbsp;                    if(var32 instanceof ScriptableObject) {
+<i>602</i>&nbsp;                        ((ScriptableObject)var32).sealObject();
+<i>603</i>&nbsp;                    }
+<i>604</i>&nbsp;                }
+<b class="nc"><i>605</i>&nbsp;</b>
+<i>606</i>&nbsp;                return var16;
+<i>607</i>&nbsp;            }
+<i>608</i>&nbsp;        }
+<i>609</i>&nbsp;    }
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;    private static Member findAnnotatedMember(AccessibleObject[] var0, Class&lt;? extends Annotation&gt; var1) {
+<i>612</i>&nbsp;        AccessibleObject[] var2 = var0;
+<i>613</i>&nbsp;        int var3 = var0.length;
+<i>614</i>&nbsp;
+<i>615</i>&nbsp;        for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>616</i>&nbsp;            AccessibleObject var5 = var2[var4];
+<i>617</i>&nbsp;            if(var5.isAnnotationPresent(var1)) {
+<i>618</i>&nbsp;                return (Member)var5;
+<i>619</i>&nbsp;            }
+<i>620</i>&nbsp;        }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;        return null;
+<b class="nc"><i>623</i>&nbsp;    }</b>
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    private static Method findSetterMethod(Method[] var0, String var1, String var2) {
+<i>626</i>&nbsp;        String var3 = &quot;set&quot; + Character.toUpperCase(var1.charAt(0)) + var1.substring(1);
+<i>627</i>&nbsp;        Method[] var4 = var0;
+<i>628</i>&nbsp;        int var5 = var0.length;
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;        int var6;
+<i>631</i>&nbsp;        for(var6 = 0; var6 &lt; var5; ++var6) {
+<i>632</i>&nbsp;            Method var7 = var4[var6];
+<i>633</i>&nbsp;            JSSetter var8 = (JSSetter)var7.getAnnotation(JSSetter.class);
+<i>634</i>&nbsp;            if(var8 != null &amp;&amp; (var1.equals(var8.value()) || &quot;&quot;.equals(var8.value()) &amp;&amp; var3.equals(var7.getName()))) {
+<i>635</i>&nbsp;                return var7;
+<i>636</i>&nbsp;            }
+<i>637</i>&nbsp;        }
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;        String var9 = var2 + var1;
+<i>640</i>&nbsp;        Method[] var10 = var0;
+<i>641</i>&nbsp;        var6 = var0.length;
+<i>642</i>&nbsp;
+<i>643</i>&nbsp;        for(int var11 = 0; var11 &lt; var6; ++var11) {
+<i>644</i>&nbsp;            Method var12 = var10[var11];
+<i>645</i>&nbsp;            if(var9.equals(var12.getName())) {
+<i>646</i>&nbsp;                return var12;
+<i>647</i>&nbsp;            }
+<i>648</i>&nbsp;        }
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;        return null;
+<i>651</i>&nbsp;    }
+<i>652</i>&nbsp;
+<i>653</i>&nbsp;    private static String getPropertyName(String var0, String var1, Annotation var2) {
+<i>654</i>&nbsp;        if(var1 != null) {
+<i>655</i>&nbsp;            return var0.substring(var1.length());
+<i>656</i>&nbsp;        } else {
+<i>657</i>&nbsp;            String var3 = null;
+<i>658</i>&nbsp;            if(var2 instanceof JSGetter) {
+<i>659</i>&nbsp;                var3 = ((JSGetter)var2).value();
+<i>660</i>&nbsp;                if((var3 == null || var3.length() == 0) &amp;&amp; var0.length() &gt; 3 &amp;&amp; var0.startsWith(&quot;get&quot;)) {
+<i>661</i>&nbsp;                    var3 = var0.substring(3);
+<i>662</i>&nbsp;                    if(Character.isUpperCase(var3.charAt(0))) {
+<i>663</i>&nbsp;                        if(var3.length() == 1) {
+<i>664</i>&nbsp;                            var3 = var3.toLowerCase();
+<i>665</i>&nbsp;                        } else if(!Character.isUpperCase(var3.charAt(1))) {
+<i>666</i>&nbsp;                            var3 = Character.toLowerCase(var3.charAt(0)) + var3.substring(1);
+<i>667</i>&nbsp;                        }
+<i>668</i>&nbsp;                    }
+<i>669</i>&nbsp;                }
+<i>670</i>&nbsp;            } else if(var2 instanceof JSFunction) {
+<i>671</i>&nbsp;                var3 = ((JSFunction)var2).value();
+<i>672</i>&nbsp;            } else if(var2 instanceof JSStaticFunction) {
+<i>673</i>&nbsp;                var3 = ((JSStaticFunction)var2).value();
+<i>674</i>&nbsp;            }
+<i>675</i>&nbsp;
+<i>676</i>&nbsp;            if(var3 == null || var3.length() == 0) {
+<i>677</i>&nbsp;                var3 = var0;
+<i>678</i>&nbsp;            }
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;            return var3;
+<i>681</i>&nbsp;        }
+<i>682</i>&nbsp;    }
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;    private static &lt;T extends Scriptable&gt; Class&lt;T&gt; extendsScriptable(Class&lt;?&gt; var0) {
+<i>685</i>&nbsp;        return ScriptRuntime.ScriptableClass.isAssignableFrom(var0)?var0:null;
+<i>686</i>&nbsp;    }
+<i>687</i>&nbsp;
+<i>688</i>&nbsp;    public void defineProperty(String var1, Object var2, int var3) {
+<i>689</i>&nbsp;        this.checkNotSealed(var1, 0);
+<i>690</i>&nbsp;        this.put(var1, this, var2);
+<i>691</i>&nbsp;        this.setAttributes(var1, var3);
+<i>692</i>&nbsp;    }
+<i>693</i>&nbsp;
+<i>694</i>&nbsp;    public static void defineProperty(Scriptable var0, String var1, Object var2, int var3) {
+<i>695</i>&nbsp;        if(!(var0 instanceof ScriptableObject)) {
+<i>696</i>&nbsp;            var0.put(var1, var0, var2);
+<i>697</i>&nbsp;        } else {
+<i>698</i>&nbsp;            ScriptableObject var4 = (ScriptableObject)var0;
+<i>699</i>&nbsp;            var4.defineProperty(var1, (Object)var2, var3);
+<i>700</i>&nbsp;        }
+<i>701</i>&nbsp;    }
+<i>702</i>&nbsp;
+<i>703</i>&nbsp;    public static void defineConstProperty(Scriptable var0, String var1) {
+<i>704</i>&nbsp;        if(var0 instanceof ConstProperties) {
+<i>705</i>&nbsp;            ConstProperties var2 = (ConstProperties)var0;
+<i>706</i>&nbsp;            var2.defineConst(var1, var0);
+<i>707</i>&nbsp;        } else {
+<i>708</i>&nbsp;            defineProperty(var0, var1, Undefined.instance, 13);
+<i>709</i>&nbsp;        }
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;    }
+<i>712</i>&nbsp;
+<i>713</i>&nbsp;    public void defineProperty(String var1, Class&lt;?&gt; var2, int var3) {
+<i>714</i>&nbsp;        int var4 = var1.length();
+<i>715</i>&nbsp;        if(var4 == 0) {
+<i>716</i>&nbsp;            throw new IllegalArgumentException();
+<i>717</i>&nbsp;        } else {
+<i>718</i>&nbsp;            char[] var5 = new char[3 + var4];
+<i>719</i>&nbsp;            var1.getChars(0, var4, var5, 3);
+<b class="nc"><i>720</i>&nbsp;            var5[3] = Character.toUpperCase(var5[3]);</b>
+<i>721</i>&nbsp;            var5[0] = 103;
+<i>722</i>&nbsp;            var5[1] = 101;
+<i>723</i>&nbsp;            var5[2] = 116;
+<i>724</i>&nbsp;            String var6 = new String(var5);
+<i>725</i>&nbsp;            var5[0] = 115;
+<i>726</i>&nbsp;            String var7 = new String(var5);
+<i>727</i>&nbsp;            Method[] var8 = FunctionObject.getMethodList(var2);
+<i>728</i>&nbsp;            Method var9 = FunctionObject.findSingleMethod(var8, var6);
+<i>729</i>&nbsp;            Method var10 = FunctionObject.findSingleMethod(var8, var7);
+<i>730</i>&nbsp;            if(var10 == null) {
+<i>731</i>&nbsp;                var3 |= 1;
+<i>732</i>&nbsp;            }
+<i>733</i>&nbsp;
+<i>734</i>&nbsp;            this.defineProperty(var1, (Object)null, var9, var10 == null?null:var10, var3);
+<i>735</i>&nbsp;        }
+<i>736</i>&nbsp;    }
+<i>737</i>&nbsp;
+<i>738</i>&nbsp;    public void defineProperty(String var1, Object var2, Method var3, Method var4, int var5) {
+<i>739</i>&nbsp;        MemberBox var6 = null;
+<i>740</i>&nbsp;        if(var3 != null) {
+<i>741</i>&nbsp;            var6 = new MemberBox(var3);
+<i>742</i>&nbsp;            boolean var7;
+<i>743</i>&nbsp;            if(!Modifier.isStatic(var3.getModifiers())) {
+<i>744</i>&nbsp;                var7 = var2 != null;
+<i>745</i>&nbsp;                var6.delegateTo = var2;
+<i>746</i>&nbsp;            } else {
+<i>747</i>&nbsp;                var7 = true;
+<i>748</i>&nbsp;                var6.delegateTo = Void.TYPE;
+<i>749</i>&nbsp;            }
+<i>750</i>&nbsp;
+<b class="nc"><i>751</i>&nbsp;            String var8 = null;</b>
+<i>752</i>&nbsp;            Class[] var9 = var3.getParameterTypes();
+<i>753</i>&nbsp;            if(var9.length == 0) {
+<i>754</i>&nbsp;                if(var7) {
+<i>755</i>&nbsp;                    var8 = &quot;msg.obj.getter.parms&quot;;
+<i>756</i>&nbsp;                }
+<i>757</i>&nbsp;            } else if(var9.length == 1) {
+<i>758</i>&nbsp;                Class var10 = var9[0];
+<i>759</i>&nbsp;                if(var10 != ScriptRuntime.ScriptableClass &amp;&amp; var10 != ScriptRuntime.ScriptableObjectClass) {
+<i>760</i>&nbsp;                    var8 = &quot;msg.bad.getter.parms&quot;;
+<i>761</i>&nbsp;                } else if(!var7) {
+<i>762</i>&nbsp;                    var8 = &quot;msg.bad.getter.parms&quot;;
+<i>763</i>&nbsp;                }
+<i>764</i>&nbsp;            } else {
+<i>765</i>&nbsp;                var8 = &quot;msg.bad.getter.parms&quot;;
+<i>766</i>&nbsp;            }
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;            if(var8 != null) {
+<i>769</i>&nbsp;                throw Context.reportRuntimeError1(var8, var3.toString());
+<i>770</i>&nbsp;            }
+<i>771</i>&nbsp;        }
+<i>772</i>&nbsp;
+<i>773</i>&nbsp;        MemberBox var12 = null;
+<i>774</i>&nbsp;        if(var4 != null) {
+<i>775</i>&nbsp;            if(var4.getReturnType() != Void.TYPE) {
+<i>776</i>&nbsp;                throw Context.reportRuntimeError1(&quot;msg.setter.return&quot;, var4.toString());
+<i>777</i>&nbsp;            }
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;            var12 = new MemberBox(var4);
+<i>780</i>&nbsp;            boolean var14;
+<i>781</i>&nbsp;            if(!Modifier.isStatic(var4.getModifiers())) {
+<i>782</i>&nbsp;                var14 = var2 != null;
+<i>783</i>&nbsp;                var12.delegateTo = var2;
+<i>784</i>&nbsp;            } else {
+<i>785</i>&nbsp;                var14 = true;
+<b class="nc"><i>786</i>&nbsp;                var12.delegateTo = Void.TYPE;</b>
+<b class="nc"><i>787</i>&nbsp;            }</b>
+<b class="nc"><i>788</i>&nbsp;</b>
+<b class="nc"><i>789</i>&nbsp;            String var13 = null;</b>
+<b class="nc"><i>790</i>&nbsp;            Class[] var16 = var4.getParameterTypes();</b>
+<b class="nc"><i>791</i>&nbsp;            if(var16.length == 1) {</b>
+<b class="nc"><i>792</i>&nbsp;                if(var14) {</b>
+<i>793</i>&nbsp;                    var13 = &quot;msg.setter2.expected&quot;;
+<i>794</i>&nbsp;                }
+<i>795</i>&nbsp;            } else if(var16.length == 2) {
+<i>796</i>&nbsp;                Class var11 = var16[0];
+<i>797</i>&nbsp;                if(var11 != ScriptRuntime.ScriptableClass &amp;&amp; var11 != ScriptRuntime.ScriptableObjectClass) {
+<b class="nc"><i>798</i>&nbsp;                    var13 = &quot;msg.setter2.parms&quot;;</b>
+<i>799</i>&nbsp;                } else if(!var14) {
+<b class="nc"><i>800</i>&nbsp;                    var13 = &quot;msg.setter1.parms&quot;;</b>
+<b class="nc"><i>801</i>&nbsp;                }</b>
+<i>802</i>&nbsp;            } else {
+<b class="nc"><i>803</i>&nbsp;                var13 = &quot;msg.setter.parms&quot;;</b>
+<i>804</i>&nbsp;            }
+<i>805</i>&nbsp;
+<i>806</i>&nbsp;            if(var13 != null) {
+<b class="nc"><i>807</i>&nbsp;                throw Context.reportRuntimeError1(var13, var4.toString());</b>
+<b class="nc"><i>808</i>&nbsp;            }</b>
+<b class="nc"><i>809</i>&nbsp;        }</b>
+<i>810</i>&nbsp;
+<i>811</i>&nbsp;        ScriptableObject.GetterSlot var15 = (ScriptableObject.GetterSlot)this.getSlot(var1, 0, 4);
+<i>812</i>&nbsp;        var15.setAttributes(var5);
+<i>813</i>&nbsp;        var15.getter = var6;
+<i>814</i>&nbsp;        var15.setter = var12;
+<i>815</i>&nbsp;    }
+<i>816</i>&nbsp;
+<b class="nc"><i>817</i>&nbsp;    public void defineOwnProperties(Context var1, ScriptableObject var2) {</b>
+<b class="nc"><i>818</i>&nbsp;        Object[] var3 = var2.getIds();</b>
+<b class="nc"><i>819</i>&nbsp;        Object[] var4 = var3;</b>
+<b class="nc"><i>820</i>&nbsp;        int var5 = var3.length;</b>
+<b class="nc"><i>821</i>&nbsp;</b>
+<b class="nc"><i>822</i>&nbsp;        int var6;</b>
+<i>823</i>&nbsp;        Object var7;
+<i>824</i>&nbsp;        String var8;
+<b class="nc"><i>825</i>&nbsp;        for(var6 = 0; var6 &lt; var5; ++var6) {</b>
+<b class="nc"><i>826</i>&nbsp;            var7 = var4[var6];</b>
+<i>827</i>&nbsp;            var8 = ScriptRuntime.toString(var7);
+<i>828</i>&nbsp;            Object var9 = var2.get(var7);
+<i>829</i>&nbsp;            ScriptableObject var10 = this.ensureScriptableObject(var9);
+<b class="nc"><i>830</i>&nbsp;            this.checkValidPropertyDefinition(this.getSlot(var8, 0, 1), var10);</b>
+<b class="nc"><i>831</i>&nbsp;        }</b>
+<i>832</i>&nbsp;
+<i>833</i>&nbsp;        var4 = var3;
+<i>834</i>&nbsp;        var5 = var3.length;
+<b class="nc"><i>835</i>&nbsp;</b>
+<b class="nc"><i>836</i>&nbsp;        for(var6 = 0; var6 &lt; var5; ++var6) {</b>
+<b class="nc"><i>837</i>&nbsp;            var7 = var4[var6];</b>
+<b class="nc"><i>838</i>&nbsp;            var8 = ScriptRuntime.toString(var7);</b>
+<b class="nc"><i>839</i>&nbsp;            ScriptableObject var11 = (ScriptableObject)var2.get(var7);</b>
+<b class="nc"><i>840</i>&nbsp;            this.defineOwnProperty(var1, var8, var11, false);</b>
+<b class="nc"><i>841</i>&nbsp;        }</b>
+<i>842</i>&nbsp;
+<i>843</i>&nbsp;    }
+<i>844</i>&nbsp;
+<b class="nc"><i>845</i>&nbsp;    public void defineOwnProperty(Context var1, Object var2, ScriptableObject var3) {</b>
+<b class="nc"><i>846</i>&nbsp;        this.defineOwnProperty(var1, var2, var3, true);</b>
+<i>847</i>&nbsp;    }
+<b class="nc"><i>848</i>&nbsp;</b>
+<i>849</i>&nbsp;    private void defineOwnProperty(Context var1, Object var2, ScriptableObject var3, boolean var4) {
+<i>850</i>&nbsp;        ScriptableObject.Slot var5 = this.getSlot(var1, var2, 1);
+<i>851</i>&nbsp;        if(var4) {
+<i>852</i>&nbsp;            this.checkValidPropertyDefinition(var5, var3);
+<i>853</i>&nbsp;        }
+<i>854</i>&nbsp;
+<i>855</i>&nbsp;        int var6;
+<i>856</i>&nbsp;        if(var5 == null) {
+<i>857</i>&nbsp;            var5 = this.getSlot(var1, var2, 2);
+<i>858</i>&nbsp;            var6 = this.applyDescriptorToAttributeBitset(7, var3);
+<b class="nc"><i>859</i>&nbsp;        } else {</b>
+<i>860</i>&nbsp;            var6 = this.applyDescriptorToAttributeBitset(var5.getAttributes(), var3);
+<b class="nc"><i>861</i>&nbsp;        }</b>
+<b class="nc"><i>862</i>&nbsp;</b>
+<b class="nc"><i>863</i>&nbsp;        this.defineOwnProperty(var1, var5, var3, var6);</b>
+<b class="nc"><i>864</i>&nbsp;    }</b>
+<b class="nc"><i>865</i>&nbsp;</b>
+<b class="nc"><i>866</i>&nbsp;    private void defineOwnProperty(Context var1, ScriptableObject.Slot var2, ScriptableObject var3, int var4) {</b>
+<b class="nc"><i>867</i>&nbsp;        String var5 = var2.name;</b>
+<b class="nc"><i>868</i>&nbsp;        int var6 = var2.indexOrHash;</b>
+<i>869</i>&nbsp;        if(this.isAccessorDescriptor(var3)) {
+<b class="nc"><i>870</i>&nbsp;            if(!(var2 instanceof ScriptableObject.GetterSlot)) {</b>
+<b class="nc"><i>871</i>&nbsp;                var2 = this.getSlot(var1, var5 != null?var5:Integer.valueOf(var6), 4);</b>
+<i>872</i>&nbsp;            }
+<i>873</i>&nbsp;
+<i>874</i>&nbsp;            ScriptableObject.GetterSlot var7 = (ScriptableObject.GetterSlot)var2;
+<i>875</i>&nbsp;            Object var8 = getProperty(var3, &quot;get&quot;);
+<b class="nc"><i>876</i>&nbsp;            if(var8 != NOT_FOUND) {</b>
+<b class="nc"><i>877</i>&nbsp;                var7.getter = var8;</b>
+<b class="nc"><i>878</i>&nbsp;            }</b>
+<i>879</i>&nbsp;
+<i>880</i>&nbsp;            Object var9 = getProperty(var3, &quot;set&quot;);
+<b class="nc"><i>881</i>&nbsp;            if(var9 != NOT_FOUND) {</b>
+<i>882</i>&nbsp;                var7.setter = var9;
+<b class="nc"><i>883</i>&nbsp;            }</b>
+<b class="nc"><i>884</i>&nbsp;</b>
+<b class="nc"><i>885</i>&nbsp;            var7.value = Undefined.instance;</b>
+<b class="nc"><i>886</i>&nbsp;            var7.setAttributes(var4);</b>
+<i>887</i>&nbsp;        } else {
+<b class="nc"><i>888</i>&nbsp;            if(var2 instanceof ScriptableObject.GetterSlot &amp;&amp; this.isDataDescriptor(var3)) {</b>
+<b class="nc"><i>889</i>&nbsp;                var2 = this.getSlot(var1, var5 != null?var5:Integer.valueOf(var6), 6);</b>
+<b class="nc"><i>890</i>&nbsp;            }</b>
+<b class="nc"><i>891</i>&nbsp;</b>
+<i>892</i>&nbsp;            Object var10 = getProperty(var3, &quot;value&quot;);
+<i>893</i>&nbsp;            if(var10 != NOT_FOUND) {
+<i>894</i>&nbsp;                var2.value = var10;
+<i>895</i>&nbsp;            }
+<i>896</i>&nbsp;
+<b class="nc"><i>897</i>&nbsp;            var2.setAttributes(var4);</b>
+<b class="nc"><i>898</i>&nbsp;        }</b>
+<i>899</i>&nbsp;
+<i>900</i>&nbsp;    }
+<i>901</i>&nbsp;
+<b class="nc"><i>902</i>&nbsp;    private void checkValidPropertyDefinition(ScriptableObject.Slot var1, ScriptableObject var2) {</b>
+<b class="nc"><i>903</i>&nbsp;        Object var3 = getProperty(var2, &quot;get&quot;);</b>
+<b class="nc"><i>904</i>&nbsp;        if(var3 != NOT_FOUND &amp;&amp; var3 != Undefined.instance &amp;&amp; !(var3 instanceof Callable)) {</b>
+<b class="nc"><i>905</i>&nbsp;            throw ScriptRuntime.notFunctionError(var3);</b>
+<i>906</i>&nbsp;        } else {
+<b class="nc"><i>907</i>&nbsp;            Object var4 = getProperty(var2, &quot;set&quot;);</b>
+<b class="nc"><i>908</i>&nbsp;            if(var4 != NOT_FOUND &amp;&amp; var4 != Undefined.instance &amp;&amp; !(var4 instanceof Callable)) {</b>
+<b class="nc"><i>909</i>&nbsp;                throw ScriptRuntime.notFunctionError(var4);</b>
+<b class="nc"><i>910</i>&nbsp;            } else if(this.isDataDescriptor(var2) &amp;&amp; this.isAccessorDescriptor(var2)) {</b>
+<b class="nc"><i>911</i>&nbsp;                throw ScriptRuntime.typeError0(&quot;msg.both.data.and.accessor.desc&quot;);</b>
+<b class="nc"><i>912</i>&nbsp;            } else {</b>
+<b class="nc"><i>913</i>&nbsp;                if(var1 == null) {</b>
+<i>914</i>&nbsp;                    if(!this.isExtensible()) {
+<i>915</i>&nbsp;                        throw ScriptRuntime.typeError(&quot;msg.not.extensible&quot;);
+<b class="nc"><i>916</i>&nbsp;                    }</b>
+<b class="nc"><i>917</i>&nbsp;                } else {</b>
+<b class="nc"><i>918</i>&nbsp;                    String var5 = var1.name;</b>
+<b class="nc"><i>919</i>&nbsp;                    ScriptableObject var6 = this.getOwnPropertyDescriptor(Context.getContext(), var5);</b>
+<i>920</i>&nbsp;                    if(isFalse(var6.get(&quot;configurable&quot;, var6))) {
+<i>921</i>&nbsp;                        if(isTrue(getProperty(var2, &quot;configurable&quot;))) {
+<i>922</i>&nbsp;                            throw ScriptRuntime.typeError1(&quot;msg.change.configurable.false.to.true&quot;, var5);
+<b class="nc"><i>923</i>&nbsp;                        }</b>
+<b class="nc"><i>924</i>&nbsp;</b>
+<b class="nc"><i>925</i>&nbsp;                        if(isTrue(var6.get(&quot;enumerable&quot;, var6)) != isTrue(getProperty(var2, &quot;enumerable&quot;))) {</b>
+<b class="nc"><i>926</i>&nbsp;                            throw ScriptRuntime.typeError1(&quot;msg.change.enumerable.with.configurable.false&quot;, var5);</b>
+<b class="nc"><i>927</i>&nbsp;                        }</b>
+<b class="nc"><i>928</i>&nbsp;</b>
+<i>929</i>&nbsp;                        if(!this.isGenericDescriptor(var2)) {
+<i>930</i>&nbsp;                            if(this.isDataDescriptor(var2) &amp;&amp; this.isDataDescriptor(var6)) {
+<i>931</i>&nbsp;                                if(isFalse(var6.get(&quot;writable&quot;, var6))) {
+<b class="nc"><i>932</i>&nbsp;                                    if(isTrue(getProperty(var2, &quot;writable&quot;))) {</b>
+<i>933</i>&nbsp;                                        throw ScriptRuntime.typeError1(&quot;msg.change.writable.false.to.true.with.configurable.false&quot;, var5);
+<i>934</i>&nbsp;                                    }
+<b class="nc"><i>935</i>&nbsp;</b>
+<i>936</i>&nbsp;                                    if(this.changes(var6.get(&quot;value&quot;, var6), getProperty(var2, &quot;value&quot;))) {
+<i>937</i>&nbsp;                                        throw ScriptRuntime.typeError1(&quot;msg.change.value.with.writable.false&quot;, var5);
+<i>938</i>&nbsp;                                    }
+<b class="nc"><i>939</i>&nbsp;                                }</b>
+<i>940</i>&nbsp;                            } else {
+<i>941</i>&nbsp;                                if(!this.isAccessorDescriptor(var2) || !this.isAccessorDescriptor(var6)) {
+<b class="nc"><i>942</i>&nbsp;                                    if(this.isDataDescriptor(var6)) {</b>
+<i>943</i>&nbsp;                                        throw ScriptRuntime.typeError1(&quot;msg.change.property.data.to.accessor.with.configurable.false&quot;, var5);
+<i>944</i>&nbsp;                                    }
+<b class="nc"><i>945</i>&nbsp;</b>
+<b class="nc"><i>946</i>&nbsp;                                    throw ScriptRuntime.typeError1(&quot;msg.change.property.accessor.to.data.with.configurable.false&quot;, var5);</b>
+<b class="nc"><i>947</i>&nbsp;                                }</b>
+<i>948</i>&nbsp;
+<i>949</i>&nbsp;                                if(this.changes(var6.get(&quot;set&quot;, var6), var4)) {
+<b class="nc"><i>950</i>&nbsp;                                    throw ScriptRuntime.typeError1(&quot;msg.change.setter.with.configurable.false&quot;, var5);</b>
+<i>951</i>&nbsp;                                }
+<i>952</i>&nbsp;
+<b class="nc"><i>953</i>&nbsp;                                if(this.changes(var6.get(&quot;get&quot;, var6), var3)) {</b>
+<b class="nc"><i>954</i>&nbsp;                                    throw ScriptRuntime.typeError1(&quot;msg.change.getter.with.configurable.false&quot;, var5);</b>
+<b class="nc"><i>955</i>&nbsp;                                }</b>
+<i>956</i>&nbsp;                            }
+<i>957</i>&nbsp;                        }
+<i>958</i>&nbsp;                    }
+<i>959</i>&nbsp;                }
+<b class="nc"><i>960</i>&nbsp;</b>
+<b class="nc"><i>961</i>&nbsp;            }</b>
+<b class="nc"><i>962</i>&nbsp;        }</b>
+<i>963</i>&nbsp;    }
+<i>964</i>&nbsp;
+<i>965</i>&nbsp;    protected static boolean isTrue(Object var0) {
+<b class="nc"><i>966</i>&nbsp;        return var0 == NOT_FOUND?false:ScriptRuntime.toBoolean(var0);</b>
+<b class="nc"><i>967</i>&nbsp;    }</b>
+<b class="nc"><i>968</i>&nbsp;</b>
+<b class="nc"><i>969</i>&nbsp;    protected static boolean isFalse(Object var0) {</b>
+<i>970</i>&nbsp;        return !isTrue(var0);
+<i>971</i>&nbsp;    }
+<i>972</i>&nbsp;
+<b class="nc"><i>973</i>&nbsp;    private boolean changes(Object var1, Object var2) {</b>
+<i>974</i>&nbsp;        if(var2 == NOT_FOUND) {
+<i>975</i>&nbsp;            return false;
+<i>976</i>&nbsp;        } else {
+<i>977</i>&nbsp;            if(var1 == NOT_FOUND) {
+<i>978</i>&nbsp;                var1 = Undefined.instance;
+<i>979</i>&nbsp;            }
+<i>980</i>&nbsp;
+<i>981</i>&nbsp;            return !ScriptRuntime.shallowEq(var1, var2);
+<i>982</i>&nbsp;        }
+<i>983</i>&nbsp;    }
+<i>984</i>&nbsp;
+<i>985</i>&nbsp;    protected int applyDescriptorToAttributeBitset(int var1, ScriptableObject var2) {
+<i>986</i>&nbsp;        Object var3 = getProperty(var2, &quot;enumerable&quot;);
+<i>987</i>&nbsp;        if(var3 != NOT_FOUND) {
+<i>988</i>&nbsp;            var1 = ScriptRuntime.toBoolean(var3)?var1 &amp; -3:var1 | 2;
+<b class="nc"><i>989</i>&nbsp;        }</b>
+<b class="nc"><i>990</i>&nbsp;</b>
+<i>991</i>&nbsp;        Object var4 = getProperty(var2, &quot;writable&quot;);
+<i>992</i>&nbsp;        if(var4 != NOT_FOUND) {
+<i>993</i>&nbsp;            var1 = ScriptRuntime.toBoolean(var4)?var1 &amp; -2:var1 | 1;
+<i>994</i>&nbsp;        }
+<i>995</i>&nbsp;
+<i>996</i>&nbsp;        Object var5 = getProperty(var2, &quot;configurable&quot;);
+<i>997</i>&nbsp;        if(var5 != NOT_FOUND) {
+<i>998</i>&nbsp;            var1 = ScriptRuntime.toBoolean(var5)?var1 &amp; -5:var1 | 4;
+<i>999</i>&nbsp;        }
+<i>1000</i>&nbsp;
+<i>1001</i>&nbsp;        return var1;
+<i>1002</i>&nbsp;    }
+<b class="nc"><i>1003</i>&nbsp;</b>
+<b class="nc"><i>1004</i>&nbsp;    protected boolean isDataDescriptor(ScriptableObject var1) {</b>
+<i>1005</i>&nbsp;        return hasProperty(var1, &quot;value&quot;) || hasProperty(var1, &quot;writable&quot;);
+<i>1006</i>&nbsp;    }
+<b class="nc"><i>1007</i>&nbsp;</b>
+<b class="nc"><i>1008</i>&nbsp;    protected boolean isAccessorDescriptor(ScriptableObject var1) {</b>
+<i>1009</i>&nbsp;        return hasProperty(var1, &quot;get&quot;) || hasProperty(var1, &quot;set&quot;);
+<i>1010</i>&nbsp;    }
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;    protected boolean isGenericDescriptor(ScriptableObject var1) {
+<i>1013</i>&nbsp;        return !this.isDataDescriptor(var1) &amp;&amp; !this.isAccessorDescriptor(var1);
+<i>1014</i>&nbsp;    }
+<i>1015</i>&nbsp;
+<i>1016</i>&nbsp;    protected Scriptable ensureScriptable(Object var1) {
+<i>1017</i>&nbsp;        if(!(var1 instanceof Scriptable)) {
+<i>1018</i>&nbsp;            throw ScriptRuntime.typeError1(&quot;msg.arg.not.object&quot;, ScriptRuntime.typeof(var1));
+<i>1019</i>&nbsp;        } else {
+<i>1020</i>&nbsp;            return (Scriptable)var1;
+<i>1021</i>&nbsp;        }
+<i>1022</i>&nbsp;    }
+<i>1023</i>&nbsp;
+<i>1024</i>&nbsp;    protected ScriptableObject ensureScriptableObject(Object var1) {
+<i>1025</i>&nbsp;        if(!(var1 instanceof ScriptableObject)) {
+<i>1026</i>&nbsp;            throw ScriptRuntime.typeError1(&quot;msg.arg.not.object&quot;, ScriptRuntime.typeof(var1));
+<i>1027</i>&nbsp;        } else {
+<i>1028</i>&nbsp;            return (ScriptableObject)var1;
+<i>1029</i>&nbsp;        }
+<i>1030</i>&nbsp;    }
+<i>1031</i>&nbsp;
+<b class="nc"><i>1032</i>&nbsp;    public void defineFunctionProperties(String[] var1, Class&lt;?&gt; var2, int var3) {</b>
+<b class="nc"><i>1033</i>&nbsp;        Method[] var4 = FunctionObject.getMethodList(var2);</b>
+<b class="nc"><i>1034</i>&nbsp;</b>
+<b class="nc"><i>1035</i>&nbsp;        for(int var5 = 0; var5 &lt; var1.length; ++var5) {</b>
+<b class="nc"><i>1036</i>&nbsp;            String var6 = var1[var5];</b>
+<b class="nc"><i>1037</i>&nbsp;            Method var7 = FunctionObject.findSingleMethod(var4, var6);</b>
+<b class="nc"><i>1038</i>&nbsp;            if(var7 == null) {</b>
+<b class="nc"><i>1039</i>&nbsp;                throw Context.reportRuntimeError2(&quot;msg.method.not.found&quot;, var6, var2.getName());</b>
+<b class="nc"><i>1040</i>&nbsp;            }</b>
+<b class="nc"><i>1041</i>&nbsp;</b>
+<b class="nc"><i>1042</i>&nbsp;            FunctionObject var8 = new FunctionObject(var6, var7, this);</b>
+<i>1043</i>&nbsp;            this.defineProperty(var6, (Object)var8, var3);
+<b class="nc"><i>1044</i>&nbsp;        }</b>
+<b class="nc"><i>1045</i>&nbsp;</b>
+<b class="nc"><i>1046</i>&nbsp;    }</b>
+<b class="nc"><i>1047</i>&nbsp;</b>
+<b class="nc"><i>1048</i>&nbsp;    public static Scriptable getObjectPrototype(Scriptable var0) {</b>
+<b class="nc"><i>1049</i>&nbsp;        return getClassPrototype(var0, &quot;Object&quot;);</b>
+<i>1050</i>&nbsp;    }
+<i>1051</i>&nbsp;
+<i>1052</i>&nbsp;    public static Scriptable getFunctionPrototype(Scriptable var0) {
+<i>1053</i>&nbsp;        return getClassPrototype(var0, &quot;Function&quot;);
+<i>1054</i>&nbsp;    }
+<i>1055</i>&nbsp;
+<i>1056</i>&nbsp;    public static Scriptable getArrayPrototype(Scriptable var0) {
+<i>1057</i>&nbsp;        return getClassPrototype(var0, &quot;Array&quot;);
+<i>1058</i>&nbsp;    }
+<i>1059</i>&nbsp;
+<i>1060</i>&nbsp;    public static Scriptable getClassPrototype(Scriptable var0, String var1) {
+<i>1061</i>&nbsp;        var0 = getTopLevelScope(var0);
+<i>1062</i>&nbsp;        Object var2 = getProperty(var0, var1);
+<i>1063</i>&nbsp;        Object var3;
+<i>1064</i>&nbsp;        if(var2 instanceof BaseFunction) {
+<i>1065</i>&nbsp;            var3 = ((BaseFunction)var2).getPrototypeProperty();
+<i>1066</i>&nbsp;        } else {
+<i>1067</i>&nbsp;            if(!(var2 instanceof Scriptable)) {
+<i>1068</i>&nbsp;                return null;
+<i>1069</i>&nbsp;            }
+<i>1070</i>&nbsp;
+<i>1071</i>&nbsp;            Scriptable var4 = (Scriptable)var2;
+<i>1072</i>&nbsp;            var3 = var4.get(&quot;prototype&quot;, var4);
+<i>1073</i>&nbsp;        }
+<i>1074</i>&nbsp;
+<i>1075</i>&nbsp;        return var3 instanceof Scriptable?(Scriptable)var3:null;
+<i>1076</i>&nbsp;    }
+<i>1077</i>&nbsp;
+<i>1078</i>&nbsp;    public static Scriptable getTopLevelScope(Scriptable var0) {
+<i>1079</i>&nbsp;        while(true) {
+<i>1080</i>&nbsp;            Scriptable var1 = var0.getParentScope();
+<i>1081</i>&nbsp;            if(var1 == null) {
+<i>1082</i>&nbsp;                return var0;
+<i>1083</i>&nbsp;            }
+<i>1084</i>&nbsp;
+<i>1085</i>&nbsp;            var0 = var1;
+<i>1086</i>&nbsp;        }
+<i>1087</i>&nbsp;    }
+<i>1088</i>&nbsp;
+<i>1089</i>&nbsp;    public boolean isExtensible() {
+<i>1090</i>&nbsp;        return this.isExtensible;
+<i>1091</i>&nbsp;    }
+<i>1092</i>&nbsp;
+<i>1093</i>&nbsp;    public void preventExtensions() {
+<i>1094</i>&nbsp;        this.isExtensible = false;
+<i>1095</i>&nbsp;    }
+<i>1096</i>&nbsp;
+<b class="nc"><i>1097</i>&nbsp;    public synchronized void sealObject() {</b>
+<b class="nc"><i>1098</i>&nbsp;        if(this.count &gt;= 0) {</b>
+<b class="nc"><i>1099</i>&nbsp;            for(ScriptableObject.Slot var1 = this.firstAdded; var1 != null; var1 = var1.orderedNext) {</b>
+<b class="nc"><i>1100</i>&nbsp;                if(var1.value instanceof LazilyLoadedCtor) {</b>
+<b class="nc"><i>1101</i>&nbsp;                    LazilyLoadedCtor var2 = (LazilyLoadedCtor)var1.value;</b>
+<i>1102</i>&nbsp;
+<i>1103</i>&nbsp;                    try {
+<b class="nc"><i>1104</i>&nbsp;                        var2.init();</b>
+<i>1105</i>&nbsp;                    } finally {
+<i>1106</i>&nbsp;                        var1.value = var2.getValue();
+<b class="nc"><i>1107</i>&nbsp;                    }</b>
+<b class="nc"><i>1108</i>&nbsp;                }</b>
+<i>1109</i>&nbsp;            }
+<i>1110</i>&nbsp;
+<b class="nc"><i>1111</i>&nbsp;            this.count = ~this.count;</b>
+<b class="nc"><i>1112</i>&nbsp;        }</b>
+<i>1113</i>&nbsp;
+<i>1114</i>&nbsp;    }
+<b class="nc"><i>1115</i>&nbsp;</b>
+<i>1116</i>&nbsp;    public final boolean isSealed() {
+<b class="nc"><i>1117</i>&nbsp;        return this.count &lt; 0;</b>
+<b class="nc"><i>1118</i>&nbsp;    }</b>
+<b class="nc"><i>1119</i>&nbsp;</b>
+<b class="nc"><i>1120</i>&nbsp;    private void checkNotSealed(String var1, int var2) {</b>
+<i>1121</i>&nbsp;        if(this.isSealed()) {
+<b class="nc"><i>1122</i>&nbsp;            String var3 = var1 != null?var1:Integer.toString(var2);</b>
+<b class="nc"><i>1123</i>&nbsp;            throw Context.reportRuntimeError1(&quot;msg.modify.sealed&quot;, var3);</b>
+<i>1124</i>&nbsp;        }
+<i>1125</i>&nbsp;    }
+<b class="nc"><i>1126</i>&nbsp;</b>
+<b class="nc"><i>1127</i>&nbsp;    public static Object getProperty(Scriptable var0, String var1) {</b>
+<b class="nc"><i>1128</i>&nbsp;        Scriptable var2 = var0;</b>
+<i>1129</i>&nbsp;
+<i>1130</i>&nbsp;        Object var3;
+<i>1131</i>&nbsp;        do {
+<b class="nc"><i>1132</i>&nbsp;            var3 = var0.get(var1, var2);</b>
+<i>1133</i>&nbsp;            if(var3 != Scriptable.NOT_FOUND) {
+<b class="nc"><i>1134</i>&nbsp;                break;</b>
+<b class="nc"><i>1135</i>&nbsp;            }</b>
+<b class="nc"><i>1136</i>&nbsp;</b>
+<b class="nc"><i>1137</i>&nbsp;            var0 = var0.getPrototype();</b>
+<i>1138</i>&nbsp;        } while(var0 != null);
+<i>1139</i>&nbsp;
+<i>1140</i>&nbsp;        return var3;
+<i>1141</i>&nbsp;    }
+<i>1142</i>&nbsp;
+<b class="nc"><i>1143</i>&nbsp;    public static &lt;T&gt; T getTypedProperty(Scriptable var0, int var1, Class&lt;T&gt; var2) {</b>
+<b class="nc"><i>1144</i>&nbsp;        Object var3 = getProperty(var0, var1);</b>
+<b class="nc"><i>1145</i>&nbsp;        if(var3 == Scriptable.NOT_FOUND) {</b>
+<b class="nc"><i>1146</i>&nbsp;            var3 = null;</b>
+<b class="nc"><i>1147</i>&nbsp;        }</b>
+<i>1148</i>&nbsp;
+<b class="nc"><i>1149</i>&nbsp;        return var2.cast(Context.jsToJava(var3, var2));</b>
+<b class="nc"><i>1150</i>&nbsp;    }</b>
+<b class="nc"><i>1151</i>&nbsp;</b>
+<b class="nc"><i>1152</i>&nbsp;    public static Object getProperty(Scriptable var0, int var1) {</b>
+<i>1153</i>&nbsp;        Scriptable var2 = var0;
+<i>1154</i>&nbsp;
+<i>1155</i>&nbsp;        Object var3;
+<i>1156</i>&nbsp;        do {
+<i>1157</i>&nbsp;            var3 = var0.get(var1, var2);
+<i>1158</i>&nbsp;            if(var3 != Scriptable.NOT_FOUND) {
+<i>1159</i>&nbsp;                break;
+<i>1160</i>&nbsp;            }
+<i>1161</i>&nbsp;
+<i>1162</i>&nbsp;            var0 = var0.getPrototype();
+<i>1163</i>&nbsp;        } while(var0 != null);
+<i>1164</i>&nbsp;
+<i>1165</i>&nbsp;        return var3;
+<i>1166</i>&nbsp;    }
+<i>1167</i>&nbsp;
+<i>1168</i>&nbsp;    public static &lt;T&gt; T getTypedProperty(Scriptable var0, String var1, Class&lt;T&gt; var2) {
+<i>1169</i>&nbsp;        Object var3 = getProperty(var0, var1);
+<i>1170</i>&nbsp;        if(var3 == Scriptable.NOT_FOUND) {
+<i>1171</i>&nbsp;            var3 = null;
+<i>1172</i>&nbsp;        }
+<b class="nc"><i>1173</i>&nbsp;</b>
+<b class="nc"><i>1174</i>&nbsp;        return var2.cast(Context.jsToJava(var3, var2));</b>
+<b class="nc"><i>1175</i>&nbsp;    }</b>
+<b class="nc"><i>1176</i>&nbsp;</b>
+<b class="nc"><i>1177</i>&nbsp;    public static boolean hasProperty(Scriptable var0, String var1) {</b>
+<b class="nc"><i>1178</i>&nbsp;        return null != getBase(var0, var1);</b>
+<i>1179</i>&nbsp;    }
+<i>1180</i>&nbsp;
+<b class="nc"><i>1181</i>&nbsp;    public static void redefineProperty(Scriptable var0, String var1, boolean var2) {</b>
+<b class="nc"><i>1182</i>&nbsp;        Scriptable var3 = getBase(var0, var1);</b>
+<i>1183</i>&nbsp;        if(var3 != null) {
+<i>1184</i>&nbsp;            if(var3 instanceof ConstProperties) {
+<i>1185</i>&nbsp;                ConstProperties var4 = (ConstProperties)var3;
+<i>1186</i>&nbsp;                if(var4.isConst(var1)) {
+<i>1187</i>&nbsp;                    throw Context.reportRuntimeError1(&quot;msg.const.redecl&quot;, var1);
+<i>1188</i>&nbsp;                }
+<i>1189</i>&nbsp;            }
+<i>1190</i>&nbsp;
+<b class="nc"><i>1191</i>&nbsp;            if(var2) {</b>
+<i>1192</i>&nbsp;                throw Context.reportRuntimeError1(&quot;msg.var.redecl&quot;, var1);
+<i>1193</i>&nbsp;            }
+<i>1194</i>&nbsp;        }
+<i>1195</i>&nbsp;    }
+<i>1196</i>&nbsp;
+<i>1197</i>&nbsp;    public static boolean hasProperty(Scriptable var0, int var1) {
+<i>1198</i>&nbsp;        return null != getBase(var0, var1);
+<b class="nc"><i>1199</i>&nbsp;    }</b>
+<i>1200</i>&nbsp;
+<i>1201</i>&nbsp;    public static void putProperty(Scriptable var0, String var1, Object var2) {
+<i>1202</i>&nbsp;        Scriptable var3 = getBase(var0, var1);
+<i>1203</i>&nbsp;        if(var3 == null) {
+<i>1204</i>&nbsp;            var3 = var0;
+<i>1205</i>&nbsp;        }
+<i>1206</i>&nbsp;
+<i>1207</i>&nbsp;        var3.put(var1, var0, var2);
+<i>1208</i>&nbsp;    }
+<i>1209</i>&nbsp;
+<i>1210</i>&nbsp;    public static void putConstProperty(Scriptable var0, String var1, Object var2) {
+<i>1211</i>&nbsp;        Scriptable var3 = getBase(var0, var1);
+<i>1212</i>&nbsp;        if(var3 == null) {
+<i>1213</i>&nbsp;            var3 = var0;
+<i>1214</i>&nbsp;        }
+<i>1215</i>&nbsp;
+<i>1216</i>&nbsp;        if(var3 instanceof ConstProperties) {
+<i>1217</i>&nbsp;            ((ConstProperties)var3).putConst(var1, var0, var2);
+<i>1218</i>&nbsp;        }
+<i>1219</i>&nbsp;
+<b class="nc"><i>1220</i>&nbsp;    }</b>
+<b class="nc"><i>1221</i>&nbsp;</b>
+<i>1222</i>&nbsp;    public static void putProperty(Scriptable var0, int var1, Object var2) {
+<b class="nc"><i>1223</i>&nbsp;        Scriptable var3 = getBase(var0, var1);</b>
+<b class="nc"><i>1224</i>&nbsp;        if(var3 == null) {</b>
+<b class="nc"><i>1225</i>&nbsp;            var3 = var0;</b>
+<b class="nc"><i>1226</i>&nbsp;        }</b>
+<b class="nc"><i>1227</i>&nbsp;</b>
+<b class="nc"><i>1228</i>&nbsp;        var3.put(var1, var0, var2);</b>
+<b class="nc"><i>1229</i>&nbsp;    }</b>
+<i>1230</i>&nbsp;
+<b class="nc"><i>1231</i>&nbsp;    public static boolean deleteProperty(Scriptable var0, String var1) {</b>
+<b class="nc"><i>1232</i>&nbsp;        Scriptable var2 = getBase(var0, var1);</b>
+<i>1233</i>&nbsp;        if(var2 == null) {
+<b class="nc"><i>1234</i>&nbsp;            return true;</b>
+<i>1235</i>&nbsp;        } else {
+<i>1236</i>&nbsp;            var2.delete(var1);
+<i>1237</i>&nbsp;            return !var2.has(var1, var0);
+<i>1238</i>&nbsp;        }
+<i>1239</i>&nbsp;    }
+<i>1240</i>&nbsp;
+<i>1241</i>&nbsp;    public static boolean deleteProperty(Scriptable var0, int var1) {
+<i>1242</i>&nbsp;        Scriptable var2 = getBase(var0, var1);
+<i>1243</i>&nbsp;        if(var2 == null) {
+<i>1244</i>&nbsp;            return true;
+<i>1245</i>&nbsp;        } else {
+<i>1246</i>&nbsp;            var2.delete(var1);
+<i>1247</i>&nbsp;            return !var2.has(var1, var0);
+<i>1248</i>&nbsp;        }
+<b class="nc"><i>1249</i>&nbsp;    }</b>
+<b class="nc"><i>1250</i>&nbsp;</b>
+<b class="nc"><i>1251</i>&nbsp;    public static Object[] getPropertyIds(Scriptable var0) {</b>
+<i>1252</i>&nbsp;        if(var0 == null) {
+<b class="nc"><i>1253</i>&nbsp;            return ScriptRuntime.emptyArgs;</b>
+<b class="nc"><i>1254</i>&nbsp;        } else {</b>
+<i>1255</i>&nbsp;            Object[] var1 = var0.getIds();
+<i>1256</i>&nbsp;            ObjToIntMap var2 = null;
+<i>1257</i>&nbsp;
+<i>1258</i>&nbsp;            while(true) {
+<i>1259</i>&nbsp;                var0 = var0.getPrototype();
+<i>1260</i>&nbsp;                if(var0 == null) {
+<i>1261</i>&nbsp;                    if(var2 != null) {
+<i>1262</i>&nbsp;                        var1 = var2.getKeys();
+<i>1263</i>&nbsp;                    }
+<i>1264</i>&nbsp;
+<i>1265</i>&nbsp;                    return var1;
+<b class="nc"><i>1266</i>&nbsp;                }</b>
+<b class="nc"><i>1267</i>&nbsp;</b>
+<i>1268</i>&nbsp;                Object[] var3 = var0.getIds();
+<i>1269</i>&nbsp;                if(var3.length != 0) {
+<i>1270</i>&nbsp;                    int var4;
+<i>1271</i>&nbsp;                    if(var2 == null) {
+<i>1272</i>&nbsp;                        if(var1.length == 0) {
+<i>1273</i>&nbsp;                            var1 = var3;
+<i>1274</i>&nbsp;                            continue;
+<i>1275</i>&nbsp;                        }
+<i>1276</i>&nbsp;
+<i>1277</i>&nbsp;                        var2 = new ObjToIntMap(var1.length + var3.length);
+<i>1278</i>&nbsp;
+<i>1279</i>&nbsp;                        for(var4 = 0; var4 != var1.length; ++var4) {
+<i>1280</i>&nbsp;                            var2.intern(var1[var4]);
+<b class="nc"><i>1281</i>&nbsp;                        }</b>
+<i>1282</i>&nbsp;
+<i>1283</i>&nbsp;                        var1 = null;
+<i>1284</i>&nbsp;                    }
+<i>1285</i>&nbsp;
+<i>1286</i>&nbsp;                    for(var4 = 0; var4 != var3.length; ++var4) {
+<i>1287</i>&nbsp;                        var2.intern(var3[var4]);
+<i>1288</i>&nbsp;                    }
+<i>1289</i>&nbsp;                }
+<i>1290</i>&nbsp;            }
+<i>1291</i>&nbsp;        }
+<i>1292</i>&nbsp;    }
+<i>1293</i>&nbsp;
+<i>1294</i>&nbsp;    public static Object callMethod(Scriptable var0, String var1, Object[] var2) {
+<i>1295</i>&nbsp;        return callMethod((Context)null, var0, var1, var2);
+<i>1296</i>&nbsp;    }
+<i>1297</i>&nbsp;
+<b class="nc"><i>1298</i>&nbsp;    public static Object callMethod(Context var0, Scriptable var1, String var2, Object[] var3) {</b>
+<i>1299</i>&nbsp;        Object var4 = getProperty(var1, var2);
+<i>1300</i>&nbsp;        if(!(var4 instanceof Function)) {
+<b class="nc"><i>1301</i>&nbsp;            throw ScriptRuntime.notFunctionError(var1, var2);</b>
+<b class="nc"><i>1302</i>&nbsp;        } else {</b>
+<b class="nc"><i>1303</i>&nbsp;            Function var5 = (Function)var4;</b>
+<b class="nc"><i>1304</i>&nbsp;            Scriptable var6 = getTopLevelScope(var1);</b>
+<b class="nc"><i>1305</i>&nbsp;            return var0 != null?var5.call(var0, var6, var1, var3):Context.call((ContextFactory)null, var5, var6, var1, var3);</b>
+<b class="nc"><i>1306</i>&nbsp;        }</b>
+<i>1307</i>&nbsp;    }
+<i>1308</i>&nbsp;
+<i>1309</i>&nbsp;    private static Scriptable getBase(Scriptable var0, String var1) {
+<i>1310</i>&nbsp;        while(true) {
+<i>1311</i>&nbsp;            if(!var0.has(var1, var0)) {
+<i>1312</i>&nbsp;                var0 = var0.getPrototype();
+<i>1313</i>&nbsp;                if(var0 != null) {
+<i>1314</i>&nbsp;                    continue;
+<i>1315</i>&nbsp;                }
+<i>1316</i>&nbsp;            }
+<i>1317</i>&nbsp;
+<i>1318</i>&nbsp;            return var0;
+<i>1319</i>&nbsp;        }
+<i>1320</i>&nbsp;    }
+<i>1321</i>&nbsp;
+<i>1322</i>&nbsp;    private static Scriptable getBase(Scriptable var0, int var1) {
+<i>1323</i>&nbsp;        while(true) {
+<i>1324</i>&nbsp;            if(!var0.has(var1, var0)) {
+<i>1325</i>&nbsp;                var0 = var0.getPrototype();
+<b class="nc"><i>1326</i>&nbsp;                if(var0 != null) {</b>
+<i>1327</i>&nbsp;                    continue;
+<i>1328</i>&nbsp;                }
+<b class="nc"><i>1329</i>&nbsp;            }</b>
+<b class="nc"><i>1330</i>&nbsp;</b>
+<b class="nc"><i>1331</i>&nbsp;            return var0;</b>
+<b class="nc"><i>1332</i>&nbsp;        }</b>
+<b class="nc"><i>1333</i>&nbsp;    }</b>
+<b class="nc"><i>1334</i>&nbsp;</b>
+<i>1335</i>&nbsp;    public final Object getAssociatedValue(Object var1) {
+<i>1336</i>&nbsp;        Map var2 = this.associatedValues;
+<i>1337</i>&nbsp;        return var2 == null?null:var2.get(var1);
+<i>1338</i>&nbsp;    }
+<i>1339</i>&nbsp;
+<i>1340</i>&nbsp;    public static Object getTopScopeValue(Scriptable var0, Object var1) {
+<i>1341</i>&nbsp;        var0 = getTopLevelScope(var0);
+<i>1342</i>&nbsp;
+<i>1343</i>&nbsp;        do {
+<i>1344</i>&nbsp;            if(var0 instanceof ScriptableObject) {
+<i>1345</i>&nbsp;                ScriptableObject var2 = (ScriptableObject)var0;
+<i>1346</i>&nbsp;                Object var3 = var2.getAssociatedValue(var1);
+<i>1347</i>&nbsp;                if(var3 != null) {
+<i>1348</i>&nbsp;                    return var3;
+<i>1349</i>&nbsp;                }
+<b class="nc"><i>1350</i>&nbsp;            }</b>
+<i>1351</i>&nbsp;
+<i>1352</i>&nbsp;            var0 = var0.getPrototype();
+<i>1353</i>&nbsp;        } while(var0 != null);
+<i>1354</i>&nbsp;
+<i>1355</i>&nbsp;        return null;
+<i>1356</i>&nbsp;    }
+<i>1357</i>&nbsp;
+<i>1358</i>&nbsp;    public final synchronized Object associateValue(Object var1, Object var2) {
+<i>1359</i>&nbsp;        if(var2 == null) {
+<i>1360</i>&nbsp;            throw new IllegalArgumentException();
+<i>1361</i>&nbsp;        } else {
+<i>1362</i>&nbsp;            Object var3 = this.associatedValues;
+<i>1363</i>&nbsp;            if(var3 == null) {
+<i>1364</i>&nbsp;                var3 = new HashMap();
+<i>1365</i>&nbsp;                this.associatedValues = (Map)var3;
+<b class="nc"><i>1366</i>&nbsp;            }</b>
+<i>1367</i>&nbsp;
+<i>1368</i>&nbsp;            return Kit.initHash((Map)var3, var1, var2);
+<i>1369</i>&nbsp;        }
+<i>1370</i>&nbsp;    }
+<i>1371</i>&nbsp;
+<i>1372</i>&nbsp;    private Object getImpl(String var1, int var2, Scriptable var3) {
+<i>1373</i>&nbsp;        ScriptableObject.Slot var4 = this.getSlot(var1, var2, 1);
+<i>1374</i>&nbsp;        if(var4 == null) {
+<i>1375</i>&nbsp;            return Scriptable.NOT_FOUND;
+<i>1376</i>&nbsp;        } else if(!(var4 instanceof ScriptableObject.GetterSlot)) {
+<i>1377</i>&nbsp;            return var4.value;
+<i>1378</i>&nbsp;        } else {
+<i>1379</i>&nbsp;            Object var5 = ((ScriptableObject.GetterSlot)var4).getter;
+<i>1380</i>&nbsp;            if(var5 != null) {
+<i>1381</i>&nbsp;                if(var5 instanceof MemberBox) {
+<b class="nc"><i>1382</i>&nbsp;                    MemberBox var12 = (MemberBox)var5;</b>
+<b class="nc"><i>1383</i>&nbsp;                    Object[] var8;</b>
+<b class="nc"><i>1384</i>&nbsp;                    Object var15;</b>
+<b class="nc"><i>1385</i>&nbsp;                    if(var12.delegateTo == null) {</b>
+<i>1386</i>&nbsp;                        var15 = var3;
+<i>1387</i>&nbsp;                        var8 = ScriptRuntime.emptyArgs;
+<i>1388</i>&nbsp;                    } else {
+<i>1389</i>&nbsp;                        var15 = var12.delegateTo;
+<i>1390</i>&nbsp;                        var8 = new Object[]{var3};
+<i>1391</i>&nbsp;                    }
+<i>1392</i>&nbsp;
+<i>1393</i>&nbsp;                    return var12.invoke(var15, var8);
+<i>1394</i>&nbsp;                } else {
+<i>1395</i>&nbsp;                    Function var14 = (Function)var5;
+<i>1396</i>&nbsp;                    Context var13 = Context.getContext();
+<i>1397</i>&nbsp;                    return var14.call(var13, var14.getParentScope(), var3, ScriptRuntime.emptyArgs);
+<i>1398</i>&nbsp;                }
+<i>1399</i>&nbsp;            } else {
+<i>1400</i>&nbsp;                Object var6 = var4.value;
+<b class="nc"><i>1401</i>&nbsp;                if(var6 instanceof LazilyLoadedCtor) {</b>
+<b class="nc"><i>1402</i>&nbsp;                    LazilyLoadedCtor var7 = (LazilyLoadedCtor)var6;</b>
+<b class="nc"><i>1403</i>&nbsp;</b>
+<b class="nc"><i>1404</i>&nbsp;                    try {</b>
+<i>1405</i>&nbsp;                        var7.init();
+<i>1406</i>&nbsp;                    } finally {
+<i>1407</i>&nbsp;                        var6 = var7.getValue();
+<i>1408</i>&nbsp;                        var4.value = var6;
+<i>1409</i>&nbsp;                    }
+<i>1410</i>&nbsp;                }
+<i>1411</i>&nbsp;
+<i>1412</i>&nbsp;                return var6;
+<i>1413</i>&nbsp;            }
+<i>1414</i>&nbsp;        }
+<i>1415</i>&nbsp;    }
+<i>1416</i>&nbsp;
+<i>1417</i>&nbsp;    private boolean putImpl(String var1, int var2, Scriptable var3, Object var4, int var5) {
+<i>1418</i>&nbsp;        ScriptableObject.Slot var6;
+<i>1419</i>&nbsp;        if(this != var3) {
+<b class="nc"><i>1420</i>&nbsp;            var6 = this.getSlot(var1, var2, 1);</b>
+<b class="nc"><i>1421</i>&nbsp;            if(var6 == null) {</b>
+<b class="nc"><i>1422</i>&nbsp;                return false;</b>
+<b class="nc"><i>1423</i>&nbsp;            }</b>
+<b class="nc"><i>1424</i>&nbsp;        } else if(!this.isExtensible()) {</b>
+<i>1425</i>&nbsp;            var6 = this.getSlot(var1, var2, 1);
+<i>1426</i>&nbsp;            if(var6 == null) {
+<i>1427</i>&nbsp;                return true;
+<i>1428</i>&nbsp;            }
+<i>1429</i>&nbsp;        } else {
+<i>1430</i>&nbsp;            this.checkNotSealed(var1, var2);
+<i>1431</i>&nbsp;            if(var5 != 0) {
+<i>1432</i>&nbsp;                var6 = this.getSlot(var1, var2, 5);
+<i>1433</i>&nbsp;                int var17 = var6.getAttributes();
+<i>1434</i>&nbsp;                if((var17 &amp; 1) == 0) {
+<i>1435</i>&nbsp;                    throw Context.reportRuntimeError1(&quot;msg.var.redecl&quot;, var1);
+<i>1436</i>&nbsp;                }
+<i>1437</i>&nbsp;
+<i>1438</i>&nbsp;                if((var17 &amp; 8) != 0) {
+<i>1439</i>&nbsp;                    var6.value = var4;
+<b class="nc"><i>1440</i>&nbsp;                    if(var5 != 8) {</b>
+<b class="nc"><i>1441</i>&nbsp;                        var6.setAttributes(var17 &amp; -9);</b>
+<b class="nc"><i>1442</i>&nbsp;                    }</b>
+<b class="nc"><i>1443</i>&nbsp;                }</b>
+<b class="nc"><i>1444</i>&nbsp;</b>
+<i>1445</i>&nbsp;                return true;
+<i>1446</i>&nbsp;            }
+<i>1447</i>&nbsp;
+<i>1448</i>&nbsp;            var6 = this.getSlot(var1, var2, 2);
+<i>1449</i>&nbsp;        }
+<i>1450</i>&nbsp;
+<i>1451</i>&nbsp;        if(var6 instanceof ScriptableObject.GetterSlot) {
+<i>1452</i>&nbsp;            ScriptableObject.GetterSlot var7 = (ScriptableObject.GetterSlot)var6;
+<i>1453</i>&nbsp;            Object var8 = var7.setter;
+<i>1454</i>&nbsp;            if(var8 != null) {
+<i>1455</i>&nbsp;                Context var9 = Context.getContext();
+<i>1456</i>&nbsp;                if(var8 instanceof MemberBox) {
+<i>1457</i>&nbsp;                    MemberBox var10 = (MemberBox)var8;
+<b class="nc"><i>1458</i>&nbsp;                    Class[] var11 = var10.argTypes;</b>
+<b class="nc"><i>1459</i>&nbsp;                    Class var12 = var11[var11.length - 1];</b>
+<i>1460</i>&nbsp;                    int var13 = FunctionObject.getTypeTag(var12);
+<b class="nc"><i>1461</i>&nbsp;                    Object var14 = FunctionObject.convertArg(var9, var3, var4, var13);</b>
+<b class="nc"><i>1462</i>&nbsp;                    Object var15;</b>
+<i>1463</i>&nbsp;                    Object[] var16;
+<b class="nc"><i>1464</i>&nbsp;                    if(var10.delegateTo == null) {</b>
+<b class="nc"><i>1465</i>&nbsp;                        var15 = var3;</b>
+<b class="nc"><i>1466</i>&nbsp;                        var16 = new Object[]{var14};</b>
+<i>1467</i>&nbsp;                    } else {
+<b class="nc"><i>1468</i>&nbsp;                        var15 = var10.delegateTo;</b>
+<b class="nc"><i>1469</i>&nbsp;                        var16 = new Object[]{var3, var14};</b>
+<b class="nc"><i>1470</i>&nbsp;                    }</b>
+<i>1471</i>&nbsp;
+<b class="nc"><i>1472</i>&nbsp;                    var10.invoke(var15, var16);</b>
+<b class="nc"><i>1473</i>&nbsp;                } else {</b>
+<b class="nc"><i>1474</i>&nbsp;                    Function var18 = (Function)var8;</b>
+<b class="nc"><i>1475</i>&nbsp;                    var18.call(var9, var18.getParentScope(), var3, new Object[]{var4});</b>
+<i>1476</i>&nbsp;                }
+<b class="nc"><i>1477</i>&nbsp;</b>
+<b class="nc"><i>1478</i>&nbsp;                return true;</b>
+<b class="nc"><i>1479</i>&nbsp;            }</b>
+<i>1480</i>&nbsp;
+<b class="nc"><i>1481</i>&nbsp;            if(var7.getter != null) {</b>
+<i>1482</i>&nbsp;                if(Context.getContext().hasFeature(11)) {
+<b class="nc"><i>1483</i>&nbsp;                    throw ScriptRuntime.typeError1(&quot;msg.set.prop.no.setter&quot;, var1);</b>
+<b class="nc"><i>1484</i>&nbsp;                }</b>
+<i>1485</i>&nbsp;
+<b class="nc"><i>1486</i>&nbsp;                return true;</b>
+<b class="nc"><i>1487</i>&nbsp;            }</b>
+<b class="nc"><i>1488</i>&nbsp;        } else if((var6.getAttributes() &amp; 1) != 0) {</b>
+<i>1489</i>&nbsp;            return true;
+<b class="nc"><i>1490</i>&nbsp;        }</b>
+<i>1491</i>&nbsp;
+<i>1492</i>&nbsp;        if(this == var3) {
+<i>1493</i>&nbsp;            var6.value = var4;
+<i>1494</i>&nbsp;            return true;
+<i>1495</i>&nbsp;        } else {
+<i>1496</i>&nbsp;            return false;
+<i>1497</i>&nbsp;        }
+<i>1498</i>&nbsp;    }
+<i>1499</i>&nbsp;
+<i>1500</i>&nbsp;    private ScriptableObject.Slot findAttributeSlot(String var1, int var2, int var3) {
+<i>1501</i>&nbsp;        ScriptableObject.Slot var4 = this.getSlot(var1, var2, var3);
+<i>1502</i>&nbsp;        if(var4 == null) {
+<i>1503</i>&nbsp;            String var5 = var1 != null?var1:Integer.toString(var2);
+<b class="nc"><i>1504</i>&nbsp;            throw Context.reportRuntimeError1(&quot;msg.prop.not.found&quot;, var5);</b>
+<i>1505</i>&nbsp;        } else {
+<i>1506</i>&nbsp;            return var4;
+<i>1507</i>&nbsp;        }
+<i>1508</i>&nbsp;    }
+<i>1509</i>&nbsp;
+<i>1510</i>&nbsp;    private ScriptableObject.Slot getSlot(String var1, int var2, int var3) {
+<i>1511</i>&nbsp;        ScriptableObject.Slot var4;
+<i>1512</i>&nbsp;        label39: {
+<i>1513</i>&nbsp;            var4 = this.lastAccess;
+<i>1514</i>&nbsp;            if(var1 != null) {
+<i>1515</i>&nbsp;                if(var1 != var4.name) {
+<i>1516</i>&nbsp;                    break label39;
+<i>1517</i>&nbsp;                }
+<b class="nc"><i>1518</i>&nbsp;            } else if(var4.name != null || var2 != var4.indexOrHash) {</b>
+<b class="nc"><i>1519</i>&nbsp;                break label39;</b>
+<b class="nc"><i>1520</i>&nbsp;            }</b>
+<i>1521</i>&nbsp;
+<b class="nc"><i>1522</i>&nbsp;            if(!var4.wasDeleted &amp;&amp; (var3 != 4 || var4 instanceof ScriptableObject.GetterSlot) &amp;&amp; (var3 != 6 || !(var4 instanceof ScriptableObject.GetterSlot))) {</b>
+<i>1523</i>&nbsp;                return var4;
+<i>1524</i>&nbsp;            }
+<i>1525</i>&nbsp;        }
+<i>1526</i>&nbsp;
+<i>1527</i>&nbsp;        var4 = this.accessSlot(var1, var2, var3);
+<i>1528</i>&nbsp;        if(var4 != null) {
+<i>1529</i>&nbsp;            this.lastAccess = var4;
+<b class="nc"><i>1530</i>&nbsp;        }</b>
+<b class="nc"><i>1531</i>&nbsp;</b>
+<b class="nc"><i>1532</i>&nbsp;        return var4;</b>
+<i>1533</i>&nbsp;    }
+<b class="nc"><i>1534</i>&nbsp;</b>
+<i>1535</i>&nbsp;    private ScriptableObject.Slot accessSlot(String var1, int var2, int var3) {
+<i>1536</i>&nbsp;        int var4 = var1 != null?var1.hashCode():var2;
+<i>1537</i>&nbsp;        int var7;
+<i>1538</i>&nbsp;        ScriptableObject.Slot var10;
+<i>1539</i>&nbsp;        int var17;
+<i>1540</i>&nbsp;        ScriptableObject.Slot var18;
+<b class="nc"><i>1541</i>&nbsp;        if(var3 != 1 &amp;&amp; var3 != 2 &amp;&amp; var3 != 5 &amp;&amp; var3 != 4 &amp;&amp; var3 != 6) {</b>
+<b class="nc"><i>1542</i>&nbsp;            if(var3 == 3) {</b>
+<b class="nc"><i>1543</i>&nbsp;                synchronized(this) {</b>
+<b class="nc"><i>1544</i>&nbsp;                    ScriptableObject.Slot[] var16 = this.slots;</b>
+<b class="nc"><i>1545</i>&nbsp;                    if(this.count != 0) {</b>
+<i>1546</i>&nbsp;                        var7 = this.slots.length;
+<i>1547</i>&nbsp;                        var17 = getSlotIndex(var7, var4);
+<i>1548</i>&nbsp;                        var18 = var16[var17];
+<i>1549</i>&nbsp;
+<i>1550</i>&nbsp;                        for(var10 = var18; var10 != null &amp;&amp; (var10.indexOrHash != var4 || var10.name != var1 &amp;&amp; (var1 == null || !var1.equals(var10.name))); var10 = var10.next) {
+<b class="nc"><i>1551</i>&nbsp;                            var18 = var10;</b>
+<b class="nc"><i>1552</i>&nbsp;                        }</b>
+<b class="nc"><i>1553</i>&nbsp;</b>
+<b class="nc"><i>1554</i>&nbsp;                        if(var10 != null &amp;&amp; (var10.getAttributes() &amp; 4) == 0) {</b>
+<b class="nc"><i>1555</i>&nbsp;                            --this.count;</b>
+<i>1556</i>&nbsp;                            if(var18 == var10) {
+<i>1557</i>&nbsp;                                var16[var17] = var10.next;
+<i>1558</i>&nbsp;                            } else {
+<i>1559</i>&nbsp;                                var18.next = var10.next;
+<i>1560</i>&nbsp;                            }
+<i>1561</i>&nbsp;
+<i>1562</i>&nbsp;                            var10.wasDeleted = true;
+<i>1563</i>&nbsp;                            var10.value = null;
+<i>1564</i>&nbsp;                            var10.name = null;
+<b class="nc"><i>1565</i>&nbsp;                            if(var10 == this.lastAccess) {</b>
+<b class="nc"><i>1566</i>&nbsp;                                this.lastAccess = REMOVED;</b>
+<b class="nc"><i>1567</i>&nbsp;                            }</b>
+<b class="nc"><i>1568</i>&nbsp;                        }</b>
+<i>1569</i>&nbsp;                    }
+<i>1570</i>&nbsp;
+<i>1571</i>&nbsp;                    return null;
+<i>1572</i>&nbsp;                }
+<i>1573</i>&nbsp;            } else {
+<i>1574</i>&nbsp;                throw Kit.codeBug();
+<i>1575</i>&nbsp;            }
+<i>1576</i>&nbsp;        } else {
+<i>1577</i>&nbsp;            ScriptableObject.Slot[] var5 = this.slots;
+<i>1578</i>&nbsp;            if(var5 == null) {
+<i>1579</i>&nbsp;                if(var3 == 1) {
+<i>1580</i>&nbsp;                    return null;
+<i>1581</i>&nbsp;                }
+<i>1582</i>&nbsp;            } else {
+<i>1583</i>&nbsp;                int var6 = var5.length;
+<b class="nc"><i>1584</i>&nbsp;                var7 = getSlotIndex(var6, var4);</b>
+<i>1585</i>&nbsp;
+<b class="nc"><i>1586</i>&nbsp;                ScriptableObject.Slot var8;</b>
+<b class="nc"><i>1587</i>&nbsp;                for(var8 = var5[var7]; var8 != null; var8 = var8.next) {</b>
+<b class="nc"><i>1588</i>&nbsp;                    String var9 = var8.name;</b>
+<b class="nc"><i>1589</i>&nbsp;                    if(var9 != null) {</b>
+<b class="nc"><i>1590</i>&nbsp;                        if(var9 == var1) {</b>
+<i>1591</i>&nbsp;                            break;
+<i>1592</i>&nbsp;                        }
+<b class="nc"><i>1593</i>&nbsp;</b>
+<b class="nc"><i>1594</i>&nbsp;                        if(var1 != null &amp;&amp; var4 == var8.indexOrHash &amp;&amp; var1.equals(var9)) {</b>
+<b class="nc"><i>1595</i>&nbsp;                            var8.name = var1;</b>
+<i>1596</i>&nbsp;                            break;
+<i>1597</i>&nbsp;                        }
+<i>1598</i>&nbsp;                    } else if(var1 == null &amp;&amp; var4 == var8.indexOrHash) {
+<i>1599</i>&nbsp;                        break;
+<i>1600</i>&nbsp;                    }
+<i>1601</i>&nbsp;                }
+<i>1602</i>&nbsp;
+<i>1603</i>&nbsp;                if(var3 == 1) {
+<i>1604</i>&nbsp;                    return var8;
+<i>1605</i>&nbsp;                }
+<i>1606</i>&nbsp;
+<i>1607</i>&nbsp;                if(var3 == 2) {
+<i>1608</i>&nbsp;                    if(var8 != null) {
+<i>1609</i>&nbsp;                        return var8;
+<i>1610</i>&nbsp;                    }
+<i>1611</i>&nbsp;                } else if(var3 == 4) {
+<i>1612</i>&nbsp;                    if(var8 instanceof ScriptableObject.GetterSlot) {
+<i>1613</i>&nbsp;                        return var8;
+<b class="nc"><i>1614</i>&nbsp;                    }</b>
+<b class="nc"><i>1615</i>&nbsp;                } else if(var3 == 5) {</b>
+<b class="nc"><i>1616</i>&nbsp;                    if(var8 != null) {</b>
+<b class="nc"><i>1617</i>&nbsp;                        return var8;</b>
+<b class="nc"><i>1618</i>&nbsp;                    }</b>
+<b class="nc"><i>1619</i>&nbsp;                } else if(var3 == 6 &amp;&amp; !(var8 instanceof ScriptableObject.GetterSlot)) {</b>
+<b class="nc"><i>1620</i>&nbsp;                    return var8;</b>
+<b class="nc"><i>1621</i>&nbsp;                }</b>
+<i>1622</i>&nbsp;            }
+<b class="nc"><i>1623</i>&nbsp;</b>
+<i>1624</i>&nbsp;            synchronized(this) {
+<b class="nc"><i>1625</i>&nbsp;                var5 = this.slots;</b>
+<i>1626</i>&nbsp;                if(this.count == 0) {
+<i>1627</i>&nbsp;                    var5 = new ScriptableObject.Slot[5];
+<i>1628</i>&nbsp;                    this.slots = var5;
+<i>1629</i>&nbsp;                    var7 = getSlotIndex(var5.length, var4);
+<i>1630</i>&nbsp;                } else {
+<i>1631</i>&nbsp;                    var17 = var5.length;
+<b class="nc"><i>1632</i>&nbsp;                    var7 = getSlotIndex(var17, var4);</b>
+<b class="nc"><i>1633</i>&nbsp;                    var18 = var5[var7];</b>
+<i>1634</i>&nbsp;
+<i>1635</i>&nbsp;                    for(var10 = var18; var10 != null &amp;&amp; (var10.indexOrHash != var4 || var10.name != var1 &amp;&amp; (var1 == null || !var1.equals(var10.name))); var10 = var10.next) {
+<b class="nc"><i>1636</i>&nbsp;                        var18 = var10;</b>
+<b class="nc"><i>1637</i>&nbsp;                    }</b>
+<b class="nc"><i>1638</i>&nbsp;</b>
+<b class="nc"><i>1639</i>&nbsp;                    if(var10 != null) {</b>
+<b class="nc"><i>1640</i>&nbsp;                        Object var11;</b>
+<i>1641</i>&nbsp;                        if(var3 == 4 &amp;&amp; !(var10 instanceof ScriptableObject.GetterSlot)) {
+<b class="nc"><i>1642</i>&nbsp;                            var11 = new ScriptableObject.GetterSlot(var1, var4, var10.getAttributes());</b>
+<b class="nc"><i>1643</i>&nbsp;                        } else {</b>
+<b class="nc"><i>1644</i>&nbsp;                            if(var3 != 6 || !(var10 instanceof ScriptableObject.GetterSlot)) {</b>
+<i>1645</i>&nbsp;                                if(var3 == 5) {
+<i>1646</i>&nbsp;                                    return null;
+<i>1647</i>&nbsp;                                }
+<b class="nc"><i>1648</i>&nbsp;</b>
+<b class="nc"><i>1649</i>&nbsp;                                return var10;</b>
+<i>1650</i>&nbsp;                            }
+<b class="nc"><i>1651</i>&nbsp;</b>
+<b class="nc"><i>1652</i>&nbsp;                            var11 = new ScriptableObject.Slot(var1, var4, var10.getAttributes());</b>
+<i>1653</i>&nbsp;                        }
+<i>1654</i>&nbsp;
+<b class="nc"><i>1655</i>&nbsp;                        ((ScriptableObject.Slot)var11).value = var10.value;</b>
+<i>1656</i>&nbsp;                        ((ScriptableObject.Slot)var11).next = var10.next;
+<i>1657</i>&nbsp;                        if(this.lastAdded != null) {
+<i>1658</i>&nbsp;                            this.lastAdded.orderedNext = (ScriptableObject.Slot)var11;
+<i>1659</i>&nbsp;                        }
+<b class="nc"><i>1660</i>&nbsp;</b>
+<b class="nc"><i>1661</i>&nbsp;                        if(this.firstAdded == null) {</b>
+<i>1662</i>&nbsp;                            this.firstAdded = (ScriptableObject.Slot)var11;
+<i>1663</i>&nbsp;                        }
+<b class="nc"><i>1664</i>&nbsp;</b>
+<i>1665</i>&nbsp;                        this.lastAdded = (ScriptableObject.Slot)var11;
+<i>1666</i>&nbsp;                        if(var18 == var10) {
+<i>1667</i>&nbsp;                            var5[var7] = (ScriptableObject.Slot)var11;
+<i>1668</i>&nbsp;                        } else {
+<i>1669</i>&nbsp;                            var18.next = (ScriptableObject.Slot)var11;
+<i>1670</i>&nbsp;                        }
+<i>1671</i>&nbsp;
+<b class="nc"><i>1672</i>&nbsp;                        var10.wasDeleted = true;</b>
+<b class="nc"><i>1673</i>&nbsp;                        var10.value = null;</b>
+<b class="nc"><i>1674</i>&nbsp;                        var10.name = null;</b>
+<i>1675</i>&nbsp;                        if(var10 == this.lastAccess) {
+<b class="nc"><i>1676</i>&nbsp;                            this.lastAccess = REMOVED;</b>
+<b class="nc"><i>1677</i>&nbsp;                        }</b>
+<b class="nc"><i>1678</i>&nbsp;</b>
+<b class="nc"><i>1679</i>&nbsp;                        return (ScriptableObject.Slot)var11;</b>
+<b class="nc"><i>1680</i>&nbsp;                    }</b>
+<i>1681</i>&nbsp;
+<b class="nc"><i>1682</i>&nbsp;                    if(4 * (this.count + 1) &gt; 3 * var5.length) {</b>
+<b class="nc"><i>1683</i>&nbsp;                        var5 = new ScriptableObject.Slot[var5.length * 2 + 1];</b>
+<b class="nc"><i>1684</i>&nbsp;                        copyTable(this.slots, var5, this.count);</b>
+<i>1685</i>&nbsp;                        this.slots = var5;
+<i>1686</i>&nbsp;                        var7 = getSlotIndex(var5.length, var4);
+<i>1687</i>&nbsp;                    }
+<b class="nc"><i>1688</i>&nbsp;                }</b>
+<b class="nc"><i>1689</i>&nbsp;</b>
+<i>1690</i>&nbsp;                Object var19 = var3 == 4?new ScriptableObject.GetterSlot(var1, var4, 0):new ScriptableObject.Slot(var1, var4, 0);
+<i>1691</i>&nbsp;                if(var3 == 5) {
+<i>1692</i>&nbsp;                    ((ScriptableObject.Slot)var19).setAttributes(13);
+<b class="nc"><i>1693</i>&nbsp;                }</b>
+<i>1694</i>&nbsp;
+<b class="nc"><i>1695</i>&nbsp;                ++this.count;</b>
+<i>1696</i>&nbsp;                if(this.lastAdded != null) {
+<b class="nc"><i>1697</i>&nbsp;                    this.lastAdded.orderedNext = (ScriptableObject.Slot)var19;</b>
+<b class="nc"><i>1698</i>&nbsp;                }</b>
+<b class="nc"><i>1699</i>&nbsp;</b>
+<b class="nc"><i>1700</i>&nbsp;                if(this.firstAdded == null) {</b>
+<b class="nc"><i>1701</i>&nbsp;                    this.firstAdded = (ScriptableObject.Slot)var19;</b>
+<i>1702</i>&nbsp;                }
+<b class="nc"><i>1703</i>&nbsp;</b>
+<b class="nc"><i>1704</i>&nbsp;                this.lastAdded = (ScriptableObject.Slot)var19;</b>
+<i>1705</i>&nbsp;                addKnownAbsentSlot(var5, (ScriptableObject.Slot)var19, var7);
+<b class="nc"><i>1706</i>&nbsp;                return (ScriptableObject.Slot)var19;</b>
+<b class="nc"><i>1707</i>&nbsp;            }</b>
+<i>1708</i>&nbsp;        }
+<i>1709</i>&nbsp;    }
+<i>1710</i>&nbsp;
+<b class="nc"><i>1711</i>&nbsp;    private static int getSlotIndex(int var0, int var1) {</b>
+<i>1712</i>&nbsp;        return (var1 &amp; 2147483647) % var0;
+<b class="nc"><i>1713</i>&nbsp;    }</b>
+<i>1714</i>&nbsp;
+<i>1715</i>&nbsp;    private static void copyTable(ScriptableObject.Slot[] var0, ScriptableObject.Slot[] var1, int var2) {
+<i>1716</i>&nbsp;        if(var2 == 0) {
+<i>1717</i>&nbsp;            throw Kit.codeBug();
+<i>1718</i>&nbsp;        } else {
+<i>1719</i>&nbsp;            int var3 = var1.length;
+<b class="nc"><i>1720</i>&nbsp;            int var4 = var0.length;</b>
+<b class="nc"><i>1721</i>&nbsp;</b>
+<b class="nc"><i>1722</i>&nbsp;            while(true) {</b>
+<i>1723</i>&nbsp;                --var4;
+<b class="nc"><i>1724</i>&nbsp;                ScriptableObject.Slot var5 = var0[var4];</b>
+<b class="nc"><i>1725</i>&nbsp;</b>
+<b class="nc"><i>1726</i>&nbsp;                while(var5 != null) {</b>
+<b class="nc"><i>1727</i>&nbsp;                    int var6 = getSlotIndex(var3, var5.indexOrHash);</b>
+<b class="nc"><i>1728</i>&nbsp;                    ScriptableObject.Slot var7 = var5.next;</b>
+<i>1729</i>&nbsp;                    addKnownAbsentSlot(var1, var5, var6);
+<b class="nc"><i>1730</i>&nbsp;                    var5.next = null;</b>
+<i>1731</i>&nbsp;                    var5 = var7;
+<i>1732</i>&nbsp;                    --var2;
+<i>1733</i>&nbsp;                    if(var2 == 0) {
+<b class="nc"><i>1734</i>&nbsp;                        return;</b>
+<b class="nc"><i>1735</i>&nbsp;                    }</b>
+<b class="nc"><i>1736</i>&nbsp;                }</b>
+<i>1737</i>&nbsp;            }
+<i>1738</i>&nbsp;        }
+<i>1739</i>&nbsp;    }
+<i>1740</i>&nbsp;
+<b class="nc"><i>1741</i>&nbsp;    private static void addKnownAbsentSlot(ScriptableObject.Slot[] var0, ScriptableObject.Slot var1, int var2) {</b>
+<b class="nc"><i>1742</i>&nbsp;        if(var0[var2] == null) {</b>
+<b class="nc"><i>1743</i>&nbsp;            var0[var2] = var1;</b>
+<i>1744</i>&nbsp;        } else {
+<i>1745</i>&nbsp;            ScriptableObject.Slot var3;
+<i>1746</i>&nbsp;            for(var3 = var0[var2]; var3.next != null; var3 = var3.next) {
+<i>1747</i>&nbsp;                ;
+<b class="nc"><i>1748</i>&nbsp;            }</b>
+<b class="nc"><i>1749</i>&nbsp;</b>
+<b class="nc"><i>1750</i>&nbsp;            var3.next = var1;</b>
+<i>1751</i>&nbsp;        }
+<b class="nc"><i>1752</i>&nbsp;</b>
+<b class="nc"><i>1753</i>&nbsp;    }</b>
+<b class="nc"><i>1754</i>&nbsp;</b>
+<b class="nc"><i>1755</i>&nbsp;    Object[] getIds(boolean var1) {</b>
+<i>1756</i>&nbsp;        ScriptableObject.Slot[] var2 = this.slots;
+<i>1757</i>&nbsp;        Object[] var3 = ScriptRuntime.emptyArgs;
+<i>1758</i>&nbsp;        if(var2 == null) {
+<b class="nc"><i>1759</i>&nbsp;            return var3;</b>
+<i>1760</i>&nbsp;        } else {
+<b class="nc"><i>1761</i>&nbsp;            int var4 = 0;</b>
+<b class="nc"><i>1762</i>&nbsp;</b>
+<b class="nc"><i>1763</i>&nbsp;            ScriptableObject.Slot var5;</b>
+<i>1764</i>&nbsp;            for(var5 = this.firstAdded; var5 != null &amp;&amp; var5.wasDeleted; var5 = var5.orderedNext) {
+<b class="nc"><i>1765</i>&nbsp;                ;</b>
+<i>1766</i>&nbsp;            }
+<i>1767</i>&nbsp;
+<i>1768</i>&nbsp;            this.firstAdded = var5;
+<i>1769</i>&nbsp;            if(var5 != null) {
+<i>1770</i>&nbsp;                while(true) {
+<i>1771</i>&nbsp;                    if(var1 || (var5.getAttributes() &amp; 2) == 0) {
+<i>1772</i>&nbsp;                        if(var4 == 0) {
+<i>1773</i>&nbsp;                            var3 = new Object[var2.length];
+<i>1774</i>&nbsp;                        }
+<i>1775</i>&nbsp;
+<i>1776</i>&nbsp;                        var3[var4++] = var5.name != null?var5.name:Integer.valueOf(var5.indexOrHash);
+<b class="nc"><i>1777</i>&nbsp;                    }</b>
+<b class="nc"><i>1778</i>&nbsp;</b>
+<b class="nc"><i>1779</i>&nbsp;                    ScriptableObject.Slot var6;</b>
+<i>1780</i>&nbsp;                    for(var6 = var5.orderedNext; var6 != null &amp;&amp; var6.wasDeleted; var6 = var6.orderedNext) {
+<i>1781</i>&nbsp;                        ;
+<b class="nc"><i>1782</i>&nbsp;                    }</b>
+<i>1783</i>&nbsp;
+<b class="nc"><i>1784</i>&nbsp;                    var5.orderedNext = var6;</b>
+<i>1785</i>&nbsp;                    if(var6 == null) {
+<i>1786</i>&nbsp;                        break;
+<i>1787</i>&nbsp;                    }
+<i>1788</i>&nbsp;
+<i>1789</i>&nbsp;                    var5 = var6;
+<b class="nc"><i>1790</i>&nbsp;                }</b>
+<b class="nc"><i>1791</i>&nbsp;            }</b>
+<i>1792</i>&nbsp;
+<b class="nc"><i>1793</i>&nbsp;            this.lastAdded = var5;</b>
+<b class="nc"><i>1794</i>&nbsp;            if(var4 == var3.length) {</b>
+<b class="nc"><i>1795</i>&nbsp;                return var3;</b>
+<b class="nc"><i>1796</i>&nbsp;            } else {</b>
+<b class="nc"><i>1797</i>&nbsp;                Object[] var7 = new Object[var4];</b>
+<i>1798</i>&nbsp;                System.arraycopy(var3, 0, var7, 0, var4);
+<b class="nc"><i>1799</i>&nbsp;                return var7;</b>
+<b class="nc"><i>1800</i>&nbsp;            }</b>
+<b class="nc"><i>1801</i>&nbsp;        }</b>
+<b class="nc"><i>1802</i>&nbsp;    }</b>
+<b class="nc"><i>1803</i>&nbsp;</b>
+<b class="nc"><i>1804</i>&nbsp;    protected ScriptableObject getOwnPropertyDescriptor(Context var1, Object var2) {</b>
+<i>1805</i>&nbsp;        ScriptableObject.Slot var3 = this.getSlot(var1, var2, 1);
+<b class="nc"><i>1806</i>&nbsp;        if(var3 == null) {</b>
+<i>1807</i>&nbsp;            return null;
+<i>1808</i>&nbsp;        } else {
+<i>1809</i>&nbsp;            Scriptable var4 = this.getParentScope();
+<b class="nc"><i>1810</i>&nbsp;            return var3.getPropertyDescriptor(var1, (Scriptable)(var4 == null?this:var4));</b>
+<i>1811</i>&nbsp;        }
+<b class="nc"><i>1812</i>&nbsp;    }</b>
+<b class="nc"><i>1813</i>&nbsp;</b>
+<b class="nc"><i>1814</i>&nbsp;    protected ScriptableObject.Slot getSlot(Context var1, Object var2, int var3) {</b>
+<i>1815</i>&nbsp;        String var5 = ScriptRuntime.toStringIdOrIndex(var1, var2);
+<b class="nc"><i>1816</i>&nbsp;        ScriptableObject.Slot var4;</b>
+<i>1817</i>&nbsp;        if(var5 == null) {
+<b class="nc"><i>1818</i>&nbsp;            int var6 = ScriptRuntime.lastIndexResult(var1);</b>
+<i>1819</i>&nbsp;            var4 = this.getSlot((String)null, var6, var3);
+<i>1820</i>&nbsp;        } else {
+<i>1821</i>&nbsp;            var4 = this.getSlot(var5, 0, var3);
+<i>1822</i>&nbsp;        }
+<i>1823</i>&nbsp;
+<i>1824</i>&nbsp;        return var4;
+<i>1825</i>&nbsp;    }
+<i>1826</i>&nbsp;
+<i>1827</i>&nbsp;    public int size() {
+<i>1828</i>&nbsp;        return this.count;
+<b class="nc"><i>1829</i>&nbsp;    }</b>
+<b class="nc"><i>1830</i>&nbsp;</b>
+<b class="nc"><i>1831</i>&nbsp;    public boolean isEmpty() {</b>
+<i>1832</i>&nbsp;        return this.count == 0;
+<i>1833</i>&nbsp;    }
+<b class="nc"><i>1834</i>&nbsp;</b>
+<b class="nc"><i>1835</i>&nbsp;    public Object get(Object var1) {</b>
+<b class="nc"><i>1836</i>&nbsp;        Object var2 = null;</b>
+<b class="nc"><i>1837</i>&nbsp;        if(var1 instanceof String) {</b>
+<i>1838</i>&nbsp;            var2 = this.get((String)var1, this);
+<i>1839</i>&nbsp;        } else if(var1 instanceof Number) {
+<i>1840</i>&nbsp;            var2 = this.get(((Number)var1).intValue(), this);
+<b class="nc"><i>1841</i>&nbsp;        }</b>
+<b class="nc"><i>1842</i>&nbsp;</b>
+<b class="nc"><i>1843</i>&nbsp;        return var2 != Scriptable.NOT_FOUND &amp;&amp; var2 != Undefined.instance?(var2 instanceof Wrapper?((Wrapper)var2).unwrap():var2):null;</b>
+<i>1844</i>&nbsp;    }
+<b class="nc"><i>1845</i>&nbsp;</b>
+<b class="nc"><i>1846</i>&nbsp;    static {</b>
+<b class="nc"><i>1847</i>&nbsp;        REMOVED.wasDeleted = true;</b>
+<i>1848</i>&nbsp;    }
+<i>1849</i>&nbsp;
+<b class="nc"><i>1850</i>&nbsp;    private static final class GetterSlot extends ScriptableObject.Slot {</b>
+<i>1851</i>&nbsp;        Object getter;
+<i>1852</i>&nbsp;        Object setter;
+<i>1853</i>&nbsp;
+<i>1854</i>&nbsp;        GetterSlot(String var1, int var2, int var3) {
+<i>1855</i>&nbsp;            super(var1, var2, var3);
+<i>1856</i>&nbsp;        }
+<i>1857</i>&nbsp;
+<i>1858</i>&nbsp;        ScriptableObject getPropertyDescriptor(Context var1, Scriptable var2) {
+<i>1859</i>&nbsp;            ScriptableObject var3 = super.getPropertyDescriptor(var1, var2);
+<i>1860</i>&nbsp;            var3.delete(&quot;value&quot;);
+<i>1861</i>&nbsp;            var3.delete(&quot;writable&quot;);
+<b class="nc"><i>1862</i>&nbsp;            if(this.getter != null) {</b>
+<b class="nc"><i>1863</i>&nbsp;                var3.defineProperty(&quot;get&quot;, (Object)this.getter, 0);</b>
+<b class="nc"><i>1864</i>&nbsp;            }</b>
+<b class="nc"><i>1865</i>&nbsp;</b>
+<b class="nc"><i>1866</i>&nbsp;            if(this.setter != null) {</b>
+<b class="nc"><i>1867</i>&nbsp;                var3.defineProperty(&quot;set&quot;, (Object)this.setter, 0);</b>
+<b class="nc"><i>1868</i>&nbsp;            }</b>
+<b class="nc"><i>1869</i>&nbsp;</b>
+<b class="nc"><i>1870</i>&nbsp;            return var3;</b>
+<i>1871</i>&nbsp;        }
+<i>1872</i>&nbsp;    }
+<i>1873</i>&nbsp;
+<i>1874</i>&nbsp;    private static class Slot {
+<i>1875</i>&nbsp;        String name;
+<i>1876</i>&nbsp;        int indexOrHash;
+<b class="nc"><i>1877</i>&nbsp;        private volatile short attributes;</b>
+<i>1878</i>&nbsp;        transient volatile boolean wasDeleted;
+<b class="nc"><i>1879</i>&nbsp;        volatile Object value;</b>
+<i>1880</i>&nbsp;        transient volatile ScriptableObject.Slot next;
+<i>1881</i>&nbsp;        transient volatile ScriptableObject.Slot orderedNext;
+<i>1882</i>&nbsp;
+<b class="nc"><i>1883</i>&nbsp;        Slot(String var1, int var2, int var3) {</b>
+<b class="nc"><i>1884</i>&nbsp;            this.name = var1;</b>
+<b class="nc"><i>1885</i>&nbsp;            this.indexOrHash = var2;</b>
+<b class="nc"><i>1886</i>&nbsp;            this.attributes = (short)var3;</b>
+<b class="nc"><i>1887</i>&nbsp;        }</b>
+<b class="nc"><i>1888</i>&nbsp;</b>
+<b class="nc"><i>1889</i>&nbsp;        final int getAttributes() {</b>
+<b class="nc"><i>1890</i>&nbsp;            return this.attributes;</b>
+<b class="nc"><i>1891</i>&nbsp;        }</b>
+<b class="nc"><i>1892</i>&nbsp;</b>
+<b class="nc"><i>1893</i>&nbsp;        final synchronized void setAttributes(int var1) {</b>
+<b class="nc"><i>1894</i>&nbsp;            ScriptableObject.checkValidAttributes(var1);</b>
+<b class="nc"><i>1895</i>&nbsp;            this.attributes = (short)var1;</b>
+<i>1896</i>&nbsp;        }
+<i>1897</i>&nbsp;
+<i>1898</i>&nbsp;        final void checkNotReadonly() {
+<i>1899</i>&nbsp;            if((this.attributes &amp; 1) != 0) {
+<b class="nc"><i>1900</i>&nbsp;                String var1 = this.name != null?this.name:Integer.toString(this.indexOrHash);</b>
+<b class="nc"><i>1901</i>&nbsp;                throw Context.reportRuntimeError1(&quot;msg.modify.readonly&quot;, var1);</b>
+<b class="nc"><i>1902</i>&nbsp;            }</b>
+<b class="nc"><i>1903</i>&nbsp;        }</b>
+<b class="nc"><i>1904</i>&nbsp;</b>
+<i>1905</i>&nbsp;        ScriptableObject getPropertyDescriptor(Context var1, Scriptable var2) {
+<i>1906</i>&nbsp;            return ScriptableObject.buildDataDescriptor(var2, this.value == null?Undefined.instance:this.value, this.attributes);
+<i>1907</i>&nbsp;        }
+<i>1908</i>&nbsp;    }
+<i>1909</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

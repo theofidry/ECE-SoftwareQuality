@@ -1,0 +1,732 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ExtendedTextSourceLabel</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ExtendedTextSourceLabel (sun.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ExtendedTextSourceLabel</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 358)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.font;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Font;
+<i>9</i>&nbsp;import java.awt.Graphics2D;
+<i>10</i>&nbsp;import java.awt.Rectangle;
+<i>11</i>&nbsp;import java.awt.Shape;
+<i>12</i>&nbsp;import java.awt.font.FontRenderContext;
+<i>13</i>&nbsp;import java.awt.font.GlyphJustificationInfo;
+<i>14</i>&nbsp;import java.awt.font.LineMetrics;
+<i>15</i>&nbsp;import java.awt.geom.AffineTransform;
+<i>16</i>&nbsp;import java.awt.geom.Rectangle2D;
+<i>17</i>&nbsp;import java.awt.geom.Rectangle2D.Float;
+<i>18</i>&nbsp;import java.util.Map;
+<i>19</i>&nbsp;import sun.font.AttributeValues;
+<i>20</i>&nbsp;import sun.font.CoreMetrics;
+<i>21</i>&nbsp;import sun.font.Decoration;
+<i>22</i>&nbsp;import sun.font.ExtendedTextLabel;
+<i>23</i>&nbsp;import sun.font.GlyphLayout;
+<i>24</i>&nbsp;import sun.font.StandardGlyphVector;
+<i>25</i>&nbsp;import sun.font.TextLineComponent;
+<i>26</i>&nbsp;import sun.font.TextSource;
+<i>27</i>&nbsp;import sun.font.Decoration.Label;
+<i>28</i>&nbsp;import sun.font.GlyphLayout.LayoutEngineFactory;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;class ExtendedTextSourceLabel extends ExtendedTextLabel implements Label {
+<i>31</i>&nbsp;    TextSource source;
+<i>32</i>&nbsp;    private Decoration decorator;
+<i>33</i>&nbsp;    private Font font;
+<i>34</i>&nbsp;    private AffineTransform baseTX;
+<i>35</i>&nbsp;    private CoreMetrics cm;
+<i>36</i>&nbsp;    Rectangle2D lb;
+<i>37</i>&nbsp;    Rectangle2D ab;
+<i>38</i>&nbsp;    Rectangle2D vb;
+<i>39</i>&nbsp;    Rectangle2D ib;
+<i>40</i>&nbsp;    StandardGlyphVector gv;
+<i>41</i>&nbsp;    float[] charinfo;
+<i>42</i>&nbsp;    private static final int posx = 0;
+<i>43</i>&nbsp;    private static final int posy = 1;
+<i>44</i>&nbsp;    private static final int advx = 2;
+<i>45</i>&nbsp;    private static final int advy = 3;
+<i>46</i>&nbsp;    private static final int visx = 4;
+<i>47</i>&nbsp;    private static final int visy = 5;
+<i>48</i>&nbsp;    private static final int visw = 6;
+<i>49</i>&nbsp;    private static final int vish = 7;
+<i>50</i>&nbsp;    private static final int numvals = 8;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public ExtendedTextSourceLabel(TextSource var1, Decoration var2) {
+<i>53</i>&nbsp;        this.source = var1;
+<i>54</i>&nbsp;        this.decorator = var2;
+<i>55</i>&nbsp;        this.finishInit();
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public ExtendedTextSourceLabel(TextSource var1, ExtendedTextSourceLabel var2, int var3) {
+<i>59</i>&nbsp;        this.source = var1;
+<b class="nc"><i>60</i>&nbsp;        this.decorator = var2.decorator;</b>
+<b class="nc"><i>61</i>&nbsp;        this.finishInit();</b>
+<b class="nc"><i>62</i>&nbsp;    }</b>
+<b class="nc"><i>63</i>&nbsp;</b>
+<i>64</i>&nbsp;    private void finishInit() {
+<i>65</i>&nbsp;        this.font = this.source.getFont();
+<i>66</i>&nbsp;        Map var1 = this.font.getAttributes();
+<i>67</i>&nbsp;        this.baseTX = AttributeValues.getBaselineTransform(var1);
+<i>68</i>&nbsp;        if(this.baseTX == null) {
+<i>69</i>&nbsp;            this.cm = this.source.getCoreMetrics();
+<i>70</i>&nbsp;        } else {
+<b class="nc"><i>71</i>&nbsp;            AffineTransform var2 = AttributeValues.getCharTransform(var1);</b>
+<i>72</i>&nbsp;            if(var2 == null) {
+<b class="nc"><i>73</i>&nbsp;                var2 = new AffineTransform();</b>
+<b class="nc"><i>74</i>&nbsp;            }</b>
+<b class="nc"><i>75</i>&nbsp;</b>
+<i>76</i>&nbsp;            this.font = this.font.deriveFont(var2);
+<i>77</i>&nbsp;            LineMetrics var3 = this.font.getLineMetrics(this.source.getChars(), this.source.getStart(), this.source.getStart() + this.source.getLength(), this.source.getFRC());
+<i>78</i>&nbsp;            this.cm = CoreMetrics.get(var3);
+<b class="nc"><i>79</i>&nbsp;        }</b>
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<b class="nc"><i>82</i>&nbsp;</b>
+<b class="nc"><i>83</i>&nbsp;    public Rectangle2D getLogicalBounds() {</b>
+<b class="nc"><i>84</i>&nbsp;        return this.getLogicalBounds(0.0F, 0.0F);</b>
+<i>85</i>&nbsp;    }
+<b class="nc"><i>86</i>&nbsp;</b>
+<b class="nc"><i>87</i>&nbsp;    public Rectangle2D getLogicalBounds(float var1, float var2) {</b>
+<b class="nc"><i>88</i>&nbsp;        if(this.lb == null) {</b>
+<i>89</i>&nbsp;            this.lb = this.createLogicalBounds();
+<b class="nc"><i>90</i>&nbsp;        }</b>
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;        return new Float((float)(this.lb.getX() + (double)var1), (float)(this.lb.getY() + (double)var2), (float)this.lb.getWidth(), (float)this.lb.getHeight());</b>
+<i>93</i>&nbsp;    }
+<b class="nc"><i>94</i>&nbsp;</b>
+<i>95</i>&nbsp;    public float getAdvance() {
+<i>96</i>&nbsp;        if(this.lb == null) {
+<i>97</i>&nbsp;            this.lb = this.createLogicalBounds();
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;        return (float)this.lb.getWidth();
+<i>101</i>&nbsp;    }
+<b class="nc"><i>102</i>&nbsp;</b>
+<i>103</i>&nbsp;    public Rectangle2D getVisualBounds(float var1, float var2) {
+<i>104</i>&nbsp;        if(this.vb == null) {
+<i>105</i>&nbsp;            this.vb = this.decorator.getVisualBounds(this);
+<b class="nc"><i>106</i>&nbsp;        }</b>
+<b class="nc"><i>107</i>&nbsp;</b>
+<i>108</i>&nbsp;        return new Float((float)(this.vb.getX() + (double)var1), (float)(this.vb.getY() + (double)var2), (float)this.vb.getWidth(), (float)this.vb.getHeight());
+<b class="nc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public Rectangle2D getAlignBounds(float var1, float var2) {
+<i>112</i>&nbsp;        if(this.ab == null) {
+<i>113</i>&nbsp;            this.ab = this.createAlignBounds();
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;        return new Float((float)(this.ab.getX() + (double)var1), (float)(this.ab.getY() + (double)var2), (float)this.ab.getWidth(), (float)this.ab.getHeight());</b>
+<b class="nc"><i>117</i>&nbsp;    }</b>
+<i>118</i>&nbsp;
+<b class="nc"><i>119</i>&nbsp;    public Rectangle2D getItalicBounds(float var1, float var2) {</b>
+<i>120</i>&nbsp;        if(this.ib == null) {
+<i>121</i>&nbsp;            this.ib = this.createItalicBounds();
+<i>122</i>&nbsp;        }
+<b class="nc"><i>123</i>&nbsp;</b>
+<b class="nc"><i>124</i>&nbsp;        return new Float((float)(this.ib.getX() + (double)var1), (float)(this.ib.getY() + (double)var2), (float)this.ib.getWidth(), (float)this.ib.getHeight());</b>
+<i>125</i>&nbsp;    }
+<b class="nc"><i>126</i>&nbsp;</b>
+<i>127</i>&nbsp;    public Rectangle getPixelBounds(FontRenderContext var1, float var2, float var3) {
+<i>128</i>&nbsp;        return this.getGV().getPixelBounds(var1, var2, var3);
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public boolean isSimple() {
+<i>132</i>&nbsp;        return this.decorator == Decoration.getPlainDecoration() &amp;&amp; this.baseTX == null;
+<b class="nc"><i>133</i>&nbsp;    }</b>
+<b class="nc"><i>134</i>&nbsp;</b>
+<i>135</i>&nbsp;    public AffineTransform getBaselineTransform() {
+<b class="nc"><i>136</i>&nbsp;        return this.baseTX;</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    public Shape handleGetOutline(float var1, float var2) {
+<i>140</i>&nbsp;        return this.getGV().getOutline(var1, var2);
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    public Shape getOutline(float var1, float var2) {
+<b class="nc"><i>144</i>&nbsp;        return this.decorator.getOutline(this, var1, var2);</b>
+<b class="nc"><i>145</i>&nbsp;    }</b>
+<i>146</i>&nbsp;
+<b class="nc"><i>147</i>&nbsp;    public void handleDraw(Graphics2D var1, float var2, float var3) {</b>
+<i>148</i>&nbsp;        var1.drawGlyphVector(this.getGV(), var2, var3);
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public void draw(Graphics2D var1, float var2, float var3) {
+<i>152</i>&nbsp;        this.decorator.drawTextAndDecorations(this, var1, var2, var3);
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<b class="nc"><i>155</i>&nbsp;    protected Rectangle2D createLogicalBounds() {</b>
+<i>156</i>&nbsp;        return this.getGV().getLogicalBounds();
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<b class="nc"><i>159</i>&nbsp;    public Rectangle2D handleGetVisualBounds() {</b>
+<i>160</i>&nbsp;        return this.getGV().getVisualBounds();
+<i>161</i>&nbsp;    }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    protected Rectangle2D createAlignBounds() {
+<b class="nc"><i>164</i>&nbsp;        float[] var1 = this.getCharinfo();</b>
+<i>165</i>&nbsp;        float var2 = 0.0F;
+<i>166</i>&nbsp;        float var3 = -this.cm.ascent;
+<i>167</i>&nbsp;        float var4 = 0.0F;
+<b class="nc"><i>168</i>&nbsp;        float var5 = this.cm.ascent + this.cm.descent;</b>
+<i>169</i>&nbsp;        if(this.charinfo != null &amp;&amp; this.charinfo.length != 0) {
+<i>170</i>&nbsp;            boolean var6 = (this.source.getLayoutFlags() &amp; 8) == 0;
+<i>171</i>&nbsp;            int var7 = var1.length - 8;
+<b class="nc"><i>172</i>&nbsp;            if(var6) {</b>
+<i>173</i>&nbsp;                while(var7 &gt; 0 &amp;&amp; var1[var7 + 6] == 0.0F) {
+<i>174</i>&nbsp;                    var7 -= 8;
+<i>175</i>&nbsp;                }
+<b class="nc"><i>176</i>&nbsp;            }</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;            if(var7 &gt;= 0) {
+<i>179</i>&nbsp;                int var8;
+<b class="nc"><i>180</i>&nbsp;                for(var8 = 0; var8 &lt; var7 &amp;&amp; (var1[var8 + 2] == 0.0F || !var6 &amp;&amp; var1[var8 + 6] == 0.0F); var8 += 8) {</b>
+<i>181</i>&nbsp;                    ;
+<i>182</i>&nbsp;                }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;                var2 = Math.max(0.0F, var1[var8 + 0]);
+<i>185</i>&nbsp;                var4 = var1[var7 + 0] + var1[var7 + 2] - var2;
+<i>186</i>&nbsp;            }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;            return new Float(var2, var3, var4, var5);
+<i>189</i>&nbsp;        } else {
+<i>190</i>&nbsp;            return new Float(var2, var3, var4, var5);
+<i>191</i>&nbsp;        }
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    public Rectangle2D createItalicBounds() {
+<i>195</i>&nbsp;        float var1 = this.cm.italicAngle;
+<i>196</i>&nbsp;        Rectangle2D var2 = this.getLogicalBounds();
+<i>197</i>&nbsp;        float var3 = (float)var2.getMinX();
+<i>198</i>&nbsp;        float var4 = -this.cm.ascent;
+<i>199</i>&nbsp;        float var5 = (float)var2.getMaxX();
+<i>200</i>&nbsp;        float var6 = this.cm.descent;
+<i>201</i>&nbsp;        if(var1 != 0.0F) {
+<i>202</i>&nbsp;            if(var1 &gt; 0.0F) {
+<i>203</i>&nbsp;                var3 -= var1 * (var6 - this.cm.ssOffset);
+<i>204</i>&nbsp;                var5 -= var1 * (var4 - this.cm.ssOffset);
+<i>205</i>&nbsp;            } else {
+<i>206</i>&nbsp;                var3 -= var1 * (var4 - this.cm.ssOffset);
+<i>207</i>&nbsp;                var5 -= var1 * (var6 - this.cm.ssOffset);
+<b class="nc"><i>208</i>&nbsp;            }</b>
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;        return new Float(var3, var4, var5 - var3, var6 - var4);
+<b class="nc"><i>212</i>&nbsp;    }</b>
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    private final StandardGlyphVector getGV() {
+<i>215</i>&nbsp;        if(this.gv == null) {
+<i>216</i>&nbsp;            this.gv = this.createGV();
+<i>217</i>&nbsp;        }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;        return this.gv;
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    protected StandardGlyphVector createGV() {
+<i>223</i>&nbsp;        FontRenderContext var1 = this.source.getFRC();
+<i>224</i>&nbsp;        int var2 = this.source.getLayoutFlags();
+<i>225</i>&nbsp;        char[] var3 = this.source.getChars();
+<b class="nc"><i>226</i>&nbsp;        int var4 = this.source.getStart();</b>
+<i>227</i>&nbsp;        int var5 = this.source.getLength();
+<b class="nc"><i>228</i>&nbsp;        GlyphLayout var6 = GlyphLayout.get((LayoutEngineFactory)null);</b>
+<b class="nc"><i>229</i>&nbsp;        this.gv = var6.layout(this.font, var1, var3, var4, var5, var2, (StandardGlyphVector)null);</b>
+<b class="nc"><i>230</i>&nbsp;        GlyphLayout.done(var6);</b>
+<b class="nc"><i>231</i>&nbsp;        return this.gv;</b>
+<i>232</i>&nbsp;    }
+<b class="nc"><i>233</i>&nbsp;</b>
+<b class="nc"><i>234</i>&nbsp;    public int getNumCharacters() {</b>
+<i>235</i>&nbsp;        return this.source.getLength();
+<i>236</i>&nbsp;    }
+<b class="nc"><i>237</i>&nbsp;</b>
+<b class="nc"><i>238</i>&nbsp;    public CoreMetrics getCoreMetrics() {</b>
+<b class="nc"><i>239</i>&nbsp;        return this.cm;</b>
+<b class="nc"><i>240</i>&nbsp;    }</b>
+<b class="nc"><i>241</i>&nbsp;</b>
+<i>242</i>&nbsp;    public float getCharX(int var1) {
+<i>243</i>&nbsp;        this.validate(var1);
+<i>244</i>&nbsp;        float[] var2 = this.getCharinfo();
+<b class="nc"><i>245</i>&nbsp;        int var3 = this.l2v(var1) * 8 + 0;</b>
+<b class="nc"><i>246</i>&nbsp;        return var2 != null &amp;&amp; var3 &lt; var2.length?var2[var3]:0.0F;</b>
+<b class="nc"><i>247</i>&nbsp;    }</b>
+<b class="nc"><i>248</i>&nbsp;</b>
+<i>249</i>&nbsp;    public float getCharY(int var1) {
+<i>250</i>&nbsp;        this.validate(var1);
+<b class="nc"><i>251</i>&nbsp;        float[] var2 = this.getCharinfo();</b>
+<b class="nc"><i>252</i>&nbsp;        int var3 = this.l2v(var1) * 8 + 1;</b>
+<i>253</i>&nbsp;        return var2 != null &amp;&amp; var3 &lt; var2.length?var2[var3]:0.0F;
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    public float getCharAdvance(int var1) {
+<i>257</i>&nbsp;        this.validate(var1);
+<i>258</i>&nbsp;        float[] var2 = this.getCharinfo();
+<i>259</i>&nbsp;        int var3 = this.l2v(var1) * 8 + 2;
+<i>260</i>&nbsp;        return var2 != null &amp;&amp; var3 &lt; var2.length?var2[var3]:0.0F;
+<i>261</i>&nbsp;    }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    public Rectangle2D handleGetCharVisualBounds(int var1) {
+<i>264</i>&nbsp;        this.validate(var1);
+<i>265</i>&nbsp;        float[] var2 = this.getCharinfo();
+<i>266</i>&nbsp;        var1 = this.l2v(var1) * 8;
+<i>267</i>&nbsp;        return var2 != null &amp;&amp; var1 + 7 &lt; var2.length?new Float(var2[var1 + 4], var2[var1 + 5], var2[var1 + 6], var2[var1 + 7]):new Float();
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public Rectangle2D getCharVisualBounds(int var1, float var2, float var3) {
+<i>271</i>&nbsp;        Rectangle2D var4 = this.decorator.getCharVisualBounds(this, var1);
+<i>272</i>&nbsp;        if(var2 != 0.0F || var3 != 0.0F) {
+<b class="nc"><i>273</i>&nbsp;            var4.setRect(var4.getX() + (double)var2, var4.getY() + (double)var3, var4.getWidth(), var4.getHeight());</b>
+<i>274</i>&nbsp;        }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;        return var4;
+<b class="nc"><i>277</i>&nbsp;    }</b>
+<i>278</i>&nbsp;
+<b class="nc"><i>279</i>&nbsp;    private void validate(int var1) {</b>
+<b class="nc"><i>280</i>&nbsp;        if(var1 &lt; 0) {</b>
+<b class="nc"><i>281</i>&nbsp;            throw new IllegalArgumentException(&quot;index &quot; + var1 + &quot; &lt; 0&quot;);</b>
+<b class="nc"><i>282</i>&nbsp;        } else if(var1 &gt;= this.source.getLength()) {</b>
+<b class="nc"><i>283</i>&nbsp;            throw new IllegalArgumentException(&quot;index &quot; + var1 + &quot; &lt; &quot; + this.source.getLength());</b>
+<b class="nc"><i>284</i>&nbsp;        }</b>
+<b class="nc"><i>285</i>&nbsp;    }</b>
+<b class="nc"><i>286</i>&nbsp;</b>
+<b class="nc"><i>287</i>&nbsp;    public int logicalToVisual(int var1) {</b>
+<i>288</i>&nbsp;        this.validate(var1);
+<b class="nc"><i>289</i>&nbsp;        return this.l2v(var1);</b>
+<b class="nc"><i>290</i>&nbsp;    }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public int visualToLogical(int var1) {
+<b class="nc"><i>293</i>&nbsp;        this.validate(var1);</b>
+<i>294</i>&nbsp;        return this.v2l(var1);
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;
+<b class="nc"><i>297</i>&nbsp;    public int getLineBreakIndex(int var1, float var2) {</b>
+<b class="nc"><i>298</i>&nbsp;        float[] var3 = this.getCharinfo();</b>
+<i>299</i>&nbsp;        int var4 = this.source.getLength();
+<i>300</i>&nbsp;        --var1;
+<b class="nc"><i>301</i>&nbsp;</b>
+<i>302</i>&nbsp;        while(var2 &gt;= 0.0F) {
+<i>303</i>&nbsp;            ++var1;
+<i>304</i>&nbsp;            if(var1 &gt;= var4) {
+<b class="nc"><i>305</i>&nbsp;                break;</b>
+<b class="nc"><i>306</i>&nbsp;            }</b>
+<b class="nc"><i>307</i>&nbsp;</b>
+<b class="nc"><i>308</i>&nbsp;            int var5 = this.l2v(var1) * 8 + 2;</b>
+<b class="nc"><i>309</i>&nbsp;            if(var5 &gt;= var3.length) {</b>
+<i>310</i>&nbsp;                break;
+<b class="nc"><i>311</i>&nbsp;            }</b>
+<b class="nc"><i>312</i>&nbsp;</b>
+<b class="nc"><i>313</i>&nbsp;            float var6 = var3[var5];</b>
+<i>314</i>&nbsp;            var2 -= var6;
+<b class="nc"><i>315</i>&nbsp;        }</b>
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;        return var1;
+<i>318</i>&nbsp;    }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;    public float getAdvanceBetween(int var1, int var2) {
+<i>321</i>&nbsp;        float var3 = 0.0F;
+<i>322</i>&nbsp;        float[] var4 = this.getCharinfo();
+<i>323</i>&nbsp;        --var1;
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;        while(true) {
+<i>326</i>&nbsp;            ++var1;
+<i>327</i>&nbsp;            if(var1 &gt;= var2) {
+<i>328</i>&nbsp;                break;
+<i>329</i>&nbsp;            }
+<i>330</i>&nbsp;
+<b class="nc"><i>331</i>&nbsp;            int var5 = this.l2v(var1) * 8 + 2;</b>
+<i>332</i>&nbsp;            if(var5 &gt;= var4.length) {
+<i>333</i>&nbsp;                break;
+<i>334</i>&nbsp;            }
+<b class="nc"><i>335</i>&nbsp;</b>
+<i>336</i>&nbsp;            var3 += var4[var5];
+<i>337</i>&nbsp;        }
+<i>338</i>&nbsp;
+<b class="nc"><i>339</i>&nbsp;        return var3;</b>
+<b class="nc"><i>340</i>&nbsp;    }</b>
+<b class="nc"><i>341</i>&nbsp;</b>
+<b class="nc"><i>342</i>&nbsp;    public boolean caretAtOffsetIsValid(int var1) {</b>
+<b class="nc"><i>343</i>&nbsp;        if(var1 != 0 &amp;&amp; var1 != this.source.getLength()) {</b>
+<i>344</i>&nbsp;            char var2 = this.source.getChars()[this.source.getStart() + var1];
+<b class="nc"><i>345</i>&nbsp;            if(var2 != 9 &amp;&amp; var2 != 10 &amp;&amp; var2 != 13) {</b>
+<i>346</i>&nbsp;                int var3 = this.l2v(var1);
+<i>347</i>&nbsp;                int var4 = var3 * 8 + 2;
+<i>348</i>&nbsp;                float[] var5 = this.getCharinfo();
+<i>349</i>&nbsp;                return var5 != null &amp;&amp; var4 &lt; var5.length?var5[var4] != 0.0F:false;
+<b class="nc"><i>350</i>&nbsp;            } else {</b>
+<b class="nc"><i>351</i>&nbsp;                return true;</b>
+<b class="nc"><i>352</i>&nbsp;            }</b>
+<b class="nc"><i>353</i>&nbsp;        } else {</b>
+<b class="nc"><i>354</i>&nbsp;            return true;</b>
+<i>355</i>&nbsp;        }
+<b class="nc"><i>356</i>&nbsp;    }</b>
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    private final float[] getCharinfo() {
+<i>359</i>&nbsp;        if(this.charinfo == null) {
+<i>360</i>&nbsp;            this.charinfo = this.createCharinfo();
+<b class="nc"><i>361</i>&nbsp;        }</b>
+<b class="nc"><i>362</i>&nbsp;</b>
+<b class="nc"><i>363</i>&nbsp;        return this.charinfo;</b>
+<b class="nc"><i>364</i>&nbsp;    }</b>
+<b class="nc"><i>365</i>&nbsp;</b>
+<i>366</i>&nbsp;    protected float[] createCharinfo() {
+<b class="nc"><i>367</i>&nbsp;        StandardGlyphVector var1 = this.getGV();</b>
+<i>368</i>&nbsp;        float[] var2 = null;
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;        try {
+<i>371</i>&nbsp;            var2 = var1.getGlyphInfo();
+<b class="nc"><i>372</i>&nbsp;        } catch (Exception var31) {</b>
+<b class="nc"><i>373</i>&nbsp;            System.out.println(this.source);</b>
+<b class="nc"><i>374</i>&nbsp;        }</b>
+<b class="nc"><i>375</i>&nbsp;</b>
+<b class="nc"><i>376</i>&nbsp;        int var3 = var1.getNumGlyphs();</b>
+<i>377</i>&nbsp;        if(var3 == 0) {
+<b class="nc"><i>378</i>&nbsp;            return var2;</b>
+<i>379</i>&nbsp;        } else {
+<i>380</i>&nbsp;            int[] var4 = var1.getGlyphCharIndices(0, var3, (int[])null);
+<i>381</i>&nbsp;            boolean var5 = false;
+<i>382</i>&nbsp;            int var6;
+<i>383</i>&nbsp;            if(var5) {
+<i>384</i>&nbsp;                System.err.println(&quot;number of glyphs: &quot; + var3);
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;                for(var6 = 0; var6 &lt; var3; ++var6) {
+<b class="nc"><i>387</i>&nbsp;                    System.err.println(&quot;g: &quot; + var6 + &quot;, x: &quot; + var2[var6 * 8 + 0] + &quot;, a: &quot; + var2[var6 * 8 + 2] + &quot;, n: &quot; + var4[var6]);</b>
+<b class="nc"><i>388</i>&nbsp;                }</b>
+<b class="nc"><i>389</i>&nbsp;            }</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;            var6 = var4[0];
+<i>392</i>&nbsp;            int var8 = 0;
+<i>393</i>&nbsp;            int var9 = 0;
+<b class="nc"><i>394</i>&nbsp;            int var10 = 0;</b>
+<i>395</i>&nbsp;            int var11 = 0;
+<i>396</i>&nbsp;            int var12 = 0;
+<i>397</i>&nbsp;            int var13 = var3;
+<b class="nc"><i>398</i>&nbsp;            byte var14 = 8;</b>
+<b class="nc"><i>399</i>&nbsp;            byte var15 = 1;</b>
+<b class="nc"><i>400</i>&nbsp;            boolean var16 = (this.source.getLayoutFlags() &amp; 1) == 0;</b>
+<b class="nc"><i>401</i>&nbsp;            if(!var16) {</b>
+<i>402</i>&nbsp;                var6 = var4[var3 - 1];
+<i>403</i>&nbsp;                var8 = 0;
+<i>404</i>&nbsp;                var9 = var2.length - 8;
+<i>405</i>&nbsp;                var10 = 0;
+<i>406</i>&nbsp;                var11 = var2.length - 8;
+<i>407</i>&nbsp;                var12 = var3 - 1;
+<i>408</i>&nbsp;                var13 = -1;
+<i>409</i>&nbsp;                var14 = -8;
+<i>410</i>&nbsp;                var15 = -1;
+<i>411</i>&nbsp;            }
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;            float var17 = 0.0F;
+<i>414</i>&nbsp;            float var18 = 0.0F;
+<i>415</i>&nbsp;            float var19 = 0.0F;
+<i>416</i>&nbsp;            float var20 = 0.0F;
+<i>417</i>&nbsp;            float var21 = 0.0F;
+<i>418</i>&nbsp;            float var22 = 0.0F;
+<i>419</i>&nbsp;            float var23 = 0.0F;
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;            boolean var24;
+<i>422</i>&nbsp;            int var27;
+<i>423</i>&nbsp;            int var26;
+<i>424</i>&nbsp;            int var33;
+<i>425</i>&nbsp;            for(var24 = false; var12 != var13; var10 += var15) {
+<i>426</i>&nbsp;                boolean var25 = false;
+<i>427</i>&nbsp;                var26 = 0;
+<i>428</i>&nbsp;                var6 = var4[var12];
+<i>429</i>&nbsp;                int var7 = var6;
+<i>430</i>&nbsp;                var12 += var15;
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;                for(var11 += var14; var12 != var13 &amp;&amp; (var2[var11 + 2] == 0.0F || var6 != var8 || var4[var12] &lt;= var7 || var7 - var6 &gt; var26); var11 += var14) {
+<i>433</i>&nbsp;                    if(!var25) {
+<i>434</i>&nbsp;                        var27 = var11 - var14;
+<i>435</i>&nbsp;                        var17 = var2[var27 + 0];
+<i>436</i>&nbsp;                        var18 = var17 + var2[var27 + 2];
+<i>437</i>&nbsp;                        var19 = var2[var27 + 4];
+<i>438</i>&nbsp;                        var20 = var2[var27 + 5];
+<i>439</i>&nbsp;                        var21 = var19 + var2[var27 + 6];
+<i>440</i>&nbsp;                        var22 = var20 + var2[var27 + 7];
+<i>441</i>&nbsp;                        var25 = true;
+<i>442</i>&nbsp;                    }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;                    ++var26;
+<i>445</i>&nbsp;                    float var34 = var2[var11 + 2];
+<i>446</i>&nbsp;                    float var28;
+<i>447</i>&nbsp;                    if(var34 != 0.0F) {
+<i>448</i>&nbsp;                        var28 = var2[var11 + 0];
+<i>449</i>&nbsp;                        var17 = Math.min(var17, var28);
+<i>450</i>&nbsp;                        var18 = Math.max(var18, var28 + var34);
+<i>451</i>&nbsp;                    }
+<i>452</i>&nbsp;
+<b class="nc"><i>453</i>&nbsp;                    var28 = var2[var11 + 6];</b>
+<b class="nc"><i>454</i>&nbsp;                    if(var28 != 0.0F) {</b>
+<i>455</i>&nbsp;                        float var29 = var2[var11 + 4];
+<i>456</i>&nbsp;                        float var30 = var2[var11 + 5];
+<i>457</i>&nbsp;                        var19 = Math.min(var19, var29);
+<b class="nc"><i>458</i>&nbsp;                        var20 = Math.min(var20, var30);</b>
+<b class="nc"><i>459</i>&nbsp;                        var21 = Math.max(var21, var29 + var28);</b>
+<i>460</i>&nbsp;                        var22 = Math.max(var22, var30 + var2[var11 + 7]);
+<i>461</i>&nbsp;                    }
+<i>462</i>&nbsp;
+<b class="nc"><i>463</i>&nbsp;                    var6 = Math.min(var6, var4[var12]);</b>
+<b class="nc"><i>464</i>&nbsp;                    var7 = Math.max(var7, var4[var12]);</b>
+<b class="nc"><i>465</i>&nbsp;                    var12 += var15;</b>
+<b class="nc"><i>466</i>&nbsp;                }</b>
+<b class="nc"><i>467</i>&nbsp;</b>
+<b class="nc"><i>468</i>&nbsp;                if(var5) {</b>
+<b class="nc"><i>469</i>&nbsp;                    System.out.println(&quot;minIndex = &quot; + var6 + &quot;, maxIndex = &quot; + var7);</b>
+<i>470</i>&nbsp;                }
+<b class="nc"><i>471</i>&nbsp;</b>
+<b class="nc"><i>472</i>&nbsp;                var8 = var7 + 1;</b>
+<b class="nc"><i>473</i>&nbsp;                var2[var9 + 1] = var23;</b>
+<i>474</i>&nbsp;                var2[var9 + 3] = 0.0F;
+<b class="nc"><i>475</i>&nbsp;                if(var25) {</b>
+<i>476</i>&nbsp;                    var2[var9 + 0] = var17;
+<i>477</i>&nbsp;                    var2[var9 + 2] = var18 - var17;
+<i>478</i>&nbsp;                    var2[var9 + 4] = var19;
+<b class="nc"><i>479</i>&nbsp;                    var2[var9 + 5] = var20;</b>
+<i>480</i>&nbsp;                    var2[var9 + 6] = var21 - var19;
+<b class="nc"><i>481</i>&nbsp;                    var2[var9 + 7] = var22 - var20;</b>
+<b class="nc"><i>482</i>&nbsp;                    if(var7 - var6 &lt; var26) {</b>
+<b class="nc"><i>483</i>&nbsp;                        var24 = true;</b>
+<b class="nc"><i>484</i>&nbsp;                    }</b>
+<b class="nc"><i>485</i>&nbsp;</b>
+<b class="nc"><i>486</i>&nbsp;                    if(var6 &lt; var7) {</b>
+<i>487</i>&nbsp;                        if(!var16) {
+<b class="nc"><i>488</i>&nbsp;                            var18 = var17;</b>
+<b class="nc"><i>489</i>&nbsp;                        }</b>
+<i>490</i>&nbsp;
+<b class="nc"><i>491</i>&nbsp;                        var21 -= var19;</b>
+<i>492</i>&nbsp;                        var22 -= var20;
+<i>493</i>&nbsp;                        var27 = var6;
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;                        for(var33 = var9 / 8; var6 &lt; var7; var2[var9 + 7] = var22) {
+<i>496</i>&nbsp;                            ++var6;
+<i>497</i>&nbsp;                            var10 += var15;
+<i>498</i>&nbsp;                            var9 += var14;
+<i>499</i>&nbsp;                            if((var9 &lt; 0 || var9 &gt;= var2.length) &amp;&amp; var5) {
+<i>500</i>&nbsp;                                System.out.println(&quot;minIndex = &quot; + var27 + &quot;, maxIndex = &quot; + var7 + &quot;, cp = &quot; + var33);
+<i>501</i>&nbsp;                            }
+<i>502</i>&nbsp;
+<b class="nc"><i>503</i>&nbsp;                            var2[var9 + 0] = var18;</b>
+<b class="nc"><i>504</i>&nbsp;                            var2[var9 + 1] = var23;</b>
+<i>505</i>&nbsp;                            var2[var9 + 2] = 0.0F;
+<b class="nc"><i>506</i>&nbsp;                            var2[var9 + 3] = 0.0F;</b>
+<b class="nc"><i>507</i>&nbsp;                            var2[var9 + 4] = var19;</b>
+<b class="nc"><i>508</i>&nbsp;                            var2[var9 + 5] = var20;</b>
+<i>509</i>&nbsp;                            var2[var9 + 6] = var21;
+<b class="nc"><i>510</i>&nbsp;                        }</b>
+<i>511</i>&nbsp;                    }
+<i>512</i>&nbsp;
+<i>513</i>&nbsp;                    var25 = false;
+<i>514</i>&nbsp;                } else if(var24) {
+<i>515</i>&nbsp;                    var27 = var11 - var14;
+<i>516</i>&nbsp;                    var2[var9 + 0] = var2[var27 + 0];
+<i>517</i>&nbsp;                    var2[var9 + 2] = var2[var27 + 2];
+<i>518</i>&nbsp;                    var2[var9 + 4] = var2[var27 + 4];
+<i>519</i>&nbsp;                    var2[var9 + 5] = var2[var27 + 5];
+<b class="nc"><i>520</i>&nbsp;                    var2[var9 + 6] = var2[var27 + 6];</b>
+<b class="nc"><i>521</i>&nbsp;                    var2[var9 + 7] = var2[var27 + 7];</b>
+<b class="nc"><i>522</i>&nbsp;                }</b>
+<b class="nc"><i>523</i>&nbsp;</b>
+<i>524</i>&nbsp;                var9 += var14;
+<b class="nc"><i>525</i>&nbsp;            }</b>
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;            if(var24 &amp;&amp; !var16) {
+<i>528</i>&nbsp;                var9 -= var14;
+<i>529</i>&nbsp;                System.arraycopy(var2, var9, var2, 0, var2.length - var9);
+<b class="nc"><i>530</i>&nbsp;            }</b>
+<b class="nc"><i>531</i>&nbsp;</b>
+<i>532</i>&nbsp;            if(var5) {
+<b class="nc"><i>533</i>&nbsp;                char[] var32 = this.source.getChars();</b>
+<i>534</i>&nbsp;                var26 = this.source.getStart();
+<i>535</i>&nbsp;                var27 = this.source.getLength();
+<i>536</i>&nbsp;                System.out.println(&quot;char info for &quot; + var27 + &quot; characters&quot;);
+<i>537</i>&nbsp;                var33 = 0;
+<i>538</i>&nbsp;
+<i>539</i>&nbsp;                while(var33 &lt; var27 * 8) {
+<i>540</i>&nbsp;                    System.out.println(&quot; ch: &quot; + Integer.toHexString(var32[var26 + this.v2l(var33 / 8)]) + &quot; x: &quot; + var2[var33++] + &quot; y: &quot; + var2[var33++] + &quot; xa: &quot; + var2[var33++] + &quot; ya: &quot; + var2[var33++] + &quot; l: &quot; + var2[var33++] + &quot; t: &quot; + var2[var33++] + &quot; w: &quot; + var2[var33++] + &quot; h: &quot; + var2[var33++]);
+<i>541</i>&nbsp;                }
+<i>542</i>&nbsp;            }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;            return var2;
+<i>545</i>&nbsp;        }
+<i>546</i>&nbsp;    }
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;    protected int l2v(int var1) {
+<i>549</i>&nbsp;        return (this.source.getLayoutFlags() &amp; 1) == 0?var1:this.source.getLength() - 1 - var1;
+<i>550</i>&nbsp;    }
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;    protected int v2l(int var1) {
+<i>553</i>&nbsp;        return (this.source.getLayoutFlags() &amp; 1) == 0?var1:this.source.getLength() - 1 - var1;
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    public TextLineComponent getSubset(int var1, int var2, int var3) {
+<i>557</i>&nbsp;        return new ExtendedTextSourceLabel(this.source.getSubSource(var1, var2 - var1, var3), this.decorator);
+<i>558</i>&nbsp;    }
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;    public String toString() {
+<i>561</i>&nbsp;        TextSource var10001 = this.source;
+<i>562</i>&nbsp;        return this.source.toString(false);
+<i>563</i>&nbsp;    }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;    public int getNumJustificationInfos() {
+<i>566</i>&nbsp;        return this.getGV().getNumGlyphs();
+<i>567</i>&nbsp;    }
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;    public void getJustificationInfos(GlyphJustificationInfo[] var1, int var2, int var3, int var4) {
+<i>570</i>&nbsp;        StandardGlyphVector var5 = this.getGV();
+<i>571</i>&nbsp;        float[] var6 = this.getCharinfo();
+<i>572</i>&nbsp;        float var7 = var5.getFont().getSize2D();
+<i>573</i>&nbsp;        GlyphJustificationInfo var8 = new GlyphJustificationInfo(0.0F, false, 3, 0.0F, 0.0F, false, 3, 0.0F, 0.0F);
+<i>574</i>&nbsp;        GlyphJustificationInfo var9 = new GlyphJustificationInfo(var7, true, 1, 0.0F, var7, true, 1, 0.0F, var7 / 4.0F);
+<i>575</i>&nbsp;        GlyphJustificationInfo var10 = new GlyphJustificationInfo(var7, true, 2, var7, var7, false, 3, 0.0F, 0.0F);
+<i>576</i>&nbsp;        char[] var11 = this.source.getChars();
+<i>577</i>&nbsp;        int var12 = this.source.getStart();
+<i>578</i>&nbsp;        int var13 = var5.getNumGlyphs();
+<i>579</i>&nbsp;        int var14 = 0;
+<i>580</i>&nbsp;        int var15 = var13;
+<i>581</i>&nbsp;        boolean var16 = (this.source.getLayoutFlags() &amp; 1) == 0;
+<i>582</i>&nbsp;        if(var3 != 0 || var4 != this.source.getLength()) {
+<i>583</i>&nbsp;            if(var16) {
+<i>584</i>&nbsp;                var14 = var3;
+<i>585</i>&nbsp;                var15 = var4;
+<i>586</i>&nbsp;            } else {
+<i>587</i>&nbsp;                var14 = var13 - var4;
+<i>588</i>&nbsp;                var15 = var13 - var3;
+<i>589</i>&nbsp;            }
+<i>590</i>&nbsp;        }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;        for(int var17 = 0; var17 &lt; var13; ++var17) {
+<i>593</i>&nbsp;            GlyphJustificationInfo var18 = null;
+<i>594</i>&nbsp;            if(var17 &gt;= var14 &amp;&amp; var17 &lt; var15) {
+<i>595</i>&nbsp;                if(var6[var17 * 8 + 2] == 0.0F) {
+<i>596</i>&nbsp;                    var18 = var8;
+<i>597</i>&nbsp;                } else {
+<i>598</i>&nbsp;                    int var19 = this.v2l(var17);
+<i>599</i>&nbsp;                    char var20 = var11[var12 + var19];
+<i>600</i>&nbsp;                    if(Character.isWhitespace(var20)) {
+<i>601</i>&nbsp;                        var18 = var9;
+<b class="nc"><i>602</i>&nbsp;                    } else if((var20 &lt; 19968 || var20 &gt;= &#39;ꀀ&#39;) &amp;&amp; (var20 &lt; &#39;가&#39; || var20 &gt;= &#39;\ud7b0&#39;) &amp;&amp; (var20 &lt; &#39;豈&#39; || var20 &gt;= &#39;ﬀ&#39;)) {</b>
+<b class="nc"><i>603</i>&nbsp;                        var18 = var8;</b>
+<i>604</i>&nbsp;                    } else {
+<b class="nc"><i>605</i>&nbsp;                        var18 = var10;</b>
+<i>606</i>&nbsp;                    }
+<b class="nc"><i>607</i>&nbsp;                }</b>
+<b class="nc"><i>608</i>&nbsp;            }</b>
+<b class="nc"><i>609</i>&nbsp;</b>
+<i>610</i>&nbsp;            var1[var2 + var17] = var18;
+<i>611</i>&nbsp;        }
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;    }
+<i>614</i>&nbsp;
+<i>615</i>&nbsp;    public TextLineComponent applyJustificationDeltas(float[] var1, int var2, boolean[] var3) {
+<i>616</i>&nbsp;        float[] var4 = (float[])((float[])this.getCharinfo().clone());
+<b class="nc"><i>617</i>&nbsp;        var3[0] = false;</b>
+<b class="nc"><i>618</i>&nbsp;        StandardGlyphVector var5 = (StandardGlyphVector)this.getGV().clone();</b>
+<b class="nc"><i>619</i>&nbsp;        float[] var6 = var5.getGlyphPositions((float[])null);</b>
+<i>620</i>&nbsp;        int var7 = var5.getNumGlyphs();
+<b class="nc"><i>621</i>&nbsp;        char[] var8 = this.source.getChars();</b>
+<i>622</i>&nbsp;        int var9 = this.source.getStart();
+<b class="nc"><i>623</i>&nbsp;        float var10 = 0.0F;</b>
+<b class="nc"><i>624</i>&nbsp;</b>
+<b class="nc"><i>625</i>&nbsp;        for(int var11 = 0; var11 &lt; var7; ++var11) {</b>
+<b class="nc"><i>626</i>&nbsp;            if(Character.isWhitespace(var8[var9 + this.v2l(var11)])) {</b>
+<b class="nc"><i>627</i>&nbsp;                var6[var11 * 2] += var10;</b>
+<i>628</i>&nbsp;                float var12 = var1[var2 + var11 * 2] + var1[var2 + var11 * 2 + 1];
+<i>629</i>&nbsp;                var4[var11 * 8 + 0] += var10;
+<i>630</i>&nbsp;                var4[var11 * 8 + 4] += var10;
+<i>631</i>&nbsp;                var4[var11 * 8 + 2] += var12;
+<i>632</i>&nbsp;                var10 += var12;
+<i>633</i>&nbsp;            } else {
+<b class="nc"><i>634</i>&nbsp;                var10 += var1[var2 + var11 * 2];</b>
+<b class="nc"><i>635</i>&nbsp;                var6[var11 * 2] += var10;</b>
+<b class="nc"><i>636</i>&nbsp;                var4[var11 * 8 + 0] += var10;</b>
+<b class="nc"><i>637</i>&nbsp;                var4[var11 * 8 + 4] += var10;</b>
+<b class="nc"><i>638</i>&nbsp;                var10 += var1[var2 + var11 * 2 + 1];</b>
+<b class="nc"><i>639</i>&nbsp;            }</b>
+<b class="nc"><i>640</i>&nbsp;        }</b>
+<b class="nc"><i>641</i>&nbsp;</b>
+<b class="nc"><i>642</i>&nbsp;        var6[var7 * 2] += var10;</b>
+<b class="nc"><i>643</i>&nbsp;        var5.setGlyphPositions(var6);</b>
+<i>644</i>&nbsp;        ExtendedTextSourceLabel var13 = new ExtendedTextSourceLabel(this.source, this.decorator);
+<b class="nc"><i>645</i>&nbsp;        var13.gv = var5;</b>
+<b class="nc"><i>646</i>&nbsp;        var13.charinfo = var4;</b>
+<b class="nc"><i>647</i>&nbsp;        return var13;</b>
+<b class="nc"><i>648</i>&nbsp;    }</b>
+<b class="nc"><i>649</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,715 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlyphLayout</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlyphLayout (sun.font)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlyphLayout</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 109)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GlyphLayout$EngineRecord</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GlyphLayout$GVData</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 48)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GlyphLayout$LayoutEngineKey</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GlyphLayout$SDCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 43)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GlyphLayout$SDCache$SDKey</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 245)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.font;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Font;
+<i>9</i>&nbsp;import java.awt.font.FontRenderContext;
+<i>10</i>&nbsp;import java.awt.geom.AffineTransform;
+<i>11</i>&nbsp;import java.awt.geom.NoninvertibleTransformException;
+<i>12</i>&nbsp;import java.awt.geom.Point2D.Float;
+<i>13</i>&nbsp;import java.lang.ref.SoftReference;
+<i>14</i>&nbsp;import java.util.ArrayList;
+<i>15</i>&nbsp;import java.util.concurrent.ConcurrentHashMap;
+<i>16</i>&nbsp;import sun.font.AttributeMap;
+<i>17</i>&nbsp;import sun.font.AttributeValues;
+<i>18</i>&nbsp;import sun.font.CompositeFont;
+<i>19</i>&nbsp;import sun.font.Font2D;
+<i>20</i>&nbsp;import sun.font.FontRunIterator;
+<i>21</i>&nbsp;import sun.font.FontStrikeDesc;
+<i>22</i>&nbsp;import sun.font.FontUtilities;
+<i>23</i>&nbsp;import sun.font.NativeFont;
+<i>24</i>&nbsp;import sun.font.PhysicalFont;
+<i>25</i>&nbsp;import sun.font.ScriptRun;
+<i>26</i>&nbsp;import sun.font.StandardGlyphVector;
+<i>27</i>&nbsp;import sun.font.SunLayoutEngine;
+<i>28</i>&nbsp;import sun.font.TextRecord;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public final class GlyphLayout {
+<i>31</i>&nbsp;    private GlyphLayout.GVData _gvdata = new GlyphLayout.GVData();
+<i>32</i>&nbsp;    private static volatile GlyphLayout cache;
+<i>33</i>&nbsp;    private GlyphLayout.LayoutEngineFactory _lef;
+<i>34</i>&nbsp;    private TextRecord _textRecord = new TextRecord();
+<i>35</i>&nbsp;    private ScriptRun _scriptRuns = new ScriptRun();
+<i>36</i>&nbsp;    private FontRunIterator _fontRuns = new FontRunIterator();
+<i>37</i>&nbsp;    private int _ercount;
+<i>38</i>&nbsp;    private ArrayList _erecords = new ArrayList(10);
+<i>39</i>&nbsp;    private Float _pt = new Float();
+<i>40</i>&nbsp;    private FontStrikeDesc _sd = new FontStrikeDesc();
+<i>41</i>&nbsp;    private float[] _mat = new float[4];
+<i>42</i>&nbsp;    private int _typo_flags;
+<i>43</i>&nbsp;    private int _offset;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public static GlyphLayout get(GlyphLayout.LayoutEngineFactory var0) {
+<i>46</i>&nbsp;        if(var0 == null) {
+<i>47</i>&nbsp;            var0 = SunLayoutEngine.instance();
+<i>48</i>&nbsp;        }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;        GlyphLayout var1 = null;
+<i>51</i>&nbsp;        Class var2 = GlyphLayout.class;
+<i>52</i>&nbsp;        synchronized(GlyphLayout.class) {
+<i>53</i>&nbsp;            if(cache != null) {
+<i>54</i>&nbsp;                var1 = cache;
+<i>55</i>&nbsp;                cache = null;
+<i>56</i>&nbsp;            }
+<i>57</i>&nbsp;        }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;        if(var1 == null) {
+<i>60</i>&nbsp;            var1 = new GlyphLayout();
+<i>61</i>&nbsp;        }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;        var1._lef = var0;
+<i>64</i>&nbsp;        return var1;
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    public static void done(GlyphLayout var0) {
+<i>68</i>&nbsp;        var0._lef = null;
+<b class="nc"><i>69</i>&nbsp;        cache = var0;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public StandardGlyphVector layout(Font var1, FontRenderContext var2, char[] var3, int var4, int var5, int var6, StandardGlyphVector var7) {
+<i>73</i>&nbsp;        if(var3 != null &amp;&amp; var4 &gt;= 0 &amp;&amp; var5 &gt;= 0 &amp;&amp; var5 &lt;= var3.length - var4) {
+<i>74</i>&nbsp;            this.init(var5);
+<i>75</i>&nbsp;            if(var1.hasLayoutAttributes()) {
+<i>76</i>&nbsp;                AttributeValues var8 = ((AttributeMap)var1.getAttributes()).getValues();
+<i>77</i>&nbsp;                if(var8.getKerning() != 0) {
+<i>78</i>&nbsp;                    this._typo_flags |= 1;
+<i>79</i>&nbsp;                }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;                if(var8.getLigatures() != 0) {
+<i>82</i>&nbsp;                    this._typo_flags |= 2;
+<i>83</i>&nbsp;                }
+<i>84</i>&nbsp;            }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;            this._offset = var4;
+<i>87</i>&nbsp;            GlyphLayout.SDCache var21 = GlyphLayout.SDCache.get(var1, var2);
+<i>88</i>&nbsp;            this._mat[0] = (float)var21.gtx.getScaleX();
+<i>89</i>&nbsp;            this._mat[1] = (float)var21.gtx.getShearY();
+<i>90</i>&nbsp;            this._mat[2] = (float)var21.gtx.getShearX();
+<i>91</i>&nbsp;            this._mat[3] = (float)var21.gtx.getScaleY();
+<i>92</i>&nbsp;            this._pt.setLocation(var21.delta);
+<b class="nc"><i>93</i>&nbsp;            int var9 = var4 + var5;</b>
+<i>94</i>&nbsp;            int var10 = 0;
+<i>95</i>&nbsp;            int var11 = var3.length;
+<b class="nc"><i>96</i>&nbsp;            if(var6 != 0) {</b>
+<b class="nc"><i>97</i>&nbsp;                if((var6 &amp; 1) != 0) {</b>
+<i>98</i>&nbsp;                    this._typo_flags |= -2147483648;
+<i>99</i>&nbsp;                }
+<i>100</i>&nbsp;
+<b class="nc"><i>101</i>&nbsp;                if((var6 &amp; 2) != 0) {</b>
+<b class="nc"><i>102</i>&nbsp;                    var10 = var4;</b>
+<b class="nc"><i>103</i>&nbsp;                }</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;                if((var6 &amp; 4) != 0) {
+<i>106</i>&nbsp;                    var11 = var9;
+<b class="nc"><i>107</i>&nbsp;                }</b>
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;            byte var12 = -1;
+<b class="nc"><i>111</i>&nbsp;            Font2D var13 = FontUtilities.getFont2D(var1);</b>
+<i>112</i>&nbsp;            this._textRecord.init(var3, var4, var9, var10, var11);
+<i>113</i>&nbsp;            int var14 = var4;
+<i>114</i>&nbsp;            int var15;
+<b class="nc"><i>115</i>&nbsp;            int var16;</b>
+<i>116</i>&nbsp;            if(var13 instanceof CompositeFont) {
+<i>117</i>&nbsp;                this._scriptRuns.init(var3, var4, var5);
+<i>118</i>&nbsp;                this._fontRuns.init((CompositeFont)var13, var3, var4, var9);
+<b class="nc"><i>119</i>&nbsp;</b>
+<i>120</i>&nbsp;                while(this._scriptRuns.next()) {
+<i>121</i>&nbsp;                    var15 = this._scriptRuns.getScriptLimit();
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;                    int var19;</b>
+<b class="nc"><i>124</i>&nbsp;                    for(var16 = this._scriptRuns.getScriptCode(); this._fontRuns.next(var16, var15); var14 = var19) {</b>
+<i>125</i>&nbsp;                        PhysicalFont var17 = this._fontRuns.getFont();
+<b class="nc"><i>126</i>&nbsp;                        if(var17 instanceof NativeFont) {</b>
+<b class="nc"><i>127</i>&nbsp;                            var17 = ((NativeFont)var17).getDelegateFont();</b>
+<i>128</i>&nbsp;                        }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;                        int var18 = this._fontRuns.getGlyphMask();
+<b class="nc"><i>131</i>&nbsp;                        var19 = this._fontRuns.getPos();</b>
+<b class="nc"><i>132</i>&nbsp;                        this.nextEngineRecord(var14, var19, var16, var12, var17, var18);</b>
+<i>133</i>&nbsp;                    }
+<i>134</i>&nbsp;                }
+<i>135</i>&nbsp;            } else {
+<i>136</i>&nbsp;                this._scriptRuns.init(var3, var4, var5);
+<b class="nc"><i>137</i>&nbsp;</b>
+<i>138</i>&nbsp;                while(this._scriptRuns.next()) {
+<i>139</i>&nbsp;                    var15 = this._scriptRuns.getScriptLimit();
+<i>140</i>&nbsp;                    var16 = this._scriptRuns.getScriptCode();
+<i>141</i>&nbsp;                    this.nextEngineRecord(var14, var15, var16, var12, var13, 0);
+<i>142</i>&nbsp;                    var14 = var15;
+<i>143</i>&nbsp;                }
+<i>144</i>&nbsp;            }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;            var15 = 0;
+<i>147</i>&nbsp;            var16 = this._ercount;
+<i>148</i>&nbsp;            byte var22 = 1;
+<i>149</i>&nbsp;            if(this._typo_flags &lt; 0) {
+<i>150</i>&nbsp;                var15 = var16 - 1;
+<i>151</i>&nbsp;                var16 = -1;
+<i>152</i>&nbsp;                var22 = -1;
+<i>153</i>&nbsp;            }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;            for(this._sd = var21.sd; var15 != var16; var15 += var22) {
+<i>156</i>&nbsp;                GlyphLayout.EngineRecord var24 = (GlyphLayout.EngineRecord)this._erecords.get(var15);
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;                while(true) {
+<i>159</i>&nbsp;                    try {
+<i>160</i>&nbsp;                        var24.layout();
+<i>161</i>&nbsp;                        break;
+<i>162</i>&nbsp;                    } catch (IndexOutOfBoundsException var20) {
+<i>163</i>&nbsp;                        if(this._gvdata._count &gt;= 0) {
+<i>164</i>&nbsp;                            this._gvdata.grow();
+<i>165</i>&nbsp;                        }
+<i>166</i>&nbsp;                    }
+<i>167</i>&nbsp;                }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;                if(this._gvdata._count &lt; 0) {
+<b class="nc"><i>170</i>&nbsp;                    break;</b>
+<b class="nc"><i>171</i>&nbsp;                }</b>
+<i>172</i>&nbsp;            }
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;            StandardGlyphVector var23;</b>
+<b class="nc"><i>175</i>&nbsp;            if(this._gvdata._count &lt; 0) {</b>
+<b class="nc"><i>176</i>&nbsp;                var23 = new StandardGlyphVector(var1, var3, var4, var5, var2);</b>
+<b class="nc"><i>177</i>&nbsp;                if(FontUtilities.debugFonts()) {</b>
+<i>178</i>&nbsp;                    FontUtilities.getLogger().warning(&quot;OpenType layout failed on font: &quot; + var1);
+<b class="nc"><i>179</i>&nbsp;                }</b>
+<b class="nc"><i>180</i>&nbsp;            } else {</b>
+<b class="nc"><i>181</i>&nbsp;                var23 = this._gvdata.createGlyphVector(var1, var2, var7);</b>
+<i>182</i>&nbsp;            }
+<b class="nc"><i>183</i>&nbsp;</b>
+<b class="nc"><i>184</i>&nbsp;            return var23;</b>
+<i>185</i>&nbsp;        } else {
+<i>186</i>&nbsp;            throw new IllegalArgumentException();
+<i>187</i>&nbsp;        }
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    private GlyphLayout() {
+<i>191</i>&nbsp;    }
+<b class="nc"><i>192</i>&nbsp;</b>
+<b class="nc"><i>193</i>&nbsp;    private void init(int var1) {</b>
+<i>194</i>&nbsp;        this._typo_flags = 0;
+<i>195</i>&nbsp;        this._ercount = 0;
+<i>196</i>&nbsp;        this._gvdata.init(var1);
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    private void nextEngineRecord(int var1, int var2, int var3, int var4, Font2D var5, int var6) {
+<i>200</i>&nbsp;        GlyphLayout.EngineRecord var7 = null;
+<i>201</i>&nbsp;        if(this._ercount == this._erecords.size()) {
+<i>202</i>&nbsp;            var7 = new GlyphLayout.EngineRecord();
+<i>203</i>&nbsp;            this._erecords.add(var7);
+<i>204</i>&nbsp;        } else {
+<i>205</i>&nbsp;            var7 = (GlyphLayout.EngineRecord)this._erecords.get(this._ercount);
+<b class="nc"><i>206</i>&nbsp;        }</b>
+<b class="nc"><i>207</i>&nbsp;</b>
+<b class="nc"><i>208</i>&nbsp;        var7.init(var1, var2, var5, var3, var4, var6);</b>
+<i>209</i>&nbsp;        ++this._ercount;
+<i>210</i>&nbsp;    }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    private final class EngineRecord {
+<b class="nc"><i>213</i>&nbsp;        private int start;</b>
+<b class="nc"><i>214</i>&nbsp;        private int limit;</b>
+<i>215</i>&nbsp;        private int gmask;
+<i>216</i>&nbsp;        private int eflags;
+<b class="nc"><i>217</i>&nbsp;        private GlyphLayout.LayoutEngineKey key = new GlyphLayout.LayoutEngineKey();</b>
+<i>218</i>&nbsp;        private GlyphLayout.LayoutEngine engine;
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;        EngineRecord() {
+<b class="nc"><i>221</i>&nbsp;        }</b>
+<b class="nc"><i>222</i>&nbsp;</b>
+<b class="nc"><i>223</i>&nbsp;        void init(int var1, int var2, Font2D var3, int var4, int var5, int var6) {</b>
+<i>224</i>&nbsp;            this.start = var1;
+<i>225</i>&nbsp;            this.limit = var2;
+<b class="nc"><i>226</i>&nbsp;            this.gmask = var6;</b>
+<b class="nc"><i>227</i>&nbsp;            this.key.init(var3, var4, var5);</b>
+<b class="nc"><i>228</i>&nbsp;            this.eflags = 0;</b>
+<b class="nc"><i>229</i>&nbsp;</b>
+<b class="nc"><i>230</i>&nbsp;            for(int var7 = var1; var7 &lt; var2; ++var7) {</b>
+<i>231</i>&nbsp;                int var8 = GlyphLayout.this._textRecord.text[var7];
+<b class="nc"><i>232</i>&nbsp;                if(Character.isHighSurrogate((char)var8) &amp;&amp; var7 &lt; var2 - 1 &amp;&amp; Character.isLowSurrogate(GlyphLayout.this._textRecord.text[var7 + 1])) {</b>
+<i>233</i>&nbsp;                    char var10000 = (char)var8;
+<i>234</i>&nbsp;                    ++var7;
+<b class="nc"><i>235</i>&nbsp;                    var8 = Character.toCodePoint(var10000, GlyphLayout.this._textRecord.text[var7]);</b>
+<i>236</i>&nbsp;                }
+<b class="nc"><i>237</i>&nbsp;</b>
+<b class="nc"><i>238</i>&nbsp;                int var9 = Character.getType(var8);</b>
+<b class="nc"><i>239</i>&nbsp;                if(var9 == 6 || var9 == 7 || var9 == 8) {</b>
+<i>240</i>&nbsp;                    this.eflags = 4;
+<i>241</i>&nbsp;                    break;
+<i>242</i>&nbsp;                }
+<i>243</i>&nbsp;            }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;            this.engine = GlyphLayout.this._lef.getEngine(this.key);
+<b class="nc"><i>246</i>&nbsp;        }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;        void layout() {
+<i>249</i>&nbsp;            GlyphLayout.this._textRecord.start = this.start;
+<b class="nc"><i>250</i>&nbsp;            GlyphLayout.this._textRecord.limit = this.limit;</b>
+<i>251</i>&nbsp;            this.engine.layout(GlyphLayout.this._sd, GlyphLayout.this._mat, this.gmask, this.start - GlyphLayout.this._offset, GlyphLayout.this._textRecord, GlyphLayout.this._typo_flags | this.eflags, GlyphLayout.this._pt, GlyphLayout.this._gvdata);
+<b class="nc"><i>252</i>&nbsp;        }</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<b class="nc"><i>255</i>&nbsp;    public static final class GVData {</b>
+<i>256</i>&nbsp;        public int _count;
+<i>257</i>&nbsp;        public int _flags;
+<i>258</i>&nbsp;        public int[] _glyphs;
+<i>259</i>&nbsp;        public float[] _positions;
+<i>260</i>&nbsp;        public int[] _indices;
+<i>261</i>&nbsp;        private static final int UNINITIALIZED_FLAGS = -1;
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;        public GVData() {
+<i>264</i>&nbsp;        }
+<b class="nc"><i>265</i>&nbsp;</b>
+<b class="nc"><i>266</i>&nbsp;        public void init(int var1) {</b>
+<b class="nc"><i>267</i>&nbsp;            this._count = 0;</b>
+<b class="nc"><i>268</i>&nbsp;            this._flags = -1;</b>
+<i>269</i>&nbsp;            if(this._glyphs == null || this._glyphs.length &lt; var1) {
+<i>270</i>&nbsp;                if(var1 &lt; 20) {
+<i>271</i>&nbsp;                    var1 = 20;
+<b class="nc"><i>272</i>&nbsp;                }</b>
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;                this._glyphs = new int[var1];
+<i>275</i>&nbsp;                this._positions = new float[var1 * 2 + 2];
+<i>276</i>&nbsp;                this._indices = new int[var1];
+<b class="nc"><i>277</i>&nbsp;            }</b>
+<b class="nc"><i>278</i>&nbsp;</b>
+<i>279</i>&nbsp;        }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;        public void grow() {
+<i>282</i>&nbsp;            this.grow(this._glyphs.length / 4);
+<b class="nc"><i>283</i>&nbsp;        }</b>
+<i>284</i>&nbsp;
+<b class="nc"><i>285</i>&nbsp;        public void grow(int var1) {</b>
+<i>286</i>&nbsp;            int var2 = this._glyphs.length + var1;
+<i>287</i>&nbsp;            int[] var3 = new int[var2];
+<i>288</i>&nbsp;            System.arraycopy(this._glyphs, 0, var3, 0, this._count);
+<i>289</i>&nbsp;            this._glyphs = var3;
+<i>290</i>&nbsp;            float[] var4 = new float[var2 * 2 + 2];
+<i>291</i>&nbsp;            System.arraycopy(this._positions, 0, var4, 0, this._count * 2 + 2);
+<i>292</i>&nbsp;            this._positions = var4;
+<i>293</i>&nbsp;            int[] var5 = new int[var2];
+<i>294</i>&nbsp;            System.arraycopy(this._indices, 0, var5, 0, this._count);
+<i>295</i>&nbsp;            this._indices = var5;
+<b class="nc"><i>296</i>&nbsp;        }</b>
+<b class="nc"><i>297</i>&nbsp;</b>
+<b class="nc"><i>298</i>&nbsp;        public void adjustPositions(AffineTransform var1) {</b>
+<i>299</i>&nbsp;            var1.transform(this._positions, 0, this._positions, 0, this._count);
+<b class="nc"><i>300</i>&nbsp;        }</b>
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;        public StandardGlyphVector createGlyphVector(Font var1, FontRenderContext var2, StandardGlyphVector var3) {
+<i>303</i>&nbsp;            if(this._flags == -1) {
+<i>304</i>&nbsp;                this._flags = 0;
+<b class="nc"><i>305</i>&nbsp;                if(this._count &gt; 1) {</b>
+<i>306</i>&nbsp;                    boolean var4 = true;
+<i>307</i>&nbsp;                    boolean var5 = true;
+<i>308</i>&nbsp;                    int var6 = this._count;
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;                    for(int var7 = 0; var7 &lt; this._count &amp;&amp; (var4 || var5); ++var7) {
+<i>311</i>&nbsp;                        boolean var10000;
+<b class="nc"><i>312</i>&nbsp;                        label51: {</b>
+<b class="nc"><i>313</i>&nbsp;                            int var8 = this._indices[var7];</b>
+<b class="nc"><i>314</i>&nbsp;                            var4 = var4 &amp;&amp; var8 == var7;</b>
+<b class="nc"><i>315</i>&nbsp;                            if(var5) {</b>
+<b class="nc"><i>316</i>&nbsp;                                --var6;</b>
+<b class="nc"><i>317</i>&nbsp;                                if(var8 == var6) {</b>
+<b class="nc"><i>318</i>&nbsp;                                    var10000 = true;</b>
+<i>319</i>&nbsp;                                    break label51;
+<i>320</i>&nbsp;                                }
+<b class="nc"><i>321</i>&nbsp;                            }</b>
+<b class="nc"><i>322</i>&nbsp;</b>
+<b class="nc"><i>323</i>&nbsp;                            var10000 = false;</b>
+<b class="nc"><i>324</i>&nbsp;                        }</b>
+<b class="nc"><i>325</i>&nbsp;</b>
+<i>326</i>&nbsp;                        var5 = var10000;
+<i>327</i>&nbsp;                    }
+<b class="nc"><i>328</i>&nbsp;</b>
+<i>329</i>&nbsp;                    if(var5) {
+<b class="nc"><i>330</i>&nbsp;                        this._flags |= 4;</b>
+<i>331</i>&nbsp;                    }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;                    if(!var5 &amp;&amp; !var4) {
+<i>334</i>&nbsp;                        this._flags |= 8;
+<i>335</i>&nbsp;                    }
+<i>336</i>&nbsp;                }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;                this._flags |= 2;
+<i>339</i>&nbsp;            }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;            int[] var9 = new int[this._count];
+<i>342</i>&nbsp;            System.arraycopy(this._glyphs, 0, var9, 0, this._count);
+<i>343</i>&nbsp;            float[] var10 = null;
+<i>344</i>&nbsp;            if((this._flags &amp; 2) != 0) {
+<i>345</i>&nbsp;                var10 = new float[this._count * 2 + 2];
+<i>346</i>&nbsp;                System.arraycopy(this._positions, 0, var10, 0, var10.length);
+<i>347</i>&nbsp;            }
+<i>348</i>&nbsp;
+<b class="nc"><i>349</i>&nbsp;            int[] var11 = null;</b>
+<b class="nc"><i>350</i>&nbsp;            if((this._flags &amp; 8) != 0) {</b>
+<i>351</i>&nbsp;                var11 = new int[this._count];
+<i>352</i>&nbsp;                System.arraycopy(this._indices, 0, var11, 0, this._count);
+<b class="nc"><i>353</i>&nbsp;            }</b>
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;            if(var3 == null) {
+<i>356</i>&nbsp;                var3 = new StandardGlyphVector(var1, var2, var9, var10, var11, this._flags);
+<b class="nc"><i>357</i>&nbsp;            } else {</b>
+<b class="nc"><i>358</i>&nbsp;                var3.initGlyphVector(var1, var2, var9, var10, var11, this._flags);</b>
+<b class="nc"><i>359</i>&nbsp;            }</b>
+<b class="nc"><i>360</i>&nbsp;</b>
+<i>361</i>&nbsp;            return var3;
+<i>362</i>&nbsp;        }
+<b class="nc"><i>363</i>&nbsp;    }</b>
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    private static final class SDCache {
+<i>366</i>&nbsp;        public Font key_font;
+<b class="nc"><i>367</i>&nbsp;        public FontRenderContext key_frc;</b>
+<b class="nc"><i>368</i>&nbsp;        public AffineTransform dtx;</b>
+<b class="nc"><i>369</i>&nbsp;        public AffineTransform invdtx;</b>
+<b class="nc"><i>370</i>&nbsp;        public AffineTransform gtx;</b>
+<b class="nc"><i>371</i>&nbsp;        public Float delta;</b>
+<b class="nc"><i>372</i>&nbsp;        public FontStrikeDesc sd;</b>
+<i>373</i>&nbsp;        private static final Float ZERO_DELTA = new Float();
+<b class="nc"><i>374</i>&nbsp;        private static SoftReference&lt;ConcurrentHashMap&lt;GlyphLayout.SDCache.SDKey, GlyphLayout.SDCache&gt;&gt; cacheRef;</b>
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;        private SDCache(Font var1, FontRenderContext var2) {</b>
+<b class="nc"><i>377</i>&nbsp;            this.key_font = var1;</b>
+<b class="nc"><i>378</i>&nbsp;            this.key_frc = var2;</b>
+<b class="nc"><i>379</i>&nbsp;            this.dtx = var2.getTransform();</b>
+<b class="nc"><i>380</i>&nbsp;            this.dtx.setTransform(this.dtx.getScaleX(), this.dtx.getShearY(), this.dtx.getShearX(), this.dtx.getScaleY(), 0.0D, 0.0D);</b>
+<i>381</i>&nbsp;            if(!this.dtx.isIdentity()) {
+<i>382</i>&nbsp;                try {
+<b class="nc"><i>383</i>&nbsp;                    this.invdtx = this.dtx.createInverse();</b>
+<b class="nc"><i>384</i>&nbsp;                } catch (NoninvertibleTransformException var6) {</b>
+<i>385</i>&nbsp;                    throw new InternalError();
+<i>386</i>&nbsp;                }
+<b class="nc"><i>387</i>&nbsp;            }</b>
+<b class="nc"><i>388</i>&nbsp;</b>
+<i>389</i>&nbsp;            float var3 = var1.getSize2D();
+<i>390</i>&nbsp;            if(var1.isTransformed()) {
+<i>391</i>&nbsp;                this.gtx = var1.getTransform();
+<b class="nc"><i>392</i>&nbsp;                this.gtx.scale((double)var3, (double)var3);</b>
+<i>393</i>&nbsp;                this.delta = new Float((float)this.gtx.getTranslateX(), (float)this.gtx.getTranslateY());
+<b class="nc"><i>394</i>&nbsp;                this.gtx.setTransform(this.gtx.getScaleX(), this.gtx.getShearY(), this.gtx.getShearX(), this.gtx.getScaleY(), 0.0D, 0.0D);</b>
+<i>395</i>&nbsp;                this.gtx.preConcatenate(this.dtx);
+<b class="nc"><i>396</i>&nbsp;            } else {</b>
+<b class="nc"><i>397</i>&nbsp;                this.delta = ZERO_DELTA;</b>
+<b class="nc"><i>398</i>&nbsp;                this.gtx = new AffineTransform(this.dtx);</b>
+<b class="nc"><i>399</i>&nbsp;                this.gtx.scale((double)var3, (double)var3);</b>
+<b class="nc"><i>400</i>&nbsp;            }</b>
+<b class="nc"><i>401</i>&nbsp;</b>
+<b class="nc"><i>402</i>&nbsp;            int var4 = FontStrikeDesc.getAAHintIntVal(var2.getAntiAliasingHint(), FontUtilities.getFont2D(var1), (int)Math.abs(var3));</b>
+<b class="nc"><i>403</i>&nbsp;            int var5 = FontStrikeDesc.getFMHintIntVal(var2.getFractionalMetricsHint());</b>
+<b class="nc"><i>404</i>&nbsp;            this.sd = new FontStrikeDesc(this.dtx, this.gtx, var1.getStyle(), var4, var5);</b>
+<b class="nc"><i>405</i>&nbsp;        }</b>
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;        public static GlyphLayout.SDCache get(Font var0, FontRenderContext var1) {
+<i>408</i>&nbsp;            if(var1.isTransformed()) {
+<i>409</i>&nbsp;                AffineTransform var2 = var1.getTransform();
+<i>410</i>&nbsp;                if(var2.getTranslateX() != 0.0D || var2.getTranslateY() != 0.0D) {
+<i>411</i>&nbsp;                    var2 = new AffineTransform(var2.getScaleX(), var2.getShearY(), var2.getShearX(), var2.getScaleY(), 0.0D, 0.0D);
+<b class="nc"><i>412</i>&nbsp;                    var1 = new FontRenderContext(var2, var1.getAntiAliasingHint(), var1.getFractionalMetricsHint());</b>
+<b class="nc"><i>413</i>&nbsp;                }</b>
+<i>414</i>&nbsp;            }
+<b class="nc"><i>415</i>&nbsp;</b>
+<b class="nc"><i>416</i>&nbsp;            GlyphLayout.SDCache.SDKey var5 = new GlyphLayout.SDCache.SDKey(var0, var1);</b>
+<b class="nc"><i>417</i>&nbsp;            ConcurrentHashMap var3 = null;</b>
+<b class="nc"><i>418</i>&nbsp;            GlyphLayout.SDCache var4 = null;</b>
+<b class="nc"><i>419</i>&nbsp;            if(cacheRef != null) {</b>
+<b class="nc"><i>420</i>&nbsp;                var3 = (ConcurrentHashMap)cacheRef.get();</b>
+<i>421</i>&nbsp;                if(var3 != null) {
+<b class="nc"><i>422</i>&nbsp;                    var4 = (GlyphLayout.SDCache)var3.get(var5);</b>
+<b class="nc"><i>423</i>&nbsp;                }</b>
+<b class="nc"><i>424</i>&nbsp;            }</b>
+<b class="nc"><i>425</i>&nbsp;</b>
+<b class="nc"><i>426</i>&nbsp;            if(var4 == null) {</b>
+<b class="nc"><i>427</i>&nbsp;                var4 = new GlyphLayout.SDCache(var0, var1);</b>
+<b class="nc"><i>428</i>&nbsp;                if(var3 == null) {</b>
+<i>429</i>&nbsp;                    var3 = new ConcurrentHashMap(10);
+<i>430</i>&nbsp;                    cacheRef = new SoftReference(var3);
+<b class="nc"><i>431</i>&nbsp;                } else if(var3.size() &gt;= 512) {</b>
+<b class="nc"><i>432</i>&nbsp;                    var3.clear();</b>
+<b class="nc"><i>433</i>&nbsp;                }</b>
+<i>434</i>&nbsp;
+<b class="nc"><i>435</i>&nbsp;                var3.put(var5, var4);</b>
+<b class="nc"><i>436</i>&nbsp;            }</b>
+<b class="nc"><i>437</i>&nbsp;</b>
+<b class="nc"><i>438</i>&nbsp;            return var4;</b>
+<i>439</i>&nbsp;        }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;        private static final class SDKey {
+<b class="nc"><i>442</i>&nbsp;            private final Font font;</b>
+<b class="nc"><i>443</i>&nbsp;            private final FontRenderContext frc;</b>
+<b class="nc"><i>444</i>&nbsp;            private final int hash;</b>
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;            SDKey(Font var1, FontRenderContext var2) {
+<b class="nc"><i>447</i>&nbsp;                this.font = var1;</b>
+<b class="nc"><i>448</i>&nbsp;                this.frc = var2;</b>
+<i>449</i>&nbsp;                this.hash = var1.hashCode() ^ var2.hashCode();
+<b class="nc"><i>450</i>&nbsp;            }</b>
+<b class="nc"><i>451</i>&nbsp;</b>
+<b class="nc"><i>452</i>&nbsp;            public int hashCode() {</b>
+<i>453</i>&nbsp;                return this.hash;
+<b class="nc"><i>454</i>&nbsp;            }</b>
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;            public boolean equals(Object var1) {
+<b class="nc"><i>457</i>&nbsp;                try {</b>
+<b class="nc"><i>458</i>&nbsp;                    GlyphLayout.SDCache.SDKey var2 = (GlyphLayout.SDCache.SDKey)var1;</b>
+<i>459</i>&nbsp;                    return this.hash == var2.hash &amp;&amp; this.font.equals(var2.font) &amp;&amp; this.frc.equals(var2.frc);
+<i>460</i>&nbsp;                } catch (ClassCastException var3) {
+<i>461</i>&nbsp;                    return false;
+<i>462</i>&nbsp;                }
+<i>463</i>&nbsp;            }
+<i>464</i>&nbsp;        }
+<i>465</i>&nbsp;    }
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;    public interface LayoutEngine {
+<i>468</i>&nbsp;        void layout(FontStrikeDesc var1, float[] var2, int var3, int var4, TextRecord var5, int var6, Float var7, GlyphLayout.GVData var8);
+<i>469</i>&nbsp;    }
+<b class="nc"><i>470</i>&nbsp;</b>
+<b class="nc"><i>471</i>&nbsp;    public interface LayoutEngineFactory {</b>
+<b class="nc"><i>472</i>&nbsp;        GlyphLayout.LayoutEngine getEngine(Font2D var1, int var2, int var3);</b>
+<b class="nc"><i>473</i>&nbsp;</b>
+<i>474</i>&nbsp;        GlyphLayout.LayoutEngine getEngine(GlyphLayout.LayoutEngineKey var1);
+<i>475</i>&nbsp;    }
+<i>476</i>&nbsp;
+<b class="nc"><i>477</i>&nbsp;    public static final class LayoutEngineKey {</b>
+<i>478</i>&nbsp;        private Font2D font;
+<i>479</i>&nbsp;        private int script;
+<b class="nc"><i>480</i>&nbsp;        private int lang;</b>
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;        LayoutEngineKey() {
+<i>483</i>&nbsp;        }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;        LayoutEngineKey(Font2D var1, int var2, int var3) {
+<i>486</i>&nbsp;            this.init(var1, var2, var3);
+<b class="nc"><i>487</i>&nbsp;        }</b>
+<b class="nc"><i>488</i>&nbsp;</b>
+<b class="nc"><i>489</i>&nbsp;        void init(Font2D var1, int var2, int var3) {</b>
+<b class="nc"><i>490</i>&nbsp;            this.font = var1;</b>
+<b class="nc"><i>491</i>&nbsp;            this.script = var2;</b>
+<b class="nc"><i>492</i>&nbsp;            this.lang = var3;</b>
+<b class="nc"><i>493</i>&nbsp;        }</b>
+<b class="nc"><i>494</i>&nbsp;</b>
+<b class="nc"><i>495</i>&nbsp;        GlyphLayout.LayoutEngineKey copy() {</b>
+<i>496</i>&nbsp;            return new GlyphLayout.LayoutEngineKey(this.font, this.script, this.lang);
+<i>497</i>&nbsp;        }
+<i>498</i>&nbsp;
+<b class="nc"><i>499</i>&nbsp;        Font2D font() {</b>
+<b class="nc"><i>500</i>&nbsp;            return this.font;</b>
+<b class="nc"><i>501</i>&nbsp;        }</b>
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;        int script() {
+<i>504</i>&nbsp;            return this.script;
+<b class="nc"><i>505</i>&nbsp;        }</b>
+<b class="nc"><i>506</i>&nbsp;</b>
+<b class="nc"><i>507</i>&nbsp;        int lang() {</b>
+<b class="nc"><i>508</i>&nbsp;            return this.lang;</b>
+<i>509</i>&nbsp;        }
+<b class="nc"><i>510</i>&nbsp;</b>
+<i>511</i>&nbsp;        public boolean equals(Object var1) {
+<b class="nc"><i>512</i>&nbsp;            if(this == var1) {</b>
+<b class="nc"><i>513</i>&nbsp;                return true;</b>
+<i>514</i>&nbsp;            } else if(var1 == null) {
+<i>515</i>&nbsp;                return false;
+<i>516</i>&nbsp;            } else {
+<i>517</i>&nbsp;                try {
+<i>518</i>&nbsp;                    GlyphLayout.LayoutEngineKey var2 = (GlyphLayout.LayoutEngineKey)var1;
+<b class="nc"><i>519</i>&nbsp;                    return this.script == var2.script &amp;&amp; this.lang == var2.lang &amp;&amp; this.font.equals(var2.font);</b>
+<i>520</i>&nbsp;                } catch (ClassCastException var3) {
+<i>521</i>&nbsp;                    return false;
+<i>522</i>&nbsp;                }
+<i>523</i>&nbsp;            }
+<i>524</i>&nbsp;        }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;        public int hashCode() {
+<i>527</i>&nbsp;            return this.script ^ this.lang ^ this.font.hashCode();
+<i>528</i>&nbsp;        }
+<b class="nc"><i>529</i>&nbsp;    }</b>
+<b class="nc"><i>530</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

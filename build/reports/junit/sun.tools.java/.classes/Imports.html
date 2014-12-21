@@ -1,0 +1,346 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Imports</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.tools.java</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Imports (sun.tools.java)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Imports</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 129)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.tools.java;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.util.Collections;
+<i>10</i>&nbsp;import java.util.Enumeration;
+<i>11</i>&nbsp;import java.util.Hashtable;
+<i>12</i>&nbsp;import java.util.List;
+<i>13</i>&nbsp;import java.util.Vector;
+<i>14</i>&nbsp;import sun.tools.java.AmbiguousClass;
+<i>15</i>&nbsp;import sun.tools.java.ClassDeclaration;
+<i>16</i>&nbsp;import sun.tools.java.ClassDefinition;
+<i>17</i>&nbsp;import sun.tools.java.ClassNotFound;
+<i>18</i>&nbsp;import sun.tools.java.Constants;
+<i>19</i>&nbsp;import sun.tools.java.Environment;
+<i>20</i>&nbsp;import sun.tools.java.Identifier;
+<i>21</i>&nbsp;import sun.tools.java.IdentifierToken;
+<i>22</i>&nbsp;import sun.tools.java.ImportEnvironment;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;public class Imports implements Constants {
+<i>25</i>&nbsp;    Identifier currentPackage;
+<i>26</i>&nbsp;    long currentPackageWhere;
+<i>27</i>&nbsp;    Hashtable classes;
+<i>28</i>&nbsp;    Vector packages;
+<i>29</i>&nbsp;    Vector singles;
+<i>30</i>&nbsp;    protected int checked;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public Imports(Environment var1) {
+<i>33</i>&nbsp;        this.currentPackage = idNull;
+<i>34</i>&nbsp;        this.currentPackageWhere = 0L;
+<i>35</i>&nbsp;        this.classes = new Hashtable();
+<i>36</i>&nbsp;        this.packages = new Vector();
+<i>37</i>&nbsp;        this.singles = new Vector();
+<i>38</i>&nbsp;        this.addPackage((Identifier)idJavaLang);
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<b class="nc"><i>41</i>&nbsp;    public synchronized void resolve(Environment var1) {</b>
+<i>42</i>&nbsp;        if(this.checked == 0) {
+<i>43</i>&nbsp;            this.checked = -1;
+<i>44</i>&nbsp;            Vector var2 = new Vector();
+<i>45</i>&nbsp;            Enumeration var3 = this.packages.elements();
+<i>46</i>&nbsp;
+<b class="nc"><i>47</i>&nbsp;            IdentifierToken var4;</b>
+<i>48</i>&nbsp;            Identifier var5;
+<i>49</i>&nbsp;            long var6;
+<i>50</i>&nbsp;            Identifier var8;
+<i>51</i>&nbsp;            while(var3.hasMoreElements()) {
+<b class="nc"><i>52</i>&nbsp;                var4 = (IdentifierToken)var3.nextElement();</b>
+<i>53</i>&nbsp;                var5 = var4.getName();
+<i>54</i>&nbsp;                var6 = var4.getWhere();
+<i>55</i>&nbsp;                if(var1.isExemptPackage(var5)) {
+<i>56</i>&nbsp;                    var2.addElement(var4);
+<i>57</i>&nbsp;                } else {
+<i>58</i>&nbsp;                    try {
+<b class="nc"><i>59</i>&nbsp;                        var8 = var1.resolvePackageQualifiedName(var5);</b>
+<i>60</i>&nbsp;                        if(importable(var8, var1)) {
+<i>61</i>&nbsp;                            if(var1.getPackage(var8.getTopName()).exists()) {
+<i>62</i>&nbsp;                                var1.error(var6, &quot;class.and.package&quot;, var8.getTopName());
+<i>63</i>&nbsp;                            }
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;                            if(!var8.isInner()) {</b>
+<i>66</i>&nbsp;                                var8 = Identifier.lookupInner(var8, idNull);
+<i>67</i>&nbsp;                            }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;                            var5 = var8;
+<i>70</i>&nbsp;                        } else if(!var1.getPackage(var5).exists()) {
+<i>71</i>&nbsp;                            var1.error(var6, &quot;package.not.found&quot;, var5, &quot;import&quot;);
+<i>72</i>&nbsp;                        } else if(var8.isInner()) {
+<i>73</i>&nbsp;                            var1.error(var6, &quot;class.and.package&quot;, var8.getTopName());
+<i>74</i>&nbsp;                        }
+<b class="nc"><i>75</i>&nbsp;</b>
+<b class="nc"><i>76</i>&nbsp;                        var2.addElement(new IdentifierToken(var6, var5));</b>
+<i>77</i>&nbsp;                    } catch (IOException var14) {
+<i>78</i>&nbsp;                        var1.error(var6, &quot;io.exception&quot;, &quot;import&quot;);
+<i>79</i>&nbsp;                    }
+<i>80</i>&nbsp;                }
+<i>81</i>&nbsp;            }
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;            this.packages = var2;</b>
+<i>84</i>&nbsp;            var3 = this.singles.elements();
+<i>85</i>&nbsp;
+<b class="nc"><i>86</i>&nbsp;            while(var3.hasMoreElements()) {</b>
+<i>87</i>&nbsp;                var4 = (IdentifierToken)var3.nextElement();
+<i>88</i>&nbsp;                var5 = var4.getName();
+<i>89</i>&nbsp;                var6 = var4.getWhere();
+<i>90</i>&nbsp;                var8 = var5.getQualifier();
+<i>91</i>&nbsp;                var5 = var1.resolvePackageQualifiedName(var5);
+<i>92</i>&nbsp;                if(!var1.classExists(var5.getTopName())) {
+<i>93</i>&nbsp;                    var1.error(var6, &quot;class.not.found&quot;, var5, &quot;import&quot;);
+<i>94</i>&nbsp;                }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;                Identifier var9 = var5.getFlatName().getName();
+<i>97</i>&nbsp;                Identifier var10 = (Identifier)this.classes.get(var9);
+<i>98</i>&nbsp;                if(var10 != null) {
+<i>99</i>&nbsp;                    Identifier var11 = Identifier.lookup(var10.getQualifier(), var10.getFlatName());
+<i>100</i>&nbsp;                    Identifier var12 = Identifier.lookup(var5.getQualifier(), var5.getFlatName());
+<i>101</i>&nbsp;                    if(!var11.equals(var12)) {
+<i>102</i>&nbsp;                        var1.error(var6, &quot;ambig.class&quot;, var5, var10);
+<i>103</i>&nbsp;                    }
+<i>104</i>&nbsp;                }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;                this.classes.put(var9, var5);
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;                try {
+<i>109</i>&nbsp;                    ClassDeclaration var17 = var1.getClassDeclaration(var5);
+<i>110</i>&nbsp;                    ClassDefinition var18 = var17.getClassDefinitionNoCheck(var1);
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;                    for(Identifier var13 = var18.getName().getQualifier(); var18 != null; var18 = var18.getOuterClass()) {
+<i>113</i>&nbsp;                        if(var18.isPrivate() || !var18.isPublic() &amp;&amp; !var13.equals(this.currentPackage)) {
+<i>114</i>&nbsp;                            var1.error(var6, &quot;cant.access.class&quot;, var18);
+<i>115</i>&nbsp;                            break;
+<i>116</i>&nbsp;                        }
+<i>117</i>&nbsp;                    }
+<i>118</i>&nbsp;                } catch (AmbiguousClass var15) {
+<b class="nc"><i>119</i>&nbsp;                    var1.error(var6, &quot;ambig.class&quot;, var15.name1, var15.name2);</b>
+<b class="nc"><i>120</i>&nbsp;                } catch (ClassNotFound var16) {</b>
+<b class="nc"><i>121</i>&nbsp;                    var1.error(var6, &quot;class.not.found&quot;, var16.name, &quot;import&quot;);</b>
+<b class="nc"><i>122</i>&nbsp;                }</b>
+<b class="nc"><i>123</i>&nbsp;            }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;            this.checked = 1;
+<i>126</i>&nbsp;        }
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<b class="nc"><i>129</i>&nbsp;    public synchronized Identifier resolve(Environment var1, Identifier var2) throws ClassNotFound {</b>
+<b class="nc"><i>130</i>&nbsp;        var1.dtEnter(&quot;Imports.resolve: &quot; + var2);</b>
+<b class="nc"><i>131</i>&nbsp;        if(var2.hasAmbigPrefix()) {</b>
+<i>132</i>&nbsp;            var2 = var2.removeAmbigPrefix();
+<i>133</i>&nbsp;        }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;        if(var2.isQualified()) {
+<b class="nc"><i>136</i>&nbsp;            var1.dtExit(&quot;Imports.resolve: QUALIFIED &quot; + var2);</b>
+<b class="nc"><i>137</i>&nbsp;            return var2;</b>
+<i>138</i>&nbsp;        } else {
+<b class="nc"><i>139</i>&nbsp;            if(this.checked &lt;= 0) {</b>
+<b class="nc"><i>140</i>&nbsp;                this.checked = 0;</b>
+<i>141</i>&nbsp;                this.resolve(var1);
+<i>142</i>&nbsp;            }
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;            Identifier var3 = (Identifier)this.classes.get(var2);</b>
+<b class="nc"><i>145</i>&nbsp;            if(var3 != null) {</b>
+<b class="nc"><i>146</i>&nbsp;                var1.dtExit(&quot;Imports.resolve: PREVIOUSLY IMPORTED &quot; + var2);</b>
+<b class="nc"><i>147</i>&nbsp;                return var3;</b>
+<b class="nc"><i>148</i>&nbsp;            } else {</b>
+<b class="nc"><i>149</i>&nbsp;                Identifier var4 = Identifier.lookup(this.currentPackage, var2);</b>
+<i>150</i>&nbsp;                if(importable(var4, var1)) {
+<b class="nc"><i>151</i>&nbsp;                    var3 = var4;</b>
+<i>152</i>&nbsp;                } else {
+<b class="nc"><i>153</i>&nbsp;                    Enumeration var5 = this.packages.elements();</b>
+<b class="nc"><i>154</i>&nbsp;</b>
+<b class="nc"><i>155</i>&nbsp;                    while(var5.hasMoreElements()) {</b>
+<b class="nc"><i>156</i>&nbsp;                        IdentifierToken var6 = (IdentifierToken)var5.nextElement();</b>
+<b class="nc"><i>157</i>&nbsp;                        var4 = Identifier.lookup(var6.getName(), var2);</b>
+<b class="nc"><i>158</i>&nbsp;                        if(importable(var4, var1)) {</b>
+<i>159</i>&nbsp;                            if(var3 != null) {
+<b class="nc"><i>160</i>&nbsp;                                var1.dtExit(&quot;Imports.resolve: AMBIGUOUS &quot; + var2);</b>
+<b class="nc"><i>161</i>&nbsp;                                throw new AmbiguousClass(var3, var4);</b>
+<b class="nc"><i>162</i>&nbsp;                            }</b>
+<b class="nc"><i>163</i>&nbsp;</b>
+<b class="nc"><i>164</i>&nbsp;                            var3 = var4;</b>
+<i>165</i>&nbsp;                        }
+<i>166</i>&nbsp;                    }
+<b class="nc"><i>167</i>&nbsp;                }</b>
+<b class="nc"><i>168</i>&nbsp;</b>
+<b class="nc"><i>169</i>&nbsp;                if(var3 == null) {</b>
+<i>170</i>&nbsp;                    var1.dtExit(&quot;Imports.resolve: NOT FOUND &quot; + var2);
+<i>171</i>&nbsp;                    throw new ClassNotFound(var2);
+<i>172</i>&nbsp;                } else {
+<b class="nc"><i>173</i>&nbsp;                    this.classes.put(var2, var3);</b>
+<i>174</i>&nbsp;                    var1.dtExit(&quot;Imports.resolve: FIRST IMPORT &quot; + var2);
+<i>175</i>&nbsp;                    return var3;
+<b class="nc"><i>176</i>&nbsp;                }</b>
+<b class="nc"><i>177</i>&nbsp;            }</b>
+<b class="nc"><i>178</i>&nbsp;        }</b>
+<i>179</i>&nbsp;    }
+<b class="nc"><i>180</i>&nbsp;</b>
+<i>181</i>&nbsp;    public static boolean importable(Identifier var0, Environment var1) {
+<b class="nc"><i>182</i>&nbsp;        if(!var0.isInner()) {</b>
+<b class="nc"><i>183</i>&nbsp;            return var1.classExists(var0);</b>
+<i>184</i>&nbsp;        } else if(!var1.classExists(var0.getTopName())) {
+<i>185</i>&nbsp;            return false;
+<b class="nc"><i>186</i>&nbsp;        } else {</b>
+<i>187</i>&nbsp;            try {
+<i>188</i>&nbsp;                ClassDeclaration var2 = var1.getClassDeclaration(var0.getTopName());
+<i>189</i>&nbsp;                ClassDefinition var3 = var2.getClassDefinitionNoCheck(var1);
+<i>190</i>&nbsp;                return var3.innerClassExists(var0.getFlatName().getTail());
+<i>191</i>&nbsp;            } catch (ClassNotFound var4) {
+<i>192</i>&nbsp;                return false;
+<i>193</i>&nbsp;            }
+<i>194</i>&nbsp;        }
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    public synchronized Identifier forceResolve(Environment var1, Identifier var2) {
+<i>198</i>&nbsp;        if(var2.isQualified()) {
+<i>199</i>&nbsp;            return var2;
+<i>200</i>&nbsp;        } else {
+<i>201</i>&nbsp;            Identifier var3 = (Identifier)this.classes.get(var2);
+<i>202</i>&nbsp;            if(var3 != null) {
+<i>203</i>&nbsp;                return var3;
+<i>204</i>&nbsp;            } else {
+<i>205</i>&nbsp;                var3 = Identifier.lookup(this.currentPackage, var2);
+<b class="nc"><i>206</i>&nbsp;                this.classes.put(var2, var3);</b>
+<i>207</i>&nbsp;                return var3;
+<i>208</i>&nbsp;            }
+<b class="nc"><i>209</i>&nbsp;        }</b>
+<i>210</i>&nbsp;    }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    public synchronized void addClass(IdentifierToken var1) {
+<i>213</i>&nbsp;        this.singles.addElement(var1);
+<b class="nc"><i>214</i>&nbsp;    }</b>
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    public void addClass(Identifier var1) throws AmbiguousClass {
+<i>217</i>&nbsp;        this.addClass((IdentifierToken)(new IdentifierToken(var1)));
+<b class="nc"><i>218</i>&nbsp;    }</b>
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;    public synchronized void addPackage(IdentifierToken var1) {
+<i>221</i>&nbsp;        Identifier var2 = var1.getName();
+<b class="nc"><i>222</i>&nbsp;        if(var2 != this.currentPackage) {</b>
+<b class="nc"><i>223</i>&nbsp;            int var3 = this.packages.size();</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<b class="nc"><i>226</i>&nbsp;                if(var2 == ((IdentifierToken)this.packages.elementAt(var4)).getName()) {</b>
+<b class="nc"><i>227</i>&nbsp;                    return;</b>
+<b class="nc"><i>228</i>&nbsp;                }</b>
+<b class="nc"><i>229</i>&nbsp;            }</b>
+<b class="nc"><i>230</i>&nbsp;</b>
+<b class="nc"><i>231</i>&nbsp;            this.packages.addElement(var1);</b>
+<b class="nc"><i>232</i>&nbsp;        }</b>
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    public void addPackage(Identifier var1) {
+<i>236</i>&nbsp;        this.addPackage((IdentifierToken)(new IdentifierToken(var1)));
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    public synchronized void setCurrentPackage(IdentifierToken var1) {
+<i>240</i>&nbsp;        this.currentPackage = var1.getName();
+<i>241</i>&nbsp;        this.currentPackageWhere = var1.getWhere();
+<i>242</i>&nbsp;    }
+<b class="nc"><i>243</i>&nbsp;</b>
+<i>244</i>&nbsp;    public synchronized void setCurrentPackage(Identifier var1) {
+<i>245</i>&nbsp;        this.currentPackage = var1;
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    public Identifier getCurrentPackage() {
+<b class="nc"><i>249</i>&nbsp;        return this.currentPackage;</b>
+<b class="nc"><i>250</i>&nbsp;    }</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    public List getImportedPackages() {
+<b class="nc"><i>253</i>&nbsp;        return Collections.unmodifiableList(this.packages);</b>
+<i>254</i>&nbsp;    }
+<b class="nc"><i>255</i>&nbsp;</b>
+<b class="nc"><i>256</i>&nbsp;    public List getImportedClasses() {</b>
+<i>257</i>&nbsp;        return Collections.unmodifiableList(this.singles);
+<i>258</i>&nbsp;    }
+<b class="nc"><i>259</i>&nbsp;</b>
+<b class="nc"><i>260</i>&nbsp;    public Environment newEnvironment(Environment var1) {</b>
+<b class="nc"><i>261</i>&nbsp;        return new ImportEnvironment(var1, this);</b>
+<i>262</i>&nbsp;    }
+<i>263</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

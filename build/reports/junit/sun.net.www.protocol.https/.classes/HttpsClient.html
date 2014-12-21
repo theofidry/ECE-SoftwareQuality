@@ -1,0 +1,582 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HttpsClient</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.net.www.protocol.https</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HttpsClient (sun.net.www.protocol.https)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HttpsClient</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 186)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HttpsClient$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">HttpsClient$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 38)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 190)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.net.www.protocol.https;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.BufferedOutputStream;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.PrintStream;
+<i>11</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>12</i>&nbsp;import java.net.InetAddress;
+<i>13</i>&nbsp;import java.net.InetSocketAddress;
+<i>14</i>&nbsp;import java.net.Proxy;
+<i>15</i>&nbsp;import java.net.Socket;
+<i>16</i>&nbsp;import java.net.SocketException;
+<i>17</i>&nbsp;import java.net.URL;
+<i>18</i>&nbsp;import java.net.UnknownHostException;
+<i>19</i>&nbsp;import java.net.Proxy.Type;
+<i>20</i>&nbsp;import java.security.AccessController;
+<i>21</i>&nbsp;import java.security.Principal;
+<i>22</i>&nbsp;import java.security.PrivilegedActionException;
+<i>23</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>24</i>&nbsp;import java.security.cert.Certificate;
+<i>25</i>&nbsp;import java.security.cert.CertificateException;
+<i>26</i>&nbsp;import java.security.cert.X509Certificate;
+<i>27</i>&nbsp;import java.util.StringTokenizer;
+<i>28</i>&nbsp;import java.util.Vector;
+<i>29</i>&nbsp;import javax.net.ssl.HandshakeCompletedEvent;
+<i>30</i>&nbsp;import javax.net.ssl.HandshakeCompletedListener;
+<i>31</i>&nbsp;import javax.net.ssl.HostnameVerifier;
+<i>32</i>&nbsp;import javax.net.ssl.SSLParameters;
+<i>33</i>&nbsp;import javax.net.ssl.SSLPeerUnverifiedException;
+<i>34</i>&nbsp;import javax.net.ssl.SSLSession;
+<i>35</i>&nbsp;import javax.net.ssl.SSLSocket;
+<i>36</i>&nbsp;import javax.net.ssl.SSLSocketFactory;
+<i>37</i>&nbsp;import sun.net.www.http.HttpClient;
+<i>38</i>&nbsp;import sun.net.www.protocol.http.HttpURLConnection;
+<i>39</i>&nbsp;import sun.net.www.protocol.http.HttpURLConnection.TunnelState;
+<i>40</i>&nbsp;import sun.security.action.GetPropertyAction;
+<i>41</i>&nbsp;import sun.security.ssl.SSLSocketImpl;
+<i>42</i>&nbsp;import sun.security.util.HostnameChecker;
+<i>43</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;final class HttpsClient extends HttpClient implements HandshakeCompletedListener {
+<i>46</i>&nbsp;    private static final int httpsPortNumber = 443;
+<i>47</i>&nbsp;    private static final String defaultHVCanonicalName = &quot;javax.net.ssl.HttpsURLConnection.DefaultHostnameVerifier&quot;;
+<i>48</i>&nbsp;    private HostnameVerifier hv;
+<i>49</i>&nbsp;    private SSLSocketFactory sslSocketFactory;
+<i>50</i>&nbsp;    private SSLSession session;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    protected int getDefaultPort() {
+<i>53</i>&nbsp;        return 443;
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    private String[] getCipherSuites() {
+<i>57</i>&nbsp;        String var2 = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;https.cipherSuites&quot;));
+<i>58</i>&nbsp;        String[] var1;
+<i>59</i>&nbsp;        if(var2 != null &amp;&amp; !&quot;&quot;.equals(var2)) {
+<i>60</i>&nbsp;            Vector var4 = new Vector();
+<i>61</i>&nbsp;            StringTokenizer var3 = new StringTokenizer(var2, &quot;,&quot;);
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;            while(var3.hasMoreTokens()) {
+<i>64</i>&nbsp;                var4.addElement(var3.nextToken());
+<i>65</i>&nbsp;            }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;            var1 = new String[var4.size()];
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;            for(int var5 = 0; var5 &lt; var1.length; ++var5) {
+<i>70</i>&nbsp;                var1[var5] = (String)var4.elementAt(var5);
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;        } else {
+<i>73</i>&nbsp;            var1 = null;
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;        return var1;
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    private String[] getProtocols() {
+<i>80</i>&nbsp;        String var2 = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;https.protocols&quot;));
+<i>81</i>&nbsp;        String[] var1;
+<i>82</i>&nbsp;        if(var2 != null &amp;&amp; !&quot;&quot;.equals(var2)) {
+<i>83</i>&nbsp;            Vector var4 = new Vector();
+<i>84</i>&nbsp;            StringTokenizer var3 = new StringTokenizer(var2, &quot;,&quot;);
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;            while(var3.hasMoreTokens()) {
+<i>87</i>&nbsp;                var4.addElement(var3.nextToken());
+<i>88</i>&nbsp;            }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;            var1 = new String[var4.size()];
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;            for(int var5 = 0; var5 &lt; var1.length; ++var5) {
+<i>93</i>&nbsp;                var1[var5] = (String)var4.elementAt(var5);
+<i>94</i>&nbsp;            }
+<i>95</i>&nbsp;        } else {
+<i>96</i>&nbsp;            var1 = null;
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        return var1;
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    private String getUserAgent() {
+<i>103</i>&nbsp;        String var1 = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;https.agent&quot;));
+<i>104</i>&nbsp;        if(var1 == null || var1.length() == 0) {
+<i>105</i>&nbsp;            var1 = &quot;JSSE&quot;;
+<b class="nc"><i>106</i>&nbsp;        }</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;        return var1;
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    private static Proxy newHttpProxy(String var0, int var1) {
+<i>112</i>&nbsp;        InetSocketAddress var2 = null;
+<i>113</i>&nbsp;        final String var3 = var0;
+<i>114</i>&nbsp;        final int var4 = var1 &lt; 0?443:var1;
+<b class="nc"><i>115</i>&nbsp;</b>
+<i>116</i>&nbsp;        try {
+<i>117</i>&nbsp;            var2 = (InetSocketAddress)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+<i>118</i>&nbsp;                public InetSocketAddress run() {
+<i>119</i>&nbsp;                    return new InetSocketAddress(var3, var4);
+<i>120</i>&nbsp;                }
+<i>121</i>&nbsp;            });
+<i>122</i>&nbsp;        } catch (PrivilegedActionException var6) {
+<i>123</i>&nbsp;            ;
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        return new Proxy(Type.HTTP, var2);
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    private HttpsClient(SSLSocketFactory var1, URL var2) throws IOException {
+<i>130</i>&nbsp;        this(var1, var2, (String)((String)null), -1);
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    HttpsClient(SSLSocketFactory var1, URL var2, String var3, int var4) throws IOException {
+<i>134</i>&nbsp;        this(var1, var2, var3, var4, -1);
+<b class="nc"><i>135</i>&nbsp;    }</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    HttpsClient(SSLSocketFactory var1, URL var2, String var3, int var4, int var5) throws IOException {
+<b class="nc"><i>138</i>&nbsp;        this(var1, var2, (Proxy)(var3 == null?null:newHttpProxy(var3, var4)), var5);</b>
+<b class="nc"><i>139</i>&nbsp;    }</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    HttpsClient(SSLSocketFactory var1, URL var2, Proxy var3, int var4) throws IOException {
+<b class="nc"><i>142</i>&nbsp;        this.proxy = var3;</b>
+<i>143</i>&nbsp;        this.setSSLSocketFactory(var1);
+<b class="nc"><i>144</i>&nbsp;        this.proxyDisabled = true;</b>
+<b class="nc"><i>145</i>&nbsp;        this.host = var2.getHost();</b>
+<b class="nc"><i>146</i>&nbsp;        this.url = var2;</b>
+<b class="nc"><i>147</i>&nbsp;        this.port = var2.getPort();</b>
+<b class="nc"><i>148</i>&nbsp;        if(this.port == -1) {</b>
+<b class="nc"><i>149</i>&nbsp;            this.port = this.getDefaultPort();</b>
+<i>150</i>&nbsp;        }
+<b class="nc"><i>151</i>&nbsp;</b>
+<i>152</i>&nbsp;        this.setConnectTimeout(var4);
+<i>153</i>&nbsp;        this.openServer();
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    static HttpClient New(SSLSocketFactory var0, URL var1, HostnameVerifier var2, HttpURLConnection var3) throws IOException {
+<i>157</i>&nbsp;        return New(var0, var1, var2, true, var3);
+<i>158</i>&nbsp;    }
+<b class="nc"><i>159</i>&nbsp;</b>
+<i>160</i>&nbsp;    static HttpClient New(SSLSocketFactory var0, URL var1, HostnameVerifier var2, boolean var3, HttpURLConnection var4) throws IOException {
+<i>161</i>&nbsp;        return New(var0, var1, var2, (String)null, -1, var3, var4);
+<b class="nc"><i>162</i>&nbsp;    }</b>
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;    static HttpClient New(SSLSocketFactory var0, URL var1, HostnameVerifier var2, String var3, int var4, HttpURLConnection var5) throws IOException {
+<i>165</i>&nbsp;        return New(var0, var1, var2, var3, var4, true, var5);
+<b class="nc"><i>166</i>&nbsp;    }</b>
+<i>167</i>&nbsp;
+<b class="nc"><i>168</i>&nbsp;    static HttpClient New(SSLSocketFactory var0, URL var1, HostnameVerifier var2, String var3, int var4, boolean var5, HttpURLConnection var6) throws IOException {</b>
+<b class="nc"><i>169</i>&nbsp;        return New(var0, var1, var2, var3, var4, var5, -1, var6);</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<b class="nc"><i>171</i>&nbsp;</b>
+<b class="nc"><i>172</i>&nbsp;    static HttpClient New(SSLSocketFactory var0, URL var1, HostnameVerifier var2, String var3, int var4, boolean var5, int var6, HttpURLConnection var7) throws IOException {</b>
+<b class="nc"><i>173</i>&nbsp;        return New(var0, var1, var2, var3 == null?null:newHttpProxy(var3, var4), var5, var6, var7);</b>
+<i>174</i>&nbsp;    }
+<i>175</i>&nbsp;
+<b class="nc"><i>176</i>&nbsp;    static HttpClient New(SSLSocketFactory var0, URL var1, HostnameVerifier var2, Proxy var3, boolean var4, int var5, HttpURLConnection var6) throws IOException {</b>
+<i>177</i>&nbsp;        if(var3 == null) {
+<i>178</i>&nbsp;            var3 = Proxy.NO_PROXY;
+<i>179</i>&nbsp;        }
+<b class="nc"><i>180</i>&nbsp;</b>
+<i>181</i>&nbsp;        HttpsClient var7 = null;
+<b class="nc"><i>182</i>&nbsp;        if(var4) {</b>
+<b class="nc"><i>183</i>&nbsp;            var7 = (HttpsClient)kac.get(var1, var0);</b>
+<i>184</i>&nbsp;            if(var7 != null &amp;&amp; var6 != null &amp;&amp; var6.streaming() &amp;&amp; var6.getRequestMethod() == &quot;POST&quot; &amp;&amp; !var7.available()) {
+<b class="nc"><i>185</i>&nbsp;                var7 = null;</b>
+<i>186</i>&nbsp;            }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;            if(var7 != null) {
+<i>189</i>&nbsp;                if((var7.proxy == null || !var7.proxy.equals(var3)) &amp;&amp; (var7.proxy != null || var3 != null)) {
+<b class="nc"><i>190</i>&nbsp;                    synchronized(var7) {</b>
+<b class="nc"><i>191</i>&nbsp;                        var7.inCache = false;</b>
+<b class="nc"><i>192</i>&nbsp;                        var7.closeServer();</b>
+<i>193</i>&nbsp;                    }
+<b class="nc"><i>194</i>&nbsp;</b>
+<i>195</i>&nbsp;                    var7 = null;
+<b class="nc"><i>196</i>&nbsp;                } else {</b>
+<i>197</i>&nbsp;                    synchronized(var7) {
+<b class="nc"><i>198</i>&nbsp;                        var7.cachedHttpClient = true;</b>
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;                        assert var7.inCache;</b>
+<b class="nc"><i>201</i>&nbsp;</b>
+<b class="nc"><i>202</i>&nbsp;                        var7.inCache = false;</b>
+<i>203</i>&nbsp;                        if(var6 != null &amp;&amp; var7.needsTunneling()) {
+<i>204</i>&nbsp;                            var6.setTunnelState(TunnelState.TUNNELING);
+<i>205</i>&nbsp;                        }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;                        PlatformLogger var9 = HttpURLConnection.getHttpLogger();
+<i>208</i>&nbsp;                        if(var9.isLoggable(300)) {
+<i>209</i>&nbsp;                            var9.finest(&quot;KeepAlive stream retrieved from the cache, &quot; + var7);
+<i>210</i>&nbsp;                        }
+<i>211</i>&nbsp;                    }
+<i>212</i>&nbsp;                }
+<i>213</i>&nbsp;            }
+<i>214</i>&nbsp;        }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        if(var7 == null) {
+<i>217</i>&nbsp;            var7 = new HttpsClient(var0, var1, var3, var5);
+<i>218</i>&nbsp;        } else {
+<i>219</i>&nbsp;            SecurityManager var8 = System.getSecurityManager();
+<i>220</i>&nbsp;            if(var8 != null) {
+<i>221</i>&nbsp;                if(var7.proxy != Proxy.NO_PROXY &amp;&amp; var7.proxy != null) {
+<i>222</i>&nbsp;                    var8.checkConnect(var1.getHost(), var1.getPort());
+<i>223</i>&nbsp;                } else {
+<i>224</i>&nbsp;                    var8.checkConnect(InetAddress.getByName(var1.getHost()).getHostAddress(), var1.getPort());
+<i>225</i>&nbsp;                }
+<i>226</i>&nbsp;            }
+<b class="nc"><i>227</i>&nbsp;</b>
+<i>228</i>&nbsp;            var7.url = var1;
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        var7.setHostnameVerifier(var2);
+<i>232</i>&nbsp;        return var7;
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    void setHostnameVerifier(HostnameVerifier var1) {
+<b class="nc"><i>236</i>&nbsp;        this.hv = var1;</b>
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    void setSSLSocketFactory(SSLSocketFactory var1) {
+<i>240</i>&nbsp;        this.sslSocketFactory = var1;
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    SSLSocketFactory getSSLSocketFactory() {
+<i>244</i>&nbsp;        return this.sslSocketFactory;
+<i>245</i>&nbsp;    }
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;    protected Socket createSocket() throws IOException {
+<i>248</i>&nbsp;        try {
+<i>249</i>&nbsp;            return this.sslSocketFactory.createSocket();
+<i>250</i>&nbsp;        } catch (SocketException var3) {
+<i>251</i>&nbsp;            Throwable var2 = var3.getCause();
+<i>252</i>&nbsp;            if(var2 != null &amp;&amp; var2 instanceof UnsupportedOperationException) {
+<i>253</i>&nbsp;                return super.createSocket();
+<i>254</i>&nbsp;            } else {
+<i>255</i>&nbsp;                throw var3;
+<i>256</i>&nbsp;            }
+<b class="nc"><i>257</i>&nbsp;        }</b>
+<b class="nc"><i>258</i>&nbsp;    }</b>
+<b class="nc"><i>259</i>&nbsp;</b>
+<b class="nc"><i>260</i>&nbsp;    public boolean needsTunneling() {</b>
+<i>261</i>&nbsp;        return this.proxy != null &amp;&amp; this.proxy.type() != Type.DIRECT &amp;&amp; this.proxy.type() != Type.SOCKS;
+<b class="nc"><i>262</i>&nbsp;    }</b>
+<b class="nc"><i>263</i>&nbsp;</b>
+<b class="nc"><i>264</i>&nbsp;    public void afterConnect() throws IOException, UnknownHostException {</b>
+<b class="nc"><i>265</i>&nbsp;        if(!this.isCachedConnection()) {</b>
+<b class="nc"><i>266</i>&nbsp;            SSLSocket var1 = null;</b>
+<i>267</i>&nbsp;            SSLSocketFactory var2 = this.sslSocketFactory;
+<b class="nc"><i>268</i>&nbsp;</b>
+<i>269</i>&nbsp;            try {
+<b class="nc"><i>270</i>&nbsp;                if(!(this.serverSocket instanceof SSLSocket)) {</b>
+<b class="nc"><i>271</i>&nbsp;                    var1 = (SSLSocket)var2.createSocket(this.serverSocket, this.host, this.port, true);</b>
+<i>272</i>&nbsp;                } else {
+<b class="nc"><i>273</i>&nbsp;                    var1 = (SSLSocket)this.serverSocket;</b>
+<i>274</i>&nbsp;                    if(var1 instanceof SSLSocketImpl) {
+<i>275</i>&nbsp;                        ((SSLSocketImpl)var1).setHost(this.host);
+<b class="nc"><i>276</i>&nbsp;                    }</b>
+<i>277</i>&nbsp;                }
+<i>278</i>&nbsp;            } catch (IOException var11) {
+<i>279</i>&nbsp;                try {
+<i>280</i>&nbsp;                    var1 = (SSLSocket)var2.createSocket(this.host, this.port);
+<i>281</i>&nbsp;                } catch (IOException var10) {
+<i>282</i>&nbsp;                    throw var11;
+<i>283</i>&nbsp;                }
+<i>284</i>&nbsp;            }
+<i>285</i>&nbsp;
+<b class="nc"><i>286</i>&nbsp;            String[] var3 = this.getProtocols();</b>
+<i>287</i>&nbsp;            String[] var4 = this.getCipherSuites();
+<i>288</i>&nbsp;            if(var3 != null) {
+<i>289</i>&nbsp;                var1.setEnabledProtocols(var3);
+<i>290</i>&nbsp;            }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;            if(var4 != null) {
+<b class="nc"><i>293</i>&nbsp;                var1.setEnabledCipherSuites(var4);</b>
+<i>294</i>&nbsp;            }
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;            var1.addHandshakeCompletedListener(this);
+<i>297</i>&nbsp;            boolean var5 = true;
+<i>298</i>&nbsp;            String var6 = var1.getSSLParameters().getEndpointIdentificationAlgorithm();
+<i>299</i>&nbsp;            if(var6 != null &amp;&amp; var6.length() != 0) {
+<i>300</i>&nbsp;                if(var6.equalsIgnoreCase(&quot;HTTPS&quot;)) {
+<i>301</i>&nbsp;                    var5 = false;
+<i>302</i>&nbsp;                }
+<b class="nc"><i>303</i>&nbsp;            } else {</b>
+<i>304</i>&nbsp;                boolean var7 = false;
+<i>305</i>&nbsp;                if(this.hv != null) {
+<i>306</i>&nbsp;                    String var8 = this.hv.getClass().getCanonicalName();
+<i>307</i>&nbsp;                    if(var8 != null &amp;&amp; var8.equalsIgnoreCase(&quot;javax.net.ssl.HttpsURLConnection.DefaultHostnameVerifier&quot;)) {
+<i>308</i>&nbsp;                        var7 = true;
+<i>309</i>&nbsp;                    }
+<b class="nc"><i>310</i>&nbsp;                } else {</b>
+<i>311</i>&nbsp;                    var7 = true;
+<i>312</i>&nbsp;                }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;                if(var7) {
+<i>315</i>&nbsp;                    SSLParameters var12 = var1.getSSLParameters();
+<i>316</i>&nbsp;                    var12.setEndpointIdentificationAlgorithm(&quot;HTTPS&quot;);
+<i>317</i>&nbsp;                    var1.setSSLParameters(var12);
+<i>318</i>&nbsp;                    var5 = false;
+<b class="nc"><i>319</i>&nbsp;                }</b>
+<i>320</i>&nbsp;            }
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;            var1.startHandshake();
+<i>323</i>&nbsp;            this.session = var1.getSession();
+<i>324</i>&nbsp;            this.serverSocket = var1;
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;            try {
+<i>327</i>&nbsp;                this.serverOutput = new PrintStream(new BufferedOutputStream(this.serverSocket.getOutputStream()), false, encoding);
+<i>328</i>&nbsp;            } catch (UnsupportedEncodingException var9) {
+<i>329</i>&nbsp;                throw new InternalError(encoding + &quot; encoding not found&quot;);
+<b class="nc"><i>330</i>&nbsp;            }</b>
+<b class="nc"><i>331</i>&nbsp;</b>
+<i>332</i>&nbsp;            if(var5) {
+<b class="nc"><i>333</i>&nbsp;                this.checkURLSpoofing(this.hv);</b>
+<b class="nc"><i>334</i>&nbsp;            }</b>
+<i>335</i>&nbsp;        } else {
+<b class="nc"><i>336</i>&nbsp;            this.session = ((SSLSocket)this.serverSocket).getSession();</b>
+<b class="nc"><i>337</i>&nbsp;        }</b>
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    }
+<b class="nc"><i>340</i>&nbsp;</b>
+<b class="nc"><i>341</i>&nbsp;    private void checkURLSpoofing(HostnameVerifier var1) throws IOException {</b>
+<i>342</i>&nbsp;        String var2 = this.url.getHost();
+<b class="nc"><i>343</i>&nbsp;        if(var2 != null &amp;&amp; var2.startsWith(&quot;[&quot;) &amp;&amp; var2.endsWith(&quot;]&quot;)) {</b>
+<b class="nc"><i>344</i>&nbsp;            var2 = var2.substring(1, var2.length() - 1);</b>
+<i>345</i>&nbsp;        }
+<b class="nc"><i>346</i>&nbsp;</b>
+<b class="nc"><i>347</i>&nbsp;        Certificate[] var3 = null;</b>
+<b class="nc"><i>348</i>&nbsp;        String var4 = this.session.getCipherSuite();</b>
+<b class="nc"><i>349</i>&nbsp;</b>
+<b class="nc"><i>350</i>&nbsp;        try {</b>
+<b class="nc"><i>351</i>&nbsp;            HostnameChecker var5 = HostnameChecker.getInstance((byte)1);</b>
+<b class="nc"><i>352</i>&nbsp;            if(var4.startsWith(&quot;TLS_KRB5&quot;)) {</b>
+<i>353</i>&nbsp;                if(!HostnameChecker.match(var2, this.getPeerPrincipal())) {
+<i>354</i>&nbsp;                    throw new SSLPeerUnverifiedException(&quot;Hostname checker failed for Kerberos&quot;);
+<i>355</i>&nbsp;                }
+<i>356</i>&nbsp;            } else {
+<i>357</i>&nbsp;                var3 = this.session.getPeerCertificates();
+<b class="nc"><i>358</i>&nbsp;                if(!(var3[0] instanceof X509Certificate)) {</b>
+<b class="nc"><i>359</i>&nbsp;                    throw new SSLPeerUnverifiedException(&quot;&quot;);</b>
+<b class="nc"><i>360</i>&nbsp;                }</b>
+<b class="nc"><i>361</i>&nbsp;</b>
+<b class="nc"><i>362</i>&nbsp;                X509Certificate var6 = (X509Certificate)var3[0];</b>
+<i>363</i>&nbsp;                var5.match(var2, var6);
+<i>364</i>&nbsp;            }
+<i>365</i>&nbsp;
+<b class="nc"><i>366</i>&nbsp;            return;</b>
+<b class="nc"><i>367</i>&nbsp;        } catch (SSLPeerUnverifiedException var7) {</b>
+<i>368</i>&nbsp;            ;
+<b class="nc"><i>369</i>&nbsp;        } catch (CertificateException var8) {</b>
+<b class="nc"><i>370</i>&nbsp;            ;</b>
+<b class="nc"><i>371</i>&nbsp;        }</b>
+<b class="nc"><i>372</i>&nbsp;</b>
+<i>373</i>&nbsp;        if(var4 == null || var4.indexOf(&quot;_anon_&quot;) == -1) {
+<b class="nc"><i>374</i>&nbsp;            if(var1 == null || !var1.verify(var2, this.session)) {</b>
+<i>375</i>&nbsp;                this.serverSocket.close();
+<i>376</i>&nbsp;                this.session.invalidate();
+<b class="nc"><i>377</i>&nbsp;                throw new IOException(&quot;HTTPS hostname wrong:  should be &lt;&quot; + this.url.getHost() + &quot;&gt;&quot;);</b>
+<i>378</i>&nbsp;            }
+<b class="nc"><i>379</i>&nbsp;        }</b>
+<i>380</i>&nbsp;    }
+<b class="nc"><i>381</i>&nbsp;</b>
+<i>382</i>&nbsp;    protected void putInKeepAliveCache() {
+<i>383</i>&nbsp;        if(this.inCache) {
+<i>384</i>&nbsp;            assert false : &quot;Duplicate put to keep alive cache&quot;;
+<i>385</i>&nbsp;
+<b class="nc"><i>386</i>&nbsp;        } else {</b>
+<i>387</i>&nbsp;            this.inCache = true;
+<i>388</i>&nbsp;            kac.put(this.url, this.sslSocketFactory, this);
+<i>389</i>&nbsp;        }
+<b class="nc"><i>390</i>&nbsp;    }</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    public void closeIdleConnection() {
+<i>393</i>&nbsp;        HttpClient var1 = kac.get(this.url, this.sslSocketFactory);
+<b class="nc"><i>394</i>&nbsp;        if(var1 != null) {</b>
+<i>395</i>&nbsp;            var1.closeServer();
+<i>396</i>&nbsp;        }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;    }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;    String getCipherSuite() {
+<i>401</i>&nbsp;        return this.session.getCipherSuite();
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<b class="nc"><i>404</i>&nbsp;    public Certificate[] getLocalCertificates() {</b>
+<b class="nc"><i>405</i>&nbsp;        return this.session.getLocalCertificates();</b>
+<i>406</i>&nbsp;    }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;    Certificate[] getServerCertificates() throws SSLPeerUnverifiedException {
+<i>409</i>&nbsp;        return this.session.getPeerCertificates();
+<i>410</i>&nbsp;    }
+<i>411</i>&nbsp;
+<b class="nc"><i>412</i>&nbsp;    javax.security.cert.X509Certificate[] getServerCertificateChain() throws SSLPeerUnverifiedException {</b>
+<b class="nc"><i>413</i>&nbsp;        return this.session.getPeerCertificateChain();</b>
+<b class="nc"><i>414</i>&nbsp;    }</b>
+<i>415</i>&nbsp;
+<b class="nc"><i>416</i>&nbsp;    Principal getPeerPrincipal() throws SSLPeerUnverifiedException {</b>
+<i>417</i>&nbsp;        Object var1;
+<i>418</i>&nbsp;        try {
+<i>419</i>&nbsp;            var1 = this.session.getPeerPrincipal();
+<i>420</i>&nbsp;        } catch (AbstractMethodError var4) {
+<i>421</i>&nbsp;            Certificate[] var3 = this.session.getPeerCertificates();
+<i>422</i>&nbsp;            var1 = ((X509Certificate)var3[0]).getSubjectX500Principal();
+<b class="nc"><i>423</i>&nbsp;        }</b>
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;        return (Principal)var1;
+<i>426</i>&nbsp;    }
+<i>427</i>&nbsp;
+<b class="nc"><i>428</i>&nbsp;    Principal getLocalPrincipal() {</b>
+<b class="nc"><i>429</i>&nbsp;        Object var1;</b>
+<b class="nc"><i>430</i>&nbsp;        try {</b>
+<i>431</i>&nbsp;            var1 = this.session.getLocalPrincipal();
+<b class="nc"><i>432</i>&nbsp;        } catch (AbstractMethodError var4) {</b>
+<b class="nc"><i>433</i>&nbsp;            var1 = null;</b>
+<i>434</i>&nbsp;            Certificate[] var3 = this.session.getLocalCertificates();
+<i>435</i>&nbsp;            if(var3 != null) {
+<b class="nc"><i>436</i>&nbsp;                var1 = ((X509Certificate)var3[0]).getSubjectX500Principal();</b>
+<b class="nc"><i>437</i>&nbsp;            }</b>
+<b class="nc"><i>438</i>&nbsp;        }</b>
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;        return (Principal)var1;
+<b class="nc"><i>441</i>&nbsp;    }</b>
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;    public void handshakeCompleted(HandshakeCompletedEvent var1) {
+<i>444</i>&nbsp;        this.session = var1.getSession();
+<i>445</i>&nbsp;    }
+<b class="nc"><i>446</i>&nbsp;</b>
+<b class="nc"><i>447</i>&nbsp;    public String getProxyHostUsed() {</b>
+<b class="nc"><i>448</i>&nbsp;        return !this.needsTunneling()?null:super.getProxyHostUsed();</b>
+<b class="nc"><i>449</i>&nbsp;    }</b>
+<b class="nc"><i>450</i>&nbsp;</b>
+<i>451</i>&nbsp;    public int getProxyPortUsed() {
+<i>452</i>&nbsp;        return this.proxy != null &amp;&amp; this.proxy.type() != Type.DIRECT &amp;&amp; this.proxy.type() != Type.SOCKS?((InetSocketAddress)this.proxy.address()).getPort():-1;
+<i>453</i>&nbsp;    }
+<i>454</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:51</div>
+</div>
+</body>
+</html>

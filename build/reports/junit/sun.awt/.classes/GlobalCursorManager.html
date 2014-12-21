@@ -1,0 +1,250 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlobalCursorManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.awt</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlobalCursorManager (sun.awt)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlobalCursorManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GlobalCursorManager$NativeUpdater</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 51)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.awt;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.Component;
+<i>9</i>&nbsp;import java.awt.Container;
+<i>10</i>&nbsp;import java.awt.Cursor;
+<i>11</i>&nbsp;import java.awt.IllegalComponentStateException;
+<i>12</i>&nbsp;import java.awt.Point;
+<i>13</i>&nbsp;import java.awt.Toolkit;
+<i>14</i>&nbsp;import java.awt.Window;
+<i>15</i>&nbsp;import java.awt.event.InputEvent;
+<i>16</i>&nbsp;import java.awt.event.InvocationEvent;
+<i>17</i>&nbsp;import sun.awt.AWTAccessor;
+<b class="nc"><i>18</i>&nbsp;import sun.awt.SunToolkit;</b>
+<i>19</i>&nbsp;
+<b class="nc"><i>20</i>&nbsp;public abstract class GlobalCursorManager {</b>
+<b class="nc"><i>21</i>&nbsp;    private final GlobalCursorManager.NativeUpdater nativeUpdater = new GlobalCursorManager.NativeUpdater();</b>
+<i>22</i>&nbsp;    private long lastUpdateMillis;
+<i>23</i>&nbsp;    private final Object lastUpdateLock = new Object();
+<b class="nc"><i>24</i>&nbsp;</b>
+<b class="nc"><i>25</i>&nbsp;    public void updateCursorImmediately() {</b>
+<b class="nc"><i>26</i>&nbsp;        GlobalCursorManager.NativeUpdater var1 = this.nativeUpdater;</b>
+<b class="nc"><i>27</i>&nbsp;        synchronized(this.nativeUpdater) {</b>
+<b class="nc"><i>28</i>&nbsp;            this.nativeUpdater.pending = false;</b>
+<i>29</i>&nbsp;        }
+<b class="nc"><i>30</i>&nbsp;</b>
+<b class="nc"><i>31</i>&nbsp;        this._updateCursor(false);</b>
+<b class="nc"><i>32</i>&nbsp;    }</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public void updateCursorImmediately(InputEvent var1) {
+<i>35</i>&nbsp;        Object var3 = this.lastUpdateLock;
+<i>36</i>&nbsp;        boolean var2;
+<b class="nc"><i>37</i>&nbsp;        synchronized(this.lastUpdateLock) {</b>
+<b class="nc"><i>38</i>&nbsp;            var2 = var1.getWhen() &gt;= this.lastUpdateMillis;</b>
+<b class="nc"><i>39</i>&nbsp;        }</b>
+<b class="nc"><i>40</i>&nbsp;</b>
+<i>41</i>&nbsp;        if(var2) {
+<b class="nc"><i>42</i>&nbsp;            this._updateCursor(true);</b>
+<b class="nc"><i>43</i>&nbsp;        }</b>
+<b class="nc"><i>44</i>&nbsp;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public void updateCursorLater(Component var1) {
+<i>48</i>&nbsp;        this.nativeUpdater.postIfNotPending(var1, new InvocationEvent(Toolkit.getDefaultToolkit(), this.nativeUpdater));
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    protected GlobalCursorManager() {
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<b class="nc"><i>54</i>&nbsp;    protected abstract void setCursor(Component var1, Cursor var2, boolean var3);</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    protected abstract void getCursorPos(Point var1);
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    protected abstract Component findComponentAt(Container var1, int var2, int var3);
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    protected abstract Point getLocationOnScreen(Component var1);
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    protected abstract Component findHeavyweightUnderCursor(boolean var1);
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    private void _updateCursor(boolean var1) {
+<b class="nc"><i>65</i>&nbsp;        Object var2 = this.lastUpdateLock;</b>
+<i>66</i>&nbsp;        synchronized(this.lastUpdateLock) {
+<i>67</i>&nbsp;            this.lastUpdateMillis = System.currentTimeMillis();
+<i>68</i>&nbsp;        }
+<i>69</i>&nbsp;
+<b class="nc"><i>70</i>&nbsp;        var2 = null;</b>
+<i>71</i>&nbsp;        Point var3 = null;
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;        try {
+<i>74</i>&nbsp;            Component var4 = this.findHeavyweightUnderCursor(var1);
+<i>75</i>&nbsp;            if(var4 == null) {
+<i>76</i>&nbsp;                this.updateCursorOutOfJava();
+<b class="nc"><i>77</i>&nbsp;                return;</b>
+<b class="nc"><i>78</i>&nbsp;            }</b>
+<b class="nc"><i>79</i>&nbsp;</b>
+<b class="nc"><i>80</i>&nbsp;            if(var4 instanceof Window) {</b>
+<i>81</i>&nbsp;                var3 = AWTAccessor.getComponentAccessor().getLocation(var4);
+<i>82</i>&nbsp;            } else if(var4 instanceof Container) {
+<i>83</i>&nbsp;                var3 = this.getLocationOnScreen(var4);
+<i>84</i>&nbsp;            }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;            if(var3 != null) {
+<i>87</i>&nbsp;                Point var8 = new Point();
+<i>88</i>&nbsp;                this.getCursorPos(var8);
+<i>89</i>&nbsp;                Component var5 = this.findComponentAt((Container)var4, var8.x - var3.x, var8.y - var3.y);
+<i>90</i>&nbsp;                if(var5 != null) {
+<b class="nc"><i>91</i>&nbsp;                    var4 = var5;</b>
+<b class="nc"><i>92</i>&nbsp;                }</b>
+<b class="nc"><i>93</i>&nbsp;            }</b>
+<b class="nc"><i>94</i>&nbsp;</b>
+<b class="nc"><i>95</i>&nbsp;            this.setCursor(var4, AWTAccessor.getComponentAccessor().getCursor(var4), var1);</b>
+<i>96</i>&nbsp;        } catch (IllegalComponentStateException var6) {
+<i>97</i>&nbsp;            ;
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    protected void updateCursorOutOfJava() {
+<i>103</i>&nbsp;    }
+<b class="nc"><i>104</i>&nbsp;</b>
+<i>105</i>&nbsp;    class NativeUpdater implements Runnable {
+<i>106</i>&nbsp;        boolean pending = false;
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;        NativeUpdater() {
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;        public void run() {
+<i>112</i>&nbsp;            boolean var1 = false;
+<i>113</i>&nbsp;            synchronized(this) {
+<i>114</i>&nbsp;                if(this.pending) {
+<i>115</i>&nbsp;                    this.pending = false;
+<i>116</i>&nbsp;                    var1 = true;
+<i>117</i>&nbsp;                }
+<i>118</i>&nbsp;            }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;            if(var1) {
+<i>121</i>&nbsp;                GlobalCursorManager.this._updateCursor(false);
+<i>122</i>&nbsp;            }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        public void postIfNotPending(Component var1, InvocationEvent var2) {
+<i>127</i>&nbsp;            boolean var3 = false;
+<i>128</i>&nbsp;            synchronized(this) {
+<i>129</i>&nbsp;                if(!this.pending) {
+<i>130</i>&nbsp;                    var3 = true;
+<i>131</i>&nbsp;                    this.pending = true;
+<i>132</i>&nbsp;                }
+<i>133</i>&nbsp;            }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;            if(var3) {
+<i>136</i>&nbsp;                SunToolkit.postEvent(SunToolkit.targetToAppContext(var1), var2);
+<i>137</i>&nbsp;            }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;        }
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

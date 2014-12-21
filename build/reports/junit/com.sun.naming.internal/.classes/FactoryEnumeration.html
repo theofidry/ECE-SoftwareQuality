@@ -1,0 +1,152 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FactoryEnumeration</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.naming.internal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FactoryEnumeration (com.sun.naming.internal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FactoryEnumeration</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.naming.internal;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.naming.internal.NamedWeakReference;
+<i>9</i>&nbsp;import java.util.List;
+<i>10</i>&nbsp;import javax.naming.NamingException;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;public final class FactoryEnumeration {
+<i>13</i>&nbsp;    private List factories;
+<i>14</i>&nbsp;    private int posn = 0;
+<i>15</i>&nbsp;    private ClassLoader loader;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    FactoryEnumeration(List var1, ClassLoader var2) {
+<i>18</i>&nbsp;        this.factories = var1;
+<i>19</i>&nbsp;        this.loader = var2;
+<i>20</i>&nbsp;    }
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public Object next() throws NamingException {
+<i>23</i>&nbsp;        List var1 = this.factories;
+<b class="nc"><i>24</i>&nbsp;        synchronized(this.factories) {</b>
+<i>25</i>&nbsp;            NamedWeakReference var2 = (NamedWeakReference)this.factories.get(this.posn++);
+<i>26</i>&nbsp;            Object var3 = var2.get();
+<i>27</i>&nbsp;            if(var3 != null &amp;&amp; !(var3 instanceof Class)) {
+<i>28</i>&nbsp;                return var3;
+<i>29</i>&nbsp;            } else {
+<i>30</i>&nbsp;                String var4 = var2.getName();
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;                NamingException var6;
+<i>33</i>&nbsp;                Object var10000;
+<i>34</i>&nbsp;                try {
+<i>35</i>&nbsp;                    if(var3 == null) {
+<i>36</i>&nbsp;                        Class var5 = Class.forName(var4, true, this.loader);
+<i>37</i>&nbsp;                        var3 = var5;
+<i>38</i>&nbsp;                    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;                    var3 = ((Class)var3).newInstance();
+<i>41</i>&nbsp;                    var2 = new NamedWeakReference(var3, var4);
+<i>42</i>&nbsp;                    this.factories.set(this.posn - 1, var2);
+<i>43</i>&nbsp;                    var10000 = var3;
+<i>44</i>&nbsp;                } catch (ClassNotFoundException var8) {
+<b class="nc"><i>45</i>&nbsp;                    var6 = new NamingException(&quot;No longer able to load &quot; + var4);</b>
+<b class="nc"><i>46</i>&nbsp;                    var6.setRootCause(var8);</b>
+<b class="nc"><i>47</i>&nbsp;                    throw var6;</b>
+<i>48</i>&nbsp;                } catch (InstantiationException var9) {
+<i>49</i>&nbsp;                    var6 = new NamingException(&quot;Cannot instantiate &quot; + var3);
+<i>50</i>&nbsp;                    var6.setRootCause(var9);
+<b class="nc"><i>51</i>&nbsp;                    throw var6;</b>
+<i>52</i>&nbsp;                } catch (IllegalAccessException var10) {
+<b class="nc"><i>53</i>&nbsp;                    var6 = new NamingException(&quot;Cannot access &quot; + var3);</b>
+<b class="nc"><i>54</i>&nbsp;                    var6.setRootCause(var10);</b>
+<b class="nc"><i>55</i>&nbsp;                    throw var6;</b>
+<b class="nc"><i>56</i>&nbsp;                }</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;                return var10000;
+<b class="nc"><i>59</i>&nbsp;            }</b>
+<i>60</i>&nbsp;        }
+<i>61</i>&nbsp;    }
+<b class="nc"><i>62</i>&nbsp;</b>
+<b class="nc"><i>63</i>&nbsp;    public boolean hasMore() {</b>
+<i>64</i>&nbsp;        List var1 = this.factories;
+<i>65</i>&nbsp;        synchronized(this.factories) {
+<b class="nc"><i>66</i>&nbsp;            return this.posn &lt; this.factories.size();</b>
+<b class="nc"><i>67</i>&nbsp;        }</b>
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<b class="nc"><i>69</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

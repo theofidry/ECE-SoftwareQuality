@@ -1,0 +1,1735 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: IDLGenerator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.rmi.rmic.iiop</a> ]
+</div>
+
+<h1>Coverage Summary for Class: IDLGenerator (sun.rmi.rmic.iiop)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IDLGenerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 64)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 918)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.rmi.rmic.iiop;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.text.DateFormat;
+<i>10</i>&nbsp;import java.util.Date;
+<i>11</i>&nbsp;import java.util.Enumeration;
+<i>12</i>&nbsp;import java.util.HashSet;
+<i>13</i>&nbsp;import java.util.Hashtable;
+<i>14</i>&nbsp;import java.util.Locale;
+<i>15</i>&nbsp;import java.util.StringTokenizer;
+<i>16</i>&nbsp;import java.util.Vector;
+<i>17</i>&nbsp;import sun.rmi.rmic.IndentingWriter;
+<i>18</i>&nbsp;import sun.rmi.rmic.Main;
+<i>19</i>&nbsp;import sun.rmi.rmic.iiop.ArrayType;
+<i>20</i>&nbsp;import sun.rmi.rmic.iiop.ClassType;
+<i>21</i>&nbsp;import sun.rmi.rmic.iiop.CompoundType;
+<i>22</i>&nbsp;import sun.rmi.rmic.iiop.ContextStack;
+<i>23</i>&nbsp;import sun.rmi.rmic.iiop.Generator;
+<i>24</i>&nbsp;import sun.rmi.rmic.iiop.ImplementationType;
+<i>25</i>&nbsp;import sun.rmi.rmic.iiop.InterfaceType;
+<i>26</i>&nbsp;import sun.rmi.rmic.iiop.RemoteType;
+<i>27</i>&nbsp;import sun.rmi.rmic.iiop.Type;
+<i>28</i>&nbsp;import sun.rmi.rmic.iiop.ValueType;
+<i>29</i>&nbsp;import sun.rmi.rmic.iiop.CompoundType.Member;
+<i>30</i>&nbsp;import sun.rmi.rmic.iiop.CompoundType.Method;
+<i>31</i>&nbsp;import sun.rmi.rmic.iiop.Generator.OutputType;
+<i>32</i>&nbsp;import sun.tools.java.ClassDefinition;
+<i>33</i>&nbsp;import sun.tools.java.CompilerError;
+<i>34</i>&nbsp;import sun.tools.java.Identifier;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;public class IDLGenerator extends Generator {
+<i>37</i>&nbsp;    private boolean valueMethods = true;
+<i>38</i>&nbsp;    private boolean factory = true;
+<i>39</i>&nbsp;    private Hashtable ifHash = new Hashtable();
+<i>40</i>&nbsp;    private Hashtable imHash = new Hashtable();
+<i>41</i>&nbsp;    private boolean isThrown = true;
+<b class="nc"><i>42</i>&nbsp;    private boolean isException = true;</b>
+<b class="nc"><i>43</i>&nbsp;    private boolean isForward = true;</b>
+<b class="nc"><i>44</i>&nbsp;    private boolean forValuetype = true;</b>
+<b class="nc"><i>45</i>&nbsp;</b>
+<i>46</i>&nbsp;    public IDLGenerator() {
+<b class="nc"><i>47</i>&nbsp;    }</b>
+<b class="nc"><i>48</i>&nbsp;</b>
+<b class="nc"><i>49</i>&nbsp;    protected boolean requireNewInstance() {</b>
+<b class="nc"><i>50</i>&nbsp;        return false;</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    protected boolean parseNonConforming(ContextStack var1) {
+<i>54</i>&nbsp;        return this.valueMethods;
+<b class="nc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    protected CompoundType getTopType(ClassDefinition var1, ContextStack var2) {
+<i>58</i>&nbsp;        return CompoundType.forCompound(var1, var2);
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    protected Identifier getOutputId(OutputType var1) {
+<i>62</i>&nbsp;        Identifier var2 = super.getOutputId(var1);
+<i>63</i>&nbsp;        Type var3 = var1.getType();
+<i>64</i>&nbsp;        String var4 = var1.getName();
+<i>65</i>&nbsp;        if(var2 == idJavaLangClass) {
+<b class="nc"><i>66</i>&nbsp;            return var3.isArray()?Identifier.lookup(&quot;org.omg.boxedRMI.javax.rmi.CORBA.&quot; + var4):idClassDesc;</b>
+<i>67</i>&nbsp;        } else if(var2 == idJavaLangString &amp;&amp; var3.isArray()) {
+<i>68</i>&nbsp;            return Identifier.lookup(&quot;org.omg.boxedRMI.CORBA.&quot; + var4);
+<i>69</i>&nbsp;        } else if(&quot;org.omg.CORBA.Object&quot;.equals(var3.getQualifiedName()) &amp;&amp; var3.isArray()) {
+<i>70</i>&nbsp;            return Identifier.lookup(&quot;org.omg.boxedRMI.&quot; + var4);
+<i>71</i>&nbsp;        } else if(var3.isArray()) {
+<i>72</i>&nbsp;            ArrayType var9 = (ArrayType)var3;
+<i>73</i>&nbsp;            Type var10 = var9.getElementType();
+<b class="nc"><i>74</i>&nbsp;            if(var10.isCompound()) {</b>
+<i>75</i>&nbsp;                CompoundType var7 = (CompoundType)var10;
+<i>76</i>&nbsp;                String var8 = var7.getQualifiedName();
+<i>77</i>&nbsp;                if(var7.isIDLEntity()) {
+<i>78</i>&nbsp;                    return Identifier.lookup(this.getQualifiedName(var9));
+<i>79</i>&nbsp;                }
+<i>80</i>&nbsp;            }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;            return Identifier.lookup(idBoxedRMI, var2);
+<i>83</i>&nbsp;        } else {
+<i>84</i>&nbsp;            if(var3.isCompound()) {
+<b class="nc"><i>85</i>&nbsp;                CompoundType var5 = (CompoundType)var3;</b>
+<i>86</i>&nbsp;                String var6 = var5.getQualifiedName();
+<i>87</i>&nbsp;                if(var5.isBoxed()) {
+<i>88</i>&nbsp;                    return Identifier.lookup(this.getQualifiedName(var5));
+<i>89</i>&nbsp;                }
+<i>90</i>&nbsp;            }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;            return var2;
+<i>93</i>&nbsp;        }
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    protected String getFileNameExtensionFor(OutputType var1) {
+<i>97</i>&nbsp;        return &quot;.idl&quot;;
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<b class="nc"><i>100</i>&nbsp;    public boolean parseArgs(String[] var1, Main var2) {</b>
+<b class="nc"><i>101</i>&nbsp;        boolean var3 = super.parseArgs(var1, var2);</b>
+<i>102</i>&nbsp;        if(var3) {
+<b class="nc"><i>103</i>&nbsp;            for(int var6 = 0; var6 &lt; var1.length; ++var6) {</b>
+<b class="nc"><i>104</i>&nbsp;                if(var1[var6] != null) {</b>
+<b class="nc"><i>105</i>&nbsp;                    if(var1[var6].equalsIgnoreCase(&quot;-idl&quot;)) {</b>
+<i>106</i>&nbsp;                        this.idl = true;
+<b class="nc"><i>107</i>&nbsp;                        var1[var6] = null;</b>
+<i>108</i>&nbsp;                    } else if(var1[var6].equalsIgnoreCase(&quot;-valueMethods&quot;)) {
+<b class="nc"><i>109</i>&nbsp;                        this.valueMethods = true;</b>
+<i>110</i>&nbsp;                        var1[var6] = null;
+<b class="nc"><i>111</i>&nbsp;                    } else if(var1[var6].equalsIgnoreCase(&quot;-noValueMethods&quot;)) {</b>
+<i>112</i>&nbsp;                        this.valueMethods = false;
+<b class="nc"><i>113</i>&nbsp;                        var1[var6] = null;</b>
+<i>114</i>&nbsp;                    } else if(var1[var6].equalsIgnoreCase(&quot;-init&quot;)) {
+<b class="nc"><i>115</i>&nbsp;                        this.factory = false;</b>
+<i>116</i>&nbsp;                        var1[var6] = null;
+<b class="nc"><i>117</i>&nbsp;                    } else if(var1[var6].equalsIgnoreCase(&quot;-factory&quot;)) {</b>
+<b class="nc"><i>118</i>&nbsp;                        this.factory = true;</b>
+<b class="nc"><i>119</i>&nbsp;                        var1[var6] = null;</b>
+<b class="nc"><i>120</i>&nbsp;                    } else {</b>
+<b class="nc"><i>121</i>&nbsp;                        String var4;</b>
+<b class="nc"><i>122</i>&nbsp;                        String var5;</b>
+<b class="nc"><i>123</i>&nbsp;                        if(var1[var6].equalsIgnoreCase(&quot;-idlfile&quot;)) {</b>
+<b class="nc"><i>124</i>&nbsp;                            var1[var6] = null;</b>
+<i>125</i>&nbsp;                            ++var6;
+<b class="nc"><i>126</i>&nbsp;                            if(var6 &lt; var1.length &amp;&amp; var1[var6] != null &amp;&amp; !var1[var6].startsWith(&quot;-&quot;)) {</b>
+<i>127</i>&nbsp;                                var4 = var1[var6];
+<i>128</i>&nbsp;                                var1[var6] = null;
+<b class="nc"><i>129</i>&nbsp;                                ++var6;</b>
+<b class="nc"><i>130</i>&nbsp;                                if(var6 &lt; var1.length &amp;&amp; var1[var6] != null &amp;&amp; !var1[var6].startsWith(&quot;-&quot;)) {</b>
+<b class="nc"><i>131</i>&nbsp;                                    var5 = var1[var6];</b>
+<b class="nc"><i>132</i>&nbsp;                                    var1[var6] = null;</b>
+<b class="nc"><i>133</i>&nbsp;                                    this.ifHash.put(var4, var5);</b>
+<i>134</i>&nbsp;                                    continue;
+<i>135</i>&nbsp;                                }
+<b class="nc"><i>136</i>&nbsp;                            }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;                            var2.error(&quot;rmic.option.requires.argument&quot;, &quot;-idlfile&quot;);
+<i>139</i>&nbsp;                            var3 = false;
+<i>140</i>&nbsp;                        } else if(var1[var6].equalsIgnoreCase(&quot;-idlmodule&quot;)) {
+<i>141</i>&nbsp;                            var1[var6] = null;
+<i>142</i>&nbsp;                            ++var6;
+<i>143</i>&nbsp;                            if(var6 &lt; var1.length &amp;&amp; var1[var6] != null &amp;&amp; !var1[var6].startsWith(&quot;-&quot;)) {
+<i>144</i>&nbsp;                                var4 = var1[var6];
+<i>145</i>&nbsp;                                var1[var6] = null;
+<i>146</i>&nbsp;                                ++var6;
+<i>147</i>&nbsp;                                if(var6 &lt; var1.length &amp;&amp; var1[var6] != null &amp;&amp; !var1[var6].startsWith(&quot;-&quot;)) {
+<i>148</i>&nbsp;                                    var5 = var1[var6];
+<b class="nc"><i>149</i>&nbsp;                                    var1[var6] = null;</b>
+<i>150</i>&nbsp;                                    this.imHash.put(var4, var5);
+<i>151</i>&nbsp;                                    continue;
+<i>152</i>&nbsp;                                }
+<i>153</i>&nbsp;                            }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;                            var2.error(&quot;rmic.option.requires.argument&quot;, &quot;-idlmodule&quot;);
+<i>156</i>&nbsp;                            var3 = false;
+<i>157</i>&nbsp;                        }
+<i>158</i>&nbsp;                    }
+<i>159</i>&nbsp;                }
+<i>160</i>&nbsp;            }
+<b class="nc"><i>161</i>&nbsp;        }</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;        return var3;
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<i>165</i>&nbsp;
+<b class="nc"><i>166</i>&nbsp;    protected OutputType[] getOutputTypesFor(CompoundType var1, HashSet var2) {</b>
+<b class="nc"><i>167</i>&nbsp;        Vector var3 = this.getAllReferencesFor(var1);</b>
+<b class="nc"><i>168</i>&nbsp;        Vector var4 = new Vector();</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<b class="nc"><i>170</i>&nbsp;        for(int var5 = 0; var5 &lt; var3.size(); ++var5) {</b>
+<i>171</i>&nbsp;            Type var6 = (Type)var3.elementAt(var5);
+<b class="nc"><i>172</i>&nbsp;            if(var6.isArray()) {</b>
+<b class="nc"><i>173</i>&nbsp;                ArrayType var7 = (ArrayType)var6;</b>
+<b class="nc"><i>174</i>&nbsp;                int var8 = var7.getArrayDimension();</b>
+<i>175</i>&nbsp;                Type var9 = var7.getElementType();
+<b class="nc"><i>176</i>&nbsp;                String var10 = this.unEsc(var9.getIDLName()).replace(&#39; &#39;, &#39;_&#39;);</b>
+<b class="nc"><i>177</i>&nbsp;</b>
+<b class="nc"><i>178</i>&nbsp;                for(int var11 = 0; var11 &lt; var8; ++var11) {</b>
+<i>179</i>&nbsp;                    String var12 = &quot;seq&quot; + (var11 + 1) + &quot;_&quot; + var10;
+<b class="nc"><i>180</i>&nbsp;                    var4.addElement(new OutputType(this, var12, var7));</b>
+<b class="nc"><i>181</i>&nbsp;                }</b>
+<b class="nc"><i>182</i>&nbsp;            } else if(var6.isCompound()) {</b>
+<i>183</i>&nbsp;                String var14 = this.unEsc(var6.getIDLName());
+<b class="nc"><i>184</i>&nbsp;                var4.addElement(new OutputType(this, var14.replace(&#39; &#39;, &#39;_&#39;), var6));</b>
+<b class="nc"><i>185</i>&nbsp;                if(var6.isClass()) {</b>
+<b class="nc"><i>186</i>&nbsp;                    ClassType var15 = (ClassType)var6;</b>
+<i>187</i>&nbsp;                    if(var15.isException()) {
+<b class="nc"><i>188</i>&nbsp;                        var14 = this.unEsc(var15.getIDLExceptionName());</b>
+<b class="nc"><i>189</i>&nbsp;                        var4.addElement(new OutputType(this, var14.replace(&#39; &#39;, &#39;_&#39;), var6));</b>
+<b class="nc"><i>190</i>&nbsp;                    }</b>
+<b class="nc"><i>191</i>&nbsp;                }</b>
+<b class="nc"><i>192</i>&nbsp;            }</b>
+<b class="nc"><i>193</i>&nbsp;        }</b>
+<b class="nc"><i>194</i>&nbsp;</b>
+<b class="nc"><i>195</i>&nbsp;        OutputType[] var13 = new OutputType[var4.size()];</b>
+<b class="nc"><i>196</i>&nbsp;        var4.copyInto(var13);</b>
+<b class="nc"><i>197</i>&nbsp;        return var13;</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;    protected Vector getAllReferencesFor(CompoundType var1) {</b>
+<b class="nc"><i>201</i>&nbsp;        Hashtable var2 = new Hashtable();</b>
+<i>202</i>&nbsp;        Hashtable var3 = new Hashtable();
+<b class="nc"><i>203</i>&nbsp;        Hashtable var4 = new Hashtable();</b>
+<b class="nc"><i>204</i>&nbsp;        var2.put(var1.getQualifiedName(), var1);</b>
+<b class="nc"><i>205</i>&nbsp;        this.accumulateReferences(var2, var3, var4);</b>
+<b class="nc"><i>206</i>&nbsp;</b>
+<b class="nc"><i>207</i>&nbsp;        int var5;</b>
+<b class="nc"><i>208</i>&nbsp;        do {</b>
+<b class="nc"><i>209</i>&nbsp;            var5 = var2.size();</b>
+<b class="nc"><i>210</i>&nbsp;            this.accumulateReferences(var2, var3, var4);</b>
+<b class="nc"><i>211</i>&nbsp;        } while(var5 &lt; var2.size());</b>
+<b class="nc"><i>212</i>&nbsp;</b>
+<i>213</i>&nbsp;        Vector var6 = new Vector();
+<i>214</i>&nbsp;        Enumeration var7 = var2.elements();
+<b class="nc"><i>215</i>&nbsp;</b>
+<b class="nc"><i>216</i>&nbsp;        CompoundType var8;</b>
+<i>217</i>&nbsp;        while(var7.hasMoreElements()) {
+<i>218</i>&nbsp;            var8 = (CompoundType)var7.nextElement();
+<i>219</i>&nbsp;            var6.addElement(var8);
+<i>220</i>&nbsp;        }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;        var7 = var3.elements();
+<b class="nc"><i>223</i>&nbsp;</b>
+<i>224</i>&nbsp;        while(var7.hasMoreElements()) {
+<i>225</i>&nbsp;            var8 = (CompoundType)var7.nextElement();
+<i>226</i>&nbsp;            var6.addElement(var8);
+<i>227</i>&nbsp;        }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;        var7 = var4.elements();
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        label32:
+<i>232</i>&nbsp;        while(var7.hasMoreElements()) {
+<i>233</i>&nbsp;            ArrayType var13 = (ArrayType)var7.nextElement();
+<i>234</i>&nbsp;            int var9 = var13.getArrayDimension();
+<i>235</i>&nbsp;            Type var10 = var13.getElementType();
+<i>236</i>&nbsp;            Enumeration var11 = var4.elements();
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;            while(var11.hasMoreElements()) {
+<b class="nc"><i>239</i>&nbsp;                ArrayType var12 = (ArrayType)var11.nextElement();</b>
+<b class="nc"><i>240</i>&nbsp;                if(var10 == var12.getElementType() &amp;&amp; var9 &lt; var12.getArrayDimension()) {</b>
+<b class="nc"><i>241</i>&nbsp;                    continue label32;</b>
+<b class="nc"><i>242</i>&nbsp;                }</b>
+<b class="nc"><i>243</i>&nbsp;            }</b>
+<b class="nc"><i>244</i>&nbsp;</b>
+<b class="nc"><i>245</i>&nbsp;            var6.addElement(var13);</b>
+<b class="nc"><i>246</i>&nbsp;        }</b>
+<b class="nc"><i>247</i>&nbsp;</b>
+<b class="nc"><i>248</i>&nbsp;        return var6;</b>
+<b class="nc"><i>249</i>&nbsp;    }</b>
+<b class="nc"><i>250</i>&nbsp;</b>
+<i>251</i>&nbsp;    protected void accumulateReferences(Hashtable var1, Hashtable var2, Hashtable var3) {
+<b class="nc"><i>252</i>&nbsp;        Enumeration var4 = var1.elements();</b>
+<b class="nc"><i>253</i>&nbsp;</b>
+<b class="nc"><i>254</i>&nbsp;        CompoundType var5;</b>
+<b class="nc"><i>255</i>&nbsp;        while(var4.hasMoreElements()) {</b>
+<b class="nc"><i>256</i>&nbsp;            var5 = (CompoundType)var4.nextElement();</b>
+<b class="nc"><i>257</i>&nbsp;            Vector var6 = this.getData(var5);</b>
+<b class="nc"><i>258</i>&nbsp;            Vector var7 = this.getMethods(var5);</b>
+<b class="nc"><i>259</i>&nbsp;            this.getInterfaces(var5, var1);</b>
+<b class="nc"><i>260</i>&nbsp;            this.getInheritance(var5, var1);</b>
+<i>261</i>&nbsp;            this.getMethodReferences(var7, var1, var2, var3, var1);
+<i>262</i>&nbsp;            this.getMemberReferences(var6, var1, var2, var3);
+<i>263</i>&nbsp;        }
+<i>264</i>&nbsp;
+<b class="nc"><i>265</i>&nbsp;        var4 = var3.elements();</b>
+<b class="nc"><i>266</i>&nbsp;</b>
+<b class="nc"><i>267</i>&nbsp;        while(var4.hasMoreElements()) {</b>
+<i>268</i>&nbsp;            ArrayType var8 = (ArrayType)var4.nextElement();
+<i>269</i>&nbsp;            Type var9 = var8.getElementType();
+<i>270</i>&nbsp;            this.addReference(var9, var1, var2, var3);
+<i>271</i>&nbsp;        }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;        var4 = var1.elements();
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;        while(var4.hasMoreElements()) {
+<i>276</i>&nbsp;            var5 = (CompoundType)var4.nextElement();
+<i>277</i>&nbsp;            if(!this.isIDLGeneratedFor(var5)) {
+<b class="nc"><i>278</i>&nbsp;                var1.remove(var5.getQualifiedName());</b>
+<b class="nc"><i>279</i>&nbsp;            }</b>
+<b class="nc"><i>280</i>&nbsp;        }</b>
+<i>281</i>&nbsp;
+<b class="nc"><i>282</i>&nbsp;    }</b>
+<b class="nc"><i>283</i>&nbsp;</b>
+<i>284</i>&nbsp;    protected boolean isIDLGeneratedFor(CompoundType var1) {
+<b class="nc"><i>285</i>&nbsp;        if(var1.isCORBAObject()) {</b>
+<b class="nc"><i>286</i>&nbsp;            return false;</b>
+<i>287</i>&nbsp;        } else if(var1.isIDLEntity()) {
+<b class="nc"><i>288</i>&nbsp;            return var1.isBoxed()?true:(&quot;org.omg.CORBA.portable.IDLEntity&quot;.equals(var1.getQualifiedName())?true:var1.isCORBAUserException());</b>
+<i>289</i>&nbsp;        } else {
+<b class="nc"><i>290</i>&nbsp;            Hashtable var2 = new Hashtable();</b>
+<b class="nc"><i>291</i>&nbsp;            this.getInterfaces(var1, var2);</b>
+<b class="nc"><i>292</i>&nbsp;            return var1.getTypeCode() == 65536?var2.size() &gt;= 2:true;</b>
+<b class="nc"><i>293</i>&nbsp;        }</b>
+<b class="nc"><i>294</i>&nbsp;    }</b>
+<b class="nc"><i>295</i>&nbsp;</b>
+<b class="nc"><i>296</i>&nbsp;    protected void writeOutputFor(OutputType var1, HashSet var2, IndentingWriter var3) throws IOException {</b>
+<b class="nc"><i>297</i>&nbsp;        Type var4 = var1.getType();</b>
+<b class="nc"><i>298</i>&nbsp;        if(var4.isArray()) {</b>
+<b class="nc"><i>299</i>&nbsp;            this.writeSequence(var1, var3);</b>
+<b class="nc"><i>300</i>&nbsp;        } else if(this.isSpecialReference(var4)) {</b>
+<b class="nc"><i>301</i>&nbsp;            this.writeSpecial(var4, var3);</b>
+<i>302</i>&nbsp;        } else {
+<b class="nc"><i>303</i>&nbsp;            if(var4.isCompound()) {</b>
+<b class="nc"><i>304</i>&nbsp;                CompoundType var5 = (CompoundType)var4;</b>
+<b class="nc"><i>305</i>&nbsp;                if(var5.isIDLEntity() &amp;&amp; var5.isBoxed()) {</b>
+<b class="nc"><i>306</i>&nbsp;                    this.writeBoxedIDL(var5, var3);</b>
+<b class="nc"><i>307</i>&nbsp;                    return;</b>
+<b class="nc"><i>308</i>&nbsp;                }</b>
+<b class="nc"><i>309</i>&nbsp;            }</b>
+<b class="nc"><i>310</i>&nbsp;</b>
+<i>311</i>&nbsp;            if(var4.isClass()) {
+<b class="nc"><i>312</i>&nbsp;                ClassType var8 = (ClassType)var4;</b>
+<b class="nc"><i>313</i>&nbsp;                if(var8.isException()) {</b>
+<b class="nc"><i>314</i>&nbsp;                    String var6 = this.unEsc(var8.getIDLExceptionName());</b>
+<b class="nc"><i>315</i>&nbsp;                    String var7 = var1.getName();</b>
+<b class="nc"><i>316</i>&nbsp;                    if(var7.equals(var6.replace(&#39; &#39;, &#39;_&#39;))) {</b>
+<i>317</i>&nbsp;                        this.writeException(var8, var3);
+<i>318</i>&nbsp;                        return;
+<i>319</i>&nbsp;                    }
+<i>320</i>&nbsp;                }
+<i>321</i>&nbsp;            }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;            switch(var4.getTypeCode()) {
+<i>324</i>&nbsp;            case 4096:
+<i>325</i>&nbsp;            case 8192:
+<i>326</i>&nbsp;                this.writeRemote((RemoteType)var4, var3);
+<i>327</i>&nbsp;                break;
+<i>328</i>&nbsp;            case 16384:
+<i>329</i>&nbsp;            case 131072:
+<i>330</i>&nbsp;                this.writeNCType((CompoundType)var4, var3);
+<i>331</i>&nbsp;                break;
+<b class="nc"><i>332</i>&nbsp;            case 32768:</b>
+<b class="nc"><i>333</i>&nbsp;                this.writeValue((ValueType)var4, var3);</b>
+<b class="nc"><i>334</i>&nbsp;                break;</b>
+<b class="nc"><i>335</i>&nbsp;            case 65536:</b>
+<b class="nc"><i>336</i>&nbsp;                this.writeImplementation((ImplementationType)var4, var3);</b>
+<b class="nc"><i>337</i>&nbsp;                break;</b>
+<b class="nc"><i>338</i>&nbsp;            default:</b>
+<b class="nc"><i>339</i>&nbsp;                throw new CompilerError(&quot;IDLGenerator got unexpected type code: &quot; + var4.getTypeCode());</b>
+<b class="nc"><i>340</i>&nbsp;            }</b>
+<b class="nc"><i>341</i>&nbsp;</b>
+<b class="nc"><i>342</i>&nbsp;        }</b>
+<b class="nc"><i>343</i>&nbsp;    }</b>
+<b class="nc"><i>344</i>&nbsp;</b>
+<b class="nc"><i>345</i>&nbsp;    protected void writeImplementation(ImplementationType var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>346</i>&nbsp;        Hashtable var3 = new Hashtable();</b>
+<b class="nc"><i>347</i>&nbsp;        Hashtable var4 = new Hashtable();</b>
+<b class="nc"><i>348</i>&nbsp;        this.getInterfaces(var1, var3);</b>
+<b class="nc"><i>349</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var2);</b>
+<b class="nc"><i>350</i>&nbsp;        this.writeInheritedIncludes(var3, var2);</b>
+<b class="nc"><i>351</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var2);</b>
+<b class="nc"><i>352</i>&nbsp;        this.writeIncOrb(var2);</b>
+<b class="nc"><i>353</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<i>354</i>&nbsp;        var2.pln();
+<i>355</i>&nbsp;        var2.pI();
+<i>356</i>&nbsp;        var2.p(&quot;interface &quot; + var1.getIDLName());
+<i>357</i>&nbsp;        this.writeInherits(var3, !this.forValuetype, var2);
+<i>358</i>&nbsp;        var2.pln(&quot; {&quot;);
+<i>359</i>&nbsp;        var2.pln(&quot;};&quot;);
+<i>360</i>&nbsp;        var2.pO();
+<i>361</i>&nbsp;        var2.pln();
+<i>362</i>&nbsp;        this.writeModule2(var1, var2);
+<i>363</i>&nbsp;        this.writeEpilog(var1, var4, var2);
+<i>364</i>&nbsp;    }
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    protected void writeNCType(CompoundType var1, IndentingWriter var2) throws IOException {
+<i>367</i>&nbsp;        Vector var3 = this.getConstants(var1);
+<i>368</i>&nbsp;        Vector var4 = this.getMethods(var1);
+<i>369</i>&nbsp;        Hashtable var5 = new Hashtable();
+<i>370</i>&nbsp;        Hashtable var6 = new Hashtable();
+<b class="nc"><i>371</i>&nbsp;        Hashtable var7 = new Hashtable();</b>
+<b class="nc"><i>372</i>&nbsp;        Hashtable var8 = new Hashtable();</b>
+<b class="nc"><i>373</i>&nbsp;        Hashtable var9 = new Hashtable();</b>
+<b class="nc"><i>374</i>&nbsp;        this.getInterfaces(var1, var5);</b>
+<b class="nc"><i>375</i>&nbsp;        this.getInheritance(var1, var5);</b>
+<b class="nc"><i>376</i>&nbsp;        this.getMethodReferences(var4, var6, var7, var8, var9);</b>
+<b class="nc"><i>377</i>&nbsp;        this.writeProlog(var1, var6, var7, var8, var9, var5, var2);</b>
+<b class="nc"><i>378</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<b class="nc"><i>379</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>380</i>&nbsp;        var2.pI();</b>
+<b class="nc"><i>381</i>&nbsp;        var2.p(&quot;abstract valuetype &quot; + var1.getIDLName());</b>
+<b class="nc"><i>382</i>&nbsp;        this.writeInherits(var5, !this.forValuetype, var2);</b>
+<b class="nc"><i>383</i>&nbsp;        var2.pln(&quot; {&quot;);</b>
+<i>384</i>&nbsp;        if(var3.size() + var4.size() &gt; 0) {
+<i>385</i>&nbsp;            var2.pln();
+<i>386</i>&nbsp;            var2.pI();
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;            int var10;
+<i>389</i>&nbsp;            for(var10 = 0; var10 &lt; var3.size(); ++var10) {
+<i>390</i>&nbsp;                this.writeConstant((Member)var3.elementAt(var10), var2);
+<i>391</i>&nbsp;            }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;            for(var10 = 0; var10 &lt; var4.size(); ++var10) {
+<i>394</i>&nbsp;                this.writeMethod((Method)var4.elementAt(var10), var2);
+<i>395</i>&nbsp;            }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;            var2.pO();
+<i>398</i>&nbsp;            var2.pln();
+<i>399</i>&nbsp;        }
+<i>400</i>&nbsp;
+<b class="nc"><i>401</i>&nbsp;        var2.pln(&quot;};&quot;);</b>
+<b class="nc"><i>402</i>&nbsp;        var2.pO();</b>
+<b class="nc"><i>403</i>&nbsp;        var2.pln();</b>
+<i>404</i>&nbsp;        this.writeModule2(var1, var2);
+<i>405</i>&nbsp;        this.writeEpilog(var1, var6, var2);
+<b class="nc"><i>406</i>&nbsp;    }</b>
+<b class="nc"><i>407</i>&nbsp;</b>
+<i>408</i>&nbsp;    protected void writeRemote(RemoteType var1, IndentingWriter var2) throws IOException {
+<i>409</i>&nbsp;        Vector var3 = this.getConstants(var1);
+<b class="nc"><i>410</i>&nbsp;        Vector var4 = this.getMethods(var1);</b>
+<b class="nc"><i>411</i>&nbsp;        Hashtable var5 = new Hashtable();</b>
+<b class="nc"><i>412</i>&nbsp;        Hashtable var6 = new Hashtable();</b>
+<b class="nc"><i>413</i>&nbsp;        Hashtable var7 = new Hashtable();</b>
+<i>414</i>&nbsp;        Hashtable var8 = new Hashtable();
+<i>415</i>&nbsp;        Hashtable var9 = new Hashtable();
+<i>416</i>&nbsp;        this.getInterfaces(var1, var5);
+<b class="nc"><i>417</i>&nbsp;        this.getMethodReferences(var4, var6, var7, var8, var9);</b>
+<b class="nc"><i>418</i>&nbsp;        this.writeProlog(var1, var6, var7, var8, var9, var5, var2);</b>
+<b class="nc"><i>419</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<b class="nc"><i>420</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>421</i>&nbsp;        var2.pI();</b>
+<b class="nc"><i>422</i>&nbsp;        if(var1.getTypeCode() == 8192) {</b>
+<b class="nc"><i>423</i>&nbsp;            var2.p(&quot;abstract &quot;);</b>
+<i>424</i>&nbsp;        }
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;        var2.p(&quot;interface &quot; + var1.getIDLName());
+<i>427</i>&nbsp;        this.writeInherits(var5, !this.forValuetype, var2);
+<b class="nc"><i>428</i>&nbsp;        var2.pln(&quot; {&quot;);</b>
+<i>429</i>&nbsp;        if(var3.size() + var4.size() &gt; 0) {
+<b class="nc"><i>430</i>&nbsp;            var2.pln();</b>
+<b class="nc"><i>431</i>&nbsp;            var2.pI();</b>
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;            int var10;
+<b class="nc"><i>434</i>&nbsp;            for(var10 = 0; var10 &lt; var3.size(); ++var10) {</b>
+<b class="nc"><i>435</i>&nbsp;                this.writeConstant((Member)var3.elementAt(var10), var2);</b>
+<i>436</i>&nbsp;            }
+<i>437</i>&nbsp;
+<b class="nc"><i>438</i>&nbsp;            for(var10 = 0; var10 &lt; var4.size(); ++var10) {</b>
+<b class="nc"><i>439</i>&nbsp;                this.writeMethod((Method)var4.elementAt(var10), var2);</b>
+<i>440</i>&nbsp;            }
+<b class="nc"><i>441</i>&nbsp;</b>
+<b class="nc"><i>442</i>&nbsp;            var2.pO();</b>
+<i>443</i>&nbsp;            var2.pln();
+<b class="nc"><i>444</i>&nbsp;        }</b>
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;        var2.pln(&quot;};&quot;);
+<i>447</i>&nbsp;        var2.pO();
+<i>448</i>&nbsp;        var2.pln();
+<i>449</i>&nbsp;        this.writeRepositoryID(var1, var2);
+<i>450</i>&nbsp;        var2.pln();
+<i>451</i>&nbsp;        this.writeModule2(var1, var2);
+<i>452</i>&nbsp;        this.writeEpilog(var1, var6, var2);
+<i>453</i>&nbsp;    }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;    protected void writeValue(ValueType var1, IndentingWriter var2) throws IOException {
+<i>456</i>&nbsp;        Vector var3 = this.getData(var1);
+<i>457</i>&nbsp;        Vector var4 = this.getConstants(var1);
+<i>458</i>&nbsp;        Vector var5 = this.getMethods(var1);
+<i>459</i>&nbsp;        Hashtable var6 = new Hashtable();
+<b class="nc"><i>460</i>&nbsp;        Hashtable var7 = new Hashtable();</b>
+<b class="nc"><i>461</i>&nbsp;        Hashtable var8 = new Hashtable();</b>
+<b class="nc"><i>462</i>&nbsp;        Hashtable var9 = new Hashtable();</b>
+<i>463</i>&nbsp;        Hashtable var10 = new Hashtable();
+<b class="nc"><i>464</i>&nbsp;        this.getInterfaces(var1, var6);</b>
+<b class="nc"><i>465</i>&nbsp;        this.getInheritance(var1, var6);</b>
+<b class="nc"><i>466</i>&nbsp;        this.getMethodReferences(var5, var7, var8, var9, var10);</b>
+<b class="nc"><i>467</i>&nbsp;        this.getMemberReferences(var3, var7, var8, var9);</b>
+<b class="nc"><i>468</i>&nbsp;        this.writeProlog(var1, var7, var8, var9, var10, var6, var2);</b>
+<b class="nc"><i>469</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<b class="nc"><i>470</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>471</i>&nbsp;        var2.pI();</b>
+<i>472</i>&nbsp;        if(var1.isCustom()) {
+<b class="nc"><i>473</i>&nbsp;            var2.p(&quot;custom &quot;);</b>
+<b class="nc"><i>474</i>&nbsp;        }</b>
+<i>475</i>&nbsp;
+<b class="nc"><i>476</i>&nbsp;        var2.p(&quot;valuetype &quot; + var1.getIDLName());</b>
+<b class="nc"><i>477</i>&nbsp;        this.writeInherits(var6, this.forValuetype, var2);</b>
+<b class="nc"><i>478</i>&nbsp;        var2.pln(&quot; {&quot;);</b>
+<i>479</i>&nbsp;        if(var4.size() + var3.size() + var5.size() &gt; 0) {
+<i>480</i>&nbsp;            var2.pln();
+<i>481</i>&nbsp;            var2.pI();
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;            int var11;
+<i>484</i>&nbsp;            for(var11 = 0; var11 &lt; var4.size(); ++var11) {
+<i>485</i>&nbsp;                this.writeConstant((Member)var4.elementAt(var11), var2);
+<i>486</i>&nbsp;            }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;            Member var12;
+<i>489</i>&nbsp;            for(var11 = 0; var11 &lt; var3.size(); ++var11) {
+<i>490</i>&nbsp;                var12 = (Member)var3.elementAt(var11);
+<i>491</i>&nbsp;                if(var12.getType().isPrimitive()) {
+<i>492</i>&nbsp;                    this.writeData(var12, var2);
+<b class="nc"><i>493</i>&nbsp;                }</b>
+<b class="nc"><i>494</i>&nbsp;            }</b>
+<b class="nc"><i>495</i>&nbsp;</b>
+<b class="nc"><i>496</i>&nbsp;            for(var11 = 0; var11 &lt; var3.size(); ++var11) {</b>
+<b class="nc"><i>497</i>&nbsp;                var12 = (Member)var3.elementAt(var11);</b>
+<b class="nc"><i>498</i>&nbsp;                if(!var12.getType().isPrimitive()) {</b>
+<b class="nc"><i>499</i>&nbsp;                    this.writeData(var12, var2);</b>
+<b class="nc"><i>500</i>&nbsp;                }</b>
+<b class="nc"><i>501</i>&nbsp;            }</b>
+<b class="nc"><i>502</i>&nbsp;</b>
+<i>503</i>&nbsp;            for(var11 = 0; var11 &lt; var5.size(); ++var11) {
+<b class="nc"><i>504</i>&nbsp;                this.writeMethod((Method)var5.elementAt(var11), var2);</b>
+<b class="nc"><i>505</i>&nbsp;            }</b>
+<b class="nc"><i>506</i>&nbsp;</b>
+<b class="nc"><i>507</i>&nbsp;            var2.pO();</b>
+<b class="nc"><i>508</i>&nbsp;            var2.pln();</b>
+<i>509</i>&nbsp;        }
+<b class="nc"><i>510</i>&nbsp;</b>
+<b class="nc"><i>511</i>&nbsp;        var2.pln(&quot;};&quot;);</b>
+<b class="nc"><i>512</i>&nbsp;        var2.pO();</b>
+<b class="nc"><i>513</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>514</i>&nbsp;        this.writeRepositoryID(var1, var2);</b>
+<b class="nc"><i>515</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>516</i>&nbsp;        this.writeModule2(var1, var2);</b>
+<b class="nc"><i>517</i>&nbsp;        this.writeEpilog(var1, var7, var2);</b>
+<i>518</i>&nbsp;    }
+<b class="nc"><i>519</i>&nbsp;</b>
+<i>520</i>&nbsp;    protected void writeProlog(CompoundType var1, Hashtable var2, Hashtable var3, Hashtable var4, Hashtable var5, Hashtable var6, IndentingWriter var7) throws IOException {
+<b class="nc"><i>521</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var7);</b>
+<b class="nc"><i>522</i>&nbsp;        this.writeForwardReferences(var2, var7);</b>
+<b class="nc"><i>523</i>&nbsp;        this.writeIncludes(var5, this.isThrown, var7);</b>
+<i>524</i>&nbsp;        this.writeInheritedIncludes(var6, var7);
+<i>525</i>&nbsp;        this.writeIncludes(var3, !this.isThrown, var7);
+<i>526</i>&nbsp;        this.writeBoxedRMIIncludes(var4, var7);
+<i>527</i>&nbsp;        this.writeIDLEntityIncludes(var2, var7);
+<i>528</i>&nbsp;        this.writeIncOrb(var7);
+<i>529</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var7);
+<i>530</i>&nbsp;    }
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;    protected void writeEpilog(CompoundType var1, Hashtable var2, IndentingWriter var3) throws IOException {
+<i>533</i>&nbsp;        this.writeIncludes(var2, !this.isThrown, var3);
+<i>534</i>&nbsp;        this.writeEndif(var3);
+<i>535</i>&nbsp;    }
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;    protected void writeSpecial(Type var1, IndentingWriter var2) throws IOException {
+<i>538</i>&nbsp;        String var3 = var1.getQualifiedName();
+<b class="nc"><i>539</i>&nbsp;        if(&quot;java.io.Serializable&quot;.equals(var3)) {</b>
+<b class="nc"><i>540</i>&nbsp;            this.writeJavaIoSerializable(var1, var2);</b>
+<b class="nc"><i>541</i>&nbsp;        } else if(&quot;java.io.Externalizable&quot;.equals(var3)) {</b>
+<b class="nc"><i>542</i>&nbsp;            this.writeJavaIoExternalizable(var1, var2);</b>
+<b class="nc"><i>543</i>&nbsp;        } else if(&quot;java.lang.Object&quot;.equals(var3)) {</b>
+<b class="nc"><i>544</i>&nbsp;            this.writeJavaLangObject(var1, var2);</b>
+<b class="nc"><i>545</i>&nbsp;        } else if(&quot;java.rmi.Remote&quot;.equals(var3)) {</b>
+<b class="nc"><i>546</i>&nbsp;            this.writeJavaRmiRemote(var1, var2);</b>
+<b class="nc"><i>547</i>&nbsp;        } else if(&quot;org.omg.CORBA.portable.IDLEntity&quot;.equals(var3)) {</b>
+<i>548</i>&nbsp;            this.writeIDLEntity(var1, var2);
+<b class="nc"><i>549</i>&nbsp;        }</b>
+<b class="nc"><i>550</i>&nbsp;</b>
+<b class="nc"><i>551</i>&nbsp;    }</b>
+<b class="nc"><i>552</i>&nbsp;</b>
+<b class="nc"><i>553</i>&nbsp;    protected void writeJavaIoSerializable(Type var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>554</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var2);</b>
+<i>555</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var2);
+<b class="nc"><i>556</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<b class="nc"><i>557</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>558</i>&nbsp;        var2.pI();</b>
+<b class="nc"><i>559</i>&nbsp;        var2.pln(&quot;typedef any Serializable;&quot;);</b>
+<b class="nc"><i>560</i>&nbsp;        var2.pO();</b>
+<b class="nc"><i>561</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>562</i>&nbsp;        this.writeModule2(var1, var2);</b>
+<b class="nc"><i>563</i>&nbsp;        this.writeEndif(var2);</b>
+<i>564</i>&nbsp;    }
+<b class="nc"><i>565</i>&nbsp;</b>
+<i>566</i>&nbsp;    protected void writeJavaIoExternalizable(Type var1, IndentingWriter var2) throws IOException {
+<b class="nc"><i>567</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var2);</b>
+<b class="nc"><i>568</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var2);</b>
+<b class="nc"><i>569</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<b class="nc"><i>570</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>571</i>&nbsp;        var2.pI();</b>
+<i>572</i>&nbsp;        var2.pln(&quot;typedef any Externalizable;&quot;);
+<i>573</i>&nbsp;        var2.pO();
+<i>574</i>&nbsp;        var2.pln();
+<i>575</i>&nbsp;        this.writeModule2(var1, var2);
+<i>576</i>&nbsp;        this.writeEndif(var2);
+<i>577</i>&nbsp;    }
+<i>578</i>&nbsp;
+<i>579</i>&nbsp;    protected void writeJavaLangObject(Type var1, IndentingWriter var2) throws IOException {
+<i>580</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var2);
+<i>581</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var2);
+<i>582</i>&nbsp;        this.writeModule1(var1, var2);
+<i>583</i>&nbsp;        var2.pln();
+<i>584</i>&nbsp;        var2.pI();
+<b class="nc"><i>585</i>&nbsp;        var2.pln(&quot;typedef any _Object;&quot;);</b>
+<b class="nc"><i>586</i>&nbsp;        var2.pO();</b>
+<b class="nc"><i>587</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>588</i>&nbsp;        this.writeModule2(var1, var2);</b>
+<b class="nc"><i>589</i>&nbsp;        this.writeEndif(var2);</b>
+<b class="nc"><i>590</i>&nbsp;    }</b>
+<b class="nc"><i>591</i>&nbsp;</b>
+<b class="nc"><i>592</i>&nbsp;    protected void writeJavaRmiRemote(Type var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>593</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var2);</b>
+<b class="nc"><i>594</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var2);</b>
+<b class="nc"><i>595</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<b class="nc"><i>596</i>&nbsp;        var2.pln();</b>
+<i>597</i>&nbsp;        var2.pI();
+<b class="nc"><i>598</i>&nbsp;        var2.pln(&quot;typedef Object Remote;&quot;);</b>
+<b class="nc"><i>599</i>&nbsp;        var2.pO();</b>
+<b class="nc"><i>600</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>601</i>&nbsp;        this.writeModule2(var1, var2);</b>
+<b class="nc"><i>602</i>&nbsp;        this.writeEndif(var2);</b>
+<b class="nc"><i>603</i>&nbsp;    }</b>
+<i>604</i>&nbsp;
+<b class="nc"><i>605</i>&nbsp;    protected void writeIDLEntity(Type var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>606</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var2);</b>
+<b class="nc"><i>607</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var2);</b>
+<b class="nc"><i>608</i>&nbsp;        this.writeModule1(var1, var2);</b>
+<b class="nc"><i>609</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>610</i>&nbsp;        var2.pI();</b>
+<b class="nc"><i>611</i>&nbsp;        var2.pln(&quot;typedef any IDLEntity;&quot;);</b>
+<b class="nc"><i>612</i>&nbsp;        var2.pO();</b>
+<b class="nc"><i>613</i>&nbsp;        var2.pln();</b>
+<i>614</i>&nbsp;        this.writeModule2(var1, var2);
+<b class="nc"><i>615</i>&nbsp;        this.writeEndif(var2);</b>
+<b class="nc"><i>616</i>&nbsp;    }</b>
+<b class="nc"><i>617</i>&nbsp;</b>
+<b class="nc"><i>618</i>&nbsp;    protected void getInterfaces(CompoundType var1, Hashtable var2) {</b>
+<i>619</i>&nbsp;        InterfaceType[] var3 = var1.getInterfaces();
+<b class="nc"><i>620</i>&nbsp;</b>
+<b class="nc"><i>621</i>&nbsp;        for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<b class="nc"><i>622</i>&nbsp;            String var5 = var3[var4].getQualifiedName();</b>
+<i>623</i>&nbsp;            switch(var1.getTypeCode()) {
+<b class="nc"><i>624</i>&nbsp;            case 32768:</b>
+<i>625</i>&nbsp;            case 131072:
+<b class="nc"><i>626</i>&nbsp;                if(&quot;java.io.Externalizable&quot;.equals(var5) || &quot;java.io.Serializable&quot;.equals(var5) || &quot;org.omg.CORBA.portable.IDLEntity&quot;.equals(var5)) {</b>
+<b class="nc"><i>627</i>&nbsp;                    continue;</b>
+<b class="nc"><i>628</i>&nbsp;                }</b>
+<b class="nc"><i>629</i>&nbsp;                break;</b>
+<b class="nc"><i>630</i>&nbsp;            default:</b>
+<i>631</i>&nbsp;                if(&quot;java.rmi.Remote&quot;.equals(var5)) {
+<i>632</i>&nbsp;                    continue;
+<i>633</i>&nbsp;                }
+<i>634</i>&nbsp;            }
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;            var2.put(var5, var3[var4]);
+<i>637</i>&nbsp;        }
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;    }
+<i>640</i>&nbsp;
+<i>641</i>&nbsp;    protected void getInheritance(CompoundType var1, Hashtable var2) {
+<i>642</i>&nbsp;        ClassType var3 = var1.getSuperclass();
+<i>643</i>&nbsp;        if(var3 != null) {
+<i>644</i>&nbsp;            String var4 = var3.getQualifiedName();
+<i>645</i>&nbsp;            switch(var1.getTypeCode()) {
+<i>646</i>&nbsp;            case 32768:
+<i>647</i>&nbsp;            case 131072:
+<i>648</i>&nbsp;                if(&quot;java.lang.Object&quot;.equals(var4)) {
+<i>649</i>&nbsp;                    return;
+<i>650</i>&nbsp;                }
+<i>651</i>&nbsp;
+<i>652</i>&nbsp;                var2.put(var4, var3);
+<b class="nc"><i>653</i>&nbsp;                return;</b>
+<b class="nc"><i>654</i>&nbsp;            default:</b>
+<b class="nc"><i>655</i>&nbsp;            }</b>
+<b class="nc"><i>656</i>&nbsp;        }</b>
+<b class="nc"><i>657</i>&nbsp;    }</b>
+<b class="nc"><i>658</i>&nbsp;</b>
+<b class="nc"><i>659</i>&nbsp;    protected void getMethodReferences(Vector var1, Hashtable var2, Hashtable var3, Hashtable var4, Hashtable var5) {</b>
+<b class="nc"><i>660</i>&nbsp;        for(int var6 = 0; var6 &lt; var1.size(); ++var6) {</b>
+<b class="nc"><i>661</i>&nbsp;            Method var7 = (Method)var1.elementAt(var6);</b>
+<i>662</i>&nbsp;            Type[] var8 = var7.getArguments();
+<i>663</i>&nbsp;            Type var9 = var7.getReturnType();
+<i>664</i>&nbsp;            this.getExceptions(var7, var5);
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;            for(int var10 = 0; var10 &lt; var8.length; ++var10) {
+<i>667</i>&nbsp;                this.addReference(var8[var10], var2, var3, var4);
+<i>668</i>&nbsp;            }
+<i>669</i>&nbsp;
+<i>670</i>&nbsp;            this.addReference(var9, var2, var3, var4);
+<i>671</i>&nbsp;        }
+<i>672</i>&nbsp;
+<i>673</i>&nbsp;    }
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;    protected void getMemberReferences(Vector var1, Hashtable var2, Hashtable var3, Hashtable var4) {
+<b class="nc"><i>676</i>&nbsp;        for(int var5 = 0; var5 &lt; var1.size(); ++var5) {</b>
+<b class="nc"><i>677</i>&nbsp;            Member var6 = (Member)var1.elementAt(var5);</b>
+<i>678</i>&nbsp;            Type var7 = var6.getType();
+<i>679</i>&nbsp;            this.addReference(var7, var2, var3, var4);
+<i>680</i>&nbsp;        }
+<i>681</i>&nbsp;
+<i>682</i>&nbsp;    }
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;    protected void addReference(Type var1, Hashtable var2, Hashtable var3, Hashtable var4) {
+<i>685</i>&nbsp;        String var5 = var1.getQualifiedName();
+<i>686</i>&nbsp;        switch(var1.getTypeCode()) {
+<i>687</i>&nbsp;        case 2048:
+<i>688</i>&nbsp;            if(&quot;org.omg.CORBA.Object&quot;.equals(var5)) {
+<i>689</i>&nbsp;                return;
+<i>690</i>&nbsp;            }
+<b class="nc"><i>691</i>&nbsp;</b>
+<b class="nc"><i>692</i>&nbsp;            var2.put(var5, var1);</b>
+<b class="nc"><i>693</i>&nbsp;            return;</b>
+<b class="nc"><i>694</i>&nbsp;        case 4096:</b>
+<b class="nc"><i>695</i>&nbsp;        case 8192:</b>
+<b class="nc"><i>696</i>&nbsp;        case 16384:</b>
+<b class="nc"><i>697</i>&nbsp;        case 32768:</b>
+<b class="nc"><i>698</i>&nbsp;        case 131072:</b>
+<b class="nc"><i>699</i>&nbsp;            var2.put(var5, var1);</b>
+<b class="nc"><i>700</i>&nbsp;            return;</b>
+<b class="nc"><i>701</i>&nbsp;        case 262144:</b>
+<i>702</i>&nbsp;            var4.put(var5 + var1.getArrayDimension(), var1);
+<i>703</i>&nbsp;            return;
+<i>704</i>&nbsp;        default:
+<i>705</i>&nbsp;            if(this.isSpecialReference(var1)) {
+<i>706</i>&nbsp;                var3.put(var5, var1);
+<i>707</i>&nbsp;            }
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;        }
+<i>710</i>&nbsp;    }
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;    protected boolean isSpecialReference(Type var1) {
+<i>713</i>&nbsp;        String var2 = var1.getQualifiedName();
+<i>714</i>&nbsp;        return &quot;java.io.Serializable&quot;.equals(var2)?true:(&quot;java.io.Externalizable&quot;.equals(var2)?true:(&quot;java.lang.Object&quot;.equals(var2)?true:(&quot;java.rmi.Remote&quot;.equals(var2)?true:&quot;org.omg.CORBA.portable.IDLEntity&quot;.equals(var2))));
+<i>715</i>&nbsp;    }
+<b class="nc"><i>716</i>&nbsp;</b>
+<b class="nc"><i>717</i>&nbsp;    protected void getExceptions(Method var1, Hashtable var2) {</b>
+<b class="nc"><i>718</i>&nbsp;        ValueType[] var3 = var1.getExceptions();</b>
+<b class="nc"><i>719</i>&nbsp;</b>
+<b class="nc"><i>720</i>&nbsp;        for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<b class="nc"><i>721</i>&nbsp;            ValueType var5 = var3[var4];</b>
+<b class="nc"><i>722</i>&nbsp;            if(var5.isCheckedException() &amp;&amp; !var5.isRemoteExceptionOrSubclass()) {</b>
+<b class="nc"><i>723</i>&nbsp;                var2.put(var5.getQualifiedName(), var5);</b>
+<i>724</i>&nbsp;            }
+<i>725</i>&nbsp;        }
+<i>726</i>&nbsp;
+<i>727</i>&nbsp;    }
+<i>728</i>&nbsp;
+<i>729</i>&nbsp;    protected Vector getMethods(CompoundType var1) {
+<i>730</i>&nbsp;        Vector var2 = new Vector();
+<i>731</i>&nbsp;        int var3 = var1.getTypeCode();
+<i>732</i>&nbsp;        switch(var3) {
+<i>733</i>&nbsp;        case 4096:
+<i>734</i>&nbsp;        case 8192:
+<i>735</i>&nbsp;            break;
+<i>736</i>&nbsp;        case 16384:
+<b class="nc"><i>737</i>&nbsp;        case 32768:</b>
+<b class="nc"><i>738</i>&nbsp;        case 131072:</b>
+<b class="nc"><i>739</i>&nbsp;            if(this.valueMethods) {</b>
+<b class="nc"><i>740</i>&nbsp;                break;</b>
+<b class="nc"><i>741</i>&nbsp;            }</b>
+<b class="nc"><i>742</i>&nbsp;        default:</b>
+<b class="nc"><i>743</i>&nbsp;            return var2;</b>
+<b class="nc"><i>744</i>&nbsp;        }</b>
+<i>745</i>&nbsp;
+<i>746</i>&nbsp;        Identifier var4 = var1.getIdentifier();
+<i>747</i>&nbsp;        Method[] var5 = var1.getMethods();
+<i>748</i>&nbsp;
+<i>749</i>&nbsp;        for(int var6 = 0; var6 &lt; var5.length; ++var6) {
+<i>750</i>&nbsp;            if(!var5[var6].isPrivate() &amp;&amp; !var5[var6].isInherited()) {
+<i>751</i>&nbsp;                if(var3 == &#39;耀&#39;) {
+<i>752</i>&nbsp;                    String var7 = var5[var6].getName();
+<i>753</i>&nbsp;                    if(&quot;readObject&quot;.equals(var7) || &quot;writeObject&quot;.equals(var7) || &quot;readExternal&quot;.equals(var7) || &quot;writeExternal&quot;.equals(var7)) {
+<i>754</i>&nbsp;                        continue;
+<i>755</i>&nbsp;                    }
+<i>756</i>&nbsp;                }
+<i>757</i>&nbsp;
+<b class="nc"><i>758</i>&nbsp;                if(var3 != 131072 &amp;&amp; var3 != 16384 || !var5[var6].isConstructor()) {</b>
+<b class="nc"><i>759</i>&nbsp;                    var2.addElement(var5[var6]);</b>
+<b class="nc"><i>760</i>&nbsp;                }</b>
+<b class="nc"><i>761</i>&nbsp;            }</b>
+<b class="nc"><i>762</i>&nbsp;        }</b>
+<b class="nc"><i>763</i>&nbsp;</b>
+<b class="nc"><i>764</i>&nbsp;        return var2;</b>
+<b class="nc"><i>765</i>&nbsp;    }</b>
+<i>766</i>&nbsp;
+<i>767</i>&nbsp;    protected Vector getConstants(CompoundType var1) {
+<i>768</i>&nbsp;        Vector var2 = new Vector();
+<i>769</i>&nbsp;        Member[] var3 = var1.getMembers();
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;        for(int var4 = 0; var4 &lt; var3.length; ++var4) {
+<i>772</i>&nbsp;            Type var5 = var3[var4].getType();
+<i>773</i>&nbsp;            String var6 = var3[var4].getValue();
+<i>774</i>&nbsp;            if(var3[var4].isPublic() &amp;&amp; var3[var4].isFinal() &amp;&amp; var3[var4].isStatic() &amp;&amp; (var5.isPrimitive() || &quot;String&quot;.equals(var5.getName())) &amp;&amp; var6 != null) {
+<i>775</i>&nbsp;                var2.addElement(var3[var4]);
+<i>776</i>&nbsp;            }
+<i>777</i>&nbsp;        }
+<i>778</i>&nbsp;
+<b class="nc"><i>779</i>&nbsp;        return var2;</b>
+<b class="nc"><i>780</i>&nbsp;    }</b>
+<b class="nc"><i>781</i>&nbsp;</b>
+<b class="nc"><i>782</i>&nbsp;    protected Vector getData(CompoundType var1) {</b>
+<b class="nc"><i>783</i>&nbsp;        Vector var2 = new Vector();</b>
+<b class="nc"><i>784</i>&nbsp;        if(var1.getTypeCode() != &#39;耀&#39;) {</b>
+<b class="nc"><i>785</i>&nbsp;            return var2;</b>
+<b class="nc"><i>786</i>&nbsp;        } else {</b>
+<i>787</i>&nbsp;            ValueType var3 = (ValueType)var1;
+<i>788</i>&nbsp;            Member[] var4 = var3.getMembers();
+<i>789</i>&nbsp;            boolean var5 = !var3.isCustom();
+<i>790</i>&nbsp;
+<i>791</i>&nbsp;            for(int var6 = 0; var6 &lt; var4.length; ++var6) {
+<i>792</i>&nbsp;                if(!var4[var6].isStatic() &amp;&amp; !var4[var6].isTransient() &amp;&amp; (var4[var6].isPublic() || var5)) {
+<i>793</i>&nbsp;                    String var8 = var4[var6].getName();
+<i>794</i>&nbsp;
+<i>795</i>&nbsp;                    int var7;
+<i>796</i>&nbsp;                    for(var7 = 0; var7 &lt; var2.size(); ++var7) {
+<i>797</i>&nbsp;                        Member var9 = (Member)var2.elementAt(var7);
+<i>798</i>&nbsp;                        if(var8.compareTo(var9.getName()) &lt; 0) {
+<i>799</i>&nbsp;                            break;
+<i>800</i>&nbsp;                        }
+<b class="nc"><i>801</i>&nbsp;                    }</b>
+<b class="nc"><i>802</i>&nbsp;</b>
+<b class="nc"><i>803</i>&nbsp;                    var2.insertElementAt(var4[var6], var7);</b>
+<b class="nc"><i>804</i>&nbsp;                }</b>
+<b class="nc"><i>805</i>&nbsp;            }</b>
+<b class="nc"><i>806</i>&nbsp;</b>
+<b class="nc"><i>807</i>&nbsp;            return var2;</b>
+<b class="nc"><i>808</i>&nbsp;        }</b>
+<i>809</i>&nbsp;    }
+<i>810</i>&nbsp;
+<i>811</i>&nbsp;    protected void writeForwardReferences(Hashtable var1, IndentingWriter var2) throws IOException {
+<i>812</i>&nbsp;        Enumeration var3 = var1.elements();
+<i>813</i>&nbsp;
+<i>814</i>&nbsp;        while(var3.hasMoreElements()) {
+<i>815</i>&nbsp;            Type var4 = (Type)var3.nextElement();
+<i>816</i>&nbsp;            if(var4.isCompound()) {
+<i>817</i>&nbsp;                CompoundType var5 = (CompoundType)var4;
+<i>818</i>&nbsp;                if(var5.isIDLEntity()) {
+<i>819</i>&nbsp;                    continue;
+<b class="nc"><i>820</i>&nbsp;                }</b>
+<i>821</i>&nbsp;            }
+<b class="nc"><i>822</i>&nbsp;</b>
+<b class="nc"><i>823</i>&nbsp;            this.writeForwardReference(var4, var2);</b>
+<b class="nc"><i>824</i>&nbsp;        }</b>
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;    }
+<b class="nc"><i>827</i>&nbsp;</b>
+<i>828</i>&nbsp;    protected void writeForwardReference(Type var1, IndentingWriter var2) throws IOException {
+<i>829</i>&nbsp;        String var3 = var1.getQualifiedName();
+<b class="nc"><i>830</i>&nbsp;        if(&quot;java.lang.String&quot;.equals(var3) || !&quot;org.omg.CORBA.Object&quot;.equals(var3)) {</b>
+<i>831</i>&nbsp;            this.writeIfndef(var1, 0, !this.isException, this.isForward, var2);
+<i>832</i>&nbsp;            this.writeModule1(var1, var2);
+<b class="nc"><i>833</i>&nbsp;            var2.pln();</b>
+<b class="nc"><i>834</i>&nbsp;            var2.pI();</b>
+<i>835</i>&nbsp;            switch(var1.getTypeCode()) {
+<i>836</i>&nbsp;            case 2048:
+<b class="nc"><i>837</i>&nbsp;            case 4096:</b>
+<i>838</i>&nbsp;                var2.p(&quot;interface &quot;);
+<i>839</i>&nbsp;                break;
+<i>840</i>&nbsp;            case 8192:
+<i>841</i>&nbsp;                var2.p(&quot;abstract interface &quot;);
+<i>842</i>&nbsp;                break;
+<i>843</i>&nbsp;            case 16384:
+<i>844</i>&nbsp;            case 131072:
+<i>845</i>&nbsp;                var2.p(&quot;abstract valuetype &quot;);
+<i>846</i>&nbsp;                break;
+<i>847</i>&nbsp;            case 32768:
+<i>848</i>&nbsp;                var2.p(&quot;valuetype &quot;);
+<i>849</i>&nbsp;            }
+<b class="nc"><i>850</i>&nbsp;</b>
+<b class="nc"><i>851</i>&nbsp;            var2.pln(var1.getIDLName() + &quot;;&quot;);</b>
+<b class="nc"><i>852</i>&nbsp;            var2.pO();</b>
+<b class="nc"><i>853</i>&nbsp;            var2.pln();</b>
+<i>854</i>&nbsp;            this.writeModule2(var1, var2);
+<i>855</i>&nbsp;            this.writeEndif(var2);
+<b class="nc"><i>856</i>&nbsp;        }</b>
+<i>857</i>&nbsp;    }
+<i>858</i>&nbsp;
+<i>859</i>&nbsp;    protected void writeForwardReference(ArrayType var1, int var2, IndentingWriter var3) throws IOException {
+<i>860</i>&nbsp;        Type var4 = var1.getElementType();
+<b class="nc"><i>861</i>&nbsp;        if(var2 &lt; 1) {</b>
+<i>862</i>&nbsp;            if(var4.isCompound()) {
+<i>863</i>&nbsp;                CompoundType var6 = (CompoundType)var4;
+<i>864</i>&nbsp;                this.writeForwardReference(var4, var3);
+<i>865</i>&nbsp;            }
+<i>866</i>&nbsp;
+<i>867</i>&nbsp;        } else {
+<i>868</i>&nbsp;            String var5 = this.unEsc(var4.getIDLName()).replace(&#39; &#39;, &#39;_&#39;);
+<i>869</i>&nbsp;            this.writeIfndef(var1, var2, !this.isException, this.isForward, var3);
+<i>870</i>&nbsp;            this.writeModule1(var1, var3);
+<i>871</i>&nbsp;            var3.pln();
+<i>872</i>&nbsp;            var3.pI();
+<i>873</i>&nbsp;            switch(var4.getTypeCode()) {
+<i>874</i>&nbsp;            case 2048:
+<i>875</i>&nbsp;            case 4096:
+<i>876</i>&nbsp;                var3.p(&quot;interface &quot;);
+<i>877</i>&nbsp;                break;
+<i>878</i>&nbsp;            case 8192:
+<b class="nc"><i>879</i>&nbsp;                var3.p(&quot;abstract interface &quot;);</b>
+<b class="nc"><i>880</i>&nbsp;                break;</b>
+<b class="nc"><i>881</i>&nbsp;            case 16384:</b>
+<b class="nc"><i>882</i>&nbsp;            case 131072:</b>
+<b class="nc"><i>883</i>&nbsp;                var3.p(&quot;abstract valuetype &quot;);</b>
+<b class="nc"><i>884</i>&nbsp;                break;</b>
+<b class="nc"><i>885</i>&nbsp;            case 32768:</b>
+<b class="nc"><i>886</i>&nbsp;                var3.p(&quot;valuetype &quot;);</b>
+<i>887</i>&nbsp;            }
+<i>888</i>&nbsp;
+<i>889</i>&nbsp;            var3.pln(&quot;seq&quot; + var2 + &quot;_&quot; + var5 + &quot;;&quot;);
+<i>890</i>&nbsp;            var3.pO();
+<i>891</i>&nbsp;            var3.pln();
+<i>892</i>&nbsp;            this.writeModule2(var1, var3);
+<i>893</i>&nbsp;            this.writeEndif(var3);
+<i>894</i>&nbsp;        }
+<i>895</i>&nbsp;    }
+<i>896</i>&nbsp;
+<i>897</i>&nbsp;    protected void writeIDLEntityIncludes(Hashtable var1, IndentingWriter var2) throws IOException {
+<i>898</i>&nbsp;        Enumeration var3 = var1.elements();
+<i>899</i>&nbsp;
+<i>900</i>&nbsp;        while(var3.hasMoreElements()) {
+<i>901</i>&nbsp;            Type var4 = (Type)var3.nextElement();
+<i>902</i>&nbsp;            if(var4.isCompound()) {
+<b class="nc"><i>903</i>&nbsp;                CompoundType var5 = (CompoundType)var4;</b>
+<b class="nc"><i>904</i>&nbsp;                if(var5.isIDLEntity()) {</b>
+<b class="nc"><i>905</i>&nbsp;                    this.writeInclude(var5, 0, !this.isThrown, var2);</b>
+<b class="nc"><i>906</i>&nbsp;                    var1.remove(var5.getQualifiedName());</b>
+<i>907</i>&nbsp;                }
+<i>908</i>&nbsp;            }
+<i>909</i>&nbsp;        }
+<i>910</i>&nbsp;
+<i>911</i>&nbsp;    }
+<i>912</i>&nbsp;
+<i>913</i>&nbsp;    protected void writeIncludes(Hashtable var1, boolean var2, IndentingWriter var3) throws IOException {
+<i>914</i>&nbsp;        Enumeration var4 = var1.elements();
+<i>915</i>&nbsp;
+<i>916</i>&nbsp;        while(var4.hasMoreElements()) {
+<i>917</i>&nbsp;            CompoundType var5 = (CompoundType)var4.nextElement();
+<i>918</i>&nbsp;            this.writeInclude(var5, 0, var2, var3);
+<i>919</i>&nbsp;        }
+<i>920</i>&nbsp;
+<i>921</i>&nbsp;    }
+<i>922</i>&nbsp;
+<i>923</i>&nbsp;    protected void writeBoxedRMIIncludes(Hashtable var1, IndentingWriter var2) throws IOException {
+<i>924</i>&nbsp;        Enumeration var3 = var1.elements();
+<b class="nc"><i>925</i>&nbsp;</b>
+<b class="nc"><i>926</i>&nbsp;        label29:</b>
+<i>927</i>&nbsp;        while(var3.hasMoreElements()) {
+<i>928</i>&nbsp;            ArrayType var4 = (ArrayType)var3.nextElement();
+<i>929</i>&nbsp;            int var5 = var4.getArrayDimension();
+<i>930</i>&nbsp;            Type var6 = var4.getElementType();
+<i>931</i>&nbsp;            Enumeration var7 = var1.elements();
+<b class="nc"><i>932</i>&nbsp;</b>
+<i>933</i>&nbsp;            while(var7.hasMoreElements()) {
+<i>934</i>&nbsp;                ArrayType var8 = (ArrayType)var7.nextElement();
+<b class="nc"><i>935</i>&nbsp;                if(var6 == var8.getElementType() &amp;&amp; var5 &lt; var8.getArrayDimension()) {</b>
+<b class="nc"><i>936</i>&nbsp;                    continue label29;</b>
+<i>937</i>&nbsp;                }
+<i>938</i>&nbsp;            }
+<b class="nc"><i>939</i>&nbsp;</b>
+<i>940</i>&nbsp;            this.writeInclude(var4, var5, !this.isThrown, var2);
+<i>941</i>&nbsp;        }
+<b class="nc"><i>942</i>&nbsp;</b>
+<b class="nc"><i>943</i>&nbsp;    }</b>
+<i>944</i>&nbsp;
+<i>945</i>&nbsp;    protected void writeInheritedIncludes(Hashtable var1, IndentingWriter var2) throws IOException {
+<i>946</i>&nbsp;        Enumeration var3 = var1.elements();
+<i>947</i>&nbsp;
+<i>948</i>&nbsp;        while(var3.hasMoreElements()) {
+<i>949</i>&nbsp;            CompoundType var4 = (CompoundType)var3.nextElement();
+<i>950</i>&nbsp;            this.writeInclude(var4, 0, !this.isThrown, var2);
+<i>951</i>&nbsp;        }
+<i>952</i>&nbsp;
+<i>953</i>&nbsp;    }
+<i>954</i>&nbsp;
+<i>955</i>&nbsp;    protected void writeInclude(Type var1, int var2, boolean var3, IndentingWriter var4) throws IOException {
+<i>956</i>&nbsp;        CompoundType var5;
+<i>957</i>&nbsp;        String var6;
+<i>958</i>&nbsp;        String[] var7;
+<i>959</i>&nbsp;        if(var1.isCompound()) {
+<b class="nc"><i>960</i>&nbsp;            var5 = (CompoundType)var1;</b>
+<b class="nc"><i>961</i>&nbsp;            String var8 = var5.getQualifiedName();</b>
+<b class="nc"><i>962</i>&nbsp;            if(&quot;java.lang.String&quot;.equals(var8)) {</b>
+<b class="nc"><i>963</i>&nbsp;                this.writeIncOrb(var4);</b>
+<b class="nc"><i>964</i>&nbsp;                return;</b>
+<b class="nc"><i>965</i>&nbsp;            }</b>
+<b class="nc"><i>966</i>&nbsp;</b>
+<i>967</i>&nbsp;            if(&quot;org.omg.CORBA.Object&quot;.equals(var8)) {
+<i>968</i>&nbsp;                return;
+<i>969</i>&nbsp;            }
+<i>970</i>&nbsp;
+<i>971</i>&nbsp;            var7 = this.getIDLModuleNames(var5);
+<i>972</i>&nbsp;            var6 = this.unEsc(var5.getIDLName());
+<i>973</i>&nbsp;            if(var5.isException()) {
+<i>974</i>&nbsp;                if(var5.isIDLEntityException()) {
+<i>975</i>&nbsp;                    if(var5.isCORBAUserException()) {
+<i>976</i>&nbsp;                        if(var3) {
+<i>977</i>&nbsp;                            var6 = this.unEsc(var5.getIDLExceptionName());
+<i>978</i>&nbsp;                        }
+<i>979</i>&nbsp;                    } else {
+<b class="nc"><i>980</i>&nbsp;                        var6 = var5.getName();</b>
+<b class="nc"><i>981</i>&nbsp;                    }</b>
+<b class="nc"><i>982</i>&nbsp;                } else if(var3) {</b>
+<b class="nc"><i>983</i>&nbsp;                    var6 = this.unEsc(var5.getIDLExceptionName());</b>
+<i>984</i>&nbsp;                }
+<b class="nc"><i>985</i>&nbsp;            }</b>
+<i>986</i>&nbsp;        } else {
+<i>987</i>&nbsp;            if(!var1.isArray()) {
+<i>988</i>&nbsp;                return;
+<i>989</i>&nbsp;            }
+<i>990</i>&nbsp;
+<i>991</i>&nbsp;            Type var9 = var1.getElementType();
+<i>992</i>&nbsp;            if(var2 &lt;= 0) {
+<i>993</i>&nbsp;                if(!var9.isCompound()) {
+<i>994</i>&nbsp;                    return;
+<i>995</i>&nbsp;                }
+<i>996</i>&nbsp;
+<i>997</i>&nbsp;                var5 = (CompoundType)var9;
+<i>998</i>&nbsp;                var7 = this.getIDLModuleNames(var5);
+<b class="nc"><i>999</i>&nbsp;                var6 = this.unEsc(var5.getIDLName());</b>
+<b class="nc"><i>1000</i>&nbsp;                this.writeInclude(var5, var7, var6, var4);</b>
+<b class="nc"><i>1001</i>&nbsp;                return;</b>
+<i>1002</i>&nbsp;            }
+<b class="nc"><i>1003</i>&nbsp;</b>
+<i>1004</i>&nbsp;            var7 = this.getIDLModuleNames(var1);
+<i>1005</i>&nbsp;            var6 = &quot;seq&quot; + var2 + &quot;_&quot; + this.unEsc(var9.getIDLName().replace(&#39; &#39;, &#39;_&#39;));
+<b class="nc"><i>1006</i>&nbsp;        }</b>
+<b class="nc"><i>1007</i>&nbsp;</b>
+<i>1008</i>&nbsp;        this.writeInclude(var1, var7, var6, var4);
+<b class="nc"><i>1009</i>&nbsp;    }</b>
+<b class="nc"><i>1010</i>&nbsp;</b>
+<i>1011</i>&nbsp;    protected void writeInclude(Type var1, String[] var2, String var3, IndentingWriter var4) throws IOException {
+<b class="nc"><i>1012</i>&nbsp;        if(var1.isCompound()) {</b>
+<b class="nc"><i>1013</i>&nbsp;            CompoundType var5 = (CompoundType)var1;</b>
+<i>1014</i>&nbsp;            if(this.ifHash.size() &gt; 0 &amp;&amp; var5.isIDLEntity()) {
+<b class="nc"><i>1015</i>&nbsp;                String var6 = var1.getQualifiedName();</b>
+<b class="nc"><i>1016</i>&nbsp;                Enumeration var7 = this.ifHash.keys();</b>
+<b class="nc"><i>1017</i>&nbsp;</b>
+<b class="nc"><i>1018</i>&nbsp;                while(var7.hasMoreElements()) {</b>
+<i>1019</i>&nbsp;                    String var8 = (String)var7.nextElement();
+<i>1020</i>&nbsp;                    if(var6.startsWith(var8)) {
+<i>1021</i>&nbsp;                        String var9 = (String)this.ifHash.get(var8);
+<b class="nc"><i>1022</i>&nbsp;                        var4.pln(&quot;#include \&quot;&quot; + var9 + &quot;\&quot;&quot;);</b>
+<i>1023</i>&nbsp;                        return;
+<b class="nc"><i>1024</i>&nbsp;                    }</b>
+<i>1025</i>&nbsp;                }
+<i>1026</i>&nbsp;            }
+<b class="nc"><i>1027</i>&nbsp;        } else if(!var1.isArray()) {</b>
+<b class="nc"><i>1028</i>&nbsp;            return;</b>
+<i>1029</i>&nbsp;        }
+<b class="nc"><i>1030</i>&nbsp;</b>
+<i>1031</i>&nbsp;        var4.p(&quot;#include \&quot;&quot;);
+<i>1032</i>&nbsp;
+<i>1033</i>&nbsp;        for(int var10 = 0; var10 &lt; var2.length; ++var10) {
+<i>1034</i>&nbsp;            var4.p(var2[var10] + &quot;/&quot;);
+<i>1035</i>&nbsp;        }
+<i>1036</i>&nbsp;
+<i>1037</i>&nbsp;        var4.p(var3 + &quot;.idl\&quot;&quot;);
+<i>1038</i>&nbsp;        var4.pln();
+<i>1039</i>&nbsp;    }
+<i>1040</i>&nbsp;
+<i>1041</i>&nbsp;    protected String getQualifiedName(Type var1) {
+<i>1042</i>&nbsp;        String[] var2 = this.getIDLModuleNames(var1);
+<b class="nc"><i>1043</i>&nbsp;        int var3 = var2.length;</b>
+<b class="nc"><i>1044</i>&nbsp;        StringBuffer var4 = new StringBuffer();</b>
+<b class="nc"><i>1045</i>&nbsp;</b>
+<b class="nc"><i>1046</i>&nbsp;        for(int var5 = 0; var5 &lt; var3; ++var5) {</b>
+<b class="nc"><i>1047</i>&nbsp;            var4.append(var2[var5] + &quot;.&quot;);</b>
+<b class="nc"><i>1048</i>&nbsp;        }</b>
+<i>1049</i>&nbsp;
+<i>1050</i>&nbsp;        var4.append(var1.getIDLName());
+<i>1051</i>&nbsp;        return var4.toString();
+<i>1052</i>&nbsp;    }
+<b class="nc"><i>1053</i>&nbsp;</b>
+<i>1054</i>&nbsp;    protected String getQualifiedIDLName(Type var1) {
+<b class="nc"><i>1055</i>&nbsp;        if(var1.isPrimitive()) {</b>
+<i>1056</i>&nbsp;            return var1.getIDLName();
+<i>1057</i>&nbsp;        } else if(!var1.isArray() &amp;&amp; &quot;org.omg.CORBA.Object&quot;.equals(var1.getQualifiedName())) {
+<i>1058</i>&nbsp;            return var1.getIDLName();
+<i>1059</i>&nbsp;        } else {
+<i>1060</i>&nbsp;            String[] var2 = this.getIDLModuleNames(var1);
+<i>1061</i>&nbsp;            int var3 = var2.length;
+<i>1062</i>&nbsp;            if(var3 &lt;= 0) {
+<i>1063</i>&nbsp;                return var1.getIDLName();
+<i>1064</i>&nbsp;            } else {
+<i>1065</i>&nbsp;                StringBuffer var4 = new StringBuffer();
+<i>1066</i>&nbsp;
+<i>1067</i>&nbsp;                for(int var5 = 0; var5 &lt; var3; ++var5) {
+<i>1068</i>&nbsp;                    var4.append(&quot;::&quot; + var2[var5]);
+<i>1069</i>&nbsp;                }
+<b class="nc"><i>1070</i>&nbsp;</b>
+<b class="nc"><i>1071</i>&nbsp;                var4.append(&quot;::&quot; + var1.getIDLName());</b>
+<b class="nc"><i>1072</i>&nbsp;                return var4.toString();</b>
+<b class="nc"><i>1073</i>&nbsp;            }</b>
+<b class="nc"><i>1074</i>&nbsp;        }</b>
+<b class="nc"><i>1075</i>&nbsp;    }</b>
+<b class="nc"><i>1076</i>&nbsp;</b>
+<i>1077</i>&nbsp;    protected String[] getIDLModuleNames(Type var1) {
+<i>1078</i>&nbsp;        String[] var2 = var1.getIDLModuleNames();
+<i>1079</i>&nbsp;        CompoundType var3;
+<b class="nc"><i>1080</i>&nbsp;        if(var1.isCompound()) {</b>
+<b class="nc"><i>1081</i>&nbsp;            var3 = (CompoundType)var1;</b>
+<b class="nc"><i>1082</i>&nbsp;            if(!var3.isIDLEntity) {</b>
+<b class="nc"><i>1083</i>&nbsp;                return var2;</b>
+<i>1084</i>&nbsp;            }
+<b class="nc"><i>1085</i>&nbsp;</b>
+<i>1086</i>&nbsp;            if(&quot;org.omg.CORBA.portable.IDLEntity&quot;.equals(var1.getQualifiedName())) {
+<i>1087</i>&nbsp;                return var2;
+<b class="nc"><i>1088</i>&nbsp;            }</b>
+<i>1089</i>&nbsp;        } else {
+<i>1090</i>&nbsp;            if(!var1.isArray()) {
+<i>1091</i>&nbsp;                return var2;
+<i>1092</i>&nbsp;            }
+<i>1093</i>&nbsp;
+<i>1094</i>&nbsp;            Type var4 = var1.getElementType();
+<i>1095</i>&nbsp;            if(!var4.isCompound()) {
+<i>1096</i>&nbsp;                return var2;
+<i>1097</i>&nbsp;            }
+<i>1098</i>&nbsp;
+<i>1099</i>&nbsp;            var3 = (CompoundType)var4;
+<i>1100</i>&nbsp;            if(!var3.isIDLEntity) {
+<i>1101</i>&nbsp;                return var2;
+<b class="nc"><i>1102</i>&nbsp;            }</b>
+<i>1103</i>&nbsp;
+<b class="nc"><i>1104</i>&nbsp;            if(&quot;org.omg.CORBA.portable.IDLEntity&quot;.equals(var1.getQualifiedName())) {</b>
+<b class="nc"><i>1105</i>&nbsp;                return var2;</b>
+<b class="nc"><i>1106</i>&nbsp;            }</b>
+<b class="nc"><i>1107</i>&nbsp;        }</b>
+<b class="nc"><i>1108</i>&nbsp;</b>
+<b class="nc"><i>1109</i>&nbsp;        Vector var6 = new Vector();</b>
+<i>1110</i>&nbsp;        if(!this.translateJavaPackage(var3, var6)) {
+<b class="nc"><i>1111</i>&nbsp;            this.stripJavaPackage(var3, var6);</b>
+<b class="nc"><i>1112</i>&nbsp;        }</b>
+<i>1113</i>&nbsp;
+<i>1114</i>&nbsp;        if(var3.isBoxed()) {
+<i>1115</i>&nbsp;            var6.insertElementAt(&quot;org&quot;, 0);
+<i>1116</i>&nbsp;            var6.insertElementAt(&quot;omg&quot;, 1);
+<i>1117</i>&nbsp;            var6.insertElementAt(&quot;boxedIDL&quot;, 2);
+<i>1118</i>&nbsp;        }
+<i>1119</i>&nbsp;
+<i>1120</i>&nbsp;        if(var1.isArray()) {
+<i>1121</i>&nbsp;            var6.insertElementAt(&quot;org&quot;, 0);
+<i>1122</i>&nbsp;            var6.insertElementAt(&quot;omg&quot;, 1);
+<i>1123</i>&nbsp;            var6.insertElementAt(&quot;boxedRMI&quot;, 2);
+<i>1124</i>&nbsp;        }
+<b class="nc"><i>1125</i>&nbsp;</b>
+<b class="nc"><i>1126</i>&nbsp;        String[] var5 = new String[var6.size()];</b>
+<b class="nc"><i>1127</i>&nbsp;        var6.copyInto(var5);</b>
+<i>1128</i>&nbsp;        return var5;
+<b class="nc"><i>1129</i>&nbsp;    }</b>
+<b class="nc"><i>1130</i>&nbsp;</b>
+<b class="nc"><i>1131</i>&nbsp;    protected boolean translateJavaPackage(CompoundType var1, Vector var2) {</b>
+<b class="nc"><i>1132</i>&nbsp;        var2.removeAllElements();</b>
+<i>1133</i>&nbsp;        boolean var3 = false;
+<b class="nc"><i>1134</i>&nbsp;        String var4 = null;</b>
+<b class="nc"><i>1135</i>&nbsp;        if(!var1.isIDLEntity()) {</b>
+<b class="nc"><i>1136</i>&nbsp;            return var3;</b>
+<i>1137</i>&nbsp;        } else {
+<b class="nc"><i>1138</i>&nbsp;            String var5 = var1.getPackageName();</b>
+<i>1139</i>&nbsp;            if(var5 == null) {
+<i>1140</i>&nbsp;                return var3;
+<b class="nc"><i>1141</i>&nbsp;            } else {</b>
+<b class="nc"><i>1142</i>&nbsp;                StringTokenizer var6 = new StringTokenizer(var5, &quot;.&quot;);</b>
+<b class="nc"><i>1143</i>&nbsp;</b>
+<b class="nc"><i>1144</i>&nbsp;                while(var6.hasMoreTokens()) {</b>
+<i>1145</i>&nbsp;                    var2.addElement(var6.nextToken());
+<i>1146</i>&nbsp;                }
+<i>1147</i>&nbsp;
+<i>1148</i>&nbsp;                if(this.imHash.size() &gt; 0) {
+<i>1149</i>&nbsp;                    Enumeration var7 = this.imHash.keys();
+<i>1150</i>&nbsp;
+<i>1151</i>&nbsp;                    label75:
+<i>1152</i>&nbsp;                    while(var7.hasMoreElements()) {
+<i>1153</i>&nbsp;                        String var8 = (String)var7.nextElement();
+<i>1154</i>&nbsp;                        StringTokenizer var9 = new StringTokenizer(var8, &quot;.&quot;);
+<i>1155</i>&nbsp;                        int var10 = var2.size();
+<i>1156</i>&nbsp;
+<i>1157</i>&nbsp;                        int var11;
+<i>1158</i>&nbsp;                        for(var11 = 0; var11 &lt; var10 &amp;&amp; var9.hasMoreTokens(); ++var11) {
+<i>1159</i>&nbsp;                            if(!var2.elementAt(var11).equals(var9.nextToken())) {
+<i>1160</i>&nbsp;                                continue label75;
+<i>1161</i>&nbsp;                            }
+<b class="nc"><i>1162</i>&nbsp;                        }</b>
+<b class="nc"><i>1163</i>&nbsp;</b>
+<b class="nc"><i>1164</i>&nbsp;                        if(var9.hasMoreTokens()) {</b>
+<b class="nc"><i>1165</i>&nbsp;                            var4 = var9.nextToken();</b>
+<b class="nc"><i>1166</i>&nbsp;                            if(!var1.getName().equals(var4) || var9.hasMoreTokens()) {</b>
+<i>1167</i>&nbsp;                                continue;
+<i>1168</i>&nbsp;                            }
+<i>1169</i>&nbsp;                        }
+<b class="nc"><i>1170</i>&nbsp;</b>
+<i>1171</i>&nbsp;                        var3 = true;
+<b class="nc"><i>1172</i>&nbsp;</b>
+<b class="nc"><i>1173</i>&nbsp;                        for(int var12 = 0; var12 &lt; var11; ++var12) {</b>
+<b class="nc"><i>1174</i>&nbsp;                            var2.removeElementAt(0);</b>
+<b class="nc"><i>1175</i>&nbsp;                        }</b>
+<i>1176</i>&nbsp;
+<b class="nc"><i>1177</i>&nbsp;                        String var17 = (String)this.imHash.get(var8);</b>
+<b class="nc"><i>1178</i>&nbsp;                        StringTokenizer var13 = new StringTokenizer(var17, &quot;::&quot;);</b>
+<b class="nc"><i>1179</i>&nbsp;                        int var14 = var13.countTokens();</b>
+<i>1180</i>&nbsp;                        boolean var15 = false;
+<b class="nc"><i>1181</i>&nbsp;                        if(var4 != null) {</b>
+<i>1182</i>&nbsp;                            --var14;
+<i>1183</i>&nbsp;                        }
+<b class="nc"><i>1184</i>&nbsp;</b>
+<b class="nc"><i>1185</i>&nbsp;                        int var18;</b>
+<b class="nc"><i>1186</i>&nbsp;                        for(var18 = 0; var18 &lt; var14; ++var18) {</b>
+<b class="nc"><i>1187</i>&nbsp;                            var2.insertElementAt(var13.nextToken(), var18);</b>
+<i>1188</i>&nbsp;                        }
+<i>1189</i>&nbsp;
+<i>1190</i>&nbsp;                        if(var4 != null) {
+<i>1191</i>&nbsp;                            String var16 = var13.nextToken();
+<i>1192</i>&nbsp;                            if(!var1.getName().equals(var16)) {
+<i>1193</i>&nbsp;                                var2.insertElementAt(var16, var18);
+<i>1194</i>&nbsp;                            }
+<i>1195</i>&nbsp;                        }
+<i>1196</i>&nbsp;                    }
+<i>1197</i>&nbsp;                }
+<i>1198</i>&nbsp;
+<i>1199</i>&nbsp;                return var3;
+<b class="nc"><i>1200</i>&nbsp;            }</b>
+<b class="nc"><i>1201</i>&nbsp;        }</b>
+<b class="nc"><i>1202</i>&nbsp;    }</b>
+<b class="nc"><i>1203</i>&nbsp;</b>
+<b class="nc"><i>1204</i>&nbsp;    protected void stripJavaPackage(CompoundType var1, Vector var2) {</b>
+<b class="nc"><i>1205</i>&nbsp;        var2.removeAllElements();</b>
+<b class="nc"><i>1206</i>&nbsp;        if(var1.isIDLEntity()) {</b>
+<b class="nc"><i>1207</i>&nbsp;            String var3 = var1.getRepositoryID().substring(4);</b>
+<i>1208</i>&nbsp;            StringTokenizer var4 = new StringTokenizer(var3, &quot;/&quot;);
+<i>1209</i>&nbsp;            if(var4.countTokens() &gt;= 2) {
+<b class="nc"><i>1210</i>&nbsp;                while(var4.hasMoreTokens()) {</b>
+<i>1211</i>&nbsp;                    var2.addElement(var4.nextToken());
+<i>1212</i>&nbsp;                }
+<i>1213</i>&nbsp;
+<i>1214</i>&nbsp;                var2.removeElementAt(var2.size() - 1);
+<i>1215</i>&nbsp;                String var5 = var1.getPackageName();
+<i>1216</i>&nbsp;                if(var5 != null) {
+<i>1217</i>&nbsp;                    Vector var6 = new Vector();
+<i>1218</i>&nbsp;                    StringTokenizer var7 = new StringTokenizer(var5, &quot;.&quot;);
+<i>1219</i>&nbsp;
+<i>1220</i>&nbsp;                    while(var7.hasMoreTokens()) {
+<i>1221</i>&nbsp;                        var6.addElement(var7.nextToken());
+<i>1222</i>&nbsp;                    }
+<i>1223</i>&nbsp;
+<i>1224</i>&nbsp;                    int var8 = var2.size() - 1;
+<b class="nc"><i>1225</i>&nbsp;</b>
+<b class="nc"><i>1226</i>&nbsp;                    for(int var9 = var6.size() - 1; var8 &gt;= 0 &amp;&amp; var9 &gt;= 0; --var9) {</b>
+<b class="nc"><i>1227</i>&nbsp;                        String var10 = (String)((String)var2.elementAt(var8));</b>
+<b class="nc"><i>1228</i>&nbsp;                        String var11 = (String)((String)var6.elementAt(var9));</b>
+<b class="nc"><i>1229</i>&nbsp;                        if(!var11.equals(var10)) {</b>
+<i>1230</i>&nbsp;                            break;
+<i>1231</i>&nbsp;                        }
+<i>1232</i>&nbsp;
+<i>1233</i>&nbsp;                        --var8;
+<i>1234</i>&nbsp;                    }
+<i>1235</i>&nbsp;
+<i>1236</i>&nbsp;                    for(int var12 = 0; var12 &lt;= var8; ++var12) {
+<i>1237</i>&nbsp;                        var2.removeElementAt(0);
+<i>1238</i>&nbsp;                    }
+<i>1239</i>&nbsp;
+<i>1240</i>&nbsp;                }
+<i>1241</i>&nbsp;            }
+<i>1242</i>&nbsp;        }
+<b class="nc"><i>1243</i>&nbsp;    }</b>
+<i>1244</i>&nbsp;
+<b class="nc"><i>1245</i>&nbsp;    protected void writeSequence(OutputType var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>1246</i>&nbsp;        ArrayType var3 = (ArrayType)var1.getType();</b>
+<b class="nc"><i>1247</i>&nbsp;        Type var4 = var3.getElementType();</b>
+<b class="nc"><i>1248</i>&nbsp;        String var5 = var1.getName();</b>
+<i>1249</i>&nbsp;        int var6 = Integer.parseInt(var5.substring(3, var5.indexOf(&quot;_&quot;)));
+<b class="nc"><i>1250</i>&nbsp;        String var7 = this.unEsc(var4.getIDLName()).replace(&#39; &#39;, &#39;_&#39;);</b>
+<b class="nc"><i>1251</i>&nbsp;        String var8 = this.getQualifiedIDLName(var4);</b>
+<b class="nc"><i>1252</i>&nbsp;        String var9 = var4.getQualifiedName();</b>
+<b class="nc"><i>1253</i>&nbsp;        String var10 = var3.getRepositoryID();</b>
+<i>1254</i>&nbsp;        int var11 = var10.indexOf(91);
+<b class="nc"><i>1255</i>&nbsp;        int var12 = var10.lastIndexOf(91) + 1;</b>
+<b class="nc"><i>1256</i>&nbsp;        StringBuffer var13 = new StringBuffer(var10.substring(0, var11) + var10.substring(var12));</b>
+<b class="nc"><i>1257</i>&nbsp;</b>
+<b class="nc"><i>1258</i>&nbsp;        for(int var14 = 0; var14 &lt; var6; ++var14) {</b>
+<i>1259</i>&nbsp;            var13.insert(var11, &#39;[&#39;);
+<i>1260</i>&nbsp;        }
+<i>1261</i>&nbsp;
+<i>1262</i>&nbsp;        String var17 = &quot;seq&quot; + var6 + &quot;_&quot; + var7;
+<i>1263</i>&nbsp;        boolean var15 = false;
+<i>1264</i>&nbsp;        if(var4.isCompound()) {
+<i>1265</i>&nbsp;            CompoundType var16 = (CompoundType)var4;
+<i>1266</i>&nbsp;            var15 = var16.isIDLEntity() || var16.isCORBAObject();
+<i>1267</i>&nbsp;        }
+<i>1268</i>&nbsp;
+<i>1269</i>&nbsp;        boolean var18 = var4.isCompound() &amp;&amp; !this.isSpecialReference(var4) &amp;&amp; var6 == 1 &amp;&amp; !var15 &amp;&amp; !&quot;org.omg.CORBA.Object&quot;.equals(var9) &amp;&amp; !&quot;java.lang.String&quot;.equals(var9);
+<i>1270</i>&nbsp;        this.writeBanner(var3, var6, !this.isException, var2);
+<b class="nc"><i>1271</i>&nbsp;        if(var6 == 1 &amp;&amp; &quot;java.lang.String&quot;.equals(var9)) {</b>
+<b class="nc"><i>1272</i>&nbsp;            this.writeIncOrb(var2);</b>
+<b class="nc"><i>1273</i>&nbsp;        }</b>
+<b class="nc"><i>1274</i>&nbsp;</b>
+<b class="nc"><i>1275</i>&nbsp;        if((var6 != 1 || !&quot;org.omg.CORBA.Object&quot;.equals(var9)) &amp;&amp; (this.isSpecialReference(var4) || var6 &gt; 1 || var15)) {</b>
+<i>1276</i>&nbsp;            this.writeInclude(var3, var6 - 1, !this.isThrown, var2);
+<i>1277</i>&nbsp;        }
+<i>1278</i>&nbsp;
+<i>1279</i>&nbsp;        this.writeIfndef(var3, var6, !this.isException, !this.isForward, var2);
+<i>1280</i>&nbsp;        if(var18) {
+<i>1281</i>&nbsp;            this.writeForwardReference(var3, var6 - 1, var2);
+<i>1282</i>&nbsp;        }
+<i>1283</i>&nbsp;
+<i>1284</i>&nbsp;        this.writeModule1(var3, var2);
+<i>1285</i>&nbsp;        var2.pln();
+<i>1286</i>&nbsp;        var2.pI();
+<i>1287</i>&nbsp;        var2.p(&quot;valuetype &quot; + var17);
+<i>1288</i>&nbsp;        var2.p(&quot; sequence&lt;&quot;);
+<i>1289</i>&nbsp;        if(var6 == 1) {
+<i>1290</i>&nbsp;            var2.p(var8);
+<i>1291</i>&nbsp;        } else {
+<i>1292</i>&nbsp;            var2.p(&quot;seq&quot; + (var6 - 1) + &quot;_&quot;);
+<i>1293</i>&nbsp;            var2.p(var7);
+<i>1294</i>&nbsp;        }
+<b class="nc"><i>1295</i>&nbsp;</b>
+<b class="nc"><i>1296</i>&nbsp;        var2.pln(&quot;&gt;;&quot;);</b>
+<b class="nc"><i>1297</i>&nbsp;        var2.pO();</b>
+<b class="nc"><i>1298</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>1299</i>&nbsp;        var2.pln(&quot;#pragma ID &quot; + var17 + &quot; \&quot;&quot; + var13 + &quot;\&quot;&quot;);</b>
+<i>1300</i>&nbsp;        var2.pln();
+<i>1301</i>&nbsp;        this.writeModule2(var3, var2);
+<b class="nc"><i>1302</i>&nbsp;        if(var18) {</b>
+<i>1303</i>&nbsp;            this.writeInclude(var3, var6 - 1, !this.isThrown, var2);
+<b class="nc"><i>1304</i>&nbsp;        }</b>
+<b class="nc"><i>1305</i>&nbsp;</b>
+<i>1306</i>&nbsp;        this.writeEndif(var2);
+<b class="nc"><i>1307</i>&nbsp;    }</b>
+<b class="nc"><i>1308</i>&nbsp;</b>
+<b class="nc"><i>1309</i>&nbsp;    protected void writeBoxedIDL(CompoundType var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>1310</i>&nbsp;        String[] var3 = this.getIDLModuleNames(var1);</b>
+<i>1311</i>&nbsp;        int var4 = var3.length;
+<b class="nc"><i>1312</i>&nbsp;        String[] var5 = new String[var4 - 3];</b>
+<b class="nc"><i>1313</i>&nbsp;</b>
+<b class="nc"><i>1314</i>&nbsp;        for(int var6 = 0; var6 &lt; var4 - 3; ++var6) {</b>
+<b class="nc"><i>1315</i>&nbsp;            var5[var6] = var3[var6 + 3];</b>
+<b class="nc"><i>1316</i>&nbsp;        }</b>
+<b class="nc"><i>1317</i>&nbsp;</b>
+<b class="nc"><i>1318</i>&nbsp;        String var8 = this.unEsc(var1.getIDLName());</b>
+<b class="nc"><i>1319</i>&nbsp;        this.writeBanner(var1, 0, !this.isException, var2);</b>
+<b class="nc"><i>1320</i>&nbsp;        this.writeInclude(var1, var5, var8, var2);</b>
+<i>1321</i>&nbsp;        this.writeIfndef(var1, 0, !this.isException, !this.isForward, var2);
+<i>1322</i>&nbsp;        this.writeModule1(var1, var2);
+<b class="nc"><i>1323</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>1324</i>&nbsp;        var2.pI();</b>
+<b class="nc"><i>1325</i>&nbsp;        var2.p(&quot;valuetype &quot; + var8 + &quot; &quot;);</b>
+<b class="nc"><i>1326</i>&nbsp;</b>
+<b class="nc"><i>1327</i>&nbsp;        for(int var7 = 0; var7 &lt; var5.length; ++var7) {</b>
+<i>1328</i>&nbsp;            var2.p(&quot;::&quot; + var5[var7]);
+<i>1329</i>&nbsp;        }
+<b class="nc"><i>1330</i>&nbsp;</b>
+<i>1331</i>&nbsp;        var2.pln(&quot;::&quot; + var8 + &quot;;&quot;);
+<b class="nc"><i>1332</i>&nbsp;        var2.pO();</b>
+<i>1333</i>&nbsp;        var2.pln();
+<i>1334</i>&nbsp;        this.writeRepositoryID(var1, var2);
+<i>1335</i>&nbsp;        var2.pln();
+<i>1336</i>&nbsp;        this.writeModule2(var1, var2);
+<i>1337</i>&nbsp;        this.writeEndif(var2);
+<i>1338</i>&nbsp;    }
+<i>1339</i>&nbsp;
+<i>1340</i>&nbsp;    protected void writeException(ClassType var1, IndentingWriter var2) throws IOException {
+<i>1341</i>&nbsp;        this.writeBanner(var1, 0, this.isException, var2);
+<i>1342</i>&nbsp;        this.writeIfndef(var1, 0, this.isException, !this.isForward, var2);
+<i>1343</i>&nbsp;        this.writeForwardReference(var1, var2);
+<i>1344</i>&nbsp;        this.writeModule1(var1, var2);
+<i>1345</i>&nbsp;        var2.pln();
+<i>1346</i>&nbsp;        var2.pI();
+<i>1347</i>&nbsp;        var2.pln(&quot;exception &quot; + var1.getIDLExceptionName() + &quot; {&quot;);
+<i>1348</i>&nbsp;        var2.pln();
+<i>1349</i>&nbsp;        var2.pI();
+<b class="nc"><i>1350</i>&nbsp;        var2.pln(var1.getIDLName() + &quot; value;&quot;);</b>
+<b class="nc"><i>1351</i>&nbsp;        var2.pO();</b>
+<i>1352</i>&nbsp;        var2.pln();
+<b class="nc"><i>1353</i>&nbsp;        var2.pln(&quot;};&quot;);</b>
+<i>1354</i>&nbsp;        var2.pO();
+<b class="nc"><i>1355</i>&nbsp;        var2.pln();</b>
+<i>1356</i>&nbsp;        this.writeModule2(var1, var2);
+<b class="nc"><i>1357</i>&nbsp;        this.writeInclude(var1, 0, !this.isThrown, var2);</b>
+<b class="nc"><i>1358</i>&nbsp;        this.writeEndif(var2);</b>
+<b class="nc"><i>1359</i>&nbsp;    }</b>
+<b class="nc"><i>1360</i>&nbsp;</b>
+<b class="nc"><i>1361</i>&nbsp;    protected void writeRepositoryID(Type var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>1362</i>&nbsp;        String var3 = var1.getRepositoryID();</b>
+<i>1363</i>&nbsp;        if(var1.isCompound()) {
+<i>1364</i>&nbsp;            CompoundType var4 = (CompoundType)var1;
+<b class="nc"><i>1365</i>&nbsp;            if(var4.isBoxed()) {</b>
+<i>1366</i>&nbsp;                var3 = var4.getBoxedRepositoryID();
+<b class="nc"><i>1367</i>&nbsp;            }</b>
+<b class="nc"><i>1368</i>&nbsp;        }</b>
+<i>1369</i>&nbsp;
+<i>1370</i>&nbsp;        var2.pln(&quot;#pragma ID &quot; + var1.getIDLName() + &quot; \&quot;&quot; + var3 + &quot;\&quot;&quot;);
+<b class="nc"><i>1371</i>&nbsp;    }</b>
+<b class="nc"><i>1372</i>&nbsp;</b>
+<b class="nc"><i>1373</i>&nbsp;    protected void writeInherits(Hashtable var1, boolean var2, IndentingWriter var3) throws IOException {</b>
+<b class="nc"><i>1374</i>&nbsp;        int var4 = var1.size();</b>
+<i>1375</i>&nbsp;        boolean var5 = false;
+<i>1376</i>&nbsp;        int var6 = 0;
+<i>1377</i>&nbsp;        if(var4 &gt;= 1) {
+<i>1378</i>&nbsp;            Enumeration var7 = var1.elements();
+<i>1379</i>&nbsp;            CompoundType var8;
+<i>1380</i>&nbsp;            if(var2) {
+<i>1381</i>&nbsp;                while(var7.hasMoreElements()) {
+<i>1382</i>&nbsp;                    var8 = (CompoundType)var7.nextElement();
+<i>1383</i>&nbsp;                    if(var8.getTypeCode() == 8192) {
+<i>1384</i>&nbsp;                        ++var6;
+<i>1385</i>&nbsp;                    }
+<b class="nc"><i>1386</i>&nbsp;                }</b>
+<b class="nc"><i>1387</i>&nbsp;            }</b>
+<b class="nc"><i>1388</i>&nbsp;</b>
+<b class="nc"><i>1389</i>&nbsp;            int var10 = var4 - var6;</b>
+<b class="nc"><i>1390</i>&nbsp;            int var9;</b>
+<b class="nc"><i>1391</i>&nbsp;            if(var10 &gt; 0) {</b>
+<b class="nc"><i>1392</i>&nbsp;                var3.p(&quot;: &quot;);</b>
+<i>1393</i>&nbsp;                var7 = var1.elements();
+<i>1394</i>&nbsp;
+<i>1395</i>&nbsp;                while(var7.hasMoreElements()) {
+<i>1396</i>&nbsp;                    var8 = (CompoundType)var7.nextElement();
+<i>1397</i>&nbsp;                    if(var8.isClass()) {
+<i>1398</i>&nbsp;                        var3.p(this.getQualifiedIDLName(var8));
+<i>1399</i>&nbsp;                        if(var10 &gt; 1) {
+<i>1400</i>&nbsp;                            var3.p(&quot;, &quot;);
+<i>1401</i>&nbsp;                        } else if(var4 &gt; 1) {
+<i>1402</i>&nbsp;                            var3.p(&quot; &quot;);
+<b class="nc"><i>1403</i>&nbsp;                        }</b>
+<b class="nc"><i>1404</i>&nbsp;                        break;</b>
+<b class="nc"><i>1405</i>&nbsp;                    }</b>
+<i>1406</i>&nbsp;                }
+<b class="nc"><i>1407</i>&nbsp;</b>
+<i>1408</i>&nbsp;                var9 = 0;
+<b class="nc"><i>1409</i>&nbsp;                var7 = var1.elements();</b>
+<b class="nc"><i>1410</i>&nbsp;</b>
+<b class="nc"><i>1411</i>&nbsp;                while(var7.hasMoreElements()) {</b>
+<b class="nc"><i>1412</i>&nbsp;                    var8 = (CompoundType)var7.nextElement();</b>
+<b class="nc"><i>1413</i>&nbsp;                    if(!var8.isClass() &amp;&amp; var8.getTypeCode() != 8192) {</b>
+<b class="nc"><i>1414</i>&nbsp;                        if(var9++ &gt; 0) {</b>
+<b class="nc"><i>1415</i>&nbsp;                            var3.p(&quot;, &quot;);</b>
+<b class="nc"><i>1416</i>&nbsp;                        }</b>
+<i>1417</i>&nbsp;
+<b class="nc"><i>1418</i>&nbsp;                        var3.p(this.getQualifiedIDLName(var8));</b>
+<i>1419</i>&nbsp;                    }
+<i>1420</i>&nbsp;                }
+<i>1421</i>&nbsp;            }
+<i>1422</i>&nbsp;
+<i>1423</i>&nbsp;            if(var6 &gt; 0) {
+<i>1424</i>&nbsp;                var3.p(&quot; supports &quot;);
+<i>1425</i>&nbsp;                var9 = 0;
+<i>1426</i>&nbsp;                var7 = var1.elements();
+<i>1427</i>&nbsp;
+<i>1428</i>&nbsp;                while(var7.hasMoreElements()) {
+<i>1429</i>&nbsp;                    var8 = (CompoundType)var7.nextElement();
+<i>1430</i>&nbsp;                    if(var8.getTypeCode() == 8192) {
+<i>1431</i>&nbsp;                        if(var9++ &gt; 0) {
+<i>1432</i>&nbsp;                            var3.p(&quot;, &quot;);
+<b class="nc"><i>1433</i>&nbsp;                        }</b>
+<i>1434</i>&nbsp;
+<b class="nc"><i>1435</i>&nbsp;                        var3.p(this.getQualifiedIDLName(var8));</b>
+<b class="nc"><i>1436</i>&nbsp;                    }</b>
+<b class="nc"><i>1437</i>&nbsp;                }</b>
+<b class="nc"><i>1438</i>&nbsp;            }</b>
+<i>1439</i>&nbsp;
+<b class="nc"><i>1440</i>&nbsp;        }</b>
+<i>1441</i>&nbsp;    }
+<b class="nc"><i>1442</i>&nbsp;</b>
+<b class="nc"><i>1443</i>&nbsp;    protected void writeConstant(Member var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>1444</i>&nbsp;        Type var3 = var1.getType();</b>
+<b class="nc"><i>1445</i>&nbsp;        var2.p(&quot;const &quot;);</b>
+<b class="nc"><i>1446</i>&nbsp;        var2.p(this.getQualifiedIDLName(var3));</b>
+<b class="nc"><i>1447</i>&nbsp;        var2.p(&quot; &quot; + var1.getIDLName() + &quot; = &quot; + var1.getValue());</b>
+<i>1448</i>&nbsp;        var2.pln(&quot;;&quot;);
+<b class="nc"><i>1449</i>&nbsp;    }</b>
+<i>1450</i>&nbsp;
+<b class="nc"><i>1451</i>&nbsp;    protected void writeData(Member var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>1452</i>&nbsp;        if(!var1.isInnerClassDeclaration()) {</b>
+<b class="nc"><i>1453</i>&nbsp;            Type var3 = var1.getType();</b>
+<i>1454</i>&nbsp;            if(var1.isPublic()) {
+<i>1455</i>&nbsp;                var2.p(&quot;public &quot;);
+<b class="nc"><i>1456</i>&nbsp;            } else {</b>
+<b class="nc"><i>1457</i>&nbsp;                var2.p(&quot;private &quot;);</b>
+<b class="nc"><i>1458</i>&nbsp;            }</b>
+<i>1459</i>&nbsp;
+<b class="nc"><i>1460</i>&nbsp;            var2.pln(this.getQualifiedIDLName(var3) + &quot; &quot; + var1.getIDLName() + &quot;;&quot;);</b>
+<b class="nc"><i>1461</i>&nbsp;        }</b>
+<b class="nc"><i>1462</i>&nbsp;    }</b>
+<b class="nc"><i>1463</i>&nbsp;</b>
+<i>1464</i>&nbsp;    protected void writeAttribute(Method var1, IndentingWriter var2) throws IOException {
+<b class="nc"><i>1465</i>&nbsp;        if(var1.getAttributeKind() != 5) {</b>
+<b class="nc"><i>1466</i>&nbsp;            Type var3 = var1.getReturnType();</b>
+<b class="nc"><i>1467</i>&nbsp;            if(!var1.isReadWriteAttribute()) {</b>
+<b class="nc"><i>1468</i>&nbsp;                var2.p(&quot;readonly &quot;);</b>
+<i>1469</i>&nbsp;            }
+<b class="nc"><i>1470</i>&nbsp;</b>
+<b class="nc"><i>1471</i>&nbsp;            var2.p(&quot;attribute &quot; + this.getQualifiedIDLName(var3) + &quot; &quot;);</b>
+<b class="nc"><i>1472</i>&nbsp;            var2.pln(var1.getAttributeName() + &quot;;&quot;);</b>
+<i>1473</i>&nbsp;        }
+<i>1474</i>&nbsp;    }
+<i>1475</i>&nbsp;
+<i>1476</i>&nbsp;    protected void writeMethod(Method var1, IndentingWriter var2) throws IOException {
+<i>1477</i>&nbsp;        if(var1.isAttribute()) {
+<i>1478</i>&nbsp;            this.writeAttribute(var1, var2);
+<i>1479</i>&nbsp;        } else {
+<i>1480</i>&nbsp;            Type[] var3 = var1.getArguments();
+<i>1481</i>&nbsp;            String[] var4 = var1.getArgumentNames();
+<i>1482</i>&nbsp;            Type var5 = var1.getReturnType();
+<i>1483</i>&nbsp;            Hashtable var6 = new Hashtable();
+<i>1484</i>&nbsp;            this.getExceptions(var1, var6);
+<i>1485</i>&nbsp;            if(var1.isConstructor()) {
+<i>1486</i>&nbsp;                if(this.factory) {
+<b class="nc"><i>1487</i>&nbsp;                    var2.p(&quot;factory &quot; + var1.getIDLName() + &quot;(&quot;);</b>
+<b class="nc"><i>1488</i>&nbsp;                } else {</b>
+<b class="nc"><i>1489</i>&nbsp;                    var2.p(&quot;init(&quot;);</b>
+<b class="nc"><i>1490</i>&nbsp;                }</b>
+<i>1491</i>&nbsp;            } else {
+<b class="nc"><i>1492</i>&nbsp;                var2.p(this.getQualifiedIDLName(var5));</b>
+<b class="nc"><i>1493</i>&nbsp;                var2.p(&quot; &quot; + var1.getIDLName() + &quot;(&quot;);</b>
+<b class="nc"><i>1494</i>&nbsp;            }</b>
+<b class="nc"><i>1495</i>&nbsp;</b>
+<i>1496</i>&nbsp;            var2.pI();
+<b class="nc"><i>1497</i>&nbsp;</b>
+<b class="nc"><i>1498</i>&nbsp;            int var7;</b>
+<i>1499</i>&nbsp;            for(var7 = 0; var7 &lt; var3.length; ++var7) {
+<i>1500</i>&nbsp;                if(var7 &gt; 0) {
+<b class="nc"><i>1501</i>&nbsp;                    var2.pln(&quot;,&quot;);</b>
+<b class="nc"><i>1502</i>&nbsp;                } else {</b>
+<b class="nc"><i>1503</i>&nbsp;                    var2.pln();</b>
+<b class="nc"><i>1504</i>&nbsp;                }</b>
+<i>1505</i>&nbsp;
+<b class="nc"><i>1506</i>&nbsp;                var2.p(&quot;in &quot;);</b>
+<b class="nc"><i>1507</i>&nbsp;                var2.p(this.getQualifiedIDLName(var3[var7]));</b>
+<b class="nc"><i>1508</i>&nbsp;                var2.p(&quot; &quot; + var4[var7]);</b>
+<i>1509</i>&nbsp;            }
+<b class="nc"><i>1510</i>&nbsp;</b>
+<b class="nc"><i>1511</i>&nbsp;            var2.pO();</b>
+<b class="nc"><i>1512</i>&nbsp;            var2.p(&quot; )&quot;);</b>
+<i>1513</i>&nbsp;            if(var6.size() &gt; 0) {
+<b class="nc"><i>1514</i>&nbsp;                var2.pln(&quot; raises (&quot;);</b>
+<i>1515</i>&nbsp;                var2.pI();
+<i>1516</i>&nbsp;                var7 = 0;
+<b class="nc"><i>1517</i>&nbsp;</b>
+<b class="nc"><i>1518</i>&nbsp;                for(Enumeration var8 = var6.elements(); var8.hasMoreElements(); ++var7) {</b>
+<b class="nc"><i>1519</i>&nbsp;                    ValueType var9 = (ValueType)var8.nextElement();</b>
+<i>1520</i>&nbsp;                    if(var7 &gt; 0) {
+<b class="nc"><i>1521</i>&nbsp;                        var2.pln(&quot;,&quot;);</b>
+<b class="nc"><i>1522</i>&nbsp;                    }</b>
+<i>1523</i>&nbsp;
+<b class="nc"><i>1524</i>&nbsp;                    if(var9.isIDLEntityException()) {</b>
+<b class="nc"><i>1525</i>&nbsp;                        if(var9.isCORBAUserException()) {</b>
+<b class="nc"><i>1526</i>&nbsp;                            var2.p(&quot;::org::omg::CORBA::UserEx&quot;);</b>
+<b class="nc"><i>1527</i>&nbsp;                        } else {</b>
+<b class="nc"><i>1528</i>&nbsp;                            String[] var10 = this.getIDLModuleNames(var9);</b>
+<b class="nc"><i>1529</i>&nbsp;</b>
+<b class="nc"><i>1530</i>&nbsp;                            for(int var11 = 0; var11 &lt; var10.length; ++var11) {</b>
+<b class="nc"><i>1531</i>&nbsp;                                var2.p(&quot;::&quot; + var10[var11]);</b>
+<b class="nc"><i>1532</i>&nbsp;                            }</b>
+<i>1533</i>&nbsp;
+<b class="nc"><i>1534</i>&nbsp;                            var2.p(&quot;::&quot; + var9.getName());</b>
+<i>1535</i>&nbsp;                        }
+<b class="nc"><i>1536</i>&nbsp;                    } else {</b>
+<i>1537</i>&nbsp;                        var2.p(var9.getQualifiedIDLExceptionName(true));
+<i>1538</i>&nbsp;                    }
+<i>1539</i>&nbsp;                }
+<i>1540</i>&nbsp;
+<i>1541</i>&nbsp;                var2.pO();
+<i>1542</i>&nbsp;                var2.p(&quot; )&quot;);
+<i>1543</i>&nbsp;            }
+<i>1544</i>&nbsp;
+<i>1545</i>&nbsp;            var2.pln(&quot;;&quot;);
+<i>1546</i>&nbsp;        }
+<i>1547</i>&nbsp;    }
+<i>1548</i>&nbsp;
+<i>1549</i>&nbsp;    protected String unEsc(String var1) {
+<i>1550</i>&nbsp;        return var1.startsWith(&quot;_&quot;)?var1.substring(1):var1;
+<i>1551</i>&nbsp;    }
+<b class="nc"><i>1552</i>&nbsp;</b>
+<b class="nc"><i>1553</i>&nbsp;    protected void writeBanner(Type var1, int var2, boolean var3, IndentingWriter var4) throws IOException {</b>
+<i>1554</i>&nbsp;        String[] var5 = this.getIDLModuleNames(var1);
+<b class="nc"><i>1555</i>&nbsp;        String var6 = this.unEsc(var1.getIDLName());</b>
+<b class="nc"><i>1556</i>&nbsp;        if(var3 &amp;&amp; var1.isClass()) {</b>
+<b class="nc"><i>1557</i>&nbsp;            ClassType var7 = (ClassType)var1;</b>
+<i>1558</i>&nbsp;            var6 = this.unEsc(var7.getIDLExceptionName());
+<b class="nc"><i>1559</i>&nbsp;        }</b>
+<b class="nc"><i>1560</i>&nbsp;</b>
+<b class="nc"><i>1561</i>&nbsp;        if(var2 &gt; 0 &amp;&amp; var1.isArray()) {</b>
+<i>1562</i>&nbsp;            Type var10 = var1.getElementType();
+<b class="nc"><i>1563</i>&nbsp;            var6 = &quot;seq&quot; + var2 + &quot;_&quot; + this.unEsc(var10.getIDLName().replace(&#39; &#39;, &#39;_&#39;));</b>
+<b class="nc"><i>1564</i>&nbsp;        }</b>
+<b class="nc"><i>1565</i>&nbsp;</b>
+<b class="nc"><i>1566</i>&nbsp;        var4.pln(&quot;/**&quot;);</b>
+<b class="nc"><i>1567</i>&nbsp;        var4.p(&quot; * &quot;);</b>
+<i>1568</i>&nbsp;
+<b class="nc"><i>1569</i>&nbsp;        for(int var11 = 0; var11 &lt; var5.length; ++var11) {</b>
+<b class="nc"><i>1570</i>&nbsp;            var4.p(var5[var11] + &quot;/&quot;);</b>
+<b class="nc"><i>1571</i>&nbsp;        }</b>
+<b class="nc"><i>1572</i>&nbsp;</b>
+<b class="nc"><i>1573</i>&nbsp;        var4.pln(var6 + &quot;.idl&quot;);</b>
+<b class="nc"><i>1574</i>&nbsp;        var4.pln(&quot; * Generated by rmic -idl. Do not edit&quot;);</b>
+<b class="nc"><i>1575</i>&nbsp;        String var12 = DateFormat.getDateTimeInstance(0, 0, Locale.getDefault()).format(new Date());</b>
+<b class="nc"><i>1576</i>&nbsp;        String var8 = &quot;o\&#39;clock&quot;;</b>
+<b class="nc"><i>1577</i>&nbsp;        int var9 = var12.indexOf(var8);</b>
+<b class="nc"><i>1578</i>&nbsp;        var4.p(&quot; * &quot;);</b>
+<i>1579</i>&nbsp;        if(var9 &gt; -1) {
+<i>1580</i>&nbsp;            var4.pln(var12.substring(0, var9) + var12.substring(var9 + var8.length()));
+<i>1581</i>&nbsp;        } else {
+<i>1582</i>&nbsp;            var4.pln(var12);
+<i>1583</i>&nbsp;        }
+<i>1584</i>&nbsp;
+<i>1585</i>&nbsp;        var4.pln(&quot; */&quot;);
+<i>1586</i>&nbsp;        var4.pln();
+<i>1587</i>&nbsp;    }
+<i>1588</i>&nbsp;
+<i>1589</i>&nbsp;    protected void writeIncOrb(IndentingWriter var1) throws IOException {
+<i>1590</i>&nbsp;        var1.pln(&quot;#include \&quot;orb.idl\&quot;&quot;);
+<i>1591</i>&nbsp;    }
+<i>1592</i>&nbsp;
+<i>1593</i>&nbsp;    protected void writeIfndef(Type var1, int var2, boolean var3, boolean var4, IndentingWriter var5) throws IOException {
+<i>1594</i>&nbsp;        String[] var6 = this.getIDLModuleNames(var1);
+<b class="nc"><i>1595</i>&nbsp;        String var7 = this.unEsc(var1.getIDLName());</b>
+<b class="nc"><i>1596</i>&nbsp;        if(var3 &amp;&amp; var1.isClass()) {</b>
+<b class="nc"><i>1597</i>&nbsp;            ClassType var8 = (ClassType)var1;</b>
+<b class="nc"><i>1598</i>&nbsp;            var7 = this.unEsc(var8.getIDLExceptionName());</b>
+<b class="nc"><i>1599</i>&nbsp;        }</b>
+<b class="nc"><i>1600</i>&nbsp;</b>
+<b class="nc"><i>1601</i>&nbsp;        if(var2 &gt; 0 &amp;&amp; var1.isArray()) {</b>
+<i>1602</i>&nbsp;            Type var10 = var1.getElementType();
+<b class="nc"><i>1603</i>&nbsp;            var7 = &quot;seq&quot; + var2 + &quot;_&quot; + this.unEsc(var10.getIDLName().replace(&#39; &#39;, &#39;_&#39;));</b>
+<b class="nc"><i>1604</i>&nbsp;        }</b>
+<b class="nc"><i>1605</i>&nbsp;</b>
+<b class="nc"><i>1606</i>&nbsp;        var5.pln();</b>
+<i>1607</i>&nbsp;        var5.p(&quot;#ifndef __&quot;);
+<i>1608</i>&nbsp;
+<b class="nc"><i>1609</i>&nbsp;        int var9;</b>
+<i>1610</i>&nbsp;        for(var9 = 0; var9 &lt; var6.length; ++var9) {
+<b class="nc"><i>1611</i>&nbsp;            var5.p(var6[var9] + &quot;_&quot;);</b>
+<b class="nc"><i>1612</i>&nbsp;        }</b>
+<b class="nc"><i>1613</i>&nbsp;</b>
+<b class="nc"><i>1614</i>&nbsp;        var5.pln(var7 + &quot;__&quot;);</b>
+<b class="nc"><i>1615</i>&nbsp;        if(!var4) {</b>
+<i>1616</i>&nbsp;            var5.p(&quot;#define __&quot;);
+<b class="nc"><i>1617</i>&nbsp;</b>
+<i>1618</i>&nbsp;            for(var9 = 0; var9 &lt; var6.length; ++var9) {
+<i>1619</i>&nbsp;                var5.p(var6[var9] + &quot;_&quot;);
+<i>1620</i>&nbsp;            }
+<i>1621</i>&nbsp;
+<i>1622</i>&nbsp;            var5.pln(var7 + &quot;__&quot;);
+<i>1623</i>&nbsp;            var5.pln();
+<i>1624</i>&nbsp;        }
+<b class="nc"><i>1625</i>&nbsp;</b>
+<b class="nc"><i>1626</i>&nbsp;    }</b>
+<b class="nc"><i>1627</i>&nbsp;</b>
+<b class="nc"><i>1628</i>&nbsp;    protected void writeEndif(IndentingWriter var1) throws IOException {</b>
+<b class="nc"><i>1629</i>&nbsp;        var1.pln(&quot;#endif&quot;);</b>
+<b class="nc"><i>1630</i>&nbsp;        var1.pln();</b>
+<b class="nc"><i>1631</i>&nbsp;    }</b>
+<b class="nc"><i>1632</i>&nbsp;</b>
+<b class="nc"><i>1633</i>&nbsp;    protected void writeModule1(Type var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>1634</i>&nbsp;        String[] var3 = this.getIDLModuleNames(var1);</b>
+<b class="nc"><i>1635</i>&nbsp;        var2.pln();</b>
+<b class="nc"><i>1636</i>&nbsp;</b>
+<b class="nc"><i>1637</i>&nbsp;        for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<b class="nc"><i>1638</i>&nbsp;            var2.pln(&quot;module &quot; + var3[var4] + &quot; {&quot;);</b>
+<i>1639</i>&nbsp;        }
+<b class="nc"><i>1640</i>&nbsp;</b>
+<b class="nc"><i>1641</i>&nbsp;    }</b>
+<i>1642</i>&nbsp;
+<b class="nc"><i>1643</i>&nbsp;    protected void writeModule2(Type var1, IndentingWriter var2) throws IOException {</b>
+<b class="nc"><i>1644</i>&nbsp;        String[] var3 = this.getIDLModuleNames(var1);</b>
+<b class="nc"><i>1645</i>&nbsp;</b>
+<b class="nc"><i>1646</i>&nbsp;        for(int var4 = 0; var4 &lt; var3.length; ++var4) {</b>
+<b class="nc"><i>1647</i>&nbsp;            var2.pln(&quot;};&quot;);</b>
+<b class="nc"><i>1648</i>&nbsp;        }</b>
+<b class="nc"><i>1649</i>&nbsp;</b>
+<b class="nc"><i>1650</i>&nbsp;        var2.pln();</b>
+<i>1651</i>&nbsp;    }
+<i>1652</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

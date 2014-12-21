@@ -1,0 +1,132 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AnnotatedBuilder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.junit.internal.builders</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AnnotatedBuilder (org.junit.internal.builders)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AnnotatedBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (12/ 18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package org.junit.internal.builders;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.lang.reflect.Modifier;
+<i>9</i>&nbsp;import org.junit.runner.RunWith;
+<i>10</i>&nbsp;import org.junit.runner.Runner;
+<i>11</i>&nbsp;import org.junit.runners.model.InitializationError;
+<i>12</i>&nbsp;import org.junit.runners.model.RunnerBuilder;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public class AnnotatedBuilder extends RunnerBuilder {
+<i>15</i>&nbsp;    private static final String CONSTRUCTOR_ERROR_FORMAT = &quot;Custom runner class %s should have a public constructor with signature %s(Class testClass)&quot;;
+<i>16</i>&nbsp;    private final RunnerBuilder suiteBuilder;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    public AnnotatedBuilder(RunnerBuilder suiteBuilder) {
+<i>19</i>&nbsp;        this.suiteBuilder = suiteBuilder;
+<i>20</i>&nbsp;    }
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public Runner runnerForClass(Class&lt;?&gt; testClass) throws Exception {
+<i>23</i>&nbsp;        for(Class currentTestClass = testClass; currentTestClass != null; currentTestClass = this.getEnclosingClassForNonStaticMemberClass(currentTestClass)) {
+<i>24</i>&nbsp;            RunWith annotation = (RunWith)currentTestClass.getAnnotation(RunWith.class);
+<i>25</i>&nbsp;            if(annotation != null) {
+<i>26</i>&nbsp;                return this.buildRunner(annotation.value(), testClass);
+<i>27</i>&nbsp;            }
+<i>28</i>&nbsp;        }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;        return null;
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private Class&lt;?&gt; getEnclosingClassForNonStaticMemberClass(Class&lt;?&gt; currentTestClass) {
+<i>34</i>&nbsp;        return currentTestClass.isMemberClass() &amp;&amp; !Modifier.isStatic(currentTestClass.getModifiers())?currentTestClass.getEnclosingClass():null;
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public Runner buildRunner(Class&lt;? extends Runner&gt; runnerClass, Class&lt;?&gt; testClass) throws Exception {
+<i>38</i>&nbsp;        try {
+<i>39</i>&nbsp;            return (Runner)runnerClass.getConstructor(new Class[]{Class.class}).newInstance(new Object[]{testClass});
+<i>40</i>&nbsp;        } catch (NoSuchMethodException var7) {
+<i>41</i>&nbsp;            try {
+<i>42</i>&nbsp;                return (Runner)runnerClass.getConstructor(new Class[]{Class.class, RunnerBuilder.class}).newInstance(new Object[]{testClass, this.suiteBuilder});
+<i>43</i>&nbsp;            } catch (NoSuchMethodException var6) {
+<i>44</i>&nbsp;                String simpleName = runnerClass.getSimpleName();
+<i>45</i>&nbsp;                throw new InitializationError(String.format(&quot;Custom runner class %s should have a public constructor with signature %s(Class testClass)&quot;, new Object[]{simpleName, simpleName}));
+<i>46</i>&nbsp;            }
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

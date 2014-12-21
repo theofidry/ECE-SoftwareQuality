@@ -1,0 +1,242 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SymbolHash</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SymbolHash (com.sun.org.apache.xerces.internal.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SymbolHash</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 38)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SymbolHash$Entry</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 52)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;public class SymbolHash {
+<i>9</i>&nbsp;    protected int fTableSize = 101;
+<i>10</i>&nbsp;    protected SymbolHash.Entry[] fBuckets;
+<i>11</i>&nbsp;    protected int fNum = 0;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    public SymbolHash() {
+<i>14</i>&nbsp;        this.fBuckets = new SymbolHash.Entry[this.fTableSize];
+<i>15</i>&nbsp;    }
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    public SymbolHash(int size) {
+<i>18</i>&nbsp;        this.fTableSize = size;
+<i>19</i>&nbsp;        this.fBuckets = new SymbolHash.Entry[this.fTableSize];
+<i>20</i>&nbsp;    }
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public void put(Object key, Object value) {
+<i>23</i>&nbsp;        int bucket = (key.hashCode() &amp; 2147483647) % this.fTableSize;
+<i>24</i>&nbsp;        SymbolHash.Entry entry = this.search(key, bucket);
+<i>25</i>&nbsp;        if(entry != null) {
+<i>26</i>&nbsp;            entry.value = value;
+<i>27</i>&nbsp;        } else {
+<i>28</i>&nbsp;            entry = new SymbolHash.Entry(key, value, this.fBuckets[bucket]);
+<i>29</i>&nbsp;            this.fBuckets[bucket] = entry;
+<i>30</i>&nbsp;            ++this.fNum;
+<i>31</i>&nbsp;        }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public Object get(Object key) {
+<b class="nc"><i>36</i>&nbsp;        int bucket = (key.hashCode() &amp; 2147483647) % this.fTableSize;</b>
+<i>37</i>&nbsp;        SymbolHash.Entry entry = this.search(key, bucket);
+<i>38</i>&nbsp;        return entry != null?entry.value:null;
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public int getLength() {
+<i>42</i>&nbsp;        return this.fNum;
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public int getValues(Object[] elements, int from) {
+<b class="nc"><i>46</i>&nbsp;        int i = 0;</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;        for(int j = 0; i &lt; this.fTableSize &amp;&amp; j &lt; this.fNum; ++i) {
+<i>49</i>&nbsp;            for(SymbolHash.Entry entry = this.fBuckets[i]; entry != null; entry = entry.next) {
+<i>50</i>&nbsp;                elements[from + j] = entry.value;
+<i>51</i>&nbsp;                ++j;
+<i>52</i>&nbsp;            }
+<b class="nc"><i>53</i>&nbsp;        }</b>
+<b class="nc"><i>54</i>&nbsp;</b>
+<i>55</i>&nbsp;        return this.fNum;
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public Object[] getEntries() {
+<i>59</i>&nbsp;        Object[] entries = new Object[this.fNum &lt;&lt; 1];
+<i>60</i>&nbsp;        int i = 0;
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;        for(int j = 0; i &lt; this.fTableSize &amp;&amp; j &lt; this.fNum &lt;&lt; 1; ++i) {</b>
+<b class="nc"><i>63</i>&nbsp;            for(SymbolHash.Entry entry = this.fBuckets[i]; entry != null; entry = entry.next) {</b>
+<b class="nc"><i>64</i>&nbsp;                entries[j] = entry.key;</b>
+<i>65</i>&nbsp;                ++j;
+<i>66</i>&nbsp;                entries[j] = entry.value;
+<i>67</i>&nbsp;                ++j;
+<i>68</i>&nbsp;            }
+<i>69</i>&nbsp;        }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;        return entries;
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public SymbolHash makeClone() {
+<i>75</i>&nbsp;        SymbolHash newTable = new SymbolHash(this.fTableSize);
+<i>76</i>&nbsp;        newTable.fNum = this.fNum;
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        for(int i = 0; i &lt; this.fTableSize; ++i) {
+<i>79</i>&nbsp;            if(this.fBuckets[i] != null) {
+<b class="nc"><i>80</i>&nbsp;                newTable.fBuckets[i] = this.fBuckets[i].makeClone();</b>
+<b class="nc"><i>81</i>&nbsp;            }</b>
+<i>82</i>&nbsp;        }
+<i>83</i>&nbsp;
+<b class="nc"><i>84</i>&nbsp;        return newTable;</b>
+<b class="nc"><i>85</i>&nbsp;    }</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    public void clear() {
+<i>88</i>&nbsp;        for(int i = 0; i &lt; this.fTableSize; ++i) {
+<b class="nc"><i>89</i>&nbsp;            this.fBuckets[i] = null;</b>
+<b class="nc"><i>90</i>&nbsp;        }</b>
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;        this.fNum = 0;
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    protected SymbolHash.Entry search(Object key, int bucket) {
+<i>96</i>&nbsp;        for(SymbolHash.Entry entry = this.fBuckets[bucket]; entry != null; entry = entry.next) {
+<i>97</i>&nbsp;            if(key.equals(entry.key)) {
+<i>98</i>&nbsp;                return entry;
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;
+<b class="nc"><i>102</i>&nbsp;        return null;</b>
+<b class="nc"><i>103</i>&nbsp;    }</b>
+<b class="nc"><i>104</i>&nbsp;</b>
+<b class="nc"><i>105</i>&nbsp;    protected static final class Entry {</b>
+<i>106</i>&nbsp;        public Object key;
+<b class="nc"><i>107</i>&nbsp;        public Object value;</b>
+<i>108</i>&nbsp;        public SymbolHash.Entry next;
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        public Entry() {
+<i>111</i>&nbsp;            this.key = null;
+<i>112</i>&nbsp;            this.value = null;
+<i>113</i>&nbsp;            this.next = null;
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;        public Entry(Object key, Object value, SymbolHash.Entry next) {</b>
+<i>117</i>&nbsp;            this.key = key;
+<i>118</i>&nbsp;            this.value = value;
+<i>119</i>&nbsp;            this.next = next;
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;        public SymbolHash.Entry makeClone() {
+<i>123</i>&nbsp;            SymbolHash.Entry entry = new SymbolHash.Entry();
+<i>124</i>&nbsp;            entry.key = this.key;
+<i>125</i>&nbsp;            entry.value = this.value;
+<i>126</i>&nbsp;            if(this.next != null) {
+<b class="nc"><i>127</i>&nbsp;                entry.next = this.next.makeClone();</b>
+<b class="nc"><i>128</i>&nbsp;            }</b>
+<b class="nc"><i>129</i>&nbsp;</b>
+<b class="nc"><i>130</i>&nbsp;            return entry;</b>
+<i>131</i>&nbsp;        }
+<i>132</i>&nbsp;    }
+<b class="nc"><i>133</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

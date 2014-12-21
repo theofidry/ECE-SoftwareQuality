@@ -1,0 +1,672 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Main</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.javac.main</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Main (com.sun.tools.javac.main)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Main</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 171)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Main$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Main$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 183)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.javac.main;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.javac.code.Source;
+<i>9</i>&nbsp;import com.sun.tools.javac.file.CacheFSInfo;
+<i>10</i>&nbsp;import com.sun.tools.javac.file.JavacFileManager;
+<i>11</i>&nbsp;import com.sun.tools.javac.jvm.Target;
+<i>12</i>&nbsp;import com.sun.tools.javac.main.CommandLine;
+<i>13</i>&nbsp;import com.sun.tools.javac.main.JavaCompiler;
+<i>14</i>&nbsp;import com.sun.tools.javac.main.OptionName;
+<i>15</i>&nbsp;import com.sun.tools.javac.main.RecognizedOptions;
+<i>16</i>&nbsp;import com.sun.tools.javac.main.JavacOption.Option;
+<i>17</i>&nbsp;import com.sun.tools.javac.main.RecognizedOptions.OptionHelper;
+<i>18</i>&nbsp;import com.sun.tools.javac.processing.AnnotationProcessingError;
+<i>19</i>&nbsp;import com.sun.tools.javac.util.ClientCodeException;
+<i>20</i>&nbsp;import com.sun.tools.javac.util.Context;
+<i>21</i>&nbsp;import com.sun.tools.javac.util.FatalError;
+<i>22</i>&nbsp;import com.sun.tools.javac.util.JavacMessages;
+<i>23</i>&nbsp;import com.sun.tools.javac.util.List;
+<i>24</i>&nbsp;import com.sun.tools.javac.util.ListBuffer;
+<i>25</i>&nbsp;import com.sun.tools.javac.util.Log;
+<i>26</i>&nbsp;import com.sun.tools.javac.util.Options;
+<i>27</i>&nbsp;import com.sun.tools.javac.util.PropagatedException;
+<i>28</i>&nbsp;import java.io.File;
+<i>29</i>&nbsp;import java.io.FileNotFoundException;
+<i>30</i>&nbsp;import java.io.IOException;
+<i>31</i>&nbsp;import java.io.PrintWriter;
+<i>32</i>&nbsp;import java.net.URL;
+<i>33</i>&nbsp;import java.security.DigestInputStream;
+<i>34</i>&nbsp;import java.security.MessageDigest;
+<i>35</i>&nbsp;import java.util.Arrays;
+<i>36</i>&nbsp;import java.util.Collection;
+<i>37</i>&nbsp;import java.util.Iterator;
+<i>38</i>&nbsp;import java.util.LinkedHashSet;
+<i>39</i>&nbsp;import java.util.MissingResourceException;
+<i>40</i>&nbsp;import java.util.Set;
+<i>41</i>&nbsp;import javax.annotation.processing.Processor;
+<i>42</i>&nbsp;import javax.tools.JavaFileManager;
+<i>43</i>&nbsp;import javax.tools.JavaFileObject;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;public class Main {
+<i>46</i>&nbsp;    String ownName;
+<i>47</i>&nbsp;    PrintWriter out;
+<i>48</i>&nbsp;    boolean apiMode;
+<i>49</i>&nbsp;    static final int EXIT_OK = 0;
+<i>50</i>&nbsp;    static final int EXIT_ERROR = 1;
+<i>51</i>&nbsp;    static final int EXIT_CMDERR = 2;
+<i>52</i>&nbsp;    static final int EXIT_SYSERR = 3;
+<i>53</i>&nbsp;    static final int EXIT_ABNORMAL = 4;
+<i>54</i>&nbsp;    private Option[] recognizedOptions;
+<i>55</i>&nbsp;    private Options options;
+<b class="nc"><i>56</i>&nbsp;    public Set&lt;File&gt; filenames;</b>
+<i>57</i>&nbsp;    public ListBuffer&lt;String&gt; classnames;
+<i>58</i>&nbsp;    private JavaFileManager fileManager;
+<b class="nc"><i>59</i>&nbsp;    private static final String javacBundleName = &quot;com.sun.tools.javac.resources.javac&quot;;</b>
+<i>60</i>&nbsp;    private static JavacMessages messages;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public Main(String var1) {
+<b class="nc"><i>63</i>&nbsp;        this(var1, new PrintWriter(System.err, true));</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public Main(String var1, PrintWriter var2) {
+<b class="nc"><i>67</i>&nbsp;        this.recognizedOptions = RecognizedOptions.getJavaCompilerOptions(new OptionHelper() {</b>
+<i>68</i>&nbsp;            public void setOut(PrintWriter var1) {
+<i>69</i>&nbsp;                Main.this.out = var1;
+<i>70</i>&nbsp;            }
+<b class="nc"><i>71</i>&nbsp;</b>
+<i>72</i>&nbsp;            public void error(String var1, Object... var2) {
+<i>73</i>&nbsp;                Main.this.error(var1, var2);
+<i>74</i>&nbsp;            }
+<b class="nc"><i>75</i>&nbsp;</b>
+<i>76</i>&nbsp;            public void printVersion() {
+<i>77</i>&nbsp;                Log.printLines(Main.this.out, Main.getLocalizedString(&quot;version&quot;, new Object[]{Main.this.ownName, JavaCompiler.version()}));
+<i>78</i>&nbsp;            }
+<b class="nc"><i>79</i>&nbsp;</b>
+<i>80</i>&nbsp;            public void printFullVersion() {
+<i>81</i>&nbsp;                Log.printLines(Main.this.out, Main.getLocalizedString(&quot;fullVersion&quot;, new Object[]{Main.this.ownName, JavaCompiler.fullVersion()}));
+<i>82</i>&nbsp;            }
+<b class="nc"><i>83</i>&nbsp;</b>
+<b class="nc"><i>84</i>&nbsp;            public void printHelp() {</b>
+<i>85</i>&nbsp;                Main.this.help();
+<i>86</i>&nbsp;            }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;            public void printXhelp() {</b>
+<i>89</i>&nbsp;                Main.this.xhelp();
+<i>90</i>&nbsp;            }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;            public void addFile(File var1) {
+<i>93</i>&nbsp;                Main.this.filenames.add(var1);
+<i>94</i>&nbsp;            }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;            public void addClassName(String var1) {
+<b class="nc"><i>97</i>&nbsp;                Main.this.classnames.append(var1);</b>
+<i>98</i>&nbsp;            }
+<i>99</i>&nbsp;        });
+<i>100</i>&nbsp;        this.options = null;
+<i>101</i>&nbsp;        this.filenames = null;
+<i>102</i>&nbsp;        this.classnames = null;
+<b class="nc"><i>103</i>&nbsp;        this.ownName = var1;</b>
+<b class="nc"><i>104</i>&nbsp;        this.out = var2;</b>
+<b class="nc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    void help() {
+<b class="nc"><i>108</i>&nbsp;        Log.printLines(this.out, getLocalizedString(&quot;msg.usage.header&quot;, new Object[]{this.ownName}));</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        for(int var1 = 0; var1 &lt; this.recognizedOptions.length; ++var1) {
+<i>111</i>&nbsp;            this.recognizedOptions[var1].help(this.out);
+<b class="nc"><i>112</i>&nbsp;        }</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;        this.out.println();
+<i>115</i>&nbsp;    }
+<b class="nc"><i>116</i>&nbsp;</b>
+<i>117</i>&nbsp;    void xhelp() {
+<i>118</i>&nbsp;        for(int var1 = 0; var1 &lt; this.recognizedOptions.length; ++var1) {
+<i>119</i>&nbsp;            this.recognizedOptions[var1].xhelp(this.out);
+<i>120</i>&nbsp;        }
+<b class="nc"><i>121</i>&nbsp;</b>
+<b class="nc"><i>122</i>&nbsp;        this.out.println();</b>
+<b class="nc"><i>123</i>&nbsp;        Log.printLines(this.out, getLocalizedString(&quot;msg.usage.nonstandard.footer&quot;, new Object[0]));</b>
+<i>124</i>&nbsp;    }
+<b class="nc"><i>125</i>&nbsp;</b>
+<i>126</i>&nbsp;    void error(String var1, Object... var2) {
+<i>127</i>&nbsp;        if(this.apiMode) {
+<i>128</i>&nbsp;            String var3 = getLocalizedString(var1, var2);
+<i>129</i>&nbsp;            throw new PropagatedException(new IllegalStateException(var3));
+<i>130</i>&nbsp;        } else {
+<b class="nc"><i>131</i>&nbsp;            this.warning(var1, var2);</b>
+<b class="nc"><i>132</i>&nbsp;            Log.printLines(this.out, getLocalizedString(&quot;msg.usage&quot;, new Object[]{this.ownName}));</b>
+<i>133</i>&nbsp;        }
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<i>136</i>&nbsp;    void warning(String var1, Object... var2) {
+<i>137</i>&nbsp;        Log.printLines(this.out, this.ownName + &quot;: &quot; + getLocalizedString(var1, var2));
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public Option getOption(String var1) {
+<b class="nc"><i>141</i>&nbsp;        Option[] var2 = this.recognizedOptions;</b>
+<b class="nc"><i>142</i>&nbsp;        int var3 = var2.length;</b>
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;        for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>145</i>&nbsp;            Option var5 = var2[var4];
+<i>146</i>&nbsp;            if(var5.matches(var1)) {
+<i>147</i>&nbsp;                return var5;
+<b class="nc"><i>148</i>&nbsp;            }</b>
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;        return null;
+<i>152</i>&nbsp;    }
+<b class="nc"><i>153</i>&nbsp;</b>
+<b class="nc"><i>154</i>&nbsp;    public void setOptions(Options var1) {</b>
+<b class="nc"><i>155</i>&nbsp;        if(var1 == null) {</b>
+<i>156</i>&nbsp;            throw new NullPointerException();
+<b class="nc"><i>157</i>&nbsp;        } else {</b>
+<i>158</i>&nbsp;            this.options = var1;
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;    }
+<b class="nc"><i>161</i>&nbsp;</b>
+<b class="nc"><i>162</i>&nbsp;    public void setAPIMode(boolean var1) {</b>
+<b class="nc"><i>163</i>&nbsp;        this.apiMode = var1;</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public Collection&lt;File&gt; processArgs(String[] var1) {
+<i>167</i>&nbsp;        return this.processArgs(var1, (String[])null);
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    public Collection&lt;File&gt; processArgs(String[] var1, String[] var2) {
+<b class="nc"><i>171</i>&nbsp;        int var3 = 0;</b>
+<b class="nc"><i>172</i>&nbsp;</b>
+<b class="nc"><i>173</i>&nbsp;        String var4;</b>
+<b class="nc"><i>174</i>&nbsp;        String var10;</b>
+<i>175</i>&nbsp;        while(var3 &lt; var1.length) {
+<i>176</i>&nbsp;            var4 = var1[var3];
+<i>177</i>&nbsp;            ++var3;
+<i>178</i>&nbsp;            Option var5 = null;
+<i>179</i>&nbsp;            if(var4.length() &gt; 0) {
+<b class="nc"><i>180</i>&nbsp;                int var6 = var4.charAt(0) == 45?0:this.recognizedOptions.length - 1;</b>
+<b class="nc"><i>181</i>&nbsp;</b>
+<b class="nc"><i>182</i>&nbsp;                for(int var7 = var6; var7 &lt; this.recognizedOptions.length; ++var7) {</b>
+<i>183</i>&nbsp;                    if(this.recognizedOptions[var7].matches(var4)) {
+<b class="nc"><i>184</i>&nbsp;                        var5 = this.recognizedOptions[var7];</b>
+<b class="nc"><i>185</i>&nbsp;                        break;</b>
+<b class="nc"><i>186</i>&nbsp;                    }</b>
+<i>187</i>&nbsp;                }
+<i>188</i>&nbsp;            }
+<b class="nc"><i>189</i>&nbsp;</b>
+<b class="nc"><i>190</i>&nbsp;            if(var5 == null) {</b>
+<b class="nc"><i>191</i>&nbsp;                this.error(&quot;err.invalid.flag&quot;, new Object[]{var4});</b>
+<b class="nc"><i>192</i>&nbsp;                return null;</b>
+<b class="nc"><i>193</i>&nbsp;            }</b>
+<i>194</i>&nbsp;
+<b class="nc"><i>195</i>&nbsp;            if(var5.hasArg()) {</b>
+<b class="nc"><i>196</i>&nbsp;                if(var3 == var1.length) {</b>
+<b class="nc"><i>197</i>&nbsp;                    this.error(&quot;err.req.arg&quot;, new Object[]{var4});</b>
+<b class="nc"><i>198</i>&nbsp;                    return null;</b>
+<b class="nc"><i>199</i>&nbsp;                }</b>
+<b class="nc"><i>200</i>&nbsp;</b>
+<b class="nc"><i>201</i>&nbsp;                var10 = var1[var3];</b>
+<i>202</i>&nbsp;                ++var3;
+<b class="nc"><i>203</i>&nbsp;                if(var5.process(this.options, var4, var10)) {</b>
+<i>204</i>&nbsp;                    return null;
+<b class="nc"><i>205</i>&nbsp;                }</b>
+<b class="nc"><i>206</i>&nbsp;            } else if(var5.process(this.options, var4)) {</b>
+<b class="nc"><i>207</i>&nbsp;                return null;</b>
+<b class="nc"><i>208</i>&nbsp;            }</b>
+<i>209</i>&nbsp;        }
+<b class="nc"><i>210</i>&nbsp;</b>
+<b class="nc"><i>211</i>&nbsp;        if(this.classnames != null &amp;&amp; var2 != null) {</b>
+<i>212</i>&nbsp;            this.classnames.addAll(Arrays.asList(var2));
+<i>213</i>&nbsp;        }
+<b class="nc"><i>214</i>&nbsp;</b>
+<b class="nc"><i>215</i>&nbsp;        if(!this.checkDirectory(OptionName.D)) {</b>
+<i>216</i>&nbsp;            return null;
+<i>217</i>&nbsp;        } else if(!this.checkDirectory(OptionName.S)) {
+<i>218</i>&nbsp;            return null;
+<i>219</i>&nbsp;        } else {
+<i>220</i>&nbsp;            var4 = this.options.get(OptionName.SOURCE);
+<i>221</i>&nbsp;            Source var9 = var4 != null?Source.lookup(var4):Source.DEFAULT;
+<i>222</i>&nbsp;            var10 = this.options.get(OptionName.TARGET);
+<b class="nc"><i>223</i>&nbsp;            Target var11 = var10 != null?Target.lookup(var10):Target.DEFAULT;</b>
+<b class="nc"><i>224</i>&nbsp;            if(Character.isDigit(var11.name.charAt(0))) {</b>
+<b class="nc"><i>225</i>&nbsp;                if(var11.compareTo(var9.requiredTarget()) &lt; 0) {</b>
+<b class="nc"><i>226</i>&nbsp;                    if(var10 != null) {</b>
+<b class="nc"><i>227</i>&nbsp;                        if(var4 == null) {</b>
+<i>228</i>&nbsp;                            this.warning(&quot;warn.target.default.source.conflict&quot;, new Object[]{var10, var9.requiredTarget().name});
+<i>229</i>&nbsp;                        } else {
+<i>230</i>&nbsp;                            this.warning(&quot;warn.source.target.conflict&quot;, new Object[]{var4, var9.requiredTarget().name});
+<b class="nc"><i>231</i>&nbsp;                        }</b>
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;                        return null;
+<i>234</i>&nbsp;                    }
+<b class="nc"><i>235</i>&nbsp;</b>
+<i>236</i>&nbsp;                    var11 = var9.requiredTarget();
+<b class="nc"><i>237</i>&nbsp;                    this.options.put(&quot;-target&quot;, var11.name);</b>
+<i>238</i>&nbsp;                } else if(var10 == null &amp;&amp; !var9.allowGenerics()) {
+<i>239</i>&nbsp;                    var11 = Target.JDK1_4;
+<b class="nc"><i>240</i>&nbsp;                    this.options.put(&quot;-target&quot;, var11.name);</b>
+<b class="nc"><i>241</i>&nbsp;                }</b>
+<i>242</i>&nbsp;            }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;            String var8 = this.options.get(&quot;showClass&quot;);
+<b class="nc"><i>245</i>&nbsp;            if(var8 != null) {</b>
+<i>246</i>&nbsp;                if(var8.equals(&quot;showClass&quot;)) {
+<i>247</i>&nbsp;                    var8 = &quot;com.sun.tools.javac.Main&quot;;
+<i>248</i>&nbsp;                }
+<b class="nc"><i>249</i>&nbsp;</b>
+<b class="nc"><i>250</i>&nbsp;                this.showClass(var8);</b>
+<b class="nc"><i>251</i>&nbsp;            }</b>
+<b class="nc"><i>252</i>&nbsp;</b>
+<b class="nc"><i>253</i>&nbsp;            return this.filenames;</b>
+<b class="nc"><i>254</i>&nbsp;        }</b>
+<b class="nc"><i>255</i>&nbsp;    }</b>
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;    private boolean checkDirectory(OptionName var1) {</b>
+<b class="nc"><i>258</i>&nbsp;        String var2 = this.options.get(var1);</b>
+<b class="nc"><i>259</i>&nbsp;        if(var2 == null) {</b>
+<i>260</i>&nbsp;            return true;
+<b class="nc"><i>261</i>&nbsp;        } else {</b>
+<i>262</i>&nbsp;            File var3 = new File(var2);
+<i>263</i>&nbsp;            if(!var3.exists()) {
+<i>264</i>&nbsp;                this.error(&quot;err.dir.not.found&quot;, new Object[]{var2});
+<i>265</i>&nbsp;                return false;
+<i>266</i>&nbsp;            } else if(!var3.isDirectory()) {
+<i>267</i>&nbsp;                this.error(&quot;err.file.not.directory&quot;, new Object[]{var2});
+<b class="nc"><i>268</i>&nbsp;                return false;</b>
+<b class="nc"><i>269</i>&nbsp;            } else {</b>
+<b class="nc"><i>270</i>&nbsp;                return true;</b>
+<b class="nc"><i>271</i>&nbsp;            }</b>
+<i>272</i>&nbsp;        }
+<b class="nc"><i>273</i>&nbsp;    }</b>
+<i>274</i>&nbsp;
+<b class="nc"><i>275</i>&nbsp;    public int compile(String[] var1) {</b>
+<i>276</i>&nbsp;        Context var2 = new Context();
+<i>277</i>&nbsp;        JavacFileManager.preRegister(var2);
+<i>278</i>&nbsp;        int var3 = this.compile(var1, var2);
+<b class="nc"><i>279</i>&nbsp;        if(this.fileManager instanceof JavacFileManager) {</b>
+<i>280</i>&nbsp;            ((JavacFileManager)this.fileManager).close();
+<i>281</i>&nbsp;        }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;        return var3;
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    public int compile(String[] var1, Context var2) {
+<i>287</i>&nbsp;        return this.compile(var1, var2, List.nil(), (Iterable)null);
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<b class="nc"><i>290</i>&nbsp;    public int compile(String[] var1, Context var2, List&lt;JavaFileObject&gt; var3, Iterable&lt;? extends Processor&gt; var4) {</b>
+<b class="nc"><i>291</i>&nbsp;        return this.compile(var1, (String[])null, var2, var3, var4);</b>
+<i>292</i>&nbsp;    }
+<b class="nc"><i>293</i>&nbsp;</b>
+<b class="nc"><i>294</i>&nbsp;    public int compile(String[] var1, String[] var2, Context var3, List&lt;JavaFileObject&gt; var4, Iterable&lt;? extends Processor&gt; var5) {</b>
+<b class="nc"><i>295</i>&nbsp;        if(this.options == null) {</b>
+<i>296</i>&nbsp;            this.options = Options.instance(var3);
+<i>297</i>&nbsp;        }
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;        this.filenames = new LinkedHashSet();
+<i>300</i>&nbsp;        this.classnames = new ListBuffer();
+<i>301</i>&nbsp;        JavaCompiler var6 = null;
+<b class="nc"><i>302</i>&nbsp;</b>
+<b class="nc"><i>303</i>&nbsp;        byte var59;</b>
+<b class="nc"><i>304</i>&nbsp;        try {</b>
+<i>305</i>&nbsp;            byte var8;
+<i>306</i>&nbsp;            try {
+<i>307</i>&nbsp;                if(var1.length == 0 &amp;&amp; (var2 == null || var2.length == 0) &amp;&amp; var4.isEmpty()) {
+<i>308</i>&nbsp;                    this.help();
+<b class="nc"><i>309</i>&nbsp;                    byte var55 = 2;</b>
+<b class="nc"><i>310</i>&nbsp;                    return var55;</b>
+<i>311</i>&nbsp;                }
+<b class="nc"><i>312</i>&nbsp;</b>
+<b class="nc"><i>313</i>&nbsp;                Collection var7;</b>
+<i>314</i>&nbsp;                try {
+<b class="nc"><i>315</i>&nbsp;                    var7 = this.processArgs(CommandLine.parse(var1), var2);</b>
+<i>316</i>&nbsp;                    if(var7 == null) {
+<i>317</i>&nbsp;                        var8 = 2;
+<i>318</i>&nbsp;                        return var8;
+<b class="nc"><i>319</i>&nbsp;                    }</b>
+<b class="nc"><i>320</i>&nbsp;</b>
+<b class="nc"><i>321</i>&nbsp;                    if(var7.isEmpty() &amp;&amp; var4.isEmpty() &amp;&amp; this.classnames.isEmpty()) {</b>
+<i>322</i>&nbsp;                        if(!this.options.isSet(OptionName.HELP) &amp;&amp; !this.options.isSet(OptionName.X) &amp;&amp; !this.options.isSet(OptionName.VERSION) &amp;&amp; !this.options.isSet(OptionName.FULLVERSION)) {
+<b class="nc"><i>323</i>&nbsp;                            if(JavaCompiler.explicitAnnotationProcessingRequested(this.options)) {</b>
+<b class="nc"><i>324</i>&nbsp;                                this.error(&quot;err.no.source.files.classes&quot;, new Object[0]);</b>
+<i>325</i>&nbsp;                            } else {
+<i>326</i>&nbsp;                                this.error(&quot;err.no.source.files&quot;, new Object[0]);
+<b class="nc"><i>327</i>&nbsp;                            }</b>
+<b class="nc"><i>328</i>&nbsp;</b>
+<i>329</i>&nbsp;                            var8 = 2;
+<b class="nc"><i>330</i>&nbsp;                            return var8;</b>
+<b class="nc"><i>331</i>&nbsp;                        }</b>
+<b class="nc"><i>332</i>&nbsp;</b>
+<b class="nc"><i>333</i>&nbsp;                        var8 = 0;</b>
+<i>334</i>&nbsp;                        return var8;
+<i>335</i>&nbsp;                    }
+<b class="nc"><i>336</i>&nbsp;                } catch (FileNotFoundException var45) {</b>
+<i>337</i>&nbsp;                    Log.printLines(this.out, this.ownName + &quot;: &quot; + getLocalizedString(&quot;err.file.not.found&quot;, new Object[]{var45.getMessage()}));
+<b class="nc"><i>338</i>&nbsp;                    byte var9 = 3;</b>
+<i>339</i>&nbsp;                    return var9;
+<b class="nc"><i>340</i>&nbsp;                }</b>
+<b class="nc"><i>341</i>&nbsp;</b>
+<i>342</i>&nbsp;                boolean var57 = this.options.isSet(&quot;stdout&quot;);
+<b class="nc"><i>343</i>&nbsp;                if(var57) {</b>
+<i>344</i>&nbsp;                    this.out.flush();
+<b class="nc"><i>345</i>&nbsp;                    this.out = new PrintWriter(System.out, true);</b>
+<b class="nc"><i>346</i>&nbsp;                }</b>
+<b class="nc"><i>347</i>&nbsp;</b>
+<b class="nc"><i>348</i>&nbsp;                var3.put(Log.outKey, this.out);</b>
+<b class="nc"><i>349</i>&nbsp;                boolean var56 = this.options.isUnset(&quot;nonBatchMode&quot;) &amp;&amp; System.getProperty(&quot;nonBatchMode&quot;) == null;</b>
+<b class="nc"><i>350</i>&nbsp;                if(var56) {</b>
+<b class="nc"><i>351</i>&nbsp;                    CacheFSInfo.preRegister(var3);</b>
+<i>352</i>&nbsp;                }
+<b class="nc"><i>353</i>&nbsp;</b>
+<i>354</i>&nbsp;                this.fileManager = (JavaFileManager)var3.get(JavaFileManager.class);
+<i>355</i>&nbsp;                var6 = JavaCompiler.instance(var3);
+<i>356</i>&nbsp;                if(var6 == null) {
+<b class="nc"><i>357</i>&nbsp;                    byte var58 = 3;</b>
+<i>358</i>&nbsp;                    return var58;
+<b class="nc"><i>359</i>&nbsp;                }</b>
+<b class="nc"><i>360</i>&nbsp;</b>
+<b class="nc"><i>361</i>&nbsp;                Log var10 = Log.instance(var3);</b>
+<b class="nc"><i>362</i>&nbsp;                if(!var7.isEmpty()) {</b>
+<b class="nc"><i>363</i>&nbsp;                    var6 = JavaCompiler.instance(var3);</b>
+<b class="nc"><i>364</i>&nbsp;                    List var11 = List.nil();</b>
+<b class="nc"><i>365</i>&nbsp;                    JavacFileManager var12 = (JavacFileManager)this.fileManager;</b>
+<b class="nc"><i>366</i>&nbsp;</b>
+<b class="nc"><i>367</i>&nbsp;                    Iterator var13;</b>
+<b class="nc"><i>368</i>&nbsp;                    JavaFileObject var14;</b>
+<b class="nc"><i>369</i>&nbsp;                    for(var13 = var12.getJavaFileObjectsFromFiles(var7).iterator(); var13.hasNext(); var11 = var11.prepend(var14)) {</b>
+<b class="nc"><i>370</i>&nbsp;                        var14 = (JavaFileObject)var13.next();</b>
+<b class="nc"><i>371</i>&nbsp;                    }</b>
+<b class="nc"><i>372</i>&nbsp;</b>
+<b class="nc"><i>373</i>&nbsp;                    for(var13 = var11.iterator(); var13.hasNext(); var4 = var4.prepend(var14)) {</b>
+<b class="nc"><i>374</i>&nbsp;                        var14 = (JavaFileObject)var13.next();</b>
+<b class="nc"><i>375</i>&nbsp;                    }</b>
+<b class="nc"><i>376</i>&nbsp;                }</b>
+<b class="nc"><i>377</i>&nbsp;</b>
+<b class="nc"><i>378</i>&nbsp;                var6.compile(var4, this.classnames.toList(), var5);</b>
+<i>379</i>&nbsp;                if(var10.expectDiagKeys == null) {
+<b class="nc"><i>380</i>&nbsp;                    if(var6.errorCount() == 0) {</b>
+<b class="nc"><i>381</i>&nbsp;                        return 0;</b>
+<i>382</i>&nbsp;                    }
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;                    var59 = 1;
+<b class="nc"><i>385</i>&nbsp;                    return var59;</b>
+<i>386</i>&nbsp;                }
+<b class="nc"><i>387</i>&nbsp;</b>
+<b class="nc"><i>388</i>&nbsp;                if(!var10.expectDiagKeys.isEmpty()) {</b>
+<i>389</i>&nbsp;                    Log.printLines(var10.noticeWriter, &quot;expected diagnostic keys not found: &quot; + var10.expectDiagKeys);
+<b class="nc"><i>390</i>&nbsp;                    var59 = 1;</b>
+<b class="nc"><i>391</i>&nbsp;                    return var59;</b>
+<b class="nc"><i>392</i>&nbsp;                }</b>
+<b class="nc"><i>393</i>&nbsp;</b>
+<b class="nc"><i>394</i>&nbsp;                Log.printLines(var10.noticeWriter, &quot;all expected diagnostics found&quot;);</b>
+<i>395</i>&nbsp;                var59 = 0;
+<i>396</i>&nbsp;            } catch (IOException var46) {
+<i>397</i>&nbsp;                this.ioMessage(var46);
+<i>398</i>&nbsp;                var8 = 3;
+<i>399</i>&nbsp;                return var8;
+<b class="nc"><i>400</i>&nbsp;            } catch (OutOfMemoryError var47) {</b>
+<i>401</i>&nbsp;                this.resourceMessage(var47);
+<b class="nc"><i>402</i>&nbsp;                var8 = 3;</b>
+<i>403</i>&nbsp;                return var8;
+<i>404</i>&nbsp;            } catch (StackOverflowError var48) {
+<i>405</i>&nbsp;                this.resourceMessage(var48);
+<i>406</i>&nbsp;                var8 = 3;
+<i>407</i>&nbsp;                return var8;
+<b class="nc"><i>408</i>&nbsp;            } catch (FatalError var49) {</b>
+<i>409</i>&nbsp;                this.feMessage(var49);
+<i>410</i>&nbsp;                var8 = 3;
+<i>411</i>&nbsp;                return var8;
+<i>412</i>&nbsp;            } catch (AnnotationProcessingError var50) {
+<i>413</i>&nbsp;                if(this.apiMode) {
+<b class="nc"><i>414</i>&nbsp;                    throw new RuntimeException(var50.getCause());</b>
+<b class="nc"><i>415</i>&nbsp;                }</b>
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;                this.apMessage(var50);
+<i>418</i>&nbsp;                var8 = 3;
+<i>419</i>&nbsp;                return var8;
+<i>420</i>&nbsp;            } catch (ClientCodeException var51) {
+<b class="nc"><i>421</i>&nbsp;                throw new RuntimeException(var51.getCause());</b>
+<i>422</i>&nbsp;            } catch (PropagatedException var52) {
+<b class="nc"><i>423</i>&nbsp;                throw var52.getCause();</b>
+<i>424</i>&nbsp;            } catch (Throwable var53) {
+<i>425</i>&nbsp;                if(var6 == null || var6.errorCount() == 0 || this.options == null || this.options.isSet(&quot;dev&quot;)) {
+<i>426</i>&nbsp;                    this.bugMessage(var53);
+<i>427</i>&nbsp;                }
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;                var8 = 4;
+<b class="nc"><i>430</i>&nbsp;                return var8;</b>
+<i>431</i>&nbsp;            }
+<b class="nc"><i>432</i>&nbsp;        } finally {</b>
+<i>433</i>&nbsp;            if(var6 != null) {
+<i>434</i>&nbsp;                try {
+<i>435</i>&nbsp;                    var6.close();
+<i>436</i>&nbsp;                } catch (ClientCodeException var44) {
+<i>437</i>&nbsp;                    throw new RuntimeException(var44.getCause());
+<i>438</i>&nbsp;                }
+<i>439</i>&nbsp;            }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;            this.filenames = null;
+<i>442</i>&nbsp;            this.options = null;
+<i>443</i>&nbsp;        }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;        return var59;
+<b class="nc"><i>446</i>&nbsp;    }</b>
+<b class="nc"><i>447</i>&nbsp;</b>
+<b class="nc"><i>448</i>&nbsp;    void bugMessage(Throwable var1) {</b>
+<i>449</i>&nbsp;        Log.printLines(this.out, getLocalizedString(&quot;msg.bug&quot;, new Object[]{JavaCompiler.version()}));
+<b class="nc"><i>450</i>&nbsp;        var1.printStackTrace(this.out);</b>
+<b class="nc"><i>451</i>&nbsp;    }</b>
+<i>452</i>&nbsp;
+<i>453</i>&nbsp;    void feMessage(Throwable var1) {
+<i>454</i>&nbsp;        Log.printLines(this.out, var1.getMessage());
+<i>455</i>&nbsp;        if(var1.getCause() != null &amp;&amp; this.options.isSet(&quot;dev&quot;)) {
+<b class="nc"><i>456</i>&nbsp;            var1.getCause().printStackTrace(this.out);</b>
+<b class="nc"><i>457</i>&nbsp;        }</b>
+<i>458</i>&nbsp;
+<b class="nc"><i>459</i>&nbsp;    }</b>
+<i>460</i>&nbsp;
+<i>461</i>&nbsp;    void ioMessage(Throwable var1) {
+<i>462</i>&nbsp;        Log.printLines(this.out, getLocalizedString(&quot;msg.io&quot;, new Object[0]));
+<b class="nc"><i>463</i>&nbsp;        var1.printStackTrace(this.out);</b>
+<i>464</i>&nbsp;    }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;    void resourceMessage(Throwable var1) {
+<i>467</i>&nbsp;        Log.printLines(this.out, getLocalizedString(&quot;msg.resource&quot;, new Object[0]));
+<i>468</i>&nbsp;        var1.printStackTrace(this.out);
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    void apMessage(AnnotationProcessingError var1) {
+<i>472</i>&nbsp;        Log.printLines(this.out, getLocalizedString(&quot;msg.proc.annotation.uncaught.exception&quot;, new Object[0]));
+<i>473</i>&nbsp;        var1.getCause().printStackTrace(this.out);
+<i>474</i>&nbsp;    }
+<i>475</i>&nbsp;
+<i>476</i>&nbsp;    void showClass(String var1) {
+<i>477</i>&nbsp;        this.out.println(&quot;javac: show class: &quot; + var1);
+<i>478</i>&nbsp;        URL var2 = this.getClass().getResource(&#39;/&#39; + var1.replace(&#39;.&#39;, &#39;/&#39;) + &quot;.class&quot;);
+<i>479</i>&nbsp;        if(var2 == null) {
+<i>480</i>&nbsp;            this.out.println(&quot;  class not found&quot;);
+<i>481</i>&nbsp;        } else {
+<i>482</i>&nbsp;            this.out.println(&quot;  &quot; + var2);
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;            try {
+<i>485</i>&nbsp;                MessageDigest var5 = MessageDigest.getInstance(&quot;MD5&quot;);
+<i>486</i>&nbsp;                DigestInputStream var6 = new DigestInputStream(var2.openStream(), var5);
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;                byte[] var4;
+<i>489</i>&nbsp;                try {
+<i>490</i>&nbsp;                    byte[] var7 = new byte[8192];
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;                    while(true) {
+<i>493</i>&nbsp;                        int var8 = var6.read(var7);
+<i>494</i>&nbsp;                        if(var8 &lt;= 0) {
+<i>495</i>&nbsp;                            var4 = var5.digest();
+<i>496</i>&nbsp;                            break;
+<i>497</i>&nbsp;                        }
+<i>498</i>&nbsp;                    }
+<i>499</i>&nbsp;                } finally {
+<i>500</i>&nbsp;                    var6.close();
+<i>501</i>&nbsp;                }
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;                StringBuilder var16 = new StringBuilder();
+<i>504</i>&nbsp;                byte[] var17 = var4;
+<i>505</i>&nbsp;                int var9 = var4.length;
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;                for(int var10 = 0; var10 &lt; var9; ++var10) {
+<i>508</i>&nbsp;                    byte var11 = var17[var10];
+<i>509</i>&nbsp;                    var16.append(String.format(&quot;%02x&quot;, new Object[]{Byte.valueOf(var11)}));
+<i>510</i>&nbsp;                }
+<i>511</i>&nbsp;
+<i>512</i>&nbsp;                this.out.println(&quot;  MD5 checksum: &quot; + var16);
+<i>513</i>&nbsp;            } catch (Exception var15) {
+<i>514</i>&nbsp;                this.out.println(&quot;  cannot compute digest: &quot; + var15);
+<i>515</i>&nbsp;            }
+<i>516</i>&nbsp;        }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;    }
+<i>519</i>&nbsp;
+<i>520</i>&nbsp;    public static String getLocalizedString(String var0, Object... var1) {
+<i>521</i>&nbsp;        try {
+<i>522</i>&nbsp;            if(messages == null) {
+<i>523</i>&nbsp;                messages = new JavacMessages(&quot;com.sun.tools.javac.resources.javac&quot;);
+<i>524</i>&nbsp;            }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;            return messages.getLocalizedString(&quot;javac.&quot; + var0, var1);
+<i>527</i>&nbsp;        } catch (MissingResourceException var3) {
+<i>528</i>&nbsp;            throw new Error(&quot;Fatal Error: Resource for javac is missing&quot;, var3);
+<i>529</i>&nbsp;        }
+<i>530</i>&nbsp;    }
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;    public static void useRawMessages(boolean var0) {
+<i>533</i>&nbsp;        if(var0) {
+<i>534</i>&nbsp;            messages = new JavacMessages(&quot;com.sun.tools.javac.resources.javac&quot;) {
+<i>535</i>&nbsp;                public String getLocalizedString(String var1, Object... var2) {
+<i>536</i>&nbsp;                    return var1;
+<i>537</i>&nbsp;                }
+<i>538</i>&nbsp;            };
+<i>539</i>&nbsp;        } else {
+<i>540</i>&nbsp;            messages = new JavacMessages(&quot;com.sun.tools.javac.resources.javac&quot;);
+<i>541</i>&nbsp;        }
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;    }
+<i>544</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

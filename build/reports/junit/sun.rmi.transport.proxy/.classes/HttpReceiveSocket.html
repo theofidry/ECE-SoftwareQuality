@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HttpReceiveSocket</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.rmi.transport.proxy</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HttpReceiveSocket (sun.rmi.transport.proxy)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HttpReceiveSocket</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.rmi.transport.proxy;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.DataOutputStream;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.InputStream;
+<i>11</i>&nbsp;import java.io.OutputStream;
+<i>12</i>&nbsp;import java.net.InetAddress;
+<i>13</i>&nbsp;import java.net.Socket;
+<i>14</i>&nbsp;import sun.rmi.transport.proxy.HttpInputStream;
+<i>15</i>&nbsp;import sun.rmi.transport.proxy.HttpOutputStream;
+<i>16</i>&nbsp;import sun.rmi.transport.proxy.RMISocketInfo;
+<i>17</i>&nbsp;import sun.rmi.transport.proxy.WrappedSocket;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;public class HttpReceiveSocket extends WrappedSocket implements RMISocketInfo {
+<i>20</i>&nbsp;    private boolean headerSent = false;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public HttpReceiveSocket(Socket var1, InputStream var2, OutputStream var3) throws IOException {
+<i>23</i>&nbsp;        super(var1, var2, var3);
+<i>24</i>&nbsp;        this.in = new HttpInputStream(var2 != null?var2:var1.getInputStream());
+<i>25</i>&nbsp;        this.out = var3 != null?var3:var1.getOutputStream();
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public boolean isReusable() {
+<i>29</i>&nbsp;        return false;
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public InetAddress getInetAddress() {
+<i>33</i>&nbsp;        return null;
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public OutputStream getOutputStream() throws IOException {
+<b class="nc"><i>37</i>&nbsp;        if(!this.headerSent) {</b>
+<i>38</i>&nbsp;            DataOutputStream var1 = new DataOutputStream(this.out);
+<i>39</i>&nbsp;            var1.writeBytes(&quot;HTTP/1.0 200 OK\r\n&quot;);
+<i>40</i>&nbsp;            var1.flush();
+<i>41</i>&nbsp;            this.headerSent = true;
+<i>42</i>&nbsp;            this.out = new HttpOutputStream(this.out);
+<i>43</i>&nbsp;        }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;        return this.out;
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public synchronized void close() throws IOException {
+<b class="nc"><i>49</i>&nbsp;        this.getOutputStream().close();</b>
+<i>50</i>&nbsp;        this.socket.close();
+<b class="nc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<b class="nc"><i>53</i>&nbsp;    public String toString() {</b>
+<i>54</i>&nbsp;        return &quot;HttpReceive&quot; + this.socket.toString();
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:56</div>
+</div>
+</body>
+</html>

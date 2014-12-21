@@ -1,0 +1,320 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InitialContext</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.naming</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InitialContext (javax.naming)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InitialContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 39)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 81)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package javax.naming;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.naming.internal.ResourceManager;
+<i>9</i>&nbsp;import java.util.Hashtable;
+<i>10</i>&nbsp;import javax.naming.Binding;
+<i>11</i>&nbsp;import javax.naming.Context;
+<i>12</i>&nbsp;import javax.naming.Name;
+<i>13</i>&nbsp;import javax.naming.NameClassPair;
+<i>14</i>&nbsp;import javax.naming.NameParser;
+<i>15</i>&nbsp;import javax.naming.NamingEnumeration;
+<i>16</i>&nbsp;import javax.naming.NamingException;
+<i>17</i>&nbsp;import javax.naming.NoInitialContextException;
+<i>18</i>&nbsp;import javax.naming.spi.NamingManager;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class InitialContext implements Context {
+<i>21</i>&nbsp;    protected Hashtable&lt;Object, Object&gt; myProps = null;
+<i>22</i>&nbsp;    protected Context defaultInitCtx = null;
+<i>23</i>&nbsp;    protected boolean gotDefault = false;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    protected InitialContext(boolean var1) throws NamingException {
+<i>26</i>&nbsp;        if(!var1) {
+<i>27</i>&nbsp;            this.init((Hashtable)null);
+<i>28</i>&nbsp;        }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public InitialContext() throws NamingException {
+<i>33</i>&nbsp;        this.init((Hashtable)null);
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public InitialContext(Hashtable&lt;?, ?&gt; var1) throws NamingException {
+<i>37</i>&nbsp;        if(var1 != null) {
+<i>38</i>&nbsp;            var1 = (Hashtable)var1.clone();
+<i>39</i>&nbsp;        }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;        this.init(var1);
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    protected void init(Hashtable&lt;?, ?&gt; var1) throws NamingException {
+<i>45</i>&nbsp;        this.myProps = ResourceManager.getInitialEnvironment(var1);
+<i>46</i>&nbsp;        if(this.myProps.get(&quot;java.naming.factory.initial&quot;) != null) {
+<i>47</i>&nbsp;            this.getDefaultInitCtx();
+<i>48</i>&nbsp;        }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public static &lt;T&gt; T doLookup(Name var0) throws NamingException {
+<i>53</i>&nbsp;        return (new InitialContext()).lookup((Name)var0);
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public static &lt;T&gt; T doLookup(String var0) throws NamingException {
+<i>57</i>&nbsp;        return (new InitialContext()).lookup((String)var0);
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    private static String getURLScheme(String var0) {
+<i>61</i>&nbsp;        int var1 = var0.indexOf(58);
+<i>62</i>&nbsp;        int var2 = var0.indexOf(47);
+<i>63</i>&nbsp;        return var1 &gt; 0 &amp;&amp; (var2 == -1 || var1 &lt; var2)?var0.substring(0, var1):null;
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    protected Context getDefaultInitCtx() throws NamingException {
+<i>67</i>&nbsp;        if(!this.gotDefault) {
+<i>68</i>&nbsp;            this.defaultInitCtx = NamingManager.getInitialContext(this.myProps);
+<i>69</i>&nbsp;            this.gotDefault = true;
+<i>70</i>&nbsp;        }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;        if(this.defaultInitCtx == null) {
+<i>73</i>&nbsp;            throw new NoInitialContextException();
+<i>74</i>&nbsp;        } else {
+<i>75</i>&nbsp;            return this.defaultInitCtx;
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    protected Context getURLOrDefaultInitCtx(String var1) throws NamingException {
+<i>80</i>&nbsp;        if(NamingManager.hasInitialContextFactoryBuilder()) {
+<i>81</i>&nbsp;            return this.getDefaultInitCtx();
+<i>82</i>&nbsp;        } else {
+<i>83</i>&nbsp;            String var2 = getURLScheme(var1);
+<i>84</i>&nbsp;            if(var2 != null) {
+<i>85</i>&nbsp;                Context var3 = NamingManager.getURLContext(var2, this.myProps);
+<i>86</i>&nbsp;                if(var3 != null) {
+<i>87</i>&nbsp;                    return var3;
+<i>88</i>&nbsp;                }
+<i>89</i>&nbsp;            }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;            return this.getDefaultInitCtx();
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    protected Context getURLOrDefaultInitCtx(Name var1) throws NamingException {
+<i>96</i>&nbsp;        if(NamingManager.hasInitialContextFactoryBuilder()) {
+<i>97</i>&nbsp;            return this.getDefaultInitCtx();
+<i>98</i>&nbsp;        } else {
+<i>99</i>&nbsp;            if(var1.size() &gt; 0) {
+<i>100</i>&nbsp;                String var2 = var1.get(0);
+<i>101</i>&nbsp;                String var3 = getURLScheme(var2);
+<i>102</i>&nbsp;                if(var3 != null) {
+<i>103</i>&nbsp;                    Context var4 = NamingManager.getURLContext(var3, this.myProps);
+<i>104</i>&nbsp;                    if(var4 != null) {
+<i>105</i>&nbsp;                        return var4;
+<i>106</i>&nbsp;                    }
+<i>107</i>&nbsp;                }
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;            return this.getDefaultInitCtx();
+<i>111</i>&nbsp;        }
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public Object lookup(String var1) throws NamingException {
+<i>115</i>&nbsp;        return this.getURLOrDefaultInitCtx((String)var1).lookup(var1);
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public Object lookup(Name var1) throws NamingException {
+<i>119</i>&nbsp;        return this.getURLOrDefaultInitCtx((Name)var1).lookup(var1);
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public void bind(String var1, Object var2) throws NamingException {
+<i>123</i>&nbsp;        this.getURLOrDefaultInitCtx((String)var1).bind(var1, var2);
+<b class="nc"><i>124</i>&nbsp;    }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public void bind(Name var1, Object var2) throws NamingException {
+<i>127</i>&nbsp;        this.getURLOrDefaultInitCtx((Name)var1).bind(var1, var2);
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public void rebind(String var1, Object var2) throws NamingException {
+<i>131</i>&nbsp;        this.getURLOrDefaultInitCtx((String)var1).rebind(var1, var2);
+<i>132</i>&nbsp;    }
+<b class="nc"><i>133</i>&nbsp;</b>
+<i>134</i>&nbsp;    public void rebind(Name var1, Object var2) throws NamingException {
+<i>135</i>&nbsp;        this.getURLOrDefaultInitCtx((Name)var1).rebind(var1, var2);
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public void unbind(String var1) throws NamingException {
+<i>139</i>&nbsp;        this.getURLOrDefaultInitCtx((String)var1).unbind(var1);
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    public void unbind(Name var1) throws NamingException {
+<i>143</i>&nbsp;        this.getURLOrDefaultInitCtx((Name)var1).unbind(var1);
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    public void rename(String var1, String var2) throws NamingException {
+<i>147</i>&nbsp;        this.getURLOrDefaultInitCtx((String)var1).rename(var1, var2);
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    public void rename(Name var1, Name var2) throws NamingException {
+<i>151</i>&nbsp;        this.getURLOrDefaultInitCtx((Name)var1).rename(var1, var2);
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public NamingEnumeration&lt;NameClassPair&gt; list(String var1) throws NamingException {
+<i>155</i>&nbsp;        return this.getURLOrDefaultInitCtx((String)var1).list(var1);
+<i>156</i>&nbsp;    }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    public NamingEnumeration&lt;NameClassPair&gt; list(Name var1) throws NamingException {
+<b class="nc"><i>159</i>&nbsp;        return this.getURLOrDefaultInitCtx((Name)var1).list(var1);</b>
+<b class="nc"><i>160</i>&nbsp;    }</b>
+<b class="nc"><i>161</i>&nbsp;</b>
+<i>162</i>&nbsp;    public NamingEnumeration&lt;Binding&gt; listBindings(String var1) throws NamingException {
+<i>163</i>&nbsp;        return this.getURLOrDefaultInitCtx((String)var1).listBindings(var1);
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public NamingEnumeration&lt;Binding&gt; listBindings(Name var1) throws NamingException {
+<i>167</i>&nbsp;        return this.getURLOrDefaultInitCtx((Name)var1).listBindings(var1);
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    public void destroySubcontext(String var1) throws NamingException {
+<i>171</i>&nbsp;        this.getURLOrDefaultInitCtx((String)var1).destroySubcontext(var1);
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<b class="nc"><i>174</i>&nbsp;    public void destroySubcontext(Name var1) throws NamingException {</b>
+<b class="nc"><i>175</i>&nbsp;        this.getURLOrDefaultInitCtx((Name)var1).destroySubcontext(var1);</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    public Context createSubcontext(String var1) throws NamingException {
+<i>179</i>&nbsp;        return this.getURLOrDefaultInitCtx((String)var1).createSubcontext(var1);
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    public Context createSubcontext(Name var1) throws NamingException {
+<i>183</i>&nbsp;        return this.getURLOrDefaultInitCtx((Name)var1).createSubcontext(var1);
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    public Object lookupLink(String var1) throws NamingException {
+<i>187</i>&nbsp;        return this.getURLOrDefaultInitCtx((String)var1).lookupLink(var1);
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    public Object lookupLink(Name var1) throws NamingException {
+<i>191</i>&nbsp;        return this.getURLOrDefaultInitCtx((Name)var1).lookupLink(var1);
+<i>192</i>&nbsp;    }
+<b class="nc"><i>193</i>&nbsp;</b>
+<b class="nc"><i>194</i>&nbsp;    public NameParser getNameParser(String var1) throws NamingException {</b>
+<b class="nc"><i>195</i>&nbsp;        return this.getURLOrDefaultInitCtx((String)var1).getNameParser(var1);</b>
+<i>196</i>&nbsp;    }
+<b class="nc"><i>197</i>&nbsp;</b>
+<i>198</i>&nbsp;    public NameParser getNameParser(Name var1) throws NamingException {
+<i>199</i>&nbsp;        return this.getURLOrDefaultInitCtx((Name)var1).getNameParser(var1);
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    public String composeName(String var1, String var2) throws NamingException {
+<i>203</i>&nbsp;        return var1;
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public Name composeName(Name var1, Name var2) throws NamingException {
+<i>207</i>&nbsp;        return (Name)var1.clone();
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public Object addToEnvironment(String var1, Object var2) throws NamingException {
+<i>211</i>&nbsp;        this.myProps.put(var1, var2);
+<i>212</i>&nbsp;        return this.getDefaultInitCtx().addToEnvironment(var1, var2);
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    public Object removeFromEnvironment(String var1) throws NamingException {
+<i>216</i>&nbsp;        this.myProps.remove(var1);
+<i>217</i>&nbsp;        return this.getDefaultInitCtx().removeFromEnvironment(var1);
+<i>218</i>&nbsp;    }
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;    public Hashtable&lt;?, ?&gt; getEnvironment() throws NamingException {
+<b class="nc"><i>221</i>&nbsp;        return this.getDefaultInitCtx().getEnvironment();</b>
+<i>222</i>&nbsp;    }
+<b class="nc"><i>223</i>&nbsp;</b>
+<i>224</i>&nbsp;    public void close() throws NamingException {
+<i>225</i>&nbsp;        this.myProps = null;
+<i>226</i>&nbsp;        if(this.defaultInitCtx != null) {
+<i>227</i>&nbsp;            this.defaultInitCtx.close();
+<i>228</i>&nbsp;            this.defaultInitCtx = null;
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        this.gotDefault = false;
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    public String getNameInNamespace() throws NamingException {
+<i>235</i>&nbsp;        return this.getDefaultInitCtx().getNameInNamespace();
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

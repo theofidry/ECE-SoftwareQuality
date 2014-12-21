@@ -1,0 +1,458 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SimpleCharStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.xsom.impl.scd</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SimpleCharStream (com.sun.xml.internal.xsom.impl.scd)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SimpleCharStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 170)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.xsom.impl.scd;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InputStream;
+<i>10</i>&nbsp;import java.io.InputStreamReader;
+<i>11</i>&nbsp;import java.io.Reader;
+<i>12</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public class SimpleCharStream {
+<i>15</i>&nbsp;    public static final boolean staticFlag = false;
+<i>16</i>&nbsp;    int bufsize;
+<i>17</i>&nbsp;    int available;
+<i>18</i>&nbsp;    int tokenBegin;
+<i>19</i>&nbsp;    public int bufpos;
+<i>20</i>&nbsp;    protected int[] bufline;
+<i>21</i>&nbsp;    protected int[] bufcolumn;
+<i>22</i>&nbsp;    protected int column;
+<i>23</i>&nbsp;    protected int line;
+<i>24</i>&nbsp;    protected boolean prevCharIsCR;
+<i>25</i>&nbsp;    protected boolean prevCharIsLF;
+<i>26</i>&nbsp;    protected Reader inputStream;
+<i>27</i>&nbsp;    protected char[] buffer;
+<i>28</i>&nbsp;    protected int maxNextCharInd;
+<i>29</i>&nbsp;    protected int inBuf;
+<i>30</i>&nbsp;    protected int tabSize;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    protected void setTabSize(int i) {
+<i>33</i>&nbsp;        this.tabSize = i;
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    protected int getTabSize(int i) {
+<i>37</i>&nbsp;        return this.tabSize;
+<i>38</i>&nbsp;    }
+<b class="nc"><i>39</i>&nbsp;</b>
+<i>40</i>&nbsp;    protected void ExpandBuff(boolean wrapAround) {
+<i>41</i>&nbsp;        char[] newbuffer = new char[this.bufsize + 2048];
+<i>42</i>&nbsp;        int[] newbufline = new int[this.bufsize + 2048];
+<b class="nc"><i>43</i>&nbsp;        int[] newbufcolumn = new int[this.bufsize + 2048];</b>
+<b class="nc"><i>44</i>&nbsp;</b>
+<i>45</i>&nbsp;        try {
+<b class="nc"><i>46</i>&nbsp;            if(wrapAround) {</b>
+<b class="nc"><i>47</i>&nbsp;                System.arraycopy(this.buffer, this.tokenBegin, newbuffer, 0, this.bufsize - this.tokenBegin);</b>
+<i>48</i>&nbsp;                System.arraycopy(this.buffer, 0, newbuffer, this.bufsize - this.tokenBegin, this.bufpos);
+<i>49</i>&nbsp;                this.buffer = newbuffer;
+<i>50</i>&nbsp;                System.arraycopy(this.bufline, this.tokenBegin, newbufline, 0, this.bufsize - this.tokenBegin);
+<i>51</i>&nbsp;                System.arraycopy(this.bufline, 0, newbufline, this.bufsize - this.tokenBegin, this.bufpos);
+<b class="nc"><i>52</i>&nbsp;                this.bufline = newbufline;</b>
+<b class="nc"><i>53</i>&nbsp;                System.arraycopy(this.bufcolumn, this.tokenBegin, newbufcolumn, 0, this.bufsize - this.tokenBegin);</b>
+<b class="nc"><i>54</i>&nbsp;                System.arraycopy(this.bufcolumn, 0, newbufcolumn, this.bufsize - this.tokenBegin, this.bufpos);</b>
+<i>55</i>&nbsp;                this.bufcolumn = newbufcolumn;
+<b class="nc"><i>56</i>&nbsp;                this.maxNextCharInd = this.bufpos += this.bufsize - this.tokenBegin;</b>
+<b class="nc"><i>57</i>&nbsp;            } else {</b>
+<i>58</i>&nbsp;                System.arraycopy(this.buffer, this.tokenBegin, newbuffer, 0, this.bufsize - this.tokenBegin);
+<i>59</i>&nbsp;                this.buffer = newbuffer;
+<i>60</i>&nbsp;                System.arraycopy(this.bufline, this.tokenBegin, newbufline, 0, this.bufsize - this.tokenBegin);
+<i>61</i>&nbsp;                this.bufline = newbufline;
+<b class="nc"><i>62</i>&nbsp;                System.arraycopy(this.bufcolumn, this.tokenBegin, newbufcolumn, 0, this.bufsize - this.tokenBegin);</b>
+<b class="nc"><i>63</i>&nbsp;                this.bufcolumn = newbufcolumn;</b>
+<b class="nc"><i>64</i>&nbsp;                this.maxNextCharInd = this.bufpos -= this.tokenBegin;</b>
+<i>65</i>&nbsp;            }
+<i>66</i>&nbsp;        } catch (Throwable var6) {
+<i>67</i>&nbsp;            throw new Error(var6.getMessage());
+<b class="nc"><i>68</i>&nbsp;        }</b>
+<i>69</i>&nbsp;
+<b class="nc"><i>70</i>&nbsp;        this.bufsize += 2048;</b>
+<b class="nc"><i>71</i>&nbsp;        this.available = this.bufsize;</b>
+<i>72</i>&nbsp;        this.tokenBegin = 0;
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<b class="nc"><i>75</i>&nbsp;    protected void FillBuff() throws IOException {</b>
+<b class="nc"><i>76</i>&nbsp;        if(this.maxNextCharInd == this.available) {</b>
+<b class="nc"><i>77</i>&nbsp;            if(this.available == this.bufsize) {</b>
+<i>78</i>&nbsp;                if(this.tokenBegin &gt; 2048) {
+<b class="nc"><i>79</i>&nbsp;                    this.bufpos = this.maxNextCharInd = 0;</b>
+<b class="nc"><i>80</i>&nbsp;                    this.available = this.tokenBegin;</b>
+<b class="nc"><i>81</i>&nbsp;                } else if(this.tokenBegin &lt; 0) {</b>
+<i>82</i>&nbsp;                    this.bufpos = this.maxNextCharInd = 0;
+<b class="nc"><i>83</i>&nbsp;                } else {</b>
+<i>84</i>&nbsp;                    this.ExpandBuff(false);
+<i>85</i>&nbsp;                }
+<i>86</i>&nbsp;            } else if(this.available &gt; this.tokenBegin) {
+<b class="nc"><i>87</i>&nbsp;                this.available = this.bufsize;</b>
+<b class="nc"><i>88</i>&nbsp;            } else if(this.tokenBegin - this.available &lt; 2048) {</b>
+<i>89</i>&nbsp;                this.ExpandBuff(true);
+<b class="nc"><i>90</i>&nbsp;            } else {</b>
+<b class="nc"><i>91</i>&nbsp;                this.available = this.tokenBegin;</b>
+<i>92</i>&nbsp;            }
+<b class="nc"><i>93</i>&nbsp;        }</b>
+<b class="nc"><i>94</i>&nbsp;</b>
+<i>95</i>&nbsp;        try {
+<b class="nc"><i>96</i>&nbsp;            int i;</b>
+<i>97</i>&nbsp;            if((i = this.inputStream.read(this.buffer, this.maxNextCharInd, this.available - this.maxNextCharInd)) == -1) {
+<i>98</i>&nbsp;                this.inputStream.close();
+<b class="nc"><i>99</i>&nbsp;                throw new IOException();</b>
+<i>100</i>&nbsp;            } else {
+<b class="nc"><i>101</i>&nbsp;                this.maxNextCharInd += i;</b>
+<b class="nc"><i>102</i>&nbsp;            }</b>
+<i>103</i>&nbsp;        } catch (IOException var3) {
+<i>104</i>&nbsp;            --this.bufpos;
+<b class="nc"><i>105</i>&nbsp;            this.backup(0);</b>
+<b class="nc"><i>106</i>&nbsp;            if(this.tokenBegin == -1) {</b>
+<b class="nc"><i>107</i>&nbsp;                this.tokenBegin = this.bufpos;</b>
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;            throw var3;
+<i>111</i>&nbsp;        }
+<b class="nc"><i>112</i>&nbsp;    }</b>
+<i>113</i>&nbsp;
+<b class="nc"><i>114</i>&nbsp;    public char BeginToken() throws IOException {</b>
+<i>115</i>&nbsp;        this.tokenBegin = -1;
+<b class="nc"><i>116</i>&nbsp;        char c = this.readChar();</b>
+<i>117</i>&nbsp;        this.tokenBegin = this.bufpos;
+<b class="nc"><i>118</i>&nbsp;        return c;</b>
+<b class="nc"><i>119</i>&nbsp;    }</b>
+<i>120</i>&nbsp;
+<b class="nc"><i>121</i>&nbsp;    protected void UpdateLineColumn(char c) {</b>
+<b class="nc"><i>122</i>&nbsp;        ++this.column;</b>
+<i>123</i>&nbsp;        if(this.prevCharIsLF) {
+<b class="nc"><i>124</i>&nbsp;            this.prevCharIsLF = false;</b>
+<i>125</i>&nbsp;            this.line += this.column = 1;
+<b class="nc"><i>126</i>&nbsp;        } else if(this.prevCharIsCR) {</b>
+<b class="nc"><i>127</i>&nbsp;            this.prevCharIsCR = false;</b>
+<b class="nc"><i>128</i>&nbsp;            if(c == 10) {</b>
+<b class="nc"><i>129</i>&nbsp;                this.prevCharIsLF = true;</b>
+<i>130</i>&nbsp;            } else {
+<b class="nc"><i>131</i>&nbsp;                this.line += this.column = 1;</b>
+<i>132</i>&nbsp;            }
+<i>133</i>&nbsp;        }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;        switch(c) {
+<b class="nc"><i>136</i>&nbsp;        case &#39;\t&#39;:</b>
+<i>137</i>&nbsp;            --this.column;
+<i>138</i>&nbsp;            this.column += this.tabSize - this.column % this.tabSize;
+<b class="nc"><i>139</i>&nbsp;            break;</b>
+<b class="nc"><i>140</i>&nbsp;        case &#39;\n&#39;:</b>
+<i>141</i>&nbsp;            this.prevCharIsLF = true;
+<i>142</i>&nbsp;        case &#39;\u000b&#39;:
+<b class="nc"><i>143</i>&nbsp;        case &#39;\f&#39;:</b>
+<i>144</i>&nbsp;        default:
+<i>145</i>&nbsp;            break;
+<b class="nc"><i>146</i>&nbsp;        case &#39;\r&#39;:</b>
+<b class="nc"><i>147</i>&nbsp;            this.prevCharIsCR = true;</b>
+<b class="nc"><i>148</i>&nbsp;        }</b>
+<b class="nc"><i>149</i>&nbsp;</b>
+<b class="nc"><i>150</i>&nbsp;        this.bufline[this.bufpos] = this.line;</b>
+<b class="nc"><i>151</i>&nbsp;        this.bufcolumn[this.bufpos] = this.column;</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public char readChar() throws IOException {
+<i>155</i>&nbsp;        if(this.inBuf &gt; 0) {
+<i>156</i>&nbsp;            --this.inBuf;
+<b class="nc"><i>157</i>&nbsp;            if(++this.bufpos == this.bufsize) {</b>
+<b class="nc"><i>158</i>&nbsp;                this.bufpos = 0;</b>
+<b class="nc"><i>159</i>&nbsp;            }</b>
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;            return this.buffer[this.bufpos];</b>
+<i>162</i>&nbsp;        } else {
+<i>163</i>&nbsp;            if(++this.bufpos &gt;= this.maxNextCharInd) {
+<i>164</i>&nbsp;                this.FillBuff();
+<i>165</i>&nbsp;            }
+<b class="nc"><i>166</i>&nbsp;</b>
+<i>167</i>&nbsp;            char c = this.buffer[this.bufpos];
+<b class="nc"><i>168</i>&nbsp;            this.UpdateLineColumn(c);</b>
+<i>169</i>&nbsp;            return c;
+<b class="nc"><i>170</i>&nbsp;        }</b>
+<b class="nc"><i>171</i>&nbsp;    }</b>
+<i>172</i>&nbsp;
+<b class="nc"><i>173</i>&nbsp;    /** @deprecated */</b>
+<i>174</i>&nbsp;    public int getColumn() {
+<b class="nc"><i>175</i>&nbsp;        return this.bufcolumn[this.bufpos];</b>
+<b class="nc"><i>176</i>&nbsp;    }</b>
+<i>177</i>&nbsp;
+<b class="nc"><i>178</i>&nbsp;    /** @deprecated */</b>
+<i>179</i>&nbsp;    public int getLine() {
+<i>180</i>&nbsp;        return this.bufline[this.bufpos];
+<b class="nc"><i>181</i>&nbsp;    }</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    public int getEndColumn() {
+<b class="nc"><i>184</i>&nbsp;        return this.bufcolumn[this.bufpos];</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;    public int getEndLine() {</b>
+<b class="nc"><i>188</i>&nbsp;        return this.bufline[this.bufpos];</b>
+<i>189</i>&nbsp;    }
+<b class="nc"><i>190</i>&nbsp;</b>
+<b class="nc"><i>191</i>&nbsp;    public int getBeginColumn() {</b>
+<i>192</i>&nbsp;        return this.bufcolumn[this.tokenBegin];
+<b class="nc"><i>193</i>&nbsp;    }</b>
+<b class="nc"><i>194</i>&nbsp;</b>
+<b class="nc"><i>195</i>&nbsp;    public int getBeginLine() {</b>
+<i>196</i>&nbsp;        return this.bufline[this.tokenBegin];
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    public void backup(int amount) {
+<b class="nc"><i>200</i>&nbsp;        this.inBuf += amount;</b>
+<b class="nc"><i>201</i>&nbsp;        if((this.bufpos -= amount) &lt; 0) {</b>
+<i>202</i>&nbsp;            this.bufpos += this.bufsize;
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    }
+<b class="nc"><i>206</i>&nbsp;</b>
+<i>207</i>&nbsp;    public SimpleCharStream(Reader dstream, int startline, int startcolumn, int buffersize) {
+<b class="nc"><i>208</i>&nbsp;        this.bufpos = -1;</b>
+<i>209</i>&nbsp;        this.column = 0;
+<b class="nc"><i>210</i>&nbsp;        this.line = 1;</b>
+<b class="nc"><i>211</i>&nbsp;        this.prevCharIsCR = false;</b>
+<i>212</i>&nbsp;        this.prevCharIsLF = false;
+<b class="nc"><i>213</i>&nbsp;        this.maxNextCharInd = 0;</b>
+<i>214</i>&nbsp;        this.inBuf = 0;
+<i>215</i>&nbsp;        this.tabSize = 8;
+<b class="nc"><i>216</i>&nbsp;        this.inputStream = dstream;</b>
+<b class="nc"><i>217</i>&nbsp;        this.line = startline;</b>
+<i>218</i>&nbsp;        this.column = startcolumn - 1;
+<b class="nc"><i>219</i>&nbsp;        this.available = this.bufsize = buffersize;</b>
+<i>220</i>&nbsp;        this.buffer = new char[buffersize];
+<b class="nc"><i>221</i>&nbsp;        this.bufline = new int[buffersize];</b>
+<b class="nc"><i>222</i>&nbsp;        this.bufcolumn = new int[buffersize];</b>
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    public SimpleCharStream(Reader dstream, int startline, int startcolumn) {
+<i>226</i>&nbsp;        this((Reader)dstream, startline, startcolumn, 4096);
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    public SimpleCharStream(Reader dstream) {
+<i>230</i>&nbsp;        this((Reader)dstream, 1, 1, 4096);
+<b class="nc"><i>231</i>&nbsp;    }</b>
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    public void ReInit(Reader dstream, int startline, int startcolumn, int buffersize) {
+<i>234</i>&nbsp;        this.inputStream = dstream;
+<i>235</i>&nbsp;        this.line = startline;
+<i>236</i>&nbsp;        this.column = startcolumn - 1;
+<i>237</i>&nbsp;        if(this.buffer == null || buffersize != this.buffer.length) {
+<i>238</i>&nbsp;            this.available = this.bufsize = buffersize;
+<i>239</i>&nbsp;            this.buffer = new char[buffersize];
+<b class="nc"><i>240</i>&nbsp;            this.bufline = new int[buffersize];</b>
+<i>241</i>&nbsp;            this.bufcolumn = new int[buffersize];
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;
+<b class="nc"><i>244</i>&nbsp;        this.prevCharIsLF = this.prevCharIsCR = false;</b>
+<i>245</i>&nbsp;        this.tokenBegin = this.inBuf = this.maxNextCharInd = 0;
+<i>246</i>&nbsp;        this.bufpos = -1;
+<i>247</i>&nbsp;    }
+<b class="nc"><i>248</i>&nbsp;</b>
+<i>249</i>&nbsp;    public void ReInit(Reader dstream, int startline, int startcolumn) {
+<i>250</i>&nbsp;        this.ReInit((Reader)dstream, startline, startcolumn, 4096);
+<i>251</i>&nbsp;    }
+<b class="nc"><i>252</i>&nbsp;</b>
+<i>253</i>&nbsp;    public void ReInit(Reader dstream) {
+<i>254</i>&nbsp;        this.ReInit((Reader)dstream, 1, 1, 4096);
+<i>255</i>&nbsp;    }
+<b class="nc"><i>256</i>&nbsp;</b>
+<i>257</i>&nbsp;    public SimpleCharStream(InputStream dstream, String encoding, int startline, int startcolumn, int buffersize) throws UnsupportedEncodingException {
+<i>258</i>&nbsp;        this((Reader)(encoding == null?new InputStreamReader(dstream):new InputStreamReader(dstream, encoding)), startline, startcolumn, buffersize);
+<i>259</i>&nbsp;    }
+<i>260</i>&nbsp;
+<b class="nc"><i>261</i>&nbsp;    public SimpleCharStream(InputStream dstream, int startline, int startcolumn, int buffersize) {</b>
+<b class="nc"><i>262</i>&nbsp;        this((Reader)(new InputStreamReader(dstream)), startline, startcolumn, buffersize);</b>
+<b class="nc"><i>263</i>&nbsp;    }</b>
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    public SimpleCharStream(InputStream dstream, String encoding, int startline, int startcolumn) throws UnsupportedEncodingException {
+<i>266</i>&nbsp;        this(dstream, encoding, startline, startcolumn, 4096);
+<i>267</i>&nbsp;    }
+<b class="nc"><i>268</i>&nbsp;</b>
+<b class="nc"><i>269</i>&nbsp;    public SimpleCharStream(InputStream dstream, int startline, int startcolumn) {</b>
+<b class="nc"><i>270</i>&nbsp;        this((InputStream)dstream, startline, startcolumn, 4096);</b>
+<b class="nc"><i>271</i>&nbsp;    }</b>
+<i>272</i>&nbsp;
+<b class="nc"><i>273</i>&nbsp;    public SimpleCharStream(InputStream dstream, String encoding) throws UnsupportedEncodingException {</b>
+<b class="nc"><i>274</i>&nbsp;        this(dstream, encoding, 1, 1, 4096);</b>
+<b class="nc"><i>275</i>&nbsp;    }</b>
+<b class="nc"><i>276</i>&nbsp;</b>
+<i>277</i>&nbsp;    public SimpleCharStream(InputStream dstream) {
+<i>278</i>&nbsp;        this((InputStream)dstream, 1, 1, 4096);
+<i>279</i>&nbsp;    }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    public void ReInit(InputStream dstream, String encoding, int startline, int startcolumn, int buffersize) throws UnsupportedEncodingException {
+<b class="nc"><i>282</i>&nbsp;        this.ReInit((Reader)(encoding == null?new InputStreamReader(dstream):new InputStreamReader(dstream, encoding)), startline, startcolumn, buffersize);</b>
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    public void ReInit(InputStream dstream, int startline, int startcolumn, int buffersize) {
+<i>286</i>&nbsp;        this.ReInit((Reader)(new InputStreamReader(dstream)), startline, startcolumn, buffersize);
+<b class="nc"><i>287</i>&nbsp;    }</b>
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    public void ReInit(InputStream dstream, String encoding) throws UnsupportedEncodingException {
+<i>290</i>&nbsp;        this.ReInit(dstream, encoding, 1, 1, 4096);
+<i>291</i>&nbsp;    }
+<b class="nc"><i>292</i>&nbsp;</b>
+<b class="nc"><i>293</i>&nbsp;    public void ReInit(InputStream dstream) {</b>
+<b class="nc"><i>294</i>&nbsp;        this.ReInit((InputStream)dstream, 1, 1, 4096);</b>
+<i>295</i>&nbsp;    }
+<b class="nc"><i>296</i>&nbsp;</b>
+<i>297</i>&nbsp;    public void ReInit(InputStream dstream, String encoding, int startline, int startcolumn) throws UnsupportedEncodingException {
+<b class="nc"><i>298</i>&nbsp;        this.ReInit(dstream, encoding, startline, startcolumn, 4096);</b>
+<b class="nc"><i>299</i>&nbsp;    }</b>
+<b class="nc"><i>300</i>&nbsp;</b>
+<b class="nc"><i>301</i>&nbsp;    public void ReInit(InputStream dstream, int startline, int startcolumn) {</b>
+<i>302</i>&nbsp;        this.ReInit((InputStream)dstream, startline, startcolumn, 4096);
+<b class="nc"><i>303</i>&nbsp;    }</b>
+<b class="nc"><i>304</i>&nbsp;</b>
+<b class="nc"><i>305</i>&nbsp;    public String GetImage() {</b>
+<i>306</i>&nbsp;        return this.bufpos &gt;= this.tokenBegin?new String(this.buffer, this.tokenBegin, this.bufpos - this.tokenBegin + 1):new String(this.buffer, this.tokenBegin, this.bufsize - this.tokenBegin) + new String(this.buffer, 0, this.bufpos + 1);
+<i>307</i>&nbsp;    }
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    public char[] GetSuffix(int len) {
+<i>310</i>&nbsp;        char[] ret = new char[len];
+<b class="nc"><i>311</i>&nbsp;        if(this.bufpos + 1 &gt;= len) {</b>
+<i>312</i>&nbsp;            System.arraycopy(this.buffer, this.bufpos - len + 1, ret, 0, len);
+<i>313</i>&nbsp;        } else {
+<i>314</i>&nbsp;            System.arraycopy(this.buffer, this.bufsize - (len - this.bufpos - 1), ret, 0, len - this.bufpos - 1);
+<i>315</i>&nbsp;            System.arraycopy(this.buffer, 0, ret, len - this.bufpos - 1, this.bufpos + 1);
+<b class="nc"><i>316</i>&nbsp;        }</b>
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;        return ret;
+<i>319</i>&nbsp;    }
+<i>320</i>&nbsp;
+<b class="nc"><i>321</i>&nbsp;    public void Done() {</b>
+<i>322</i>&nbsp;        this.buffer = null;
+<i>323</i>&nbsp;        this.bufline = null;
+<i>324</i>&nbsp;        this.bufcolumn = null;
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<b class="nc"><i>327</i>&nbsp;    public void adjustBeginLineColumn(int newLine, int newCol) {</b>
+<i>328</i>&nbsp;        int start = this.tokenBegin;
+<i>329</i>&nbsp;        int len;
+<i>330</i>&nbsp;        if(this.bufpos &gt;= this.tokenBegin) {
+<i>331</i>&nbsp;            len = this.bufpos - this.tokenBegin + this.inBuf + 1;
+<i>332</i>&nbsp;        } else {
+<b class="nc"><i>333</i>&nbsp;            len = this.bufsize - this.tokenBegin + this.bufpos + 1 + this.inBuf;</b>
+<i>334</i>&nbsp;        }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;        int i = 0;
+<i>337</i>&nbsp;        int j = 0;
+<i>338</i>&nbsp;        boolean k = false;
+<b class="nc"><i>339</i>&nbsp;        boolean nextColDiff = false;</b>
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;        int columnDiff;
+<i>342</i>&nbsp;        int var10000;
+<i>343</i>&nbsp;        for(columnDiff = 0; i &lt; len; ++i) {
+<b class="nc"><i>344</i>&nbsp;            var10000 = this.bufline[j = start % this.bufsize];</b>
+<i>345</i>&nbsp;            ++start;
+<i>346</i>&nbsp;            int var10;
+<i>347</i>&nbsp;            if(var10000 != this.bufline[var10 = start % this.bufsize]) {
+<i>348</i>&nbsp;                break;
+<b class="nc"><i>349</i>&nbsp;            }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;            this.bufline[j] = newLine;
+<i>352</i>&nbsp;            int var11 = columnDiff + this.bufcolumn[var10] - this.bufcolumn[j];
+<i>353</i>&nbsp;            this.bufcolumn[j] = newCol + columnDiff;
+<i>354</i>&nbsp;            columnDiff = var11;
+<b class="nc"><i>355</i>&nbsp;        }</b>
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;        if(i &lt; len) {
+<i>358</i>&nbsp;            this.bufline[j] = newLine++;
+<i>359</i>&nbsp;            this.bufcolumn[j] = newCol + columnDiff;
+<i>360</i>&nbsp;
+<b class="nc"><i>361</i>&nbsp;            while(i++ &lt; len) {</b>
+<i>362</i>&nbsp;                var10000 = this.bufline[j = start % this.bufsize];
+<i>363</i>&nbsp;                ++start;
+<i>364</i>&nbsp;                if(var10000 != this.bufline[start % this.bufsize]) {
+<i>365</i>&nbsp;                    this.bufline[j] = newLine++;
+<b class="nc"><i>366</i>&nbsp;                } else {</b>
+<i>367</i>&nbsp;                    this.bufline[j] = newLine;
+<i>368</i>&nbsp;                }
+<i>369</i>&nbsp;            }
+<i>370</i>&nbsp;        }
+<b class="nc"><i>371</i>&nbsp;</b>
+<i>372</i>&nbsp;        this.line = this.bufline[j];
+<i>373</i>&nbsp;        this.column = this.bufcolumn[j];
+<i>374</i>&nbsp;    }
+<i>375</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

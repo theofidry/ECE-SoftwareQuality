@@ -1,0 +1,226 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClientSchemaValidationTube</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.client</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClientSchemaValidationTube (com.sun.xml.internal.ws.client)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClientSchemaValidationTube</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ClientSchemaValidationTube$MetadataResolverImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 53)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.client;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.ws.api.WSBinding;
+<i>9</i>&nbsp;import com.sun.xml.internal.ws.api.message.Packet;
+<i>10</i>&nbsp;import com.sun.xml.internal.ws.api.model.wsdl.WSDLPort;
+<i>11</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.NextAction;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.Tube;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.TubeCloner;
+<i>14</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.helper.AbstractTubeImpl;
+<i>15</i>&nbsp;import com.sun.xml.internal.ws.util.MetadataUtil;
+<i>16</i>&nbsp;import com.sun.xml.internal.ws.util.pipe.AbstractSchemaValidationTube;
+<i>17</i>&nbsp;import com.sun.xml.internal.ws.util.pipe.AbstractSchemaValidationTube.MetadataResolverImpl;
+<i>18</i>&nbsp;import java.util.Map;
+<i>19</i>&nbsp;import java.util.logging.Logger;
+<i>20</i>&nbsp;import javax.xml.transform.Source;
+<i>21</i>&nbsp;import javax.xml.validation.Schema;
+<i>22</i>&nbsp;import javax.xml.validation.Validator;
+<i>23</i>&nbsp;import javax.xml.ws.WebServiceException;
+<i>24</i>&nbsp;import org.xml.sax.SAXException;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;public class ClientSchemaValidationTube extends AbstractSchemaValidationTube {
+<i>27</i>&nbsp;    private static final Logger LOGGER = Logger.getLogger(ClientSchemaValidationTube.class.getName());
+<i>28</i>&nbsp;    private final Schema schema;
+<i>29</i>&nbsp;    private final Validator validator;
+<i>30</i>&nbsp;    private final boolean noValidation;
+<i>31</i>&nbsp;    private final WSDLPort port;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public ClientSchemaValidationTube(WSBinding binding, WSDLPort port, Tube next) {
+<i>34</i>&nbsp;        super(binding, next);
+<i>35</i>&nbsp;        this.port = port;
+<i>36</i>&nbsp;        if(port != null) {
+<i>37</i>&nbsp;            String primaryWsdl = port.getOwner().getParent().getLocation().getSystemId();
+<i>38</i>&nbsp;            MetadataResolverImpl mdresolver = new MetadataResolverImpl(this);
+<i>39</i>&nbsp;            Map docs = MetadataUtil.getMetadataClosure(primaryWsdl, mdresolver, true);
+<i>40</i>&nbsp;            mdresolver = new MetadataResolverImpl(this, docs.values());
+<i>41</i>&nbsp;            Source[] sources = this.getSchemaSources(docs.values(), mdresolver);
+<i>42</i>&nbsp;            Source[] e = sources;
+<i>43</i>&nbsp;            int len$ = sources.length;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;            for(int i$ = 0; i$ &lt; len$; ++i$) {
+<i>46</i>&nbsp;                Source source = e[i$];
+<i>47</i>&nbsp;                LOGGER.fine(&quot;Constructing client validation schema from = &quot; + source.getSystemId());
+<i>48</i>&nbsp;            }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;            if(sources.length != 0) {
+<i>51</i>&nbsp;                this.noValidation = false;
+<i>52</i>&nbsp;                this.sf.setResourceResolver(mdresolver);
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;                try {
+<i>55</i>&nbsp;                    this.schema = this.sf.newSchema(sources);
+<i>56</i>&nbsp;                } catch (SAXException var12) {
+<i>57</i>&nbsp;                    throw new WebServiceException(var12);
+<i>58</i>&nbsp;                }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;                this.validator = this.schema.newValidator();
+<i>61</i>&nbsp;                return;
+<i>62</i>&nbsp;            }
+<b class="nc"><i>63</i>&nbsp;        }</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;        this.noValidation = true;
+<i>66</i>&nbsp;        this.schema = null;
+<i>67</i>&nbsp;        this.validator = null;
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    protected Validator getValidator() {
+<b class="nc"><i>71</i>&nbsp;        return this.validator;</b>
+<b class="nc"><i>72</i>&nbsp;    }</b>
+<b class="nc"><i>73</i>&nbsp;</b>
+<b class="nc"><i>74</i>&nbsp;    protected boolean isNoValidation() {</b>
+<b class="nc"><i>75</i>&nbsp;        return this.noValidation;</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<b class="nc"><i>78</i>&nbsp;    protected ClientSchemaValidationTube(ClientSchemaValidationTube that, TubeCloner cloner) {</b>
+<i>79</i>&nbsp;        super(that, cloner);
+<i>80</i>&nbsp;        this.port = that.port;
+<i>81</i>&nbsp;        this.schema = that.schema;
+<b class="nc"><i>82</i>&nbsp;        this.validator = this.schema.newValidator();</b>
+<b class="nc"><i>83</i>&nbsp;        this.noValidation = that.noValidation;</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<i>85</i>&nbsp;
+<b class="nc"><i>86</i>&nbsp;    public AbstractTubeImpl copy(TubeCloner cloner) {</b>
+<b class="nc"><i>87</i>&nbsp;        return new ClientSchemaValidationTube(this, cloner);</b>
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<b class="nc"><i>89</i>&nbsp;</b>
+<b class="nc"><i>90</i>&nbsp;    public NextAction processRequest(Packet request) {</b>
+<b class="nc"><i>91</i>&nbsp;        if(!this.isNoValidation() &amp;&amp; this.feature.isOutbound() &amp;&amp; request.getMessage().hasPayload() &amp;&amp; !request.getMessage().isFault()) {</b>
+<b class="nc"><i>92</i>&nbsp;            try {</b>
+<b class="nc"><i>93</i>&nbsp;                this.doProcess(request);</b>
+<b class="nc"><i>94</i>&nbsp;            } catch (SAXException var3) {</b>
+<i>95</i>&nbsp;                throw new WebServiceException(var3);
+<i>96</i>&nbsp;            }
+<i>97</i>&nbsp;
+<b class="nc"><i>98</i>&nbsp;            return super.processRequest(request);</b>
+<i>99</i>&nbsp;        } else {
+<b class="nc"><i>100</i>&nbsp;            return super.processRequest(request);</b>
+<i>101</i>&nbsp;        }
+<i>102</i>&nbsp;    }
+<b class="nc"><i>103</i>&nbsp;</b>
+<b class="nc"><i>104</i>&nbsp;    public NextAction processResponse(Packet response) {</b>
+<i>105</i>&nbsp;        if(!this.isNoValidation() &amp;&amp; this.feature.isInbound() &amp;&amp; response.getMessage() != null &amp;&amp; response.getMessage().hasPayload() &amp;&amp; !response.getMessage().isFault()) {
+<i>106</i>&nbsp;            try {
+<b class="nc"><i>107</i>&nbsp;                this.doProcess(response);</b>
+<b class="nc"><i>108</i>&nbsp;            } catch (SAXException var3) {</b>
+<b class="nc"><i>109</i>&nbsp;                throw new WebServiceException(var3);</b>
+<b class="nc"><i>110</i>&nbsp;            }</b>
+<b class="nc"><i>111</i>&nbsp;</b>
+<b class="nc"><i>112</i>&nbsp;            return super.processResponse(response);</b>
+<i>113</i>&nbsp;        } else {
+<b class="nc"><i>114</i>&nbsp;            return super.processResponse(response);</b>
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

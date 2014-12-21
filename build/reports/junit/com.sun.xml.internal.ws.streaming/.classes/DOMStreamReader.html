@@ -1,0 +1,837 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DOMStreamReader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.streaming</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DOMStreamReader (com.sun.xml.internal.ws.streaming)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DOMStreamReader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 61)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 288)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DOMStreamReader$Scope</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 38)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 68)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 326)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.streaming;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.istack.internal.FinalArrayList;
+<i>9</i>&nbsp;import com.sun.istack.internal.NotNull;
+<i>10</i>&nbsp;import com.sun.istack.internal.XMLStreamException2;
+<i>11</i>&nbsp;import com.sun.xml.internal.ws.util.xml.DummyLocation;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.util.xml.XmlUtil;
+<i>13</i>&nbsp;import java.io.OutputStream;
+<i>14</i>&nbsp;import java.util.Collections;
+<i>15</i>&nbsp;import java.util.Iterator;
+<i>16</i>&nbsp;import javax.xml.namespace.NamespaceContext;
+<i>17</i>&nbsp;import javax.xml.namespace.QName;
+<i>18</i>&nbsp;import javax.xml.stream.Location;
+<i>19</i>&nbsp;import javax.xml.stream.XMLStreamException;
+<i>20</i>&nbsp;import javax.xml.stream.XMLStreamReader;
+<i>21</i>&nbsp;import javax.xml.transform.dom.DOMSource;
+<i>22</i>&nbsp;import javax.xml.transform.stream.StreamResult;
+<i>23</i>&nbsp;import org.w3c.dom.Attr;
+<i>24</i>&nbsp;import org.w3c.dom.NamedNodeMap;
+<i>25</i>&nbsp;import org.w3c.dom.Node;
+<i>26</i>&nbsp;import org.w3c.dom.NodeList;
+<i>27</i>&nbsp;import org.w3c.dom.ProcessingInstruction;
+<i>28</i>&nbsp;import org.w3c.dom.Text;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public final class DOMStreamReader implements XMLStreamReader, NamespaceContext {
+<i>31</i>&nbsp;    private Node _current;
+<i>32</i>&nbsp;    private Node _start;
+<i>33</i>&nbsp;    private NamedNodeMap _namedNodeMap;
+<i>34</i>&nbsp;    private String wholeText;
+<i>35</i>&nbsp;    private final FinalArrayList&lt;Attr&gt; _currentAttributes = new FinalArrayList();
+<i>36</i>&nbsp;    private DOMStreamReader.Scope[] scopes = new DOMStreamReader.Scope[8];
+<i>37</i>&nbsp;    private int depth = 0;
+<i>38</i>&nbsp;    int _state;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public DOMStreamReader() {
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public DOMStreamReader(Node node) {
+<i>44</i>&nbsp;        this.setCurrentNode(node);
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public void setCurrentNode(Node node) {
+<i>48</i>&nbsp;        this.scopes[0] = new DOMStreamReader.Scope((DOMStreamReader.Scope)null);
+<i>49</i>&nbsp;        this.depth = 0;
+<i>50</i>&nbsp;        this._start = this._current = node;
+<i>51</i>&nbsp;        this._state = 7;
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public void close() throws XMLStreamException {
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    private void splitAttributes() {
+<i>58</i>&nbsp;        this._currentAttributes.clear();
+<i>59</i>&nbsp;        DOMStreamReader.Scope scope = this.allocateScope();
+<i>60</i>&nbsp;        this._namedNodeMap = this._current.getAttributes();
+<i>61</i>&nbsp;        int i;
+<i>62</i>&nbsp;        if(this._namedNodeMap != null) {
+<i>63</i>&nbsp;            i = this._namedNodeMap.getLength();
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;            for(int a = 0; a &lt; i; ++a) {
+<i>66</i>&nbsp;                Attr attr = (Attr)this._namedNodeMap.item(a);
+<i>67</i>&nbsp;                String attrName = attr.getNodeName();
+<i>68</i>&nbsp;                if(!attrName.startsWith(&quot;xmlns:&quot;) &amp;&amp; !attrName.equals(&quot;xmlns&quot;)) {
+<i>69</i>&nbsp;                    this._currentAttributes.add(attr);
+<i>70</i>&nbsp;                } else {
+<i>71</i>&nbsp;                    scope.currentNamespaces.add(attr);
+<i>72</i>&nbsp;                }
+<b class="nc"><i>73</i>&nbsp;            }</b>
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;        this.ensureNs(this._current);
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        for(i = this._currentAttributes.size() - 1; i &gt;= 0; --i) {
+<i>79</i>&nbsp;            Attr var6 = (Attr)this._currentAttributes.get(i);
+<i>80</i>&nbsp;            if(fixNull(var6.getNamespaceURI()).length() &gt; 0) {
+<i>81</i>&nbsp;                this.ensureNs(var6);
+<i>82</i>&nbsp;            }
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    private void ensureNs(Node n) {
+<i>88</i>&nbsp;        String prefix = fixNull(n.getPrefix());
+<i>89</i>&nbsp;        String uri = fixNull(n.getNamespaceURI());
+<i>90</i>&nbsp;        DOMStreamReader.Scope scope = this.scopes[this.depth];
+<i>91</i>&nbsp;        String currentUri = scope.getNamespaceURI(prefix);
+<i>92</i>&nbsp;        if(prefix.length() == 0) {
+<i>93</i>&nbsp;            currentUri = fixNull(currentUri);
+<i>94</i>&nbsp;            if(currentUri.equals(uri)) {
+<i>95</i>&nbsp;                return;
+<i>96</i>&nbsp;            }
+<i>97</i>&nbsp;        } else if(currentUri != null &amp;&amp; currentUri.equals(uri)) {
+<i>98</i>&nbsp;            return;
+<i>99</i>&nbsp;        }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;        if(!prefix.equals(&quot;xml&quot;) &amp;&amp; !prefix.equals(&quot;xmlns&quot;)) {
+<i>102</i>&nbsp;            scope.additionalNamespaces.add(prefix);
+<i>103</i>&nbsp;            scope.additionalNamespaces.add(uri);
+<b class="nc"><i>104</i>&nbsp;        }</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    private DOMStreamReader.Scope allocateScope() {
+<i>108</i>&nbsp;        if(this.scopes.length == ++this.depth) {
+<b class="nc"><i>109</i>&nbsp;            DOMStreamReader.Scope[] scope = new DOMStreamReader.Scope[this.scopes.length * 2];</b>
+<i>110</i>&nbsp;            System.arraycopy(this.scopes, 0, scope, 0, this.scopes.length);
+<i>111</i>&nbsp;            this.scopes = scope;
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;        DOMStreamReader.Scope var2 = this.scopes[this.depth];
+<b class="nc"><i>115</i>&nbsp;        if(var2 == null) {</b>
+<i>116</i>&nbsp;            var2 = this.scopes[this.depth] = new DOMStreamReader.Scope(this.scopes[this.depth - 1]);
+<i>117</i>&nbsp;        } else {
+<i>118</i>&nbsp;            var2.reset();
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        return var2;
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public int getAttributeCount() {
+<i>125</i>&nbsp;        if(this._state == 1) {
+<i>126</i>&nbsp;            return this._currentAttributes.size();
+<i>127</i>&nbsp;        } else {
+<i>128</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributeCount() called in illegal state&quot;);
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public String getAttributeLocalName(int index) {
+<i>133</i>&nbsp;        if(this._state == 1) {
+<i>134</i>&nbsp;            String localName = ((Attr)this._currentAttributes.get(index)).getLocalName();
+<i>135</i>&nbsp;            return localName != null?localName:QName.valueOf(((Attr)this._currentAttributes.get(index)).getNodeName()).getLocalPart();
+<i>136</i>&nbsp;        } else {
+<b class="nc"><i>137</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributeLocalName() called in illegal state&quot;);</b>
+<i>138</i>&nbsp;        }
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public QName getAttributeName(int index) {
+<i>142</i>&nbsp;        if(this._state == 1) {
+<i>143</i>&nbsp;            Node attr = (Node)this._currentAttributes.get(index);
+<i>144</i>&nbsp;            String localName = attr.getLocalName();
+<b class="nc"><i>145</i>&nbsp;            if(localName != null) {</b>
+<i>146</i>&nbsp;                String prefix = attr.getPrefix();
+<b class="nc"><i>147</i>&nbsp;                String uri = attr.getNamespaceURI();</b>
+<b class="nc"><i>148</i>&nbsp;                return new QName(fixNull(uri), localName, fixNull(prefix));</b>
+<i>149</i>&nbsp;            } else {
+<i>150</i>&nbsp;                return QName.valueOf(attr.getNodeName());
+<i>151</i>&nbsp;            }
+<b class="nc"><i>152</i>&nbsp;        } else {</b>
+<b class="nc"><i>153</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributeName() called in illegal state&quot;);</b>
+<i>154</i>&nbsp;        }
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;    public String getAttributeNamespace(int index) {</b>
+<i>158</i>&nbsp;        if(this._state == 1) {
+<i>159</i>&nbsp;            String uri = ((Attr)this._currentAttributes.get(index)).getNamespaceURI();
+<i>160</i>&nbsp;            return fixNull(uri);
+<b class="nc"><i>161</i>&nbsp;        } else {</b>
+<b class="nc"><i>162</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributeNamespace() called in illegal state&quot;);</b>
+<b class="nc"><i>163</i>&nbsp;        }</b>
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<b class="nc"><i>165</i>&nbsp;</b>
+<b class="nc"><i>166</i>&nbsp;    public String getAttributePrefix(int index) {</b>
+<i>167</i>&nbsp;        if(this._state == 1) {
+<b class="nc"><i>168</i>&nbsp;            String prefix = ((Attr)this._currentAttributes.get(index)).getPrefix();</b>
+<i>169</i>&nbsp;            return fixNull(prefix);
+<b class="nc"><i>170</i>&nbsp;        } else {</b>
+<i>171</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributePrefix() called in illegal state&quot;);
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;
+<b class="nc"><i>175</i>&nbsp;    public String getAttributeType(int index) {</b>
+<b class="nc"><i>176</i>&nbsp;        if(this._state == 1) {</b>
+<b class="nc"><i>177</i>&nbsp;            return &quot;CDATA&quot;;</b>
+<i>178</i>&nbsp;        } else {
+<b class="nc"><i>179</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributeType() called in illegal state&quot;);</b>
+<i>180</i>&nbsp;        }
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    public String getAttributeValue(int index) {
+<i>184</i>&nbsp;        if(this._state == 1) {
+<i>185</i>&nbsp;            return ((Attr)this._currentAttributes.get(index)).getNodeValue();
+<i>186</i>&nbsp;        } else {
+<i>187</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributeValue() called in illegal state&quot;);
+<b class="nc"><i>188</i>&nbsp;        }</b>
+<b class="nc"><i>189</i>&nbsp;    }</b>
+<b class="nc"><i>190</i>&nbsp;</b>
+<b class="nc"><i>191</i>&nbsp;    public String getAttributeValue(String namespaceURI, String localName) {</b>
+<b class="nc"><i>192</i>&nbsp;        if(this._state == 1) {</b>
+<i>193</i>&nbsp;            if(this._namedNodeMap != null) {
+<b class="nc"><i>194</i>&nbsp;                Node attr = this._namedNodeMap.getNamedItemNS(namespaceURI, localName);</b>
+<b class="nc"><i>195</i>&nbsp;                return attr != null?attr.getNodeValue():null;</b>
+<b class="nc"><i>196</i>&nbsp;            } else {</b>
+<i>197</i>&nbsp;                return null;
+<b class="nc"><i>198</i>&nbsp;            }</b>
+<i>199</i>&nbsp;        } else {
+<i>200</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getAttributeValue() called in illegal state&quot;);
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    public String getCharacterEncodingScheme() {
+<i>205</i>&nbsp;        return null;
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<b class="nc"><i>208</i>&nbsp;    public String getElementText() throws XMLStreamException {</b>
+<i>209</i>&nbsp;        throw new RuntimeException(&quot;DOMStreamReader: getElementText() not implemented&quot;);
+<b class="nc"><i>210</i>&nbsp;    }</b>
+<b class="nc"><i>211</i>&nbsp;</b>
+<b class="nc"><i>212</i>&nbsp;    public String getEncoding() {</b>
+<b class="nc"><i>213</i>&nbsp;        return null;</b>
+<b class="nc"><i>214</i>&nbsp;    }</b>
+<i>215</i>&nbsp;
+<b class="nc"><i>216</i>&nbsp;    public int getEventType() {</b>
+<b class="nc"><i>217</i>&nbsp;        return this._state;</b>
+<b class="nc"><i>218</i>&nbsp;    }</b>
+<i>219</i>&nbsp;
+<b class="nc"><i>220</i>&nbsp;    public String getLocalName() {</b>
+<i>221</i>&nbsp;        if(this._state != 1 &amp;&amp; this._state != 2) {
+<i>222</i>&nbsp;            if(this._state == 9) {
+<i>223</i>&nbsp;                return this._current.getNodeName();
+<i>224</i>&nbsp;            } else {
+<b class="nc"><i>225</i>&nbsp;                throw new IllegalStateException(&quot;DOMStreamReader: getAttributeValue() called in illegal state&quot;);</b>
+<i>226</i>&nbsp;            }
+<i>227</i>&nbsp;        } else {
+<b class="nc"><i>228</i>&nbsp;            String localName = this._current.getLocalName();</b>
+<b class="nc"><i>229</i>&nbsp;            return localName != null?localName:QName.valueOf(this._current.getNodeName()).getLocalPart();</b>
+<i>230</i>&nbsp;        }
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<b class="nc"><i>233</i>&nbsp;    public Location getLocation() {</b>
+<b class="nc"><i>234</i>&nbsp;        return DummyLocation.INSTANCE;</b>
+<i>235</i>&nbsp;    }
+<b class="nc"><i>236</i>&nbsp;</b>
+<b class="nc"><i>237</i>&nbsp;    public QName getName() {</b>
+<i>238</i>&nbsp;        if(this._state != 1 &amp;&amp; this._state != 2) {
+<i>239</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getName() called in illegal state&quot;);
+<i>240</i>&nbsp;        } else {
+<i>241</i>&nbsp;            String localName = this._current.getLocalName();
+<i>242</i>&nbsp;            if(localName != null) {
+<i>243</i>&nbsp;                String prefix = this._current.getPrefix();
+<i>244</i>&nbsp;                String uri = this._current.getNamespaceURI();
+<i>245</i>&nbsp;                return new QName(fixNull(uri), localName, fixNull(prefix));
+<i>246</i>&nbsp;            } else {
+<i>247</i>&nbsp;                return QName.valueOf(this._current.getNodeName());
+<i>248</i>&nbsp;            }
+<i>249</i>&nbsp;        }
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;
+<b class="nc"><i>252</i>&nbsp;    public NamespaceContext getNamespaceContext() {</b>
+<i>253</i>&nbsp;        return this;
+<b class="nc"><i>254</i>&nbsp;    }</b>
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;    private DOMStreamReader.Scope getCheckedScope() {</b>
+<b class="nc"><i>257</i>&nbsp;        if(this._state != 1 &amp;&amp; this._state != 2) {</b>
+<b class="nc"><i>258</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: neither on START_ELEMENT nor END_ELEMENT&quot;);</b>
+<b class="nc"><i>259</i>&nbsp;        } else {</b>
+<b class="nc"><i>260</i>&nbsp;            return this.scopes[this.depth];</b>
+<b class="nc"><i>261</i>&nbsp;        }</b>
+<b class="nc"><i>262</i>&nbsp;    }</b>
+<b class="nc"><i>263</i>&nbsp;</b>
+<i>264</i>&nbsp;    public int getNamespaceCount() {
+<i>265</i>&nbsp;        return this.getCheckedScope().getNamespaceCount();
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    public String getNamespacePrefix(int index) {
+<i>269</i>&nbsp;        return this.getCheckedScope().getNamespacePrefix(index);
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;    public String getNamespaceURI(int index) {</b>
+<b class="nc"><i>273</i>&nbsp;        return this.getCheckedScope().getNamespaceURI(index);</b>
+<b class="nc"><i>274</i>&nbsp;    }</b>
+<b class="nc"><i>275</i>&nbsp;</b>
+<b class="nc"><i>276</i>&nbsp;    public String getNamespaceURI() {</b>
+<i>277</i>&nbsp;        if(this._state != 1 &amp;&amp; this._state != 2) {
+<i>278</i>&nbsp;            return null;
+<i>279</i>&nbsp;        } else {
+<i>280</i>&nbsp;            String uri = this._current.getNamespaceURI();
+<i>281</i>&nbsp;            return fixNull(uri);
+<i>282</i>&nbsp;        }
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    public String getNamespaceURI(String prefix) {
+<i>286</i>&nbsp;        if(prefix == null) {
+<i>287</i>&nbsp;            throw new IllegalArgumentException(&quot;DOMStreamReader: getNamespaceURI(String) call with a null prefix&quot;);
+<i>288</i>&nbsp;        } else if(prefix.equals(&quot;xml&quot;)) {
+<i>289</i>&nbsp;            return &quot;http://www.w3.org/XML/1998/namespace&quot;;
+<i>290</i>&nbsp;        } else if(prefix.equals(&quot;xmlns&quot;)) {
+<b class="nc"><i>291</i>&nbsp;            return &quot;http://www.w3.org/2000/xmlns/&quot;;</b>
+<b class="nc"><i>292</i>&nbsp;        } else {</b>
+<i>293</i>&nbsp;            String nsUri = this.scopes[this.depth].getNamespaceURI(prefix);
+<b class="nc"><i>294</i>&nbsp;            if(nsUri != null) {</b>
+<i>295</i>&nbsp;                return nsUri;
+<b class="nc"><i>296</i>&nbsp;            } else {</b>
+<i>297</i>&nbsp;                Node node = this.findRootElement();
+<b class="nc"><i>298</i>&nbsp;</b>
+<b class="nc"><i>299</i>&nbsp;                for(String nsDeclName = prefix.length() == 0?&quot;xmlns&quot;:&quot;xmlns:&quot; + prefix; node.getNodeType() != 9; node = node.getParentNode()) {</b>
+<b class="nc"><i>300</i>&nbsp;                    NamedNodeMap namedNodeMap = node.getAttributes();</b>
+<i>301</i>&nbsp;                    Attr attr = (Attr)namedNodeMap.getNamedItem(nsDeclName);
+<i>302</i>&nbsp;                    if(attr != null) {
+<b class="nc"><i>303</i>&nbsp;                        return attr.getValue();</b>
+<i>304</i>&nbsp;                    }
+<i>305</i>&nbsp;                }
+<i>306</i>&nbsp;
+<b class="nc"><i>307</i>&nbsp;                return null;</b>
+<i>308</i>&nbsp;            }
+<i>309</i>&nbsp;        }
+<i>310</i>&nbsp;    }
+<b class="nc"><i>311</i>&nbsp;</b>
+<b class="nc"><i>312</i>&nbsp;    public String getPrefix(String nsUri) {</b>
+<i>313</i>&nbsp;        if(nsUri == null) {
+<i>314</i>&nbsp;            throw new IllegalArgumentException(&quot;DOMStreamReader: getPrefix(String) call with a null namespace URI&quot;);
+<i>315</i>&nbsp;        } else if(nsUri.equals(&quot;http://www.w3.org/XML/1998/namespace&quot;)) {
+<i>316</i>&nbsp;            return &quot;xml&quot;;
+<i>317</i>&nbsp;        } else if(nsUri.equals(&quot;http://www.w3.org/2000/xmlns/&quot;)) {
+<i>318</i>&nbsp;            return &quot;xmlns&quot;;
+<b class="nc"><i>319</i>&nbsp;        } else {</b>
+<b class="nc"><i>320</i>&nbsp;            String prefix = this.scopes[this.depth].getPrefix(nsUri);</b>
+<b class="nc"><i>321</i>&nbsp;            if(prefix != null) {</b>
+<b class="nc"><i>322</i>&nbsp;                return prefix;</b>
+<i>323</i>&nbsp;            } else {
+<b class="nc"><i>324</i>&nbsp;                for(Node node = this.findRootElement(); node.getNodeType() != 9; node = node.getParentNode()) {</b>
+<b class="nc"><i>325</i>&nbsp;                    NamedNodeMap namedNodeMap = node.getAttributes();</b>
+<b class="nc"><i>326</i>&nbsp;</b>
+<i>327</i>&nbsp;                    for(int i = namedNodeMap.getLength() - 1; i &gt;= 0; --i) {
+<b class="nc"><i>328</i>&nbsp;                        Attr attr = (Attr)namedNodeMap.item(i);</b>
+<i>329</i>&nbsp;                        prefix = getPrefixForAttr(attr, nsUri);
+<b class="nc"><i>330</i>&nbsp;                        if(prefix != null) {</b>
+<i>331</i>&nbsp;                            return prefix;
+<i>332</i>&nbsp;                        }
+<i>333</i>&nbsp;                    }
+<b class="nc"><i>334</i>&nbsp;                }</b>
+<b class="nc"><i>335</i>&nbsp;</b>
+<b class="nc"><i>336</i>&nbsp;                return null;</b>
+<i>337</i>&nbsp;            }
+<i>338</i>&nbsp;        }
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    private Node findRootElement() {
+<i>342</i>&nbsp;        short type;
+<b class="nc"><i>343</i>&nbsp;        Node node;</b>
+<b class="nc"><i>344</i>&nbsp;        for(node = this._start; (type = node.getNodeType()) != 9 &amp;&amp; type != 1; node = node.getParentNode()) {</b>
+<b class="nc"><i>345</i>&nbsp;            ;</b>
+<i>346</i>&nbsp;        }
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;        return node;</b>
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    private static String getPrefixForAttr(Attr attr, String nsUri) {
+<i>352</i>&nbsp;        String attrName = attr.getNodeName();
+<i>353</i>&nbsp;        if(!attrName.startsWith(&quot;xmlns:&quot;) &amp;&amp; !attrName.equals(&quot;xmlns&quot;)) {
+<i>354</i>&nbsp;            return null;
+<b class="nc"><i>355</i>&nbsp;        } else if(attr.getValue().equals(nsUri)) {</b>
+<b class="nc"><i>356</i>&nbsp;            if(attrName.equals(&quot;xmlns&quot;)) {</b>
+<b class="nc"><i>357</i>&nbsp;                return &quot;&quot;;</b>
+<b class="nc"><i>358</i>&nbsp;            } else {</b>
+<b class="nc"><i>359</i>&nbsp;                String localName = attr.getLocalName();</b>
+<b class="nc"><i>360</i>&nbsp;                return localName != null?localName:QName.valueOf(attrName).getLocalPart();</b>
+<b class="nc"><i>361</i>&nbsp;            }</b>
+<i>362</i>&nbsp;        } else {
+<i>363</i>&nbsp;            return null;
+<b class="nc"><i>364</i>&nbsp;        }</b>
+<i>365</i>&nbsp;    }
+<i>366</i>&nbsp;
+<b class="nc"><i>367</i>&nbsp;    public Iterator getPrefixes(String nsUri) {</b>
+<i>368</i>&nbsp;        String prefix = this.getPrefix(nsUri);
+<i>369</i>&nbsp;        return prefix == null?Collections.emptyList().iterator():Collections.singletonList(prefix).iterator();
+<i>370</i>&nbsp;    }
+<b class="nc"><i>371</i>&nbsp;</b>
+<b class="nc"><i>372</i>&nbsp;    public String getPIData() {</b>
+<b class="nc"><i>373</i>&nbsp;        return this._state == 3?((ProcessingInstruction)this._current).getData():null;</b>
+<i>374</i>&nbsp;    }
+<b class="nc"><i>375</i>&nbsp;</b>
+<i>376</i>&nbsp;    public String getPITarget() {
+<i>377</i>&nbsp;        return this._state == 3?((ProcessingInstruction)this._current).getTarget():null;
+<i>378</i>&nbsp;    }
+<b class="nc"><i>379</i>&nbsp;</b>
+<b class="nc"><i>380</i>&nbsp;    public String getPrefix() {</b>
+<b class="nc"><i>381</i>&nbsp;        if(this._state != 1 &amp;&amp; this._state != 2) {</b>
+<i>382</i>&nbsp;            return null;
+<b class="nc"><i>383</i>&nbsp;        } else {</b>
+<i>384</i>&nbsp;            String prefix = this._current.getPrefix();
+<i>385</i>&nbsp;            return fixNull(prefix);
+<i>386</i>&nbsp;        }
+<b class="nc"><i>387</i>&nbsp;    }</b>
+<b class="nc"><i>388</i>&nbsp;</b>
+<i>389</i>&nbsp;    public Object getProperty(String str) throws IllegalArgumentException {
+<b class="nc"><i>390</i>&nbsp;        return null;</b>
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    public String getText() {
+<b class="nc"><i>394</i>&nbsp;        if(this._state == 4) {</b>
+<b class="nc"><i>395</i>&nbsp;            return this.wholeText;</b>
+<i>396</i>&nbsp;        } else if(this._state != 12 &amp;&amp; this._state != 5 &amp;&amp; this._state != 9) {
+<b class="nc"><i>397</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getTextLength() called in illegal state&quot;);</b>
+<i>398</i>&nbsp;        } else {
+<i>399</i>&nbsp;            return this._current.getNodeValue();
+<i>400</i>&nbsp;        }
+<b class="nc"><i>401</i>&nbsp;    }</b>
+<b class="nc"><i>402</i>&nbsp;</b>
+<b class="nc"><i>403</i>&nbsp;    public char[] getTextCharacters() {</b>
+<b class="nc"><i>404</i>&nbsp;        return this.getText().toCharArray();</b>
+<i>405</i>&nbsp;    }
+<b class="nc"><i>406</i>&nbsp;</b>
+<i>407</i>&nbsp;    public int getTextCharacters(int sourceStart, char[] target, int targetStart, int targetLength) throws XMLStreamException {
+<b class="nc"><i>408</i>&nbsp;        String text = this.getText();</b>
+<i>409</i>&nbsp;        int copiedSize = Math.min(targetLength, text.length() - sourceStart);
+<i>410</i>&nbsp;        text.getChars(sourceStart, sourceStart + copiedSize, target, targetStart);
+<i>411</i>&nbsp;        return copiedSize;
+<b class="nc"><i>412</i>&nbsp;    }</b>
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;    public int getTextLength() {
+<i>415</i>&nbsp;        return this.getText().length();
+<b class="nc"><i>416</i>&nbsp;    }</b>
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    public int getTextStart() {
+<i>419</i>&nbsp;        if(this._state != 4 &amp;&amp; this._state != 12 &amp;&amp; this._state != 5 &amp;&amp; this._state != 9) {
+<b class="nc"><i>420</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: getTextStart() called in illegal state&quot;);</b>
+<i>421</i>&nbsp;        } else {
+<i>422</i>&nbsp;            return 0;
+<i>423</i>&nbsp;        }
+<b class="nc"><i>424</i>&nbsp;    }</b>
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;    public String getVersion() {
+<i>427</i>&nbsp;        return null;
+<i>428</i>&nbsp;    }
+<i>429</i>&nbsp;
+<i>430</i>&nbsp;    public boolean hasName() {
+<b class="nc"><i>431</i>&nbsp;        return this._state == 1 || this._state == 2;</b>
+<b class="nc"><i>432</i>&nbsp;    }</b>
+<b class="nc"><i>433</i>&nbsp;</b>
+<i>434</i>&nbsp;    public boolean hasNext() throws XMLStreamException {
+<i>435</i>&nbsp;        return this._state != 8;
+<b class="nc"><i>436</i>&nbsp;    }</b>
+<b class="nc"><i>437</i>&nbsp;</b>
+<i>438</i>&nbsp;    public boolean hasText() {
+<b class="nc"><i>439</i>&nbsp;        return this._state != 4 &amp;&amp; this._state != 12 &amp;&amp; this._state != 5 &amp;&amp; this._state != 9?false:this.getText().trim().length() &gt; 0;</b>
+<i>440</i>&nbsp;    }
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;    public boolean isAttributeSpecified(int param) {
+<b class="nc"><i>443</i>&nbsp;        return false;</b>
+<i>444</i>&nbsp;    }
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;    public boolean isCharacters() {
+<i>447</i>&nbsp;        return this._state == 4;
+<i>448</i>&nbsp;    }
+<i>449</i>&nbsp;
+<b class="nc"><i>450</i>&nbsp;    public boolean isEndElement() {</b>
+<b class="nc"><i>451</i>&nbsp;        return this._state == 2;</b>
+<b class="nc"><i>452</i>&nbsp;    }</b>
+<b class="nc"><i>453</i>&nbsp;</b>
+<b class="nc"><i>454</i>&nbsp;    public boolean isStandalone() {</b>
+<b class="nc"><i>455</i>&nbsp;        return true;</b>
+<i>456</i>&nbsp;    }
+<i>457</i>&nbsp;
+<b class="nc"><i>458</i>&nbsp;    public boolean isStartElement() {</b>
+<i>459</i>&nbsp;        return this._state == 1;
+<i>460</i>&nbsp;    }
+<b class="nc"><i>461</i>&nbsp;</b>
+<i>462</i>&nbsp;    public boolean isWhiteSpace() {
+<i>463</i>&nbsp;        return this._state != 4 &amp;&amp; this._state != 12?false:this.getText().trim().length() == 0;
+<i>464</i>&nbsp;    }
+<b class="nc"><i>465</i>&nbsp;</b>
+<i>466</i>&nbsp;    private static int mapNodeTypeToState(int nodetype) {
+<i>467</i>&nbsp;        switch(nodetype) {
+<i>468</i>&nbsp;        case 1:
+<i>469</i>&nbsp;            return 1;
+<i>470</i>&nbsp;        case 2:
+<i>471</i>&nbsp;        case 9:
+<i>472</i>&nbsp;        case 10:
+<i>473</i>&nbsp;        case 11:
+<i>474</i>&nbsp;        default:
+<b class="nc"><i>475</i>&nbsp;            throw new RuntimeException(&quot;DOMStreamReader: Unexpected node type&quot;);</b>
+<b class="nc"><i>476</i>&nbsp;        case 3:</b>
+<i>477</i>&nbsp;            return 4;
+<b class="nc"><i>478</i>&nbsp;        case 4:</b>
+<i>479</i>&nbsp;            return 12;
+<i>480</i>&nbsp;        case 5:
+<i>481</i>&nbsp;            return 9;
+<b class="nc"><i>482</i>&nbsp;        case 6:</b>
+<i>483</i>&nbsp;            return 15;
+<i>484</i>&nbsp;        case 7:
+<i>485</i>&nbsp;            return 3;
+<b class="nc"><i>486</i>&nbsp;        case 8:</b>
+<i>487</i>&nbsp;            return 5;
+<i>488</i>&nbsp;        case 12:
+<i>489</i>&nbsp;            return 14;
+<b class="nc"><i>490</i>&nbsp;        }</b>
+<i>491</i>&nbsp;    }
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;    public int next() throws XMLStreamException {
+<b class="nc"><i>494</i>&nbsp;        while(true) {</b>
+<b class="nc"><i>495</i>&nbsp;            int r = this._next();</b>
+<b class="nc"><i>496</i>&nbsp;            switch(r) {</b>
+<i>497</i>&nbsp;            case 1:
+<b class="nc"><i>498</i>&nbsp;                this.splitAttributes();</b>
+<i>499</i>&nbsp;                return 1;
+<i>500</i>&nbsp;            case 4:
+<i>501</i>&nbsp;                Node prev = this._current.getPreviousSibling();
+<i>502</i>&nbsp;                if(prev != null &amp;&amp; prev.getNodeType() == 3) {
+<i>503</i>&nbsp;                    break;
+<i>504</i>&nbsp;                }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;                Text t = (Text)this._current;
+<b class="nc"><i>507</i>&nbsp;                this.wholeText = t.getWholeText();</b>
+<b class="nc"><i>508</i>&nbsp;                if(this.wholeText.length() == 0) {</b>
+<i>509</i>&nbsp;                    break;
+<b class="nc"><i>510</i>&nbsp;                }</b>
+<b class="nc"><i>511</i>&nbsp;</b>
+<i>512</i>&nbsp;                return 4;
+<b class="nc"><i>513</i>&nbsp;            default:</b>
+<b class="nc"><i>514</i>&nbsp;                return r;</b>
+<i>515</i>&nbsp;            }
+<i>516</i>&nbsp;        }
+<i>517</i>&nbsp;    }
+<b class="nc"><i>518</i>&nbsp;</b>
+<b class="nc"><i>519</i>&nbsp;    private int _next() throws XMLStreamException {</b>
+<i>520</i>&nbsp;        Node child;
+<i>521</i>&nbsp;        switch(this._state) {
+<b class="nc"><i>522</i>&nbsp;        case 1:</b>
+<b class="nc"><i>523</i>&nbsp;            child = this._current.getFirstChild();</b>
+<b class="nc"><i>524</i>&nbsp;            if(child == null) {</b>
+<i>525</i>&nbsp;                return this._state = 2;
+<b class="nc"><i>526</i>&nbsp;            }</b>
+<b class="nc"><i>527</i>&nbsp;</b>
+<b class="nc"><i>528</i>&nbsp;            this._current = child;</b>
+<b class="nc"><i>529</i>&nbsp;            return this._state = mapNodeTypeToState(this._current.getNodeType());</b>
+<b class="nc"><i>530</i>&nbsp;        case 2:</b>
+<b class="nc"><i>531</i>&nbsp;            --this.depth;</b>
+<b class="nc"><i>532</i>&nbsp;        case 3:</b>
+<i>533</i>&nbsp;        case 4:
+<i>534</i>&nbsp;        case 5:
+<i>535</i>&nbsp;        case 9:
+<b class="nc"><i>536</i>&nbsp;        case 12:</b>
+<b class="nc"><i>537</i>&nbsp;            break;</b>
+<i>538</i>&nbsp;        case 6:
+<b class="nc"><i>539</i>&nbsp;        case 10:</b>
+<b class="nc"><i>540</i>&nbsp;        case 11:</b>
+<i>541</i>&nbsp;        case 13:
+<b class="nc"><i>542</i>&nbsp;        default:</b>
+<b class="nc"><i>543</i>&nbsp;            throw new RuntimeException(&quot;DOMStreamReader: Unexpected internal state&quot;);</b>
+<i>544</i>&nbsp;        case 7:
+<i>545</i>&nbsp;            if(this._current.getNodeType() == 1) {
+<i>546</i>&nbsp;                return this._state = 1;
+<b class="nc"><i>547</i>&nbsp;            }</b>
+<b class="nc"><i>548</i>&nbsp;</b>
+<i>549</i>&nbsp;            child = this._current.getFirstChild();
+<i>550</i>&nbsp;            if(child == null) {
+<b class="nc"><i>551</i>&nbsp;                return this._state = 8;</b>
+<i>552</i>&nbsp;            }
+<b class="nc"><i>553</i>&nbsp;</b>
+<i>554</i>&nbsp;            this._current = child;
+<b class="nc"><i>555</i>&nbsp;            return this._state = mapNodeTypeToState(this._current.getNodeType());</b>
+<b class="nc"><i>556</i>&nbsp;        case 8:</b>
+<b class="nc"><i>557</i>&nbsp;            throw new IllegalStateException(&quot;DOMStreamReader: Calling next() at END_DOCUMENT&quot;);</b>
+<b class="nc"><i>558</i>&nbsp;        }</b>
+<b class="nc"><i>559</i>&nbsp;</b>
+<b class="nc"><i>560</i>&nbsp;        if(this._current == this._start) {</b>
+<i>561</i>&nbsp;            return this._state = 8;
+<b class="nc"><i>562</i>&nbsp;        } else {</b>
+<b class="nc"><i>563</i>&nbsp;            Node sibling = this._current.getNextSibling();</b>
+<b class="nc"><i>564</i>&nbsp;            if(sibling != null) {</b>
+<i>565</i>&nbsp;                this._current = sibling;
+<i>566</i>&nbsp;                return this._state = mapNodeTypeToState(this._current.getNodeType());
+<i>567</i>&nbsp;            } else {
+<i>568</i>&nbsp;                this._current = this._current.getParentNode();
+<i>569</i>&nbsp;                this._state = this._current != null &amp;&amp; this._current.getNodeType() != 9?2:8;
+<i>570</i>&nbsp;                return this._state;
+<i>571</i>&nbsp;            }
+<i>572</i>&nbsp;        }
+<b class="nc"><i>573</i>&nbsp;    }</b>
+<i>574</i>&nbsp;
+<b class="nc"><i>575</i>&nbsp;    public int nextTag() throws XMLStreamException {</b>
+<b class="nc"><i>576</i>&nbsp;        int eventType;</b>
+<i>577</i>&nbsp;        for(eventType = this.next(); eventType == 4 &amp;&amp; this.isWhiteSpace() || eventType == 12 &amp;&amp; this.isWhiteSpace() || eventType == 6 || eventType == 3 || eventType == 5; eventType = this.next()) {
+<b class="nc"><i>578</i>&nbsp;            ;</b>
+<i>579</i>&nbsp;        }
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;        if(eventType != 1 &amp;&amp; eventType != 2) {
+<i>582</i>&nbsp;            throw new XMLStreamException2(&quot;DOMStreamReader: Expected start or end tag&quot;);
+<i>583</i>&nbsp;        } else {
+<i>584</i>&nbsp;            return eventType;
+<i>585</i>&nbsp;        }
+<b class="nc"><i>586</i>&nbsp;    }</b>
+<b class="nc"><i>587</i>&nbsp;</b>
+<b class="nc"><i>588</i>&nbsp;    public void require(int type, String namespaceURI, String localName) throws XMLStreamException {</b>
+<i>589</i>&nbsp;        if(type != this._state) {
+<b class="nc"><i>590</i>&nbsp;            throw new XMLStreamException2(&quot;DOMStreamReader: Required event type not found&quot;);</b>
+<b class="nc"><i>591</i>&nbsp;        } else if(namespaceURI != null &amp;&amp; !namespaceURI.equals(this.getNamespaceURI())) {</b>
+<b class="nc"><i>592</i>&nbsp;            throw new XMLStreamException2(&quot;DOMStreamReader: Required namespaceURI not found&quot;);</b>
+<b class="nc"><i>593</i>&nbsp;        } else if(localName != null &amp;&amp; !localName.equals(this.getLocalName())) {</b>
+<b class="nc"><i>594</i>&nbsp;            throw new XMLStreamException2(&quot;DOMStreamReader: Required localName not found&quot;);</b>
+<i>595</i>&nbsp;        }
+<i>596</i>&nbsp;    }
+<i>597</i>&nbsp;
+<b class="nc"><i>598</i>&nbsp;    public boolean standaloneSet() {</b>
+<i>599</i>&nbsp;        return true;
+<i>600</i>&nbsp;    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    private static void displayDOM(Node node, OutputStream ostream) {
+<i>603</i>&nbsp;        try {
+<b class="nc"><i>604</i>&nbsp;            System.out.println(&quot;\n====\n&quot;);</b>
+<b class="nc"><i>605</i>&nbsp;            XmlUtil.newTransformer().transform(new DOMSource(node), new StreamResult(ostream));</b>
+<b class="nc"><i>606</i>&nbsp;            System.out.println(&quot;\n====\n&quot;);</b>
+<i>607</i>&nbsp;        } catch (Exception var3) {
+<i>608</i>&nbsp;            var3.printStackTrace();
+<i>609</i>&nbsp;        }
+<b class="nc"><i>610</i>&nbsp;</b>
+<b class="nc"><i>611</i>&nbsp;    }</b>
+<i>612</i>&nbsp;
+<b class="nc"><i>613</i>&nbsp;    private static void verifyDOMIntegrity(Node node) {</b>
+<i>614</i>&nbsp;        switch(node.getNodeType()) {
+<i>615</i>&nbsp;        case 1:
+<i>616</i>&nbsp;        case 2:
+<b class="nc"><i>617</i>&nbsp;            if(node.getLocalName() == null) {</b>
+<b class="nc"><i>618</i>&nbsp;                System.out.println(&quot;WARNING: DOM level 1 node found&quot;);</b>
+<i>619</i>&nbsp;                System.out.println(&quot; -&gt; node.getNodeName() = &quot; + node.getNodeName());
+<b class="nc"><i>620</i>&nbsp;                System.out.println(&quot; -&gt; node.getNamespaceURI() = &quot; + node.getNamespaceURI());</b>
+<i>621</i>&nbsp;                System.out.println(&quot; -&gt; node.getLocalName() = &quot; + node.getLocalName());
+<i>622</i>&nbsp;                System.out.println(&quot; -&gt; node.getPrefix() = &quot; + node.getPrefix());
+<i>623</i>&nbsp;            }
+<b class="nc"><i>624</i>&nbsp;</b>
+<b class="nc"><i>625</i>&nbsp;            if(node.getNodeType() == 2) {</b>
+<b class="nc"><i>626</i>&nbsp;                return;</b>
+<i>627</i>&nbsp;            } else {
+<b class="nc"><i>628</i>&nbsp;                NamedNodeMap attrs = node.getAttributes();</b>
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;                for(int children = 0; children &lt; attrs.getLength(); ++children) {
+<i>631</i>&nbsp;                    verifyDOMIntegrity(attrs.item(children));
+<b class="nc"><i>632</i>&nbsp;                }</b>
+<i>633</i>&nbsp;            }
+<i>634</i>&nbsp;        case 9:
+<i>635</i>&nbsp;            NodeList var4 = node.getChildNodes();
+<b class="nc"><i>636</i>&nbsp;</b>
+<b class="nc"><i>637</i>&nbsp;            for(int i = 0; i &lt; var4.getLength(); ++i) {</b>
+<b class="nc"><i>638</i>&nbsp;                verifyDOMIntegrity(var4.item(i));</b>
+<b class="nc"><i>639</i>&nbsp;            }</b>
+<b class="nc"><i>640</i>&nbsp;        default:</b>
+<i>641</i>&nbsp;        }
+<i>642</i>&nbsp;    }
+<i>643</i>&nbsp;
+<b class="nc"><i>644</i>&nbsp;    private static String fixNull(String s) {</b>
+<i>645</i>&nbsp;        return s == null?&quot;&quot;:s;
+<i>646</i>&nbsp;    }
+<i>647</i>&nbsp;
+<i>648</i>&nbsp;    private static final class Scope {
+<b class="nc"><i>649</i>&nbsp;        final DOMStreamReader.Scope parent;</b>
+<b class="nc"><i>650</i>&nbsp;        final FinalArrayList&lt;Attr&gt; currentNamespaces = new FinalArrayList();</b>
+<b class="nc"><i>651</i>&nbsp;        final FinalArrayList&lt;String&gt; additionalNamespaces = new FinalArrayList();</b>
+<i>652</i>&nbsp;
+<b class="nc"><i>653</i>&nbsp;        Scope(DOMStreamReader.Scope parent) {</b>
+<i>654</i>&nbsp;            this.parent = parent;
+<i>655</i>&nbsp;        }
+<i>656</i>&nbsp;
+<b class="nc"><i>657</i>&nbsp;        void reset() {</b>
+<i>658</i>&nbsp;            this.currentNamespaces.clear();
+<i>659</i>&nbsp;            this.additionalNamespaces.clear();
+<i>660</i>&nbsp;        }
+<b class="nc"><i>661</i>&nbsp;</b>
+<b class="nc"><i>662</i>&nbsp;        int getNamespaceCount() {</b>
+<i>663</i>&nbsp;            return this.currentNamespaces.size() + this.additionalNamespaces.size() / 2;
+<b class="nc"><i>664</i>&nbsp;        }</b>
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;        String getNamespacePrefix(int index) {
+<i>667</i>&nbsp;            int sz = this.currentNamespaces.size();
+<b class="nc"><i>668</i>&nbsp;            if(index &lt; sz) {</b>
+<i>669</i>&nbsp;                Attr attr = (Attr)this.currentNamespaces.get(index);
+<i>670</i>&nbsp;                String result = attr.getLocalName();
+<i>671</i>&nbsp;                if(result == null) {
+<b class="nc"><i>672</i>&nbsp;                    result = QName.valueOf(attr.getNodeName()).getLocalPart();</b>
+<i>673</i>&nbsp;                }
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;                return result.equals(&quot;xmlns&quot;)?null:result;
+<b class="nc"><i>676</i>&nbsp;            } else {</b>
+<i>677</i>&nbsp;                return (String)this.additionalNamespaces.get((index - sz) * 2);
+<i>678</i>&nbsp;            }
+<i>679</i>&nbsp;        }
+<b class="nc"><i>680</i>&nbsp;</b>
+<b class="nc"><i>681</i>&nbsp;        String getNamespaceURI(int index) {</b>
+<i>682</i>&nbsp;            int sz = this.currentNamespaces.size();
+<b class="nc"><i>683</i>&nbsp;            return index &lt; sz?((Attr)this.currentNamespaces.get(index)).getValue():(String)this.additionalNamespaces.get((index - sz) * 2 + 1);</b>
+<i>684</i>&nbsp;        }
+<i>685</i>&nbsp;
+<i>686</i>&nbsp;        String getPrefix(String nsUri) {
+<b class="nc"><i>687</i>&nbsp;            for(DOMStreamReader.Scope sp = this; sp != null; sp = sp.parent) {</b>
+<i>688</i>&nbsp;                int i;
+<i>689</i>&nbsp;                for(i = sp.currentNamespaces.size() - 1; i &gt;= 0; --i) {
+<i>690</i>&nbsp;                    String result = DOMStreamReader.getPrefixForAttr((Attr)sp.currentNamespaces.get(i), nsUri);
+<b class="nc"><i>691</i>&nbsp;                    if(result != null) {</b>
+<i>692</i>&nbsp;                        return result;
+<i>693</i>&nbsp;                    }
+<i>694</i>&nbsp;                }
+<b class="nc"><i>695</i>&nbsp;</b>
+<i>696</i>&nbsp;                for(i = sp.additionalNamespaces.size() - 2; i &gt;= 0; i -= 2) {
+<i>697</i>&nbsp;                    if(((String)sp.additionalNamespaces.get(i + 1)).equals(nsUri)) {
+<i>698</i>&nbsp;                        return (String)sp.additionalNamespaces.get(i);
+<b class="nc"><i>699</i>&nbsp;                    }</b>
+<i>700</i>&nbsp;                }
+<i>701</i>&nbsp;            }
+<i>702</i>&nbsp;
+<b class="nc"><i>703</i>&nbsp;            return null;</b>
+<i>704</i>&nbsp;        }
+<i>705</i>&nbsp;
+<i>706</i>&nbsp;        String getNamespaceURI(@NotNull String prefix) {
+<b class="nc"><i>707</i>&nbsp;            String nsDeclName = prefix.length() == 0?&quot;xmlns&quot;:&quot;xmlns:&quot; + prefix;</b>
+<b class="nc"><i>708</i>&nbsp;</b>
+<b class="nc"><i>709</i>&nbsp;            for(DOMStreamReader.Scope sp = this; sp != null; sp = sp.parent) {</b>
+<i>710</i>&nbsp;                int i;
+<i>711</i>&nbsp;                for(i = sp.currentNamespaces.size() - 1; i &gt;= 0; --i) {
+<i>712</i>&nbsp;                    Attr a = (Attr)sp.currentNamespaces.get(i);
+<b class="nc"><i>713</i>&nbsp;                    if(a.getNodeName().equals(nsDeclName)) {</b>
+<i>714</i>&nbsp;                        return a.getValue();
+<b class="nc"><i>715</i>&nbsp;                    }</b>
+<i>716</i>&nbsp;                }
+<b class="nc"><i>717</i>&nbsp;</b>
+<i>718</i>&nbsp;                for(i = sp.additionalNamespaces.size() - 2; i &gt;= 0; i -= 2) {
+<b class="nc"><i>719</i>&nbsp;                    if(((String)sp.additionalNamespaces.get(i)).equals(prefix)) {</b>
+<i>720</i>&nbsp;                        return (String)sp.additionalNamespaces.get(i + 1);
+<b class="nc"><i>721</i>&nbsp;                    }</b>
+<i>722</i>&nbsp;                }
+<b class="nc"><i>723</i>&nbsp;            }</b>
+<i>724</i>&nbsp;
+<b class="nc"><i>725</i>&nbsp;            return null;</b>
+<i>726</i>&nbsp;        }
+<b class="nc"><i>727</i>&nbsp;    }</b>
+<i>728</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,313 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BodyImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.messaging.saaj.soap.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BodyImpl (com.sun.xml.internal.messaging.saaj.soap.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BodyImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 101)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.messaging.saaj.soap.impl;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl;
+<i>9</i>&nbsp;import com.sun.xml.internal.messaging.saaj.SOAPExceptionImpl;
+<i>10</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.SOAPDocument;
+<i>11</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.SOAPDocumentImpl;
+<i>12</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.impl.ElementFactory;
+<i>13</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.impl.ElementImpl;
+<i>14</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.impl.FaultImpl;
+<i>15</i>&nbsp;import com.sun.xml.internal.messaging.saaj.soap.name.NameImpl;
+<i>16</i>&nbsp;import java.util.Iterator;
+<i>17</i>&nbsp;import java.util.Locale;
+<i>18</i>&nbsp;import java.util.logging.Level;
+<i>19</i>&nbsp;import javax.xml.namespace.QName;
+<i>20</i>&nbsp;import javax.xml.parsers.DocumentBuilder;
+<i>21</i>&nbsp;import javax.xml.soap.Name;
+<i>22</i>&nbsp;import javax.xml.soap.SOAPBody;
+<i>23</i>&nbsp;import javax.xml.soap.SOAPBodyElement;
+<i>24</i>&nbsp;import javax.xml.soap.SOAPElement;
+<i>25</i>&nbsp;import javax.xml.soap.SOAPEnvelope;
+<i>26</i>&nbsp;import javax.xml.soap.SOAPException;
+<i>27</i>&nbsp;import javax.xml.soap.SOAPFault;
+<i>28</i>&nbsp;import org.w3c.dom.Document;
+<i>29</i>&nbsp;import org.w3c.dom.DocumentFragment;
+<i>30</i>&nbsp;import org.w3c.dom.Element;
+<i>31</i>&nbsp;import org.w3c.dom.Node;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;public abstract class BodyImpl extends ElementImpl implements SOAPBody {
+<i>34</i>&nbsp;    private SOAPFault fault;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    protected BodyImpl(SOAPDocumentImpl ownerDoc, NameImpl bodyName) {
+<i>37</i>&nbsp;        super(ownerDoc, bodyName);
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    protected abstract NameImpl getFaultName(String var1);
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    protected abstract boolean isFault(SOAPElement var1);
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    protected abstract SOAPBodyElement createBodyElement(Name var1);
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    protected abstract SOAPBodyElement createBodyElement(QName var1);
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    protected abstract SOAPFault createFaultElement();
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    protected abstract QName getDefaultFaultCode();
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public SOAPFault addFault() throws SOAPException {
+<i>53</i>&nbsp;        if(this.hasFault()) {
+<b class="nc"><i>54</i>&nbsp;            log.severe(&quot;SAAJ0110.impl.fault.already.exists&quot;);</b>
+<i>55</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Error: Fault already exists&quot;);
+<i>56</i>&nbsp;        } else {
+<i>57</i>&nbsp;            this.fault = this.createFaultElement();
+<i>58</i>&nbsp;            this.addNode(this.fault);
+<i>59</i>&nbsp;            this.fault.setFaultCode(this.getDefaultFaultCode());
+<i>60</i>&nbsp;            this.fault.setFaultString(&quot;Fault string, and possibly fault code, not set&quot;);
+<i>61</i>&nbsp;            return this.fault;
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;    public SOAPFault addFault(Name faultCode, String faultString, Locale locale) throws SOAPException {</b>
+<b class="nc"><i>66</i>&nbsp;        SOAPFault fault = this.addFault();</b>
+<b class="nc"><i>67</i>&nbsp;        fault.setFaultCode(faultCode);</b>
+<i>68</i>&nbsp;        fault.setFaultString(faultString, locale);
+<i>69</i>&nbsp;        return fault;
+<b class="nc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<b class="nc"><i>72</i>&nbsp;    public SOAPFault addFault(QName faultCode, String faultString, Locale locale) throws SOAPException {</b>
+<i>73</i>&nbsp;        SOAPFault fault = this.addFault();
+<b class="nc"><i>74</i>&nbsp;        fault.setFaultCode(faultCode);</b>
+<b class="nc"><i>75</i>&nbsp;        fault.setFaultString(faultString, locale);</b>
+<i>76</i>&nbsp;        return fault;
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public SOAPFault addFault(Name faultCode, String faultString) throws SOAPException {
+<i>80</i>&nbsp;        SOAPFault fault = this.addFault();
+<i>81</i>&nbsp;        fault.setFaultCode(faultCode);
+<i>82</i>&nbsp;        fault.setFaultString(faultString);
+<i>83</i>&nbsp;        return fault;
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<b class="nc"><i>86</i>&nbsp;    public SOAPFault addFault(QName faultCode, String faultString) throws SOAPException {</b>
+<b class="nc"><i>87</i>&nbsp;        SOAPFault fault = this.addFault();</b>
+<b class="nc"><i>88</i>&nbsp;        fault.setFaultCode(faultCode);</b>
+<b class="nc"><i>89</i>&nbsp;        fault.setFaultString(faultString);</b>
+<i>90</i>&nbsp;        return fault;
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    void initializeFault() {
+<i>94</i>&nbsp;        FaultImpl flt = (FaultImpl)this.findFault();
+<i>95</i>&nbsp;        this.fault = flt;
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<b class="nc"><i>98</i>&nbsp;    protected SOAPElement findFault() {</b>
+<b class="nc"><i>99</i>&nbsp;        Iterator eachChild = this.getChildElementNodes();</b>
+<b class="nc"><i>100</i>&nbsp;</b>
+<b class="nc"><i>101</i>&nbsp;        SOAPElement child;</b>
+<i>102</i>&nbsp;        do {
+<i>103</i>&nbsp;            if(!eachChild.hasNext()) {
+<i>104</i>&nbsp;                return null;
+<i>105</i>&nbsp;            }
+<i>106</i>&nbsp;
+<b class="nc"><i>107</i>&nbsp;            child = (SOAPElement)eachChild.next();</b>
+<b class="nc"><i>108</i>&nbsp;        } while(!this.isFault(child));</b>
+<b class="nc"><i>109</i>&nbsp;</b>
+<b class="nc"><i>110</i>&nbsp;        return child;</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    public boolean hasFault() {
+<i>114</i>&nbsp;        this.initializeFault();
+<i>115</i>&nbsp;        return this.fault != null;
+<b class="nc"><i>116</i>&nbsp;    }</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<b class="nc"><i>118</i>&nbsp;    public SOAPFault getFault() {</b>
+<b class="nc"><i>119</i>&nbsp;        return this.hasFault()?this.fault:null;</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public SOAPBodyElement addBodyElement(Name name) throws SOAPException {
+<b class="nc"><i>123</i>&nbsp;        SOAPBodyElement newBodyElement = (SOAPBodyElement)ElementFactory.createNamedElement(((SOAPDocument)this.getOwnerDocument()).getDocument(), name.getLocalName(), name.getPrefix(), name.getURI());</b>
+<b class="nc"><i>124</i>&nbsp;        if(newBodyElement == null) {</b>
+<i>125</i>&nbsp;            newBodyElement = this.createBodyElement((Name)name);
+<i>126</i>&nbsp;        }
+<i>127</i>&nbsp;
+<b class="nc"><i>128</i>&nbsp;        this.addNode(newBodyElement);</b>
+<b class="nc"><i>129</i>&nbsp;        return newBodyElement;</b>
+<b class="nc"><i>130</i>&nbsp;    }</b>
+<b class="nc"><i>131</i>&nbsp;</b>
+<b class="nc"><i>132</i>&nbsp;    public SOAPBodyElement addBodyElement(QName qname) throws SOAPException {</b>
+<i>133</i>&nbsp;        SOAPBodyElement newBodyElement = (SOAPBodyElement)ElementFactory.createNamedElement(((SOAPDocument)this.getOwnerDocument()).getDocument(), qname.getLocalPart(), qname.getPrefix(), qname.getNamespaceURI());
+<b class="nc"><i>134</i>&nbsp;        if(newBodyElement == null) {</b>
+<i>135</i>&nbsp;            newBodyElement = this.createBodyElement((QName)qname);
+<b class="nc"><i>136</i>&nbsp;        }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;        this.addNode(newBodyElement);
+<i>139</i>&nbsp;        return newBodyElement;
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<b class="nc"><i>141</i>&nbsp;</b>
+<i>142</i>&nbsp;    public void setParentElement(SOAPElement element) throws SOAPException {
+<i>143</i>&nbsp;        if(!(element instanceof SOAPEnvelope)) {
+<i>144</i>&nbsp;            log.severe(&quot;SAAJ0111.impl.body.parent.must.be.envelope&quot;);
+<b class="nc"><i>145</i>&nbsp;            throw new SOAPException(&quot;Parent of SOAPBody has to be a SOAPEnvelope&quot;);</b>
+<b class="nc"><i>146</i>&nbsp;        } else {</b>
+<b class="nc"><i>147</i>&nbsp;            super.setParentElement(element);</b>
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;    protected SOAPElement addElement(Name name) throws SOAPException {</b>
+<i>152</i>&nbsp;        return this.addBodyElement((Name)name);
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    protected SOAPElement addElement(QName name) throws SOAPException {
+<i>156</i>&nbsp;        return this.addBodyElement((QName)name);
+<b class="nc"><i>157</i>&nbsp;    }</b>
+<b class="nc"><i>158</i>&nbsp;</b>
+<i>159</i>&nbsp;    public SOAPBodyElement addDocument(Document document) throws SOAPException {
+<b class="nc"><i>160</i>&nbsp;        SOAPBodyElement newBodyElement = null;</b>
+<b class="nc"><i>161</i>&nbsp;        DocumentFragment docFrag = document.createDocumentFragment();</b>
+<i>162</i>&nbsp;        Element rootElement = document.getDocumentElement();
+<i>163</i>&nbsp;        if(rootElement != null) {
+<i>164</i>&nbsp;            docFrag.appendChild(rootElement);
+<b class="nc"><i>165</i>&nbsp;            Document ownerDoc = this.getOwnerDocument();</b>
+<i>166</i>&nbsp;            Node replacingNode = ownerDoc.importNode(docFrag, true);
+<i>167</i>&nbsp;            this.addNode(replacingNode);
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;            for(Iterator i = this.getChildElements(NameImpl.copyElementName(rootElement)); i.hasNext(); newBodyElement = (SOAPBodyElement)i.next()) {
+<i>170</i>&nbsp;                ;
+<b class="nc"><i>171</i>&nbsp;            }</b>
+<b class="nc"><i>172</i>&nbsp;        }</b>
+<i>173</i>&nbsp;
+<b class="nc"><i>174</i>&nbsp;        return newBodyElement;</b>
+<b class="nc"><i>175</i>&nbsp;    }</b>
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    protected SOAPElement convertToSoapElement(Element element) {
+<i>178</i>&nbsp;        return element instanceof SOAPBodyElement &amp;&amp; !element.getClass().equals(ElementImpl.class)?(SOAPElement)element:replaceElementWithSOAPElement(element, (ElementImpl)this.createBodyElement((Name)NameImpl.copyElementName(element)));
+<i>179</i>&nbsp;    }
+<b class="nc"><i>180</i>&nbsp;</b>
+<b class="nc"><i>181</i>&nbsp;    public SOAPElement setElementQName(QName newName) throws SOAPException {</b>
+<b class="nc"><i>182</i>&nbsp;        log.log(Level.SEVERE, &quot;SAAJ0146.impl.invalid.name.change.requested&quot;, new Object[]{this.elementQName.getLocalPart(), newName.getLocalPart()});</b>
+<i>183</i>&nbsp;        throw new SOAPException(&quot;Cannot change name for &quot; + this.elementQName.getLocalPart() + &quot; to &quot; + newName.getLocalPart());
+<b class="nc"><i>184</i>&nbsp;    }</b>
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    public Document extractContentAsDocument() throws SOAPException {
+<i>187</i>&nbsp;        Iterator eachChild = this.getChildElements();
+<b class="nc"><i>188</i>&nbsp;</b>
+<i>189</i>&nbsp;        javax.xml.soap.Node firstBodyElement;
+<i>190</i>&nbsp;        for(firstBodyElement = null; eachChild.hasNext() &amp;&amp; !(firstBodyElement instanceof SOAPElement); firstBodyElement = (javax.xml.soap.Node)eachChild.next()) {
+<i>191</i>&nbsp;            ;
+<b class="nc"><i>192</i>&nbsp;        }</b>
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;        boolean exactlyOneChildElement = true;
+<i>195</i>&nbsp;        Node document;
+<i>196</i>&nbsp;        if(firstBodyElement == null) {
+<i>197</i>&nbsp;            exactlyOneChildElement = false;
+<i>198</i>&nbsp;        } else {
+<i>199</i>&nbsp;            for(document = firstBodyElement.getNextSibling(); document != null; document = document.getNextSibling()) {
+<i>200</i>&nbsp;                if(document instanceof Element) {
+<i>201</i>&nbsp;                    exactlyOneChildElement = false;
+<i>202</i>&nbsp;                    break;
+<i>203</i>&nbsp;                }
+<i>204</i>&nbsp;            }
+<i>205</i>&nbsp;        }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;        if(!exactlyOneChildElement) {
+<i>208</i>&nbsp;            log.log(Level.SEVERE, &quot;SAAJ0250.impl.body.should.have.exactly.one.child&quot;);
+<i>209</i>&nbsp;            throw new SOAPException(&quot;Cannot extract Document from body&quot;);
+<i>210</i>&nbsp;        } else {
+<i>211</i>&nbsp;            document = null;
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;            Document document1;
+<i>214</i>&nbsp;            try {
+<i>215</i>&nbsp;                DocumentBuilderFactoryImpl e = new DocumentBuilderFactoryImpl();
+<i>216</i>&nbsp;                e.setNamespaceAware(true);
+<i>217</i>&nbsp;                DocumentBuilder builder = e.newDocumentBuilder();
+<i>218</i>&nbsp;                document1 = builder.newDocument();
+<i>219</i>&nbsp;                Element rootElement = (Element)document1.importNode(firstBodyElement, true);
+<i>220</i>&nbsp;                document1.appendChild(rootElement);
+<i>221</i>&nbsp;            } catch (Exception var8) {
+<i>222</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0251.impl.cannot.extract.document.from.body&quot;);
+<b class="nc"><i>223</i>&nbsp;                throw new SOAPExceptionImpl(&quot;Unable to extract Document from body&quot;, var8);</b>
+<b class="nc"><i>224</i>&nbsp;            }</b>
+<b class="nc"><i>225</i>&nbsp;</b>
+<b class="nc"><i>226</i>&nbsp;            firstBodyElement.detachNode();</b>
+<b class="nc"><i>227</i>&nbsp;            return document1;</b>
+<i>228</i>&nbsp;        }
+<b class="nc"><i>229</i>&nbsp;    }</b>
+<i>230</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

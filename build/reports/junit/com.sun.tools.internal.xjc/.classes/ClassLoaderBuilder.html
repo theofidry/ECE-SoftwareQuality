@@ -1,0 +1,140 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClassLoaderBuilder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.internal.xjc</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClassLoaderBuilder (com.sun.tools.internal.xjc)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClassLoaderBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.internal.xjc;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.istack.internal.tools.MaskingClassLoader;
+<i>9</i>&nbsp;import com.sun.istack.internal.tools.ParallelWorldClassLoader;
+<i>10</i>&nbsp;import com.sun.tools.internal.xjc.XJCFacade;
+<i>11</i>&nbsp;import java.net.MalformedURLException;
+<i>12</i>&nbsp;import java.net.URL;
+<i>13</i>&nbsp;import java.net.URLClassLoader;
+<i>14</i>&nbsp;import java.util.ArrayList;
+<i>15</i>&nbsp;import java.util.Arrays;
+<i>16</i>&nbsp;import javax.xml.bind.JAXBContext;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;class ClassLoaderBuilder {
+<i>19</i>&nbsp;    private static String[] maskedPackages = new String[]{&quot;com.sun.tools.&quot;, &quot;com.sun.codemodel.internal.&quot;, &quot;com.sun.relaxng.&quot;, &quot;com.sun.xml.internal.xsom.&quot;, &quot;com.sun.xml.internal.bind.&quot;};
+<i>20</i>&nbsp;    private static String[] toolPackages = new String[]{&quot;com.sun.tools.&quot;, &quot;com.sun.codemodel.internal.&quot;, &quot;com.sun.relaxng.&quot;, &quot;com.sun.xml.internal.xsom.&quot;};
+<i>21</i>&nbsp;    public static final boolean noHack = Boolean.getBoolean(XJCFacade.class.getName() + &quot;.nohack&quot;);
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    ClassLoaderBuilder() {
+<i>24</i>&nbsp;    }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    protected static ClassLoader createProtectiveClassLoader(ClassLoader cl, String v) throws ClassNotFoundException, MalformedURLException {
+<i>27</i>&nbsp;        if(noHack) {
+<i>28</i>&nbsp;            return (ClassLoader)cl;
+<i>29</i>&nbsp;        } else {
+<i>30</i>&nbsp;            boolean mustang = false;
+<i>31</i>&nbsp;            if(JAXBContext.class.getClassLoader() == null) {
+<i>32</i>&nbsp;                mustang = true;
+<i>33</i>&nbsp;                ArrayList mask = new ArrayList(Arrays.asList(maskedPackages));
+<i>34</i>&nbsp;                mask.add(&quot;javax.xml.bind.&quot;);
+<i>35</i>&nbsp;                MaskingClassLoader cl1 = new MaskingClassLoader((ClassLoader)cl, mask);
+<i>36</i>&nbsp;                URL apiUrl = cl1.getResource(&quot;javax/xml/bind/JAXBPermission.class&quot;);
+<i>37</i>&nbsp;                if(apiUrl == null) {
+<i>38</i>&nbsp;                    throw new ClassNotFoundException(&quot;There\&#39;s no JAXB 2.2 API in the classpath&quot;);
+<i>39</i>&nbsp;                }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;                cl = new URLClassLoader(new URL[]{ParallelWorldClassLoader.toJarUrl(apiUrl)}, cl1);
+<i>42</i>&nbsp;            }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;            if(v.equals(&quot;1.0&quot;)) {
+<i>45</i>&nbsp;                if(!mustang) {
+<b class="nc"><i>46</i>&nbsp;                    cl = new MaskingClassLoader((ClassLoader)cl, toolPackages);</b>
+<i>47</i>&nbsp;                }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;                cl = new ParallelWorldClassLoader((ClassLoader)cl, &quot;1.0/&quot;);
+<i>50</i>&nbsp;            } else if(mustang) {
+<i>51</i>&nbsp;                cl = new ParallelWorldClassLoader((ClassLoader)cl, &quot;&quot;);
+<i>52</i>&nbsp;            }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;            return (ClassLoader)cl;
+<i>55</i>&nbsp;        }
+<b class="nc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,895 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PNGImageWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.imageio.plugins.png</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PNGImageWriter (com.sun.imageio.plugins.png)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PNGImageWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 474)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.imageio.plugins.png;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.imageio.plugins.png.ChunkStream;
+<i>9</i>&nbsp;import com.sun.imageio.plugins.png.IDATOutputStream;
+<i>10</i>&nbsp;import com.sun.imageio.plugins.png.PNGImageReader;
+<i>11</i>&nbsp;import com.sun.imageio.plugins.png.PNGImageWriteParam;
+<i>12</i>&nbsp;import com.sun.imageio.plugins.png.PNGMetadata;
+<i>13</i>&nbsp;import com.sun.imageio.plugins.png.RowFilter;
+<i>14</i>&nbsp;import java.awt.Rectangle;
+<i>15</i>&nbsp;import java.awt.image.IndexColorModel;
+<i>16</i>&nbsp;import java.awt.image.Raster;
+<i>17</i>&nbsp;import java.awt.image.RenderedImage;
+<i>18</i>&nbsp;import java.awt.image.SampleModel;
+<i>19</i>&nbsp;import java.awt.image.WritableRaster;
+<i>20</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>21</i>&nbsp;import java.io.IOException;
+<i>22</i>&nbsp;import java.util.Iterator;
+<i>23</i>&nbsp;import java.util.zip.DeflaterOutputStream;
+<i>24</i>&nbsp;import javax.imageio.IIOException;
+<i>25</i>&nbsp;import javax.imageio.IIOImage;
+<i>26</i>&nbsp;import javax.imageio.ImageTypeSpecifier;
+<i>27</i>&nbsp;import javax.imageio.ImageWriteParam;
+<i>28</i>&nbsp;import javax.imageio.ImageWriter;
+<i>29</i>&nbsp;import javax.imageio.metadata.IIOMetadata;
+<i>30</i>&nbsp;import javax.imageio.spi.ImageWriterSpi;
+<i>31</i>&nbsp;import javax.imageio.stream.ImageOutputStream;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;public class PNGImageWriter extends ImageWriter {
+<i>34</i>&nbsp;    ImageOutputStream stream = null;
+<i>35</i>&nbsp;    PNGMetadata metadata = null;
+<i>36</i>&nbsp;    int sourceXOffset = 0;
+<i>37</i>&nbsp;    int sourceYOffset = 0;
+<i>38</i>&nbsp;    int sourceWidth = 0;
+<i>39</i>&nbsp;    int sourceHeight = 0;
+<i>40</i>&nbsp;    int[] sourceBands = null;
+<i>41</i>&nbsp;    int periodX = 1;
+<i>42</i>&nbsp;    int periodY = 1;
+<i>43</i>&nbsp;    int numBands;
+<i>44</i>&nbsp;    int bpp;
+<i>45</i>&nbsp;    RowFilter rowFilter = new RowFilter();
+<i>46</i>&nbsp;    byte[] prevRow = null;
+<i>47</i>&nbsp;    byte[] currRow = null;
+<i>48</i>&nbsp;    byte[][] filteredRows = (byte[][])null;
+<i>49</i>&nbsp;    int[] sampleSize = null;
+<i>50</i>&nbsp;    int scalingBitDepth = -1;
+<i>51</i>&nbsp;    byte[][] scale = (byte[][])null;
+<i>52</i>&nbsp;    byte[] scale0 = null;
+<i>53</i>&nbsp;    byte[][] scaleh = (byte[][])null;
+<i>54</i>&nbsp;    byte[][] scalel = (byte[][])null;
+<i>55</i>&nbsp;    int totalPixels;
+<i>56</i>&nbsp;    int pixelsDone;
+<i>57</i>&nbsp;    private static int[] allowedProgressivePasses = new int[]{1, 7};
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public PNGImageWriter(ImageWriterSpi var1) {
+<i>60</i>&nbsp;        super(var1);
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public void setOutput(Object var1) {
+<i>64</i>&nbsp;        super.setOutput(var1);
+<i>65</i>&nbsp;        if(var1 != null) {
+<i>66</i>&nbsp;            if(!(var1 instanceof ImageOutputStream)) {
+<i>67</i>&nbsp;                throw new IllegalArgumentException(&quot;output not an ImageOutputStream!&quot;);
+<i>68</i>&nbsp;            }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;            this.stream = (ImageOutputStream)var1;
+<i>71</i>&nbsp;        } else {
+<i>72</i>&nbsp;            this.stream = null;
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public ImageWriteParam getDefaultWriteParam() {
+<i>78</i>&nbsp;        return new PNGImageWriteParam(this.getLocale());
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam var1) {
+<i>82</i>&nbsp;        return null;
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier var1, ImageWriteParam var2) {
+<i>86</i>&nbsp;        PNGMetadata var3 = new PNGMetadata();
+<i>87</i>&nbsp;        var3.initialize(var1, var1.getSampleModel().getNumBands());
+<i>88</i>&nbsp;        return var3;
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public IIOMetadata convertStreamMetadata(IIOMetadata var1, ImageWriteParam var2) {
+<i>92</i>&nbsp;        return null;
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public IIOMetadata convertImageMetadata(IIOMetadata var1, ImageTypeSpecifier var2, ImageWriteParam var3) {
+<i>96</i>&nbsp;        return var1 instanceof PNGMetadata?(PNGMetadata)((PNGMetadata)var1).clone():new PNGMetadata(var1);
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    private void write_magic() throws IOException {
+<i>100</i>&nbsp;        byte[] var1 = new byte[]{(byte)-119, (byte)80, (byte)78, (byte)71, (byte)13, (byte)10, (byte)26, (byte)10};
+<i>101</i>&nbsp;        this.stream.write(var1);
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    private void write_IHDR() throws IOException {
+<i>105</i>&nbsp;        ChunkStream var1 = new ChunkStream(1229472850, this.stream);
+<i>106</i>&nbsp;        var1.writeInt(this.metadata.IHDR_width);
+<i>107</i>&nbsp;        var1.writeInt(this.metadata.IHDR_height);
+<i>108</i>&nbsp;        var1.writeByte(this.metadata.IHDR_bitDepth);
+<i>109</i>&nbsp;        var1.writeByte(this.metadata.IHDR_colorType);
+<i>110</i>&nbsp;        if(this.metadata.IHDR_compressionMethod != 0) {
+<i>111</i>&nbsp;            throw new IIOException(&quot;Only compression method 0 is defined in PNG 1.1&quot;);
+<i>112</i>&nbsp;        } else {
+<i>113</i>&nbsp;            var1.writeByte(this.metadata.IHDR_compressionMethod);
+<i>114</i>&nbsp;            if(this.metadata.IHDR_filterMethod != 0) {
+<i>115</i>&nbsp;                throw new IIOException(&quot;Only filter method 0 is defined in PNG 1.1&quot;);
+<i>116</i>&nbsp;            } else {
+<i>117</i>&nbsp;                var1.writeByte(this.metadata.IHDR_filterMethod);
+<i>118</i>&nbsp;                if(this.metadata.IHDR_interlaceMethod &gt;= 0 &amp;&amp; this.metadata.IHDR_interlaceMethod &lt;= 1) {
+<i>119</i>&nbsp;                    var1.writeByte(this.metadata.IHDR_interlaceMethod);
+<i>120</i>&nbsp;                    var1.finish();
+<i>121</i>&nbsp;                } else {
+<i>122</i>&nbsp;                    throw new IIOException(&quot;Only interlace methods 0 (node) and 1 (adam7) are defined in PNG 1.1&quot;);
+<i>123</i>&nbsp;                }
+<i>124</i>&nbsp;            }
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    private void write_cHRM() throws IOException {
+<i>129</i>&nbsp;        if(this.metadata.cHRM_present) {
+<i>130</i>&nbsp;            ChunkStream var1 = new ChunkStream(1665684045, this.stream);
+<i>131</i>&nbsp;            var1.writeInt(this.metadata.cHRM_whitePointX);
+<i>132</i>&nbsp;            var1.writeInt(this.metadata.cHRM_whitePointY);
+<i>133</i>&nbsp;            var1.writeInt(this.metadata.cHRM_redX);
+<i>134</i>&nbsp;            var1.writeInt(this.metadata.cHRM_redY);
+<i>135</i>&nbsp;            var1.writeInt(this.metadata.cHRM_greenX);
+<i>136</i>&nbsp;            var1.writeInt(this.metadata.cHRM_greenY);
+<i>137</i>&nbsp;            var1.writeInt(this.metadata.cHRM_blueX);
+<i>138</i>&nbsp;            var1.writeInt(this.metadata.cHRM_blueY);
+<i>139</i>&nbsp;            var1.finish();
+<i>140</i>&nbsp;        }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    private void write_gAMA() throws IOException {
+<i>145</i>&nbsp;        if(this.metadata.gAMA_present) {
+<i>146</i>&nbsp;            ChunkStream var1 = new ChunkStream(1732332865, this.stream);
+<i>147</i>&nbsp;            var1.writeInt(this.metadata.gAMA_gamma);
+<i>148</i>&nbsp;            var1.finish();
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    private void write_iCCP() throws IOException {
+<i>154</i>&nbsp;        if(this.metadata.iCCP_present) {
+<i>155</i>&nbsp;            ChunkStream var1 = new ChunkStream(1766015824, this.stream);
+<i>156</i>&nbsp;            var1.writeBytes(this.metadata.iCCP_profileName);
+<i>157</i>&nbsp;            var1.writeByte(0);
+<i>158</i>&nbsp;            var1.writeByte(this.metadata.iCCP_compressionMethod);
+<i>159</i>&nbsp;            var1.write(this.metadata.iCCP_compressedProfile);
+<i>160</i>&nbsp;            var1.finish();
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    private void write_sBIT() throws IOException {
+<i>166</i>&nbsp;        if(this.metadata.sBIT_present) {
+<i>167</i>&nbsp;            ChunkStream var1 = new ChunkStream(1933723988, this.stream);
+<i>168</i>&nbsp;            int var2 = this.metadata.IHDR_colorType;
+<i>169</i>&nbsp;            if(this.metadata.sBIT_colorType != var2) {
+<i>170</i>&nbsp;                this.processWarningOccurred(0, &quot;sBIT metadata has wrong color type.\nThe chunk will not be written.&quot;);
+<i>171</i>&nbsp;                return;
+<i>172</i>&nbsp;            }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;            if(var2 != 0 &amp;&amp; var2 != 4) {
+<i>175</i>&nbsp;                if(var2 == 2 || var2 == 3 || var2 == 6) {
+<i>176</i>&nbsp;                    var1.writeByte(this.metadata.sBIT_redBits);
+<i>177</i>&nbsp;                    var1.writeByte(this.metadata.sBIT_greenBits);
+<i>178</i>&nbsp;                    var1.writeByte(this.metadata.sBIT_blueBits);
+<i>179</i>&nbsp;                }
+<i>180</i>&nbsp;            } else {
+<i>181</i>&nbsp;                var1.writeByte(this.metadata.sBIT_grayBits);
+<i>182</i>&nbsp;            }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;            if(var2 == 4 || var2 == 6) {
+<i>185</i>&nbsp;                var1.writeByte(this.metadata.sBIT_alphaBits);
+<i>186</i>&nbsp;            }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;            var1.finish();
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    private void write_sRGB() throws IOException {
+<i>194</i>&nbsp;        if(this.metadata.sRGB_present) {
+<i>195</i>&nbsp;            ChunkStream var1 = new ChunkStream(1934772034, this.stream);
+<i>196</i>&nbsp;            var1.writeByte(this.metadata.sRGB_renderingIntent);
+<i>197</i>&nbsp;            var1.finish();
+<i>198</i>&nbsp;        }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    private void write_PLTE() throws IOException {
+<i>203</i>&nbsp;        if(this.metadata.PLTE_present) {
+<i>204</i>&nbsp;            if(this.metadata.IHDR_colorType == 0 || this.metadata.IHDR_colorType == 4) {
+<i>205</i>&nbsp;                this.processWarningOccurred(0, &quot;A PLTE chunk may not appear in a gray or gray alpha image.\nThe chunk will not be written&quot;);
+<i>206</i>&nbsp;                return;
+<i>207</i>&nbsp;            }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;            ChunkStream var1 = new ChunkStream(1347179589, this.stream);
+<i>210</i>&nbsp;            int var2 = this.metadata.PLTE_red.length;
+<i>211</i>&nbsp;            byte[] var3 = new byte[var2 * 3];
+<i>212</i>&nbsp;            int var4 = 0;
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;            for(int var5 = 0; var5 &lt; var2; ++var5) {
+<i>215</i>&nbsp;                var3[var4++] = this.metadata.PLTE_red[var5];
+<i>216</i>&nbsp;                var3[var4++] = this.metadata.PLTE_green[var5];
+<i>217</i>&nbsp;                var3[var4++] = this.metadata.PLTE_blue[var5];
+<i>218</i>&nbsp;            }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;            var1.write(var3);
+<i>221</i>&nbsp;            var1.finish();
+<i>222</i>&nbsp;        }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    private void write_hIST() throws IOException, IIOException {
+<i>227</i>&nbsp;        if(this.metadata.hIST_present) {
+<i>228</i>&nbsp;            ChunkStream var1 = new ChunkStream(1749635924, this.stream);
+<i>229</i>&nbsp;            if(!this.metadata.PLTE_present) {
+<i>230</i>&nbsp;                throw new IIOException(&quot;hIST chunk without PLTE chunk!&quot;);
+<i>231</i>&nbsp;            }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;            var1.writeChars(this.metadata.hIST_histogram, 0, this.metadata.hIST_histogram.length);
+<i>234</i>&nbsp;            var1.finish();
+<i>235</i>&nbsp;        }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    private void write_tRNS() throws IOException, IIOException {
+<i>240</i>&nbsp;        if(this.metadata.tRNS_present) {
+<i>241</i>&nbsp;            ChunkStream var1 = new ChunkStream(1951551059, this.stream);
+<i>242</i>&nbsp;            int var2 = this.metadata.IHDR_colorType;
+<i>243</i>&nbsp;            int var3 = this.metadata.tRNS_colorType;
+<i>244</i>&nbsp;            int var4 = this.metadata.tRNS_red;
+<i>245</i>&nbsp;            int var5 = this.metadata.tRNS_green;
+<i>246</i>&nbsp;            int var6 = this.metadata.tRNS_blue;
+<i>247</i>&nbsp;            if(var2 == 2 &amp;&amp; var3 == 0) {
+<i>248</i>&nbsp;                var3 = var2;
+<i>249</i>&nbsp;                var6 = this.metadata.tRNS_gray;
+<i>250</i>&nbsp;                var5 = this.metadata.tRNS_gray;
+<i>251</i>&nbsp;                var4 = this.metadata.tRNS_gray;
+<i>252</i>&nbsp;            }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;            if(var3 != var2) {
+<i>255</i>&nbsp;                this.processWarningOccurred(0, &quot;tRNS metadata has incompatible color type.\nThe chunk will not be written.&quot;);
+<i>256</i>&nbsp;                return;
+<i>257</i>&nbsp;            }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;            if(var2 == 3) {
+<i>260</i>&nbsp;                if(!this.metadata.PLTE_present) {
+<i>261</i>&nbsp;                    throw new IIOException(&quot;tRNS chunk without PLTE chunk!&quot;);
+<i>262</i>&nbsp;                }
+<b class="nc"><i>263</i>&nbsp;</b>
+<i>264</i>&nbsp;                var1.write(this.metadata.tRNS_alpha);
+<b class="nc"><i>265</i>&nbsp;            } else if(var2 == 0) {</b>
+<i>266</i>&nbsp;                var1.writeShort(this.metadata.tRNS_gray);
+<i>267</i>&nbsp;            } else {
+<b class="nc"><i>268</i>&nbsp;                if(var2 != 2) {</b>
+<b class="nc"><i>269</i>&nbsp;                    throw new IIOException(&quot;tRNS chunk for color type 4 or 6!&quot;);</b>
+<b class="nc"><i>270</i>&nbsp;                }</b>
+<b class="nc"><i>271</i>&nbsp;</b>
+<b class="nc"><i>272</i>&nbsp;                var1.writeShort(var4);</b>
+<b class="nc"><i>273</i>&nbsp;                var1.writeShort(var5);</b>
+<b class="nc"><i>274</i>&nbsp;                var1.writeShort(var6);</b>
+<i>275</i>&nbsp;            }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;            var1.finish();
+<i>278</i>&nbsp;        }
+<b class="nc"><i>279</i>&nbsp;</b>
+<b class="nc"><i>280</i>&nbsp;    }</b>
+<b class="nc"><i>281</i>&nbsp;</b>
+<b class="nc"><i>282</i>&nbsp;    private void write_bKGD() throws IOException {</b>
+<i>283</i>&nbsp;        if(this.metadata.bKGD_present) {
+<i>284</i>&nbsp;            ChunkStream var1 = new ChunkStream(1649100612, this.stream);
+<i>285</i>&nbsp;            int var2 = this.metadata.IHDR_colorType &amp; 3;
+<i>286</i>&nbsp;            int var3 = this.metadata.bKGD_colorType;
+<i>287</i>&nbsp;            int var4 = this.metadata.bKGD_red;
+<i>288</i>&nbsp;            int var5 = this.metadata.bKGD_red;
+<i>289</i>&nbsp;            int var6 = this.metadata.bKGD_red;
+<i>290</i>&nbsp;            if(var2 == 2 &amp;&amp; var3 == 0) {
+<i>291</i>&nbsp;                var3 = var2;
+<b class="nc"><i>292</i>&nbsp;                var6 = this.metadata.bKGD_gray;</b>
+<b class="nc"><i>293</i>&nbsp;                var5 = this.metadata.bKGD_gray;</b>
+<i>294</i>&nbsp;                var4 = this.metadata.bKGD_gray;
+<i>295</i>&nbsp;            }
+<b class="nc"><i>296</i>&nbsp;</b>
+<b class="nc"><i>297</i>&nbsp;            if(var3 != var2) {</b>
+<i>298</i>&nbsp;                this.processWarningOccurred(0, &quot;bKGD metadata has incompatible color type.\nThe chunk will not be written.&quot;);
+<i>299</i>&nbsp;                return;
+<b class="nc"><i>300</i>&nbsp;            }</b>
+<b class="nc"><i>301</i>&nbsp;</b>
+<i>302</i>&nbsp;            if(var2 == 3) {
+<i>303</i>&nbsp;                var1.writeByte(this.metadata.bKGD_index);
+<i>304</i>&nbsp;            } else if(var2 != 0 &amp;&amp; var2 != 4) {
+<i>305</i>&nbsp;                var1.writeShort(var4);
+<i>306</i>&nbsp;                var1.writeShort(var5);
+<b class="nc"><i>307</i>&nbsp;                var1.writeShort(var6);</b>
+<i>308</i>&nbsp;            } else {
+<i>309</i>&nbsp;                var1.writeShort(this.metadata.bKGD_gray);
+<i>310</i>&nbsp;            }
+<b class="nc"><i>311</i>&nbsp;</b>
+<b class="nc"><i>312</i>&nbsp;            var1.finish();</b>
+<b class="nc"><i>313</i>&nbsp;        }</b>
+<b class="nc"><i>314</i>&nbsp;</b>
+<i>315</i>&nbsp;    }
+<b class="nc"><i>316</i>&nbsp;</b>
+<i>317</i>&nbsp;    private void write_pHYs() throws IOException {
+<b class="nc"><i>318</i>&nbsp;        if(this.metadata.pHYs_present) {</b>
+<i>319</i>&nbsp;            ChunkStream var1 = new ChunkStream(1883789683, this.stream);
+<i>320</i>&nbsp;            var1.writeInt(this.metadata.pHYs_pixelsPerUnitXAxis);
+<i>321</i>&nbsp;            var1.writeInt(this.metadata.pHYs_pixelsPerUnitYAxis);
+<b class="nc"><i>322</i>&nbsp;            var1.writeByte(this.metadata.pHYs_unitSpecifier);</b>
+<i>323</i>&nbsp;            var1.finish();
+<i>324</i>&nbsp;        }
+<b class="nc"><i>325</i>&nbsp;</b>
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    private void write_sPLT() throws IOException {
+<b class="nc"><i>329</i>&nbsp;        if(this.metadata.sPLT_present) {</b>
+<i>330</i>&nbsp;            ChunkStream var1 = new ChunkStream(1934642260, this.stream);
+<i>331</i>&nbsp;            var1.writeBytes(this.metadata.sPLT_paletteName);
+<i>332</i>&nbsp;            var1.writeByte(0);
+<i>333</i>&nbsp;            var1.writeByte(this.metadata.sPLT_sampleDepth);
+<b class="nc"><i>334</i>&nbsp;            int var2 = this.metadata.sPLT_red.length;</b>
+<b class="nc"><i>335</i>&nbsp;            int var3;</b>
+<b class="nc"><i>336</i>&nbsp;            if(this.metadata.sPLT_sampleDepth == 8) {</b>
+<i>337</i>&nbsp;                for(var3 = 0; var3 &lt; var2; ++var3) {
+<i>338</i>&nbsp;                    var1.writeByte(this.metadata.sPLT_red[var3]);
+<i>339</i>&nbsp;                    var1.writeByte(this.metadata.sPLT_green[var3]);
+<i>340</i>&nbsp;                    var1.writeByte(this.metadata.sPLT_blue[var3]);
+<b class="nc"><i>341</i>&nbsp;                    var1.writeByte(this.metadata.sPLT_alpha[var3]);</b>
+<i>342</i>&nbsp;                    var1.writeShort(this.metadata.sPLT_frequency[var3]);
+<i>343</i>&nbsp;                }
+<i>344</i>&nbsp;            } else {
+<i>345</i>&nbsp;                for(var3 = 0; var3 &lt; var2; ++var3) {
+<i>346</i>&nbsp;                    var1.writeShort(this.metadata.sPLT_red[var3]);
+<i>347</i>&nbsp;                    var1.writeShort(this.metadata.sPLT_green[var3]);
+<b class="nc"><i>348</i>&nbsp;                    var1.writeShort(this.metadata.sPLT_blue[var3]);</b>
+<b class="nc"><i>349</i>&nbsp;                    var1.writeShort(this.metadata.sPLT_alpha[var3]);</b>
+<i>350</i>&nbsp;                    var1.writeShort(this.metadata.sPLT_frequency[var3]);
+<b class="nc"><i>351</i>&nbsp;                }</b>
+<i>352</i>&nbsp;            }
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;            var1.finish();
+<i>355</i>&nbsp;        }
+<i>356</i>&nbsp;
+<b class="nc"><i>357</i>&nbsp;    }</b>
+<b class="nc"><i>358</i>&nbsp;</b>
+<i>359</i>&nbsp;    private void write_tIME() throws IOException {
+<i>360</i>&nbsp;        if(this.metadata.tIME_present) {
+<i>361</i>&nbsp;            ChunkStream var1 = new ChunkStream(1950960965, this.stream);
+<i>362</i>&nbsp;            var1.writeShort(this.metadata.tIME_year);
+<b class="nc"><i>363</i>&nbsp;            var1.writeByte(this.metadata.tIME_month);</b>
+<b class="nc"><i>364</i>&nbsp;            var1.writeByte(this.metadata.tIME_day);</b>
+<b class="nc"><i>365</i>&nbsp;            var1.writeByte(this.metadata.tIME_hour);</b>
+<b class="nc"><i>366</i>&nbsp;            var1.writeByte(this.metadata.tIME_minute);</b>
+<b class="nc"><i>367</i>&nbsp;            var1.writeByte(this.metadata.tIME_second);</b>
+<b class="nc"><i>368</i>&nbsp;            var1.finish();</b>
+<b class="nc"><i>369</i>&nbsp;        }</b>
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    }
+<b class="nc"><i>372</i>&nbsp;</b>
+<b class="nc"><i>373</i>&nbsp;    private void write_tEXt() throws IOException {</b>
+<b class="nc"><i>374</i>&nbsp;        Iterator var1 = this.metadata.tEXt_keyword.iterator();</b>
+<i>375</i>&nbsp;        Iterator var2 = this.metadata.tEXt_text.iterator();
+<i>376</i>&nbsp;
+<b class="nc"><i>377</i>&nbsp;        while(var1.hasNext()) {</b>
+<b class="nc"><i>378</i>&nbsp;            ChunkStream var3 = new ChunkStream(1950701684, this.stream);</b>
+<i>379</i>&nbsp;            String var4 = (String)var1.next();
+<b class="nc"><i>380</i>&nbsp;            var3.writeBytes(var4);</b>
+<i>381</i>&nbsp;            var3.writeByte(0);
+<i>382</i>&nbsp;            String var5 = (String)var2.next();
+<b class="nc"><i>383</i>&nbsp;            var3.writeBytes(var5);</b>
+<b class="nc"><i>384</i>&nbsp;            var3.finish();</b>
+<i>385</i>&nbsp;        }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    }
+<b class="nc"><i>388</i>&nbsp;</b>
+<b class="nc"><i>389</i>&nbsp;    private byte[] deflate(byte[] var1) throws IOException {</b>
+<b class="nc"><i>390</i>&nbsp;        ByteArrayOutputStream var2 = new ByteArrayOutputStream();</b>
+<b class="nc"><i>391</i>&nbsp;        DeflaterOutputStream var3 = new DeflaterOutputStream(var2);</b>
+<b class="nc"><i>392</i>&nbsp;        var3.write(var1);</b>
+<b class="nc"><i>393</i>&nbsp;        var3.close();</b>
+<b class="nc"><i>394</i>&nbsp;        return var2.toByteArray();</b>
+<b class="nc"><i>395</i>&nbsp;    }</b>
+<b class="nc"><i>396</i>&nbsp;</b>
+<b class="nc"><i>397</i>&nbsp;    private void write_iTXt() throws IOException {</b>
+<b class="nc"><i>398</i>&nbsp;        Iterator var1 = this.metadata.iTXt_keyword.iterator();</b>
+<i>399</i>&nbsp;        Iterator var2 = this.metadata.iTXt_compressionFlag.iterator();
+<i>400</i>&nbsp;        Iterator var3 = this.metadata.iTXt_compressionMethod.iterator();
+<i>401</i>&nbsp;        Iterator var4 = this.metadata.iTXt_languageTag.iterator();
+<i>402</i>&nbsp;        Iterator var5 = this.metadata.iTXt_translatedKeyword.iterator();
+<b class="nc"><i>403</i>&nbsp;</b>
+<b class="nc"><i>404</i>&nbsp;        ChunkStream var7;</b>
+<b class="nc"><i>405</i>&nbsp;        for(Iterator var6 = this.metadata.iTXt_text.iterator(); var1.hasNext(); var7.finish()) {</b>
+<b class="nc"><i>406</i>&nbsp;            var7 = new ChunkStream(1767135348, this.stream);</b>
+<i>407</i>&nbsp;            var7.writeBytes((String)var1.next());
+<i>408</i>&nbsp;            var7.writeByte(0);
+<i>409</i>&nbsp;            Boolean var8 = (Boolean)var2.next();
+<i>410</i>&nbsp;            var7.writeByte(var8.booleanValue()?1:0);
+<b class="nc"><i>411</i>&nbsp;            var7.writeByte(((Integer)var3.next()).intValue());</b>
+<b class="nc"><i>412</i>&nbsp;            var7.writeBytes((String)var4.next());</b>
+<b class="nc"><i>413</i>&nbsp;            var7.writeByte(0);</b>
+<b class="nc"><i>414</i>&nbsp;            var7.write(((String)var5.next()).getBytes(&quot;UTF8&quot;));</b>
+<i>415</i>&nbsp;            var7.writeByte(0);
+<b class="nc"><i>416</i>&nbsp;            String var9 = (String)var6.next();</b>
+<b class="nc"><i>417</i>&nbsp;            if(var8.booleanValue()) {</b>
+<b class="nc"><i>418</i>&nbsp;                var7.write(this.deflate(var9.getBytes(&quot;UTF8&quot;)));</b>
+<i>419</i>&nbsp;            } else {
+<i>420</i>&nbsp;                var7.write(var9.getBytes(&quot;UTF8&quot;));
+<i>421</i>&nbsp;            }
+<i>422</i>&nbsp;        }
+<b class="nc"><i>423</i>&nbsp;</b>
+<b class="nc"><i>424</i>&nbsp;    }</b>
+<b class="nc"><i>425</i>&nbsp;</b>
+<b class="nc"><i>426</i>&nbsp;    private void write_zTXt() throws IOException {</b>
+<b class="nc"><i>427</i>&nbsp;        Iterator var1 = this.metadata.zTXt_keyword.iterator();</b>
+<i>428</i>&nbsp;        Iterator var2 = this.metadata.zTXt_compressionMethod.iterator();
+<i>429</i>&nbsp;        Iterator var3 = this.metadata.zTXt_text.iterator();
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;        while(var1.hasNext()) {
+<i>432</i>&nbsp;            ChunkStream var4 = new ChunkStream(2052348020, this.stream);
+<b class="nc"><i>433</i>&nbsp;            String var5 = (String)var1.next();</b>
+<i>434</i>&nbsp;            var4.writeBytes(var5);
+<b class="nc"><i>435</i>&nbsp;            var4.writeByte(0);</b>
+<b class="nc"><i>436</i>&nbsp;            int var6 = ((Integer)var2.next()).intValue();</b>
+<i>437</i>&nbsp;            var4.writeByte(var6);
+<i>438</i>&nbsp;            String var7 = (String)var3.next();
+<b class="nc"><i>439</i>&nbsp;            var4.write(this.deflate(var7.getBytes(&quot;ISO-8859-1&quot;)));</b>
+<b class="nc"><i>440</i>&nbsp;            var4.finish();</b>
+<b class="nc"><i>441</i>&nbsp;        }</b>
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;    }
+<b class="nc"><i>444</i>&nbsp;</b>
+<i>445</i>&nbsp;    private void writeUnknownChunks() throws IOException {
+<b class="nc"><i>446</i>&nbsp;        Iterator var1 = this.metadata.unknownChunkType.iterator();</b>
+<i>447</i>&nbsp;        Iterator var2 = this.metadata.unknownChunkData.iterator();
+<b class="nc"><i>448</i>&nbsp;</b>
+<i>449</i>&nbsp;        while(var1.hasNext() &amp;&amp; var2.hasNext()) {
+<i>450</i>&nbsp;            String var3 = (String)var1.next();
+<i>451</i>&nbsp;            ChunkStream var4 = new ChunkStream(chunkType(var3), this.stream);
+<i>452</i>&nbsp;            byte[] var5 = (byte[])((byte[])var2.next());
+<b class="nc"><i>453</i>&nbsp;            var4.write(var5);</b>
+<b class="nc"><i>454</i>&nbsp;            var4.finish();</b>
+<b class="nc"><i>455</i>&nbsp;        }</b>
+<b class="nc"><i>456</i>&nbsp;</b>
+<i>457</i>&nbsp;    }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    private static int chunkType(String var0) {
+<i>460</i>&nbsp;        char var1 = var0.charAt(0);
+<b class="nc"><i>461</i>&nbsp;        char var2 = var0.charAt(1);</b>
+<b class="nc"><i>462</i>&nbsp;        char var3 = var0.charAt(2);</b>
+<i>463</i>&nbsp;        char var4 = var0.charAt(3);
+<i>464</i>&nbsp;        int var5 = var1 &lt;&lt; 24 | var2 &lt;&lt; 16 | var3 &lt;&lt; 8 | var4;
+<i>465</i>&nbsp;        return var5;
+<b class="nc"><i>466</i>&nbsp;    }</b>
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    private void encodePass(ImageOutputStream var1, RenderedImage var2, int var3, int var4, int var5, int var6) throws IOException {
+<i>469</i>&nbsp;        int var7 = this.sourceXOffset;
+<i>470</i>&nbsp;        int var8 = this.sourceYOffset;
+<i>471</i>&nbsp;        int var9 = this.sourceWidth;
+<b class="nc"><i>472</i>&nbsp;        int var10 = this.sourceHeight;</b>
+<i>473</i>&nbsp;        var3 *= this.periodX;
+<b class="nc"><i>474</i>&nbsp;        var5 *= this.periodX;</b>
+<b class="nc"><i>475</i>&nbsp;        var4 *= this.periodY;</b>
+<b class="nc"><i>476</i>&nbsp;        var6 *= this.periodY;</b>
+<b class="nc"><i>477</i>&nbsp;        int var11 = (var9 - var3 + var5 - 1) / var5;</b>
+<b class="nc"><i>478</i>&nbsp;        int var12 = (var10 - var4 + var6 - 1) / var6;</b>
+<b class="nc"><i>479</i>&nbsp;        if(var11 != 0 &amp;&amp; var12 != 0) {</b>
+<b class="nc"><i>480</i>&nbsp;            var3 *= this.numBands;</b>
+<i>481</i>&nbsp;            var5 *= this.numBands;
+<i>482</i>&nbsp;            int var13 = 8 / this.metadata.IHDR_bitDepth;
+<b class="nc"><i>483</i>&nbsp;            int var14 = var9 * this.numBands;</b>
+<b class="nc"><i>484</i>&nbsp;            int[] var15 = new int[var14];</b>
+<i>485</i>&nbsp;            int var16 = var11 * this.numBands;
+<i>486</i>&nbsp;            if(this.metadata.IHDR_bitDepth &lt; 8) {
+<i>487</i>&nbsp;                var16 = (var16 + var13 - 1) / var13;
+<i>488</i>&nbsp;            } else if(this.metadata.IHDR_bitDepth == 16) {
+<b class="nc"><i>489</i>&nbsp;                var16 *= 2;</b>
+<b class="nc"><i>490</i>&nbsp;            }</b>
+<i>491</i>&nbsp;
+<b class="nc"><i>492</i>&nbsp;            IndexColorModel var17 = null;</b>
+<b class="nc"><i>493</i>&nbsp;            if(this.metadata.IHDR_colorType == 4 &amp;&amp; var2.getColorModel() instanceof IndexColorModel) {</b>
+<i>494</i>&nbsp;                var16 *= 2;
+<i>495</i>&nbsp;                var17 = (IndexColorModel)var2.getColorModel();
+<b class="nc"><i>496</i>&nbsp;            }</b>
+<i>497</i>&nbsp;
+<b class="nc"><i>498</i>&nbsp;            this.currRow = new byte[var16 + this.bpp];</b>
+<i>499</i>&nbsp;            this.prevRow = new byte[var16 + this.bpp];
+<i>500</i>&nbsp;            this.filteredRows = new byte[5][var16 + this.bpp];
+<i>501</i>&nbsp;            int var18 = this.metadata.IHDR_bitDepth;
+<i>502</i>&nbsp;
+<b class="nc"><i>503</i>&nbsp;            for(int var19 = var8 + var4; var19 &lt; var8 + var10; var19 += var6) {</b>
+<b class="nc"><i>504</i>&nbsp;                Rectangle var20 = new Rectangle(var7, var19, var9, 1);</b>
+<b class="nc"><i>505</i>&nbsp;                Raster var21 = var2.getData(var20);</b>
+<b class="nc"><i>506</i>&nbsp;                if(this.sourceBands != null) {</b>
+<i>507</i>&nbsp;                    var21 = var21.createChild(var7, var19, var9, 1, var7, var19, this.sourceBands);
+<i>508</i>&nbsp;                }
+<i>509</i>&nbsp;
+<b class="nc"><i>510</i>&nbsp;                var21.getPixels(var7, var19, var9, 1, var15);</b>
+<b class="nc"><i>511</i>&nbsp;                if(var2.getColorModel().isAlphaPremultiplied()) {</b>
+<b class="nc"><i>512</i>&nbsp;                    WritableRaster var22 = var21.createCompatibleWritableRaster();</b>
+<b class="nc"><i>513</i>&nbsp;                    var22.setPixels(var22.getMinX(), var22.getMinY(), var22.getWidth(), var22.getHeight(), var15);</b>
+<i>514</i>&nbsp;                    var2.getColorModel().coerceData(var22, false);
+<b class="nc"><i>515</i>&nbsp;                    var22.getPixels(var22.getMinX(), var22.getMinY(), var22.getWidth(), var22.getHeight(), var15);</b>
+<b class="nc"><i>516</i>&nbsp;                }</b>
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;                int[] var29 = this.metadata.PLTE_order;
+<i>519</i>&nbsp;                int var23;
+<b class="nc"><i>520</i>&nbsp;                if(var29 != null) {</b>
+<b class="nc"><i>521</i>&nbsp;                    for(var23 = 0; var23 &lt; var14; ++var23) {</b>
+<i>522</i>&nbsp;                        var15[var23] = var29[var15[var23]];
+<i>523</i>&nbsp;                    }
+<i>524</i>&nbsp;                }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;                int var26;
+<b class="nc"><i>527</i>&nbsp;                var23 = this.bpp;</b>
+<b class="nc"><i>528</i>&nbsp;                int var24 = 0;</b>
+<b class="nc"><i>529</i>&nbsp;                int var25 = 0;</b>
+<i>530</i>&nbsp;                int var27;
+<b class="nc"><i>531</i>&nbsp;                int var28;</b>
+<b class="nc"><i>532</i>&nbsp;                label115:</b>
+<b class="nc"><i>533</i>&nbsp;                switch(var18) {</b>
+<b class="nc"><i>534</i>&nbsp;                case 1:</b>
+<b class="nc"><i>535</i>&nbsp;                case 2:</b>
+<b class="nc"><i>536</i>&nbsp;                case 4:</b>
+<b class="nc"><i>537</i>&nbsp;                    var26 = var13 - 1;</b>
+<i>538</i>&nbsp;
+<b class="nc"><i>539</i>&nbsp;                    for(var27 = var3; var27 &lt; var14; var27 += var5) {</b>
+<i>540</i>&nbsp;                        byte var30 = this.scale0[var15[var27]];
+<b class="nc"><i>541</i>&nbsp;                        var25 = var25 &lt;&lt; var18 | var30;</b>
+<i>542</i>&nbsp;                        if((var24++ &amp; var26) == var26) {
+<i>543</i>&nbsp;                            this.currRow[var23++] = (byte)var25;
+<i>544</i>&nbsp;                            var25 = 0;
+<i>545</i>&nbsp;                            var24 = 0;
+<b class="nc"><i>546</i>&nbsp;                        }</b>
+<b class="nc"><i>547</i>&nbsp;                    }</b>
+<b class="nc"><i>548</i>&nbsp;</b>
+<b class="nc"><i>549</i>&nbsp;                    if((var24 &amp; var26) != 0) {</b>
+<i>550</i>&nbsp;                        var25 &lt;&lt;= (8 / var18 - var24) * var18;
+<i>551</i>&nbsp;                        this.currRow[var23++] = (byte)var25;
+<i>552</i>&nbsp;                    }
+<b class="nc"><i>553</i>&nbsp;                    break;</b>
+<b class="nc"><i>554</i>&nbsp;                case 8:</b>
+<b class="nc"><i>555</i>&nbsp;                    if(this.numBands == 1) {</b>
+<b class="nc"><i>556</i>&nbsp;                        var27 = var3;</b>
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;                        while(true) {
+<b class="nc"><i>559</i>&nbsp;                            if(var27 &gt;= var14) {</b>
+<b class="nc"><i>560</i>&nbsp;                                break label115;</b>
+<i>561</i>&nbsp;                            }
+<i>562</i>&nbsp;
+<i>563</i>&nbsp;                            this.currRow[var23++] = this.scale0[var15[var27]];
+<i>564</i>&nbsp;                            if(var17 != null) {
+<b class="nc"><i>565</i>&nbsp;                                this.currRow[var23++] = this.scale0[var17.getAlpha(255 &amp; var15[var27])];</b>
+<b class="nc"><i>566</i>&nbsp;                            }</b>
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;                            var27 += var5;
+<i>569</i>&nbsp;                        }
+<i>570</i>&nbsp;                    } else {
+<i>571</i>&nbsp;                        var27 = var3;
+<b class="nc"><i>572</i>&nbsp;</b>
+<b class="nc"><i>573</i>&nbsp;                        while(true) {</b>
+<b class="nc"><i>574</i>&nbsp;                            if(var27 &gt;= var14) {</b>
+<i>575</i>&nbsp;                                break label115;
+<b class="nc"><i>576</i>&nbsp;                            }</b>
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;                            for(var28 = 0; var28 &lt; this.numBands; ++var28) {
+<b class="nc"><i>579</i>&nbsp;                                this.currRow[var23++] = this.scale[var28][var15[var27 + var28]];</b>
+<b class="nc"><i>580</i>&nbsp;                            }</b>
+<b class="nc"><i>581</i>&nbsp;</b>
+<i>582</i>&nbsp;                            var27 += var5;
+<b class="nc"><i>583</i>&nbsp;                        }</b>
+<i>584</i>&nbsp;                    }
+<i>585</i>&nbsp;                case 16:
+<i>586</i>&nbsp;                    for(var27 = var3; var27 &lt; var14; var27 += var5) {
+<i>587</i>&nbsp;                        for(var28 = 0; var28 &lt; this.numBands; ++var28) {
+<b class="nc"><i>588</i>&nbsp;                            this.currRow[var23++] = this.scaleh[var28][var15[var27 + var28]];</b>
+<b class="nc"><i>589</i>&nbsp;                            this.currRow[var23++] = this.scalel[var28][var15[var27 + var28]];</b>
+<b class="nc"><i>590</i>&nbsp;                        }</b>
+<b class="nc"><i>591</i>&nbsp;                    }</b>
+<b class="nc"><i>592</i>&nbsp;                }</b>
+<b class="nc"><i>593</i>&nbsp;</b>
+<i>594</i>&nbsp;                var26 = this.rowFilter.filterRow(this.metadata.IHDR_colorType, this.currRow, this.prevRow, this.filteredRows, var16, this.bpp);
+<i>595</i>&nbsp;                var1.write(var26);
+<i>596</i>&nbsp;                var1.write(this.filteredRows[var26], this.bpp, var16);
+<i>597</i>&nbsp;                byte[] var31 = this.currRow;
+<b class="nc"><i>598</i>&nbsp;                this.currRow = this.prevRow;</b>
+<b class="nc"><i>599</i>&nbsp;                this.prevRow = var31;</b>
+<i>600</i>&nbsp;                this.pixelsDone += var11;
+<b class="nc"><i>601</i>&nbsp;                this.processImageProgress(100.0F * (float)this.pixelsDone / (float)this.totalPixels);</b>
+<b class="nc"><i>602</i>&nbsp;                if(this.abortRequested()) {</b>
+<i>603</i>&nbsp;                    return;
+<b class="nc"><i>604</i>&nbsp;                }</b>
+<b class="nc"><i>605</i>&nbsp;            }</b>
+<i>606</i>&nbsp;
+<b class="nc"><i>607</i>&nbsp;        }</b>
+<b class="nc"><i>608</i>&nbsp;    }</b>
+<b class="nc"><i>609</i>&nbsp;</b>
+<b class="nc"><i>610</i>&nbsp;    private void write_IDAT(RenderedImage var1) throws IOException {</b>
+<b class="nc"><i>611</i>&nbsp;        IDATOutputStream var2 = new IDATOutputStream(this.stream, &#39;耀&#39;);</b>
+<b class="nc"><i>612</i>&nbsp;</b>
+<b class="nc"><i>613</i>&nbsp;        try {</b>
+<i>614</i>&nbsp;            if(this.metadata.IHDR_interlaceMethod == 1) {
+<i>615</i>&nbsp;                for(int var3 = 0; var3 &lt; 7; ++var3) {
+<b class="nc"><i>616</i>&nbsp;                    this.encodePass(var2, var1, PNGImageReader.adam7XOffset[var3], PNGImageReader.adam7YOffset[var3], PNGImageReader.adam7XSubsampling[var3], PNGImageReader.adam7YSubsampling[var3]);</b>
+<b class="nc"><i>617</i>&nbsp;                    if(this.abortRequested()) {</b>
+<b class="nc"><i>618</i>&nbsp;                        break;</b>
+<b class="nc"><i>619</i>&nbsp;                    }</b>
+<b class="nc"><i>620</i>&nbsp;                }</b>
+<b class="nc"><i>621</i>&nbsp;            } else {</b>
+<i>622</i>&nbsp;                this.encodePass(var2, var1, 0, 0, 1, 1);
+<i>623</i>&nbsp;            }
+<b class="nc"><i>624</i>&nbsp;        } finally {</b>
+<i>625</i>&nbsp;            var2.finish();
+<i>626</i>&nbsp;        }
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;    }
+<b class="nc"><i>629</i>&nbsp;</b>
+<b class="nc"><i>630</i>&nbsp;    private void writeIEND() throws IOException {</b>
+<b class="nc"><i>631</i>&nbsp;        ChunkStream var1 = new ChunkStream(1229278788, this.stream);</b>
+<b class="nc"><i>632</i>&nbsp;        var1.finish();</b>
+<b class="nc"><i>633</i>&nbsp;    }</b>
+<b class="nc"><i>634</i>&nbsp;</b>
+<b class="nc"><i>635</i>&nbsp;    private boolean equals(int[] var1, int[] var2) {</b>
+<b class="nc"><i>636</i>&nbsp;        if(var1 != null &amp;&amp; var2 != null) {</b>
+<b class="nc"><i>637</i>&nbsp;            if(var1.length != var2.length) {</b>
+<i>638</i>&nbsp;                return false;
+<i>639</i>&nbsp;            } else {
+<i>640</i>&nbsp;                for(int var3 = 0; var3 &lt; var1.length; ++var3) {
+<i>641</i>&nbsp;                    if(var1[var3] != var2[var3]) {
+<b class="nc"><i>642</i>&nbsp;                        return false;</b>
+<b class="nc"><i>643</i>&nbsp;                    }</b>
+<i>644</i>&nbsp;                }
+<b class="nc"><i>645</i>&nbsp;</b>
+<b class="nc"><i>646</i>&nbsp;                return true;</b>
+<b class="nc"><i>647</i>&nbsp;            }</b>
+<b class="nc"><i>648</i>&nbsp;        } else {</b>
+<b class="nc"><i>649</i>&nbsp;            return false;</b>
+<i>650</i>&nbsp;        }
+<b class="nc"><i>651</i>&nbsp;    }</b>
+<b class="nc"><i>652</i>&nbsp;</b>
+<b class="nc"><i>653</i>&nbsp;    private void initializeScaleTables(int[] var1) {</b>
+<b class="nc"><i>654</i>&nbsp;        int var2 = this.metadata.IHDR_bitDepth;</b>
+<i>655</i>&nbsp;        if(var2 != this.scalingBitDepth || !this.equals(var1, this.sampleSize)) {
+<i>656</i>&nbsp;            this.sampleSize = var1;
+<i>657</i>&nbsp;            this.scalingBitDepth = var2;
+<b class="nc"><i>658</i>&nbsp;            int var3 = (1 &lt;&lt; var2) - 1;</b>
+<b class="nc"><i>659</i>&nbsp;            int var4;</b>
+<i>660</i>&nbsp;            int var5;
+<b class="nc"><i>661</i>&nbsp;            int var6;</b>
+<b class="nc"><i>662</i>&nbsp;            int var7;</b>
+<b class="nc"><i>663</i>&nbsp;            if(var2 &lt;= 8) {</b>
+<i>664</i>&nbsp;                this.scale = new byte[this.numBands][];
+<b class="nc"><i>665</i>&nbsp;</b>
+<i>666</i>&nbsp;                for(var4 = 0; var4 &lt; this.numBands; ++var4) {
+<b class="nc"><i>667</i>&nbsp;                    var5 = (1 &lt;&lt; var1[var4]) - 1;</b>
+<i>668</i>&nbsp;                    var6 = var5 / 2;
+<i>669</i>&nbsp;                    this.scale[var4] = new byte[var5 + 1];
+<i>670</i>&nbsp;
+<b class="nc"><i>671</i>&nbsp;                    for(var7 = 0; var7 &lt;= var5; ++var7) {</b>
+<b class="nc"><i>672</i>&nbsp;                        this.scale[var4][var7] = (byte)((var7 * var3 + var6) / var5);</b>
+<b class="nc"><i>673</i>&nbsp;                    }</b>
+<b class="nc"><i>674</i>&nbsp;                }</b>
+<b class="nc"><i>675</i>&nbsp;</b>
+<i>676</i>&nbsp;                this.scale0 = this.scale[0];
+<b class="nc"><i>677</i>&nbsp;                this.scaleh = this.scalel = (byte[][])null;</b>
+<i>678</i>&nbsp;            } else {
+<b class="nc"><i>679</i>&nbsp;                this.scaleh = new byte[this.numBands][];</b>
+<b class="nc"><i>680</i>&nbsp;                this.scalel = new byte[this.numBands][];</b>
+<i>681</i>&nbsp;
+<b class="nc"><i>682</i>&nbsp;                for(var4 = 0; var4 &lt; this.numBands; ++var4) {</b>
+<b class="nc"><i>683</i>&nbsp;                    var5 = (1 &lt;&lt; var1[var4]) - 1;</b>
+<i>684</i>&nbsp;                    var6 = var5 / 2;
+<b class="nc"><i>685</i>&nbsp;                    this.scaleh[var4] = new byte[var5 + 1];</b>
+<b class="nc"><i>686</i>&nbsp;                    this.scalel[var4] = new byte[var5 + 1];</b>
+<i>687</i>&nbsp;
+<b class="nc"><i>688</i>&nbsp;                    for(var7 = 0; var7 &lt;= var5; ++var7) {</b>
+<i>689</i>&nbsp;                        int var8 = (var7 * var3 + var6) / var5;
+<b class="nc"><i>690</i>&nbsp;                        this.scaleh[var4][var7] = (byte)(var8 &gt;&gt; 8);</b>
+<b class="nc"><i>691</i>&nbsp;                        this.scalel[var4][var7] = (byte)(var8 &amp; 255);</b>
+<i>692</i>&nbsp;                    }
+<i>693</i>&nbsp;                }
+<b class="nc"><i>694</i>&nbsp;</b>
+<b class="nc"><i>695</i>&nbsp;                this.scale = (byte[][])null;</b>
+<i>696</i>&nbsp;                this.scale0 = null;
+<b class="nc"><i>697</i>&nbsp;            }</b>
+<b class="nc"><i>698</i>&nbsp;</b>
+<b class="nc"><i>699</i>&nbsp;        }</b>
+<i>700</i>&nbsp;    }
+<b class="nc"><i>701</i>&nbsp;</b>
+<i>702</i>&nbsp;    public void write(IIOMetadata var1, IIOImage var2, ImageWriteParam var3) throws IIOException {
+<b class="nc"><i>703</i>&nbsp;        if(this.stream == null) {</b>
+<b class="nc"><i>704</i>&nbsp;            throw new IllegalStateException(&quot;output == null!&quot;);</b>
+<i>705</i>&nbsp;        } else if(var2 == null) {
+<i>706</i>&nbsp;            throw new IllegalArgumentException(&quot;image == null!&quot;);
+<i>707</i>&nbsp;        } else if(var2.hasRaster()) {
+<b class="nc"><i>708</i>&nbsp;            throw new UnsupportedOperationException(&quot;image has a Raster!&quot;);</b>
+<b class="nc"><i>709</i>&nbsp;        } else {</b>
+<b class="nc"><i>710</i>&nbsp;            RenderedImage var4 = var2.getRenderedImage();</b>
+<i>711</i>&nbsp;            SampleModel var5 = var4.getSampleModel();
+<b class="nc"><i>712</i>&nbsp;            this.numBands = var5.getNumBands();</b>
+<b class="nc"><i>713</i>&nbsp;            this.sourceXOffset = var4.getMinX();</b>
+<b class="nc"><i>714</i>&nbsp;            this.sourceYOffset = var4.getMinY();</b>
+<b class="nc"><i>715</i>&nbsp;            this.sourceWidth = var4.getWidth();</b>
+<b class="nc"><i>716</i>&nbsp;            this.sourceHeight = var4.getHeight();</b>
+<i>717</i>&nbsp;            this.sourceBands = null;
+<b class="nc"><i>718</i>&nbsp;            this.periodX = 1;</b>
+<b class="nc"><i>719</i>&nbsp;            this.periodY = 1;</b>
+<i>720</i>&nbsp;            int var12;
+<b class="nc"><i>721</i>&nbsp;            if(var3 != null) {</b>
+<b class="nc"><i>722</i>&nbsp;                Rectangle var6 = var3.getSourceRegion();</b>
+<b class="nc"><i>723</i>&nbsp;                if(var6 != null) {</b>
+<b class="nc"><i>724</i>&nbsp;                    Rectangle var7 = new Rectangle(var4.getMinX(), var4.getMinY(), var4.getWidth(), var4.getHeight());</b>
+<i>725</i>&nbsp;                    var6 = var6.intersection(var7);
+<i>726</i>&nbsp;                    this.sourceXOffset = var6.x;
+<i>727</i>&nbsp;                    this.sourceYOffset = var6.y;
+<b class="nc"><i>728</i>&nbsp;                    this.sourceWidth = var6.width;</b>
+<b class="nc"><i>729</i>&nbsp;                    this.sourceHeight = var6.height;</b>
+<i>730</i>&nbsp;                }
+<b class="nc"><i>731</i>&nbsp;</b>
+<b class="nc"><i>732</i>&nbsp;                var12 = var3.getSubsamplingXOffset();</b>
+<b class="nc"><i>733</i>&nbsp;                int var8 = var3.getSubsamplingYOffset();</b>
+<b class="nc"><i>734</i>&nbsp;                this.sourceXOffset += var12;</b>
+<b class="nc"><i>735</i>&nbsp;                this.sourceYOffset += var8;</b>
+<b class="nc"><i>736</i>&nbsp;                this.sourceWidth -= var12;</b>
+<b class="nc"><i>737</i>&nbsp;                this.sourceHeight -= var8;</b>
+<i>738</i>&nbsp;                this.periodX = var3.getSourceXSubsampling();
+<i>739</i>&nbsp;                this.periodY = var3.getSourceYSubsampling();
+<i>740</i>&nbsp;                int[] var9 = var3.getSourceBands();
+<b class="nc"><i>741</i>&nbsp;                if(var9 != null) {</b>
+<b class="nc"><i>742</i>&nbsp;                    this.sourceBands = var9;</b>
+<b class="nc"><i>743</i>&nbsp;                    this.numBands = this.sourceBands.length;</b>
+<b class="nc"><i>744</i>&nbsp;                }</b>
+<i>745</i>&nbsp;            }
+<b class="nc"><i>746</i>&nbsp;</b>
+<b class="nc"><i>747</i>&nbsp;            int var11 = (this.sourceWidth + this.periodX - 1) / this.periodX;</b>
+<i>748</i>&nbsp;            var12 = (this.sourceHeight + this.periodY - 1) / this.periodY;
+<i>749</i>&nbsp;            if(var11 &gt; 0 &amp;&amp; var12 &gt; 0) {
+<i>750</i>&nbsp;                this.totalPixels = var11 * var12;
+<i>751</i>&nbsp;                this.pixelsDone = 0;
+<i>752</i>&nbsp;                IIOMetadata var13 = var2.getMetadata();
+<i>753</i>&nbsp;                if(var13 != null) {
+<b class="nc"><i>754</i>&nbsp;                    this.metadata = (PNGMetadata)this.convertImageMetadata(var13, ImageTypeSpecifier.createFromRenderedImage(var4), (ImageWriteParam)null);</b>
+<b class="nc"><i>755</i>&nbsp;                } else {</b>
+<b class="nc"><i>756</i>&nbsp;                    this.metadata = new PNGMetadata();</b>
+<b class="nc"><i>757</i>&nbsp;                }</b>
+<i>758</i>&nbsp;
+<i>759</i>&nbsp;                if(var3 != null) {
+<b class="nc"><i>760</i>&nbsp;                    switch(var3.getProgressiveMode()) {</b>
+<b class="nc"><i>761</i>&nbsp;                    case 0:</b>
+<b class="nc"><i>762</i>&nbsp;                        this.metadata.IHDR_interlaceMethod = 0;</b>
+<b class="nc"><i>763</i>&nbsp;                        break;</b>
+<i>764</i>&nbsp;                    case 1:
+<i>765</i>&nbsp;                        this.metadata.IHDR_interlaceMethod = 1;
+<b class="nc"><i>766</i>&nbsp;                    }</b>
+<b class="nc"><i>767</i>&nbsp;                }</b>
+<b class="nc"><i>768</i>&nbsp;</b>
+<i>769</i>&nbsp;                this.metadata.initialize(new ImageTypeSpecifier(var4), this.numBands);
+<i>770</i>&nbsp;                this.metadata.IHDR_width = var11;
+<i>771</i>&nbsp;                this.metadata.IHDR_height = var12;
+<i>772</i>&nbsp;                this.bpp = this.numBands * (this.metadata.IHDR_bitDepth == 16?2:1);
+<b class="nc"><i>773</i>&nbsp;                this.initializeScaleTables(var5.getSampleSize());</b>
+<b class="nc"><i>774</i>&nbsp;                this.clearAbortRequest();</b>
+<i>775</i>&nbsp;                this.processImageStarted(0);
+<i>776</i>&nbsp;
+<b class="nc"><i>777</i>&nbsp;                try {</b>
+<b class="nc"><i>778</i>&nbsp;                    this.write_magic();</b>
+<b class="nc"><i>779</i>&nbsp;                    this.write_IHDR();</b>
+<i>780</i>&nbsp;                    this.write_cHRM();
+<b class="nc"><i>781</i>&nbsp;                    this.write_gAMA();</b>
+<b class="nc"><i>782</i>&nbsp;                    this.write_iCCP();</b>
+<b class="nc"><i>783</i>&nbsp;                    this.write_sBIT();</b>
+<b class="nc"><i>784</i>&nbsp;                    this.write_sRGB();</b>
+<b class="nc"><i>785</i>&nbsp;                    this.write_PLTE();</b>
+<i>786</i>&nbsp;                    this.write_hIST();
+<i>787</i>&nbsp;                    this.write_tRNS();
+<b class="nc"><i>788</i>&nbsp;                    this.write_bKGD();</b>
+<b class="nc"><i>789</i>&nbsp;                    this.write_pHYs();</b>
+<i>790</i>&nbsp;                    this.write_sPLT();
+<i>791</i>&nbsp;                    this.write_tIME();
+<i>792</i>&nbsp;                    this.write_tEXt();
+<b class="nc"><i>793</i>&nbsp;                    this.write_iTXt();</b>
+<i>794</i>&nbsp;                    this.write_zTXt();
+<i>795</i>&nbsp;                    this.writeUnknownChunks();
+<b class="nc"><i>796</i>&nbsp;                    this.write_IDAT(var4);</b>
+<i>797</i>&nbsp;                    if(this.abortRequested()) {
+<i>798</i>&nbsp;                        this.processWriteAborted();
+<b class="nc"><i>799</i>&nbsp;                    } else {</b>
+<b class="nc"><i>800</i>&nbsp;                        this.writeIEND();</b>
+<b class="nc"><i>801</i>&nbsp;                        this.processImageComplete();</b>
+<i>802</i>&nbsp;                    }
+<b class="nc"><i>803</i>&nbsp;</b>
+<b class="nc"><i>804</i>&nbsp;                } catch (IOException var10) {</b>
+<b class="nc"><i>805</i>&nbsp;                    throw new IIOException(&quot;I/O error writing PNG file!&quot;, var10);</b>
+<b class="nc"><i>806</i>&nbsp;                }</b>
+<b class="nc"><i>807</i>&nbsp;            } else {</b>
+<b class="nc"><i>808</i>&nbsp;                throw new IllegalArgumentException(&quot;Empty source region!&quot;);</b>
+<i>809</i>&nbsp;            }
+<i>810</i>&nbsp;        }
+<i>811</i>&nbsp;    }
+<b class="nc"><i>812</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:36</div>
+</div>
+</body>
+</html>

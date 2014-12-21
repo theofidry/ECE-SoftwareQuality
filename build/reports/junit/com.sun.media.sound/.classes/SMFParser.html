@@ -1,0 +1,249 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SMFParser</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.media.sound</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SMFParser (com.sun.media.sound)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SMFParser</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 78)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.media.sound;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.media.sound.FastShortMessage;
+<i>9</i>&nbsp;import java.io.DataInputStream;
+<i>10</i>&nbsp;import java.io.EOFException;
+<i>11</i>&nbsp;import java.io.IOException;
+<i>12</i>&nbsp;import javax.sound.midi.InvalidMidiDataException;
+<i>13</i>&nbsp;import javax.sound.midi.MetaMessage;
+<i>14</i>&nbsp;import javax.sound.midi.MidiEvent;
+<i>15</i>&nbsp;import javax.sound.midi.MidiMessage;
+<i>16</i>&nbsp;import javax.sound.midi.SysexMessage;
+<i>17</i>&nbsp;import javax.sound.midi.Track;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;final class SMFParser {
+<i>20</i>&nbsp;    private static final int MTrk_MAGIC = 1297379947;
+<i>21</i>&nbsp;    private static final boolean STRICT_PARSER = false;
+<i>22</i>&nbsp;    private static final boolean DEBUG = false;
+<i>23</i>&nbsp;    int tracks;
+<i>24</i>&nbsp;    DataInputStream stream;
+<i>25</i>&nbsp;    private int trackLength = 0;
+<i>26</i>&nbsp;    private byte[] trackData = null;
+<i>27</i>&nbsp;    private int pos = 0;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    SMFParser() {
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    private int readUnsigned() throws IOException {
+<i>33</i>&nbsp;        return this.trackData[this.pos++] &amp; 255;
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    private void read(byte[] var1) throws IOException {
+<i>37</i>&nbsp;        System.arraycopy(this.trackData, this.pos, var1, 0, var1.length);
+<i>38</i>&nbsp;        this.pos += var1.length;
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    private long readVarInt() throws IOException {
+<i>42</i>&nbsp;        long var1 = 0L;
+<i>43</i>&nbsp;        boolean var3 = false;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;        int var4;
+<i>46</i>&nbsp;        do {
+<i>47</i>&nbsp;            var4 = this.trackData[this.pos++] &amp; 255;
+<i>48</i>&nbsp;            var1 = (var1 &lt;&lt; 7) + (long)(var4 &amp; 127);
+<i>49</i>&nbsp;        } while((var4 &amp; 128) != 0);
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;        return var1;
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    private int readIntFromStream() throws IOException {
+<i>55</i>&nbsp;        try {
+<i>56</i>&nbsp;            return this.stream.readInt();
+<i>57</i>&nbsp;        } catch (EOFException var2) {
+<i>58</i>&nbsp;            throw new EOFException(&quot;invalid MIDI file&quot;);
+<i>59</i>&nbsp;        }
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    boolean nextTrack() throws IOException, InvalidMidiDataException {
+<i>63</i>&nbsp;        this.trackLength = 0;
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;        while(this.stream.skipBytes(this.trackLength) == this.trackLength) {
+<i>66</i>&nbsp;            int var1 = this.readIntFromStream();
+<i>67</i>&nbsp;            this.trackLength = this.readIntFromStream();
+<i>68</i>&nbsp;            if(var1 == 1297379947) {
+<i>69</i>&nbsp;                if(this.trackLength &lt; 0) {
+<i>70</i>&nbsp;                    return false;
+<i>71</i>&nbsp;                }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;                this.trackData = new byte[this.trackLength];
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;                try {
+<i>76</i>&nbsp;                    this.stream.readFully(this.trackData);
+<i>77</i>&nbsp;                } catch (EOFException var3) {
+<i>78</i>&nbsp;                    return false;
+<i>79</i>&nbsp;                }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;                this.pos = 0;
+<i>82</i>&nbsp;                return true;
+<i>83</i>&nbsp;            }
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;        return false;
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    private boolean trackFinished() {
+<i>90</i>&nbsp;        return this.pos &gt;= this.trackLength;
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    void readTrack(Track var1) throws IOException, InvalidMidiDataException {
+<i>94</i>&nbsp;        try {
+<i>95</i>&nbsp;            long var2 = 0L;
+<i>96</i>&nbsp;            int var4 = 0;
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;            Object var6;
+<i>99</i>&nbsp;            for(boolean var5 = false; !this.trackFinished() &amp;&amp; !var5; var1.add(new MidiEvent((MidiMessage)var6, var2))) {
+<i>100</i>&nbsp;                int var7 = -1;
+<i>101</i>&nbsp;                boolean var8 = false;
+<i>102</i>&nbsp;                var2 += this.readVarInt();
+<i>103</i>&nbsp;                int var9 = this.readUnsigned();
+<i>104</i>&nbsp;                if(var9 &gt;= 128) {
+<i>105</i>&nbsp;                    var4 = var9;
+<i>106</i>&nbsp;                } else {
+<i>107</i>&nbsp;                    var7 = var9;
+<i>108</i>&nbsp;                }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;                switch(var4 &amp; 240) {
+<i>111</i>&nbsp;                case 128:
+<i>112</i>&nbsp;                case 144:
+<i>113</i>&nbsp;                case 160:
+<i>114</i>&nbsp;                case 176:
+<i>115</i>&nbsp;                case 224:
+<i>116</i>&nbsp;                    if(var7 == -1) {
+<i>117</i>&nbsp;                        var7 = this.readUnsigned();
+<i>118</i>&nbsp;                    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;                    int var18 = this.readUnsigned();
+<i>121</i>&nbsp;                    var6 = new FastShortMessage(var4 | var7 &lt;&lt; 8 | var18 &lt;&lt; 16);
+<i>122</i>&nbsp;                    break;
+<i>123</i>&nbsp;                case 192:
+<i>124</i>&nbsp;                case 208:
+<i>125</i>&nbsp;                    if(var7 == -1) {
+<i>126</i>&nbsp;                        var7 = this.readUnsigned();
+<i>127</i>&nbsp;                    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;                    var6 = new FastShortMessage(var4 | var7 &lt;&lt; 8);
+<i>130</i>&nbsp;                    break;
+<i>131</i>&nbsp;                case 240:
+<i>132</i>&nbsp;                    switch(var4) {
+<i>133</i>&nbsp;                    case 240:
+<i>134</i>&nbsp;                    case 247:
+<i>135</i>&nbsp;                        int var10 = (int)this.readVarInt();
+<i>136</i>&nbsp;                        byte[] var11 = new byte[var10];
+<i>137</i>&nbsp;                        this.read(var11);
+<i>138</i>&nbsp;                        SysexMessage var12 = new SysexMessage();
+<i>139</i>&nbsp;                        var12.setMessage(var4, var11, var10);
+<i>140</i>&nbsp;                        var6 = var12;
+<i>141</i>&nbsp;                        continue;
+<i>142</i>&nbsp;                    case 255:
+<i>143</i>&nbsp;                        int var13 = this.readUnsigned();
+<i>144</i>&nbsp;                        int var14 = (int)this.readVarInt();
+<i>145</i>&nbsp;                        byte[] var15 = new byte[var14];
+<i>146</i>&nbsp;                        this.read(var15);
+<i>147</i>&nbsp;                        MetaMessage var16 = new MetaMessage();
+<i>148</i>&nbsp;                        var16.setMessage(var13, var15, var14);
+<i>149</i>&nbsp;                        var6 = var16;
+<i>150</i>&nbsp;                        if(var13 == 47) {
+<i>151</i>&nbsp;                            var5 = true;
+<i>152</i>&nbsp;                        }
+<i>153</i>&nbsp;                        continue;
+<i>154</i>&nbsp;                    default:
+<i>155</i>&nbsp;                        throw new InvalidMidiDataException(&quot;Invalid status byte: &quot; + var4);
+<i>156</i>&nbsp;                    }
+<i>157</i>&nbsp;                default:
+<i>158</i>&nbsp;                    throw new InvalidMidiDataException(&quot;Invalid status byte: &quot; + var4);
+<i>159</i>&nbsp;                }
+<i>160</i>&nbsp;            }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;        } catch (ArrayIndexOutOfBoundsException var17) {
+<i>163</i>&nbsp;            throw new EOFException(&quot;invalid MIDI file&quot;);
+<i>164</i>&nbsp;        }
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:57</div>
+</div>
+</body>
+</html>

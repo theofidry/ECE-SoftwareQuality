@@ -1,0 +1,436 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Lexer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xpath.internal.compiler</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Lexer (com.sun.org.apache.xpath.internal.compiler)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Lexer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 187)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xpath.internal.compiler;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xml.internal.utils.PrefixResolver;
+<i>9</i>&nbsp;import com.sun.org.apache.xpath.internal.compiler.Compiler;
+<i>10</i>&nbsp;import com.sun.org.apache.xpath.internal.compiler.Keywords;
+<i>11</i>&nbsp;import com.sun.org.apache.xpath.internal.compiler.OpMapVector;
+<i>12</i>&nbsp;import com.sun.org.apache.xpath.internal.compiler.XPathParser;
+<i>13</i>&nbsp;import java.util.Vector;
+<i>14</i>&nbsp;import javax.xml.transform.TransformerException;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;class Lexer {
+<i>17</i>&nbsp;    private Compiler m_compiler;
+<i>18</i>&nbsp;    PrefixResolver m_namespaceContext;
+<i>19</i>&nbsp;    XPathParser m_processor;
+<i>20</i>&nbsp;    static final int TARGETEXTRA = 10000;
+<i>21</i>&nbsp;    private int[] m_patternMap = new int[100];
+<i>22</i>&nbsp;    private int m_patternMapSize;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    Lexer(Compiler compiler, PrefixResolver resolver, XPathParser xpathProcessor) {
+<i>25</i>&nbsp;        this.m_compiler = compiler;
+<i>26</i>&nbsp;        this.m_namespaceContext = resolver;
+<i>27</i>&nbsp;        this.m_processor = xpathProcessor;
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    void tokenize(String pat) throws TransformerException {
+<i>31</i>&nbsp;        this.tokenize(pat, (Vector)null);
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    void tokenize(String pat, Vector targetStrings) throws TransformerException {
+<i>35</i>&nbsp;        this.m_compiler.m_currentPattern = pat;
+<i>36</i>&nbsp;        this.m_patternMapSize = 0;
+<i>37</i>&nbsp;        this.m_compiler.m_opMap = new OpMapVector(2500, 2500, 1);
+<i>38</i>&nbsp;        int nChars = pat.length();
+<i>39</i>&nbsp;        int startSubstring = -1;
+<i>40</i>&nbsp;        int posOfNSSep = -1;
+<i>41</i>&nbsp;        boolean isStartOfPat = true;
+<i>42</i>&nbsp;        boolean isAttrName = false;
+<i>43</i>&nbsp;        boolean isNum = false;
+<i>44</i>&nbsp;        int nesting = 0;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        for(int i = 0; i &lt; nChars; ++i) {
+<i>47</i>&nbsp;            char c = pat.charAt(i);
+<i>48</i>&nbsp;            switch(c) {
+<i>49</i>&nbsp;            case &#39;\t&#39;:
+<i>50</i>&nbsp;            case &#39;\n&#39;:
+<i>51</i>&nbsp;            case &#39;\r&#39;:
+<i>52</i>&nbsp;            case &#39; &#39;:
+<i>53</i>&nbsp;                if(startSubstring != -1) {
+<i>54</i>&nbsp;                    isNum = false;
+<i>55</i>&nbsp;                    isStartOfPat = this.mapPatternElemPos(nesting, isStartOfPat, isAttrName);
+<i>56</i>&nbsp;                    isAttrName = false;
+<i>57</i>&nbsp;                    if(-1 != posOfNSSep) {
+<i>58</i>&nbsp;                        posOfNSSep = this.mapNSTokens(pat, startSubstring, posOfNSSep, i);
+<i>59</i>&nbsp;                    } else {
+<i>60</i>&nbsp;                        this.addToTokenQueue(pat.substring(startSubstring, i));
+<i>61</i>&nbsp;                    }
+<b class="nc"><i>62</i>&nbsp;</b>
+<i>63</i>&nbsp;                    startSubstring = -1;
+<i>64</i>&nbsp;                }
+<i>65</i>&nbsp;                break;
+<i>66</i>&nbsp;            case &#39;\&quot;&#39;:
+<i>67</i>&nbsp;                if(startSubstring != -1) {
+<i>68</i>&nbsp;                    isNum = false;
+<i>69</i>&nbsp;                    isStartOfPat = this.mapPatternElemPos(nesting, isStartOfPat, isAttrName);
+<i>70</i>&nbsp;                    isAttrName = false;
+<i>71</i>&nbsp;                    if(-1 != posOfNSSep) {
+<i>72</i>&nbsp;                        posOfNSSep = this.mapNSTokens(pat, startSubstring, posOfNSSep, i);
+<i>73</i>&nbsp;                    } else {
+<i>74</i>&nbsp;                        this.addToTokenQueue(pat.substring(startSubstring, i));
+<i>75</i>&nbsp;                    }
+<i>76</i>&nbsp;                }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;                for(startSubstring = i++; i &lt; nChars &amp;&amp; (c = pat.charAt(i)) != 34; ++i) {
+<i>79</i>&nbsp;                    ;
+<b class="nc"><i>80</i>&nbsp;                }</b>
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;                if(c == 34 &amp;&amp; i &lt; nChars) {</b>
+<b class="nc"><i>83</i>&nbsp;                    this.addToTokenQueue(pat.substring(startSubstring, i + 1));</b>
+<b class="nc"><i>84</i>&nbsp;                    startSubstring = -1;</b>
+<i>85</i>&nbsp;                } else {
+<i>86</i>&nbsp;                    this.m_processor.error(&quot;ER_EXPECTED_DOUBLE_QUOTE&quot;, (Object[])null);
+<i>87</i>&nbsp;                }
+<i>88</i>&nbsp;                break;
+<i>89</i>&nbsp;            case &#39;\&#39;&#39;:
+<i>90</i>&nbsp;                if(startSubstring != -1) {
+<i>91</i>&nbsp;                    isNum = false;
+<i>92</i>&nbsp;                    isStartOfPat = this.mapPatternElemPos(nesting, isStartOfPat, isAttrName);
+<i>93</i>&nbsp;                    isAttrName = false;
+<i>94</i>&nbsp;                    if(-1 != posOfNSSep) {
+<i>95</i>&nbsp;                        posOfNSSep = this.mapNSTokens(pat, startSubstring, posOfNSSep, i);
+<b class="nc"><i>96</i>&nbsp;                    } else {</b>
+<i>97</i>&nbsp;                        this.addToTokenQueue(pat.substring(startSubstring, i));
+<i>98</i>&nbsp;                    }
+<i>99</i>&nbsp;                }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;                for(startSubstring = i++; i &lt; nChars &amp;&amp; (c = pat.charAt(i)) != 39; ++i) {
+<i>102</i>&nbsp;                    ;
+<i>103</i>&nbsp;                }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;                if(c == 39 &amp;&amp; i &lt; nChars) {
+<i>106</i>&nbsp;                    this.addToTokenQueue(pat.substring(startSubstring, i + 1));
+<i>107</i>&nbsp;                    startSubstring = -1;
+<i>108</i>&nbsp;                } else {
+<i>109</i>&nbsp;                    this.m_processor.error(&quot;ER_EXPECTED_SINGLE_QUOTE&quot;, (Object[])null);
+<i>110</i>&nbsp;                }
+<b class="nc"><i>111</i>&nbsp;                break;</b>
+<b class="nc"><i>112</i>&nbsp;            case &#39;:&#39;:</b>
+<i>113</i>&nbsp;                if(i &gt; 0) {
+<i>114</i>&nbsp;                    if(posOfNSSep == i - 1) {
+<b class="nc"><i>115</i>&nbsp;                        if(startSubstring != -1 &amp;&amp; startSubstring &lt; i - 1) {</b>
+<i>116</i>&nbsp;                            this.addToTokenQueue(pat.substring(startSubstring, i - 1));
+<b class="nc"><i>117</i>&nbsp;                        }</b>
+<b class="nc"><i>118</i>&nbsp;</b>
+<b class="nc"><i>119</i>&nbsp;                        isNum = false;</b>
+<b class="nc"><i>120</i>&nbsp;                        isAttrName = false;</b>
+<b class="nc"><i>121</i>&nbsp;                        startSubstring = -1;</b>
+<b class="nc"><i>122</i>&nbsp;                        posOfNSSep = -1;</b>
+<i>123</i>&nbsp;                        this.addToTokenQueue(pat.substring(i - 1, i + 1));
+<i>124</i>&nbsp;                        break;
+<i>125</i>&nbsp;                    } else {
+<b class="nc"><i>126</i>&nbsp;                        posOfNSSep = i;</b>
+<i>127</i>&nbsp;                    }
+<i>128</i>&nbsp;                }
+<b class="nc"><i>129</i>&nbsp;            default:</b>
+<i>130</i>&nbsp;                if(-1 == startSubstring) {
+<b class="nc"><i>131</i>&nbsp;                    startSubstring = i;</b>
+<i>132</i>&nbsp;                    isNum = Character.isDigit(c);
+<b class="nc"><i>133</i>&nbsp;                } else if(isNum) {</b>
+<i>134</i>&nbsp;                    isNum = Character.isDigit(c);
+<i>135</i>&nbsp;                }
+<i>136</i>&nbsp;                break;
+<b class="nc"><i>137</i>&nbsp;            case &#39;@&#39;:</b>
+<i>138</i>&nbsp;                isAttrName = true;
+<b class="nc"><i>139</i>&nbsp;            case &#39;-&#39;:</b>
+<b class="nc"><i>140</i>&nbsp;                if(45 == c) {</b>
+<b class="nc"><i>141</i>&nbsp;                    if(!isNum &amp;&amp; startSubstring != -1) {</b>
+<i>142</i>&nbsp;                        break;
+<b class="nc"><i>143</i>&nbsp;                    }</b>
+<i>144</i>&nbsp;
+<b class="nc"><i>145</i>&nbsp;                    isNum = false;</b>
+<i>146</i>&nbsp;                }
+<i>147</i>&nbsp;            case &#39;!&#39;:
+<i>148</i>&nbsp;            case &#39;$&#39;:
+<b class="nc"><i>149</i>&nbsp;            case &#39;(&#39;:</b>
+<i>150</i>&nbsp;            case &#39;)&#39;:
+<i>151</i>&nbsp;            case &#39;*&#39;:
+<i>152</i>&nbsp;            case &#39;+&#39;:
+<b class="nc"><i>153</i>&nbsp;            case &#39;,&#39;:</b>
+<i>154</i>&nbsp;            case &#39;/&#39;:
+<b class="nc"><i>155</i>&nbsp;            case &#39;&lt;&#39;:</b>
+<i>156</i>&nbsp;            case &#39;=&#39;:
+<b class="nc"><i>157</i>&nbsp;            case &#39;&gt;&#39;:</b>
+<i>158</i>&nbsp;            case &#39;[&#39;:
+<b class="nc"><i>159</i>&nbsp;            case &#39;\\&#39;:</b>
+<i>160</i>&nbsp;            case &#39;]&#39;:
+<b class="nc"><i>161</i>&nbsp;            case &#39;^&#39;:</b>
+<i>162</i>&nbsp;            case &#39;|&#39;:
+<i>163</i>&nbsp;                if(startSubstring != -1) {
+<i>164</i>&nbsp;                    isNum = false;
+<b class="nc"><i>165</i>&nbsp;                    isStartOfPat = this.mapPatternElemPos(nesting, isStartOfPat, isAttrName);</b>
+<i>166</i>&nbsp;                    isAttrName = false;
+<i>167</i>&nbsp;                    if(-1 != posOfNSSep) {
+<i>168</i>&nbsp;                        posOfNSSep = this.mapNSTokens(pat, startSubstring, posOfNSSep, i);
+<b class="nc"><i>169</i>&nbsp;                    } else {</b>
+<i>170</i>&nbsp;                        this.addToTokenQueue(pat.substring(startSubstring, i));
+<b class="nc"><i>171</i>&nbsp;                    }</b>
+<i>172</i>&nbsp;
+<b class="nc"><i>173</i>&nbsp;                    startSubstring = -1;</b>
+<b class="nc"><i>174</i>&nbsp;                } else if(47 == c &amp;&amp; isStartOfPat) {</b>
+<b class="nc"><i>175</i>&nbsp;                    isStartOfPat = this.mapPatternElemPos(nesting, isStartOfPat, isAttrName);</b>
+<i>176</i>&nbsp;                } else if(42 == c) {
+<b class="nc"><i>177</i>&nbsp;                    isStartOfPat = this.mapPatternElemPos(nesting, isStartOfPat, isAttrName);</b>
+<i>178</i>&nbsp;                    isAttrName = false;
+<b class="nc"><i>179</i>&nbsp;                }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;                if(0 == nesting &amp;&amp; 124 == c) {
+<i>182</i>&nbsp;                    if(null != targetStrings) {
+<b class="nc"><i>183</i>&nbsp;                        this.recordTokenString(targetStrings);</b>
+<i>184</i>&nbsp;                    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;                    isStartOfPat = true;
+<b class="nc"><i>187</i>&nbsp;                }</b>
+<i>188</i>&nbsp;
+<b class="nc"><i>189</i>&nbsp;                if(41 != c &amp;&amp; 93 != c) {</b>
+<i>190</i>&nbsp;                    if(40 == c || 91 == c) {
+<b class="nc"><i>191</i>&nbsp;                        ++nesting;</b>
+<i>192</i>&nbsp;                    }
+<b class="nc"><i>193</i>&nbsp;                } else {</b>
+<i>194</i>&nbsp;                    --nesting;
+<b class="nc"><i>195</i>&nbsp;                }</b>
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;                this.addToTokenQueue(pat.substring(i, i + 1));
+<i>198</i>&nbsp;            }
+<b class="nc"><i>199</i>&nbsp;        }</b>
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;        if(startSubstring != -1) {
+<b class="nc"><i>202</i>&nbsp;            isNum = false;</b>
+<i>203</i>&nbsp;            this.mapPatternElemPos(nesting, isStartOfPat, isAttrName);
+<i>204</i>&nbsp;            if(-1 == posOfNSSep &amp;&amp; (this.m_namespaceContext == null || !this.m_namespaceContext.handlesNullPrefixes())) {
+<i>205</i>&nbsp;                this.addToTokenQueue(pat.substring(startSubstring, nChars));
+<i>206</i>&nbsp;            } else {
+<b class="nc"><i>207</i>&nbsp;                this.mapNSTokens(pat, startSubstring, posOfNSSep, nChars);</b>
+<i>208</i>&nbsp;            }
+<b class="nc"><i>209</i>&nbsp;        }</b>
+<b class="nc"><i>210</i>&nbsp;</b>
+<b class="nc"><i>211</i>&nbsp;        if(0 == this.m_compiler.getTokenQueueSize()) {</b>
+<i>212</i>&nbsp;            this.m_processor.error(&quot;ER_EMPTY_EXPRESSION&quot;, (Object[])null);
+<b class="nc"><i>213</i>&nbsp;        } else if(null != targetStrings) {</b>
+<i>214</i>&nbsp;            this.recordTokenString(targetStrings);
+<b class="nc"><i>215</i>&nbsp;        }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        this.m_processor.m_queueMark = 0;
+<i>218</i>&nbsp;    }
+<b class="nc"><i>219</i>&nbsp;</b>
+<i>220</i>&nbsp;    private boolean mapPatternElemPos(int nesting, boolean isStart, boolean isAttrName) {
+<i>221</i>&nbsp;        if(0 == nesting) {
+<b class="nc"><i>222</i>&nbsp;            if(this.m_patternMapSize &gt;= this.m_patternMap.length) {</b>
+<i>223</i>&nbsp;                int[] patternMap = this.m_patternMap;
+<i>224</i>&nbsp;                int len = this.m_patternMap.length;
+<i>225</i>&nbsp;                this.m_patternMap = new int[this.m_patternMapSize + 100];
+<b class="nc"><i>226</i>&nbsp;                System.arraycopy(patternMap, 0, this.m_patternMap, 0, len);</b>
+<i>227</i>&nbsp;            }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;            if(!isStart) {
+<b class="nc"><i>230</i>&nbsp;                this.m_patternMap[this.m_patternMapSize - 1] -= 10000;</b>
+<i>231</i>&nbsp;            }
+<b class="nc"><i>232</i>&nbsp;</b>
+<i>233</i>&nbsp;            this.m_patternMap[this.m_patternMapSize] = this.m_compiler.getTokenQueueSize() - (isAttrName?1:0) + 10000;
+<b class="nc"><i>234</i>&nbsp;            ++this.m_patternMapSize;</b>
+<i>235</i>&nbsp;            isStart = false;
+<i>236</i>&nbsp;        }
+<b class="nc"><i>237</i>&nbsp;</b>
+<i>238</i>&nbsp;        return isStart;
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    private int getTokenQueuePosFromMap(int i) {
+<i>242</i>&nbsp;        int pos = this.m_patternMap[i];
+<i>243</i>&nbsp;        return pos &gt;= 10000?pos - 10000:pos;
+<i>244</i>&nbsp;    }
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;    private final void resetTokenMark(int mark) {
+<i>247</i>&nbsp;        int qsz = this.m_compiler.getTokenQueueSize();
+<i>248</i>&nbsp;        this.m_processor.m_queueMark = mark &gt; 0?(mark &lt;= qsz?mark - 1:mark):0;
+<i>249</i>&nbsp;        if(this.m_processor.m_queueMark &lt; qsz) {
+<i>250</i>&nbsp;            this.m_processor.m_token = (String)this.m_compiler.getTokenQueue().elementAt(this.m_processor.m_queueMark++);
+<i>251</i>&nbsp;            this.m_processor.m_tokenChar = this.m_processor.m_token.charAt(0);
+<i>252</i>&nbsp;        } else {
+<i>253</i>&nbsp;            this.m_processor.m_token = null;
+<i>254</i>&nbsp;            this.m_processor.m_tokenChar = 0;
+<i>255</i>&nbsp;        }
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;    }</b>
+<i>258</i>&nbsp;
+<b class="nc"><i>259</i>&nbsp;    final int getKeywordToken(String key) {</b>
+<b class="nc"><i>260</i>&nbsp;        int tok;</b>
+<b class="nc"><i>261</i>&nbsp;        try {</b>
+<i>262</i>&nbsp;            Integer cce = (Integer)Keywords.getKeyWord(key);
+<b class="nc"><i>263</i>&nbsp;            tok = null != cce?cce.intValue():0;</b>
+<i>264</i>&nbsp;        } catch (NullPointerException var4) {
+<b class="nc"><i>265</i>&nbsp;            tok = 0;</b>
+<i>266</i>&nbsp;        } catch (ClassCastException var5) {
+<i>267</i>&nbsp;            tok = 0;
+<i>268</i>&nbsp;        }
+<b class="nc"><i>269</i>&nbsp;</b>
+<i>270</i>&nbsp;        return tok;
+<i>271</i>&nbsp;    }
+<b class="nc"><i>272</i>&nbsp;</b>
+<i>273</i>&nbsp;    private void recordTokenString(Vector targetStrings) {
+<b class="nc"><i>274</i>&nbsp;        int tokPos = this.getTokenQueuePosFromMap(this.m_patternMapSize - 1);</b>
+<i>275</i>&nbsp;        this.resetTokenMark(tokPos + 1);
+<b class="nc"><i>276</i>&nbsp;        if(this.m_processor.lookahead(&#39;(&#39;, 1)) {</b>
+<i>277</i>&nbsp;            int tok = this.getKeywordToken(this.m_processor.m_token);
+<b class="nc"><i>278</i>&nbsp;            switch(tok) {</b>
+<i>279</i>&nbsp;            case 35:
+<b class="nc"><i>280</i>&nbsp;                targetStrings.addElement(&quot;/&quot;);</b>
+<b class="nc"><i>281</i>&nbsp;                break;</b>
+<i>282</i>&nbsp;            case 36:
+<i>283</i>&nbsp;                targetStrings.addElement(&quot;*&quot;);
+<b class="nc"><i>284</i>&nbsp;                break;</b>
+<i>285</i>&nbsp;            case 1030:
+<b class="nc"><i>286</i>&nbsp;                targetStrings.addElement(&quot;#comment&quot;);</b>
+<i>287</i>&nbsp;                break;
+<b class="nc"><i>288</i>&nbsp;            case 1031:</b>
+<i>289</i>&nbsp;                targetStrings.addElement(&quot;#text&quot;);
+<b class="nc"><i>290</i>&nbsp;                break;</b>
+<i>291</i>&nbsp;            case 1032:
+<i>292</i>&nbsp;                targetStrings.addElement(&quot;*&quot;);
+<b class="nc"><i>293</i>&nbsp;                break;</b>
+<i>294</i>&nbsp;            case 1033:
+<i>295</i>&nbsp;                targetStrings.addElement(&quot;*&quot;);
+<i>296</i>&nbsp;                break;
+<b class="nc"><i>297</i>&nbsp;            default:</b>
+<i>298</i>&nbsp;                targetStrings.addElement(&quot;*&quot;);
+<b class="nc"><i>299</i>&nbsp;            }</b>
+<i>300</i>&nbsp;        } else {
+<b class="nc"><i>301</i>&nbsp;            if(this.m_processor.tokenIs(&#39;@&#39;)) {</b>
+<i>302</i>&nbsp;                ++tokPos;
+<b class="nc"><i>303</i>&nbsp;                this.resetTokenMark(tokPos + 1);</b>
+<i>304</i>&nbsp;            }
+<i>305</i>&nbsp;
+<b class="nc"><i>306</i>&nbsp;            if(this.m_processor.lookahead(&#39;:&#39;, 1)) {</b>
+<b class="nc"><i>307</i>&nbsp;                tokPos += 2;</b>
+<i>308</i>&nbsp;            }
+<b class="nc"><i>309</i>&nbsp;</b>
+<i>310</i>&nbsp;            targetStrings.addElement(this.m_compiler.getTokenQueue().elementAt(tokPos));
+<b class="nc"><i>311</i>&nbsp;        }</b>
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;    }</b>
+<i>314</i>&nbsp;
+<b class="nc"><i>315</i>&nbsp;    private final void addToTokenQueue(String s) {</b>
+<b class="nc"><i>316</i>&nbsp;        this.m_compiler.getTokenQueue().addElement(s);</b>
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<b class="nc"><i>319</i>&nbsp;    private int mapNSTokens(String pat, int startSubstring, int posOfNSSep, int posOfScan) throws TransformerException {</b>
+<b class="nc"><i>320</i>&nbsp;        String prefix = &quot;&quot;;</b>
+<b class="nc"><i>321</i>&nbsp;        if(startSubstring &gt;= 0 &amp;&amp; posOfNSSep &gt;= 0) {</b>
+<b class="nc"><i>322</i>&nbsp;            prefix = pat.substring(startSubstring, posOfNSSep);</b>
+<i>323</i>&nbsp;        }
+<b class="nc"><i>324</i>&nbsp;</b>
+<i>325</i>&nbsp;        String uName;
+<b class="nc"><i>326</i>&nbsp;        if(null != this.m_namespaceContext &amp;&amp; !prefix.equals(&quot;*&quot;) &amp;&amp; !prefix.equals(&quot;xmlns&quot;)) {</b>
+<i>327</i>&nbsp;            try {
+<i>328</i>&nbsp;                if(prefix.length() &gt; 0) {
+<i>329</i>&nbsp;                    uName = this.m_namespaceContext.getNamespaceForPrefix(prefix);
+<b class="nc"><i>330</i>&nbsp;                } else {</b>
+<i>331</i>&nbsp;                    uName = this.m_namespaceContext.getNamespaceForPrefix(prefix);
+<i>332</i>&nbsp;                }
+<i>333</i>&nbsp;            } catch (ClassCastException var8) {
+<i>334</i>&nbsp;                uName = this.m_namespaceContext.getNamespaceForPrefix(prefix);
+<i>335</i>&nbsp;            }
+<b class="nc"><i>336</i>&nbsp;        } else {</b>
+<i>337</i>&nbsp;            uName = prefix;
+<b class="nc"><i>338</i>&nbsp;        }</b>
+<b class="nc"><i>339</i>&nbsp;</b>
+<i>340</i>&nbsp;        if(null != uName &amp;&amp; uName.length() &gt; 0) {
+<b class="nc"><i>341</i>&nbsp;            this.addToTokenQueue(uName);</b>
+<i>342</i>&nbsp;            this.addToTokenQueue(&quot;:&quot;);
+<b class="nc"><i>343</i>&nbsp;            String s = pat.substring(posOfNSSep + 1, posOfScan);</b>
+<i>344</i>&nbsp;            if(s.length() &gt; 0) {
+<i>345</i>&nbsp;                this.addToTokenQueue(s);
+<i>346</i>&nbsp;            }
+<i>347</i>&nbsp;        } else {
+<b class="nc"><i>348</i>&nbsp;            this.m_processor.errorForDOM3(&quot;ER_PREFIX_MUST_RESOLVE&quot;, new String[]{prefix});</b>
+<i>349</i>&nbsp;        }
+<b class="nc"><i>350</i>&nbsp;</b>
+<b class="nc"><i>351</i>&nbsp;        return -1;</b>
+<i>352</i>&nbsp;    }
+<b class="nc"><i>353</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

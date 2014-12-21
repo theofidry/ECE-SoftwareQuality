@@ -1,0 +1,263 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FastInfosetCodec</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.encoding.fastinfoset</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FastInfosetCodec (com.sun.xml.internal.ws.encoding.fastinfoset)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FastInfosetCodec</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 69)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.encoding.fastinfoset;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.fastinfoset.stax.StAXDocumentParser;
+<i>9</i>&nbsp;import com.sun.xml.internal.fastinfoset.stax.StAXDocumentSerializer;
+<i>10</i>&nbsp;import com.sun.xml.internal.fastinfoset.vocab.ParserVocabulary;
+<i>11</i>&nbsp;import com.sun.xml.internal.fastinfoset.vocab.SerializerVocabulary;
+<i>12</i>&nbsp;import com.sun.xml.internal.org.jvnet.fastinfoset.FastInfosetSource;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.api.SOAPVersion;
+<i>14</i>&nbsp;import com.sun.xml.internal.ws.api.message.Message;
+<i>15</i>&nbsp;import com.sun.xml.internal.ws.api.message.Messages;
+<i>16</i>&nbsp;import com.sun.xml.internal.ws.api.message.Packet;
+<i>17</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.Codec;
+<i>18</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.ContentType;
+<i>19</i>&nbsp;import com.sun.xml.internal.ws.encoding.ContentTypeImpl;
+<i>20</i>&nbsp;import com.sun.xml.internal.ws.encoding.fastinfoset.FastInfosetStreamReaderRecyclable;
+<i>21</i>&nbsp;import java.io.BufferedInputStream;
+<i>22</i>&nbsp;import java.io.IOException;
+<i>23</i>&nbsp;import java.io.InputStream;
+<i>24</i>&nbsp;import java.io.OutputStream;
+<i>25</i>&nbsp;import java.nio.channels.ReadableByteChannel;
+<i>26</i>&nbsp;import java.nio.channels.WritableByteChannel;
+<i>27</i>&nbsp;import javax.xml.stream.XMLStreamException;
+<i>28</i>&nbsp;import javax.xml.stream.XMLStreamReader;
+<i>29</i>&nbsp;import javax.xml.stream.XMLStreamWriter;
+<i>30</i>&nbsp;import javax.xml.ws.WebServiceException;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public class FastInfosetCodec implements Codec {
+<i>33</i>&nbsp;    private static final int DEFAULT_INDEXED_STRING_SIZE_LIMIT = 32;
+<i>34</i>&nbsp;    private static final int DEFAULT_INDEXED_STRING_MEMORY_LIMIT = 4194304;
+<i>35</i>&nbsp;    private StAXDocumentParser _parser;
+<i>36</i>&nbsp;    private StAXDocumentSerializer _serializer;
+<i>37</i>&nbsp;    private final boolean _retainState;
+<i>38</i>&nbsp;    private final ContentType _contentType;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    FastInfosetCodec(boolean retainState) {
+<i>41</i>&nbsp;        this._retainState = retainState;
+<i>42</i>&nbsp;        this._contentType = retainState?new ContentTypeImpl(&quot;application/vnd.sun.stateful.fastinfoset&quot;):new ContentTypeImpl(&quot;application/fastinfoset&quot;);
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public String getMimeType() {
+<i>46</i>&nbsp;        return this._contentType.getContentType();
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public Codec copy() {
+<i>50</i>&nbsp;        return new FastInfosetCodec(this._retainState);
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public ContentType getStaticContentType(Packet packet) {
+<i>54</i>&nbsp;        return this._contentType;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public ContentType encode(Packet packet, OutputStream out) {
+<i>58</i>&nbsp;        Message message = packet.getMessage();
+<i>59</i>&nbsp;        if(message != null &amp;&amp; message.hasPayload()) {
+<i>60</i>&nbsp;            XMLStreamWriter writer = this.getXMLStreamWriter(out);
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;            try {
+<i>63</i>&nbsp;                writer.writeStartDocument();
+<i>64</i>&nbsp;                packet.getMessage().writePayloadTo(writer);
+<i>65</i>&nbsp;                writer.writeEndDocument();
+<i>66</i>&nbsp;                writer.flush();
+<i>67</i>&nbsp;            } catch (XMLStreamException var6) {
+<i>68</i>&nbsp;                throw new WebServiceException(var6);
+<b class="nc"><i>69</i>&nbsp;            }</b>
+<b class="nc"><i>70</i>&nbsp;        }</b>
+<b class="nc"><i>71</i>&nbsp;</b>
+<i>72</i>&nbsp;        return this._contentType;
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    public ContentType encode(Packet packet, WritableByteChannel buffer) {
+<b class="nc"><i>76</i>&nbsp;        throw new UnsupportedOperationException();</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public void decode(InputStream in, String contentType, Packet packet) throws IOException {
+<b class="nc"><i>80</i>&nbsp;        Message message = null;</b>
+<i>81</i>&nbsp;        in = hasSomeData(in);
+<i>82</i>&nbsp;        if(in != null) {
+<i>83</i>&nbsp;            message = Messages.createUsingPayload(new FastInfosetSource(in), SOAPVersion.SOAP_11);
+<b class="nc"><i>84</i>&nbsp;        } else {</b>
+<i>85</i>&nbsp;            message = Messages.createEmpty(SOAPVersion.SOAP_11);
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;        packet.setMessage(message);</b>
+<b class="nc"><i>89</i>&nbsp;    }</b>
+<b class="nc"><i>90</i>&nbsp;</b>
+<i>91</i>&nbsp;    public void decode(ReadableByteChannel in, String contentType, Packet response) {
+<b class="nc"><i>92</i>&nbsp;        throw new UnsupportedOperationException();</b>
+<b class="nc"><i>93</i>&nbsp;    }</b>
+<b class="nc"><i>94</i>&nbsp;</b>
+<b class="nc"><i>95</i>&nbsp;    private XMLStreamWriter getXMLStreamWriter(OutputStream out) {</b>
+<b class="nc"><i>96</i>&nbsp;        if(this._serializer != null) {</b>
+<b class="nc"><i>97</i>&nbsp;            this._serializer.setOutputStream(out);</b>
+<b class="nc"><i>98</i>&nbsp;            return this._serializer;</b>
+<i>99</i>&nbsp;        } else {
+<i>100</i>&nbsp;            return this._serializer = createNewStreamWriter(out, this._retainState);
+<b class="nc"><i>101</i>&nbsp;        }</b>
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    private XMLStreamReader getXMLStreamReader(InputStream in) {
+<i>105</i>&nbsp;        if(this._parser != null) {
+<b class="nc"><i>106</i>&nbsp;            this._parser.setInputStream(in);</b>
+<i>107</i>&nbsp;            return this._parser;
+<i>108</i>&nbsp;        } else {
+<i>109</i>&nbsp;            return this._parser = createNewStreamReader(in, this._retainState);
+<i>110</i>&nbsp;        }
+<i>111</i>&nbsp;    }
+<b class="nc"><i>112</i>&nbsp;</b>
+<b class="nc"><i>113</i>&nbsp;    public static FastInfosetCodec create() {</b>
+<b class="nc"><i>114</i>&nbsp;        return create(false);</b>
+<b class="nc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public static FastInfosetCodec create(boolean retainState) {
+<b class="nc"><i>118</i>&nbsp;        return new FastInfosetCodec(retainState);</b>
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<b class="nc"><i>121</i>&nbsp;    static StAXDocumentSerializer createNewStreamWriter(OutputStream out, boolean retainState) {</b>
+<i>122</i>&nbsp;        return createNewStreamWriter(out, retainState, 32, 4194304);
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<b class="nc"><i>125</i>&nbsp;    static StAXDocumentSerializer createNewStreamWriter(OutputStream out, boolean retainState, int indexedStringSizeLimit, int stringsMemoryLimit) {</b>
+<i>126</i>&nbsp;        StAXDocumentSerializer serializer = new StAXDocumentSerializer(out);
+<i>127</i>&nbsp;        if(retainState) {
+<i>128</i>&nbsp;            SerializerVocabulary vocabulary = new SerializerVocabulary();
+<b class="nc"><i>129</i>&nbsp;            serializer.setVocabulary(vocabulary);</b>
+<b class="nc"><i>130</i>&nbsp;            serializer.setMinAttributeValueSize(0);</b>
+<b class="nc"><i>131</i>&nbsp;            serializer.setMaxAttributeValueSize(indexedStringSizeLimit);</b>
+<i>132</i>&nbsp;            serializer.setMinCharacterContentChunkSize(0);
+<b class="nc"><i>133</i>&nbsp;            serializer.setMaxCharacterContentChunkSize(indexedStringSizeLimit);</b>
+<i>134</i>&nbsp;            serializer.setAttributeValueMapMemoryLimit(stringsMemoryLimit);
+<i>135</i>&nbsp;            serializer.setCharacterContentChunkMapMemoryLimit(stringsMemoryLimit);
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;        return serializer;</b>
+<b class="nc"><i>139</i>&nbsp;    }</b>
+<b class="nc"><i>140</i>&nbsp;</b>
+<i>141</i>&nbsp;    static StAXDocumentParser createNewStreamReader(InputStream in, boolean retainState) {
+<b class="nc"><i>142</i>&nbsp;        StAXDocumentParser parser = new StAXDocumentParser(in);</b>
+<i>143</i>&nbsp;        parser.setStringInterning(true);
+<i>144</i>&nbsp;        if(retainState) {
+<i>145</i>&nbsp;            ParserVocabulary vocabulary = new ParserVocabulary();
+<i>146</i>&nbsp;            parser.setVocabulary(vocabulary);
+<i>147</i>&nbsp;        }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;        return parser;
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<b class="nc"><i>152</i>&nbsp;    static StAXDocumentParser createNewStreamReaderRecyclable(InputStream in, boolean retainState) {</b>
+<i>153</i>&nbsp;        FastInfosetStreamReaderRecyclable parser = new FastInfosetStreamReaderRecyclable(in);
+<i>154</i>&nbsp;        parser.setStringInterning(true);
+<i>155</i>&nbsp;        parser.setForceStreamClose(true);
+<i>156</i>&nbsp;        if(retainState) {
+<i>157</i>&nbsp;            ParserVocabulary vocabulary = new ParserVocabulary();
+<i>158</i>&nbsp;            parser.setVocabulary(vocabulary);
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;        return parser;
+<i>162</i>&nbsp;    }
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;    private static InputStream hasSomeData(InputStream in) throws IOException {
+<i>165</i>&nbsp;        if(in != null &amp;&amp; ((InputStream)in).available() &lt; 1) {
+<i>166</i>&nbsp;            if(!((InputStream)in).markSupported()) {
+<i>167</i>&nbsp;                in = new BufferedInputStream((InputStream)in);
+<i>168</i>&nbsp;            }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;            ((InputStream)in).mark(1);
+<i>171</i>&nbsp;            if(((InputStream)in).read() != -1) {
+<i>172</i>&nbsp;                ((InputStream)in).reset();
+<i>173</i>&nbsp;            } else {
+<i>174</i>&nbsp;                in = null;
+<b class="nc"><i>175</i>&nbsp;            }</b>
+<i>176</i>&nbsp;        }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;        return (InputStream)in;
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:50</div>
+</div>
+</body>
+</html>

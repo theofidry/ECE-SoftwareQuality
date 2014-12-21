@@ -1,0 +1,638 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XMLAttributesImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XMLAttributesImpl (com.sun.org.apache.xerces.internal.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XMLAttributesImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 52)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 244)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">XMLAttributesImpl$Attribute</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 53)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 247)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.util.AugmentationsImpl;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.Augmentations;
+<i>10</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.QName;
+<i>11</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLAttributes;
+<i>12</i>&nbsp;import com.sun.org.apache.xerces.internal.xni.XMLString;
+<i>13</i>&nbsp;import com.sun.xml.internal.stream.XMLBufferListener;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;public class XMLAttributesImpl implements XMLAttributes, XMLBufferListener {
+<i>16</i>&nbsp;    protected static final int TABLE_SIZE = 101;
+<i>17</i>&nbsp;    protected static final int SIZE_LIMIT = 20;
+<i>18</i>&nbsp;    protected boolean fNamespaces;
+<i>19</i>&nbsp;    protected int fLargeCount;
+<i>20</i>&nbsp;    protected int fLength;
+<i>21</i>&nbsp;    protected XMLAttributesImpl.Attribute[] fAttributes;
+<i>22</i>&nbsp;    protected XMLAttributesImpl.Attribute[] fAttributeTableView;
+<i>23</i>&nbsp;    protected int[] fAttributeTableViewChainState;
+<i>24</i>&nbsp;    protected int fTableViewBuckets;
+<i>25</i>&nbsp;    protected boolean fIsTableViewConsistent;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public XMLAttributesImpl() {
+<i>28</i>&nbsp;        this(101);
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public XMLAttributesImpl(int tableSize) {
+<i>32</i>&nbsp;        this.fNamespaces = true;
+<i>33</i>&nbsp;        this.fLargeCount = 1;
+<i>34</i>&nbsp;        this.fAttributes = new XMLAttributesImpl.Attribute[4];
+<i>35</i>&nbsp;        this.fTableViewBuckets = tableSize;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;        for(int i = 0; i &lt; this.fAttributes.length; ++i) {
+<i>38</i>&nbsp;            this.fAttributes[i] = new XMLAttributesImpl.Attribute();
+<i>39</i>&nbsp;        }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public void setNamespaces(boolean namespaces) {
+<i>44</i>&nbsp;        this.fNamespaces = namespaces;
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public int addAttribute(QName name, String type, String value) {
+<i>48</i>&nbsp;        return this.addAttribute(name, type, value, (XMLString)null);
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public int addAttribute(QName name, String type, String value, XMLString valueCache) {
+<i>52</i>&nbsp;        int index;
+<i>53</i>&nbsp;        if(this.fLength &lt; 20) {
+<i>54</i>&nbsp;            index = name.uri != null &amp;&amp; !name.uri.equals(&quot;&quot;)?this.getIndexFast(name.uri, name.localpart):this.getIndexFast(name.rawname);
+<i>55</i>&nbsp;            if(index == -1) {
+<i>56</i>&nbsp;                index = this.fLength;
+<i>57</i>&nbsp;                if(this.fLength++ == this.fAttributes.length) {
+<i>58</i>&nbsp;                    XMLAttributesImpl.Attribute[] attribute = new XMLAttributesImpl.Attribute[this.fAttributes.length + 4];
+<i>59</i>&nbsp;                    System.arraycopy(this.fAttributes, 0, attribute, 0, this.fAttributes.length);
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;                    for(int found = this.fAttributes.length; found &lt; attribute.length; ++found) {
+<i>62</i>&nbsp;                        attribute[found] = new XMLAttributesImpl.Attribute();
+<i>63</i>&nbsp;                    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;                    this.fAttributes = attribute;
+<i>66</i>&nbsp;                }
+<i>67</i>&nbsp;            }
+<i>68</i>&nbsp;        } else if(name.uri == null || name.uri.length() == 0 || (index = this.getIndexFast(name.uri, name.localpart)) == -1) {
+<i>69</i>&nbsp;            if(!this.fIsTableViewConsistent || this.fLength == 20) {
+<i>70</i>&nbsp;                this.prepareAndPopulateTableView();
+<i>71</i>&nbsp;                this.fIsTableViewConsistent = true;
+<i>72</i>&nbsp;            }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;            int var11 = this.getTableViewBucket(name.rawname);
+<i>75</i>&nbsp;            if(this.fAttributeTableViewChainState[var11] != this.fLargeCount) {
+<i>76</i>&nbsp;                index = this.fLength;
+<i>77</i>&nbsp;                if(this.fLength++ == this.fAttributes.length) {
+<i>78</i>&nbsp;                    XMLAttributesImpl.Attribute[] var13 = new XMLAttributesImpl.Attribute[this.fAttributes.length &lt;&lt; 1];
+<i>79</i>&nbsp;                    System.arraycopy(this.fAttributes, 0, var13, 0, this.fAttributes.length);
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;                    for(int attributes = this.fAttributes.length; attributes &lt; var13.length; ++attributes) {
+<i>82</i>&nbsp;                        var13[attributes] = new XMLAttributesImpl.Attribute();
+<i>83</i>&nbsp;                    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;                    this.fAttributes = var13;
+<i>86</i>&nbsp;                }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;                this.fAttributeTableViewChainState[var11] = this.fLargeCount;
+<i>89</i>&nbsp;                this.fAttributes[index].next = null;
+<i>90</i>&nbsp;                this.fAttributeTableView[var11] = this.fAttributes[index];
+<i>91</i>&nbsp;            } else {
+<i>92</i>&nbsp;                XMLAttributesImpl.Attribute var12;
+<i>93</i>&nbsp;                for(var12 = this.fAttributeTableView[var11]; var12 != null &amp;&amp; var12.name.rawname != name.rawname; var12 = var12.next) {
+<i>94</i>&nbsp;                    ;
+<i>95</i>&nbsp;                }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;                if(var12 == null) {
+<i>98</i>&nbsp;                    index = this.fLength;
+<i>99</i>&nbsp;                    if(this.fLength++ == this.fAttributes.length) {
+<i>100</i>&nbsp;                        XMLAttributesImpl.Attribute[] var14 = new XMLAttributesImpl.Attribute[this.fAttributes.length &lt;&lt; 1];
+<i>101</i>&nbsp;                        System.arraycopy(this.fAttributes, 0, var14, 0, this.fAttributes.length);
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;                        for(int i = this.fAttributes.length; i &lt; var14.length; ++i) {
+<i>104</i>&nbsp;                            var14[i] = new XMLAttributesImpl.Attribute();
+<i>105</i>&nbsp;                        }
+<i>106</i>&nbsp;
+<b class="nc"><i>107</i>&nbsp;                        this.fAttributes = var14;</b>
+<i>108</i>&nbsp;                    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;                    this.fAttributes[index].next = this.fAttributeTableView[var11];
+<i>111</i>&nbsp;                    this.fAttributeTableView[var11] = this.fAttributes[index];
+<i>112</i>&nbsp;                } else {
+<i>113</i>&nbsp;                    index = this.getIndexFast(name.rawname);
+<i>114</i>&nbsp;                }
+<i>115</i>&nbsp;            }
+<b class="nc"><i>116</i>&nbsp;        }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;        XMLAttributesImpl.Attribute var10 = this.fAttributes[index];
+<i>119</i>&nbsp;        var10.name.setValues(name);
+<i>120</i>&nbsp;        var10.type = type;
+<i>121</i>&nbsp;        var10.value = value;
+<b class="nc"><i>122</i>&nbsp;        var10.xmlValue = valueCache;</b>
+<i>123</i>&nbsp;        var10.nonNormalizedValue = value;
+<i>124</i>&nbsp;        var10.specified = false;
+<i>125</i>&nbsp;        if(var10.augs != null) {
+<i>126</i>&nbsp;            var10.augs.removeAllItems();
+<i>127</i>&nbsp;        }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;        return index;
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public void removeAllAttributes() {
+<i>133</i>&nbsp;        this.fLength = 0;
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public void removeAttributeAt(int attrIndex) {
+<i>137</i>&nbsp;        this.fIsTableViewConsistent = false;
+<i>138</i>&nbsp;        if(attrIndex &lt; this.fLength - 1) {
+<i>139</i>&nbsp;            XMLAttributesImpl.Attribute removedAttr = this.fAttributes[attrIndex];
+<i>140</i>&nbsp;            System.arraycopy(this.fAttributes, attrIndex + 1, this.fAttributes, attrIndex, this.fLength - attrIndex - 1);
+<i>141</i>&nbsp;            this.fAttributes[this.fLength - 1] = removedAttr;
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;        --this.fLength;
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    public void setName(int attrIndex, QName attrName) {
+<i>148</i>&nbsp;        this.fAttributes[attrIndex].name.setValues(attrName);
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public void getName(int attrIndex, QName attrName) {
+<i>152</i>&nbsp;        attrName.setValues(this.fAttributes[attrIndex].name);
+<i>153</i>&nbsp;    }
+<b class="nc"><i>154</i>&nbsp;</b>
+<i>155</i>&nbsp;    public void setType(int attrIndex, String attrType) {
+<i>156</i>&nbsp;        this.fAttributes[attrIndex].type = attrType;
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    public void setValue(int attrIndex, String attrValue) {
+<b class="nc"><i>160</i>&nbsp;        this.setValue(attrIndex, attrValue, (XMLString)null);</b>
+<b class="nc"><i>161</i>&nbsp;    }</b>
+<b class="nc"><i>162</i>&nbsp;</b>
+<b class="nc"><i>163</i>&nbsp;    public void setValue(int attrIndex, String attrValue, XMLString value) {</b>
+<i>164</i>&nbsp;        XMLAttributesImpl.Attribute attribute = this.fAttributes[attrIndex];
+<i>165</i>&nbsp;        attribute.value = attrValue;
+<i>166</i>&nbsp;        attribute.nonNormalizedValue = attrValue;
+<i>167</i>&nbsp;        attribute.xmlValue = value;
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    public void setNonNormalizedValue(int attrIndex, String attrValue) {
+<i>171</i>&nbsp;        if(attrValue == null) {
+<i>172</i>&nbsp;            attrValue = this.fAttributes[attrIndex].value;
+<i>173</i>&nbsp;        }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;        this.fAttributes[attrIndex].nonNormalizedValue = attrValue;
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    public String getNonNormalizedValue(int attrIndex) {
+<i>179</i>&nbsp;        String value = this.fAttributes[attrIndex].nonNormalizedValue;
+<b class="nc"><i>180</i>&nbsp;        return value;</b>
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    public void setSpecified(int attrIndex, boolean specified) {
+<i>184</i>&nbsp;        this.fAttributes[attrIndex].specified = specified;
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    public boolean isSpecified(int attrIndex) {
+<i>188</i>&nbsp;        return this.fAttributes[attrIndex].specified;
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    public int getLength() {
+<i>192</i>&nbsp;        return this.fLength;
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public String getType(int index) {
+<i>196</i>&nbsp;        return index &gt;= 0 &amp;&amp; index &lt; this.fLength?this.getReportableType(this.fAttributes[index].type):null;
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    public String getType(String qname) {
+<i>200</i>&nbsp;        int index = this.getIndex(qname);
+<i>201</i>&nbsp;        return index != -1?this.getReportableType(this.fAttributes[index].type):null;
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    public String getValue(int index) {
+<i>205</i>&nbsp;        if(index &gt;= 0 &amp;&amp; index &lt; this.fLength) {
+<i>206</i>&nbsp;            if(this.fAttributes[index].value == null &amp;&amp; this.fAttributes[index].xmlValue != null) {
+<i>207</i>&nbsp;                this.fAttributes[index].value = this.fAttributes[index].xmlValue.toString();
+<i>208</i>&nbsp;            }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;            return this.fAttributes[index].value;
+<i>211</i>&nbsp;        } else {
+<i>212</i>&nbsp;            return null;
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;    }
+<i>215</i>&nbsp;
+<b class="nc"><i>216</i>&nbsp;    public String getValue(String qname) {</b>
+<i>217</i>&nbsp;        int index = this.getIndex(qname);
+<i>218</i>&nbsp;        if(index == -1) {
+<i>219</i>&nbsp;            return null;
+<i>220</i>&nbsp;        } else {
+<b class="nc"><i>221</i>&nbsp;            if(this.fAttributes[index].value == null) {</b>
+<b class="nc"><i>222</i>&nbsp;                this.fAttributes[index].value = this.fAttributes[index].xmlValue.toString();</b>
+<i>223</i>&nbsp;            }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;            return this.fAttributes[index].value;
+<b class="nc"><i>226</i>&nbsp;        }</b>
+<b class="nc"><i>227</i>&nbsp;    }</b>
+<b class="nc"><i>228</i>&nbsp;</b>
+<b class="nc"><i>229</i>&nbsp;    public String getName(int index) {</b>
+<b class="nc"><i>230</i>&nbsp;        return index &gt;= 0 &amp;&amp; index &lt; this.fLength?this.fAttributes[index].name.rawname:null;</b>
+<b class="nc"><i>231</i>&nbsp;    }</b>
+<b class="nc"><i>232</i>&nbsp;</b>
+<i>233</i>&nbsp;    public int getIndex(String qName) {
+<b class="nc"><i>234</i>&nbsp;        for(int i = 0; i &lt; this.fLength; ++i) {</b>
+<b class="nc"><i>235</i>&nbsp;            XMLAttributesImpl.Attribute attribute = this.fAttributes[i];</b>
+<i>236</i>&nbsp;            if(attribute.name.rawname != null &amp;&amp; attribute.name.rawname.equals(qName)) {
+<i>237</i>&nbsp;                return i;
+<b class="nc"><i>238</i>&nbsp;            }</b>
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;        return -1;
+<i>242</i>&nbsp;    }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    public int getIndex(String uri, String localPart) {
+<i>245</i>&nbsp;        for(int i = 0; i &lt; this.fLength; ++i) {
+<i>246</i>&nbsp;            XMLAttributesImpl.Attribute attribute = this.fAttributes[i];
+<i>247</i>&nbsp;            if(attribute.name.localpart != null &amp;&amp; attribute.name.localpart.equals(localPart) &amp;&amp; (uri == attribute.name.uri || uri != null &amp;&amp; attribute.name.uri != null &amp;&amp; attribute.name.uri.equals(uri))) {
+<i>248</i>&nbsp;                return i;
+<i>249</i>&nbsp;            }
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<b class="nc"><i>251</i>&nbsp;</b>
+<b class="nc"><i>252</i>&nbsp;        return -1;</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<b class="nc"><i>255</i>&nbsp;    public int getIndexByLocalName(String localPart) {</b>
+<i>256</i>&nbsp;        for(int i = 0; i &lt; this.fLength; ++i) {
+<i>257</i>&nbsp;            XMLAttributesImpl.Attribute attribute = this.fAttributes[i];
+<i>258</i>&nbsp;            if(attribute.name.localpart != null &amp;&amp; attribute.name.localpart.equals(localPart)) {
+<b class="nc"><i>259</i>&nbsp;                return i;</b>
+<b class="nc"><i>260</i>&nbsp;            }</b>
+<b class="nc"><i>261</i>&nbsp;        }</b>
+<b class="nc"><i>262</i>&nbsp;</b>
+<b class="nc"><i>263</i>&nbsp;        return -1;</b>
+<b class="nc"><i>264</i>&nbsp;    }</b>
+<b class="nc"><i>265</i>&nbsp;</b>
+<i>266</i>&nbsp;    public String getLocalName(int index) {
+<b class="nc"><i>267</i>&nbsp;        return !this.fNamespaces?&quot;&quot;:(index &gt;= 0 &amp;&amp; index &lt; this.fLength?this.fAttributes[index].name.localpart:null);</b>
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public String getQName(int index) {
+<b class="nc"><i>271</i>&nbsp;        if(index &gt;= 0 &amp;&amp; index &lt; this.fLength) {</b>
+<b class="nc"><i>272</i>&nbsp;            String rawname = this.fAttributes[index].name.rawname;</b>
+<b class="nc"><i>273</i>&nbsp;            return rawname != null?rawname:&quot;&quot;;</b>
+<i>274</i>&nbsp;        } else {
+<i>275</i>&nbsp;            return null;
+<i>276</i>&nbsp;        }
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<b class="nc"><i>279</i>&nbsp;    public QName getQualifiedName(int index) {</b>
+<b class="nc"><i>280</i>&nbsp;        return index &gt;= 0 &amp;&amp; index &lt; this.fLength?this.fAttributes[index].name:null;</b>
+<b class="nc"><i>281</i>&nbsp;    }</b>
+<b class="nc"><i>282</i>&nbsp;</b>
+<i>283</i>&nbsp;    public String getType(String uri, String localName) {
+<b class="nc"><i>284</i>&nbsp;        if(!this.fNamespaces) {</b>
+<i>285</i>&nbsp;            return null;
+<i>286</i>&nbsp;        } else {
+<b class="nc"><i>287</i>&nbsp;            int index = this.getIndex(uri, localName);</b>
+<b class="nc"><i>288</i>&nbsp;            return index != -1?this.getType(index):null;</b>
+<b class="nc"><i>289</i>&nbsp;        }</b>
+<b class="nc"><i>290</i>&nbsp;    }</b>
+<b class="nc"><i>291</i>&nbsp;</b>
+<b class="nc"><i>292</i>&nbsp;    public int getIndexFast(String qName) {</b>
+<b class="nc"><i>293</i>&nbsp;        for(int i = 0; i &lt; this.fLength; ++i) {</b>
+<i>294</i>&nbsp;            XMLAttributesImpl.Attribute attribute = this.fAttributes[i];
+<b class="nc"><i>295</i>&nbsp;            if(attribute.name.rawname == qName) {</b>
+<i>296</i>&nbsp;                return i;
+<i>297</i>&nbsp;            }
+<i>298</i>&nbsp;        }
+<b class="nc"><i>299</i>&nbsp;</b>
+<b class="nc"><i>300</i>&nbsp;        return -1;</b>
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    public void addAttributeNS(QName name, String type, String value) {
+<b class="nc"><i>304</i>&nbsp;        int index = this.fLength;</b>
+<i>305</i>&nbsp;        if(this.fLength++ == this.fAttributes.length) {
+<i>306</i>&nbsp;            XMLAttributesImpl.Attribute[] attribute;
+<i>307</i>&nbsp;            if(this.fLength &lt; 20) {
+<i>308</i>&nbsp;                attribute = new XMLAttributesImpl.Attribute[this.fAttributes.length + 4];
+<i>309</i>&nbsp;            } else {
+<b class="nc"><i>310</i>&nbsp;                attribute = new XMLAttributesImpl.Attribute[this.fAttributes.length &lt;&lt; 1];</b>
+<b class="nc"><i>311</i>&nbsp;            }</b>
+<b class="nc"><i>312</i>&nbsp;</b>
+<b class="nc"><i>313</i>&nbsp;            System.arraycopy(this.fAttributes, 0, attribute, 0, this.fAttributes.length);</b>
+<b class="nc"><i>314</i>&nbsp;</b>
+<b class="nc"><i>315</i>&nbsp;            for(int i = this.fAttributes.length; i &lt; attribute.length; ++i) {</b>
+<b class="nc"><i>316</i>&nbsp;                attribute[i] = new XMLAttributesImpl.Attribute();</b>
+<i>317</i>&nbsp;            }
+<i>318</i>&nbsp;
+<b class="nc"><i>319</i>&nbsp;            this.fAttributes = attribute;</b>
+<b class="nc"><i>320</i>&nbsp;        }</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;        XMLAttributesImpl.Attribute var7 = this.fAttributes[index];</b>
+<i>323</i>&nbsp;        var7.name.setValues(name);
+<i>324</i>&nbsp;        var7.type = type;
+<i>325</i>&nbsp;        var7.value = value;
+<i>326</i>&nbsp;        var7.nonNormalizedValue = value;
+<i>327</i>&nbsp;        var7.specified = false;
+<i>328</i>&nbsp;        var7.augs.removeAllItems();
+<i>329</i>&nbsp;    }
+<i>330</i>&nbsp;
+<b class="nc"><i>331</i>&nbsp;    public QName checkDuplicatesNS() {</b>
+<i>332</i>&nbsp;        int i;
+<i>333</i>&nbsp;        XMLAttributesImpl.Attribute found;
+<i>334</i>&nbsp;        if(this.fLength &lt;= 20) {
+<i>335</i>&nbsp;            for(int attr = 0; attr &lt; this.fLength - 1; ++attr) {
+<i>336</i>&nbsp;                XMLAttributesImpl.Attribute bucket = this.fAttributes[attr];
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;                for(i = attr + 1; i &lt; this.fLength; ++i) {
+<i>339</i>&nbsp;                    found = this.fAttributes[i];
+<i>340</i>&nbsp;                    if(bucket.name.localpart == found.name.localpart &amp;&amp; bucket.name.uri == found.name.uri) {
+<i>341</i>&nbsp;                        return found.name;
+<i>342</i>&nbsp;                    }
+<b class="nc"><i>343</i>&nbsp;                }</b>
+<b class="nc"><i>344</i>&nbsp;            }</b>
+<b class="nc"><i>345</i>&nbsp;        } else {</b>
+<b class="nc"><i>346</i>&nbsp;            this.fIsTableViewConsistent = false;</b>
+<i>347</i>&nbsp;            this.prepareTableView();
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;            for(i = this.fLength - 1; i &gt;= 0; --i) {
+<b class="nc"><i>350</i>&nbsp;                XMLAttributesImpl.Attribute var5 = this.fAttributes[i];</b>
+<i>351</i>&nbsp;                int var6 = this.getTableViewBucket(var5.name.localpart, var5.name.uri);
+<b class="nc"><i>352</i>&nbsp;                if(this.fAttributeTableViewChainState[var6] != this.fLargeCount) {</b>
+<i>353</i>&nbsp;                    this.fAttributeTableViewChainState[var6] = this.fLargeCount;
+<i>354</i>&nbsp;                    var5.next = null;
+<i>355</i>&nbsp;                    this.fAttributeTableView[var6] = var5;
+<i>356</i>&nbsp;                } else {
+<i>357</i>&nbsp;                    for(found = this.fAttributeTableView[var6]; found != null; found = found.next) {
+<i>358</i>&nbsp;                        if(found.name.localpart == var5.name.localpart &amp;&amp; found.name.uri == var5.name.uri) {
+<i>359</i>&nbsp;                            return var5.name;
+<i>360</i>&nbsp;                        }
+<i>361</i>&nbsp;                    }
+<b class="nc"><i>362</i>&nbsp;</b>
+<i>363</i>&nbsp;                    var5.next = this.fAttributeTableView[var6];
+<i>364</i>&nbsp;                    this.fAttributeTableView[var6] = var5;
+<i>365</i>&nbsp;                }
+<i>366</i>&nbsp;            }
+<i>367</i>&nbsp;        }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;        return null;
+<i>370</i>&nbsp;    }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    public int getIndexFast(String uri, String localPart) {
+<b class="nc"><i>373</i>&nbsp;        for(int i = 0; i &lt; this.fLength; ++i) {</b>
+<i>374</i>&nbsp;            XMLAttributesImpl.Attribute attribute = this.fAttributes[i];
+<i>375</i>&nbsp;            if(attribute.name.localpart == localPart &amp;&amp; attribute.name.uri == uri) {
+<i>376</i>&nbsp;                return i;
+<i>377</i>&nbsp;            }
+<i>378</i>&nbsp;        }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;        return -1;
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    private String getReportableType(String type) {
+<i>384</i>&nbsp;        return type.charAt(0) == 40?&quot;NMTOKEN&quot;:type;
+<i>385</i>&nbsp;    }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    protected int getTableViewBucket(String qname) {
+<i>388</i>&nbsp;        return (qname.hashCode() &amp; 2147483647) % this.fTableViewBuckets;
+<i>389</i>&nbsp;    }
+<b class="nc"><i>390</i>&nbsp;</b>
+<i>391</i>&nbsp;    protected int getTableViewBucket(String localpart, String uri) {
+<i>392</i>&nbsp;        return uri == null?(localpart.hashCode() &amp; 2147483647) % this.fTableViewBuckets:(localpart.hashCode() + uri.hashCode() &amp; 2147483647) % this.fTableViewBuckets;
+<i>393</i>&nbsp;    }
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;    protected void cleanTableView() {
+<i>396</i>&nbsp;        if(++this.fLargeCount &lt; 0) {
+<i>397</i>&nbsp;            if(this.fAttributeTableViewChainState != null) {
+<i>398</i>&nbsp;                for(int i = this.fTableViewBuckets - 1; i &gt;= 0; --i) {
+<i>399</i>&nbsp;                    this.fAttributeTableViewChainState[i] = 0;
+<i>400</i>&nbsp;                }
+<i>401</i>&nbsp;            }
+<i>402</i>&nbsp;
+<b class="nc"><i>403</i>&nbsp;            this.fLargeCount = 1;</b>
+<i>404</i>&nbsp;        }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    }
+<b class="nc"><i>407</i>&nbsp;</b>
+<b class="nc"><i>408</i>&nbsp;    protected void prepareTableView() {</b>
+<b class="nc"><i>409</i>&nbsp;        if(this.fAttributeTableView == null) {</b>
+<b class="nc"><i>410</i>&nbsp;            this.fAttributeTableView = new XMLAttributesImpl.Attribute[this.fTableViewBuckets];</b>
+<i>411</i>&nbsp;            this.fAttributeTableViewChainState = new int[this.fTableViewBuckets];
+<i>412</i>&nbsp;        } else {
+<i>413</i>&nbsp;            this.cleanTableView();
+<i>414</i>&nbsp;        }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    }
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    protected void prepareAndPopulateTableView() {
+<i>419</i>&nbsp;        this.prepareTableView();
+<i>420</i>&nbsp;
+<b class="nc"><i>421</i>&nbsp;        for(int i = 0; i &lt; this.fLength; ++i) {</b>
+<b class="nc"><i>422</i>&nbsp;            XMLAttributesImpl.Attribute attr = this.fAttributes[i];</b>
+<i>423</i>&nbsp;            int bucket = this.getTableViewBucket(attr.name.rawname);
+<b class="nc"><i>424</i>&nbsp;            if(this.fAttributeTableViewChainState[bucket] != this.fLargeCount) {</b>
+<i>425</i>&nbsp;                this.fAttributeTableViewChainState[bucket] = this.fLargeCount;
+<i>426</i>&nbsp;                attr.next = null;
+<i>427</i>&nbsp;                this.fAttributeTableView[bucket] = attr;
+<i>428</i>&nbsp;            } else {
+<i>429</i>&nbsp;                attr.next = this.fAttributeTableView[bucket];
+<i>430</i>&nbsp;                this.fAttributeTableView[bucket] = attr;
+<i>431</i>&nbsp;            }
+<i>432</i>&nbsp;        }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    }
+<b class="nc"><i>435</i>&nbsp;</b>
+<b class="nc"><i>436</i>&nbsp;    public String getPrefix(int index) {</b>
+<i>437</i>&nbsp;        if(index &gt;= 0 &amp;&amp; index &lt; this.fLength) {
+<i>438</i>&nbsp;            String prefix = this.fAttributes[index].name.prefix;
+<i>439</i>&nbsp;            return prefix != null?prefix:&quot;&quot;;
+<i>440</i>&nbsp;        } else {
+<i>441</i>&nbsp;            return null;
+<i>442</i>&nbsp;        }
+<i>443</i>&nbsp;    }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;    public String getURI(int index) {
+<i>446</i>&nbsp;        if(index &gt;= 0 &amp;&amp; index &lt; this.fLength) {
+<i>447</i>&nbsp;            String uri = this.fAttributes[index].name.uri;
+<b class="nc"><i>448</i>&nbsp;            return uri;</b>
+<i>449</i>&nbsp;        } else {
+<i>450</i>&nbsp;            return null;
+<i>451</i>&nbsp;        }
+<i>452</i>&nbsp;    }
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;    public String getValue(String uri, String localName) {
+<i>455</i>&nbsp;        int index = this.getIndex(uri, localName);
+<i>456</i>&nbsp;        return index != -1?this.getValue(index):null;
+<b class="nc"><i>457</i>&nbsp;    }</b>
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    public Augmentations getAugmentations(String uri, String localName) {
+<i>460</i>&nbsp;        int index = this.getIndex(uri, localName);
+<i>461</i>&nbsp;        return index != -1?this.fAttributes[index].augs:null;
+<i>462</i>&nbsp;    }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;    public Augmentations getAugmentations(String qName) {
+<i>465</i>&nbsp;        int index = this.getIndex(qName);
+<i>466</i>&nbsp;        return index != -1?this.fAttributes[index].augs:null;
+<i>467</i>&nbsp;    }
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;    public Augmentations getAugmentations(int attributeIndex) {
+<i>470</i>&nbsp;        return attributeIndex &gt;= 0 &amp;&amp; attributeIndex &lt; this.fLength?this.fAttributes[attributeIndex].augs:null;
+<i>471</i>&nbsp;    }
+<i>472</i>&nbsp;
+<b class="nc"><i>473</i>&nbsp;    public void setAugmentations(int attrIndex, Augmentations augs) {</b>
+<i>474</i>&nbsp;        this.fAttributes[attrIndex].augs = augs;
+<i>475</i>&nbsp;    }
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;    public void setURI(int attrIndex, String uri) {
+<i>478</i>&nbsp;        this.fAttributes[attrIndex].name.uri = uri;
+<i>479</i>&nbsp;    }
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;    public void setSchemaId(int attrIndex, boolean schemaId) {
+<i>482</i>&nbsp;        this.fAttributes[attrIndex].schemaId = schemaId;
+<i>483</i>&nbsp;    }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;    public boolean getSchemaId(int index) {
+<i>486</i>&nbsp;        return index &gt;= 0 &amp;&amp; index &lt; this.fLength?this.fAttributes[index].schemaId:false;
+<i>487</i>&nbsp;    }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    public boolean getSchemaId(String qname) {
+<i>490</i>&nbsp;        int index = this.getIndex(qname);
+<i>491</i>&nbsp;        return index != -1?this.fAttributes[index].schemaId:false;
+<i>492</i>&nbsp;    }
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;    public boolean getSchemaId(String uri, String localName) {
+<i>495</i>&nbsp;        if(!this.fNamespaces) {
+<i>496</i>&nbsp;            return false;
+<b class="nc"><i>497</i>&nbsp;        } else {</b>
+<b class="nc"><i>498</i>&nbsp;            int index = this.getIndex(uri, localName);</b>
+<i>499</i>&nbsp;            return index != -1?this.fAttributes[index].schemaId:false;
+<b class="nc"><i>500</i>&nbsp;        }</b>
+<i>501</i>&nbsp;    }
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;    public void refresh() {
+<i>504</i>&nbsp;        if(this.fLength &gt; 0) {
+<i>505</i>&nbsp;            for(int i = 0; i &lt; this.fLength; ++i) {
+<i>506</i>&nbsp;                this.getValue(i);
+<i>507</i>&nbsp;            }
+<i>508</i>&nbsp;        }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;    }
+<i>511</i>&nbsp;
+<i>512</i>&nbsp;    public void refresh(int pos) {
+<i>513</i>&nbsp;    }
+<i>514</i>&nbsp;
+<b class="nc"><i>515</i>&nbsp;    static class Attribute {</b>
+<b class="nc"><i>516</i>&nbsp;        public QName name = new QName();</b>
+<i>517</i>&nbsp;        public String type;
+<i>518</i>&nbsp;        public String value;
+<i>519</i>&nbsp;        public XMLString xmlValue;
+<i>520</i>&nbsp;        public String nonNormalizedValue;
+<i>521</i>&nbsp;        public boolean specified;
+<i>522</i>&nbsp;        public boolean schemaId;
+<i>523</i>&nbsp;        public Augmentations augs = new AugmentationsImpl();
+<i>524</i>&nbsp;        public XMLAttributesImpl.Attribute next;
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;        Attribute() {
+<i>527</i>&nbsp;        }
+<i>528</i>&nbsp;    }
+<i>529</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

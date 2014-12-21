@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LayoutParser</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.doclets.internal.toolkit.builders</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LayoutParser (com.sun.tools.doclets.internal.toolkit.builders)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LayoutParser</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.doclets.internal.toolkit.builders;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.tools.doclets.internal.toolkit.Configuration;
+<i>9</i>&nbsp;import com.sun.tools.doclets.internal.toolkit.builders.XMLNode;
+<i>10</i>&nbsp;import com.sun.tools.doclets.internal.toolkit.util.DocletAbortException;
+<i>11</i>&nbsp;import java.io.InputStream;
+<i>12</i>&nbsp;import java.util.HashMap;
+<i>13</i>&nbsp;import java.util.Map;
+<i>14</i>&nbsp;import javax.xml.parsers.SAXParser;
+<i>15</i>&nbsp;import javax.xml.parsers.SAXParserFactory;
+<i>16</i>&nbsp;import org.xml.sax.Attributes;
+<i>17</i>&nbsp;import org.xml.sax.SAXException;
+<i>18</i>&nbsp;import org.xml.sax.helpers.DefaultHandler;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class LayoutParser extends DefaultHandler {
+<i>21</i>&nbsp;    private Map&lt;String, XMLNode&gt; xmlElementsMap = new HashMap();
+<i>22</i>&nbsp;    private XMLNode currentNode;
+<i>23</i>&nbsp;    private Configuration configuration;
+<i>24</i>&nbsp;    private static LayoutParser instance;
+<i>25</i>&nbsp;    private String currentRoot;
+<i>26</i>&nbsp;    private boolean isParsing;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    private LayoutParser(Configuration var1) {
+<i>29</i>&nbsp;        this.configuration = var1;
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public static LayoutParser getInstance(Configuration var0) {
+<i>33</i>&nbsp;        if(instance == null) {
+<i>34</i>&nbsp;            instance = new LayoutParser(var0);
+<i>35</i>&nbsp;        }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;        return instance;
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<b class="nc"><i>40</i>&nbsp;    public XMLNode parseXML(String var1) {</b>
+<b class="nc"><i>41</i>&nbsp;        if(this.xmlElementsMap.containsKey(var1)) {</b>
+<b class="nc"><i>42</i>&nbsp;            return (XMLNode)this.xmlElementsMap.get(var1);</b>
+<i>43</i>&nbsp;        } else {
+<i>44</i>&nbsp;            try {
+<i>45</i>&nbsp;                this.currentRoot = var1;
+<i>46</i>&nbsp;                this.isParsing = false;
+<i>47</i>&nbsp;                SAXParserFactory var2 = SAXParserFactory.newInstance();
+<i>48</i>&nbsp;                SAXParser var3 = var2.newSAXParser();
+<i>49</i>&nbsp;                InputStream var4 = this.configuration.getBuilderXML();
+<i>50</i>&nbsp;                var3.parse(var4, this);
+<i>51</i>&nbsp;                return (XMLNode)this.xmlElementsMap.get(var1);
+<b class="nc"><i>52</i>&nbsp;            } catch (Throwable var5) {</b>
+<b class="nc"><i>53</i>&nbsp;                var5.printStackTrace();</b>
+<i>54</i>&nbsp;                throw new DocletAbortException();
+<b class="nc"><i>55</i>&nbsp;            }</b>
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public void startElement(String var1, String var2, String var3, Attributes var4) throws SAXException {
+<i>60</i>&nbsp;        if(this.isParsing || var3.equals(this.currentRoot)) {
+<i>61</i>&nbsp;            this.isParsing = true;
+<i>62</i>&nbsp;            this.currentNode = new XMLNode(this.currentNode, var3);
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;            for(int var5 = 0; var5 &lt; var4.getLength(); ++var5) {</b>
+<b class="nc"><i>65</i>&nbsp;                this.currentNode.attrs.put(var4.getLocalName(var5), var4.getValue(var5));</b>
+<i>66</i>&nbsp;            }
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;            if(var3.equals(this.currentRoot)) {</b>
+<b class="nc"><i>69</i>&nbsp;                this.xmlElementsMap.put(var3, this.currentNode);</b>
+<b class="nc"><i>70</i>&nbsp;            }</b>
+<b class="nc"><i>71</i>&nbsp;        }</b>
+<b class="nc"><i>72</i>&nbsp;</b>
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<b class="nc"><i>75</i>&nbsp;    public void endElement(String var1, String var2, String var3) throws SAXException {</b>
+<b class="nc"><i>76</i>&nbsp;        if(this.isParsing) {</b>
+<b class="nc"><i>77</i>&nbsp;            this.currentNode = this.currentNode.parent;</b>
+<b class="nc"><i>78</i>&nbsp;            this.isParsing = !var3.equals(this.currentRoot);</b>
+<b class="nc"><i>79</i>&nbsp;        }</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

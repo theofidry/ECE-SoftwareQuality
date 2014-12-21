@@ -1,0 +1,781 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SocketPermission</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.net</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SocketPermission (java.net)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SocketPermission</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 369)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.net;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectInputStream;
+<i>10</i>&nbsp;import java.io.ObjectOutputStream;
+<i>11</i>&nbsp;import java.io.Serializable;
+<i>12</i>&nbsp;import java.net.InetAddress;
+<i>13</i>&nbsp;import java.net.SocketPermissionCollection;
+<i>14</i>&nbsp;import java.net.UnknownHostException;
+<i>15</i>&nbsp;import java.security.AccessController;
+<i>16</i>&nbsp;import java.security.Permission;
+<i>17</i>&nbsp;import java.security.PermissionCollection;
+<i>18</i>&nbsp;import java.security.PrivilegedAction;
+<i>19</i>&nbsp;import java.util.StringTokenizer;
+<i>20</i>&nbsp;import sun.net.PortConfig;
+<i>21</i>&nbsp;import sun.net.RegisteredDomain;
+<i>22</i>&nbsp;import sun.net.util.IPAddressUtil;
+<i>23</i>&nbsp;import sun.net.www.URLConnection;
+<i>24</i>&nbsp;import sun.security.action.GetBooleanAction;
+<i>25</i>&nbsp;import sun.security.util.Debug;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;public final class SocketPermission extends Permission implements Serializable {
+<i>28</i>&nbsp;    private static final long serialVersionUID = -7204263841984476862L;
+<i>29</i>&nbsp;    private static final int CONNECT = 1;
+<i>30</i>&nbsp;    private static final int LISTEN = 2;
+<i>31</i>&nbsp;    private static final int ACCEPT = 4;
+<i>32</i>&nbsp;    private static final int RESOLVE = 8;
+<i>33</i>&nbsp;    private static final int NONE = 0;
+<i>34</i>&nbsp;    private static final int ALL = 15;
+<i>35</i>&nbsp;    private static final int PORT_MIN = 0;
+<i>36</i>&nbsp;    private static final int PORT_MAX = 65535;
+<i>37</i>&nbsp;    private static final int PRIV_PORT_MAX = 1023;
+<i>38</i>&nbsp;    private static final int DEF_EPH_LOW = 49152;
+<i>39</i>&nbsp;    private transient int mask;
+<i>40</i>&nbsp;    private String actions;
+<i>41</i>&nbsp;    private transient String hostname;
+<i>42</i>&nbsp;    private transient String cname;
+<i>43</i>&nbsp;    private transient InetAddress[] addresses;
+<i>44</i>&nbsp;    private transient boolean wildcard;
+<i>45</i>&nbsp;    private transient boolean init_with_ip;
+<i>46</i>&nbsp;    private transient boolean invalid;
+<i>47</i>&nbsp;    private transient int[] portrange;
+<i>48</i>&nbsp;    private transient boolean defaultDeny = false;
+<i>49</i>&nbsp;    private transient boolean untrusted;
+<i>50</i>&nbsp;    private transient boolean trusted;
+<i>51</i>&nbsp;    private static boolean trustNameService;
+<i>52</i>&nbsp;    private static Debug debug = null;
+<i>53</i>&nbsp;    private static boolean debugInit = false;
+<i>54</i>&nbsp;    private static final int ephemeralLow = initEphemeralPorts(&quot;low&quot;, &#39;쀀&#39;);
+<i>55</i>&nbsp;    private static final int ephemeralHigh = initEphemeralPorts(&quot;high&quot;, &#39;\uffff&#39;);
+<i>56</i>&nbsp;    private transient String cdomain;
+<i>57</i>&nbsp;    private transient String hdomain;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private static synchronized Debug getDebug() {
+<i>60</i>&nbsp;        if(!debugInit) {
+<i>61</i>&nbsp;            debug = Debug.getInstance(&quot;access&quot;);
+<i>62</i>&nbsp;            debugInit = true;
+<i>63</i>&nbsp;        }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;        return debug;
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public SocketPermission(String var1, String var2) {
+<i>69</i>&nbsp;        super(getHost(var1));
+<i>70</i>&nbsp;        this.init(this.getName(), getMask(var2));
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    SocketPermission(String var1, int var2) {
+<i>74</i>&nbsp;        super(getHost(var1));
+<i>75</i>&nbsp;        this.init(this.getName(), var2);
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    private void setDeny() {
+<i>79</i>&nbsp;        this.defaultDeny = true;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private static String getHost(String var0) {
+<i>83</i>&nbsp;        if(var0.equals(&quot;&quot;)) {
+<i>84</i>&nbsp;            return &quot;localhost&quot;;
+<i>85</i>&nbsp;        } else {
+<i>86</i>&nbsp;            if(var0.charAt(0) != 91 &amp;&amp; var0.indexOf(58) != var0.lastIndexOf(58)) {
+<i>87</i>&nbsp;                StringTokenizer var2 = new StringTokenizer(var0, &quot;:&quot;);
+<i>88</i>&nbsp;                int var3 = var2.countTokens();
+<i>89</i>&nbsp;                if(var3 == 9) {
+<i>90</i>&nbsp;                    int var1 = var0.lastIndexOf(58);
+<i>91</i>&nbsp;                    var0 = &quot;[&quot; + var0.substring(0, var1) + &quot;]&quot; + var0.substring(var1);
+<i>92</i>&nbsp;                } else {
+<i>93</i>&nbsp;                    if(var3 != 8 || var0.indexOf(&quot;::&quot;) != -1) {
+<i>94</i>&nbsp;                        throw new IllegalArgumentException(&quot;Ambiguous hostport part&quot;);
+<i>95</i>&nbsp;                    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;                    var0 = &quot;[&quot; + var0 + &quot;]&quot;;
+<i>98</i>&nbsp;                }
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;            return var0;
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    private int[] parsePort(String var1) throws Exception {
+<i>106</i>&nbsp;        if(var1 != null &amp;&amp; !var1.equals(&quot;&quot;) &amp;&amp; !var1.equals(&quot;*&quot;)) {
+<i>107</i>&nbsp;            int var2 = var1.indexOf(45);
+<i>108</i>&nbsp;            if(var2 == -1) {
+<i>109</i>&nbsp;                int var7 = Integer.parseInt(var1);
+<i>110</i>&nbsp;                return new int[]{var7, var7};
+<i>111</i>&nbsp;            } else {
+<i>112</i>&nbsp;                String var3 = var1.substring(0, var2);
+<i>113</i>&nbsp;                String var4 = var1.substring(var2 + 1);
+<i>114</i>&nbsp;                int var5;
+<i>115</i>&nbsp;                if(var3.equals(&quot;&quot;)) {
+<i>116</i>&nbsp;                    var5 = 0;
+<i>117</i>&nbsp;                } else {
+<i>118</i>&nbsp;                    var5 = Integer.parseInt(var3);
+<i>119</i>&nbsp;                }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;                int var6;
+<i>122</i>&nbsp;                if(var4.equals(&quot;&quot;)) {
+<i>123</i>&nbsp;                    var6 = &#39;\uffff&#39;;
+<i>124</i>&nbsp;                } else {
+<i>125</i>&nbsp;                    var6 = Integer.parseInt(var4);
+<i>126</i>&nbsp;                }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;                if(var5 &gt;= 0 &amp;&amp; var6 &gt;= 0 &amp;&amp; var6 &gt;= var5) {
+<i>129</i>&nbsp;                    return new int[]{var5, var6};
+<i>130</i>&nbsp;                } else {
+<i>131</i>&nbsp;                    throw new IllegalArgumentException(&quot;invalid port range&quot;);
+<i>132</i>&nbsp;                }
+<i>133</i>&nbsp;            }
+<i>134</i>&nbsp;        } else {
+<i>135</i>&nbsp;            return new int[]{0, &#39;\uffff&#39;};
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    private boolean includesEphemerals() {
+<i>140</i>&nbsp;        return this.portrange[0] == 0;
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    private void init(String var1, int var2) {
+<i>144</i>&nbsp;        if((var2 &amp; 15) != var2) {
+<i>145</i>&nbsp;            throw new IllegalArgumentException(&quot;invalid actions mask&quot;);
+<i>146</i>&nbsp;        } else {
+<i>147</i>&nbsp;            this.mask = var2 | 8;
+<i>148</i>&nbsp;            byte var3 = 0;
+<i>149</i>&nbsp;            boolean var4 = false;
+<i>150</i>&nbsp;            boolean var5 = false;
+<i>151</i>&nbsp;            boolean var6 = true;
+<i>152</i>&nbsp;            String var7 = var1;
+<i>153</i>&nbsp;            byte var14;
+<i>154</i>&nbsp;            int var15;
+<i>155</i>&nbsp;            if(var1.charAt(0) == 91) {
+<i>156</i>&nbsp;                var14 = 1;
+<i>157</i>&nbsp;                int var13 = var1.indexOf(93);
+<i>158</i>&nbsp;                if(var13 == -1) {
+<i>159</i>&nbsp;                    throw new IllegalArgumentException(&quot;invalid host/port: &quot; + var1);
+<i>160</i>&nbsp;                }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;                var1 = var1.substring(var14, var13);
+<i>163</i>&nbsp;                var15 = var7.indexOf(58, var13 + 1);
+<i>164</i>&nbsp;            } else {
+<i>165</i>&nbsp;                var14 = 0;
+<i>166</i>&nbsp;                var15 = var1.indexOf(58, var3);
+<i>167</i>&nbsp;                if(var15 != -1) {
+<i>168</i>&nbsp;                    var1 = var1.substring(var14, var15);
+<i>169</i>&nbsp;                }
+<i>170</i>&nbsp;            }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;            if(var15 != -1) {
+<i>173</i>&nbsp;                String var8 = var1.substring(var15 + 1);
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;                try {
+<i>176</i>&nbsp;                    this.portrange = this.parsePort(var8);
+<i>177</i>&nbsp;                } catch (Exception var12) {
+<i>178</i>&nbsp;                    throw new IllegalArgumentException(&quot;invalid port range: &quot; + var8);
+<i>179</i>&nbsp;                }
+<i>180</i>&nbsp;            } else {
+<i>181</i>&nbsp;                this.portrange = new int[]{0, &#39;\uffff&#39;};
+<i>182</i>&nbsp;            }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;            this.hostname = var1;
+<i>185</i>&nbsp;            if(var1.lastIndexOf(42) &gt; 0) {
+<i>186</i>&nbsp;                throw new IllegalArgumentException(&quot;invalid host wildcard specification&quot;);
+<i>187</i>&nbsp;            } else if(var1.startsWith(&quot;*&quot;)) {
+<i>188</i>&nbsp;                this.wildcard = true;
+<i>189</i>&nbsp;                if(var1.equals(&quot;*&quot;)) {
+<i>190</i>&nbsp;                    this.cname = &quot;&quot;;
+<i>191</i>&nbsp;                } else {
+<i>192</i>&nbsp;                    if(!var1.startsWith(&quot;*.&quot;)) {
+<i>193</i>&nbsp;                        throw new IllegalArgumentException(&quot;invalid host wildcard specification&quot;);
+<i>194</i>&nbsp;                    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;                    this.cname = var1.substring(1).toLowerCase();
+<i>197</i>&nbsp;                }
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;            } else {</b>
+<i>200</i>&nbsp;                if(var1.length() &gt; 0) {
+<i>201</i>&nbsp;                    char var16 = var1.charAt(0);
+<i>202</i>&nbsp;                    if(var16 == 58 || Character.digit(var16, 16) != -1) {
+<i>203</i>&nbsp;                        byte[] var9 = IPAddressUtil.textToNumericFormatV4(var1);
+<i>204</i>&nbsp;                        if(var9 == null) {
+<i>205</i>&nbsp;                            var9 = IPAddressUtil.textToNumericFormatV6(var1);
+<i>206</i>&nbsp;                        }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;                        if(var9 != null) {
+<i>209</i>&nbsp;                            try {
+<i>210</i>&nbsp;                                this.addresses = new InetAddress[]{InetAddress.getByAddress(var9)};
+<i>211</i>&nbsp;                                this.init_with_ip = true;
+<b class="nc"><i>212</i>&nbsp;                            } catch (UnknownHostException var11) {</b>
+<b class="nc"><i>213</i>&nbsp;                                this.invalid = true;</b>
+<i>214</i>&nbsp;                            }
+<i>215</i>&nbsp;                        }
+<b class="nc"><i>216</i>&nbsp;                    }</b>
+<i>217</i>&nbsp;                }
+<b class="nc"><i>218</i>&nbsp;</b>
+<b class="nc"><i>219</i>&nbsp;            }</b>
+<i>220</i>&nbsp;        }
+<b class="nc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    private static int getMask(String var0) {
+<i>224</i>&nbsp;        if(var0 == null) {
+<i>225</i>&nbsp;            throw new NullPointerException(&quot;action can\&#39;t be null&quot;);
+<b class="nc"><i>226</i>&nbsp;        } else if(var0.equals(&quot;&quot;)) {</b>
+<b class="nc"><i>227</i>&nbsp;            throw new IllegalArgumentException(&quot;action can\&#39;t be empty&quot;);</b>
+<b class="nc"><i>228</i>&nbsp;        } else {</b>
+<i>229</i>&nbsp;            int var1 = 0;
+<b class="nc"><i>230</i>&nbsp;            if(var0 == &quot;resolve&quot;) {</b>
+<i>231</i>&nbsp;                return 8;
+<i>232</i>&nbsp;            } else if(var0 == &quot;connect&quot;) {
+<i>233</i>&nbsp;                return 1;
+<i>234</i>&nbsp;            } else if(var0 == &quot;listen&quot;) {
+<i>235</i>&nbsp;                return 2;
+<i>236</i>&nbsp;            } else if(var0 == &quot;accept&quot;) {
+<i>237</i>&nbsp;                return 4;
+<i>238</i>&nbsp;            } else if(var0 == &quot;connect,accept&quot;) {
+<i>239</i>&nbsp;                return 5;
+<i>240</i>&nbsp;            } else {
+<i>241</i>&nbsp;                char[] var2 = var0.toCharArray();
+<i>242</i>&nbsp;                int var3 = var2.length - 1;
+<i>243</i>&nbsp;                if(var3 &lt; 0) {
+<i>244</i>&nbsp;                    return var1;
+<i>245</i>&nbsp;                } else {
+<i>246</i>&nbsp;                    while(var3 != -1) {
+<i>247</i>&nbsp;                        char var4;
+<i>248</i>&nbsp;                        while(var3 != -1 &amp;&amp; ((var4 = var2[var3]) == 32 || var4 == 13 || var4 == 10 || var4 == 12 || var4 == 9)) {
+<i>249</i>&nbsp;                            --var3;
+<i>250</i>&nbsp;                        }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;                        byte var5;
+<i>253</i>&nbsp;                        if(var3 &gt;= 6 &amp;&amp; (var2[var3 - 6] == 99 || var2[var3 - 6] == 67) &amp;&amp; (var2[var3 - 5] == 111 || var2[var3 - 5] == 79) &amp;&amp; (var2[var3 - 4] == 110 || var2[var3 - 4] == 78) &amp;&amp; (var2[var3 - 3] == 110 || var2[var3 - 3] == 78) &amp;&amp; (var2[var3 - 2] == 101 || var2[var3 - 2] == 69) &amp;&amp; (var2[var3 - 1] == 99 || var2[var3 - 1] == 67) &amp;&amp; (var2[var3] == 116 || var2[var3] == 84)) {
+<i>254</i>&nbsp;                            var5 = 7;
+<i>255</i>&nbsp;                            var1 |= 1;
+<i>256</i>&nbsp;                        } else if(var3 &gt;= 6 &amp;&amp; (var2[var3 - 6] == 114 || var2[var3 - 6] == 82) &amp;&amp; (var2[var3 - 5] == 101 || var2[var3 - 5] == 69) &amp;&amp; (var2[var3 - 4] == 115 || var2[var3 - 4] == 83) &amp;&amp; (var2[var3 - 3] == 111 || var2[var3 - 3] == 79) &amp;&amp; (var2[var3 - 2] == 108 || var2[var3 - 2] == 76) &amp;&amp; (var2[var3 - 1] == 118 || var2[var3 - 1] == 86) &amp;&amp; (var2[var3] == 101 || var2[var3] == 69)) {
+<i>257</i>&nbsp;                            var5 = 7;
+<i>258</i>&nbsp;                            var1 |= 8;
+<i>259</i>&nbsp;                        } else if(var3 &gt;= 5 &amp;&amp; (var2[var3 - 5] == 108 || var2[var3 - 5] == 76) &amp;&amp; (var2[var3 - 4] == 105 || var2[var3 - 4] == 73) &amp;&amp; (var2[var3 - 3] == 115 || var2[var3 - 3] == 83) &amp;&amp; (var2[var3 - 2] == 116 || var2[var3 - 2] == 84) &amp;&amp; (var2[var3 - 1] == 101 || var2[var3 - 1] == 69) &amp;&amp; (var2[var3] == 110 || var2[var3] == 78)) {
+<i>260</i>&nbsp;                            var5 = 6;
+<i>261</i>&nbsp;                            var1 |= 2;
+<i>262</i>&nbsp;                        } else {
+<i>263</i>&nbsp;                            if(var3 &lt; 5 || var2[var3 - 5] != 97 &amp;&amp; var2[var3 - 5] != 65 || var2[var3 - 4] != 99 &amp;&amp; var2[var3 - 4] != 67 || var2[var3 - 3] != 99 &amp;&amp; var2[var3 - 3] != 67 || var2[var3 - 2] != 101 &amp;&amp; var2[var3 - 2] != 69 || var2[var3 - 1] != 112 &amp;&amp; var2[var3 - 1] != 80 || var2[var3] != 116 &amp;&amp; var2[var3] != 84) {
+<b class="nc"><i>264</i>&nbsp;                                throw new IllegalArgumentException(&quot;invalid permission: &quot; + var0);</b>
+<i>265</i>&nbsp;                            }
+<b class="nc"><i>266</i>&nbsp;</b>
+<i>267</i>&nbsp;                            var5 = 6;
+<i>268</i>&nbsp;                            var1 |= 4;
+<i>269</i>&nbsp;                        }
+<i>270</i>&nbsp;
+<b class="nc"><i>271</i>&nbsp;                        boolean var6 = false;</b>
+<i>272</i>&nbsp;
+<b class="nc"><i>273</i>&nbsp;                        while(var3 &gt;= var5 &amp;&amp; !var6) {</b>
+<i>274</i>&nbsp;                            switch(var2[var3 - var5]) {
+<i>275</i>&nbsp;                            case &#39;,&#39;:
+<i>276</i>&nbsp;                                var6 = true;
+<b class="nc"><i>277</i>&nbsp;                            case &#39;\t&#39;:</b>
+<i>278</i>&nbsp;                            case &#39;\n&#39;:
+<i>279</i>&nbsp;                            case &#39;\f&#39;:
+<i>280</i>&nbsp;                            case &#39;\r&#39;:
+<i>281</i>&nbsp;                            case &#39; &#39;:
+<b class="nc"><i>282</i>&nbsp;                                --var3;</b>
+<b class="nc"><i>283</i>&nbsp;                                break;</b>
+<i>284</i>&nbsp;                            default:
+<i>285</i>&nbsp;                                throw new IllegalArgumentException(&quot;invalid permission: &quot; + var0);
+<i>286</i>&nbsp;                            }
+<i>287</i>&nbsp;                        }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;                        var3 -= var5;
+<b class="nc"><i>290</i>&nbsp;                    }</b>
+<b class="nc"><i>291</i>&nbsp;</b>
+<i>292</i>&nbsp;                    return var1;
+<i>293</i>&nbsp;                }
+<i>294</i>&nbsp;            }
+<i>295</i>&nbsp;        }
+<b class="nc"><i>296</i>&nbsp;    }</b>
+<b class="nc"><i>297</i>&nbsp;</b>
+<b class="nc"><i>298</i>&nbsp;    private boolean isUntrusted() throws UnknownHostException {</b>
+<i>299</i>&nbsp;        if(this.trusted) {
+<b class="nc"><i>300</i>&nbsp;            return false;</b>
+<b class="nc"><i>301</i>&nbsp;        } else if(!this.invalid &amp;&amp; !this.untrusted) {</b>
+<i>302</i>&nbsp;            try {
+<b class="nc"><i>303</i>&nbsp;                if(!trustNameService &amp;&amp; (this.defaultDeny || URLConnection.isProxiedHost(this.hostname))) {</b>
+<i>304</i>&nbsp;                    if(this.cname == null) {
+<b class="nc"><i>305</i>&nbsp;                        this.getCanonName();</b>
+<i>306</i>&nbsp;                    }
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;                    if(!this.match(this.cname, this.hostname) &amp;&amp; !this.authorized(this.hostname, this.addresses[0].getAddress())) {</b>
+<i>309</i>&nbsp;                        this.untrusted = true;
+<i>310</i>&nbsp;                        Debug var1 = getDebug();
+<i>311</i>&nbsp;                        if(var1 != null &amp;&amp; Debug.isOn(&quot;failure&quot;)) {
+<i>312</i>&nbsp;                            var1.println(&quot;socket access restriction: proxied host (&quot; + this.addresses[0] + &quot;)&quot; + &quot; does not match &quot; + this.cname + &quot; from reverse lookup&quot;);
+<b class="nc"><i>313</i>&nbsp;                        }</b>
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;                        return true;
+<i>316</i>&nbsp;                    }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;                    this.trusted = true;
+<i>319</i>&nbsp;                }
+<i>320</i>&nbsp;
+<b class="nc"><i>321</i>&nbsp;                return false;</b>
+<b class="nc"><i>322</i>&nbsp;            } catch (UnknownHostException var2) {</b>
+<i>323</i>&nbsp;                this.invalid = true;
+<i>324</i>&nbsp;                throw var2;
+<b class="nc"><i>325</i>&nbsp;            }</b>
+<i>326</i>&nbsp;        } else {
+<b class="nc"><i>327</i>&nbsp;            return true;</b>
+<b class="nc"><i>328</i>&nbsp;        }</b>
+<b class="nc"><i>329</i>&nbsp;    }</b>
+<i>330</i>&nbsp;
+<b class="nc"><i>331</i>&nbsp;    void getCanonName() throws UnknownHostException {</b>
+<b class="nc"><i>332</i>&nbsp;        if(this.cname == null &amp;&amp; !this.invalid &amp;&amp; !this.untrusted) {</b>
+<i>333</i>&nbsp;            try {
+<i>334</i>&nbsp;                if(this.addresses == null) {
+<b class="nc"><i>335</i>&nbsp;                    this.getIP();</b>
+<b class="nc"><i>336</i>&nbsp;                }</b>
+<i>337</i>&nbsp;
+<b class="nc"><i>338</i>&nbsp;                if(this.init_with_ip) {</b>
+<i>339</i>&nbsp;                    this.cname = this.addresses[0].getHostName(false).toLowerCase();
+<i>340</i>&nbsp;                } else {
+<b class="nc"><i>341</i>&nbsp;                    this.cname = InetAddress.getByName(this.addresses[0].getHostAddress()).getHostName(false).toLowerCase();</b>
+<b class="nc"><i>342</i>&nbsp;                }</b>
+<i>343</i>&nbsp;
+<b class="nc"><i>344</i>&nbsp;            } catch (UnknownHostException var2) {</b>
+<i>345</i>&nbsp;                this.invalid = true;
+<b class="nc"><i>346</i>&nbsp;                throw var2;</b>
+<b class="nc"><i>347</i>&nbsp;            }</b>
+<i>348</i>&nbsp;        }
+<b class="nc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    private boolean match(String var1, String var2) {
+<i>352</i>&nbsp;        String var3 = var1.toLowerCase();
+<i>353</i>&nbsp;        String var4 = var2.toLowerCase();
+<i>354</i>&nbsp;        if(var3.startsWith(var4) &amp;&amp; (var3.length() == var4.length() || var3.charAt(var4.length()) == 46)) {
+<i>355</i>&nbsp;            return true;
+<i>356</i>&nbsp;        } else {
+<i>357</i>&nbsp;            if(this.cdomain == null) {
+<i>358</i>&nbsp;                this.cdomain = RegisteredDomain.getRegisteredDomain(var3);
+<i>359</i>&nbsp;            }
+<i>360</i>&nbsp;
+<b class="nc"><i>361</i>&nbsp;            if(this.hdomain == null) {</b>
+<b class="nc"><i>362</i>&nbsp;                this.hdomain = RegisteredDomain.getRegisteredDomain(var4);</b>
+<i>363</i>&nbsp;            }
+<i>364</i>&nbsp;
+<b class="nc"><i>365</i>&nbsp;            return this.cdomain.length() != 0 &amp;&amp; this.hdomain.length() != 0 &amp;&amp; this.cdomain.equals(this.hdomain);</b>
+<i>366</i>&nbsp;        }
+<i>367</i>&nbsp;    }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    private boolean authorized(String var1, byte[] var2) {
+<i>370</i>&nbsp;        return var2.length == 4?this.authorizedIPv4(var1, var2):(var2.length == 16?this.authorizedIPv6(var1, var2):false);
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;    private boolean authorizedIPv4(String var1, byte[] var2) {
+<i>374</i>&nbsp;        String var3 = &quot;&quot;;
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;        try {</b>
+<b class="nc"><i>377</i>&nbsp;            var3 = &quot;auth.&quot; + (var2[3] &amp; 255) + &quot;.&quot; + (var2[2] &amp; 255) + &quot;.&quot; + (var2[1] &amp; 255) + &quot;.&quot; + (var2[0] &amp; 255) + &quot;.in-addr.arpa&quot;;</b>
+<b class="nc"><i>378</i>&nbsp;            var3 = this.hostname + &#39;.&#39; + var3;</b>
+<b class="nc"><i>379</i>&nbsp;            InetAddress var4 = InetAddress.getAllByName0(var3, false)[0];</b>
+<b class="nc"><i>380</i>&nbsp;            if(var4.equals(InetAddress.getByAddress(var2))) {</b>
+<b class="nc"><i>381</i>&nbsp;                return true;</b>
+<b class="nc"><i>382</i>&nbsp;            }</b>
+<b class="nc"><i>383</i>&nbsp;</b>
+<b class="nc"><i>384</i>&nbsp;            Debug var5 = getDebug();</b>
+<i>385</i>&nbsp;            if(var5 != null &amp;&amp; Debug.isOn(&quot;failure&quot;)) {
+<b class="nc"><i>386</i>&nbsp;                var5.println(&quot;socket access restriction: IP address of &quot; + var4 + &quot; != &quot; + InetAddress.getByAddress(var2));</b>
+<i>387</i>&nbsp;            }
+<i>388</i>&nbsp;        } catch (UnknownHostException var7) {
+<b class="nc"><i>389</i>&nbsp;            Debug var6 = getDebug();</b>
+<i>390</i>&nbsp;            if(var6 != null &amp;&amp; Debug.isOn(&quot;failure&quot;)) {
+<b class="nc"><i>391</i>&nbsp;                var6.println(&quot;socket access restriction: forward lookup failed for &quot; + var3);</b>
+<b class="nc"><i>392</i>&nbsp;            }</b>
+<b class="nc"><i>393</i>&nbsp;        }</b>
+<b class="nc"><i>394</i>&nbsp;</b>
+<b class="nc"><i>395</i>&nbsp;        return false;</b>
+<i>396</i>&nbsp;    }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;    private boolean authorizedIPv6(String var1, byte[] var2) {
+<b class="nc"><i>399</i>&nbsp;        String var3 = &quot;&quot;;</b>
+<b class="nc"><i>400</i>&nbsp;</b>
+<i>401</i>&nbsp;        Debug var6;
+<b class="nc"><i>402</i>&nbsp;        try {</b>
+<b class="nc"><i>403</i>&nbsp;            StringBuffer var5 = new StringBuffer(39);</b>
+<b class="nc"><i>404</i>&nbsp;</b>
+<i>405</i>&nbsp;            for(int var8 = 15; var8 &gt;= 0; --var8) {
+<b class="nc"><i>406</i>&nbsp;                var5.append(Integer.toHexString(var2[var8] &amp; 15));</b>
+<b class="nc"><i>407</i>&nbsp;                var5.append(&#39;.&#39;);</b>
+<b class="nc"><i>408</i>&nbsp;                var5.append(Integer.toHexString(var2[var8] &gt;&gt; 4 &amp; 15));</b>
+<i>409</i>&nbsp;                var5.append(&#39;.&#39;);
+<i>410</i>&nbsp;            }
+<b class="nc"><i>411</i>&nbsp;</b>
+<i>412</i>&nbsp;            var3 = &quot;auth.&quot; + var5.toString() + &quot;IP6.ARPA&quot;;
+<i>413</i>&nbsp;            var3 = this.hostname + &#39;.&#39; + var3;
+<b class="nc"><i>414</i>&nbsp;            InetAddress var4 = InetAddress.getAllByName0(var3, false)[0];</b>
+<b class="nc"><i>415</i>&nbsp;            if(var4.equals(InetAddress.getByAddress(var2))) {</b>
+<i>416</i>&nbsp;                return true;
+<b class="nc"><i>417</i>&nbsp;            }</b>
+<b class="nc"><i>418</i>&nbsp;</b>
+<b class="nc"><i>419</i>&nbsp;            var6 = getDebug();</b>
+<b class="nc"><i>420</i>&nbsp;            if(var6 != null &amp;&amp; Debug.isOn(&quot;failure&quot;)) {</b>
+<b class="nc"><i>421</i>&nbsp;                var6.println(&quot;socket access restriction: IP address of &quot; + var4 + &quot; != &quot; + InetAddress.getByAddress(var2));</b>
+<b class="nc"><i>422</i>&nbsp;            }</b>
+<i>423</i>&nbsp;        } catch (UnknownHostException var7) {
+<b class="nc"><i>424</i>&nbsp;            var6 = getDebug();</b>
+<i>425</i>&nbsp;            if(var6 != null &amp;&amp; Debug.isOn(&quot;failure&quot;)) {
+<i>426</i>&nbsp;                var6.println(&quot;socket access restriction: forward lookup failed for &quot; + var3);
+<i>427</i>&nbsp;            }
+<i>428</i>&nbsp;        }
+<b class="nc"><i>429</i>&nbsp;</b>
+<i>430</i>&nbsp;        return false;
+<b class="nc"><i>431</i>&nbsp;    }</b>
+<b class="nc"><i>432</i>&nbsp;</b>
+<b class="nc"><i>433</i>&nbsp;    void getIP() throws UnknownHostException {</b>
+<b class="nc"><i>434</i>&nbsp;        if(this.addresses == null &amp;&amp; !this.wildcard &amp;&amp; !this.invalid) {</b>
+<b class="nc"><i>435</i>&nbsp;            try {</b>
+<i>436</i>&nbsp;                String var1;
+<b class="nc"><i>437</i>&nbsp;                if(this.getName().charAt(0) == 91) {</b>
+<i>438</i>&nbsp;                    var1 = this.getName().substring(1, this.getName().indexOf(93));
+<b class="nc"><i>439</i>&nbsp;                } else {</b>
+<i>440</i>&nbsp;                    int var2 = this.getName().indexOf(&quot;:&quot;);
+<i>441</i>&nbsp;                    if(var2 == -1) {
+<b class="nc"><i>442</i>&nbsp;                        var1 = this.getName();</b>
+<b class="nc"><i>443</i>&nbsp;                    } else {</b>
+<i>444</i>&nbsp;                        var1 = this.getName().substring(0, var2);
+<b class="nc"><i>445</i>&nbsp;                    }</b>
+<b class="nc"><i>446</i>&nbsp;                }</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;                this.addresses = new InetAddress[]{InetAddress.getAllByName0(var1, false)[0]};
+<i>449</i>&nbsp;            } catch (UnknownHostException var3) {
+<i>450</i>&nbsp;                this.invalid = true;
+<i>451</i>&nbsp;                throw var3;
+<i>452</i>&nbsp;            } catch (IndexOutOfBoundsException var4) {
+<i>453</i>&nbsp;                this.invalid = true;
+<i>454</i>&nbsp;                throw new UnknownHostException(this.getName());
+<i>455</i>&nbsp;            }
+<i>456</i>&nbsp;        }
+<i>457</i>&nbsp;    }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    public boolean implies(Permission var1) {
+<i>460</i>&nbsp;        if(!(var1 instanceof SocketPermission)) {
+<b class="nc"><i>461</i>&nbsp;            return false;</b>
+<b class="nc"><i>462</i>&nbsp;        } else if(var1 == this) {</b>
+<i>463</i>&nbsp;            return true;
+<i>464</i>&nbsp;        } else {
+<b class="nc"><i>465</i>&nbsp;            SocketPermission var4 = (SocketPermission)var1;</b>
+<b class="nc"><i>466</i>&nbsp;            return (this.mask &amp; var4.mask) == var4.mask &amp;&amp; this.impliesIgnoreMask(var4);</b>
+<i>467</i>&nbsp;        }
+<i>468</i>&nbsp;    }
+<b class="nc"><i>469</i>&nbsp;</b>
+<i>470</i>&nbsp;    boolean impliesIgnoreMask(SocketPermission var1) {
+<i>471</i>&nbsp;        if((var1.mask &amp; 8) != var1.mask &amp;&amp; (var1.portrange[0] &lt; this.portrange[0] || var1.portrange[1] &gt; this.portrange[1])) {
+<b class="nc"><i>472</i>&nbsp;            if(!this.includesEphemerals() &amp;&amp; !var1.includesEphemerals()) {</b>
+<b class="nc"><i>473</i>&nbsp;                return false;</b>
+<b class="nc"><i>474</i>&nbsp;            }</b>
+<b class="nc"><i>475</i>&nbsp;</b>
+<b class="nc"><i>476</i>&nbsp;            if(!inRange(this.portrange[0], this.portrange[1], var1.portrange[0], var1.portrange[1])) {</b>
+<b class="nc"><i>477</i>&nbsp;                return false;</b>
+<b class="nc"><i>478</i>&nbsp;            }</b>
+<b class="nc"><i>479</i>&nbsp;        }</b>
+<b class="nc"><i>480</i>&nbsp;</b>
+<b class="nc"><i>481</i>&nbsp;        if(this.wildcard &amp;&amp; &quot;&quot;.equals(this.cname)) {</b>
+<i>482</i>&nbsp;            return true;
+<i>483</i>&nbsp;        } else if(!this.invalid &amp;&amp; !var1.invalid) {
+<b class="nc"><i>484</i>&nbsp;            try {</b>
+<i>485</i>&nbsp;                int var2;
+<b class="nc"><i>486</i>&nbsp;                if(this.init_with_ip) {</b>
+<b class="nc"><i>487</i>&nbsp;                    if(var1.wildcard) {</b>
+<b class="nc"><i>488</i>&nbsp;                        return false;</b>
+<i>489</i>&nbsp;                    } else if(var1.init_with_ip) {
+<b class="nc"><i>490</i>&nbsp;                        return this.addresses[0].equals(var1.addresses[0]);</b>
+<i>491</i>&nbsp;                    } else {
+<i>492</i>&nbsp;                        if(var1.addresses == null) {
+<i>493</i>&nbsp;                            var1.getIP();
+<b class="nc"><i>494</i>&nbsp;                        }</b>
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;                        for(var2 = 0; var2 &lt; var1.addresses.length; ++var2) {
+<i>497</i>&nbsp;                            if(this.addresses[0].equals(var1.addresses[var2])) {
+<i>498</i>&nbsp;                                return true;
+<b class="nc"><i>499</i>&nbsp;                            }</b>
+<i>500</i>&nbsp;                        }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;                        return false;
+<i>503</i>&nbsp;                    }
+<b class="nc"><i>504</i>&nbsp;                } else if(!this.wildcard &amp;&amp; !var1.wildcard) {</b>
+<i>505</i>&nbsp;                    if(this.addresses == null) {
+<i>506</i>&nbsp;                        this.getIP();
+<i>507</i>&nbsp;                    }
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;                    if(var1.addresses == null) {
+<i>510</i>&nbsp;                        var1.getIP();
+<i>511</i>&nbsp;                    }
+<b class="nc"><i>512</i>&nbsp;</b>
+<b class="nc"><i>513</i>&nbsp;                    if(var1.init_with_ip &amp;&amp; this.isUntrusted()) {</b>
+<i>514</i>&nbsp;                        return false;
+<b class="nc"><i>515</i>&nbsp;                    } else {</b>
+<i>516</i>&nbsp;                        for(int var3 = 0; var3 &lt; this.addresses.length; ++var3) {
+<i>517</i>&nbsp;                            for(var2 = 0; var2 &lt; var1.addresses.length; ++var2) {
+<i>518</i>&nbsp;                                if(this.addresses[var3].equals(var1.addresses[var2])) {
+<i>519</i>&nbsp;                                    return true;
+<i>520</i>&nbsp;                                }
+<i>521</i>&nbsp;                            }
+<i>522</i>&nbsp;                        }
+<b class="nc"><i>523</i>&nbsp;</b>
+<b class="nc"><i>524</i>&nbsp;                        if(this.cname == null) {</b>
+<i>525</i>&nbsp;                            this.getCanonName();
+<b class="nc"><i>526</i>&nbsp;                        }</b>
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;                        if(var1.cname == null) {
+<i>529</i>&nbsp;                            var1.getCanonName();
+<i>530</i>&nbsp;                        }
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;                        return this.cname.equalsIgnoreCase(var1.cname);
+<b class="nc"><i>533</i>&nbsp;                    }</b>
+<b class="nc"><i>534</i>&nbsp;                } else if(this.wildcard &amp;&amp; var1.wildcard) {</b>
+<i>535</i>&nbsp;                    return var1.cname.endsWith(this.cname);
+<b class="nc"><i>536</i>&nbsp;                } else if(var1.wildcard) {</b>
+<i>537</i>&nbsp;                    return false;
+<i>538</i>&nbsp;                } else {
+<i>539</i>&nbsp;                    if(var1.cname == null) {
+<i>540</i>&nbsp;                        var1.getCanonName();
+<i>541</i>&nbsp;                    }
+<i>542</i>&nbsp;
+<b class="nc"><i>543</i>&nbsp;                    return var1.cname.endsWith(this.cname);</b>
+<b class="nc"><i>544</i>&nbsp;                }</b>
+<i>545</i>&nbsp;            } catch (UnknownHostException var5) {
+<i>546</i>&nbsp;                return this.compareHostnames(var1);
+<i>547</i>&nbsp;            }
+<b class="nc"><i>548</i>&nbsp;        } else {</b>
+<i>549</i>&nbsp;            return this.compareHostnames(var1);
+<i>550</i>&nbsp;        }
+<i>551</i>&nbsp;    }
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;    private boolean compareHostnames(SocketPermission var1) {
+<b class="nc"><i>554</i>&nbsp;        String var2 = this.hostname;</b>
+<b class="nc"><i>555</i>&nbsp;        String var3 = var1.hostname;</b>
+<b class="nc"><i>556</i>&nbsp;        return var2 == null?false:var2.equalsIgnoreCase(var3);</b>
+<i>557</i>&nbsp;    }
+<b class="nc"><i>558</i>&nbsp;</b>
+<i>559</i>&nbsp;    public boolean equals(Object var1) {
+<i>560</i>&nbsp;        if(var1 == this) {
+<i>561</i>&nbsp;            return true;
+<b class="nc"><i>562</i>&nbsp;        } else if(!(var1 instanceof SocketPermission)) {</b>
+<i>563</i>&nbsp;            return false;
+<b class="nc"><i>564</i>&nbsp;        } else {</b>
+<i>565</i>&nbsp;            SocketPermission var2 = (SocketPermission)var1;
+<i>566</i>&nbsp;            if(this.mask != var2.mask) {
+<b class="nc"><i>567</i>&nbsp;                return false;</b>
+<i>568</i>&nbsp;            } else if((var2.mask &amp; 8) != var2.mask &amp;&amp; (this.portrange[0] != var2.portrange[0] || this.portrange[1] != var2.portrange[1])) {
+<i>569</i>&nbsp;                return false;
+<i>570</i>&nbsp;            } else if(this.getName().equalsIgnoreCase(var2.getName())) {
+<b class="nc"><i>571</i>&nbsp;                return true;</b>
+<b class="nc"><i>572</i>&nbsp;            } else {</b>
+<i>573</i>&nbsp;                try {
+<b class="nc"><i>574</i>&nbsp;                    this.getCanonName();</b>
+<i>575</i>&nbsp;                    var2.getCanonName();
+<i>576</i>&nbsp;                } catch (UnknownHostException var4) {
+<i>577</i>&nbsp;                    return false;
+<i>578</i>&nbsp;                }
+<i>579</i>&nbsp;
+<b class="nc"><i>580</i>&nbsp;                return !this.invalid &amp;&amp; !var2.invalid?(this.cname != null?this.cname.equalsIgnoreCase(var2.cname):false):false;</b>
+<b class="nc"><i>581</i>&nbsp;            }</b>
+<i>582</i>&nbsp;        }
+<b class="nc"><i>583</i>&nbsp;    }</b>
+<i>584</i>&nbsp;
+<b class="nc"><i>585</i>&nbsp;    public int hashCode() {</b>
+<b class="nc"><i>586</i>&nbsp;        if(!this.init_with_ip &amp;&amp; !this.wildcard) {</b>
+<i>587</i>&nbsp;            try {
+<b class="nc"><i>588</i>&nbsp;                this.getCanonName();</b>
+<i>589</i>&nbsp;            } catch (UnknownHostException var2) {
+<i>590</i>&nbsp;                ;
+<b class="nc"><i>591</i>&nbsp;            }</b>
+<b class="nc"><i>592</i>&nbsp;</b>
+<b class="nc"><i>593</i>&nbsp;            return !this.invalid &amp;&amp; this.cname != null?this.cname.hashCode():this.getName().hashCode();</b>
+<b class="nc"><i>594</i>&nbsp;        } else {</b>
+<b class="nc"><i>595</i>&nbsp;            return this.getName().hashCode();</b>
+<i>596</i>&nbsp;        }
+<b class="nc"><i>597</i>&nbsp;    }</b>
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;    int getMask() {
+<b class="nc"><i>600</i>&nbsp;        return this.mask;</b>
+<i>601</i>&nbsp;    }
+<b class="nc"><i>602</i>&nbsp;</b>
+<b class="nc"><i>603</i>&nbsp;    private static String getActions(int var0) {</b>
+<b class="nc"><i>604</i>&nbsp;        StringBuilder var1 = new StringBuilder();</b>
+<b class="nc"><i>605</i>&nbsp;        boolean var2 = false;</b>
+<b class="nc"><i>606</i>&nbsp;        if((var0 &amp; 1) == 1) {</b>
+<i>607</i>&nbsp;            var2 = true;
+<i>608</i>&nbsp;            var1.append(&quot;connect&quot;);
+<i>609</i>&nbsp;        }
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;        if((var0 &amp; 2) == 2) {
+<i>612</i>&nbsp;            if(var2) {
+<i>613</i>&nbsp;                var1.append(&#39;,&#39;);
+<i>614</i>&nbsp;            } else {
+<i>615</i>&nbsp;                var2 = true;
+<b class="nc"><i>616</i>&nbsp;            }</b>
+<i>617</i>&nbsp;
+<i>618</i>&nbsp;            var1.append(&quot;listen&quot;);
+<i>619</i>&nbsp;        }
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;        if((var0 &amp; 4) == 4) {
+<i>622</i>&nbsp;            if(var2) {
+<i>623</i>&nbsp;                var1.append(&#39;,&#39;);
+<b class="nc"><i>624</i>&nbsp;            } else {</b>
+<b class="nc"><i>625</i>&nbsp;                var2 = true;</b>
+<i>626</i>&nbsp;            }
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;            var1.append(&quot;accept&quot;);
+<i>629</i>&nbsp;        }
+<b class="nc"><i>630</i>&nbsp;</b>
+<b class="nc"><i>631</i>&nbsp;        if((var0 &amp; 8) == 8) {</b>
+<i>632</i>&nbsp;            if(var2) {
+<b class="nc"><i>633</i>&nbsp;                var1.append(&#39;,&#39;);</b>
+<i>634</i>&nbsp;            } else {
+<i>635</i>&nbsp;                var2 = true;
+<b class="nc"><i>636</i>&nbsp;            }</b>
+<b class="nc"><i>637</i>&nbsp;</b>
+<b class="nc"><i>638</i>&nbsp;            var1.append(&quot;resolve&quot;);</b>
+<b class="nc"><i>639</i>&nbsp;        }</b>
+<i>640</i>&nbsp;
+<i>641</i>&nbsp;        return var1.toString();
+<i>642</i>&nbsp;    }
+<b class="nc"><i>643</i>&nbsp;</b>
+<b class="nc"><i>644</i>&nbsp;    public String getActions() {</b>
+<b class="nc"><i>645</i>&nbsp;        if(this.actions == null) {</b>
+<i>646</i>&nbsp;            this.actions = getActions(this.mask);
+<b class="nc"><i>647</i>&nbsp;        }</b>
+<b class="nc"><i>648</i>&nbsp;</b>
+<b class="nc"><i>649</i>&nbsp;        return this.actions;</b>
+<b class="nc"><i>650</i>&nbsp;    }</b>
+<b class="nc"><i>651</i>&nbsp;</b>
+<b class="nc"><i>652</i>&nbsp;    public PermissionCollection newPermissionCollection() {</b>
+<i>653</i>&nbsp;        return new SocketPermissionCollection();
+<i>654</i>&nbsp;    }
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;    private synchronized void writeObject(ObjectOutputStream var1) throws IOException {
+<i>657</i>&nbsp;        if(this.actions == null) {
+<i>658</i>&nbsp;            this.getActions();
+<i>659</i>&nbsp;        }
+<i>660</i>&nbsp;
+<b class="nc"><i>661</i>&nbsp;        var1.defaultWriteObject();</b>
+<b class="nc"><i>662</i>&nbsp;    }</b>
+<b class="nc"><i>663</i>&nbsp;</b>
+<b class="nc"><i>664</i>&nbsp;    private synchronized void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {</b>
+<b class="nc"><i>665</i>&nbsp;        var1.defaultReadObject();</b>
+<b class="nc"><i>666</i>&nbsp;        this.init(this.getName(), getMask(this.actions));</b>
+<b class="nc"><i>667</i>&nbsp;    }</b>
+<b class="nc"><i>668</i>&nbsp;</b>
+<i>669</i>&nbsp;    private static int initEphemeralPorts(final String var0, int var1) {
+<b class="nc"><i>670</i>&nbsp;        return ((Integer)AccessController.doPrivileged(new PrivilegedAction() {</b>
+<b class="nc"><i>671</i>&nbsp;            public Integer run() {</b>
+<b class="nc"><i>672</i>&nbsp;                int var1 = Integer.getInteger(&quot;jdk.net.ephemeralPortRange.&quot; + var0, -1).intValue();</b>
+<b class="nc"><i>673</i>&nbsp;                return var1 != -1?Integer.valueOf(var1):Integer.valueOf(var0.equals(&quot;low&quot;)?PortConfig.getLower():PortConfig.getUpper());</b>
+<b class="nc"><i>674</i>&nbsp;            }</b>
+<b class="nc"><i>675</i>&nbsp;        })).intValue();</b>
+<b class="nc"><i>676</i>&nbsp;    }</b>
+<b class="nc"><i>677</i>&nbsp;</b>
+<b class="nc"><i>678</i>&nbsp;    private static boolean inRange(int var0, int var1, int var2, int var3) {</b>
+<b class="nc"><i>679</i>&nbsp;        if(var2 == 0) {</b>
+<i>680</i>&nbsp;            if(!inRange(var0, var1, ephemeralLow, ephemeralHigh)) {
+<i>681</i>&nbsp;                return false;
+<b class="nc"><i>682</i>&nbsp;            }</b>
+<b class="nc"><i>683</i>&nbsp;</b>
+<b class="nc"><i>684</i>&nbsp;            if(var3 == 0) {</b>
+<i>685</i>&nbsp;                return true;
+<b class="nc"><i>686</i>&nbsp;            }</b>
+<i>687</i>&nbsp;
+<b class="nc"><i>688</i>&nbsp;            var2 = 1;</b>
+<i>689</i>&nbsp;        }
+<i>690</i>&nbsp;
+<i>691</i>&nbsp;        return var0 == 0 &amp;&amp; var1 == 0?var2 &gt;= ephemeralLow &amp;&amp; var3 &lt;= ephemeralHigh:(var0 != 0?var2 &gt;= var0 &amp;&amp; var3 &lt;= var1:(var1 &gt;= ephemeralLow - 1?var3 &lt;= ephemeralHigh:var2 &lt;= var1 &amp;&amp; var3 &lt;= var1 || var2 &gt;= ephemeralLow &amp;&amp; var3 &lt;= ephemeralHigh));
+<i>692</i>&nbsp;    }
+<b class="nc"><i>693</i>&nbsp;</b>
+<b class="nc"><i>694</i>&nbsp;    static {</b>
+<b class="nc"><i>695</i>&nbsp;        Boolean var0 = (Boolean)AccessController.doPrivileged(new GetBooleanAction(&quot;sun.net.trustNameService&quot;));</b>
+<b class="nc"><i>696</i>&nbsp;        trustNameService = var0.booleanValue();</b>
+<i>697</i>&nbsp;    }
+<b class="nc"><i>698</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

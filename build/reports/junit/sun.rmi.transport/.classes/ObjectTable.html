@@ -1,0 +1,346 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ObjectTable</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.rmi.transport</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ObjectTable (sun.rmi.transport)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ObjectTable</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 83)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ObjectTable$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ObjectTable$Reaper</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 100)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.rmi.transport;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.lang.ref.ReferenceQueue;
+<i>9</i>&nbsp;import java.rmi.NoSuchObjectException;
+<i>10</i>&nbsp;import java.rmi.Remote;
+<i>11</i>&nbsp;import java.rmi.dgc.VMID;
+<i>12</i>&nbsp;import java.rmi.server.ExportException;
+<i>13</i>&nbsp;import java.rmi.server.ObjID;
+<i>14</i>&nbsp;import java.security.AccessController;
+<i>15</i>&nbsp;import java.security.PrivilegedAction;
+<i>16</i>&nbsp;import java.util.HashMap;
+<i>17</i>&nbsp;import java.util.Map;
+<i>18</i>&nbsp;import sun.misc.GC;
+<i>19</i>&nbsp;import sun.misc.GC.LatencyRequest;
+<i>20</i>&nbsp;import sun.rmi.runtime.Log;
+<i>21</i>&nbsp;import sun.rmi.runtime.NewThreadAction;
+<i>22</i>&nbsp;import sun.rmi.transport.DGCImpl;
+<i>23</i>&nbsp;import sun.rmi.transport.ObjectEndpoint;
+<i>24</i>&nbsp;import sun.rmi.transport.Target;
+<i>25</i>&nbsp;import sun.rmi.transport.Transport;
+<i>26</i>&nbsp;import sun.rmi.transport.WeakRef;
+<i>27</i>&nbsp;import sun.security.action.GetLongAction;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;public final class ObjectTable {
+<i>30</i>&nbsp;    private static final long gcInterval = ((Long)AccessController.doPrivileged(new GetLongAction(&quot;sun.rmi.dgc.server.gcInterval&quot;, 3600000L))).longValue();
+<i>31</i>&nbsp;    private static final Object tableLock = new Object();
+<i>32</i>&nbsp;    private static final Map&lt;ObjectEndpoint, Target&gt; objTable = new HashMap();
+<b class="nc"><i>33</i>&nbsp;    private static final Map&lt;WeakRef, Target&gt; implTable = new HashMap();</b>
+<i>34</i>&nbsp;    private static final Object keepAliveLock = new Object();
+<i>35</i>&nbsp;    private static int keepAliveCount = 0;
+<b class="nc"><i>36</i>&nbsp;    private static Thread reaper = null;</b>
+<i>37</i>&nbsp;    static final ReferenceQueue&lt;Object&gt; reapQueue = new ReferenceQueue();
+<i>38</i>&nbsp;    private static LatencyRequest gcLatencyRequest = null;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private ObjectTable() {
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    static Target getTarget(ObjectEndpoint var0) {
+<b class="nc"><i>44</i>&nbsp;        Object var1 = tableLock;</b>
+<i>45</i>&nbsp;        synchronized(tableLock) {
+<i>46</i>&nbsp;            return (Target)objTable.get(var0);
+<b class="nc"><i>47</i>&nbsp;        }</b>
+<i>48</i>&nbsp;    }
+<b class="nc"><i>49</i>&nbsp;</b>
+<i>50</i>&nbsp;    public static Target getTarget(Remote var0) {
+<i>51</i>&nbsp;        Object var1 = tableLock;
+<i>52</i>&nbsp;        synchronized(tableLock) {
+<i>53</i>&nbsp;            return (Target)implTable.get(new WeakRef(var0));
+<i>54</i>&nbsp;        }
+<i>55</i>&nbsp;    }
+<b class="nc"><i>56</i>&nbsp;</b>
+<i>57</i>&nbsp;    public static Remote getStub(Remote var0) throws NoSuchObjectException {
+<i>58</i>&nbsp;        Target var1 = getTarget((Remote)var0);
+<b class="nc"><i>59</i>&nbsp;        if(var1 == null) {</b>
+<i>60</i>&nbsp;            throw new NoSuchObjectException(&quot;object not exported&quot;);
+<i>61</i>&nbsp;        } else {
+<b class="nc"><i>62</i>&nbsp;            return var1.getStub();</b>
+<i>63</i>&nbsp;        }
+<i>64</i>&nbsp;    }
+<b class="nc"><i>65</i>&nbsp;</b>
+<i>66</i>&nbsp;    public static boolean unexportObject(Remote var0, boolean var1) throws NoSuchObjectException {
+<i>67</i>&nbsp;        Object var2 = tableLock;
+<b class="nc"><i>68</i>&nbsp;        synchronized(tableLock) {</b>
+<i>69</i>&nbsp;            Target var3 = getTarget((Remote)var0);
+<i>70</i>&nbsp;            if(var3 == null) {
+<i>71</i>&nbsp;                throw new NoSuchObjectException(&quot;object not exported&quot;);
+<i>72</i>&nbsp;            } else if(var3.unexport(var1)) {
+<b class="nc"><i>73</i>&nbsp;                removeTarget(var3);</b>
+<i>74</i>&nbsp;                return true;
+<i>75</i>&nbsp;            } else {
+<i>76</i>&nbsp;                return false;
+<i>77</i>&nbsp;            }
+<i>78</i>&nbsp;        }
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<b class="nc"><i>80</i>&nbsp;</b>
+<b class="nc"><i>81</i>&nbsp;    static void putTarget(Target var0) throws ExportException {</b>
+<i>82</i>&nbsp;        ObjectEndpoint var1 = var0.getObjectEndpoint();
+<i>83</i>&nbsp;        WeakRef var2 = var0.getWeakImpl();
+<i>84</i>&nbsp;        if(DGCImpl.dgcLog.isLoggable(Log.VERBOSE)) {
+<i>85</i>&nbsp;            DGCImpl.dgcLog.log(Log.VERBOSE, &quot;add object &quot; + var1);
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;        Object var3 = tableLock;</b>
+<b class="nc"><i>89</i>&nbsp;        synchronized(tableLock) {</b>
+<b class="nc"><i>90</i>&nbsp;            if(var0.getImpl() != null) {</b>
+<i>91</i>&nbsp;                if(objTable.containsKey(var1)) {
+<i>92</i>&nbsp;                    throw new ExportException(&quot;internal error: ObjID already in use&quot;);
+<i>93</i>&nbsp;                }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;                if(implTable.containsKey(var2)) {
+<i>96</i>&nbsp;                    throw new ExportException(&quot;object already exported&quot;);
+<i>97</i>&nbsp;                }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;                objTable.put(var1, var0);
+<i>100</i>&nbsp;                implTable.put(var2, var0);
+<i>101</i>&nbsp;                if(!var0.isPermanent()) {
+<i>102</i>&nbsp;                    incrementKeepAliveCount();
+<i>103</i>&nbsp;                }
+<i>104</i>&nbsp;            }
+<b class="nc"><i>105</i>&nbsp;</b>
+<b class="nc"><i>106</i>&nbsp;        }</b>
+<b class="nc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<b class="nc"><i>109</i>&nbsp;    private static void removeTarget(Target var0) {</b>
+<i>110</i>&nbsp;        ObjectEndpoint var1 = var0.getObjectEndpoint();
+<i>111</i>&nbsp;        WeakRef var2 = var0.getWeakImpl();
+<i>112</i>&nbsp;        if(DGCImpl.dgcLog.isLoggable(Log.VERBOSE)) {
+<i>113</i>&nbsp;            DGCImpl.dgcLog.log(Log.VERBOSE, &quot;remove object &quot; + var1);
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;        objTable.remove(var1);
+<i>117</i>&nbsp;        implTable.remove(var2);
+<i>118</i>&nbsp;        var0.markRemoved();
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    static void referenced(ObjID var0, long var1, VMID var3) {
+<i>122</i>&nbsp;        Object var4 = tableLock;
+<i>123</i>&nbsp;        synchronized(tableLock) {
+<i>124</i>&nbsp;            ObjectEndpoint var5 = new ObjectEndpoint(var0, Transport.currentTransport());
+<i>125</i>&nbsp;            Target var6 = (Target)objTable.get(var5);
+<i>126</i>&nbsp;            if(var6 != null) {
+<i>127</i>&nbsp;                var6.referenced(var1, var3);
+<i>128</i>&nbsp;            }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;        }
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<b class="nc"><i>133</i>&nbsp;    static void unreferenced(ObjID var0, long var1, VMID var3, boolean var4) {</b>
+<b class="nc"><i>134</i>&nbsp;        Object var5 = tableLock;</b>
+<b class="nc"><i>135</i>&nbsp;        synchronized(tableLock) {</b>
+<b class="nc"><i>136</i>&nbsp;            ObjectEndpoint var6 = new ObjectEndpoint(var0, Transport.currentTransport());</b>
+<i>137</i>&nbsp;            Target var7 = (Target)objTable.get(var6);
+<b class="nc"><i>138</i>&nbsp;            if(var7 != null) {</b>
+<b class="nc"><i>139</i>&nbsp;                var7.unreferenced(var1, var3, var4);</b>
+<b class="nc"><i>140</i>&nbsp;            }</b>
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;        }</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<b class="nc"><i>145</i>&nbsp;    static void incrementKeepAliveCount() {</b>
+<i>146</i>&nbsp;        Object var0 = keepAliveLock;
+<i>147</i>&nbsp;        synchronized(keepAliveLock) {
+<i>148</i>&nbsp;            ++keepAliveCount;
+<i>149</i>&nbsp;            if(reaper == null) {
+<i>150</i>&nbsp;                reaper = (Thread)AccessController.doPrivileged(new NewThreadAction(new ObjectTable.Reaper(null), &quot;Reaper&quot;, false));
+<i>151</i>&nbsp;                reaper.start();
+<i>152</i>&nbsp;            }
+<i>153</i>&nbsp;
+<b class="nc"><i>154</i>&nbsp;            if(gcLatencyRequest == null) {</b>
+<b class="nc"><i>155</i>&nbsp;                gcLatencyRequest = GC.requestLatency(gcInterval);</b>
+<i>156</i>&nbsp;            }
+<b class="nc"><i>157</i>&nbsp;</b>
+<b class="nc"><i>158</i>&nbsp;        }</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;    static void decrementKeepAliveCount() {</b>
+<b class="nc"><i>162</i>&nbsp;        Object var0 = keepAliveLock;</b>
+<b class="nc"><i>163</i>&nbsp;        synchronized(keepAliveLock) {</b>
+<i>164</i>&nbsp;            --keepAliveCount;
+<i>165</i>&nbsp;            if(keepAliveCount == 0) {
+<i>166</i>&nbsp;                if(reaper == null) {
+<b class="nc"><i>167</i>&nbsp;                    throw new AssertionError();</b>
+<b class="nc"><i>168</i>&nbsp;                }</b>
+<b class="nc"><i>169</i>&nbsp;</b>
+<i>170</i>&nbsp;                AccessController.doPrivileged(new PrivilegedAction() {
+<b class="nc"><i>171</i>&nbsp;                    public Void run() {</b>
+<b class="nc"><i>172</i>&nbsp;                        ObjectTable.reaper.interrupt();</b>
+<i>173</i>&nbsp;                        return null;
+<i>174</i>&nbsp;                    }
+<b class="nc"><i>175</i>&nbsp;                });</b>
+<b class="nc"><i>176</i>&nbsp;                reaper = null;</b>
+<i>177</i>&nbsp;                gcLatencyRequest.cancel();
+<b class="nc"><i>178</i>&nbsp;                gcLatencyRequest = null;</b>
+<b class="nc"><i>179</i>&nbsp;            }</b>
+<i>180</i>&nbsp;
+<b class="nc"><i>181</i>&nbsp;        }</b>
+<i>182</i>&nbsp;    }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    private static class Reaper implements Runnable {
+<i>185</i>&nbsp;        private Reaper() {
+<i>186</i>&nbsp;        }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;        public void run() {
+<i>189</i>&nbsp;            while(true) {
+<i>190</i>&nbsp;                try {
+<i>191</i>&nbsp;                    WeakRef var1 = (WeakRef)ObjectTable.reapQueue.remove();
+<i>192</i>&nbsp;                    synchronized(ObjectTable.tableLock) {
+<b class="nc"><i>193</i>&nbsp;                        Target var3 = (Target)ObjectTable.implTable.get(var1);</b>
+<b class="nc"><i>194</i>&nbsp;                        if(var3 != null) {</b>
+<i>195</i>&nbsp;                            if(!var3.isEmpty()) {
+<b class="nc"><i>196</i>&nbsp;                                throw new Error(&quot;object with known references collected&quot;);</b>
+<b class="nc"><i>197</i>&nbsp;                            }</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;                            if(var3.isPermanent()) {
+<b class="nc"><i>200</i>&nbsp;                                throw new Error(&quot;permanent object collected&quot;);</b>
+<b class="nc"><i>201</i>&nbsp;                            }</b>
+<i>202</i>&nbsp;
+<b class="nc"><i>203</i>&nbsp;                            ObjectTable.removeTarget(var3);</b>
+<i>204</i>&nbsp;                        }
+<i>205</i>&nbsp;                    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;                    if(!Thread.interrupted()) {
+<i>208</i>&nbsp;                        continue;
+<i>209</i>&nbsp;                    }
+<i>210</i>&nbsp;                } catch (InterruptedException var6) {
+<i>211</i>&nbsp;                    ;
+<b class="nc"><i>212</i>&nbsp;                }</b>
+<b class="nc"><i>213</i>&nbsp;</b>
+<i>214</i>&nbsp;                return;
+<b class="nc"><i>215</i>&nbsp;            }</b>
+<b class="nc"><i>216</i>&nbsp;        }</b>
+<b class="nc"><i>217</i>&nbsp;    }</b>
+<i>218</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

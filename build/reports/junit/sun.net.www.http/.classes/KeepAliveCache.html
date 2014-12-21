@@ -1,0 +1,269 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KeepAliveCache</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.net.www.http</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KeepAliveCache (sun.net.www.http)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeepAliveCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 64)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">KeepAliveCache$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 74)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.net.www.http;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.NotSerializableException;
+<i>10</i>&nbsp;import java.io.ObjectInputStream;
+<i>11</i>&nbsp;import java.io.ObjectOutputStream;
+<i>12</i>&nbsp;import java.net.URL;
+<i>13</i>&nbsp;import java.security.AccessController;
+<i>14</i>&nbsp;import java.security.PrivilegedAction;
+<i>15</i>&nbsp;import java.util.ArrayList;
+<i>16</i>&nbsp;import java.util.HashMap;
+<i>17</i>&nbsp;import java.util.Iterator;
+<i>18</i>&nbsp;import sun.net.www.http.ClientVector;
+<i>19</i>&nbsp;import sun.net.www.http.HttpClient;
+<i>20</i>&nbsp;import sun.net.www.http.KeepAliveEntry;
+<i>21</i>&nbsp;import sun.net.www.http.KeepAliveKey;
+<i>22</i>&nbsp;import sun.security.action.GetIntegerAction;
+<b class="nc"><i>23</i>&nbsp;</b>
+<i>24</i>&nbsp;public class KeepAliveCache extends HashMap&lt;KeepAliveKey, ClientVector&gt; implements Runnable {
+<i>25</i>&nbsp;    private static final long serialVersionUID = -2937172892064557949L;
+<i>26</i>&nbsp;    static final int MAX_CONNECTIONS = 5;
+<i>27</i>&nbsp;    static int result = -1;
+<i>28</i>&nbsp;    static final int LIFETIME = 5000;
+<i>29</i>&nbsp;    private Thread keepAliveTimer = null;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    static int getMaxConnections() {
+<i>32</i>&nbsp;        if(result == -1) {
+<b class="nc"><i>33</i>&nbsp;            result = ((Integer)AccessController.doPrivileged(new GetIntegerAction(&quot;http.maxConnections&quot;, 5))).intValue();</b>
+<i>34</i>&nbsp;            if(result &lt;= 0) {
+<b class="nc"><i>35</i>&nbsp;                result = 5;</b>
+<b class="nc"><i>36</i>&nbsp;            }</b>
+<i>37</i>&nbsp;        }
+<i>38</i>&nbsp;
+<b class="nc"><i>39</i>&nbsp;        return result;</b>
+<b class="nc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;
+<b class="nc"><i>42</i>&nbsp;    public KeepAliveCache() {</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public synchronized void put(URL var1, Object var2, HttpClient var3) {
+<i>46</i>&nbsp;        boolean var4 = this.keepAliveTimer == null;
+<b class="nc"><i>47</i>&nbsp;        if(!var4 &amp;&amp; !this.keepAliveTimer.isAlive()) {</b>
+<i>48</i>&nbsp;            var4 = true;
+<i>49</i>&nbsp;        }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;        if(var4) {
+<i>52</i>&nbsp;            this.clear();
+<i>53</i>&nbsp;            AccessController.doPrivileged(new PrivilegedAction() {
+<i>54</i>&nbsp;                public Void run() {
+<i>55</i>&nbsp;                    ThreadGroup var1 = Thread.currentThread().getThreadGroup();
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;                    for(ThreadGroup var2 = null; (var2 = var1.getParent()) != null; var1 = var2) {
+<i>58</i>&nbsp;                        ;
+<i>59</i>&nbsp;                    }
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;                    KeepAliveCache.this.keepAliveTimer = new Thread(var1, KeepAliveCache.this, &quot;Keep-Alive-Timer&quot;);</b>
+<b class="nc"><i>62</i>&nbsp;                    KeepAliveCache.this.keepAliveTimer.setDaemon(true);</b>
+<b class="nc"><i>63</i>&nbsp;                    KeepAliveCache.this.keepAliveTimer.setPriority(8);</b>
+<i>64</i>&nbsp;                    KeepAliveCache.this.keepAliveTimer.setContextClassLoader((ClassLoader)null);
+<i>65</i>&nbsp;                    KeepAliveCache.this.keepAliveTimer.start();
+<b class="nc"><i>66</i>&nbsp;                    return null;</b>
+<b class="nc"><i>67</i>&nbsp;                }</b>
+<i>68</i>&nbsp;            });
+<i>69</i>&nbsp;        }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;        KeepAliveKey var5 = new KeepAliveKey(var1, var2);
+<i>72</i>&nbsp;        ClientVector var6 = (ClientVector)super.get(var5);
+<i>73</i>&nbsp;        if(var6 == null) {
+<b class="nc"><i>74</i>&nbsp;            int var7 = var3.getKeepAliveTimeout();</b>
+<b class="nc"><i>75</i>&nbsp;            var6 = new ClientVector(var7 &gt; 0?var7 * 1000:5000);</b>
+<b class="nc"><i>76</i>&nbsp;            var6.put(var3);</b>
+<i>77</i>&nbsp;            super.put(var5, var6);
+<i>78</i>&nbsp;        } else {
+<i>79</i>&nbsp;            var6.put(var3);
+<b class="nc"><i>80</i>&nbsp;        }</b>
+<b class="nc"><i>81</i>&nbsp;</b>
+<b class="nc"><i>82</i>&nbsp;    }</b>
+<b class="nc"><i>83</i>&nbsp;</b>
+<i>84</i>&nbsp;    public synchronized void remove(HttpClient var1, Object var2) {
+<i>85</i>&nbsp;        KeepAliveKey var3 = new KeepAliveKey(var1.url, var2);
+<b class="nc"><i>86</i>&nbsp;        ClientVector var4 = (ClientVector)super.get(var3);</b>
+<b class="nc"><i>87</i>&nbsp;        if(var4 != null) {</b>
+<b class="nc"><i>88</i>&nbsp;            var4.remove(var1);</b>
+<b class="nc"><i>89</i>&nbsp;            if(var4.empty()) {</b>
+<b class="nc"><i>90</i>&nbsp;                this.removeVector(var3);</b>
+<i>91</i>&nbsp;            }
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    }
+<b class="nc"><i>95</i>&nbsp;</b>
+<b class="nc"><i>96</i>&nbsp;    synchronized void removeVector(KeepAliveKey var1) {</b>
+<i>97</i>&nbsp;        super.remove(var1);
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<b class="nc"><i>99</i>&nbsp;</b>
+<b class="nc"><i>100</i>&nbsp;    public synchronized HttpClient get(URL var1, Object var2) {</b>
+<i>101</i>&nbsp;        KeepAliveKey var3 = new KeepAliveKey(var1, var2);
+<b class="nc"><i>102</i>&nbsp;        ClientVector var4 = (ClientVector)super.get(var3);</b>
+<b class="nc"><i>103</i>&nbsp;        return var4 == null?null:var4.get();</b>
+<b class="nc"><i>104</i>&nbsp;    }</b>
+<b class="nc"><i>105</i>&nbsp;</b>
+<i>106</i>&nbsp;    public void run() {
+<i>107</i>&nbsp;        do {
+<i>108</i>&nbsp;            try {
+<i>109</i>&nbsp;                Thread.sleep(5000L);
+<i>110</i>&nbsp;            } catch (InterruptedException var14) {
+<b class="nc"><i>111</i>&nbsp;                ;</b>
+<b class="nc"><i>112</i>&nbsp;            }</b>
+<b class="nc"><i>113</i>&nbsp;</b>
+<b class="nc"><i>114</i>&nbsp;            synchronized(this) {</b>
+<b class="nc"><i>115</i>&nbsp;                long var2 = System.currentTimeMillis();</b>
+<b class="nc"><i>116</i>&nbsp;                ArrayList var4 = new ArrayList();</b>
+<i>117</i>&nbsp;                Iterator var5 = this.keySet().iterator();
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;                KeepAliveKey var6;
+<i>120</i>&nbsp;                while(var5.hasNext()) {
+<i>121</i>&nbsp;                    var6 = (KeepAliveKey)var5.next();
+<i>122</i>&nbsp;                    ClientVector var7 = (ClientVector)this.get(var6);
+<i>123</i>&nbsp;                    synchronized(var7) {
+<i>124</i>&nbsp;                        int var9;
+<b class="nc"><i>125</i>&nbsp;                        for(var9 = 0; var9 &lt; var7.size(); ++var9) {</b>
+<i>126</i>&nbsp;                            KeepAliveEntry var10 = (KeepAliveEntry)var7.elementAt(var9);
+<i>127</i>&nbsp;                            if(var2 - var10.idleStartTime &lt;= (long)var7.nap) {
+<i>128</i>&nbsp;                                break;
+<i>129</i>&nbsp;                            }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;                            HttpClient var11 = var10.hc;
+<i>132</i>&nbsp;                            var11.closeServer();
+<b class="nc"><i>133</i>&nbsp;                        }</b>
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;                        var7.subList(0, var9).clear();</b>
+<b class="nc"><i>136</i>&nbsp;                        if(var7.size() == 0) {</b>
+<i>137</i>&nbsp;                            var4.add(var6);
+<b class="nc"><i>138</i>&nbsp;                        }</b>
+<i>139</i>&nbsp;                    }
+<i>140</i>&nbsp;                }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;                var5 = var4.iterator();
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;                while(var5.hasNext()) {
+<i>145</i>&nbsp;                    var6 = (KeepAliveKey)var5.next();
+<i>146</i>&nbsp;                    this.removeVector(var6);
+<i>147</i>&nbsp;                }
+<i>148</i>&nbsp;            }
+<b class="nc"><i>149</i>&nbsp;        } while(this.size() &gt; 0);</b>
+<b class="nc"><i>150</i>&nbsp;</b>
+<b class="nc"><i>151</i>&nbsp;    }</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    private void writeObject(ObjectOutputStream var1) throws IOException {
+<i>154</i>&nbsp;        throw new NotSerializableException();
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    private void readObject(ObjectInputStream var1) throws IOException, ClassNotFoundException {
+<i>158</i>&nbsp;        throw new NotSerializableException();
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

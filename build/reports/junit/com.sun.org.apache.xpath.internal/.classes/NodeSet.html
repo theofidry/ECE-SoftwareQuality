@@ -1,0 +1,720 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NodeSet</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xpath.internal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NodeSet (com.sun.org.apache.xpath.internal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NodeSet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 60)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 291)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xpath.internal;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xalan.internal.res.XSLMessages;
+<i>9</i>&nbsp;import com.sun.org.apache.xml.internal.utils.DOM2Helper;
+<i>10</i>&nbsp;import com.sun.org.apache.xpath.internal.XPathContext;
+<i>11</i>&nbsp;import com.sun.org.apache.xpath.internal.axes.ContextNodeList;
+<i>12</i>&nbsp;import org.w3c.dom.DOMException;
+<i>13</i>&nbsp;import org.w3c.dom.Node;
+<i>14</i>&nbsp;import org.w3c.dom.NodeList;
+<i>15</i>&nbsp;import org.w3c.dom.traversal.NodeFilter;
+<i>16</i>&nbsp;import org.w3c.dom.traversal.NodeIterator;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;public class NodeSet implements NodeList, NodeIterator, Cloneable, ContextNodeList {
+<i>19</i>&nbsp;    protected transient int m_next;
+<i>20</i>&nbsp;    protected transient boolean m_mutable;
+<i>21</i>&nbsp;    protected transient boolean m_cacheNodes;
+<i>22</i>&nbsp;    private transient int m_last;
+<i>23</i>&nbsp;    private int m_blocksize;
+<i>24</i>&nbsp;    Node[] m_map;
+<i>25</i>&nbsp;    protected int m_firstFree;
+<i>26</i>&nbsp;    private int m_mapSize;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public NodeSet() {
+<i>29</i>&nbsp;        this.m_next = 0;
+<i>30</i>&nbsp;        this.m_mutable = true;
+<i>31</i>&nbsp;        this.m_cacheNodes = true;
+<i>32</i>&nbsp;        this.m_last = 0;
+<i>33</i>&nbsp;        this.m_firstFree = 0;
+<i>34</i>&nbsp;        this.m_blocksize = 32;
+<i>35</i>&nbsp;        this.m_mapSize = 0;
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    public NodeSet(int blocksize) {
+<i>39</i>&nbsp;        this.m_next = 0;
+<i>40</i>&nbsp;        this.m_mutable = true;
+<i>41</i>&nbsp;        this.m_cacheNodes = true;
+<i>42</i>&nbsp;        this.m_last = 0;
+<i>43</i>&nbsp;        this.m_firstFree = 0;
+<i>44</i>&nbsp;        this.m_blocksize = blocksize;
+<i>45</i>&nbsp;        this.m_mapSize = 0;
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public NodeSet(NodeList nodelist) {
+<i>49</i>&nbsp;        this(32);
+<i>50</i>&nbsp;        this.addNodes((NodeList)nodelist);
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public NodeSet(NodeSet nodelist) {
+<i>54</i>&nbsp;        this(32);
+<i>55</i>&nbsp;        this.addNodes((NodeIterator)nodelist);
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public NodeSet(NodeIterator ni) {
+<i>59</i>&nbsp;        this(32);
+<i>60</i>&nbsp;        this.addNodes((NodeIterator)ni);
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public NodeSet(Node node) {
+<i>64</i>&nbsp;        this(32);
+<b class="nc"><i>65</i>&nbsp;        this.addNode(node);</b>
+<b class="nc"><i>66</i>&nbsp;    }</b>
+<b class="nc"><i>67</i>&nbsp;</b>
+<i>68</i>&nbsp;    public Node getRoot() {
+<i>69</i>&nbsp;        return null;
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public NodeIterator cloneWithReset() throws CloneNotSupportedException {
+<i>73</i>&nbsp;        NodeSet clone = (NodeSet)this.clone();
+<i>74</i>&nbsp;        clone.reset();
+<i>75</i>&nbsp;        return clone;
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<b class="nc"><i>78</i>&nbsp;    public void reset() {</b>
+<i>79</i>&nbsp;        this.m_next = 0;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public int getWhatToShow() {
+<i>83</i>&nbsp;        return -17;
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public NodeFilter getFilter() {
+<i>87</i>&nbsp;        return null;
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<b class="nc"><i>90</i>&nbsp;    public boolean getExpandEntityReferences() {</b>
+<i>91</i>&nbsp;        return true;
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public Node nextNode() throws DOMException {
+<i>95</i>&nbsp;        if(this.m_next &lt; this.size()) {
+<i>96</i>&nbsp;            Node next = this.elementAt(this.m_next);
+<i>97</i>&nbsp;            ++this.m_next;
+<i>98</i>&nbsp;            return next;
+<i>99</i>&nbsp;        } else {
+<i>100</i>&nbsp;            return null;
+<i>101</i>&nbsp;        }
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<b class="nc"><i>104</i>&nbsp;    public Node previousNode() throws DOMException {</b>
+<i>105</i>&nbsp;        if(!this.m_cacheNodes) {
+<b class="nc"><i>106</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_CANNOT_ITERATE&quot;, (Object[])null));</b>
+<i>107</i>&nbsp;        } else if(this.m_next - 1 &gt; 0) {
+<i>108</i>&nbsp;            --this.m_next;
+<i>109</i>&nbsp;            return this.elementAt(this.m_next);
+<i>110</i>&nbsp;        } else {
+<i>111</i>&nbsp;            return null;
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public void detach() {
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<b class="nc"><i>118</i>&nbsp;    public boolean isFresh() {</b>
+<i>119</i>&nbsp;        return this.m_next == 0;
+<b class="nc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public void runTo(int index) {
+<i>123</i>&nbsp;        if(!this.m_cacheNodes) {
+<i>124</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_CANNOT_INDEX&quot;, (Object[])null));
+<i>125</i>&nbsp;        } else {
+<i>126</i>&nbsp;            if(index &gt;= 0 &amp;&amp; this.m_next &lt; this.m_firstFree) {
+<i>127</i>&nbsp;                this.m_next = index;
+<i>128</i>&nbsp;            } else {
+<i>129</i>&nbsp;                this.m_next = this.m_firstFree - 1;
+<i>130</i>&nbsp;            }
+<b class="nc"><i>131</i>&nbsp;</b>
+<i>132</i>&nbsp;        }
+<b class="nc"><i>133</i>&nbsp;    }</b>
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    public Node item(int index) {
+<i>136</i>&nbsp;        this.runTo(index);
+<i>137</i>&nbsp;        return this.elementAt(index);
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public int getLength() {
+<i>141</i>&nbsp;        this.runTo(-1);
+<b class="nc"><i>142</i>&nbsp;        return this.size();</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public void addNode(Node n) {
+<i>146</i>&nbsp;        if(!this.m_mutable) {
+<i>147</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>148</i>&nbsp;        } else {
+<i>149</i>&nbsp;            this.addElement(n);
+<i>150</i>&nbsp;        }
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    public void insertNode(Node n, int pos) {
+<i>154</i>&nbsp;        if(!this.m_mutable) {
+<i>155</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>156</i>&nbsp;        } else {
+<i>157</i>&nbsp;            this.insertElementAt(n, pos);
+<b class="nc"><i>158</i>&nbsp;        }</b>
+<i>159</i>&nbsp;    }
+<b class="nc"><i>160</i>&nbsp;</b>
+<i>161</i>&nbsp;    public void removeNode(Node n) {
+<b class="nc"><i>162</i>&nbsp;        if(!this.m_mutable) {</b>
+<i>163</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>164</i>&nbsp;        } else {
+<i>165</i>&nbsp;            this.removeElement(n);
+<i>166</i>&nbsp;        }
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    public void addNodes(NodeList nodelist) {
+<b class="nc"><i>170</i>&nbsp;        if(!this.m_mutable) {</b>
+<i>171</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>172</i>&nbsp;        } else {
+<i>173</i>&nbsp;            if(null != nodelist) {
+<i>174</i>&nbsp;                int nChildren = nodelist.getLength();
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;                for(int i = 0; i &lt; nChildren; ++i) {
+<i>177</i>&nbsp;                    Node obj = nodelist.item(i);
+<i>178</i>&nbsp;                    if(null != obj) {
+<i>179</i>&nbsp;                        this.addElement(obj);
+<i>180</i>&nbsp;                    }
+<i>181</i>&nbsp;                }
+<i>182</i>&nbsp;            }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;    public void addNodes(NodeSet ns) {</b>
+<i>188</i>&nbsp;        if(!this.m_mutable) {
+<i>189</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>190</i>&nbsp;        } else {
+<i>191</i>&nbsp;            this.addNodes((NodeIterator)ns);
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public void addNodes(NodeIterator iterator) {
+<i>196</i>&nbsp;        if(!this.m_mutable) {
+<i>197</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>198</i>&nbsp;        } else {
+<i>199</i>&nbsp;            Node obj;
+<i>200</i>&nbsp;            if(null != iterator) {
+<i>201</i>&nbsp;                while(null != (obj = iterator.nextNode())) {
+<i>202</i>&nbsp;                    this.addElement(obj);
+<i>203</i>&nbsp;                }
+<i>204</i>&nbsp;            }
+<b class="nc"><i>205</i>&nbsp;</b>
+<i>206</i>&nbsp;        }
+<i>207</i>&nbsp;    }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    public void addNodesInDocOrder(NodeList nodelist, XPathContext support) {
+<i>210</i>&nbsp;        if(!this.m_mutable) {
+<i>211</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>212</i>&nbsp;        } else {
+<i>213</i>&nbsp;            int nChildren = nodelist.getLength();
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;            for(int i = 0; i &lt; nChildren; ++i) {
+<i>216</i>&nbsp;                Node node = nodelist.item(i);
+<i>217</i>&nbsp;                if(null != node) {
+<i>218</i>&nbsp;                    this.addNodeInDocOrder(node, support);
+<i>219</i>&nbsp;                }
+<i>220</i>&nbsp;            }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;        }
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    public void addNodesInDocOrder(NodeIterator iterator, XPathContext support) {
+<b class="nc"><i>226</i>&nbsp;        if(!this.m_mutable) {</b>
+<i>227</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>228</i>&nbsp;        } else {
+<i>229</i>&nbsp;            Node node;
+<i>230</i>&nbsp;            while(null != (node = iterator.nextNode())) {
+<i>231</i>&nbsp;                this.addNodeInDocOrder(node, support);
+<i>232</i>&nbsp;            }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;        }
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    private boolean addNodesInDocOrder(int start, int end, int testIndex, NodeList nodelist, XPathContext support) {
+<i>238</i>&nbsp;        if(!this.m_mutable) {
+<i>239</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>240</i>&nbsp;        } else {
+<i>241</i>&nbsp;            boolean foundit = false;
+<b class="nc"><i>242</i>&nbsp;            Node node = nodelist.item(testIndex);</b>
+<i>243</i>&nbsp;
+<b class="nc"><i>244</i>&nbsp;            int i;</b>
+<i>245</i>&nbsp;            for(i = end; i &gt;= start; --i) {
+<b class="nc"><i>246</i>&nbsp;                Node child = this.elementAt(i);</b>
+<i>247</i>&nbsp;                if(child == node) {
+<b class="nc"><i>248</i>&nbsp;                    i = -2;</b>
+<i>249</i>&nbsp;                    break;
+<i>250</i>&nbsp;                }
+<b class="nc"><i>251</i>&nbsp;</b>
+<i>252</i>&nbsp;                if(!DOM2Helper.isNodeAfter(node, child)) {
+<i>253</i>&nbsp;                    this.insertElementAt(node, i + 1);
+<i>254</i>&nbsp;                    --testIndex;
+<i>255</i>&nbsp;                    if(testIndex &gt; 0) {
+<i>256</i>&nbsp;                        boolean foundPrev = this.addNodesInDocOrder(0, i, testIndex, nodelist, support);
+<i>257</i>&nbsp;                        if(!foundPrev) {
+<i>258</i>&nbsp;                            this.addNodesInDocOrder(i, this.size() - 1, testIndex, nodelist, support);
+<i>259</i>&nbsp;                        }
+<i>260</i>&nbsp;                    }
+<i>261</i>&nbsp;                    break;
+<i>262</i>&nbsp;                }
+<i>263</i>&nbsp;            }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;            if(i == -1) {
+<i>266</i>&nbsp;                this.insertElementAt(node, 0);
+<i>267</i>&nbsp;            }
+<b class="nc"><i>268</i>&nbsp;</b>
+<b class="nc"><i>269</i>&nbsp;            return foundit;</b>
+<i>270</i>&nbsp;        }
+<i>271</i>&nbsp;    }
+<b class="nc"><i>272</i>&nbsp;</b>
+<i>273</i>&nbsp;    public int addNodeInDocOrder(Node node, boolean test, XPathContext support) {
+<b class="nc"><i>274</i>&nbsp;        if(!this.m_mutable) {</b>
+<i>275</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<b class="nc"><i>276</i>&nbsp;        } else {</b>
+<i>277</i>&nbsp;            int insertIndex = -1;
+<i>278</i>&nbsp;            int i;
+<b class="nc"><i>279</i>&nbsp;            if(test) {</b>
+<i>280</i>&nbsp;                int foundit = this.size();
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;                for(i = foundit - 1; i &gt;= 0; --i) {
+<i>283</i>&nbsp;                    Node child = this.elementAt(i);
+<i>284</i>&nbsp;                    if(child == node) {
+<i>285</i>&nbsp;                        i = -2;
+<i>286</i>&nbsp;                        break;
+<i>287</i>&nbsp;                    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;                    if(!DOM2Helper.isNodeAfter(node, child)) {
+<i>290</i>&nbsp;                        break;
+<i>291</i>&nbsp;                    }
+<i>292</i>&nbsp;                }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;                if(i != -2) {
+<i>295</i>&nbsp;                    insertIndex = i + 1;
+<i>296</i>&nbsp;                    this.insertElementAt(node, insertIndex);
+<i>297</i>&nbsp;                }
+<i>298</i>&nbsp;            } else {
+<i>299</i>&nbsp;                insertIndex = this.size();
+<i>300</i>&nbsp;                boolean var8 = false;
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;                for(i = 0; i &lt; insertIndex; ++i) {
+<i>303</i>&nbsp;                    if(this.item(i).equals(node)) {
+<i>304</i>&nbsp;                        var8 = true;
+<b class="nc"><i>305</i>&nbsp;                        break;</b>
+<i>306</i>&nbsp;                    }
+<i>307</i>&nbsp;                }
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;                if(!var8) {
+<i>310</i>&nbsp;                    this.addElement(node);
+<i>311</i>&nbsp;                }
+<i>312</i>&nbsp;            }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;            return insertIndex;
+<i>315</i>&nbsp;        }
+<i>316</i>&nbsp;    }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    public int addNodeInDocOrder(Node node, XPathContext support) {
+<i>319</i>&nbsp;        if(!this.m_mutable) {
+<i>320</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>321</i>&nbsp;        } else {
+<i>322</i>&nbsp;            return this.addNodeInDocOrder(node, true, support);
+<b class="nc"><i>323</i>&nbsp;        }</b>
+<b class="nc"><i>324</i>&nbsp;    }</b>
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;    public int getCurrentPos() {
+<b class="nc"><i>327</i>&nbsp;        return this.m_next;</b>
+<b class="nc"><i>328</i>&nbsp;    }</b>
+<i>329</i>&nbsp;
+<b class="nc"><i>330</i>&nbsp;    public void setCurrentPos(int i) {</b>
+<i>331</i>&nbsp;        if(!this.m_cacheNodes) {
+<i>332</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_CANNOT_INDEX&quot;, (Object[])null));
+<i>333</i>&nbsp;        } else {
+<i>334</i>&nbsp;            this.m_next = i;
+<i>335</i>&nbsp;        }
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    public Node getCurrentNode() {
+<i>339</i>&nbsp;        if(!this.m_cacheNodes) {
+<i>340</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_CANNOT_INDEX&quot;, (Object[])null));
+<i>341</i>&nbsp;        } else {
+<i>342</i>&nbsp;            int saved = this.m_next;
+<i>343</i>&nbsp;            Node n = this.m_next &lt; this.m_firstFree?this.elementAt(this.m_next):null;
+<i>344</i>&nbsp;            this.m_next = saved;
+<i>345</i>&nbsp;            return n;
+<i>346</i>&nbsp;        }
+<i>347</i>&nbsp;    }
+<b class="nc"><i>348</i>&nbsp;</b>
+<i>349</i>&nbsp;    public boolean getShouldCacheNodes() {
+<b class="nc"><i>350</i>&nbsp;        return this.m_cacheNodes;</b>
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    public void setShouldCacheNodes(boolean b) {
+<i>354</i>&nbsp;        if(!this.isFresh()) {
+<i>355</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_CANNOT_CALL_SETSHOULDCACHENODE&quot;, (Object[])null));
+<i>356</i>&nbsp;        } else {
+<i>357</i>&nbsp;            this.m_cacheNodes = b;
+<i>358</i>&nbsp;            this.m_mutable = true;
+<i>359</i>&nbsp;        }
+<i>360</i>&nbsp;    }
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;    public int getLast() {
+<i>363</i>&nbsp;        return this.m_last;
+<b class="nc"><i>364</i>&nbsp;    }</b>
+<i>365</i>&nbsp;
+<b class="nc"><i>366</i>&nbsp;    public void setLast(int last) {</b>
+<i>367</i>&nbsp;        this.m_last = last;
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    public Object clone() throws CloneNotSupportedException {
+<i>371</i>&nbsp;        NodeSet clone = (NodeSet)super.clone();
+<i>372</i>&nbsp;        if(null != this.m_map &amp;&amp; this.m_map == clone.m_map) {
+<i>373</i>&nbsp;            clone.m_map = new Node[this.m_map.length];
+<i>374</i>&nbsp;            System.arraycopy(this.m_map, 0, clone.m_map, 0, this.m_map.length);
+<i>375</i>&nbsp;        }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;        return clone;
+<i>378</i>&nbsp;    }
+<i>379</i>&nbsp;
+<b class="nc"><i>380</i>&nbsp;    public int size() {</b>
+<b class="nc"><i>381</i>&nbsp;        return this.m_firstFree;</b>
+<i>382</i>&nbsp;    }
+<b class="nc"><i>383</i>&nbsp;</b>
+<i>384</i>&nbsp;    public void addElement(Node value) {
+<i>385</i>&nbsp;        if(!this.m_mutable) {
+<i>386</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>387</i>&nbsp;        } else {
+<i>388</i>&nbsp;            if(this.m_firstFree + 1 &gt;= this.m_mapSize) {
+<i>389</i>&nbsp;                if(null == this.m_map) {
+<i>390</i>&nbsp;                    this.m_map = new Node[this.m_blocksize];
+<i>391</i>&nbsp;                    this.m_mapSize = this.m_blocksize;
+<i>392</i>&nbsp;                } else {
+<i>393</i>&nbsp;                    this.m_mapSize += this.m_blocksize;
+<i>394</i>&nbsp;                    Node[] newMap = new Node[this.m_mapSize];
+<i>395</i>&nbsp;                    System.arraycopy(this.m_map, 0, newMap, 0, this.m_firstFree + 1);
+<i>396</i>&nbsp;                    this.m_map = newMap;
+<i>397</i>&nbsp;                }
+<b class="nc"><i>398</i>&nbsp;            }</b>
+<b class="nc"><i>399</i>&nbsp;</b>
+<i>400</i>&nbsp;            this.m_map[this.m_firstFree] = value;
+<b class="nc"><i>401</i>&nbsp;            ++this.m_firstFree;</b>
+<i>402</i>&nbsp;        }
+<i>403</i>&nbsp;    }
+<i>404</i>&nbsp;
+<i>405</i>&nbsp;    public final void push(Node value) {
+<i>406</i>&nbsp;        int ff = this.m_firstFree;
+<i>407</i>&nbsp;        if(ff + 1 &gt;= this.m_mapSize) {
+<i>408</i>&nbsp;            if(null == this.m_map) {
+<i>409</i>&nbsp;                this.m_map = new Node[this.m_blocksize];
+<i>410</i>&nbsp;                this.m_mapSize = this.m_blocksize;
+<i>411</i>&nbsp;            } else {
+<i>412</i>&nbsp;                this.m_mapSize += this.m_blocksize;
+<i>413</i>&nbsp;                Node[] newMap = new Node[this.m_mapSize];
+<b class="nc"><i>414</i>&nbsp;                System.arraycopy(this.m_map, 0, newMap, 0, ff + 1);</b>
+<b class="nc"><i>415</i>&nbsp;                this.m_map = newMap;</b>
+<i>416</i>&nbsp;            }
+<b class="nc"><i>417</i>&nbsp;        }</b>
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;        this.m_map[ff] = value;
+<i>420</i>&nbsp;        ++ff;
+<i>421</i>&nbsp;        this.m_firstFree = ff;
+<i>422</i>&nbsp;    }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;    public final Node pop() {
+<i>425</i>&nbsp;        --this.m_firstFree;
+<i>426</i>&nbsp;        Node n = this.m_map[this.m_firstFree];
+<i>427</i>&nbsp;        this.m_map[this.m_firstFree] = null;
+<i>428</i>&nbsp;        return n;
+<i>429</i>&nbsp;    }
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;    public final Node popAndTop() {
+<b class="nc"><i>432</i>&nbsp;        --this.m_firstFree;</b>
+<b class="nc"><i>433</i>&nbsp;        this.m_map[this.m_firstFree] = null;</b>
+<i>434</i>&nbsp;        return this.m_firstFree == 0?null:this.m_map[this.m_firstFree - 1];
+<b class="nc"><i>435</i>&nbsp;    }</b>
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;    public final void popQuick() {</b>
+<i>438</i>&nbsp;        --this.m_firstFree;
+<b class="nc"><i>439</i>&nbsp;        this.m_map[this.m_firstFree] = null;</b>
+<i>440</i>&nbsp;    }
+<b class="nc"><i>441</i>&nbsp;</b>
+<i>442</i>&nbsp;    public final Node peepOrNull() {
+<b class="nc"><i>443</i>&nbsp;        return null != this.m_map &amp;&amp; this.m_firstFree &gt; 0?this.m_map[this.m_firstFree - 1]:null;</b>
+<i>444</i>&nbsp;    }
+<b class="nc"><i>445</i>&nbsp;</b>
+<i>446</i>&nbsp;    public final void pushPair(Node v1, Node v2) {
+<i>447</i>&nbsp;        if(null == this.m_map) {
+<i>448</i>&nbsp;            this.m_map = new Node[this.m_blocksize];
+<i>449</i>&nbsp;            this.m_mapSize = this.m_blocksize;
+<i>450</i>&nbsp;        } else if(this.m_firstFree + 2 &gt;= this.m_mapSize) {
+<i>451</i>&nbsp;            this.m_mapSize += this.m_blocksize;
+<i>452</i>&nbsp;            Node[] newMap = new Node[this.m_mapSize];
+<i>453</i>&nbsp;            System.arraycopy(this.m_map, 0, newMap, 0, this.m_firstFree);
+<i>454</i>&nbsp;            this.m_map = newMap;
+<i>455</i>&nbsp;        }
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;        this.m_map[this.m_firstFree] = v1;
+<i>458</i>&nbsp;        this.m_map[this.m_firstFree + 1] = v2;
+<i>459</i>&nbsp;        this.m_firstFree += 2;
+<i>460</i>&nbsp;    }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;    public final void popPair() {
+<i>463</i>&nbsp;        this.m_firstFree -= 2;
+<i>464</i>&nbsp;        this.m_map[this.m_firstFree] = null;
+<i>465</i>&nbsp;        this.m_map[this.m_firstFree + 1] = null;
+<i>466</i>&nbsp;    }
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    public final void setTail(Node n) {
+<i>469</i>&nbsp;        this.m_map[this.m_firstFree - 1] = n;
+<i>470</i>&nbsp;    }
+<i>471</i>&nbsp;
+<b class="nc"><i>472</i>&nbsp;    public final void setTailSub1(Node n) {</b>
+<b class="nc"><i>473</i>&nbsp;        this.m_map[this.m_firstFree - 2] = n;</b>
+<i>474</i>&nbsp;    }
+<b class="nc"><i>475</i>&nbsp;</b>
+<i>476</i>&nbsp;    public final Node peepTail() {
+<i>477</i>&nbsp;        return this.m_map[this.m_firstFree - 1];
+<i>478</i>&nbsp;    }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;    public final Node peepTailSub1() {
+<i>481</i>&nbsp;        return this.m_map[this.m_firstFree - 2];
+<i>482</i>&nbsp;    }
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;    public void insertElementAt(Node value, int at) {
+<i>485</i>&nbsp;        if(!this.m_mutable) {
+<i>486</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>487</i>&nbsp;        } else {
+<i>488</i>&nbsp;            if(null == this.m_map) {
+<b class="nc"><i>489</i>&nbsp;                this.m_map = new Node[this.m_blocksize];</b>
+<b class="nc"><i>490</i>&nbsp;                this.m_mapSize = this.m_blocksize;</b>
+<i>491</i>&nbsp;            } else if(this.m_firstFree + 1 &gt;= this.m_mapSize) {
+<b class="nc"><i>492</i>&nbsp;                this.m_mapSize += this.m_blocksize;</b>
+<i>493</i>&nbsp;                Node[] newMap = new Node[this.m_mapSize];
+<i>494</i>&nbsp;                System.arraycopy(this.m_map, 0, newMap, 0, this.m_firstFree + 1);
+<i>495</i>&nbsp;                this.m_map = newMap;
+<b class="nc"><i>496</i>&nbsp;            }</b>
+<i>497</i>&nbsp;
+<b class="nc"><i>498</i>&nbsp;            if(at &lt;= this.m_firstFree - 1) {</b>
+<i>499</i>&nbsp;                System.arraycopy(this.m_map, at, this.m_map, at + 1, this.m_firstFree - at);
+<i>500</i>&nbsp;            }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;            this.m_map[at] = value;
+<i>503</i>&nbsp;            ++this.m_firstFree;
+<i>504</i>&nbsp;        }
+<i>505</i>&nbsp;    }
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;    public void appendNodes(NodeSet nodes) {
+<i>508</i>&nbsp;        int nNodes = nodes.size();
+<i>509</i>&nbsp;        if(null == this.m_map) {
+<i>510</i>&nbsp;            this.m_mapSize = nNodes + this.m_blocksize;
+<i>511</i>&nbsp;            this.m_map = new Node[this.m_mapSize];
+<i>512</i>&nbsp;        } else if(this.m_firstFree + nNodes &gt;= this.m_mapSize) {
+<i>513</i>&nbsp;            this.m_mapSize += nNodes + this.m_blocksize;
+<i>514</i>&nbsp;            Node[] newMap = new Node[this.m_mapSize];
+<i>515</i>&nbsp;            System.arraycopy(this.m_map, 0, newMap, 0, this.m_firstFree + nNodes);
+<i>516</i>&nbsp;            this.m_map = newMap;
+<b class="nc"><i>517</i>&nbsp;        }</b>
+<b class="nc"><i>518</i>&nbsp;</b>
+<i>519</i>&nbsp;        System.arraycopy(nodes.m_map, 0, this.m_map, this.m_firstFree, nNodes);
+<b class="nc"><i>520</i>&nbsp;        this.m_firstFree += nNodes;</b>
+<i>521</i>&nbsp;    }
+<b class="nc"><i>522</i>&nbsp;</b>
+<i>523</i>&nbsp;    public void removeAllElements() {
+<b class="nc"><i>524</i>&nbsp;        if(null != this.m_map) {</b>
+<i>525</i>&nbsp;            for(int i = 0; i &lt; this.m_firstFree; ++i) {
+<b class="nc"><i>526</i>&nbsp;                this.m_map[i] = null;</b>
+<i>527</i>&nbsp;            }
+<b class="nc"><i>528</i>&nbsp;</b>
+<i>529</i>&nbsp;            this.m_firstFree = 0;
+<i>530</i>&nbsp;        }
+<i>531</i>&nbsp;    }
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;    public boolean removeElement(Node s) {
+<i>534</i>&nbsp;        if(!this.m_mutable) {
+<i>535</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<i>536</i>&nbsp;        } else if(null == this.m_map) {
+<i>537</i>&nbsp;            return false;
+<i>538</i>&nbsp;        } else {
+<i>539</i>&nbsp;            for(int i = 0; i &lt; this.m_firstFree; ++i) {
+<i>540</i>&nbsp;                Node node = this.m_map[i];
+<i>541</i>&nbsp;                if(null != node &amp;&amp; node.equals(s)) {
+<i>542</i>&nbsp;                    if(i &lt; this.m_firstFree - 1) {
+<i>543</i>&nbsp;                        System.arraycopy(this.m_map, i + 1, this.m_map, i, this.m_firstFree - i - 1);
+<i>544</i>&nbsp;                    }
+<b class="nc"><i>545</i>&nbsp;</b>
+<b class="nc"><i>546</i>&nbsp;                    --this.m_firstFree;</b>
+<i>547</i>&nbsp;                    this.m_map[this.m_firstFree] = null;
+<i>548</i>&nbsp;                    return true;
+<i>549</i>&nbsp;                }
+<b class="nc"><i>550</i>&nbsp;            }</b>
+<i>551</i>&nbsp;
+<b class="nc"><i>552</i>&nbsp;            return false;</b>
+<i>553</i>&nbsp;        }
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    public void removeElementAt(int i) {
+<i>557</i>&nbsp;        if(null != this.m_map) {
+<i>558</i>&nbsp;            if(i &gt;= this.m_firstFree) {
+<i>559</i>&nbsp;                throw new ArrayIndexOutOfBoundsException(i + &quot; &gt;= &quot; + this.m_firstFree);
+<i>560</i>&nbsp;            } else if(i &lt; 0) {
+<i>561</i>&nbsp;                throw new ArrayIndexOutOfBoundsException(i);
+<i>562</i>&nbsp;            } else {
+<i>563</i>&nbsp;                if(i &lt; this.m_firstFree - 1) {
+<i>564</i>&nbsp;                    System.arraycopy(this.m_map, i + 1, this.m_map, i, this.m_firstFree - i - 1);
+<i>565</i>&nbsp;                }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;                --this.m_firstFree;
+<i>568</i>&nbsp;                this.m_map[this.m_firstFree] = null;
+<i>569</i>&nbsp;            }
+<i>570</i>&nbsp;        }
+<i>571</i>&nbsp;    }
+<i>572</i>&nbsp;
+<b class="nc"><i>573</i>&nbsp;    public void setElementAt(Node node, int index) {</b>
+<b class="nc"><i>574</i>&nbsp;        if(!this.m_mutable) {</b>
+<i>575</i>&nbsp;            throw new RuntimeException(XSLMessages.createXPATHMessage(&quot;ER_NODESET_NOT_MUTABLE&quot;, (Object[])null));
+<b class="nc"><i>576</i>&nbsp;        } else {</b>
+<i>577</i>&nbsp;            if(null == this.m_map) {
+<b class="nc"><i>578</i>&nbsp;                this.m_map = new Node[this.m_blocksize];</b>
+<i>579</i>&nbsp;                this.m_mapSize = this.m_blocksize;
+<b class="nc"><i>580</i>&nbsp;            }</b>
+<i>581</i>&nbsp;
+<b class="nc"><i>582</i>&nbsp;            this.m_map[index] = node;</b>
+<i>583</i>&nbsp;        }
+<b class="nc"><i>584</i>&nbsp;    }</b>
+<i>585</i>&nbsp;
+<b class="nc"><i>586</i>&nbsp;    public Node elementAt(int i) {</b>
+<i>587</i>&nbsp;        return null == this.m_map?null:this.m_map[i];
+<b class="nc"><i>588</i>&nbsp;    }</b>
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;    public boolean contains(Node s) {
+<b class="nc"><i>591</i>&nbsp;        this.runTo(-1);</b>
+<i>592</i>&nbsp;        if(null == this.m_map) {
+<b class="nc"><i>593</i>&nbsp;            return false;</b>
+<i>594</i>&nbsp;        } else {
+<b class="nc"><i>595</i>&nbsp;            for(int i = 0; i &lt; this.m_firstFree; ++i) {</b>
+<i>596</i>&nbsp;                Node node = this.m_map[i];
+<b class="nc"><i>597</i>&nbsp;                if(null != node &amp;&amp; node.equals(s)) {</b>
+<i>598</i>&nbsp;                    return true;
+<b class="nc"><i>599</i>&nbsp;                }</b>
+<i>600</i>&nbsp;            }
+<i>601</i>&nbsp;
+<b class="nc"><i>602</i>&nbsp;            return false;</b>
+<i>603</i>&nbsp;        }
+<b class="nc"><i>604</i>&nbsp;    }</b>
+<i>605</i>&nbsp;
+<b class="nc"><i>606</i>&nbsp;    public int indexOf(Node elem, int index) {</b>
+<i>607</i>&nbsp;        this.runTo(-1);
+<i>608</i>&nbsp;        if(null == this.m_map) {
+<i>609</i>&nbsp;            return -1;
+<i>610</i>&nbsp;        } else {
+<i>611</i>&nbsp;            for(int i = index; i &lt; this.m_firstFree; ++i) {
+<b class="nc"><i>612</i>&nbsp;                Node node = this.m_map[i];</b>
+<i>613</i>&nbsp;                if(null != node &amp;&amp; node.equals(elem)) {
+<b class="nc"><i>614</i>&nbsp;                    return i;</b>
+<i>615</i>&nbsp;                }
+<i>616</i>&nbsp;            }
+<b class="nc"><i>617</i>&nbsp;</b>
+<i>618</i>&nbsp;            return -1;
+<i>619</i>&nbsp;        }
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    public int indexOf(Node elem) {
+<i>623</i>&nbsp;        this.runTo(-1);
+<i>624</i>&nbsp;        if(null == this.m_map) {
+<i>625</i>&nbsp;            return -1;
+<i>626</i>&nbsp;        } else {
+<i>627</i>&nbsp;            for(int i = 0; i &lt; this.m_firstFree; ++i) {
+<i>628</i>&nbsp;                Node node = this.m_map[i];
+<i>629</i>&nbsp;                if(null != node &amp;&amp; node.equals(elem)) {
+<i>630</i>&nbsp;                    return i;
+<i>631</i>&nbsp;                }
+<i>632</i>&nbsp;            }
+<b class="nc"><i>633</i>&nbsp;</b>
+<b class="nc"><i>634</i>&nbsp;            return -1;</b>
+<i>635</i>&nbsp;        }
+<b class="nc"><i>636</i>&nbsp;    }</b>
+<i>637</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

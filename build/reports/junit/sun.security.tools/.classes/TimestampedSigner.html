@@ -1,0 +1,317 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TimestampedSigner</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.tools</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TimestampedSigner (sun.security.tools)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TimestampedSigner</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 107)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.tools;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jarsigner.ContentSigner;
+<i>9</i>&nbsp;import com.sun.jarsigner.ContentSignerParameters;
+<i>10</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>11</i>&nbsp;import java.io.IOException;
+<i>12</i>&nbsp;import java.math.BigInteger;
+<i>13</i>&nbsp;import java.net.URI;
+<i>14</i>&nbsp;import java.security.MessageDigest;
+<i>15</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>16</i>&nbsp;import java.security.Principal;
+<i>17</i>&nbsp;import java.security.SecureRandom;
+<i>18</i>&nbsp;import java.security.cert.CertificateException;
+<i>19</i>&nbsp;import java.security.cert.X509CRL;
+<i>20</i>&nbsp;import java.security.cert.X509Certificate;
+<i>21</i>&nbsp;import java.util.Arrays;
+<i>22</i>&nbsp;import java.util.List;
+<i>23</i>&nbsp;import sun.security.pkcs.ContentInfo;
+<i>24</i>&nbsp;import sun.security.pkcs.PKCS7;
+<i>25</i>&nbsp;import sun.security.pkcs.PKCS9Attribute;
+<i>26</i>&nbsp;import sun.security.pkcs.PKCS9Attributes;
+<i>27</i>&nbsp;import sun.security.pkcs.SignerInfo;
+<i>28</i>&nbsp;import sun.security.timestamp.HttpTimestamper;
+<i>29</i>&nbsp;import sun.security.timestamp.TSRequest;
+<i>30</i>&nbsp;import sun.security.timestamp.TSResponse;
+<i>31</i>&nbsp;import sun.security.timestamp.TimestampToken;
+<i>32</i>&nbsp;import sun.security.util.DerInputStream;
+<i>33</i>&nbsp;import sun.security.util.DerValue;
+<i>34</i>&nbsp;import sun.security.util.ObjectIdentifier;
+<i>35</i>&nbsp;import sun.security.x509.AccessDescription;
+<i>36</i>&nbsp;import sun.security.x509.AlgorithmId;
+<i>37</i>&nbsp;import sun.security.x509.GeneralName;
+<i>38</i>&nbsp;import sun.security.x509.URIName;
+<i>39</i>&nbsp;import sun.security.x509.X500Name;
+<i>40</i>&nbsp;import sun.security.x509.X509CertInfo;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;public final class TimestampedSigner extends ContentSigner {
+<i>43</i>&nbsp;    private static final SecureRandom RANDOM;
+<i>44</i>&nbsp;    private static final String SUBJECT_INFO_ACCESS_OID = &quot;1.3.6.1.5.5.7.1.11&quot;;
+<i>45</i>&nbsp;    private static final String KP_TIMESTAMPING_OID = &quot;1.3.6.1.5.5.7.3.8&quot;;
+<i>46</i>&nbsp;    private static final String EXTENDED_KEY_USAGE_OID = &quot;2.5.29.37&quot;;
+<i>47</i>&nbsp;    private static final ObjectIdentifier AD_TIMESTAMPING_Id;
+<i>48</i>&nbsp;    private String tsaUrl = null;
+<i>49</i>&nbsp;    private X509Certificate tsaCertificate = null;
+<i>50</i>&nbsp;    private MessageDigest messageDigest = null;
+<i>51</i>&nbsp;    private boolean tsRequestCertificate = true;
+<i>52</i>&nbsp;
+<b class="nc"><i>53</i>&nbsp;    public TimestampedSigner() {</b>
+<i>54</i>&nbsp;    }
+<b class="nc"><i>55</i>&nbsp;</b>
+<b class="nc"><i>56</i>&nbsp;    public byte[] generateSignedData(ContentSignerParameters var1, boolean var2, boolean var3) throws NoSuchAlgorithmException, CertificateException, IOException {</b>
+<i>57</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>58</i>&nbsp;            throw new NullPointerException();</b>
+<b class="nc"><i>59</i>&nbsp;        } else {</b>
+<i>60</i>&nbsp;            String var4 = var1.getSignatureAlgorithm();
+<i>61</i>&nbsp;            String var5 = AlgorithmId.getEncAlgFromSigAlg(var4);
+<i>62</i>&nbsp;            String var6 = AlgorithmId.getDigAlgFromSigAlg(var4);
+<i>63</i>&nbsp;            AlgorithmId var7 = AlgorithmId.get(var6);
+<i>64</i>&nbsp;            X509Certificate[] var8 = var1.getSignerCertificateChain();
+<i>65</i>&nbsp;            Principal var9 = var8[0].getIssuerDN();
+<i>66</i>&nbsp;            if(!(var9 instanceof X500Name)) {
+<i>67</i>&nbsp;                X509CertInfo var10 = new X509CertInfo(var8[0].getTBSCertificate());
+<i>68</i>&nbsp;                var9 = (Principal)var10.get(&quot;issuer.dname&quot;);
+<i>69</i>&nbsp;            }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;            BigInteger var19 = var8[0].getSerialNumber();
+<i>72</i>&nbsp;            byte[] var11 = var1.getContent();
+<i>73</i>&nbsp;            ContentInfo var12;
+<i>74</i>&nbsp;            if(var2) {
+<i>75</i>&nbsp;                var12 = new ContentInfo(ContentInfo.DATA_OID, (DerValue)null);
+<i>76</i>&nbsp;            } else {
+<i>77</i>&nbsp;                var12 = new ContentInfo(var11);
+<b class="nc"><i>78</i>&nbsp;            }</b>
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;            byte[] var13 = var1.getSignature();</b>
+<b class="nc"><i>81</i>&nbsp;            SignerInfo var14 = null;</b>
+<i>82</i>&nbsp;            if(var3) {
+<b class="nc"><i>83</i>&nbsp;                this.tsaCertificate = var1.getTimestampingAuthorityCertificate();</b>
+<b class="nc"><i>84</i>&nbsp;                URI var15 = var1.getTimestampingAuthority();</b>
+<i>85</i>&nbsp;                if(var15 != null) {
+<i>86</i>&nbsp;                    this.tsaUrl = var15.toString();
+<i>87</i>&nbsp;                } else {
+<i>88</i>&nbsp;                    String var16 = getTimestampingUrl(this.tsaCertificate);
+<i>89</i>&nbsp;                    if(var16 == null) {
+<b class="nc"><i>90</i>&nbsp;                        throw new CertificateException(&quot;Subject Information Access extension not found&quot;);</b>
+<i>91</i>&nbsp;                    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;                    this.tsaUrl = var16;
+<i>94</i>&nbsp;                }
+<b class="nc"><i>95</i>&nbsp;</b>
+<i>96</i>&nbsp;                byte[] var22 = this.generateTimestampToken(var13);
+<i>97</i>&nbsp;                PKCS9Attributes var17 = new PKCS9Attributes(new PKCS9Attribute[]{new PKCS9Attribute(&quot;SignatureTimestampToken&quot;, var22)});
+<i>98</i>&nbsp;                var14 = new SignerInfo((X500Name)var9, var19, var7, (PKCS9Attributes)null, AlgorithmId.get(var5), var13, var17);
+<i>99</i>&nbsp;            } else {
+<b class="nc"><i>100</i>&nbsp;                var14 = new SignerInfo((X500Name)var9, var19, var7, AlgorithmId.get(var5), var13);</b>
+<i>101</i>&nbsp;            }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;            SignerInfo[] var20 = new SignerInfo[]{var14};
+<i>104</i>&nbsp;            AlgorithmId[] var21 = new AlgorithmId[]{var7};
+<b class="nc"><i>105</i>&nbsp;            PKCS7 var23 = new PKCS7(var21, var12, var8, (X509CRL[])null, var20);</b>
+<i>106</i>&nbsp;            ByteArrayOutputStream var18 = new ByteArrayOutputStream();
+<i>107</i>&nbsp;            var23.encodeSignedData(var18);
+<i>108</i>&nbsp;            return var18.toByteArray();
+<i>109</i>&nbsp;        }
+<b class="nc"><i>110</i>&nbsp;    }</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public static String getTimestampingUrl(X509Certificate var0) {
+<i>113</i>&nbsp;        if(var0 == null) {
+<i>114</i>&nbsp;            return null;
+<i>115</i>&nbsp;        } else {
+<i>116</i>&nbsp;            try {
+<i>117</i>&nbsp;                byte[] var1 = var0.getExtensionValue(&quot;1.3.6.1.5.5.7.1.11&quot;);
+<i>118</i>&nbsp;                if(var1 == null) {
+<i>119</i>&nbsp;                    return null;
+<i>120</i>&nbsp;                }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;                DerInputStream var2 = new DerInputStream(var1);
+<i>123</i>&nbsp;                var2 = new DerInputStream(var2.getOctetString());
+<i>124</i>&nbsp;                DerValue[] var3 = var2.getSequence(5);
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;                for(int var7 = 0; var7 &lt; var3.length; ++var7) {
+<i>127</i>&nbsp;                    AccessDescription var4 = new AccessDescription(var3[var7]);
+<i>128</i>&nbsp;                    if(var4.getAccessMethod().equals(AD_TIMESTAMPING_Id)) {
+<i>129</i>&nbsp;                        GeneralName var5 = var4.getAccessLocation();
+<i>130</i>&nbsp;                        if(var5.getType() == 6) {
+<i>131</i>&nbsp;                            URIName var6 = (URIName)var5.getName();
+<i>132</i>&nbsp;                            if(var6.getScheme().equalsIgnoreCase(&quot;http&quot;) || var6.getScheme().equalsIgnoreCase(&quot;https&quot;)) {
+<i>133</i>&nbsp;                                return var6.getName();
+<i>134</i>&nbsp;                            }
+<i>135</i>&nbsp;                        }
+<i>136</i>&nbsp;                    }
+<i>137</i>&nbsp;                }
+<i>138</i>&nbsp;            } catch (IOException var8) {
+<i>139</i>&nbsp;                ;
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;            return null;</b>
+<b class="nc"><i>143</i>&nbsp;        }</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    private byte[] generateTimestampToken(byte[] var1) throws CertificateException, IOException {
+<i>147</i>&nbsp;        if(this.messageDigest == null) {
+<i>148</i>&nbsp;            try {
+<i>149</i>&nbsp;                this.messageDigest = MessageDigest.getInstance(&quot;SHA-1&quot;);
+<b class="nc"><i>150</i>&nbsp;            } catch (NoSuchAlgorithmException var17) {</b>
+<b class="nc"><i>151</i>&nbsp;                ;</b>
+<b class="nc"><i>152</i>&nbsp;            }</b>
+<b class="nc"><i>153</i>&nbsp;        }</b>
+<b class="nc"><i>154</i>&nbsp;</b>
+<b class="nc"><i>155</i>&nbsp;        byte[] var2 = this.messageDigest.digest(var1);</b>
+<b class="nc"><i>156</i>&nbsp;        TSRequest var3 = new TSRequest(var2, &quot;SHA-1&quot;);</b>
+<b class="nc"><i>157</i>&nbsp;        BigInteger var4 = null;</b>
+<b class="nc"><i>158</i>&nbsp;        if(RANDOM != null) {</b>
+<i>159</i>&nbsp;            var4 = new BigInteger(64, RANDOM);
+<b class="nc"><i>160</i>&nbsp;            var3.setNonce(var4);</b>
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;        var3.requestCertificate(this.tsRequestCertificate);</b>
+<i>164</i>&nbsp;        HttpTimestamper var5 = new HttpTimestamper(this.tsaUrl);
+<i>165</i>&nbsp;        TSResponse var6 = var5.generateTimestamp(var3);
+<b class="nc"><i>166</i>&nbsp;        int var7 = var6.getStatusCode();</b>
+<i>167</i>&nbsp;        if(var7 != 0 &amp;&amp; var7 != 1) {
+<b class="nc"><i>168</i>&nbsp;            int var18 = var6.getFailureCode();</b>
+<b class="nc"><i>169</i>&nbsp;            if(var18 == -1) {</b>
+<i>170</i>&nbsp;                throw new IOException(&quot;Error generating timestamp: &quot; + var6.getStatusCodeAsText());
+<i>171</i>&nbsp;            } else {
+<i>172</i>&nbsp;                throw new IOException(&quot;Error generating timestamp: &quot; + var6.getStatusCodeAsText() + &quot; &quot; + var6.getFailureCodeAsText());
+<i>173</i>&nbsp;            }
+<b class="nc"><i>174</i>&nbsp;        } else {</b>
+<i>175</i>&nbsp;            PKCS7 var8 = var6.getToken();
+<b class="nc"><i>176</i>&nbsp;            TimestampToken var9 = new TimestampToken(var8.getContentInfo().getData());</b>
+<i>177</i>&nbsp;            if(!var9.getHashAlgorithm().equals(new AlgorithmId(new ObjectIdentifier(&quot;1.3.14.3.2.26&quot;)))) {
+<i>178</i>&nbsp;                throw new IOException(&quot;Digest algorithm not SHA-1 in timestamp token&quot;);
+<i>179</i>&nbsp;            } else if(!Arrays.equals(var9.getHashedMessage(), var2)) {
+<b class="nc"><i>180</i>&nbsp;                throw new IOException(&quot;Digest octets changed in timestamp token&quot;);</b>
+<i>181</i>&nbsp;            } else {
+<i>182</i>&nbsp;                BigInteger var10 = var9.getNonce();
+<b class="nc"><i>183</i>&nbsp;                if(var10 == null &amp;&amp; var4 != null) {</b>
+<i>184</i>&nbsp;                    throw new IOException(&quot;Nonce missing in timestamp token&quot;);
+<b class="nc"><i>185</i>&nbsp;                } else if(var10 != null &amp;&amp; !var10.equals(var4)) {</b>
+<b class="nc"><i>186</i>&nbsp;                    throw new IOException(&quot;Nonce changed in timestamp token&quot;);</b>
+<i>187</i>&nbsp;                } else {
+<b class="nc"><i>188</i>&nbsp;                    SignerInfo[] var11 = var8.getSignerInfos();</b>
+<i>189</i>&nbsp;                    int var12 = var11.length;
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;                    for(int var13 = 0; var13 &lt; var12; ++var13) {
+<b class="nc"><i>192</i>&nbsp;                        SignerInfo var14 = var11[var13];</b>
+<b class="nc"><i>193</i>&nbsp;                        X509Certificate var15 = var14.getCertificate(var8);</b>
+<b class="nc"><i>194</i>&nbsp;                        if(var15 == null) {</b>
+<i>195</i>&nbsp;                            throw new CertificateException(&quot;Certificate not included in timestamp token&quot;);
+<b class="nc"><i>196</i>&nbsp;                        }</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<b class="nc"><i>198</i>&nbsp;                        if(!var15.getCriticalExtensionOIDs().contains(&quot;2.5.29.37&quot;)) {</b>
+<b class="nc"><i>199</i>&nbsp;                            throw new CertificateException(&quot;Certificate is not valid for timestamping&quot;);</b>
+<i>200</i>&nbsp;                        }
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;                        List var16 = var15.getExtendedKeyUsage();</b>
+<b class="nc"><i>203</i>&nbsp;                        if(var16 == null || !var16.contains(&quot;1.3.6.1.5.5.7.3.8&quot;)) {</b>
+<b class="nc"><i>204</i>&nbsp;                            throw new CertificateException(&quot;Certificate is not valid for timestamping&quot;);</b>
+<i>205</i>&nbsp;                        }
+<i>206</i>&nbsp;                    }
+<b class="nc"><i>207</i>&nbsp;</b>
+<i>208</i>&nbsp;                    return var6.getEncodedToken();
+<i>209</i>&nbsp;                }
+<i>210</i>&nbsp;            }
+<b class="nc"><i>211</i>&nbsp;        }</b>
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    static {
+<b class="nc"><i>215</i>&nbsp;        SecureRandom var0 = null;</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        try {
+<i>218</i>&nbsp;            var0 = SecureRandom.getInstance(&quot;SHA1PRNG&quot;);
+<i>219</i>&nbsp;        } catch (NoSuchAlgorithmException var3) {
+<b class="nc"><i>220</i>&nbsp;            ;</b>
+<i>221</i>&nbsp;        }
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;        RANDOM = var0;</b>
+<b class="nc"><i>224</i>&nbsp;        ObjectIdentifier var4 = null;</b>
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;        try {
+<i>227</i>&nbsp;            var4 = new ObjectIdentifier(&quot;1.3.6.1.5.5.7.48.3&quot;);
+<b class="nc"><i>228</i>&nbsp;        } catch (IOException var2) {</b>
+<b class="nc"><i>229</i>&nbsp;            ;</b>
+<i>230</i>&nbsp;        }
+<i>231</i>&nbsp;
+<b class="nc"><i>232</i>&nbsp;        AD_TIMESTAMPING_Id = var4;</b>
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:51</div>
+</div>
+</body>
+</html>

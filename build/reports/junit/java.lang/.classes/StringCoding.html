@@ -1,0 +1,474 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StringCoding</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">java.lang</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StringCoding (java.lang)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StringCoding</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 73)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StringCoding$StringDecoder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StringCoding$StringEncoder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 125)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package java.lang;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>9</i>&nbsp;import java.lang.ref.SoftReference;
+<i>10</i>&nbsp;import java.nio.ByteBuffer;
+<i>11</i>&nbsp;import java.nio.CharBuffer;
+<i>12</i>&nbsp;import java.nio.charset.CharacterCodingException;
+<i>13</i>&nbsp;import java.nio.charset.Charset;
+<i>14</i>&nbsp;import java.nio.charset.CharsetDecoder;
+<i>15</i>&nbsp;import java.nio.charset.CharsetEncoder;
+<i>16</i>&nbsp;import java.nio.charset.CoderResult;
+<i>17</i>&nbsp;import java.nio.charset.CodingErrorAction;
+<i>18</i>&nbsp;import java.nio.charset.IllegalCharsetNameException;
+<i>19</i>&nbsp;import java.nio.charset.UnsupportedCharsetException;
+<i>20</i>&nbsp;import java.util.Arrays;
+<i>21</i>&nbsp;import sun.misc.MessageUtils;
+<i>22</i>&nbsp;import sun.nio.cs.ArrayDecoder;
+<i>23</i>&nbsp;import sun.nio.cs.ArrayEncoder;
+<i>24</i>&nbsp;import sun.nio.cs.HistoricallyNamedCharset;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;class StringCoding {
+<i>27</i>&nbsp;    private static final ThreadLocal&lt;SoftReference&lt;StringCoding.StringDecoder&gt;&gt; decoder = new ThreadLocal();
+<i>28</i>&nbsp;    private static final ThreadLocal&lt;SoftReference&lt;StringCoding.StringEncoder&gt;&gt; encoder = new ThreadLocal();
+<i>29</i>&nbsp;    private static boolean warnUnsupportedCharset = true;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    private StringCoding() {
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<b class="nc"><i>34</i>&nbsp;    private static &lt;T&gt; T deref(ThreadLocal&lt;SoftReference&lt;T&gt;&gt; var0) {</b>
+<i>35</i>&nbsp;        SoftReference var1 = (SoftReference)var0.get();
+<b class="nc"><i>36</i>&nbsp;        return var1 == null?null:var1.get();</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private static &lt;T&gt; void set(ThreadLocal&lt;SoftReference&lt;T&gt;&gt; var0, T var1) {
+<b class="nc"><i>40</i>&nbsp;        var0.set(new SoftReference(var1));</b>
+<b class="nc"><i>41</i>&nbsp;    }</b>
+<i>42</i>&nbsp;
+<b class="nc"><i>43</i>&nbsp;    private static byte[] safeTrim(byte[] var0, int var1, Charset var2, boolean var3) {</b>
+<i>44</i>&nbsp;        return var1 == var0.length &amp;&amp; (var3 || System.getSecurityManager() == null)?var0:Arrays.copyOf(var0, var1);
+<i>45</i>&nbsp;    }
+<b class="nc"><i>46</i>&nbsp;</b>
+<b class="nc"><i>47</i>&nbsp;    private static char[] safeTrim(char[] var0, int var1, Charset var2, boolean var3) {</b>
+<b class="nc"><i>48</i>&nbsp;        return var1 == var0.length &amp;&amp; (var3 || System.getSecurityManager() == null)?var0:Arrays.copyOf(var0, var1);</b>
+<b class="nc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private static int scale(int var0, float var1) {
+<i>52</i>&nbsp;        return (int)((double)var0 * (double)var1);
+<b class="nc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    private static Charset lookupCharset(String var0) {
+<i>56</i>&nbsp;        if(Charset.isSupported(var0)) {
+<i>57</i>&nbsp;            try {
+<i>58</i>&nbsp;                return Charset.forName(var0);
+<b class="nc"><i>59</i>&nbsp;            } catch (UnsupportedCharsetException var2) {</b>
+<i>60</i>&nbsp;                throw new Error(var2);
+<i>61</i>&nbsp;            }
+<b class="nc"><i>62</i>&nbsp;        } else {</b>
+<i>63</i>&nbsp;            return null;
+<b class="nc"><i>64</i>&nbsp;        }</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    private static void warnUnsupportedCharset(String var0) {
+<i>68</i>&nbsp;        if(warnUnsupportedCharset) {
+<i>69</i>&nbsp;            MessageUtils.err(&quot;WARNING: Default charset &quot; + var0 + &quot; not supported, using ISO-8859-1 instead&quot;);
+<b class="nc"><i>70</i>&nbsp;            warnUnsupportedCharset = false;</b>
+<i>71</i>&nbsp;        }
+<i>72</i>&nbsp;
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<b class="nc"><i>75</i>&nbsp;    static char[] decode(String var0, byte[] var1, int var2, int var3) throws UnsupportedEncodingException {</b>
+<i>76</i>&nbsp;        StringCoding.StringDecoder var4 = (StringCoding.StringDecoder)deref(decoder);
+<i>77</i>&nbsp;        String var5 = var0 == null?&quot;ISO-8859-1&quot;:var0;
+<i>78</i>&nbsp;        if(var4 == null || !var5.equals(var4.requestedCharsetName()) &amp;&amp; !var5.equals(var4.charsetName())) {
+<i>79</i>&nbsp;            var4 = null;
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;            try {</b>
+<i>82</i>&nbsp;                Charset var6 = lookupCharset(var5);
+<i>83</i>&nbsp;                if(var6 != null) {
+<i>84</i>&nbsp;                    var4 = new StringCoding.StringDecoder(var6, var5);
+<b class="nc"><i>85</i>&nbsp;                }</b>
+<i>86</i>&nbsp;            } catch (IllegalCharsetNameException var7) {
+<b class="nc"><i>87</i>&nbsp;                ;</b>
+<b class="nc"><i>88</i>&nbsp;            }</b>
+<b class="nc"><i>89</i>&nbsp;</b>
+<i>90</i>&nbsp;            if(var4 == null) {
+<i>91</i>&nbsp;                throw new UnsupportedEncodingException(var5);
+<b class="nc"><i>92</i>&nbsp;            }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;            set(decoder, var4);
+<i>95</i>&nbsp;        }
+<b class="nc"><i>96</i>&nbsp;</b>
+<i>97</i>&nbsp;        return var4.decode(var1, var2, var3);
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<b class="nc"><i>100</i>&nbsp;    static char[] decode(Charset var0, byte[] var1, int var2, int var3) {</b>
+<i>101</i>&nbsp;        CharsetDecoder var4 = var0.newDecoder();
+<b class="nc"><i>102</i>&nbsp;        int var5 = scale(var3, var4.maxCharsPerByte());</b>
+<i>103</i>&nbsp;        char[] var6 = new char[var5];
+<i>104</i>&nbsp;        if(var3 == 0) {
+<i>105</i>&nbsp;            return var6;
+<i>106</i>&nbsp;        } else {
+<i>107</i>&nbsp;            boolean var7 = false;
+<b class="nc"><i>108</i>&nbsp;            if(System.getSecurityManager() != null &amp;&amp; !(var7 = var0.getClass().getClassLoader0() == null)) {</b>
+<i>109</i>&nbsp;                var1 = Arrays.copyOfRange(var1, var2, var2 + var3);
+<i>110</i>&nbsp;                var2 = 0;
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;            var4.onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE).reset();</b>
+<b class="nc"><i>114</i>&nbsp;            if(var4 instanceof ArrayDecoder) {</b>
+<b class="nc"><i>115</i>&nbsp;                int var12 = ((ArrayDecoder)var4).decode(var1, var2, var3, var6);</b>
+<b class="nc"><i>116</i>&nbsp;                return safeTrim((char[])var6, var12, var0, var7);</b>
+<i>117</i>&nbsp;            } else {
+<i>118</i>&nbsp;                ByteBuffer var8 = ByteBuffer.wrap(var1, var2, var3);
+<i>119</i>&nbsp;                CharBuffer var9 = CharBuffer.wrap(var6);
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;                try {
+<b class="nc"><i>122</i>&nbsp;                    CoderResult var10 = var4.decode(var8, var9, true);</b>
+<b class="nc"><i>123</i>&nbsp;                    if(!var10.isUnderflow()) {</b>
+<b class="nc"><i>124</i>&nbsp;                        var10.throwException();</b>
+<i>125</i>&nbsp;                    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;                    var10 = var4.flush(var9);
+<b class="nc"><i>128</i>&nbsp;                    if(!var10.isUnderflow()) {</b>
+<i>129</i>&nbsp;                        var10.throwException();
+<i>130</i>&nbsp;                    }
+<i>131</i>&nbsp;                } catch (CharacterCodingException var11) {
+<b class="nc"><i>132</i>&nbsp;                    throw new Error(var11);</b>
+<b class="nc"><i>133</i>&nbsp;                }</b>
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;                return safeTrim((char[])var6, var9.position(), var0, var7);</b>
+<b class="nc"><i>136</i>&nbsp;            }</b>
+<b class="nc"><i>137</i>&nbsp;        }</b>
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<i>139</i>&nbsp;
+<b class="nc"><i>140</i>&nbsp;    static char[] decode(byte[] var0, int var1, int var2) {</b>
+<b class="nc"><i>141</i>&nbsp;        String var3 = Charset.defaultCharset().name();</b>
+<b class="nc"><i>142</i>&nbsp;</b>
+<b class="nc"><i>143</i>&nbsp;        try {</b>
+<b class="nc"><i>144</i>&nbsp;            return decode((String)var3, var0, var1, var2);</b>
+<b class="nc"><i>145</i>&nbsp;        } catch (UnsupportedEncodingException var6) {</b>
+<b class="nc"><i>146</i>&nbsp;            warnUnsupportedCharset(var3);</b>
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;            try {
+<b class="nc"><i>149</i>&nbsp;                return decode((String)&quot;ISO-8859-1&quot;, var0, var1, var2);</b>
+<b class="nc"><i>150</i>&nbsp;            } catch (UnsupportedEncodingException var5) {</b>
+<b class="nc"><i>151</i>&nbsp;                MessageUtils.err(&quot;ISO-8859-1 charset not available: &quot; + var5.toString());</b>
+<i>152</i>&nbsp;                System.exit(1);
+<i>153</i>&nbsp;                return null;
+<i>154</i>&nbsp;            }
+<i>155</i>&nbsp;        }
+<i>156</i>&nbsp;    }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    static byte[] encode(String var0, char[] var1, int var2, int var3) throws UnsupportedEncodingException {
+<b class="nc"><i>159</i>&nbsp;        StringCoding.StringEncoder var4 = (StringCoding.StringEncoder)deref(encoder);</b>
+<b class="nc"><i>160</i>&nbsp;        String var5 = var0 == null?&quot;ISO-8859-1&quot;:var0;</b>
+<b class="nc"><i>161</i>&nbsp;        if(var4 == null || !var5.equals(var4.requestedCharsetName()) &amp;&amp; !var5.equals(var4.charsetName())) {</b>
+<i>162</i>&nbsp;            var4 = null;
+<b class="nc"><i>163</i>&nbsp;</b>
+<i>164</i>&nbsp;            try {
+<b class="nc"><i>165</i>&nbsp;                Charset var6 = lookupCharset(var5);</b>
+<b class="nc"><i>166</i>&nbsp;                if(var6 != null) {</b>
+<b class="nc"><i>167</i>&nbsp;                    var4 = new StringCoding.StringEncoder(var6, var5);</b>
+<b class="nc"><i>168</i>&nbsp;                }</b>
+<b class="nc"><i>169</i>&nbsp;            } catch (IllegalCharsetNameException var7) {</b>
+<b class="nc"><i>170</i>&nbsp;                ;</b>
+<b class="nc"><i>171</i>&nbsp;            }</b>
+<i>172</i>&nbsp;
+<b class="nc"><i>173</i>&nbsp;            if(var4 == null) {</b>
+<i>174</i>&nbsp;                throw new UnsupportedEncodingException(var5);
+<i>175</i>&nbsp;            }
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;            set(encoder, var4);</b>
+<b class="nc"><i>178</i>&nbsp;        }</b>
+<b class="nc"><i>179</i>&nbsp;</b>
+<i>180</i>&nbsp;        return var4.encode(var1, var2, var3);
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<b class="nc"><i>183</i>&nbsp;    static byte[] encode(Charset var0, char[] var1, int var2, int var3) {</b>
+<i>184</i>&nbsp;        CharsetEncoder var4 = var0.newEncoder();
+<b class="nc"><i>185</i>&nbsp;        int var5 = scale(var3, var4.maxBytesPerChar());</b>
+<b class="nc"><i>186</i>&nbsp;        byte[] var6 = new byte[var5];</b>
+<b class="nc"><i>187</i>&nbsp;        if(var3 == 0) {</b>
+<i>188</i>&nbsp;            return var6;
+<i>189</i>&nbsp;        } else {
+<b class="nc"><i>190</i>&nbsp;            boolean var7 = false;</b>
+<b class="nc"><i>191</i>&nbsp;            if(System.getSecurityManager() != null &amp;&amp; !(var7 = var0.getClass().getClassLoader0() == null)) {</b>
+<i>192</i>&nbsp;                var1 = Arrays.copyOfRange(var1, var2, var2 + var3);
+<i>193</i>&nbsp;                var2 = 0;
+<b class="nc"><i>194</i>&nbsp;            }</b>
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;            var4.onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE).reset();
+<i>197</i>&nbsp;            if(var4 instanceof ArrayEncoder) {
+<b class="nc"><i>198</i>&nbsp;                int var12 = ((ArrayEncoder)var4).encode(var1, var2, var3, var6);</b>
+<b class="nc"><i>199</i>&nbsp;                return safeTrim((byte[])var6, var12, var0, var7);</b>
+<i>200</i>&nbsp;            } else {
+<i>201</i>&nbsp;                ByteBuffer var8 = ByteBuffer.wrap(var6);
+<i>202</i>&nbsp;                CharBuffer var9 = CharBuffer.wrap(var1, var2, var3);
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;                try {
+<i>205</i>&nbsp;                    CoderResult var10 = var4.encode(var9, var8, true);
+<i>206</i>&nbsp;                    if(!var10.isUnderflow()) {
+<b class="nc"><i>207</i>&nbsp;                        var10.throwException();</b>
+<i>208</i>&nbsp;                    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;                    var10 = var4.flush(var8);
+<i>211</i>&nbsp;                    if(!var10.isUnderflow()) {
+<b class="nc"><i>212</i>&nbsp;                        var10.throwException();</b>
+<b class="nc"><i>213</i>&nbsp;                    }</b>
+<b class="nc"><i>214</i>&nbsp;                } catch (CharacterCodingException var11) {</b>
+<b class="nc"><i>215</i>&nbsp;                    throw new Error(var11);</b>
+<i>216</i>&nbsp;                }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;                return safeTrim((byte[])var6, var8.position(), var0, var7);
+<i>219</i>&nbsp;            }
+<i>220</i>&nbsp;        }
+<b class="nc"><i>221</i>&nbsp;    }</b>
+<b class="nc"><i>222</i>&nbsp;</b>
+<b class="nc"><i>223</i>&nbsp;    static byte[] encode(char[] var0, int var1, int var2) {</b>
+<i>224</i>&nbsp;        String var3 = Charset.defaultCharset().name();
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;        try {
+<b class="nc"><i>227</i>&nbsp;            return encode((String)var3, var0, var1, var2);</b>
+<i>228</i>&nbsp;        } catch (UnsupportedEncodingException var6) {
+<i>229</i>&nbsp;            warnUnsupportedCharset(var3);
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;            try {</b>
+<b class="nc"><i>232</i>&nbsp;                return encode((String)&quot;ISO-8859-1&quot;, var0, var1, var2);</b>
+<b class="nc"><i>233</i>&nbsp;            } catch (UnsupportedEncodingException var5) {</b>
+<b class="nc"><i>234</i>&nbsp;                MessageUtils.err(&quot;ISO-8859-1 charset not available: &quot; + var5.toString());</b>
+<i>235</i>&nbsp;                System.exit(1);
+<b class="nc"><i>236</i>&nbsp;                return null;</b>
+<b class="nc"><i>237</i>&nbsp;            }</b>
+<b class="nc"><i>238</i>&nbsp;        }</b>
+<i>239</i>&nbsp;    }
+<b class="nc"><i>240</i>&nbsp;</b>
+<b class="nc"><i>241</i>&nbsp;    private static class StringEncoder {</b>
+<b class="nc"><i>242</i>&nbsp;        private Charset cs;</b>
+<b class="nc"><i>243</i>&nbsp;        private CharsetEncoder ce;</b>
+<b class="nc"><i>244</i>&nbsp;        private final String requestedCharsetName;</b>
+<b class="nc"><i>245</i>&nbsp;        private final boolean isTrusted;</b>
+<b class="nc"><i>246</i>&nbsp;</b>
+<i>247</i>&nbsp;        private StringEncoder(Charset var1, String var2) {
+<i>248</i>&nbsp;            this.requestedCharsetName = var2;
+<b class="nc"><i>249</i>&nbsp;            this.cs = var1;</b>
+<b class="nc"><i>250</i>&nbsp;            this.ce = var1.newEncoder().onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE);</b>
+<b class="nc"><i>251</i>&nbsp;            this.isTrusted = var1.getClass().getClassLoader0() == null;</b>
+<i>252</i>&nbsp;        }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;        String charsetName() {
+<i>255</i>&nbsp;            return this.cs instanceof HistoricallyNamedCharset?((HistoricallyNamedCharset)this.cs).historicalName():this.cs.name();
+<i>256</i>&nbsp;        }
+<i>257</i>&nbsp;
+<b class="nc"><i>258</i>&nbsp;        final String requestedCharsetName() {</b>
+<b class="nc"><i>259</i>&nbsp;            return this.requestedCharsetName;</b>
+<b class="nc"><i>260</i>&nbsp;        }</b>
+<i>261</i>&nbsp;
+<b class="nc"><i>262</i>&nbsp;        byte[] encode(char[] var1, int var2, int var3) {</b>
+<i>263</i>&nbsp;            int var4 = StringCoding.scale(var3, this.ce.maxBytesPerChar());
+<b class="nc"><i>264</i>&nbsp;            byte[] var5 = new byte[var4];</b>
+<b class="nc"><i>265</i>&nbsp;            if(var3 == 0) {</b>
+<b class="nc"><i>266</i>&nbsp;                return var5;</b>
+<b class="nc"><i>267</i>&nbsp;            } else if(this.ce instanceof ArrayEncoder) {</b>
+<b class="nc"><i>268</i>&nbsp;                int var10 = ((ArrayEncoder)this.ce).encode(var1, var2, var3, var5);</b>
+<b class="nc"><i>269</i>&nbsp;                return StringCoding.safeTrim((byte[])var5, var10, this.cs, this.isTrusted);</b>
+<b class="nc"><i>270</i>&nbsp;            } else {</b>
+<i>271</i>&nbsp;                this.ce.reset();
+<b class="nc"><i>272</i>&nbsp;                ByteBuffer var6 = ByteBuffer.wrap(var5);</b>
+<i>273</i>&nbsp;                CharBuffer var7 = CharBuffer.wrap(var1, var2, var3);
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;                try {
+<b class="nc"><i>276</i>&nbsp;                    CoderResult var8 = this.ce.encode(var7, var6, true);</b>
+<b class="nc"><i>277</i>&nbsp;                    if(!var8.isUnderflow()) {</b>
+<b class="nc"><i>278</i>&nbsp;                        var8.throwException();</b>
+<i>279</i>&nbsp;                    }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;                    var8 = this.ce.flush(var6);
+<b class="nc"><i>282</i>&nbsp;                    if(!var8.isUnderflow()) {</b>
+<i>283</i>&nbsp;                        var8.throwException();
+<b class="nc"><i>284</i>&nbsp;                    }</b>
+<b class="nc"><i>285</i>&nbsp;                } catch (CharacterCodingException var9) {</b>
+<b class="nc"><i>286</i>&nbsp;                    throw new Error(var9);</b>
+<i>287</i>&nbsp;                }
+<i>288</i>&nbsp;
+<b class="nc"><i>289</i>&nbsp;                return StringCoding.safeTrim((byte[])var5, var6.position(), this.cs, this.isTrusted);</b>
+<b class="nc"><i>290</i>&nbsp;            }</b>
+<i>291</i>&nbsp;        }
+<i>292</i>&nbsp;    }
+<b class="nc"><i>293</i>&nbsp;</b>
+<i>294</i>&nbsp;    private static class StringDecoder {
+<i>295</i>&nbsp;        private final String requestedCharsetName;
+<i>296</i>&nbsp;        private final Charset cs;
+<b class="nc"><i>297</i>&nbsp;        private final CharsetDecoder cd;</b>
+<b class="nc"><i>298</i>&nbsp;        private final boolean isTrusted;</b>
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;        private StringDecoder(Charset var1, String var2) {
+<i>301</i>&nbsp;            this.requestedCharsetName = var2;
+<i>302</i>&nbsp;            this.cs = var1;
+<i>303</i>&nbsp;            this.cd = var1.newDecoder().onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE);
+<i>304</i>&nbsp;            this.isTrusted = var1.getClass().getClassLoader0() == null;
+<i>305</i>&nbsp;        }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;        String charsetName() {
+<i>308</i>&nbsp;            return this.cs instanceof HistoricallyNamedCharset?((HistoricallyNamedCharset)this.cs).historicalName():this.cs.name();
+<i>309</i>&nbsp;        }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;        final String requestedCharsetName() {
+<i>312</i>&nbsp;            return this.requestedCharsetName;
+<i>313</i>&nbsp;        }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;        char[] decode(byte[] var1, int var2, int var3) {
+<i>316</i>&nbsp;            int var4 = StringCoding.scale(var3, this.cd.maxCharsPerByte());
+<i>317</i>&nbsp;            char[] var5 = new char[var4];
+<i>318</i>&nbsp;            if(var3 == 0) {
+<i>319</i>&nbsp;                return var5;
+<i>320</i>&nbsp;            } else if(this.cd instanceof ArrayDecoder) {
+<i>321</i>&nbsp;                int var10 = ((ArrayDecoder)this.cd).decode(var1, var2, var3, var5);
+<i>322</i>&nbsp;                return StringCoding.safeTrim((char[])var5, var10, this.cs, this.isTrusted);
+<i>323</i>&nbsp;            } else {
+<i>324</i>&nbsp;                this.cd.reset();
+<i>325</i>&nbsp;                ByteBuffer var6 = ByteBuffer.wrap(var1, var2, var3);
+<i>326</i>&nbsp;                CharBuffer var7 = CharBuffer.wrap(var5);
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;                try {
+<i>329</i>&nbsp;                    CoderResult var8 = this.cd.decode(var6, var7, true);
+<i>330</i>&nbsp;                    if(!var8.isUnderflow()) {
+<i>331</i>&nbsp;                        var8.throwException();
+<i>332</i>&nbsp;                    }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;                    var8 = this.cd.flush(var7);
+<i>335</i>&nbsp;                    if(!var8.isUnderflow()) {
+<i>336</i>&nbsp;                        var8.throwException();
+<i>337</i>&nbsp;                    }
+<i>338</i>&nbsp;                } catch (CharacterCodingException var9) {
+<i>339</i>&nbsp;                    throw new Error(var9);
+<i>340</i>&nbsp;                }
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;                return StringCoding.safeTrim((char[])var5, var7.position(), this.cs, this.isTrusted);
+<i>343</i>&nbsp;            }
+<i>344</i>&nbsp;        }
+<i>345</i>&nbsp;    }
+<i>346</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

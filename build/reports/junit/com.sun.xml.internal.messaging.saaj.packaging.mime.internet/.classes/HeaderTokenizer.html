@@ -1,0 +1,315 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HeaderTokenizer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.messaging.saaj.packaging.mime.internet</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HeaderTokenizer (com.sun.xml.internal.messaging.saaj.packaging.mime.internet)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HeaderTokenizer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 96)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HeaderTokenizer$Token</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 101)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.messaging.saaj.packaging.mime.internet;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParseException;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;public class HeaderTokenizer {
+<i>11</i>&nbsp;    private String string;
+<i>12</i>&nbsp;    private boolean skipComments;
+<i>13</i>&nbsp;    private String delimiters;
+<i>14</i>&nbsp;    private int currentPos;
+<i>15</i>&nbsp;    private int maxPos;
+<i>16</i>&nbsp;    private int nextPos;
+<i>17</i>&nbsp;    private int peekPos;
+<i>18</i>&nbsp;    public static final String RFC822 = &quot;()&lt;&gt;@,;:\\\&quot;\t .[]&quot;;
+<i>19</i>&nbsp;    public static final String MIME = &quot;()&lt;&gt;@,;:\\\&quot;\t []/?=&quot;;
+<i>20</i>&nbsp;    private static final HeaderTokenizer.Token EOFToken = new HeaderTokenizer.Token(-4, (String)null);
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public HeaderTokenizer(String header, String delimiters, boolean skipComments) {
+<i>23</i>&nbsp;        this.string = header == null?&quot;&quot;:header;
+<i>24</i>&nbsp;        this.skipComments = skipComments;
+<i>25</i>&nbsp;        this.delimiters = delimiters;
+<i>26</i>&nbsp;        this.currentPos = this.nextPos = this.peekPos = 0;
+<i>27</i>&nbsp;        this.maxPos = this.string.length();
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public HeaderTokenizer(String header, String delimiters) {
+<i>31</i>&nbsp;        this(header, delimiters, true);
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public HeaderTokenizer(String header) {
+<i>35</i>&nbsp;        this(header, &quot;()&lt;&gt;@,;:\\\&quot;\t .[]&quot;);
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    public HeaderTokenizer.Token next() throws ParseException {
+<i>39</i>&nbsp;        this.currentPos = this.nextPos;
+<i>40</i>&nbsp;        HeaderTokenizer.Token tk = this.getNext();
+<i>41</i>&nbsp;        this.nextPos = this.peekPos = this.currentPos;
+<i>42</i>&nbsp;        return tk;
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public HeaderTokenizer.Token peek() throws ParseException {
+<i>46</i>&nbsp;        this.currentPos = this.peekPos;
+<i>47</i>&nbsp;        HeaderTokenizer.Token tk = this.getNext();
+<i>48</i>&nbsp;        this.peekPos = this.currentPos;
+<i>49</i>&nbsp;        return tk;
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public String getRemainder() {
+<i>53</i>&nbsp;        return this.string.substring(this.nextPos);
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    private HeaderTokenizer.Token getNext() throws ParseException {
+<i>57</i>&nbsp;        if(this.currentPos &gt;= this.maxPos) {
+<i>58</i>&nbsp;            return EOFToken;
+<i>59</i>&nbsp;        } else if(this.skipWhiteSpace() == -4) {
+<i>60</i>&nbsp;            return EOFToken;
+<i>61</i>&nbsp;        } else {
+<i>62</i>&nbsp;            boolean filter = false;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;            char c;
+<i>65</i>&nbsp;            int start;
+<i>66</i>&nbsp;            for(c = this.string.charAt(this.currentPos); c == 40; c = this.string.charAt(this.currentPos)) {
+<i>67</i>&nbsp;                start = ++this.currentPos;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;                int ch;
+<i>70</i>&nbsp;                for(ch = 1; ch &gt; 0 &amp;&amp; this.currentPos &lt; this.maxPos; ++this.currentPos) {
+<i>71</i>&nbsp;                    c = this.string.charAt(this.currentPos);
+<i>72</i>&nbsp;                    if(c == 92) {
+<i>73</i>&nbsp;                        ++this.currentPos;
+<i>74</i>&nbsp;                        filter = true;
+<i>75</i>&nbsp;                    } else if(c == 13) {
+<i>76</i>&nbsp;                        filter = true;
+<i>77</i>&nbsp;                    } else if(c == 40) {
+<i>78</i>&nbsp;                        ++ch;
+<i>79</i>&nbsp;                    } else if(c == 41) {
+<i>80</i>&nbsp;                        --ch;
+<i>81</i>&nbsp;                    }
+<i>82</i>&nbsp;                }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;                if(ch != 0) {
+<b class="nc"><i>85</i>&nbsp;                    throw new ParseException(&quot;Unbalanced comments&quot;);</b>
+<b class="nc"><i>86</i>&nbsp;                }</b>
+<b class="nc"><i>87</i>&nbsp;</b>
+<i>88</i>&nbsp;                if(!this.skipComments) {
+<i>89</i>&nbsp;                    String s;
+<i>90</i>&nbsp;                    if(filter) {
+<i>91</i>&nbsp;                        s = filterToken(this.string, start, this.currentPos - 1);
+<i>92</i>&nbsp;                    } else {
+<i>93</i>&nbsp;                        s = this.string.substring(start, this.currentPos - 1);
+<i>94</i>&nbsp;                    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;                    return new HeaderTokenizer.Token(-3, s);
+<i>97</i>&nbsp;                }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;                if(this.skipWhiteSpace() == -4) {
+<i>100</i>&nbsp;                    return EOFToken;
+<i>101</i>&nbsp;                }
+<i>102</i>&nbsp;            }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;            if(c == 34) {
+<i>105</i>&nbsp;                for(start = ++this.currentPos; this.currentPos &lt; this.maxPos; ++this.currentPos) {
+<i>106</i>&nbsp;                    c = this.string.charAt(this.currentPos);
+<b class="nc"><i>107</i>&nbsp;                    if(c == 92) {</b>
+<i>108</i>&nbsp;                        ++this.currentPos;
+<i>109</i>&nbsp;                        filter = true;
+<i>110</i>&nbsp;                    } else if(c == 13) {
+<i>111</i>&nbsp;                        filter = true;
+<i>112</i>&nbsp;                    } else if(c == 34) {
+<i>113</i>&nbsp;                        ++this.currentPos;
+<i>114</i>&nbsp;                        String var6;
+<i>115</i>&nbsp;                        if(filter) {
+<i>116</i>&nbsp;                            var6 = filterToken(this.string, start, this.currentPos - 1);
+<i>117</i>&nbsp;                        } else {
+<i>118</i>&nbsp;                            var6 = this.string.substring(start, this.currentPos - 1);
+<b class="nc"><i>119</i>&nbsp;                        }</b>
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;                        return new HeaderTokenizer.Token(-2, var6);
+<i>122</i>&nbsp;                    }
+<i>123</i>&nbsp;                }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;                throw new ParseException(&quot;Unbalanced quoted string&quot;);
+<i>126</i>&nbsp;            } else if(c &gt;= 32 &amp;&amp; c &lt; 127 &amp;&amp; this.delimiters.indexOf(c) &lt; 0) {
+<i>127</i>&nbsp;                for(start = this.currentPos; this.currentPos &lt; this.maxPos; ++this.currentPos) {
+<i>128</i>&nbsp;                    c = this.string.charAt(this.currentPos);
+<i>129</i>&nbsp;                    if(c &lt; 32 || c &gt;= 127 || c == 40 || c == 32 || c == 34 || this.delimiters.indexOf(c) &gt;= 0) {
+<i>130</i>&nbsp;                        break;
+<i>131</i>&nbsp;                    }
+<i>132</i>&nbsp;                }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;                return new HeaderTokenizer.Token(-1, this.string.substring(start, this.currentPos));
+<i>135</i>&nbsp;            } else {
+<i>136</i>&nbsp;                ++this.currentPos;
+<i>137</i>&nbsp;                char[] var7 = new char[]{c};
+<i>138</i>&nbsp;                return new HeaderTokenizer.Token(c, new String(var7));
+<i>139</i>&nbsp;            }
+<i>140</i>&nbsp;        }
+<i>141</i>&nbsp;    }
+<b class="nc"><i>142</i>&nbsp;</b>
+<i>143</i>&nbsp;    private int skipWhiteSpace() {
+<i>144</i>&nbsp;        while(this.currentPos &lt; this.maxPos) {
+<i>145</i>&nbsp;            char c;
+<i>146</i>&nbsp;            if((c = this.string.charAt(this.currentPos)) != 32 &amp;&amp; c != 9 &amp;&amp; c != 13 &amp;&amp; c != 10) {
+<i>147</i>&nbsp;                return this.currentPos;
+<i>148</i>&nbsp;            }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;            ++this.currentPos;
+<i>151</i>&nbsp;        }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;        return -4;
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<b class="nc"><i>156</i>&nbsp;    private static String filterToken(String s, int start, int end) {</b>
+<b class="nc"><i>157</i>&nbsp;        StringBuffer sb = new StringBuffer();</b>
+<b class="nc"><i>158</i>&nbsp;        boolean gotEscape = false;</b>
+<b class="nc"><i>159</i>&nbsp;        boolean gotCR = false;</b>
+<b class="nc"><i>160</i>&nbsp;</b>
+<b class="nc"><i>161</i>&nbsp;        for(int i = start; i &lt; end; ++i) {</b>
+<i>162</i>&nbsp;            char c = s.charAt(i);
+<i>163</i>&nbsp;            if(c == 10 &amp;&amp; gotCR) {
+<i>164</i>&nbsp;                gotCR = false;
+<i>165</i>&nbsp;            } else {
+<i>166</i>&nbsp;                gotCR = false;
+<i>167</i>&nbsp;                if(!gotEscape) {
+<i>168</i>&nbsp;                    if(c == 92) {
+<i>169</i>&nbsp;                        gotEscape = true;
+<i>170</i>&nbsp;                    } else if(c == 13) {
+<b class="nc"><i>171</i>&nbsp;                        gotCR = true;</b>
+<i>172</i>&nbsp;                    } else {
+<i>173</i>&nbsp;                        sb.append(c);
+<i>174</i>&nbsp;                    }
+<i>175</i>&nbsp;                } else {
+<i>176</i>&nbsp;                    sb.append(c);
+<i>177</i>&nbsp;                    gotEscape = false;
+<i>178</i>&nbsp;                }
+<i>179</i>&nbsp;            }
+<b class="nc"><i>180</i>&nbsp;        }</b>
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;        return sb.toString();
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    public static class Token {
+<i>186</i>&nbsp;        private int type;
+<i>187</i>&nbsp;        private String value;
+<i>188</i>&nbsp;        public static final int ATOM = -1;
+<i>189</i>&nbsp;        public static final int QUOTEDSTRING = -2;
+<i>190</i>&nbsp;        public static final int COMMENT = -3;
+<i>191</i>&nbsp;        public static final int EOF = -4;
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;        public Token(int type, String value) {
+<i>194</i>&nbsp;            this.type = type;
+<b class="nc"><i>195</i>&nbsp;            this.value = value;</b>
+<b class="nc"><i>196</i>&nbsp;        }</b>
+<b class="nc"><i>197</i>&nbsp;</b>
+<b class="nc"><i>198</i>&nbsp;        public int getType() {</b>
+<i>199</i>&nbsp;            return this.type;
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;        public String getValue() {
+<i>203</i>&nbsp;            return this.value;
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:52</div>
+</div>
+</body>
+</html>

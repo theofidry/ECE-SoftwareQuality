@@ -1,0 +1,244 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: XMLLimitAnalyzer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xerces.internal.utils</a> ]
+</div>
+
+<h1>Coverage Summary for Class: XMLLimitAnalyzer (com.sun.org.apache.xerces.internal.utils)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XMLLimitAnalyzer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">XMLLimitAnalyzer$NameMap</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 51)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xerces.internal.utils;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.xerces.internal.utils.XMLSecurityManager;
+<i>9</i>&nbsp;import com.sun.org.apache.xerces.internal.utils.XMLSecurityManager.Limit;
+<i>10</i>&nbsp;import java.util.Formatter;
+<i>11</i>&nbsp;import java.util.HashMap;
+<i>12</i>&nbsp;import java.util.Map;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public final class XMLLimitAnalyzer {
+<i>15</i>&nbsp;    private final int[] values = new int[Limit.values().length];
+<i>16</i>&nbsp;    private final String[] names = new String[Limit.values().length];
+<i>17</i>&nbsp;    private final int[] totalValue = new int[Limit.values().length];
+<i>18</i>&nbsp;    private final Map[] caches = new Map[Limit.values().length];
+<i>19</i>&nbsp;    private String entityStart;
+<i>20</i>&nbsp;    private String entityEnd;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public XMLLimitAnalyzer() {
+<i>23</i>&nbsp;    }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public void addValue(Limit limit, String entityName, int value) {
+<i>26</i>&nbsp;        this.addValue(limit.ordinal(), entityName, value);
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public void addValue(int index, String entityName, int value) {
+<i>30</i>&nbsp;        if(index != Limit.ENTITY_EXPANSION_LIMIT.ordinal() &amp;&amp; index != Limit.MAX_OCCUR_NODE_LIMIT.ordinal() &amp;&amp; index != Limit.ELEMENT_ATTRIBUTE_LIMIT.ordinal()) {
+<i>31</i>&nbsp;            if(index == Limit.MAX_ELEMENT_DEPTH_LIMIT.ordinal()) {
+<i>32</i>&nbsp;                this.totalValue[index] = value;
+<i>33</i>&nbsp;            } else {
+<i>34</i>&nbsp;                Object cache;
+<i>35</i>&nbsp;                if(this.caches[index] == null) {
+<i>36</i>&nbsp;                    cache = new HashMap(10);
+<i>37</i>&nbsp;                    this.caches[index] = (Map)cache;
+<i>38</i>&nbsp;                } else {
+<i>39</i>&nbsp;                    cache = this.caches[index];
+<i>40</i>&nbsp;                }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;                int accumulatedValue = value;
+<i>43</i>&nbsp;                if(((Map)cache).containsKey(entityName)) {
+<i>44</i>&nbsp;                    accumulatedValue = value + ((Integer)((Map)cache).get(entityName)).intValue();
+<i>45</i>&nbsp;                    ((Map)cache).put(entityName, Integer.valueOf(accumulatedValue));
+<i>46</i>&nbsp;                } else {
+<i>47</i>&nbsp;                    ((Map)cache).put(entityName, Integer.valueOf(value));
+<i>48</i>&nbsp;                }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;                if(accumulatedValue &gt; this.values[index]) {
+<i>51</i>&nbsp;                    this.values[index] = accumulatedValue;
+<i>52</i>&nbsp;                    this.names[index] = entityName;
+<i>53</i>&nbsp;                }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;                if(index == Limit.GENEAL_ENTITY_SIZE_LIMIT.ordinal() || index == Limit.PARAMETER_ENTITY_SIZE_LIMIT.ordinal()) {
+<i>56</i>&nbsp;                    int[] var10000 = this.totalValue;
+<i>57</i>&nbsp;                    int var10001 = Limit.TOTAL_ENTITY_SIZE_LIMIT.ordinal();
+<i>58</i>&nbsp;                    var10000[var10001] += value;
+<b class="nc"><i>59</i>&nbsp;                }</b>
+<b class="nc"><i>60</i>&nbsp;</b>
+<b class="nc"><i>61</i>&nbsp;            }</b>
+<b class="nc"><i>62</i>&nbsp;        } else {</b>
+<i>63</i>&nbsp;            this.totalValue[index] += value;
+<i>64</i>&nbsp;        }
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<b class="nc"><i>67</i>&nbsp;    public int getValue(Limit limit) {</b>
+<b class="nc"><i>68</i>&nbsp;        return this.values[limit.ordinal()];</b>
+<b class="nc"><i>69</i>&nbsp;    }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public int getValue(int index) {
+<i>72</i>&nbsp;        return this.values[index];
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<b class="nc"><i>74</i>&nbsp;</b>
+<i>75</i>&nbsp;    public int getTotalValue(Limit limit) {
+<b class="nc"><i>76</i>&nbsp;        return this.totalValue[limit.ordinal()];</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public int getTotalValue(int index) {
+<i>80</i>&nbsp;        return this.totalValue[index];
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    public int getValueByIndex(int index) {
+<i>84</i>&nbsp;        return this.values[index];
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    public void startEntity(String name) {
+<i>88</i>&nbsp;        this.entityStart = name;
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public boolean isTracking(String name) {
+<i>92</i>&nbsp;        return this.entityStart == null?false:this.entityStart.equals(name);
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public void endEntity(Limit limit, String name) {
+<i>96</i>&nbsp;        this.entityStart = &quot;&quot;;
+<i>97</i>&nbsp;        Map cache = this.caches[limit.ordinal()];
+<i>98</i>&nbsp;        if(cache != null) {
+<i>99</i>&nbsp;            cache.remove(name);
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<b class="nc"><i>104</i>&nbsp;    public void debugPrint(XMLSecurityManager securityManager) {</b>
+<b class="nc"><i>105</i>&nbsp;        Formatter formatter = new Formatter();</b>
+<b class="nc"><i>106</i>&nbsp;        System.out.println(formatter.format(&quot;%30s %15s %15s %15s %30s&quot;, new Object[]{&quot;Property&quot;, &quot;Limit&quot;, &quot;Total size&quot;, &quot;Size&quot;, &quot;Entity Name&quot;}));</b>
+<b class="nc"><i>107</i>&nbsp;        Limit[] arr$ = Limit.values();</b>
+<b class="nc"><i>108</i>&nbsp;        int len$ = arr$.length;</b>
+<b class="nc"><i>109</i>&nbsp;</b>
+<i>110</i>&nbsp;        for(int i$ = 0; i$ &lt; len$; ++i$) {
+<i>111</i>&nbsp;            Limit limit = arr$[i$];
+<i>112</i>&nbsp;            formatter = new Formatter();
+<i>113</i>&nbsp;            System.out.println(formatter.format(&quot;%30s %15d %15d %15d %30s&quot;, new Object[]{limit.name(), Integer.valueOf(securityManager.getLimit(limit)), Integer.valueOf(this.totalValue[limit.ordinal()]), Integer.valueOf(this.values[limit.ordinal()]), this.names[limit.ordinal()]}));
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public static enum NameMap {
+<i>119</i>&nbsp;        ENTITY_EXPANSION_LIMIT(&quot;jdk.xml.entityExpansionLimit&quot;, &quot;entityExpansionLimit&quot;),
+<i>120</i>&nbsp;        MAX_OCCUR_NODE_LIMIT(&quot;jdk.xml.maxOccurLimit&quot;, &quot;maxOccurLimit&quot;),
+<b class="nc"><i>121</i>&nbsp;        ELEMENT_ATTRIBUTE_LIMIT(&quot;jdk.xml.elementAttributeLimit&quot;, &quot;elementAttributeLimit&quot;);</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        final String newName;
+<i>124</i>&nbsp;        final String oldName;
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        private NameMap(String newName, String oldName) {
+<i>127</i>&nbsp;            this.newName = newName;
+<i>128</i>&nbsp;            this.oldName = oldName;
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;        String getOldName(String newName) {</b>
+<i>132</i>&nbsp;            return newName.equals(this.newName)?this.oldName:null;
+<i>133</i>&nbsp;        }
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SocketConnection</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.tools.jdi</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SocketConnection (com.sun.tools.jdi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SocketConnection</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 81)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.tools.jdi;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jdi.connect.spi.ClosedConnectionException;
+<i>9</i>&nbsp;import com.sun.jdi.connect.spi.Connection;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.io.InputStream;
+<i>12</i>&nbsp;import java.io.OutputStream;
+<i>13</i>&nbsp;import java.net.Socket;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;class SocketConnection extends Connection {
+<i>16</i>&nbsp;    private Socket socket;
+<i>17</i>&nbsp;    private boolean closed = false;
+<i>18</i>&nbsp;    private OutputStream socketOutput;
+<i>19</i>&nbsp;    private InputStream socketInput;
+<i>20</i>&nbsp;    private Object receiveLock = new Object();
+<i>21</i>&nbsp;    private Object sendLock = new Object();
+<i>22</i>&nbsp;    private Object closeLock = new Object();
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    SocketConnection(Socket var1) throws IOException {
+<i>25</i>&nbsp;        this.socket = var1;
+<i>26</i>&nbsp;        var1.setTcpNoDelay(true);
+<i>27</i>&nbsp;        this.socketInput = var1.getInputStream();
+<i>28</i>&nbsp;        this.socketOutput = var1.getOutputStream();
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public void close() throws IOException {
+<i>32</i>&nbsp;        Object var1 = this.closeLock;
+<i>33</i>&nbsp;        synchronized(this.closeLock) {
+<i>34</i>&nbsp;            if(!this.closed) {
+<i>35</i>&nbsp;                this.socketOutput.close();
+<i>36</i>&nbsp;                this.socketInput.close();
+<i>37</i>&nbsp;                this.socket.close();
+<i>38</i>&nbsp;                this.closed = true;
+<i>39</i>&nbsp;            }
+<i>40</i>&nbsp;        }
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public boolean isOpen() {
+<i>44</i>&nbsp;        Object var1 = this.closeLock;
+<i>45</i>&nbsp;        synchronized(this.closeLock) {
+<i>46</i>&nbsp;            return !this.closed;
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public byte[] readPacket() throws IOException {
+<i>51</i>&nbsp;        if(!this.isOpen()) {
+<i>52</i>&nbsp;            throw new ClosedConnectionException(&quot;connection is closed&quot;);
+<i>53</i>&nbsp;        } else {
+<i>54</i>&nbsp;            Object var1 = this.receiveLock;
+<i>55</i>&nbsp;            synchronized(this.receiveLock) {
+<i>56</i>&nbsp;                int var2;
+<i>57</i>&nbsp;                int var3;
+<i>58</i>&nbsp;                int var4;
+<i>59</i>&nbsp;                int var5;
+<i>60</i>&nbsp;                try {
+<i>61</i>&nbsp;                    var2 = this.socketInput.read();
+<i>62</i>&nbsp;                    var3 = this.socketInput.read();
+<i>63</i>&nbsp;                    var4 = this.socketInput.read();
+<i>64</i>&nbsp;                    var5 = this.socketInput.read();
+<i>65</i>&nbsp;                } catch (IOException var12) {
+<i>66</i>&nbsp;                    if(!this.isOpen()) {
+<i>67</i>&nbsp;                        throw new ClosedConnectionException(&quot;connection is closed&quot;);
+<i>68</i>&nbsp;                    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;                    throw var12;
+<i>71</i>&nbsp;                }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;                if(var2 &lt; 0) {
+<i>74</i>&nbsp;                    return new byte[0];
+<i>75</i>&nbsp;                } else if(var3 &gt;= 0 &amp;&amp; var4 &gt;= 0 &amp;&amp; var5 &gt;= 0) {
+<i>76</i>&nbsp;                    int var6 = var2 &lt;&lt; 24 | var3 &lt;&lt; 16 | var4 &lt;&lt; 8 | var5 &lt;&lt; 0;
+<i>77</i>&nbsp;                    if(var6 &lt; 0) {
+<i>78</i>&nbsp;                        throw new IOException(&quot;protocol error - invalid length&quot;);
+<i>79</i>&nbsp;                    } else {
+<i>80</i>&nbsp;                        byte[] var7 = new byte[var6];
+<i>81</i>&nbsp;                        var7[0] = (byte)var2;
+<i>82</i>&nbsp;                        var7[1] = (byte)var3;
+<i>83</i>&nbsp;                        var7[2] = (byte)var4;
+<i>84</i>&nbsp;                        var7[3] = (byte)var5;
+<i>85</i>&nbsp;                        int var8 = 4;
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;                        int var9;
+<i>88</i>&nbsp;                        for(var6 -= var8; var6 &gt; 0; var8 += var9) {
+<i>89</i>&nbsp;                            try {
+<i>90</i>&nbsp;                                var9 = this.socketInput.read(var7, var8, var6);
+<i>91</i>&nbsp;                            } catch (IOException var13) {
+<i>92</i>&nbsp;                                if(!this.isOpen()) {
+<i>93</i>&nbsp;                                    throw new ClosedConnectionException(&quot;connection is closed&quot;);
+<i>94</i>&nbsp;                                }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;                                throw var13;
+<i>97</i>&nbsp;                            }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;                            if(var9 &lt; 0) {
+<i>100</i>&nbsp;                                throw new IOException(&quot;protocol error - premature EOF&quot;);
+<i>101</i>&nbsp;                            }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;                            var6 -= var9;
+<i>104</i>&nbsp;                        }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;                        return var7;
+<i>107</i>&nbsp;                    }
+<i>108</i>&nbsp;                } else {
+<i>109</i>&nbsp;                    throw new IOException(&quot;protocol error - premature EOF&quot;);
+<i>110</i>&nbsp;                }
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public void writePacket(byte[] var1) throws IOException {
+<i>116</i>&nbsp;        if(!this.isOpen()) {
+<i>117</i>&nbsp;            throw new ClosedConnectionException(&quot;connection is closed&quot;);
+<i>118</i>&nbsp;        } else if(var1.length &lt; 11) {
+<i>119</i>&nbsp;            throw new IllegalArgumentException(&quot;packet is insufficient size&quot;);
+<i>120</i>&nbsp;        } else {
+<i>121</i>&nbsp;            int var2 = var1[0] &amp; 255;
+<i>122</i>&nbsp;            int var3 = var1[1] &amp; 255;
+<i>123</i>&nbsp;            int var4 = var1[2] &amp; 255;
+<i>124</i>&nbsp;            int var5 = var1[3] &amp; 255;
+<i>125</i>&nbsp;            int var6 = var2 &lt;&lt; 24 | var3 &lt;&lt; 16 | var4 &lt;&lt; 8 | var5 &lt;&lt; 0;
+<i>126</i>&nbsp;            if(var6 &lt; 11) {
+<i>127</i>&nbsp;                throw new IllegalArgumentException(&quot;packet is insufficient size&quot;);
+<i>128</i>&nbsp;            } else if(var6 &gt; var1.length) {
+<i>129</i>&nbsp;                throw new IllegalArgumentException(&quot;length mis-match&quot;);
+<i>130</i>&nbsp;            } else {
+<i>131</i>&nbsp;                Object var7 = this.sendLock;
+<i>132</i>&nbsp;                synchronized(this.sendLock) {
+<i>133</i>&nbsp;                    try {
+<i>134</i>&nbsp;                        this.socketOutput.write(var1, 0, var6);
+<i>135</i>&nbsp;                    } catch (IOException var10) {
+<i>136</i>&nbsp;                        if(!this.isOpen()) {
+<i>137</i>&nbsp;                            throw new ClosedConnectionException(&quot;connection is closed&quot;);
+<i>138</i>&nbsp;                        }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;                        throw var10;
+<i>141</i>&nbsp;                    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;                }
+<i>144</i>&nbsp;            }
+<i>145</i>&nbsp;        }
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

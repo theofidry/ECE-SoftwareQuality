@@ -1,0 +1,929 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RMIGenerator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.rmi.rmic</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RMIGenerator (sun.rmi.rmic)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RMIGenerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 466)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.rmi.rmic;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.corba.se.impl.util.Utility;
+<i>9</i>&nbsp;import java.io.File;
+<i>10</i>&nbsp;import java.io.FileOutputStream;
+<i>11</i>&nbsp;import java.io.IOException;
+<i>12</i>&nbsp;import java.io.OutputStreamWriter;
+<i>13</i>&nbsp;import java.util.Enumeration;
+<i>14</i>&nbsp;import java.util.Hashtable;
+<i>15</i>&nbsp;import java.util.Vector;
+<i>16</i>&nbsp;import sun.rmi.rmic.BatchEnvironment;
+<i>17</i>&nbsp;import sun.rmi.rmic.Generator;
+<i>18</i>&nbsp;import sun.rmi.rmic.IndentingWriter;
+<i>19</i>&nbsp;import sun.rmi.rmic.Main;
+<i>20</i>&nbsp;import sun.rmi.rmic.Names;
+<i>21</i>&nbsp;import sun.rmi.rmic.RMIConstants;
+<i>22</i>&nbsp;import sun.rmi.rmic.RemoteClass;
+<i>23</i>&nbsp;import sun.rmi.rmic.Util;
+<i>24</i>&nbsp;import sun.rmi.rmic.RemoteClass.Method;
+<i>25</i>&nbsp;import sun.tools.java.ClassDeclaration;
+<i>26</i>&nbsp;import sun.tools.java.ClassDefinition;
+<i>27</i>&nbsp;import sun.tools.java.ClassFile;
+<i>28</i>&nbsp;import sun.tools.java.ClassNotFound;
+<i>29</i>&nbsp;import sun.tools.java.Identifier;
+<i>30</i>&nbsp;import sun.tools.java.MemberDefinition;
+<i>31</i>&nbsp;import sun.tools.java.Type;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;public class RMIGenerator implements RMIConstants, Generator {
+<i>34</i>&nbsp;    private static final Hashtable&lt;String, Integer&gt; versionOptions = new Hashtable();
+<i>35</i>&nbsp;    private BatchEnvironment env;
+<i>36</i>&nbsp;    private RemoteClass remoteClass;
+<i>37</i>&nbsp;    private int version;
+<i>38</i>&nbsp;    private Method[] remoteMethods;
+<i>39</i>&nbsp;    private Identifier remoteClassName;
+<i>40</i>&nbsp;    private Identifier stubClassName;
+<i>41</i>&nbsp;    private Identifier skeletonClassName;
+<i>42</i>&nbsp;    private ClassDefinition cdef;
+<i>43</i>&nbsp;    private File destDir;
+<i>44</i>&nbsp;    private File stubFile;
+<i>45</i>&nbsp;    private File skeletonFile;
+<i>46</i>&nbsp;    private String[] methodFieldNames;
+<i>47</i>&nbsp;    private ClassDefinition defException;
+<i>48</i>&nbsp;    private ClassDefinition defRemoteException;
+<i>49</i>&nbsp;    private ClassDefinition defRuntimeException;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public RMIGenerator() {
+<i>52</i>&nbsp;        this.version = 3;
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<b class="nc"><i>55</i>&nbsp;    public boolean parseArgs(String[] var1, Main var2) {</b>
+<i>56</i>&nbsp;        String var3 = null;
+<b class="nc"><i>57</i>&nbsp;</b>
+<b class="nc"><i>58</i>&nbsp;        for(int var4 = 0; var4 &lt; var1.length; ++var4) {</b>
+<b class="nc"><i>59</i>&nbsp;            if(var1[var4] != null) {</b>
+<i>60</i>&nbsp;                String var5 = var1[var4].toLowerCase();
+<i>61</i>&nbsp;                if(versionOptions.containsKey(var5)) {
+<i>62</i>&nbsp;                    if(var3 != null &amp;&amp; !var3.equals(var5)) {
+<i>63</i>&nbsp;                        var2.error(&quot;rmic.cannot.use.both&quot;, var3, var5);
+<i>64</i>&nbsp;                        return false;
+<b class="nc"><i>65</i>&nbsp;                    }</b>
+<b class="nc"><i>66</i>&nbsp;</b>
+<i>67</i>&nbsp;                    var3 = var5;
+<i>68</i>&nbsp;                    this.version = ((Integer)versionOptions.get(var5)).intValue();
+<i>69</i>&nbsp;                    var1[var4] = null;
+<i>70</i>&nbsp;                }
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;        return true;
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<b class="nc"><i>77</i>&nbsp;    public void generate(BatchEnvironment var1, ClassDefinition var2, File var3) {</b>
+<b class="nc"><i>78</i>&nbsp;        RemoteClass var4 = RemoteClass.forClass(var1, var2);</b>
+<b class="nc"><i>79</i>&nbsp;        if(var4 != null) {</b>
+<b class="nc"><i>80</i>&nbsp;            RMIGenerator var5;</b>
+<b class="nc"><i>81</i>&nbsp;            try {</b>
+<b class="nc"><i>82</i>&nbsp;                var5 = new RMIGenerator(var1, var2, var3, var4, this.version);</b>
+<i>83</i>&nbsp;            } catch (ClassNotFound var7) {
+<i>84</i>&nbsp;                var1.error(0L, &quot;rmic.class.not.found&quot;, var7.name);
+<b class="nc"><i>85</i>&nbsp;                return;</b>
+<i>86</i>&nbsp;            }
+<b class="nc"><i>87</i>&nbsp;</b>
+<i>88</i>&nbsp;            var5.generate();
+<b class="nc"><i>89</i>&nbsp;        }</b>
+<b class="nc"><i>90</i>&nbsp;    }</b>
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;    private void generate() {
+<i>93</i>&nbsp;        this.env.addGeneratedFile(this.stubFile);
+<i>94</i>&nbsp;
+<b class="nc"><i>95</i>&nbsp;        IndentingWriter var1;</b>
+<i>96</i>&nbsp;        try {
+<i>97</i>&nbsp;            var1 = new IndentingWriter(new OutputStreamWriter(new FileOutputStream(this.stubFile)));
+<i>98</i>&nbsp;            this.writeStub(var1);
+<i>99</i>&nbsp;            var1.close();
+<i>100</i>&nbsp;            if(this.env.verbose()) {
+<i>101</i>&nbsp;                this.env.output(Main.getText(&quot;rmic.wrote&quot;, this.stubFile.getPath()));
+<i>102</i>&nbsp;            }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;            this.env.parseFile(new ClassFile(this.stubFile));
+<i>105</i>&nbsp;        } catch (IOException var4) {
+<i>106</i>&nbsp;            this.env.error(0L, &quot;cant.write&quot;, this.stubFile.toString());
+<i>107</i>&nbsp;            return;
+<i>108</i>&nbsp;        }
+<b class="nc"><i>109</i>&nbsp;</b>
+<b class="nc"><i>110</i>&nbsp;        if(this.version != 1 &amp;&amp; this.version != 2) {</b>
+<i>111</i>&nbsp;            File var5 = Util.getOutputDirectoryFor(this.remoteClassName, this.destDir, this.env);
+<i>112</i>&nbsp;            File var2 = new File(var5, this.skeletonClassName.getName().toString() + &quot;.class&quot;);
+<i>113</i>&nbsp;            this.skeletonFile.delete();
+<i>114</i>&nbsp;            var2.delete();
+<b class="nc"><i>115</i>&nbsp;        } else {</b>
+<b class="nc"><i>116</i>&nbsp;            this.env.addGeneratedFile(this.skeletonFile);</b>
+<b class="nc"><i>117</i>&nbsp;</b>
+<i>118</i>&nbsp;            try {
+<b class="nc"><i>119</i>&nbsp;                var1 = new IndentingWriter(new OutputStreamWriter(new FileOutputStream(this.skeletonFile)));</b>
+<b class="nc"><i>120</i>&nbsp;                this.writeSkeleton(var1);</b>
+<i>121</i>&nbsp;                var1.close();
+<i>122</i>&nbsp;                if(this.env.verbose()) {
+<i>123</i>&nbsp;                    this.env.output(Main.getText(&quot;rmic.wrote&quot;, this.skeletonFile.getPath()));
+<b class="nc"><i>124</i>&nbsp;                }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;                this.env.parseFile(new ClassFile(this.skeletonFile));
+<b class="nc"><i>127</i>&nbsp;            } catch (IOException var3) {</b>
+<i>128</i>&nbsp;                this.env.error(0L, &quot;cant.write&quot;, this.stubFile.toString());
+<b class="nc"><i>129</i>&nbsp;                return;</b>
+<b class="nc"><i>130</i>&nbsp;            }</b>
+<b class="nc"><i>131</i>&nbsp;        }</b>
+<b class="nc"><i>132</i>&nbsp;</b>
+<i>133</i>&nbsp;    }
+<b class="nc"><i>134</i>&nbsp;</b>
+<b class="nc"><i>135</i>&nbsp;    protected static File sourceFileForClass(Identifier var0, Identifier var1, File var2, BatchEnvironment var3) {</b>
+<b class="nc"><i>136</i>&nbsp;        File var4 = Util.getOutputDirectoryFor(var0, var2, var3);</b>
+<i>137</i>&nbsp;        String var5 = Names.mangleClass(var1).getName().toString();
+<b class="nc"><i>138</i>&nbsp;        String var6;</b>
+<i>139</i>&nbsp;        if(var5.endsWith(&quot;_Skel&quot;)) {
+<b class="nc"><i>140</i>&nbsp;            var6 = var0.getName().toString();</b>
+<i>141</i>&nbsp;            File var7 = new File(var4, Utility.tieName(var6) + &quot;.class&quot;);
+<i>142</i>&nbsp;            if(var7.exists() &amp;&amp; !var3.getMain().iiopGeneration) {
+<b class="nc"><i>143</i>&nbsp;                var3.error(0L, &quot;warn.rmic.tie.found&quot;, var6, var7.getAbsolutePath());</b>
+<i>144</i>&nbsp;            }
+<i>145</i>&nbsp;        }
+<b class="nc"><i>146</i>&nbsp;</b>
+<i>147</i>&nbsp;        var6 = var5 + &quot;.java&quot;;
+<i>148</i>&nbsp;        return new File(var4, var6);
+<b class="nc"><i>149</i>&nbsp;    }</b>
+<b class="nc"><i>150</i>&nbsp;</b>
+<b class="nc"><i>151</i>&nbsp;    private RMIGenerator(BatchEnvironment var1, ClassDefinition var2, File var3, RemoteClass var4, int var5) throws ClassNotFound {</b>
+<b class="nc"><i>152</i>&nbsp;        this.destDir = var3;</b>
+<i>153</i>&nbsp;        this.cdef = var2;
+<i>154</i>&nbsp;        this.env = var1;
+<b class="nc"><i>155</i>&nbsp;        this.remoteClass = var4;</b>
+<b class="nc"><i>156</i>&nbsp;        this.version = var5;</b>
+<b class="nc"><i>157</i>&nbsp;        this.remoteMethods = var4.getRemoteMethods();</b>
+<i>158</i>&nbsp;        this.remoteClassName = var4.getName();
+<b class="nc"><i>159</i>&nbsp;        this.stubClassName = Names.stubFor(this.remoteClassName);</b>
+<i>160</i>&nbsp;        this.skeletonClassName = Names.skeletonFor(this.remoteClassName);
+<i>161</i>&nbsp;        this.methodFieldNames = nameMethodFields(this.remoteMethods);
+<i>162</i>&nbsp;        this.stubFile = sourceFileForClass(this.remoteClassName, this.stubClassName, var3, var1);
+<i>163</i>&nbsp;        this.skeletonFile = sourceFileForClass(this.remoteClassName, this.skeletonClassName, var3, var1);
+<i>164</i>&nbsp;        this.defException = var1.getClassDeclaration(idJavaLangException).getClassDefinition(var1);
+<i>165</i>&nbsp;        this.defRemoteException = var1.getClassDeclaration(idRemoteException).getClassDefinition(var1);
+<i>166</i>&nbsp;        this.defRuntimeException = var1.getClassDeclaration(idJavaLangRuntimeException).getClassDefinition(var1);
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<b class="nc"><i>169</i>&nbsp;    private void writeStub(IndentingWriter var1) throws IOException {</b>
+<b class="nc"><i>170</i>&nbsp;        var1.pln(&quot;// Stub class generated by rmic, do not edit.&quot;);</b>
+<i>171</i>&nbsp;        var1.pln(&quot;// Contents subject to change without notice.&quot;);
+<b class="nc"><i>172</i>&nbsp;        var1.pln();</b>
+<b class="nc"><i>173</i>&nbsp;        if(this.remoteClassName.isQualified()) {</b>
+<i>174</i>&nbsp;            var1.pln(&quot;package &quot; + this.remoteClassName.getQualifier() + &quot;;&quot;);
+<i>175</i>&nbsp;            var1.pln();
+<i>176</i>&nbsp;        }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;        var1.plnI(&quot;public final class &quot; + Names.mangleClass(this.stubClassName.getName()));
+<i>179</i>&nbsp;        var1.pln(&quot;extends &quot; + idRemoteStub);
+<i>180</i>&nbsp;        ClassDefinition[] var2 = this.remoteClass.getRemoteInterfaces();
+<i>181</i>&nbsp;        int var3;
+<i>182</i>&nbsp;        if(var2.length &gt; 0) {
+<i>183</i>&nbsp;            var1.p(&quot;implements &quot;);
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;            for(var3 = 0; var3 &lt; var2.length; ++var3) {
+<i>186</i>&nbsp;                if(var3 &gt; 0) {
+<b class="nc"><i>187</i>&nbsp;                    var1.p(&quot;, &quot;);</b>
+<b class="nc"><i>188</i>&nbsp;                }</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;                var1.p(var2[var3].getName().toString());
+<i>191</i>&nbsp;            }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;            var1.pln();
+<b class="nc"><i>194</i>&nbsp;        }</b>
+<b class="nc"><i>195</i>&nbsp;</b>
+<b class="nc"><i>196</i>&nbsp;        var1.pOlnI(&quot;{&quot;);</b>
+<b class="nc"><i>197</i>&nbsp;        if(this.version == 1 || this.version == 2) {</b>
+<i>198</i>&nbsp;            this.writeOperationsArray(var1);
+<i>199</i>&nbsp;            var1.pln();
+<i>200</i>&nbsp;            this.writeInterfaceHash(var1);
+<b class="nc"><i>201</i>&nbsp;            var1.pln();</b>
+<i>202</i>&nbsp;        }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;        if(this.version == 2 || this.version == 3) {
+<b class="nc"><i>205</i>&nbsp;            var1.pln(&quot;private static final long serialVersionUID = 2;&quot;);</b>
+<i>206</i>&nbsp;            var1.pln();
+<i>207</i>&nbsp;            if(this.methodFieldNames.length &gt; 0) {
+<i>208</i>&nbsp;                if(this.version == 2) {
+<i>209</i>&nbsp;                    var1.pln(&quot;private static boolean useNewInvoke;&quot;);
+<i>210</i>&nbsp;                }
+<i>211</i>&nbsp;
+<b class="nc"><i>212</i>&nbsp;                this.writeMethodFieldDeclarations(var1);</b>
+<b class="nc"><i>213</i>&nbsp;                var1.pln();</b>
+<i>214</i>&nbsp;                var1.plnI(&quot;static {&quot;);
+<i>215</i>&nbsp;                var1.plnI(&quot;try {&quot;);
+<i>216</i>&nbsp;                if(this.version == 2) {
+<i>217</i>&nbsp;                    var1.plnI(idRemoteRef + &quot;.class.getMethod(\&quot;invoke\&quot;,&quot;);
+<i>218</i>&nbsp;                    var1.plnI(&quot;new java.lang.Class[] {&quot;);
+<i>219</i>&nbsp;                    var1.pln(idRemote + &quot;.class,&quot;);
+<i>220</i>&nbsp;                    var1.pln(&quot;java.lang.reflect.Method.class,&quot;);
+<i>221</i>&nbsp;                    var1.pln(&quot;java.lang.Object[].class,&quot;);
+<i>222</i>&nbsp;                    var1.pln(&quot;long.class&quot;);
+<i>223</i>&nbsp;                    var1.pOln(&quot;});&quot;);
+<i>224</i>&nbsp;                    var1.pO();
+<i>225</i>&nbsp;                    var1.pln(&quot;useNewInvoke = true;&quot;);
+<i>226</i>&nbsp;                }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;                this.writeMethodFieldInitializers(var1);
+<i>229</i>&nbsp;                var1.pOlnI(&quot;} catch (java.lang.NoSuchMethodException e) {&quot;);
+<i>230</i>&nbsp;                if(this.version == 2) {
+<i>231</i>&nbsp;                    var1.pln(&quot;useNewInvoke = false;&quot;);
+<i>232</i>&nbsp;                } else {
+<i>233</i>&nbsp;                    var1.plnI(&quot;throw new java.lang.NoSuchMethodError(&quot;);
+<i>234</i>&nbsp;                    var1.pln(&quot;\&quot;stub class initialization failed\&quot;);&quot;);
+<i>235</i>&nbsp;                    var1.pO();
+<i>236</i>&nbsp;                }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;                var1.pOln(&quot;}&quot;);
+<i>239</i>&nbsp;                var1.pOln(&quot;}&quot;);
+<i>240</i>&nbsp;                var1.pln();
+<i>241</i>&nbsp;            }
+<i>242</i>&nbsp;        }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;        this.writeStubConstructors(var1);
+<i>245</i>&nbsp;        var1.pln();
+<i>246</i>&nbsp;        if(this.remoteMethods.length &gt; 0) {
+<i>247</i>&nbsp;            var1.pln(&quot;// methods from remote interfaces&quot;);
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;            for(var3 = 0; var3 &lt; this.remoteMethods.length; ++var3) {
+<i>250</i>&nbsp;                var1.pln();
+<i>251</i>&nbsp;                this.writeStubMethod(var1, var3);
+<i>252</i>&nbsp;            }
+<i>253</i>&nbsp;        }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;        var1.pOln(&quot;}&quot;);
+<i>256</i>&nbsp;    }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    private void writeStubConstructors(IndentingWriter var1) throws IOException {
+<i>259</i>&nbsp;        var1.pln(&quot;// constructors&quot;);
+<i>260</i>&nbsp;        if(this.version == 1 || this.version == 2) {
+<b class="nc"><i>261</i>&nbsp;            var1.plnI(&quot;public &quot; + Names.mangleClass(this.stubClassName.getName()) + &quot;() {&quot;);</b>
+<b class="nc"><i>262</i>&nbsp;            var1.pln(&quot;super();&quot;);</b>
+<b class="nc"><i>263</i>&nbsp;            var1.pOln(&quot;}&quot;);</b>
+<b class="nc"><i>264</i>&nbsp;        }</b>
+<b class="nc"><i>265</i>&nbsp;</b>
+<b class="nc"><i>266</i>&nbsp;        var1.plnI(&quot;public &quot; + Names.mangleClass(this.stubClassName.getName()) + &quot;(&quot; + idRemoteRef + &quot; ref) {&quot;);</b>
+<i>267</i>&nbsp;        var1.pln(&quot;super(ref);&quot;);
+<b class="nc"><i>268</i>&nbsp;        var1.pOln(&quot;}&quot;);</b>
+<i>269</i>&nbsp;    }
+<b class="nc"><i>270</i>&nbsp;</b>
+<b class="nc"><i>271</i>&nbsp;    private void writeStubMethod(IndentingWriter var1, int var2) throws IOException {</b>
+<b class="nc"><i>272</i>&nbsp;        Method var3 = this.remoteMethods[var2];</b>
+<i>273</i>&nbsp;        Identifier var4 = var3.getName();
+<b class="nc"><i>274</i>&nbsp;        Type var5 = var3.getType();</b>
+<i>275</i>&nbsp;        Type[] var6 = var5.getArgumentTypes();
+<b class="nc"><i>276</i>&nbsp;        String[] var7 = nameParameters(var6);</b>
+<b class="nc"><i>277</i>&nbsp;        Type var8 = var5.getReturnType();</b>
+<i>278</i>&nbsp;        ClassDeclaration[] var9 = var3.getExceptions();
+<i>279</i>&nbsp;        var1.pln(&quot;// implementation of &quot; + var5.typeString(var4.toString(), true, false));
+<i>280</i>&nbsp;        var1.p(&quot;public &quot; + var8 + &quot; &quot; + var4 + &quot;(&quot;);
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;        int var10;
+<b class="nc"><i>283</i>&nbsp;        for(var10 = 0; var10 &lt; var6.length; ++var10) {</b>
+<i>284</i>&nbsp;            if(var10 &gt; 0) {
+<i>285</i>&nbsp;                var1.p(&quot;, &quot;);
+<b class="nc"><i>286</i>&nbsp;            }</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;            var1.p(var6[var10] + &quot; &quot; + var7[var10]);
+<b class="nc"><i>289</i>&nbsp;        }</b>
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;        var1.plnI(&quot;)&quot;);
+<i>292</i>&nbsp;        if(var9.length &gt; 0) {
+<i>293</i>&nbsp;            var1.p(&quot;throws &quot;);
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;            for(var10 = 0; var10 &lt; var9.length; ++var10) {
+<i>296</i>&nbsp;                if(var10 &gt; 0) {
+<i>297</i>&nbsp;                    var1.p(&quot;, &quot;);
+<i>298</i>&nbsp;                }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;                var1.p(var9[var10].getName().toString());
+<i>301</i>&nbsp;            }
+<b class="nc"><i>302</i>&nbsp;</b>
+<b class="nc"><i>303</i>&nbsp;            var1.pln();</b>
+<b class="nc"><i>304</i>&nbsp;        }</b>
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;        var1.pOlnI(&quot;{&quot;);
+<i>307</i>&nbsp;        Vector var13 = this.computeUniqueCatchList(var9);
+<i>308</i>&nbsp;        if(var13.size() &gt; 0) {
+<i>309</i>&nbsp;            var1.plnI(&quot;try {&quot;);
+<b class="nc"><i>310</i>&nbsp;        }</b>
+<b class="nc"><i>311</i>&nbsp;</b>
+<b class="nc"><i>312</i>&nbsp;        if(this.version == 2) {</b>
+<i>313</i>&nbsp;            var1.plnI(&quot;if (useNewInvoke) {&quot;);
+<i>314</i>&nbsp;        }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;        if(this.version == 2 || this.version == 3) {
+<i>317</i>&nbsp;            if(!var8.isType(11)) {
+<b class="nc"><i>318</i>&nbsp;                var1.p(&quot;Object $result = &quot;);</b>
+<i>319</i>&nbsp;            }
+<b class="nc"><i>320</i>&nbsp;</b>
+<b class="nc"><i>321</i>&nbsp;            var1.p(&quot;ref.invoke(this, &quot; + this.methodFieldNames[var2] + &quot;, &quot;);</b>
+<b class="nc"><i>322</i>&nbsp;            if(var6.length &gt; 0) {</b>
+<b class="nc"><i>323</i>&nbsp;                var1.p(&quot;new java.lang.Object[] {&quot;);</b>
+<b class="nc"><i>324</i>&nbsp;</b>
+<b class="nc"><i>325</i>&nbsp;                for(int var11 = 0; var11 &lt; var6.length; ++var11) {</b>
+<b class="nc"><i>326</i>&nbsp;                    if(var11 &gt; 0) {</b>
+<b class="nc"><i>327</i>&nbsp;                        var1.p(&quot;, &quot;);</b>
+<i>328</i>&nbsp;                    }
+<b class="nc"><i>329</i>&nbsp;</b>
+<i>330</i>&nbsp;                    var1.p(wrapArgumentCode(var6[var11], var7[var11]));
+<b class="nc"><i>331</i>&nbsp;                }</b>
+<i>332</i>&nbsp;
+<b class="nc"><i>333</i>&nbsp;                var1.p(&quot;}&quot;);</b>
+<i>334</i>&nbsp;            } else {
+<i>335</i>&nbsp;                var1.p(&quot;null&quot;);
+<b class="nc"><i>336</i>&nbsp;            }</b>
+<b class="nc"><i>337</i>&nbsp;</b>
+<b class="nc"><i>338</i>&nbsp;            var1.pln(&quot;, &quot; + var3.getMethodHash() + &quot;L);&quot;);</b>
+<b class="nc"><i>339</i>&nbsp;            if(!var8.isType(11)) {</b>
+<i>340</i>&nbsp;                var1.pln(&quot;return &quot; + unwrapArgumentCode(var8, &quot;$result&quot;) + &quot;;&quot;);
+<i>341</i>&nbsp;            }
+<b class="nc"><i>342</i>&nbsp;        }</b>
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;        if(this.version == 2) {
+<b class="nc"><i>345</i>&nbsp;            var1.pOlnI(&quot;} else {&quot;);</b>
+<i>346</i>&nbsp;        }
+<b class="nc"><i>347</i>&nbsp;</b>
+<i>348</i>&nbsp;        if(this.version == 1 || this.version == 2) {
+<i>349</i>&nbsp;            var1.pln(idRemoteCall + &quot; call = ref.newCall((&quot; + idRemoteObject + &quot;) this, operations, &quot; + var2 + &quot;, interfaceHash);&quot;);
+<i>350</i>&nbsp;            if(var6.length &gt; 0) {
+<i>351</i>&nbsp;                var1.plnI(&quot;try {&quot;);
+<i>352</i>&nbsp;                var1.pln(&quot;java.io.ObjectOutput out = call.getOutputStream();&quot;);
+<i>353</i>&nbsp;                writeMarshalArguments(var1, &quot;out&quot;, var6, var7);
+<i>354</i>&nbsp;                var1.pOlnI(&quot;} catch (java.io.IOException e) {&quot;);
+<i>355</i>&nbsp;                var1.pln(&quot;throw new &quot; + idMarshalException + &quot;(\&quot;error marshalling arguments\&quot;, e);&quot;);
+<b class="nc"><i>356</i>&nbsp;                var1.pOln(&quot;}&quot;);</b>
+<b class="nc"><i>357</i>&nbsp;            }</b>
+<b class="nc"><i>358</i>&nbsp;</b>
+<i>359</i>&nbsp;            var1.pln(&quot;ref.invoke(call);&quot;);
+<b class="nc"><i>360</i>&nbsp;            if(var8.isType(11)) {</b>
+<b class="nc"><i>361</i>&nbsp;                var1.pln(&quot;ref.done(call);&quot;);</b>
+<i>362</i>&nbsp;            } else {
+<i>363</i>&nbsp;                var1.pln(var8 + &quot; $result;&quot;);
+<i>364</i>&nbsp;                var1.plnI(&quot;try {&quot;);
+<i>365</i>&nbsp;                var1.pln(&quot;java.io.ObjectInput in = call.getInputStream();&quot;);
+<i>366</i>&nbsp;                boolean var14 = writeUnmarshalArgument(var1, &quot;in&quot;, var8, &quot;$result&quot;);
+<b class="nc"><i>367</i>&nbsp;                var1.pln(&quot;;&quot;);</b>
+<b class="nc"><i>368</i>&nbsp;                var1.pOlnI(&quot;} catch (java.io.IOException e) {&quot;);</b>
+<b class="nc"><i>369</i>&nbsp;                var1.pln(&quot;throw new &quot; + idUnmarshalException + &quot;(\&quot;error unmarshalling return\&quot;, e);&quot;);</b>
+<i>370</i>&nbsp;                if(var14) {
+<i>371</i>&nbsp;                    var1.pOlnI(&quot;} catch (java.lang.ClassNotFoundException e) {&quot;);
+<i>372</i>&nbsp;                    var1.pln(&quot;throw new &quot; + idUnmarshalException + &quot;(\&quot;error unmarshalling return\&quot;, e);&quot;);
+<i>373</i>&nbsp;                }
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;                var1.pOlnI(&quot;} finally {&quot;);
+<i>376</i>&nbsp;                var1.pln(&quot;ref.done(call);&quot;);
+<i>377</i>&nbsp;                var1.pOln(&quot;}&quot;);
+<i>378</i>&nbsp;                var1.pln(&quot;return $result;&quot;);
+<b class="nc"><i>379</i>&nbsp;            }</b>
+<b class="nc"><i>380</i>&nbsp;        }</b>
+<b class="nc"><i>381</i>&nbsp;</b>
+<b class="nc"><i>382</i>&nbsp;        if(this.version == 2) {</b>
+<b class="nc"><i>383</i>&nbsp;            var1.pOln(&quot;}&quot;);</b>
+<b class="nc"><i>384</i>&nbsp;        }</b>
+<b class="nc"><i>385</i>&nbsp;</b>
+<b class="nc"><i>386</i>&nbsp;        if(var13.size() &gt; 0) {</b>
+<b class="nc"><i>387</i>&nbsp;            Enumeration var15 = var13.elements();</b>
+<i>388</i>&nbsp;
+<b class="nc"><i>389</i>&nbsp;            while(var15.hasMoreElements()) {</b>
+<b class="nc"><i>390</i>&nbsp;                ClassDefinition var12 = (ClassDefinition)var15.nextElement();</b>
+<b class="nc"><i>391</i>&nbsp;                var1.pOlnI(&quot;} catch (&quot; + var12.getName() + &quot; e) {&quot;);</b>
+<b class="nc"><i>392</i>&nbsp;                var1.pln(&quot;throw e;&quot;);</b>
+<i>393</i>&nbsp;            }
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;            var1.pOlnI(&quot;} catch (java.lang.Exception e) {&quot;);
+<i>396</i>&nbsp;            var1.pln(&quot;throw new &quot; + idUnexpectedException + &quot;(\&quot;undeclared checked exception\&quot;, e);&quot;);
+<i>397</i>&nbsp;            var1.pOln(&quot;}&quot;);
+<i>398</i>&nbsp;        }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;        var1.pOln(&quot;}&quot;);
+<i>401</i>&nbsp;    }
+<i>402</i>&nbsp;
+<b class="nc"><i>403</i>&nbsp;    private Vector&lt;ClassDefinition&gt; computeUniqueCatchList(ClassDeclaration[] var1) {</b>
+<b class="nc"><i>404</i>&nbsp;        Vector var2 = new Vector();</b>
+<b class="nc"><i>405</i>&nbsp;        var2.addElement(this.defRuntimeException);</b>
+<i>406</i>&nbsp;        var2.addElement(this.defRemoteException);
+<b class="nc"><i>407</i>&nbsp;</b>
+<b class="nc"><i>408</i>&nbsp;        label47:</b>
+<b class="nc"><i>409</i>&nbsp;        for(int var3 = 0; var3 &lt; var1.length; ++var3) {</b>
+<i>410</i>&nbsp;            ClassDeclaration var4 = var1[var3];
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;            try {
+<b class="nc"><i>413</i>&nbsp;                if(this.defException.subClassOf(this.env, var4)) {</b>
+<b class="nc"><i>414</i>&nbsp;                    var2.clear();</b>
+<i>415</i>&nbsp;                    break;
+<i>416</i>&nbsp;                }
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;                if(this.defException.superClassOf(this.env, var4)) {
+<b class="nc"><i>419</i>&nbsp;                    int var5 = 0;</b>
+<b class="nc"><i>420</i>&nbsp;</b>
+<b class="nc"><i>421</i>&nbsp;                    while(var5 &lt; var2.size()) {</b>
+<b class="nc"><i>422</i>&nbsp;                        ClassDefinition var6 = (ClassDefinition)var2.elementAt(var5);</b>
+<b class="nc"><i>423</i>&nbsp;                        if(var6.superClassOf(this.env, var4)) {</b>
+<i>424</i>&nbsp;                            continue label47;
+<i>425</i>&nbsp;                        }
+<i>426</i>&nbsp;
+<b class="nc"><i>427</i>&nbsp;                        if(var6.subClassOf(this.env, var4)) {</b>
+<i>428</i>&nbsp;                            var2.removeElementAt(var5);
+<i>429</i>&nbsp;                        } else {
+<i>430</i>&nbsp;                            ++var5;
+<i>431</i>&nbsp;                        }
+<i>432</i>&nbsp;                    }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;                    var2.addElement(var4.getClassDefinition(this.env));
+<i>435</i>&nbsp;                }
+<b class="nc"><i>436</i>&nbsp;            } catch (ClassNotFound var7) {</b>
+<i>437</i>&nbsp;                this.env.error(0L, &quot;class.not.found&quot;, var7.name, var4.getName());
+<i>438</i>&nbsp;            }
+<i>439</i>&nbsp;        }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;        return var2;
+<i>442</i>&nbsp;    }
+<b class="nc"><i>443</i>&nbsp;</b>
+<i>444</i>&nbsp;    private void writeSkeleton(IndentingWriter var1) throws IOException {
+<i>445</i>&nbsp;        if(this.version == 3) {
+<b class="nc"><i>446</i>&nbsp;            throw new Error(&quot;should not generate skeleton for version&quot;);</b>
+<i>447</i>&nbsp;        } else {
+<b class="nc"><i>448</i>&nbsp;            var1.pln(&quot;// Skeleton class generated by rmic, do not edit.&quot;);</b>
+<b class="nc"><i>449</i>&nbsp;            var1.pln(&quot;// Contents subject to change without notice.&quot;);</b>
+<i>450</i>&nbsp;            var1.pln();
+<i>451</i>&nbsp;            if(this.remoteClassName.isQualified()) {
+<b class="nc"><i>452</i>&nbsp;                var1.pln(&quot;package &quot; + this.remoteClassName.getQualifier() + &quot;;&quot;);</b>
+<i>453</i>&nbsp;                var1.pln();
+<b class="nc"><i>454</i>&nbsp;            }</b>
+<b class="nc"><i>455</i>&nbsp;</b>
+<i>456</i>&nbsp;            var1.plnI(&quot;public final class &quot; + Names.mangleClass(this.skeletonClassName.getName()));
+<i>457</i>&nbsp;            var1.pln(&quot;implements &quot; + idSkeleton);
+<i>458</i>&nbsp;            var1.pOlnI(&quot;{&quot;);
+<i>459</i>&nbsp;            this.writeOperationsArray(var1);
+<i>460</i>&nbsp;            var1.pln();
+<i>461</i>&nbsp;            this.writeInterfaceHash(var1);
+<i>462</i>&nbsp;            var1.pln();
+<i>463</i>&nbsp;            var1.plnI(&quot;public &quot; + idOperation + &quot;[] getOperations() {&quot;);
+<b class="nc"><i>464</i>&nbsp;            var1.pln(&quot;return (&quot; + idOperation + &quot;[]) operations.clone();&quot;);</b>
+<b class="nc"><i>465</i>&nbsp;            var1.pOln(&quot;}&quot;);</b>
+<b class="nc"><i>466</i>&nbsp;            var1.pln();</b>
+<b class="nc"><i>467</i>&nbsp;            var1.plnI(&quot;public void dispatch(&quot; + idRemote + &quot; obj, &quot; + idRemoteCall + &quot; call, int opnum, long hash)&quot;);</b>
+<b class="nc"><i>468</i>&nbsp;            var1.pln(&quot;throws java.lang.Exception&quot;);</b>
+<b class="nc"><i>469</i>&nbsp;            var1.pOlnI(&quot;{&quot;);</b>
+<b class="nc"><i>470</i>&nbsp;            int var2;</b>
+<i>471</i>&nbsp;            if(this.version == 2) {
+<i>472</i>&nbsp;                var1.plnI(&quot;if (opnum &lt; 0) {&quot;);
+<i>473</i>&nbsp;                if(this.remoteMethods.length &gt; 0) {
+<i>474</i>&nbsp;                    for(var2 = 0; var2 &lt; this.remoteMethods.length; ++var2) {
+<i>475</i>&nbsp;                        if(var2 &gt; 0) {
+<b class="nc"><i>476</i>&nbsp;                            var1.pO(&quot;} else &quot;);</b>
+<i>477</i>&nbsp;                        }
+<b class="nc"><i>478</i>&nbsp;</b>
+<b class="nc"><i>479</i>&nbsp;                        var1.plnI(&quot;if (hash == &quot; + this.remoteMethods[var2].getMethodHash() + &quot;L) {&quot;);</b>
+<b class="nc"><i>480</i>&nbsp;                        var1.pln(&quot;opnum = &quot; + var2 + &quot;;&quot;);</b>
+<b class="nc"><i>481</i>&nbsp;                    }</b>
+<b class="nc"><i>482</i>&nbsp;</b>
+<i>483</i>&nbsp;                    var1.pOlnI(&quot;} else {&quot;);
+<b class="nc"><i>484</i>&nbsp;                }</b>
+<b class="nc"><i>485</i>&nbsp;</b>
+<b class="nc"><i>486</i>&nbsp;                var1.pln(&quot;throw new &quot; + idUnmarshalException + &quot;(\&quot;invalid method hash\&quot;);&quot;);</b>
+<b class="nc"><i>487</i>&nbsp;                if(this.remoteMethods.length &gt; 0) {</b>
+<b class="nc"><i>488</i>&nbsp;                    var1.pOln(&quot;}&quot;);</b>
+<b class="nc"><i>489</i>&nbsp;                }</b>
+<b class="nc"><i>490</i>&nbsp;</b>
+<i>491</i>&nbsp;                var1.pOlnI(&quot;} else {&quot;);
+<b class="nc"><i>492</i>&nbsp;            }</b>
+<i>493</i>&nbsp;
+<b class="nc"><i>494</i>&nbsp;            var1.plnI(&quot;if (hash != interfaceHash)&quot;);</b>
+<i>495</i>&nbsp;            var1.pln(&quot;throw new &quot; + idSkeletonMismatchException + &quot;(\&quot;interface hash mismatch\&quot;);&quot;);
+<i>496</i>&nbsp;            var1.pO();
+<i>497</i>&nbsp;            if(this.version == 2) {
+<i>498</i>&nbsp;                var1.pOln(&quot;}&quot;);
+<i>499</i>&nbsp;            }
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;            var1.pln();
+<i>502</i>&nbsp;            var1.pln(this.remoteClassName + &quot; server = (&quot; + this.remoteClassName + &quot;) obj;&quot;);
+<i>503</i>&nbsp;            var1.plnI(&quot;switch (opnum) {&quot;);
+<i>504</i>&nbsp;
+<i>505</i>&nbsp;            for(var2 = 0; var2 &lt; this.remoteMethods.length; ++var2) {
+<i>506</i>&nbsp;                this.writeSkeletonDispatchCase(var1, var2);
+<i>507</i>&nbsp;            }
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;            var1.pOlnI(&quot;default:&quot;);
+<i>510</i>&nbsp;            var1.pln(&quot;throw new &quot; + idUnmarshalException + &quot;(\&quot;invalid method number\&quot;);&quot;);
+<i>511</i>&nbsp;            var1.pOln(&quot;}&quot;);
+<i>512</i>&nbsp;            var1.pOln(&quot;}&quot;);
+<b class="nc"><i>513</i>&nbsp;            var1.pOln(&quot;}&quot;);</b>
+<i>514</i>&nbsp;        }
+<i>515</i>&nbsp;    }
+<i>516</i>&nbsp;
+<i>517</i>&nbsp;    private void writeSkeletonDispatchCase(IndentingWriter var1, int var2) throws IOException {
+<i>518</i>&nbsp;        Method var3 = this.remoteMethods[var2];
+<i>519</i>&nbsp;        Identifier var4 = var3.getName();
+<b class="nc"><i>520</i>&nbsp;        Type var5 = var3.getType();</b>
+<b class="nc"><i>521</i>&nbsp;        Type[] var6 = var5.getArgumentTypes();</b>
+<i>522</i>&nbsp;        String[] var7 = nameParameters(var6);
+<i>523</i>&nbsp;        Type var8 = var5.getReturnType();
+<b class="nc"><i>524</i>&nbsp;        var1.pOlnI(&quot;case &quot; + var2 + &quot;: // &quot; + var5.typeString(var4.toString(), true, false));</b>
+<b class="nc"><i>525</i>&nbsp;        var1.pOlnI(&quot;{&quot;);</b>
+<i>526</i>&nbsp;        int var9;
+<b class="nc"><i>527</i>&nbsp;        if(var6.length &gt; 0) {</b>
+<i>528</i>&nbsp;            for(var9 = 0; var9 &lt; var6.length; ++var9) {
+<i>529</i>&nbsp;                var1.pln(var6[var9] + &quot; &quot; + var7[var9] + &quot;;&quot;);
+<b class="nc"><i>530</i>&nbsp;            }</b>
+<b class="nc"><i>531</i>&nbsp;</b>
+<i>532</i>&nbsp;            var1.plnI(&quot;try {&quot;);
+<b class="nc"><i>533</i>&nbsp;            var1.pln(&quot;java.io.ObjectInput in = call.getInputStream();&quot;);</b>
+<b class="nc"><i>534</i>&nbsp;            boolean var10 = writeUnmarshalArguments(var1, &quot;in&quot;, var6, var7);</b>
+<b class="nc"><i>535</i>&nbsp;            var1.pOlnI(&quot;} catch (java.io.IOException e) {&quot;);</b>
+<b class="nc"><i>536</i>&nbsp;            var1.pln(&quot;throw new &quot; + idUnmarshalException + &quot;(\&quot;error unmarshalling arguments\&quot;, e);&quot;);</b>
+<b class="nc"><i>537</i>&nbsp;            if(var10) {</b>
+<b class="nc"><i>538</i>&nbsp;                var1.pOlnI(&quot;} catch (java.lang.ClassNotFoundException e) {&quot;);</b>
+<b class="nc"><i>539</i>&nbsp;                var1.pln(&quot;throw new &quot; + idUnmarshalException + &quot;(\&quot;error unmarshalling arguments\&quot;, e);&quot;);</b>
+<i>540</i>&nbsp;            }
+<b class="nc"><i>541</i>&nbsp;</b>
+<i>542</i>&nbsp;            var1.pOlnI(&quot;} finally {&quot;);
+<b class="nc"><i>543</i>&nbsp;            var1.pln(&quot;call.releaseInputStream();&quot;);</b>
+<i>544</i>&nbsp;            var1.pOln(&quot;}&quot;);
+<b class="nc"><i>545</i>&nbsp;        } else {</b>
+<b class="nc"><i>546</i>&nbsp;            var1.pln(&quot;call.releaseInputStream();&quot;);</b>
+<b class="nc"><i>547</i>&nbsp;        }</b>
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;        if(!var8.isType(11)) {
+<i>550</i>&nbsp;            var1.p(var8 + &quot; $result = &quot;);
+<b class="nc"><i>551</i>&nbsp;        }</b>
+<b class="nc"><i>552</i>&nbsp;</b>
+<i>553</i>&nbsp;        var1.p(&quot;server.&quot; + var4 + &quot;(&quot;);
+<b class="nc"><i>554</i>&nbsp;</b>
+<i>555</i>&nbsp;        for(var9 = 0; var9 &lt; var7.length; ++var9) {
+<i>556</i>&nbsp;            if(var9 &gt; 0) {
+<b class="nc"><i>557</i>&nbsp;                var1.p(&quot;, &quot;);</b>
+<i>558</i>&nbsp;            }
+<i>559</i>&nbsp;
+<b class="nc"><i>560</i>&nbsp;            var1.p(var7[var9]);</b>
+<b class="nc"><i>561</i>&nbsp;        }</b>
+<b class="nc"><i>562</i>&nbsp;</b>
+<b class="nc"><i>563</i>&nbsp;        var1.pln(&quot;);&quot;);</b>
+<b class="nc"><i>564</i>&nbsp;        var1.plnI(&quot;try {&quot;);</b>
+<b class="nc"><i>565</i>&nbsp;        if(!var8.isType(11)) {</b>
+<i>566</i>&nbsp;            var1.p(&quot;java.io.ObjectOutput out = &quot;);
+<b class="nc"><i>567</i>&nbsp;        }</b>
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;        var1.pln(&quot;call.getResultStream(true);&quot;);
+<b class="nc"><i>570</i>&nbsp;        if(!var8.isType(11)) {</b>
+<i>571</i>&nbsp;            writeMarshalArgument(var1, &quot;out&quot;, var8, &quot;$result&quot;);
+<b class="nc"><i>572</i>&nbsp;            var1.pln(&quot;;&quot;);</b>
+<b class="nc"><i>573</i>&nbsp;        }</b>
+<i>574</i>&nbsp;
+<b class="nc"><i>575</i>&nbsp;        var1.pOlnI(&quot;} catch (java.io.IOException e) {&quot;);</b>
+<b class="nc"><i>576</i>&nbsp;        var1.pln(&quot;throw new &quot; + idMarshalException + &quot;(\&quot;error marshalling return\&quot;, e);&quot;);</b>
+<b class="nc"><i>577</i>&nbsp;        var1.pOln(&quot;}&quot;);</b>
+<b class="nc"><i>578</i>&nbsp;        var1.pln(&quot;break;&quot;);</b>
+<i>579</i>&nbsp;        var1.pOlnI(&quot;}&quot;);
+<b class="nc"><i>580</i>&nbsp;        var1.pln();</b>
+<b class="nc"><i>581</i>&nbsp;    }</b>
+<b class="nc"><i>582</i>&nbsp;</b>
+<i>583</i>&nbsp;    private void writeOperationsArray(IndentingWriter var1) throws IOException {
+<i>584</i>&nbsp;        var1.plnI(&quot;private static final &quot; + idOperation + &quot;[] operations = {&quot;);
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;        for(int var2 = 0; var2 &lt; this.remoteMethods.length; ++var2) {
+<i>587</i>&nbsp;            if(var2 &gt; 0) {
+<b class="nc"><i>588</i>&nbsp;                var1.pln(&quot;,&quot;);</b>
+<b class="nc"><i>589</i>&nbsp;            }</b>
+<b class="nc"><i>590</i>&nbsp;</b>
+<i>591</i>&nbsp;            var1.p(&quot;new &quot; + idOperation + &quot;(\&quot;&quot; + this.remoteMethods[var2].getOperationString() + &quot;\&quot;)&quot;);
+<i>592</i>&nbsp;        }
+<b class="nc"><i>593</i>&nbsp;</b>
+<b class="nc"><i>594</i>&nbsp;        var1.pln();</b>
+<b class="nc"><i>595</i>&nbsp;        var1.pOln(&quot;};&quot;);</b>
+<b class="nc"><i>596</i>&nbsp;    }</b>
+<i>597</i>&nbsp;
+<i>598</i>&nbsp;    private void writeInterfaceHash(IndentingWriter var1) throws IOException {
+<b class="nc"><i>599</i>&nbsp;        var1.pln(&quot;private static final long interfaceHash = &quot; + this.remoteClass.getInterfaceHash() + &quot;L;&quot;);</b>
+<b class="nc"><i>600</i>&nbsp;    }</b>
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    private void writeMethodFieldDeclarations(IndentingWriter var1) throws IOException {
+<i>603</i>&nbsp;        for(int var2 = 0; var2 &lt; this.methodFieldNames.length; ++var2) {
+<i>604</i>&nbsp;            var1.pln(&quot;private static java.lang.reflect.Method &quot; + this.methodFieldNames[var2] + &quot;;&quot;);
+<i>605</i>&nbsp;        }
+<i>606</i>&nbsp;
+<i>607</i>&nbsp;    }
+<b class="nc"><i>608</i>&nbsp;</b>
+<b class="nc"><i>609</i>&nbsp;    private void writeMethodFieldInitializers(IndentingWriter var1) throws IOException {</b>
+<b class="nc"><i>610</i>&nbsp;        for(int var2 = 0; var2 &lt; this.methodFieldNames.length; ++var2) {</b>
+<i>611</i>&nbsp;            var1.p(this.methodFieldNames[var2] + &quot; = &quot;);
+<b class="nc"><i>612</i>&nbsp;            Method var3 = this.remoteMethods[var2];</b>
+<b class="nc"><i>613</i>&nbsp;            MemberDefinition var4 = var3.getMemberDefinition();</b>
+<b class="nc"><i>614</i>&nbsp;            Identifier var5 = var3.getName();</b>
+<b class="nc"><i>615</i>&nbsp;            Type var6 = var3.getType();</b>
+<b class="nc"><i>616</i>&nbsp;            Type[] var7 = var6.getArgumentTypes();</b>
+<b class="nc"><i>617</i>&nbsp;            var1.p(var4.getClassDefinition().getName() + &quot;.class.getMethod(\&quot;&quot; + var5 + &quot;\&quot;, new java.lang.Class[] {&quot;);</b>
+<i>618</i>&nbsp;
+<b class="nc"><i>619</i>&nbsp;            for(int var8 = 0; var8 &lt; var7.length; ++var8) {</b>
+<i>620</i>&nbsp;                if(var8 &gt; 0) {
+<i>621</i>&nbsp;                    var1.p(&quot;, &quot;);
+<b class="nc"><i>622</i>&nbsp;                }</b>
+<i>623</i>&nbsp;
+<i>624</i>&nbsp;                var1.p(var7[var8] + &quot;.class&quot;);
+<i>625</i>&nbsp;            }
+<i>626</i>&nbsp;
+<i>627</i>&nbsp;            var1.pln(&quot;});&quot;);
+<i>628</i>&nbsp;        }
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    private static String[] nameMethodFields(Method[] var0) {
+<i>633</i>&nbsp;        String[] var1 = new String[var0.length];
+<i>634</i>&nbsp;
+<i>635</i>&nbsp;        for(int var2 = 0; var2 &lt; var1.length; ++var2) {
+<i>636</i>&nbsp;            var1[var2] = &quot;$method_&quot; + var0[var2].getName() + &quot;_&quot; + var2;
+<i>637</i>&nbsp;        }
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;        return var1;
+<i>640</i>&nbsp;    }
+<i>641</i>&nbsp;
+<i>642</i>&nbsp;    private static String[] nameParameters(Type[] var0) {
+<i>643</i>&nbsp;        String[] var1 = new String[var0.length];
+<i>644</i>&nbsp;
+<b class="nc"><i>645</i>&nbsp;        for(int var2 = 0; var2 &lt; var1.length; ++var2) {</b>
+<i>646</i>&nbsp;            var1[var2] = &quot;$param_&quot; + generateNameFromType(var0[var2]) + &quot;_&quot; + (var2 + 1);
+<b class="nc"><i>647</i>&nbsp;        }</b>
+<b class="nc"><i>648</i>&nbsp;</b>
+<i>649</i>&nbsp;        return var1;
+<i>650</i>&nbsp;    }
+<i>651</i>&nbsp;
+<b class="nc"><i>652</i>&nbsp;    private static String generateNameFromType(Type var0) {</b>
+<b class="nc"><i>653</i>&nbsp;        int var1 = var0.getTypeCode();</b>
+<i>654</i>&nbsp;        switch(var1) {
+<b class="nc"><i>655</i>&nbsp;        case 0:</b>
+<i>656</i>&nbsp;        case 1:
+<i>657</i>&nbsp;        case 2:
+<i>658</i>&nbsp;        case 3:
+<i>659</i>&nbsp;        case 4:
+<i>660</i>&nbsp;        case 5:
+<i>661</i>&nbsp;        case 6:
+<b class="nc"><i>662</i>&nbsp;        case 7:</b>
+<b class="nc"><i>663</i>&nbsp;            return var0.toString();</b>
+<b class="nc"><i>664</i>&nbsp;        case 8:</b>
+<i>665</i>&nbsp;        default:
+<i>666</i>&nbsp;            throw new Error(&quot;unexpected type code: &quot; + var1);
+<i>667</i>&nbsp;        case 9:
+<i>668</i>&nbsp;            return &quot;arrayOf_&quot; + generateNameFromType(var0.getElementType());
+<b class="nc"><i>669</i>&nbsp;        case 10:</b>
+<i>670</i>&nbsp;            return Names.mangleClass(var0.getClassName().getName()).toString();
+<i>671</i>&nbsp;        }
+<i>672</i>&nbsp;    }
+<i>673</i>&nbsp;
+<i>674</i>&nbsp;    private static void writeMarshalArgument(IndentingWriter var0, String var1, Type var2, String var3) throws IOException {
+<b class="nc"><i>675</i>&nbsp;        int var4 = var2.getTypeCode();</b>
+<b class="nc"><i>676</i>&nbsp;        switch(var4) {</b>
+<i>677</i>&nbsp;        case 0:
+<b class="nc"><i>678</i>&nbsp;            var0.p(var1 + &quot;.writeBoolean(&quot; + var3 + &quot;)&quot;);</b>
+<i>679</i>&nbsp;            break;
+<i>680</i>&nbsp;        case 1:
+<i>681</i>&nbsp;            var0.p(var1 + &quot;.writeByte(&quot; + var3 + &quot;)&quot;);
+<i>682</i>&nbsp;            break;
+<b class="nc"><i>683</i>&nbsp;        case 2:</b>
+<b class="nc"><i>684</i>&nbsp;            var0.p(var1 + &quot;.writeChar(&quot; + var3 + &quot;)&quot;);</b>
+<i>685</i>&nbsp;            break;
+<i>686</i>&nbsp;        case 3:
+<i>687</i>&nbsp;            var0.p(var1 + &quot;.writeShort(&quot; + var3 + &quot;)&quot;);
+<i>688</i>&nbsp;            break;
+<b class="nc"><i>689</i>&nbsp;        case 4:</b>
+<i>690</i>&nbsp;            var0.p(var1 + &quot;.writeInt(&quot; + var3 + &quot;)&quot;);
+<b class="nc"><i>691</i>&nbsp;            break;</b>
+<i>692</i>&nbsp;        case 5:
+<b class="nc"><i>693</i>&nbsp;            var0.p(var1 + &quot;.writeLong(&quot; + var3 + &quot;)&quot;);</b>
+<i>694</i>&nbsp;            break;
+<b class="nc"><i>695</i>&nbsp;        case 6:</b>
+<b class="nc"><i>696</i>&nbsp;            var0.p(var1 + &quot;.writeFloat(&quot; + var3 + &quot;)&quot;);</b>
+<b class="nc"><i>697</i>&nbsp;            break;</b>
+<i>698</i>&nbsp;        case 7:
+<i>699</i>&nbsp;            var0.p(var1 + &quot;.writeDouble(&quot; + var3 + &quot;)&quot;);
+<i>700</i>&nbsp;            break;
+<i>701</i>&nbsp;        case 8:
+<i>702</i>&nbsp;        default:
+<b class="nc"><i>703</i>&nbsp;            throw new Error(&quot;unexpected type code: &quot; + var4);</b>
+<i>704</i>&nbsp;        case 9:
+<b class="nc"><i>705</i>&nbsp;        case 10:</b>
+<i>706</i>&nbsp;            var0.p(var1 + &quot;.writeObject(&quot; + var3 + &quot;)&quot;);
+<i>707</i>&nbsp;        }
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;    }
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;    private static void writeMarshalArguments(IndentingWriter var0, String var1, Type[] var2, String[] var3) throws IOException {
+<b class="nc"><i>712</i>&nbsp;        if(var2.length != var3.length) {</b>
+<b class="nc"><i>713</i>&nbsp;            throw new Error(&quot;paramter type and name arrays different sizes&quot;);</b>
+<i>714</i>&nbsp;        } else {
+<i>715</i>&nbsp;            for(int var4 = 0; var4 &lt; var2.length; ++var4) {
+<i>716</i>&nbsp;                writeMarshalArgument(var0, var1, var2[var4], var3[var4]);
+<i>717</i>&nbsp;                var0.pln(&quot;;&quot;);
+<i>718</i>&nbsp;            }
+<b class="nc"><i>719</i>&nbsp;</b>
+<b class="nc"><i>720</i>&nbsp;        }</b>
+<b class="nc"><i>721</i>&nbsp;    }</b>
+<i>722</i>&nbsp;
+<i>723</i>&nbsp;    private static boolean writeUnmarshalArgument(IndentingWriter var0, String var1, Type var2, String var3) throws IOException {
+<i>724</i>&nbsp;        boolean var4 = false;
+<i>725</i>&nbsp;        if(var3 != null) {
+<i>726</i>&nbsp;            var0.p(var3 + &quot; = &quot;);
+<b class="nc"><i>727</i>&nbsp;        }</b>
+<b class="nc"><i>728</i>&nbsp;</b>
+<b class="nc"><i>729</i>&nbsp;        int var5 = var2.getTypeCode();</b>
+<i>730</i>&nbsp;        switch(var2.getTypeCode()) {
+<i>731</i>&nbsp;        case 0:
+<i>732</i>&nbsp;            var0.p(var1 + &quot;.readBoolean()&quot;);
+<i>733</i>&nbsp;            break;
+<i>734</i>&nbsp;        case 1:
+<b class="nc"><i>735</i>&nbsp;            var0.p(var1 + &quot;.readByte()&quot;);</b>
+<i>736</i>&nbsp;            break;
+<b class="nc"><i>737</i>&nbsp;        case 2:</b>
+<b class="nc"><i>738</i>&nbsp;            var0.p(var1 + &quot;.readChar()&quot;);</b>
+<i>739</i>&nbsp;            break;
+<b class="nc"><i>740</i>&nbsp;        case 3:</b>
+<b class="nc"><i>741</i>&nbsp;            var0.p(var1 + &quot;.readShort()&quot;);</b>
+<i>742</i>&nbsp;            break;
+<b class="nc"><i>743</i>&nbsp;        case 4:</b>
+<b class="nc"><i>744</i>&nbsp;            var0.p(var1 + &quot;.readInt()&quot;);</b>
+<i>745</i>&nbsp;            break;
+<i>746</i>&nbsp;        case 5:
+<i>747</i>&nbsp;            var0.p(var1 + &quot;.readLong()&quot;);
+<i>748</i>&nbsp;            break;
+<b class="nc"><i>749</i>&nbsp;        case 6:</b>
+<b class="nc"><i>750</i>&nbsp;            var0.p(var1 + &quot;.readFloat()&quot;);</b>
+<b class="nc"><i>751</i>&nbsp;            break;</b>
+<b class="nc"><i>752</i>&nbsp;        case 7:</b>
+<i>753</i>&nbsp;            var0.p(var1 + &quot;.readDouble()&quot;);
+<i>754</i>&nbsp;            break;
+<i>755</i>&nbsp;        case 8:
+<i>756</i>&nbsp;        default:
+<b class="nc"><i>757</i>&nbsp;            throw new Error(&quot;unexpected type code: &quot; + var5);</b>
+<i>758</i>&nbsp;        case 9:
+<b class="nc"><i>759</i>&nbsp;        case 10:</b>
+<b class="nc"><i>760</i>&nbsp;            var0.p(&quot;(&quot; + var2 + &quot;) &quot; + var1 + &quot;.readObject()&quot;);</b>
+<i>761</i>&nbsp;            var4 = true;
+<b class="nc"><i>762</i>&nbsp;        }</b>
+<b class="nc"><i>763</i>&nbsp;</b>
+<b class="nc"><i>764</i>&nbsp;        return var4;</b>
+<b class="nc"><i>765</i>&nbsp;    }</b>
+<b class="nc"><i>766</i>&nbsp;</b>
+<b class="nc"><i>767</i>&nbsp;    private static boolean writeUnmarshalArguments(IndentingWriter var0, String var1, Type[] var2, String[] var3) throws IOException {</b>
+<b class="nc"><i>768</i>&nbsp;        if(var2.length != var3.length) {</b>
+<i>769</i>&nbsp;            throw new Error(&quot;paramter type and name arrays different sizes&quot;);
+<b class="nc"><i>770</i>&nbsp;        } else {</b>
+<i>771</i>&nbsp;            boolean var4 = false;
+<b class="nc"><i>772</i>&nbsp;</b>
+<i>773</i>&nbsp;            for(int var5 = 0; var5 &lt; var2.length; ++var5) {
+<i>774</i>&nbsp;                if(writeUnmarshalArgument(var0, var1, var2[var5], var3[var5])) {
+<i>775</i>&nbsp;                    var4 = true;
+<i>776</i>&nbsp;                }
+<i>777</i>&nbsp;
+<i>778</i>&nbsp;                var0.pln(&quot;;&quot;);
+<b class="nc"><i>779</i>&nbsp;            }</b>
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;            return var4;</b>
+<b class="nc"><i>782</i>&nbsp;        }</b>
+<i>783</i>&nbsp;    }
+<i>784</i>&nbsp;
+<i>785</i>&nbsp;    private static String wrapArgumentCode(Type var0, String var1) {
+<i>786</i>&nbsp;        int var2 = var0.getTypeCode();
+<i>787</i>&nbsp;        switch(var2) {
+<i>788</i>&nbsp;        case 0:
+<b class="nc"><i>789</i>&nbsp;            return &quot;(&quot; + var1 + &quot; ? java.lang.Boolean.TRUE : java.lang.Boolean.FALSE)&quot;;</b>
+<i>790</i>&nbsp;        case 1:
+<i>791</i>&nbsp;            return &quot;new java.lang.Byte(&quot; + var1 + &quot;)&quot;;
+<b class="nc"><i>792</i>&nbsp;        case 2:</b>
+<b class="nc"><i>793</i>&nbsp;            return &quot;new java.lang.Character(&quot; + var1 + &quot;)&quot;;</b>
+<i>794</i>&nbsp;        case 3:
+<b class="nc"><i>795</i>&nbsp;            return &quot;new java.lang.Short(&quot; + var1 + &quot;)&quot;;</b>
+<i>796</i>&nbsp;        case 4:
+<b class="nc"><i>797</i>&nbsp;            return &quot;new java.lang.Integer(&quot; + var1 + &quot;)&quot;;</b>
+<b class="nc"><i>798</i>&nbsp;        case 5:</b>
+<i>799</i>&nbsp;            return &quot;new java.lang.Long(&quot; + var1 + &quot;)&quot;;
+<b class="nc"><i>800</i>&nbsp;        case 6:</b>
+<i>801</i>&nbsp;            return &quot;new java.lang.Float(&quot; + var1 + &quot;)&quot;;
+<i>802</i>&nbsp;        case 7:
+<i>803</i>&nbsp;            return &quot;new java.lang.Double(&quot; + var1 + &quot;)&quot;;
+<i>804</i>&nbsp;        case 8:
+<b class="nc"><i>805</i>&nbsp;        default:</b>
+<i>806</i>&nbsp;            throw new Error(&quot;unexpected type code: &quot; + var2);
+<i>807</i>&nbsp;        case 9:
+<i>808</i>&nbsp;        case 10:
+<i>809</i>&nbsp;            return var1;
+<b class="nc"><i>810</i>&nbsp;        }</b>
+<b class="nc"><i>811</i>&nbsp;    }</b>
+<b class="nc"><i>812</i>&nbsp;</b>
+<i>813</i>&nbsp;    private static String unwrapArgumentCode(Type var0, String var1) {
+<b class="nc"><i>814</i>&nbsp;        int var2 = var0.getTypeCode();</b>
+<i>815</i>&nbsp;        switch(var2) {
+<i>816</i>&nbsp;        case 0:
+<i>817</i>&nbsp;            return &quot;((java.lang.Boolean) &quot; + var1 + &quot;).booleanValue()&quot;;
+<i>818</i>&nbsp;        case 1:
+<i>819</i>&nbsp;            return &quot;((java.lang.Byte) &quot; + var1 + &quot;).byteValue()&quot;;
+<b class="nc"><i>820</i>&nbsp;        case 2:</b>
+<i>821</i>&nbsp;            return &quot;((java.lang.Character) &quot; + var1 + &quot;).charValue()&quot;;
+<b class="nc"><i>822</i>&nbsp;        case 3:</b>
+<i>823</i>&nbsp;            return &quot;((java.lang.Short) &quot; + var1 + &quot;).shortValue()&quot;;
+<b class="nc"><i>824</i>&nbsp;        case 4:</b>
+<i>825</i>&nbsp;            return &quot;((java.lang.Integer) &quot; + var1 + &quot;).intValue()&quot;;
+<b class="nc"><i>826</i>&nbsp;        case 5:</b>
+<i>827</i>&nbsp;            return &quot;((java.lang.Long) &quot; + var1 + &quot;).longValue()&quot;;
+<i>828</i>&nbsp;        case 6:
+<i>829</i>&nbsp;            return &quot;((java.lang.Float) &quot; + var1 + &quot;).floatValue()&quot;;
+<i>830</i>&nbsp;        case 7:
+<i>831</i>&nbsp;            return &quot;((java.lang.Double) &quot; + var1 + &quot;).doubleValue()&quot;;
+<i>832</i>&nbsp;        case 8:
+<i>833</i>&nbsp;        default:
+<i>834</i>&nbsp;            throw new Error(&quot;unexpected type code: &quot; + var2);
+<i>835</i>&nbsp;        case 9:
+<b class="nc"><i>836</i>&nbsp;        case 10:</b>
+<b class="nc"><i>837</i>&nbsp;            return &quot;((&quot; + var0 + &quot;) &quot; + var1 + &quot;)&quot;;</b>
+<b class="nc"><i>838</i>&nbsp;        }</b>
+<b class="nc"><i>839</i>&nbsp;    }</b>
+<b class="nc"><i>840</i>&nbsp;</b>
+<b class="nc"><i>841</i>&nbsp;    static {</b>
+<i>842</i>&nbsp;        versionOptions.put(&quot;-v1.1&quot;, new Integer(1));
+<b class="nc"><i>843</i>&nbsp;        versionOptions.put(&quot;-vcompat&quot;, new Integer(2));</b>
+<i>844</i>&nbsp;        versionOptions.put(&quot;-v1.2&quot;, new Integer(3));
+<i>845</i>&nbsp;    }
+<i>846</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

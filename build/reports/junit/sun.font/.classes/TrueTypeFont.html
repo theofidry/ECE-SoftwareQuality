@@ -1,0 +1,1395 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TrueTypeFont</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TrueTypeFont (sun.font)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TrueTypeFont</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 43)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 522)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TrueTypeFont$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">TrueTypeFont$DirectoryEntry</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">TrueTypeFont$TTDisposerRecord</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 49)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 534)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.font;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.FontFormatException;
+<i>9</i>&nbsp;import java.awt.GraphicsEnvironment;
+<i>10</i>&nbsp;import java.awt.geom.Point2D.Float;
+<i>11</i>&nbsp;import java.io.FileNotFoundException;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.io.RandomAccessFile;
+<i>14</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>15</i>&nbsp;import java.nio.ByteBuffer;
+<i>16</i>&nbsp;import java.nio.CharBuffer;
+<i>17</i>&nbsp;import java.nio.IntBuffer;
+<i>18</i>&nbsp;import java.nio.ShortBuffer;
+<i>19</i>&nbsp;import java.nio.channels.ClosedChannelException;
+<i>20</i>&nbsp;import java.nio.channels.FileChannel;
+<i>21</i>&nbsp;import java.security.AccessController;
+<i>22</i>&nbsp;import java.security.PrivilegedAction;
+<i>23</i>&nbsp;import java.util.HashMap;
+<i>24</i>&nbsp;import java.util.HashSet;
+<i>25</i>&nbsp;import java.util.Locale;
+<i>26</i>&nbsp;import java.util.Map;
+<i>27</i>&nbsp;import sun.awt.SunToolkit;
+<i>28</i>&nbsp;import sun.font.CharToGlyphMapper;
+<i>29</i>&nbsp;import sun.font.FileFont;
+<i>30</i>&nbsp;import sun.font.FontManager;
+<i>31</i>&nbsp;import sun.font.FontManagerFactory;
+<i>32</i>&nbsp;import sun.font.FontScaler;
+<i>33</i>&nbsp;import sun.font.FontScalerException;
+<i>34</i>&nbsp;import sun.font.FontUtilities;
+<i>35</i>&nbsp;import sun.font.NativeFont;
+<i>36</i>&nbsp;import sun.font.SunFontManager;
+<i>37</i>&nbsp;import sun.font.TrueTypeGlyphMapper;
+<i>38</i>&nbsp;import sun.java2d.Disposer;
+<i>39</i>&nbsp;import sun.java2d.DisposerRecord;
+<i>40</i>&nbsp;import sun.security.action.GetPropertyAction;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;public class TrueTypeFont extends FileFont {
+<i>43</i>&nbsp;    public static final int cmapTag = 1668112752;
+<i>44</i>&nbsp;    public static final int glyfTag = 1735162214;
+<i>45</i>&nbsp;    public static final int headTag = 1751474532;
+<i>46</i>&nbsp;    public static final int hheaTag = 1751672161;
+<i>47</i>&nbsp;    public static final int hmtxTag = 1752003704;
+<i>48</i>&nbsp;    public static final int locaTag = 1819239265;
+<i>49</i>&nbsp;    public static final int maxpTag = 1835104368;
+<i>50</i>&nbsp;    public static final int nameTag = 1851878757;
+<i>51</i>&nbsp;    public static final int postTag = 1886352244;
+<i>52</i>&nbsp;    public static final int os_2Tag = 1330851634;
+<i>53</i>&nbsp;    public static final int GDEFTag = 1195656518;
+<i>54</i>&nbsp;    public static final int GPOSTag = 1196445523;
+<i>55</i>&nbsp;    public static final int GSUBTag = 1196643650;
+<i>56</i>&nbsp;    public static final int mortTag = 1836020340;
+<i>57</i>&nbsp;    public static final int fdscTag = 1717859171;
+<i>58</i>&nbsp;    public static final int fvarTag = 1719034226;
+<i>59</i>&nbsp;    public static final int featTag = 1717920116;
+<i>60</i>&nbsp;    public static final int EBLCTag = 1161972803;
+<i>61</i>&nbsp;    public static final int gaspTag = 1734439792;
+<i>62</i>&nbsp;    public static final int ttcfTag = 1953784678;
+<i>63</i>&nbsp;    public static final int v1ttTag = 65536;
+<i>64</i>&nbsp;    public static final int trueTag = 1953658213;
+<i>65</i>&nbsp;    public static final int ottoTag = 1330926671;
+<i>66</i>&nbsp;    public static final int MS_PLATFORM_ID = 3;
+<i>67</i>&nbsp;    public static final short ENGLISH_LOCALE_ID = 1033;
+<i>68</i>&nbsp;    public static final int FAMILY_NAME_ID = 1;
+<i>69</i>&nbsp;    public static final int FULL_NAME_ID = 4;
+<i>70</i>&nbsp;    public static final int POSTSCRIPT_NAME_ID = 6;
+<i>71</i>&nbsp;    private static final short US_LCID = 1033;
+<i>72</i>&nbsp;    private static Map&lt;String, Short&gt; lcidMap;
+<i>73</i>&nbsp;    TrueTypeFont.TTDisposerRecord disposerRecord = new TrueTypeFont.TTDisposerRecord(null);
+<i>74</i>&nbsp;    int fontIndex = 0;
+<i>75</i>&nbsp;    int directoryCount = 1;
+<i>76</i>&nbsp;    int directoryOffset;
+<i>77</i>&nbsp;    int numTables;
+<i>78</i>&nbsp;    TrueTypeFont.DirectoryEntry[] tableDirectory;
+<i>79</i>&nbsp;    private boolean supportsJA;
+<i>80</i>&nbsp;    private boolean supportsCJK;
+<i>81</i>&nbsp;    private Locale nameLocale;
+<i>82</i>&nbsp;    private String localeFamilyName;
+<i>83</i>&nbsp;    private String localeFullName;
+<i>84</i>&nbsp;    private static final int TTCHEADERSIZE = 12;
+<i>85</i>&nbsp;    private static final int DIRECTORYHEADERSIZE = 12;
+<i>86</i>&nbsp;    private static final int DIRECTORYENTRYSIZE = 16;
+<b class="nc"><i>87</i>&nbsp;    static final String[] encoding_mapping = new String[]{&quot;cp1252&quot;, &quot;cp1250&quot;, &quot;cp1251&quot;, &quot;cp1253&quot;, &quot;cp1254&quot;, &quot;cp1255&quot;, &quot;cp1256&quot;, &quot;cp1257&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;ms874&quot;, &quot;ms932&quot;, &quot;gbk&quot;, &quot;ms949&quot;, &quot;ms950&quot;, &quot;ms1361&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;};</b>
+<i>88</i>&nbsp;    private static final String[][] languages = new String[][]{{&quot;en&quot;, &quot;ca&quot;, &quot;da&quot;, &quot;de&quot;, &quot;es&quot;, &quot;fi&quot;, &quot;fr&quot;, &quot;is&quot;, &quot;it&quot;, &quot;nl&quot;, &quot;no&quot;, &quot;pt&quot;, &quot;sq&quot;, &quot;sv&quot;}, {&quot;cs&quot;, &quot;cz&quot;, &quot;et&quot;, &quot;hr&quot;, &quot;hu&quot;, &quot;nr&quot;, &quot;pl&quot;, &quot;ro&quot;, &quot;sk&quot;, &quot;sl&quot;, &quot;sq&quot;, &quot;sr&quot;}, {&quot;bg&quot;, &quot;mk&quot;, &quot;ru&quot;, &quot;sh&quot;, &quot;uk&quot;}, {&quot;el&quot;}, {&quot;tr&quot;}, {&quot;he&quot;}, {&quot;ar&quot;}, {&quot;et&quot;, &quot;lt&quot;, &quot;lv&quot;}, {&quot;th&quot;}, {&quot;ja&quot;}, {&quot;zh&quot;, &quot;zh_CN&quot;}, {&quot;ko&quot;}, {&quot;zh_HK&quot;, &quot;zh_TW&quot;}, {&quot;ko&quot;}};
+<i>89</i>&nbsp;    private static final String[] codePages = new String[]{&quot;cp1252&quot;, &quot;cp1250&quot;, &quot;cp1251&quot;, &quot;cp1253&quot;, &quot;cp1254&quot;, &quot;cp1255&quot;, &quot;cp1256&quot;, &quot;cp1257&quot;, &quot;ms874&quot;, &quot;ms932&quot;, &quot;gbk&quot;, &quot;ms949&quot;, &quot;ms950&quot;, &quot;ms1361&quot;};
+<i>90</i>&nbsp;    private static String defaultCodePage = null;
+<i>91</i>&nbsp;    public static final int reserved_bits1 = -2147483648;
+<i>92</i>&nbsp;    public static final int reserved_bits2 = 65535;
+<i>93</i>&nbsp;    private static final int fsSelectionItalicBit = 1;
+<i>94</i>&nbsp;    private static final int fsSelectionBoldBit = 32;
+<i>95</i>&nbsp;    private static final int fsSelectionRegularBit = 64;
+<i>96</i>&nbsp;    private float stSize;
+<i>97</i>&nbsp;    private float stPos;
+<i>98</i>&nbsp;    private float ulSize;
+<i>99</i>&nbsp;    private float ulPos;
+<i>100</i>&nbsp;    private char[] gaspTable;
+<b class="nc"><i>101</i>&nbsp;</b>
+<i>102</i>&nbsp;    public TrueTypeFont(String var1, Object var2, int var3, boolean var4) throws FontFormatException {
+<b class="nc"><i>103</i>&nbsp;        super(var1, var2);</b>
+<i>104</i>&nbsp;        this.useJavaRasterizer = var4;
+<i>105</i>&nbsp;        this.fontRank = 3;
+<i>106</i>&nbsp;
+<b class="nc"><i>107</i>&nbsp;        try {</b>
+<b class="nc"><i>108</i>&nbsp;            this.verify();</b>
+<i>109</i>&nbsp;            this.init(var3);
+<b class="nc"><i>110</i>&nbsp;        } catch (Throwable var6) {</b>
+<i>111</i>&nbsp;            this.close();
+<b class="nc"><i>112</i>&nbsp;            if(var6 instanceof FontFormatException) {</b>
+<b class="nc"><i>113</i>&nbsp;                throw (FontFormatException)var6;</b>
+<i>114</i>&nbsp;            }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;            throw new FontFormatException(&quot;Unexpected runtime exception.&quot;);
+<b class="nc"><i>117</i>&nbsp;        }</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;        Disposer.addObjectRecord(this, this.disposerRecord);
+<b class="nc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    protected boolean checkUseNatives() {
+<b class="nc"><i>123</i>&nbsp;        if(this.checkedNatives) {</b>
+<i>124</i>&nbsp;            return this.useNatives;
+<i>125</i>&nbsp;        } else if(FontUtilities.isSolaris &amp;&amp; !this.useJavaRasterizer &amp;&amp; !FontUtilities.useT2K &amp;&amp; this.nativeNames != null &amp;&amp; this.getDirectoryEntry(1161972803) == null &amp;&amp; !GraphicsEnvironment.isHeadless()) {
+<i>126</i>&nbsp;            if(this.nativeNames instanceof String) {
+<i>127</i>&nbsp;                String var1 = (String)this.nativeNames;
+<i>128</i>&nbsp;                if(var1.indexOf(&quot;8859&quot;) &gt; 0) {
+<i>129</i>&nbsp;                    this.checkedNatives = true;
+<i>130</i>&nbsp;                    return false;
+<i>131</i>&nbsp;                }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;                if(NativeFont.hasExternalBitmaps(var1)) {
+<i>134</i>&nbsp;                    this.nativeFonts = new NativeFont[1];
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;                    try {
+<i>137</i>&nbsp;                        this.nativeFonts[0] = new NativeFont(var1, true);
+<i>138</i>&nbsp;                        this.useNatives = true;
+<i>139</i>&nbsp;                    } catch (FontFormatException var7) {
+<i>140</i>&nbsp;                        this.nativeFonts = null;
+<i>141</i>&nbsp;                    }
+<i>142</i>&nbsp;                }
+<i>143</i>&nbsp;            } else if(this.nativeNames instanceof String[]) {
+<i>144</i>&nbsp;                String[] var8 = (String[])((String[])this.nativeNames);
+<i>145</i>&nbsp;                int var2 = var8.length;
+<i>146</i>&nbsp;                boolean var3 = false;
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;                int var4;
+<i>149</i>&nbsp;                for(var4 = 0; var4 &lt; var2; ++var4) {
+<i>150</i>&nbsp;                    if(var8[var4].indexOf(&quot;8859&quot;) &gt; 0) {
+<i>151</i>&nbsp;                        this.checkedNatives = true;
+<i>152</i>&nbsp;                        return false;
+<i>153</i>&nbsp;                    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;                    if(NativeFont.hasExternalBitmaps(var8[var4])) {
+<i>156</i>&nbsp;                        var3 = true;
+<b class="nc"><i>157</i>&nbsp;                    }</b>
+<b class="nc"><i>158</i>&nbsp;                }</b>
+<b class="nc"><i>159</i>&nbsp;</b>
+<i>160</i>&nbsp;                if(!var3) {
+<b class="nc"><i>161</i>&nbsp;                    this.checkedNatives = true;</b>
+<b class="nc"><i>162</i>&nbsp;                    return false;</b>
+<b class="nc"><i>163</i>&nbsp;                }</b>
+<b class="nc"><i>164</i>&nbsp;</b>
+<b class="nc"><i>165</i>&nbsp;                this.useNatives = true;</b>
+<b class="nc"><i>166</i>&nbsp;                this.nativeFonts = new NativeFont[var2];</b>
+<i>167</i>&nbsp;
+<b class="nc"><i>168</i>&nbsp;                for(var4 = 0; var4 &lt; var2; ++var4) {</b>
+<i>169</i>&nbsp;                    try {
+<b class="nc"><i>170</i>&nbsp;                        this.nativeFonts[var4] = new NativeFont(var8[var4], true);</b>
+<b class="nc"><i>171</i>&nbsp;                    } catch (FontFormatException var6) {</b>
+<i>172</i>&nbsp;                        this.useNatives = false;
+<i>173</i>&nbsp;                        this.nativeFonts = null;
+<i>174</i>&nbsp;                    }
+<i>175</i>&nbsp;                }
+<i>176</i>&nbsp;            }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;            if(this.useNatives) {
+<i>179</i>&nbsp;                this.glyphToCharMap = new char[this.getMapper().getNumGlyphs()];
+<i>180</i>&nbsp;            }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;            this.checkedNatives = true;
+<i>183</i>&nbsp;            return this.useNatives;
+<i>184</i>&nbsp;        } else {
+<i>185</i>&nbsp;            this.checkedNatives = true;
+<b class="nc"><i>186</i>&nbsp;            return false;</b>
+<b class="nc"><i>187</i>&nbsp;        }</b>
+<i>188</i>&nbsp;    }
+<b class="nc"><i>189</i>&nbsp;</b>
+<i>190</i>&nbsp;    private synchronized FileChannel open() throws FontFormatException {
+<i>191</i>&nbsp;        if(this.disposerRecord.channel == null) {
+<i>192</i>&nbsp;            if(FontUtilities.isLogging()) {
+<b class="nc"><i>193</i>&nbsp;                FontUtilities.getLogger().info(&quot;open TTF: &quot; + this.platName);</b>
+<b class="nc"><i>194</i>&nbsp;            }</b>
+<b class="nc"><i>195</i>&nbsp;</b>
+<b class="nc"><i>196</i>&nbsp;            try {</b>
+<i>197</i>&nbsp;                RandomAccessFile var1 = (RandomAccessFile)AccessController.doPrivileged(new PrivilegedAction() {
+<b class="nc"><i>198</i>&nbsp;                    public Object run() {</b>
+<b class="nc"><i>199</i>&nbsp;                        try {</b>
+<b class="nc"><i>200</i>&nbsp;                            return new RandomAccessFile(TrueTypeFont.this.platName, &quot;r&quot;);</b>
+<b class="nc"><i>201</i>&nbsp;                        } catch (FileNotFoundException var2) {</b>
+<b class="nc"><i>202</i>&nbsp;                            return null;</b>
+<i>203</i>&nbsp;                        }
+<b class="nc"><i>204</i>&nbsp;                    }</b>
+<i>205</i>&nbsp;                });
+<i>206</i>&nbsp;                this.disposerRecord.channel = var1.getChannel();
+<i>207</i>&nbsp;                this.fileSize = (int)this.disposerRecord.channel.size();
+<b class="nc"><i>208</i>&nbsp;                FontManager var2 = FontManagerFactory.getInstance();</b>
+<b class="nc"><i>209</i>&nbsp;                if(var2 instanceof SunFontManager) {</b>
+<b class="nc"><i>210</i>&nbsp;                    ((SunFontManager)var2).addToPool(this);</b>
+<b class="nc"><i>211</i>&nbsp;                }</b>
+<i>212</i>&nbsp;            } catch (NullPointerException var3) {
+<b class="nc"><i>213</i>&nbsp;                this.close();</b>
+<b class="nc"><i>214</i>&nbsp;                throw new FontFormatException(var3.toString());</b>
+<b class="nc"><i>215</i>&nbsp;            } catch (ClosedChannelException var4) {</b>
+<b class="nc"><i>216</i>&nbsp;                Thread.interrupted();</b>
+<b class="nc"><i>217</i>&nbsp;                this.close();</b>
+<b class="nc"><i>218</i>&nbsp;                this.open();</b>
+<b class="nc"><i>219</i>&nbsp;            } catch (IOException var5) {</b>
+<b class="nc"><i>220</i>&nbsp;                this.close();</b>
+<b class="nc"><i>221</i>&nbsp;                throw new FontFormatException(var5.toString());</b>
+<b class="nc"><i>222</i>&nbsp;            }</b>
+<i>223</i>&nbsp;        }
+<i>224</i>&nbsp;
+<b class="nc"><i>225</i>&nbsp;        return this.disposerRecord.channel;</b>
+<b class="nc"><i>226</i>&nbsp;    }</b>
+<b class="nc"><i>227</i>&nbsp;</b>
+<i>228</i>&nbsp;    protected synchronized void close() {
+<b class="nc"><i>229</i>&nbsp;        this.disposerRecord.dispose();</b>
+<b class="nc"><i>230</i>&nbsp;    }</b>
+<b class="nc"><i>231</i>&nbsp;</b>
+<i>232</i>&nbsp;    int readBlock(ByteBuffer var1, int var2, int var3) {
+<b class="nc"><i>233</i>&nbsp;        int var4 = 0;</b>
+<b class="nc"><i>234</i>&nbsp;</b>
+<b class="nc"><i>235</i>&nbsp;        try {</b>
+<b class="nc"><i>236</i>&nbsp;            synchronized(this) {</b>
+<b class="nc"><i>237</i>&nbsp;                if(this.disposerRecord.channel == null) {</b>
+<i>238</i>&nbsp;                    this.open();
+<i>239</i>&nbsp;                }
+<b class="nc"><i>240</i>&nbsp;</b>
+<b class="nc"><i>241</i>&nbsp;                if(var2 + var3 &gt; this.fileSize) {</b>
+<i>242</i>&nbsp;                    if(var2 &gt;= this.fileSize) {
+<b class="nc"><i>243</i>&nbsp;                        if(FontUtilities.isLogging()) {</b>
+<b class="nc"><i>244</i>&nbsp;                            String var15 = &quot;Read offset is &quot; + var2 + &quot; file size is &quot; + this.fileSize + &quot; file is &quot; + this.platName;</b>
+<i>245</i>&nbsp;                            FontUtilities.getLogger().severe(var15);
+<i>246</i>&nbsp;                        }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;                        return -1;
+<i>249</i>&nbsp;                    }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;                    var3 = this.fileSize - var2;
+<i>252</i>&nbsp;                }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;                var1.clear();
+<i>255</i>&nbsp;                this.disposerRecord.channel.position((long)var2);
+<b class="nc"><i>256</i>&nbsp;</b>
+<b class="nc"><i>257</i>&nbsp;                while(var4 &lt; var3) {</b>
+<b class="nc"><i>258</i>&nbsp;                    int var6 = this.disposerRecord.channel.read(var1);</b>
+<i>259</i>&nbsp;                    if(var6 == -1) {
+<i>260</i>&nbsp;                        String var7 = &quot;Unexpected EOF &quot; + this;
+<b class="nc"><i>261</i>&nbsp;                        int var8 = (int)this.disposerRecord.channel.size();</b>
+<i>262</i>&nbsp;                        if(var8 != this.fileSize) {
+<b class="nc"><i>263</i>&nbsp;                            var7 = var7 + &quot; File size was &quot; + this.fileSize + &quot; and now is &quot; + var8;</b>
+<i>264</i>&nbsp;                        }
+<i>265</i>&nbsp;
+<b class="nc"><i>266</i>&nbsp;                        if(FontUtilities.isLogging()) {</b>
+<b class="nc"><i>267</i>&nbsp;                            FontUtilities.getLogger().severe(var7);</b>
+<i>268</i>&nbsp;                        }
+<b class="nc"><i>269</i>&nbsp;</b>
+<i>270</i>&nbsp;                        if(var4 &lt;= var3 / 2 &amp;&amp; var4 &lt;= 16384) {
+<i>271</i>&nbsp;                            boolean var14 = true;
+<b class="nc"><i>272</i>&nbsp;                        } else {</b>
+<b class="nc"><i>273</i>&nbsp;                            var1.flip();</b>
+<b class="nc"><i>274</i>&nbsp;                            if(FontUtilities.isLogging()) {</b>
+<b class="nc"><i>275</i>&nbsp;                                var7 = &quot;Returning &quot; + var4 + &quot; bytes instead of &quot; + var3;</b>
+<b class="nc"><i>276</i>&nbsp;                                FontUtilities.getLogger().severe(var7);</b>
+<b class="nc"><i>277</i>&nbsp;                            }</b>
+<b class="nc"><i>278</i>&nbsp;                        }</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;                        throw new IOException(var7);
+<i>281</i>&nbsp;                    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;                    var4 += var6;
+<b class="nc"><i>284</i>&nbsp;                }</b>
+<b class="nc"><i>285</i>&nbsp;</b>
+<b class="nc"><i>286</i>&nbsp;                var1.flip();</b>
+<b class="nc"><i>287</i>&nbsp;                if(var4 &gt; var3) {</b>
+<b class="nc"><i>288</i>&nbsp;                    var4 = var3;</b>
+<b class="nc"><i>289</i>&nbsp;                }</b>
+<b class="nc"><i>290</i>&nbsp;            }</b>
+<i>291</i>&nbsp;        } catch (FontFormatException var11) {
+<b class="nc"><i>292</i>&nbsp;            if(FontUtilities.isLogging()) {</b>
+<i>293</i>&nbsp;                FontUtilities.getLogger().severe(&quot;While reading &quot; + this.platName, var11);
+<i>294</i>&nbsp;            }
+<i>295</i>&nbsp;
+<b class="nc"><i>296</i>&nbsp;            var4 = -1;</b>
+<i>297</i>&nbsp;            this.deregisterFontAndClearStrikeCache();
+<i>298</i>&nbsp;        } catch (ClosedChannelException var12) {
+<i>299</i>&nbsp;            Thread.interrupted();
+<i>300</i>&nbsp;            this.close();
+<b class="nc"><i>301</i>&nbsp;            return this.readBlock(var1, var2, var3);</b>
+<i>302</i>&nbsp;        } catch (IOException var13) {
+<b class="nc"><i>303</i>&nbsp;            if(FontUtilities.isLogging()) {</b>
+<b class="nc"><i>304</i>&nbsp;                FontUtilities.getLogger().severe(&quot;While reading &quot; + this.platName, var13);</b>
+<b class="nc"><i>305</i>&nbsp;            }</b>
+<i>306</i>&nbsp;
+<b class="nc"><i>307</i>&nbsp;            if(var4 == 0) {</b>
+<b class="nc"><i>308</i>&nbsp;                var4 = -1;</b>
+<i>309</i>&nbsp;                this.deregisterFontAndClearStrikeCache();
+<i>310</i>&nbsp;            }
+<i>311</i>&nbsp;        }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;        return var4;
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    ByteBuffer readBlock(int var1, int var2) {
+<i>317</i>&nbsp;        ByteBuffer var3 = ByteBuffer.allocate(var2);
+<b class="nc"><i>318</i>&nbsp;</b>
+<b class="nc"><i>319</i>&nbsp;        try {</b>
+<i>320</i>&nbsp;            synchronized(this) {
+<i>321</i>&nbsp;                if(this.disposerRecord.channel == null) {
+<b class="nc"><i>322</i>&nbsp;                    this.open();</b>
+<i>323</i>&nbsp;                }
+<b class="nc"><i>324</i>&nbsp;</b>
+<i>325</i>&nbsp;                if(var1 + var2 &gt; this.fileSize) {
+<b class="nc"><i>326</i>&nbsp;                    if(var1 &gt; this.fileSize) {</b>
+<i>327</i>&nbsp;                        return null;
+<i>328</i>&nbsp;                    }
+<b class="nc"><i>329</i>&nbsp;</b>
+<b class="nc"><i>330</i>&nbsp;                    var3 = ByteBuffer.allocate(this.fileSize - var1);</b>
+<b class="nc"><i>331</i>&nbsp;                }</b>
+<b class="nc"><i>332</i>&nbsp;</b>
+<b class="nc"><i>333</i>&nbsp;                this.disposerRecord.channel.position((long)var1);</b>
+<b class="nc"><i>334</i>&nbsp;                this.disposerRecord.channel.read(var3);</b>
+<b class="nc"><i>335</i>&nbsp;                var3.flip();</b>
+<b class="nc"><i>336</i>&nbsp;            }</b>
+<b class="nc"><i>337</i>&nbsp;        } catch (FontFormatException var7) {</b>
+<i>338</i>&nbsp;            return null;
+<i>339</i>&nbsp;        } catch (ClosedChannelException var8) {
+<b class="nc"><i>340</i>&nbsp;            Thread.interrupted();</b>
+<b class="nc"><i>341</i>&nbsp;            this.close();</b>
+<i>342</i>&nbsp;            this.readBlock(var3, var1, var2);
+<i>343</i>&nbsp;        } catch (IOException var9) {
+<i>344</i>&nbsp;            return null;
+<i>345</i>&nbsp;        }
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;        return var3;
+<i>348</i>&nbsp;    }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    byte[] readBytes(int var1, int var2) {
+<i>351</i>&nbsp;        ByteBuffer var3 = this.readBlock(var1, var2);
+<i>352</i>&nbsp;        if(var3.hasArray()) {
+<b class="nc"><i>353</i>&nbsp;            return var3.array();</b>
+<b class="nc"><i>354</i>&nbsp;        } else {</b>
+<b class="nc"><i>355</i>&nbsp;            byte[] var4 = new byte[var3.limit()];</b>
+<b class="nc"><i>356</i>&nbsp;            var3.get(var4);</b>
+<i>357</i>&nbsp;            return var4;
+<b class="nc"><i>358</i>&nbsp;        }</b>
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;
+<b class="nc"><i>361</i>&nbsp;    private void verify() throws FontFormatException {</b>
+<i>362</i>&nbsp;        this.open();
+<b class="nc"><i>363</i>&nbsp;    }</b>
+<i>364</i>&nbsp;
+<b class="nc"><i>365</i>&nbsp;    protected void init(int var1) throws FontFormatException {</b>
+<b class="nc"><i>366</i>&nbsp;        int var2 = 0;</b>
+<b class="nc"><i>367</i>&nbsp;        ByteBuffer var3 = this.readBlock(0, 12);</b>
+<b class="nc"><i>368</i>&nbsp;</b>
+<b class="nc"><i>369</i>&nbsp;        ByteBuffer var4;</b>
+<i>370</i>&nbsp;        try {
+<b class="nc"><i>371</i>&nbsp;            switch(var3.getInt()) {</b>
+<b class="nc"><i>372</i>&nbsp;            case 1953784678:</b>
+<b class="nc"><i>373</i>&nbsp;                var3.getInt();</b>
+<b class="nc"><i>374</i>&nbsp;                this.directoryCount = var3.getInt();</b>
+<i>375</i>&nbsp;                if(var1 &gt;= this.directoryCount) {
+<i>376</i>&nbsp;                    throw new FontFormatException(&quot;Bad collection index&quot;);
+<b class="nc"><i>377</i>&nbsp;                }</b>
+<b class="nc"><i>378</i>&nbsp;</b>
+<b class="nc"><i>379</i>&nbsp;                this.fontIndex = var1;</b>
+<i>380</i>&nbsp;                var3 = this.readBlock(12 + 4 * var1, 4);
+<i>381</i>&nbsp;                var2 = var3.getInt();
+<i>382</i>&nbsp;            case 65536:
+<b class="nc"><i>383</i>&nbsp;            case 1330926671:</b>
+<b class="nc"><i>384</i>&nbsp;            case 1953658213:</b>
+<b class="nc"><i>385</i>&nbsp;                var3 = this.readBlock(var2 + 4, 2);</b>
+<b class="nc"><i>386</i>&nbsp;                this.numTables = var3.getShort();</b>
+<i>387</i>&nbsp;                this.directoryOffset = var2 + 12;
+<i>388</i>&nbsp;                var4 = this.readBlock(this.directoryOffset, this.numTables * 16);
+<i>389</i>&nbsp;                IntBuffer var5 = var4.asIntBuffer();
+<i>390</i>&nbsp;                this.tableDirectory = new TrueTypeFont.DirectoryEntry[this.numTables];
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;                for(int var7 = 0; var7 &lt; this.numTables; ++var7) {
+<i>393</i>&nbsp;                    TrueTypeFont.DirectoryEntry var6;
+<b class="nc"><i>394</i>&nbsp;                    this.tableDirectory[var7] = var6 = new TrueTypeFont.DirectoryEntry();</b>
+<b class="nc"><i>395</i>&nbsp;                    var6.tag = var5.get();</b>
+<i>396</i>&nbsp;                    var5.get();
+<i>397</i>&nbsp;                    var6.offset = var5.get();
+<b class="nc"><i>398</i>&nbsp;                    var6.length = var5.get();</b>
+<b class="nc"><i>399</i>&nbsp;                    if(var6.offset + var6.length &gt; this.fileSize) {</b>
+<b class="nc"><i>400</i>&nbsp;                        throw new FontFormatException(&quot;bad table, tag=&quot; + var6.tag);</b>
+<i>401</i>&nbsp;                    }
+<b class="nc"><i>402</i>&nbsp;                }</b>
+<b class="nc"><i>403</i>&nbsp;</b>
+<i>404</i>&nbsp;                this.initNames();
+<i>405</i>&nbsp;                break;
+<i>406</i>&nbsp;            default:
+<i>407</i>&nbsp;                throw new FontFormatException(&quot;Unsupported sfnt &quot; + this.getPublicFileName());
+<b class="nc"><i>408</i>&nbsp;            }</b>
+<i>409</i>&nbsp;        } catch (Exception var8) {
+<b class="nc"><i>410</i>&nbsp;            if(FontUtilities.isLogging()) {</b>
+<b class="nc"><i>411</i>&nbsp;                FontUtilities.getLogger().severe(var8.toString());</b>
+<b class="nc"><i>412</i>&nbsp;            }</b>
+<i>413</i>&nbsp;
+<b class="nc"><i>414</i>&nbsp;            if(var8 instanceof FontFormatException) {</b>
+<b class="nc"><i>415</i>&nbsp;                throw (FontFormatException)var8;</b>
+<b class="nc"><i>416</i>&nbsp;            }</b>
+<i>417</i>&nbsp;
+<b class="nc"><i>418</i>&nbsp;            throw new FontFormatException(var8.toString());</b>
+<i>419</i>&nbsp;        }
+<i>420</i>&nbsp;
+<b class="nc"><i>421</i>&nbsp;        if(this.familyName != null &amp;&amp; this.fullName != null) {</b>
+<b class="nc"><i>422</i>&nbsp;            var4 = this.getTableBuffer(1330851634);</b>
+<b class="nc"><i>423</i>&nbsp;            this.setStyle(var4);</b>
+<b class="nc"><i>424</i>&nbsp;            this.setCJKSupport(var4);</b>
+<b class="nc"><i>425</i>&nbsp;        } else {</b>
+<b class="nc"><i>426</i>&nbsp;            throw new FontFormatException(&quot;Font name not found&quot;);</b>
+<b class="nc"><i>427</i>&nbsp;        }</b>
+<i>428</i>&nbsp;    }
+<i>429</i>&nbsp;
+<i>430</i>&nbsp;    static String getCodePage() {
+<b class="nc"><i>431</i>&nbsp;        if(defaultCodePage != null) {</b>
+<b class="nc"><i>432</i>&nbsp;            return defaultCodePage;</b>
+<b class="nc"><i>433</i>&nbsp;        } else {</b>
+<b class="nc"><i>434</i>&nbsp;            if(FontUtilities.isWindows) {</b>
+<b class="nc"><i>435</i>&nbsp;                defaultCodePage = (String)AccessController.doPrivileged(new GetPropertyAction(&quot;file.encoding&quot;));</b>
+<b class="nc"><i>436</i>&nbsp;            } else {</b>
+<b class="nc"><i>437</i>&nbsp;                if(languages.length != codePages.length) {</b>
+<i>438</i>&nbsp;                    throw new InternalError(&quot;wrong code pages array length&quot;);
+<i>439</i>&nbsp;                }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;                Locale var0 = SunToolkit.getStartupLocale();
+<i>442</i>&nbsp;                String var1 = var0.getLanguage();
+<i>443</i>&nbsp;                if(var1 != null) {
+<i>444</i>&nbsp;                    if(var1.equals(&quot;zh&quot;)) {
+<i>445</i>&nbsp;                        String var2 = var0.getCountry();
+<i>446</i>&nbsp;                        if(var2 != null) {
+<b class="nc"><i>447</i>&nbsp;                            var1 = var1 + &quot;_&quot; + var2;</b>
+<b class="nc"><i>448</i>&nbsp;                        }</b>
+<b class="nc"><i>449</i>&nbsp;                    }</b>
+<i>450</i>&nbsp;
+<b class="nc"><i>451</i>&nbsp;                    for(int var4 = 0; var4 &lt; languages.length; ++var4) {</b>
+<b class="nc"><i>452</i>&nbsp;                        for(int var3 = 0; var3 &lt; languages[var4].length; ++var3) {</b>
+<b class="nc"><i>453</i>&nbsp;                            if(var1.equals(languages[var4][var3])) {</b>
+<i>454</i>&nbsp;                                defaultCodePage = codePages[var4];
+<i>455</i>&nbsp;                                return defaultCodePage;
+<i>456</i>&nbsp;                            }
+<i>457</i>&nbsp;                        }
+<b class="nc"><i>458</i>&nbsp;                    }</b>
+<i>459</i>&nbsp;                }
+<i>460</i>&nbsp;            }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;            if(defaultCodePage == null) {
+<i>463</i>&nbsp;                defaultCodePage = &quot;&quot;;
+<i>464</i>&nbsp;            }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;            return defaultCodePage;
+<b class="nc"><i>467</i>&nbsp;        }</b>
+<b class="nc"><i>468</i>&nbsp;    }</b>
+<i>469</i>&nbsp;
+<b class="nc"><i>470</i>&nbsp;    boolean supportsEncoding(String var1) {</b>
+<i>471</i>&nbsp;        if(var1 == null) {
+<i>472</i>&nbsp;            var1 = getCodePage();
+<b class="nc"><i>473</i>&nbsp;        }</b>
+<b class="nc"><i>474</i>&nbsp;</b>
+<b class="nc"><i>475</i>&nbsp;        if(&quot;&quot;.equals(var1)) {</b>
+<b class="nc"><i>476</i>&nbsp;            return false;</b>
+<i>477</i>&nbsp;        } else {
+<b class="nc"><i>478</i>&nbsp;            var1 = var1.toLowerCase();</b>
+<b class="nc"><i>479</i>&nbsp;            if(var1.equals(&quot;gb18030&quot;)) {</b>
+<b class="nc"><i>480</i>&nbsp;                var1 = &quot;gbk&quot;;</b>
+<b class="nc"><i>481</i>&nbsp;            } else if(var1.equals(&quot;ms950_hkscs&quot;)) {</b>
+<i>482</i>&nbsp;                var1 = &quot;ms950&quot;;
+<i>483</i>&nbsp;            }
+<i>484</i>&nbsp;
+<b class="nc"><i>485</i>&nbsp;            ByteBuffer var2 = this.getTableBuffer(1330851634);</b>
+<i>486</i>&nbsp;            if(var2 != null &amp;&amp; var2.capacity() &gt;= 86) {
+<i>487</i>&nbsp;                int var3 = var2.getInt(78);
+<b class="nc"><i>488</i>&nbsp;                int var4 = var2.getInt(82);</b>
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;                for(int var5 = 0; var5 &lt; encoding_mapping.length; ++var5) {
+<i>491</i>&nbsp;                    if(encoding_mapping[var5].equals(var1) &amp;&amp; (1 &lt;&lt; var5 &amp; var3) != 0) {
+<i>492</i>&nbsp;                        return true;
+<i>493</i>&nbsp;                    }
+<i>494</i>&nbsp;                }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;                return false;
+<i>497</i>&nbsp;            } else {
+<b class="nc"><i>498</i>&nbsp;                return false;</b>
+<b class="nc"><i>499</i>&nbsp;            }</b>
+<b class="nc"><i>500</i>&nbsp;        }</b>
+<b class="nc"><i>501</i>&nbsp;    }</b>
+<i>502</i>&nbsp;
+<b class="nc"><i>503</i>&nbsp;    private void setCJKSupport(ByteBuffer var1) {</b>
+<i>504</i>&nbsp;        if(var1 != null &amp;&amp; var1.capacity() &gt;= 50) {
+<b class="nc"><i>505</i>&nbsp;            int var2 = var1.getInt(46);</b>
+<b class="nc"><i>506</i>&nbsp;            this.supportsCJK = (var2 &amp; 700383232) != 0;</b>
+<b class="nc"><i>507</i>&nbsp;            this.supportsJA = (var2 &amp; 393216) != 0;</b>
+<b class="nc"><i>508</i>&nbsp;        }</b>
+<b class="nc"><i>509</i>&nbsp;    }</b>
+<b class="nc"><i>510</i>&nbsp;</b>
+<b class="nc"><i>511</i>&nbsp;    boolean supportsJA() {</b>
+<b class="nc"><i>512</i>&nbsp;        return this.supportsJA;</b>
+<b class="nc"><i>513</i>&nbsp;    }</b>
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;    ByteBuffer getTableBuffer(int var1) {
+<b class="nc"><i>516</i>&nbsp;        TrueTypeFont.DirectoryEntry var2 = null;</b>
+<b class="nc"><i>517</i>&nbsp;</b>
+<b class="nc"><i>518</i>&nbsp;        int var3;</b>
+<b class="nc"><i>519</i>&nbsp;        for(var3 = 0; var3 &lt; this.numTables; ++var3) {</b>
+<i>520</i>&nbsp;            if(this.tableDirectory[var3].tag == var1) {
+<b class="nc"><i>521</i>&nbsp;                var2 = this.tableDirectory[var3];</b>
+<b class="nc"><i>522</i>&nbsp;                break;</b>
+<i>523</i>&nbsp;            }
+<b class="nc"><i>524</i>&nbsp;        }</b>
+<i>525</i>&nbsp;
+<b class="nc"><i>526</i>&nbsp;        if(var2 != null &amp;&amp; var2.length != 0 &amp;&amp; var2.offset + var2.length &lt;= this.fileSize) {</b>
+<b class="nc"><i>527</i>&nbsp;            boolean var12 = false;</b>
+<b class="nc"><i>528</i>&nbsp;            ByteBuffer var4 = ByteBuffer.allocate(var2.length);</b>
+<i>529</i>&nbsp;            synchronized(this) {
+<i>530</i>&nbsp;                try {
+<i>531</i>&nbsp;                    if(this.disposerRecord.channel == null) {
+<i>532</i>&nbsp;                        this.open();
+<i>533</i>&nbsp;                    }
+<b class="nc"><i>534</i>&nbsp;</b>
+<b class="nc"><i>535</i>&nbsp;                    this.disposerRecord.channel.position((long)var2.offset);</b>
+<b class="nc"><i>536</i>&nbsp;                    var3 = this.disposerRecord.channel.read(var4);</b>
+<i>537</i>&nbsp;                    var4.flip();
+<i>538</i>&nbsp;                } catch (ClosedChannelException var8) {
+<i>539</i>&nbsp;                    Thread.interrupted();
+<i>540</i>&nbsp;                    this.close();
+<i>541</i>&nbsp;                    return this.getTableBuffer(var1);
+<i>542</i>&nbsp;                } catch (IOException var9) {
+<i>543</i>&nbsp;                    return null;
+<i>544</i>&nbsp;                } catch (FontFormatException var10) {
+<i>545</i>&nbsp;                    return null;
+<b class="nc"><i>546</i>&nbsp;                }</b>
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;                return var3 &lt; var2.length?null:var4;
+<i>549</i>&nbsp;            }
+<i>550</i>&nbsp;        } else {
+<i>551</i>&nbsp;            return null;
+<i>552</i>&nbsp;        }
+<i>553</i>&nbsp;    }
+<i>554</i>&nbsp;
+<i>555</i>&nbsp;    long getLayoutTableCache() {
+<i>556</i>&nbsp;        try {
+<i>557</i>&nbsp;            return this.getScaler().getLayoutTableCache();
+<i>558</i>&nbsp;        } catch (FontScalerException var2) {
+<i>559</i>&nbsp;            return 0L;
+<i>560</i>&nbsp;        }
+<i>561</i>&nbsp;    }
+<i>562</i>&nbsp;
+<i>563</i>&nbsp;    byte[] getTableBytes(int var1) {
+<i>564</i>&nbsp;        ByteBuffer var2 = this.getTableBuffer(var1);
+<i>565</i>&nbsp;        if(var2 == null) {
+<i>566</i>&nbsp;            return null;
+<i>567</i>&nbsp;        } else {
+<i>568</i>&nbsp;            if(var2.hasArray()) {
+<i>569</i>&nbsp;                try {
+<i>570</i>&nbsp;                    return var2.array();
+<i>571</i>&nbsp;                } catch (Exception var4) {
+<i>572</i>&nbsp;                    ;
+<i>573</i>&nbsp;                }
+<i>574</i>&nbsp;            }
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;            byte[] var3 = new byte[this.getTableSize(var1)];
+<i>577</i>&nbsp;            var2.get(var3);
+<i>578</i>&nbsp;            return var3;
+<i>579</i>&nbsp;        }
+<i>580</i>&nbsp;    }
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;    int getTableSize(int var1) {
+<i>583</i>&nbsp;        for(int var2 = 0; var2 &lt; this.numTables; ++var2) {
+<i>584</i>&nbsp;            if(this.tableDirectory[var2].tag == var1) {
+<i>585</i>&nbsp;                return this.tableDirectory[var2].length;
+<i>586</i>&nbsp;            }
+<i>587</i>&nbsp;        }
+<i>588</i>&nbsp;
+<i>589</i>&nbsp;        return 0;
+<i>590</i>&nbsp;    }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;    int getTableOffset(int var1) {
+<i>593</i>&nbsp;        for(int var2 = 0; var2 &lt; this.numTables; ++var2) {
+<b class="nc"><i>594</i>&nbsp;            if(this.tableDirectory[var2].tag == var1) {</b>
+<i>595</i>&nbsp;                return this.tableDirectory[var2].offset;
+<i>596</i>&nbsp;            }
+<i>597</i>&nbsp;        }
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;        return 0;
+<i>600</i>&nbsp;    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    TrueTypeFont.DirectoryEntry getDirectoryEntry(int var1) {
+<i>603</i>&nbsp;        for(int var2 = 0; var2 &lt; this.numTables; ++var2) {
+<i>604</i>&nbsp;            if(this.tableDirectory[var2].tag == var1) {
+<i>605</i>&nbsp;                return this.tableDirectory[var2];
+<i>606</i>&nbsp;            }
+<i>607</i>&nbsp;        }
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;        return null;
+<i>610</i>&nbsp;    }
+<i>611</i>&nbsp;
+<i>612</i>&nbsp;    boolean useEmbeddedBitmapsForSize(int var1) {
+<i>613</i>&nbsp;        if(!this.supportsCJK) {
+<i>614</i>&nbsp;            return false;
+<i>615</i>&nbsp;        } else if(this.getDirectoryEntry(1161972803) == null) {
+<i>616</i>&nbsp;            return false;
+<i>617</i>&nbsp;        } else {
+<i>618</i>&nbsp;            ByteBuffer var2 = this.getTableBuffer(1161972803);
+<i>619</i>&nbsp;            int var3 = var2.getInt(4);
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;            for(int var4 = 0; var4 &lt; var3; ++var4) {
+<i>622</i>&nbsp;                int var5 = var2.get(8 + var4 * 48 + 45) &amp; 255;
+<i>623</i>&nbsp;                if(var5 == var1) {
+<i>624</i>&nbsp;                    return true;
+<i>625</i>&nbsp;                }
+<i>626</i>&nbsp;            }
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;            return false;
+<i>629</i>&nbsp;        }
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    public String getFullName() {
+<i>633</i>&nbsp;        return this.fullName;
+<i>634</i>&nbsp;    }
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;    protected void setStyle() {
+<i>637</i>&nbsp;        this.setStyle(this.getTableBuffer(1330851634));
+<i>638</i>&nbsp;    }
+<i>639</i>&nbsp;
+<i>640</i>&nbsp;    private void setStyle(ByteBuffer var1) {
+<b class="nc"><i>641</i>&nbsp;        if(var1 != null &amp;&amp; var1.capacity() &gt;= 64) {</b>
+<i>642</i>&nbsp;            int var2 = var1.getChar(62) &amp; &#39;\uffff&#39;;
+<i>643</i>&nbsp;            int var3 = var2 &amp; 1;
+<i>644</i>&nbsp;            int var4 = var2 &amp; 32;
+<i>645</i>&nbsp;            int var5 = var2 &amp; 64;
+<i>646</i>&nbsp;            if(var5 != 0 &amp;&amp; (var3 | var4) != 0) {
+<i>647</i>&nbsp;                super.setStyle();
+<i>648</i>&nbsp;            } else if((var5 | var3 | var4) == 0) {
+<i>649</i>&nbsp;                super.setStyle();
+<i>650</i>&nbsp;            } else {
+<i>651</i>&nbsp;                switch(var4 | var3) {
+<i>652</i>&nbsp;                case 1:
+<i>653</i>&nbsp;                    this.style = 2;
+<i>654</i>&nbsp;                    break;
+<i>655</i>&nbsp;                case 32:
+<i>656</i>&nbsp;                    if(FontUtilities.isSolaris &amp;&amp; this.platName.endsWith(&quot;HG-GothicB.ttf&quot;)) {
+<i>657</i>&nbsp;                        this.style = 0;
+<b class="nc"><i>658</i>&nbsp;                    } else {</b>
+<i>659</i>&nbsp;                        this.style = 1;
+<i>660</i>&nbsp;                    }
+<b class="nc"><i>661</i>&nbsp;                    break;</b>
+<b class="nc"><i>662</i>&nbsp;                case 33:</b>
+<i>663</i>&nbsp;                    this.style = 3;
+<i>664</i>&nbsp;                }
+<b class="nc"><i>665</i>&nbsp;</b>
+<b class="nc"><i>666</i>&nbsp;            }</b>
+<i>667</i>&nbsp;        } else {
+<i>668</i>&nbsp;            super.setStyle();
+<i>669</i>&nbsp;        }
+<b class="nc"><i>670</i>&nbsp;    }</b>
+<b class="nc"><i>671</i>&nbsp;</b>
+<i>672</i>&nbsp;    private void setStrikethroughMetrics(ByteBuffer var1, int var2) {
+<b class="nc"><i>673</i>&nbsp;        if(var1 != null &amp;&amp; var1.capacity() &gt;= 30 &amp;&amp; var2 &gt;= 0) {</b>
+<i>674</i>&nbsp;            ShortBuffer var3 = var1.asShortBuffer();
+<b class="nc"><i>675</i>&nbsp;            this.stSize = (float)var3.get(13) / (float)var2;</b>
+<b class="nc"><i>676</i>&nbsp;            this.stPos = (float)(-var3.get(14)) / (float)var2;</b>
+<b class="nc"><i>677</i>&nbsp;        } else {</b>
+<b class="nc"><i>678</i>&nbsp;            this.stSize = 0.05F;</b>
+<b class="nc"><i>679</i>&nbsp;            this.stPos = -0.4F;</b>
+<b class="nc"><i>680</i>&nbsp;        }</b>
+<i>681</i>&nbsp;    }
+<i>682</i>&nbsp;
+<b class="nc"><i>683</i>&nbsp;    private void setUnderlineMetrics(ByteBuffer var1, int var2) {</b>
+<b class="nc"><i>684</i>&nbsp;        if(var1 != null &amp;&amp; var1.capacity() &gt;= 12 &amp;&amp; var2 &gt;= 0) {</b>
+<b class="nc"><i>685</i>&nbsp;            ShortBuffer var3 = var1.asShortBuffer();</b>
+<b class="nc"><i>686</i>&nbsp;            this.ulSize = (float)var3.get(5) / (float)var2;</b>
+<b class="nc"><i>687</i>&nbsp;            this.ulPos = (float)(-var3.get(4)) / (float)var2;</b>
+<i>688</i>&nbsp;        } else {
+<i>689</i>&nbsp;            this.ulSize = 0.05F;
+<i>690</i>&nbsp;            this.ulPos = 0.1F;
+<i>691</i>&nbsp;        }
+<i>692</i>&nbsp;    }
+<b class="nc"><i>693</i>&nbsp;</b>
+<b class="nc"><i>694</i>&nbsp;    public void getStyleMetrics(float var1, float[] var2, int var3) {</b>
+<i>695</i>&nbsp;        if(this.ulSize == 0.0F &amp;&amp; this.ulPos == 0.0F) {
+<b class="nc"><i>696</i>&nbsp;            ByteBuffer var4 = this.getTableBuffer(1751474532);</b>
+<i>697</i>&nbsp;            int var5 = -1;
+<i>698</i>&nbsp;            if(var4 != null &amp;&amp; var4.capacity() &gt;= 18) {
+<i>699</i>&nbsp;                ShortBuffer var6 = var4.asShortBuffer();
+<i>700</i>&nbsp;                var5 = var6.get(9) &amp; &#39;\uffff&#39;;
+<i>701</i>&nbsp;                if(var5 &lt; 16 || var5 &gt; 16384) {
+<i>702</i>&nbsp;                    var5 = 2048;
+<b class="nc"><i>703</i>&nbsp;                }</b>
+<b class="nc"><i>704</i>&nbsp;            }</b>
+<i>705</i>&nbsp;
+<b class="nc"><i>706</i>&nbsp;            ByteBuffer var8 = this.getTableBuffer(1330851634);</b>
+<b class="nc"><i>707</i>&nbsp;            this.setStrikethroughMetrics(var8, var5);</b>
+<i>708</i>&nbsp;            ByteBuffer var7 = this.getTableBuffer(1886352244);
+<i>709</i>&nbsp;            this.setUnderlineMetrics(var7, var5);
+<b class="nc"><i>710</i>&nbsp;        }</b>
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;        var2[var3] = this.stPos * var1;
+<i>713</i>&nbsp;        var2[var3 + 1] = this.stSize * var1;
+<i>714</i>&nbsp;        var2[var3 + 2] = this.ulPos * var1;
+<i>715</i>&nbsp;        var2[var3 + 3] = this.ulSize * var1;
+<i>716</i>&nbsp;    }
+<i>717</i>&nbsp;
+<i>718</i>&nbsp;    private String makeString(byte[] var1, int var2, short var3) {
+<b class="nc"><i>719</i>&nbsp;        if(var3 &gt;= 2 &amp;&amp; var3 &lt;= 6) {</b>
+<b class="nc"><i>720</i>&nbsp;            byte[] var4 = var1;</b>
+<b class="nc"><i>721</i>&nbsp;            int var5 = var2;</b>
+<b class="nc"><i>722</i>&nbsp;            var1 = new byte[var2];</b>
+<i>723</i>&nbsp;            var2 = 0;
+<i>724</i>&nbsp;
+<b class="nc"><i>725</i>&nbsp;            for(int var6 = 0; var6 &lt; var5; ++var6) {</b>
+<i>726</i>&nbsp;                if(var4[var6] != 0) {
+<b class="nc"><i>727</i>&nbsp;                    var1[var2++] = var4[var6];</b>
+<b class="nc"><i>728</i>&nbsp;                }</b>
+<i>729</i>&nbsp;            }
+<i>730</i>&nbsp;        }
+<b class="nc"><i>731</i>&nbsp;</b>
+<b class="nc"><i>732</i>&nbsp;        String var9;</b>
+<i>733</i>&nbsp;        switch(var3) {
+<i>734</i>&nbsp;        case 0:
+<i>735</i>&nbsp;            var9 = &quot;UTF-16&quot;;
+<i>736</i>&nbsp;            break;
+<i>737</i>&nbsp;        case 1:
+<i>738</i>&nbsp;            var9 = &quot;UTF-16&quot;;
+<i>739</i>&nbsp;            break;
+<i>740</i>&nbsp;        case 2:
+<i>741</i>&nbsp;            var9 = &quot;SJIS&quot;;
+<b class="nc"><i>742</i>&nbsp;            break;</b>
+<b class="nc"><i>743</i>&nbsp;        case 3:</b>
+<b class="nc"><i>744</i>&nbsp;            var9 = &quot;GBK&quot;;</b>
+<b class="nc"><i>745</i>&nbsp;            break;</b>
+<i>746</i>&nbsp;        case 4:
+<i>747</i>&nbsp;            var9 = &quot;MS950&quot;;
+<i>748</i>&nbsp;            break;
+<b class="nc"><i>749</i>&nbsp;        case 5:</b>
+<i>750</i>&nbsp;            var9 = &quot;EUC_KR&quot;;
+<i>751</i>&nbsp;            break;
+<i>752</i>&nbsp;        case 6:
+<i>753</i>&nbsp;            var9 = &quot;Johab&quot;;
+<i>754</i>&nbsp;            break;
+<i>755</i>&nbsp;        default:
+<b class="nc"><i>756</i>&nbsp;            var9 = &quot;UTF-16&quot;;</b>
+<i>757</i>&nbsp;        }
+<i>758</i>&nbsp;
+<b class="nc"><i>759</i>&nbsp;        try {</b>
+<i>760</i>&nbsp;            return new String(var1, 0, var2, var9);
+<i>761</i>&nbsp;        } catch (UnsupportedEncodingException var7) {
+<i>762</i>&nbsp;            if(FontUtilities.isLogging()) {
+<i>763</i>&nbsp;                FontUtilities.getLogger().warning(var7 + &quot; EncodingID=&quot; + var3);
+<i>764</i>&nbsp;            }
+<i>765</i>&nbsp;
+<b class="nc"><i>766</i>&nbsp;            return new String(var1, 0, var2);</b>
+<i>767</i>&nbsp;        } catch (Throwable var8) {
+<i>768</i>&nbsp;            return null;
+<i>769</i>&nbsp;        }
+<i>770</i>&nbsp;    }
+<i>771</i>&nbsp;
+<i>772</i>&nbsp;    protected void initNames() {
+<i>773</i>&nbsp;        byte[] var1 = new byte[256];
+<i>774</i>&nbsp;        ByteBuffer var2 = this.getTableBuffer(1851878757);
+<b class="nc"><i>775</i>&nbsp;        if(var2 != null) {</b>
+<i>776</i>&nbsp;            ShortBuffer var3 = var2.asShortBuffer();
+<i>777</i>&nbsp;            var3.get();
+<i>778</i>&nbsp;            short var4 = var3.get();
+<b class="nc"><i>779</i>&nbsp;            int var5 = var3.get() &amp; &#39;\uffff&#39;;</b>
+<i>780</i>&nbsp;            this.nameLocale = SunToolkit.getStartupLocale();
+<i>781</i>&nbsp;            short var6 = getLCIDFromLocale(this.nameLocale);
+<i>782</i>&nbsp;
+<b class="nc"><i>783</i>&nbsp;            for(int var7 = 0; var7 &lt; var4; ++var7) {</b>
+<i>784</i>&nbsp;                short var8 = var3.get();
+<b class="nc"><i>785</i>&nbsp;                if(var8 != 3) {</b>
+<b class="nc"><i>786</i>&nbsp;                    var3.position(var3.position() + 5);</b>
+<b class="nc"><i>787</i>&nbsp;                } else {</b>
+<b class="nc"><i>788</i>&nbsp;                    short var9 = var3.get();</b>
+<i>789</i>&nbsp;                    short var10 = var3.get();
+<i>790</i>&nbsp;                    short var11 = var3.get();
+<b class="nc"><i>791</i>&nbsp;                    int var12 = var3.get() &amp; &#39;\uffff&#39;;</b>
+<i>792</i>&nbsp;                    int var13 = (var3.get() &amp; &#39;\uffff&#39;) + var5;
+<b class="nc"><i>793</i>&nbsp;                    String var14 = null;</b>
+<i>794</i>&nbsp;                    switch(var11) {
+<i>795</i>&nbsp;                    case 1:
+<b class="nc"><i>796</i>&nbsp;                        if(this.familyName == null || var10 == 1033 || var10 == var6) {</b>
+<b class="nc"><i>797</i>&nbsp;                            var2.position(var13);</b>
+<b class="nc"><i>798</i>&nbsp;                            var2.get(var1, 0, var12);</b>
+<i>799</i>&nbsp;                            var14 = this.makeString(var1, var12, var9);
+<b class="nc"><i>800</i>&nbsp;                            if(this.familyName == null || var10 == 1033) {</b>
+<b class="nc"><i>801</i>&nbsp;                                this.familyName = var14;</b>
+<i>802</i>&nbsp;                            }
+<b class="nc"><i>803</i>&nbsp;</b>
+<b class="nc"><i>804</i>&nbsp;                            if(var10 == var6) {</b>
+<b class="nc"><i>805</i>&nbsp;                                this.localeFamilyName = var14;</b>
+<b class="nc"><i>806</i>&nbsp;                            }</b>
+<i>807</i>&nbsp;                        }
+<i>808</i>&nbsp;                        break;
+<i>809</i>&nbsp;                    case 4:
+<b class="nc"><i>810</i>&nbsp;                        if(this.fullName == null || var10 == 1033 || var10 == var6) {</b>
+<b class="nc"><i>811</i>&nbsp;                            var2.position(var13);</b>
+<b class="nc"><i>812</i>&nbsp;                            var2.get(var1, 0, var12);</b>
+<b class="nc"><i>813</i>&nbsp;                            var14 = this.makeString(var1, var12, var9);</b>
+<b class="nc"><i>814</i>&nbsp;                            if(this.fullName == null || var10 == 1033) {</b>
+<b class="nc"><i>815</i>&nbsp;                                this.fullName = var14;</b>
+<b class="nc"><i>816</i>&nbsp;                            }</b>
+<b class="nc"><i>817</i>&nbsp;</b>
+<i>818</i>&nbsp;                            if(var10 == var6) {
+<b class="nc"><i>819</i>&nbsp;                                this.localeFullName = var14;</b>
+<b class="nc"><i>820</i>&nbsp;                            }</b>
+<i>821</i>&nbsp;                        }
+<b class="nc"><i>822</i>&nbsp;                    }</b>
+<i>823</i>&nbsp;                }
+<b class="nc"><i>824</i>&nbsp;            }</b>
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;            if(this.localeFamilyName == null) {
+<i>827</i>&nbsp;                this.localeFamilyName = this.familyName;
+<b class="nc"><i>828</i>&nbsp;            }</b>
+<b class="nc"><i>829</i>&nbsp;</b>
+<b class="nc"><i>830</i>&nbsp;            if(this.localeFullName == null) {</b>
+<b class="nc"><i>831</i>&nbsp;                this.localeFullName = this.fullName;</b>
+<i>832</i>&nbsp;            }
+<b class="nc"><i>833</i>&nbsp;        }</b>
+<b class="nc"><i>834</i>&nbsp;</b>
+<i>835</i>&nbsp;    }
+<i>836</i>&nbsp;
+<b class="nc"><i>837</i>&nbsp;    protected String lookupName(short var1, int var2) {</b>
+<b class="nc"><i>838</i>&nbsp;        String var3 = null;</b>
+<b class="nc"><i>839</i>&nbsp;        byte[] var4 = new byte[1024];</b>
+<i>840</i>&nbsp;        ByteBuffer var5 = this.getTableBuffer(1851878757);
+<i>841</i>&nbsp;        if(var5 != null) {
+<i>842</i>&nbsp;            ShortBuffer var6 = var5.asShortBuffer();
+<b class="nc"><i>843</i>&nbsp;            var6.get();</b>
+<b class="nc"><i>844</i>&nbsp;            short var7 = var6.get();</b>
+<b class="nc"><i>845</i>&nbsp;            int var8 = var6.get() &amp; &#39;\uffff&#39;;</b>
+<i>846</i>&nbsp;
+<i>847</i>&nbsp;            for(int var9 = 0; var9 &lt; var7; ++var9) {
+<b class="nc"><i>848</i>&nbsp;                short var10 = var6.get();</b>
+<i>849</i>&nbsp;                if(var10 != 3) {
+<i>850</i>&nbsp;                    var6.position(var6.position() + 5);
+<i>851</i>&nbsp;                } else {
+<b class="nc"><i>852</i>&nbsp;                    short var11 = var6.get();</b>
+<b class="nc"><i>853</i>&nbsp;                    short var12 = var6.get();</b>
+<b class="nc"><i>854</i>&nbsp;                    short var13 = var6.get();</b>
+<i>855</i>&nbsp;                    int var14 = var6.get() &amp; &#39;\uffff&#39;;
+<i>856</i>&nbsp;                    int var15 = (var6.get() &amp; &#39;\uffff&#39;) + var8;
+<b class="nc"><i>857</i>&nbsp;                    if(var13 == var2 &amp;&amp; (var3 == null &amp;&amp; var12 == 1033 || var12 == var1)) {</b>
+<i>858</i>&nbsp;                        var5.position(var15);
+<i>859</i>&nbsp;                        var5.get(var4, 0, var14);
+<i>860</i>&nbsp;                        var3 = this.makeString(var4, var14, var11);
+<b class="nc"><i>861</i>&nbsp;                        if(var12 == var1) {</b>
+<b class="nc"><i>862</i>&nbsp;                            return var3;</b>
+<b class="nc"><i>863</i>&nbsp;                        }</b>
+<i>864</i>&nbsp;                    }
+<i>865</i>&nbsp;                }
+<b class="nc"><i>866</i>&nbsp;            }</b>
+<i>867</i>&nbsp;        }
+<i>868</i>&nbsp;
+<i>869</i>&nbsp;        return var3;
+<i>870</i>&nbsp;    }
+<i>871</i>&nbsp;
+<i>872</i>&nbsp;    public int getFontCount() {
+<b class="nc"><i>873</i>&nbsp;        return this.directoryCount;</b>
+<b class="nc"><i>874</i>&nbsp;    }</b>
+<i>875</i>&nbsp;
+<b class="nc"><i>876</i>&nbsp;    protected synchronized FontScaler getScaler() {</b>
+<b class="nc"><i>877</i>&nbsp;        if(this.scaler == null) {</b>
+<i>878</i>&nbsp;            this.scaler = FontScaler.getScaler(this, this.fontIndex, this.supportsCJK, this.fileSize);
+<b class="nc"><i>879</i>&nbsp;        }</b>
+<b class="nc"><i>880</i>&nbsp;</b>
+<i>881</i>&nbsp;        return this.scaler;
+<i>882</i>&nbsp;    }
+<i>883</i>&nbsp;
+<i>884</i>&nbsp;    public String getPostscriptName() {
+<b class="nc"><i>885</i>&nbsp;        String var1 = this.lookupName((short)1033, 6);</b>
+<b class="nc"><i>886</i>&nbsp;        return var1 == null?this.fullName:var1;</b>
+<b class="nc"><i>887</i>&nbsp;    }</b>
+<b class="nc"><i>888</i>&nbsp;</b>
+<i>889</i>&nbsp;    public String getFontName(Locale var1) {
+<i>890</i>&nbsp;        if(var1 == null) {
+<b class="nc"><i>891</i>&nbsp;            return this.fullName;</b>
+<i>892</i>&nbsp;        } else if(var1.equals(this.nameLocale) &amp;&amp; this.localeFullName != null) {
+<i>893</i>&nbsp;            return this.localeFullName;
+<i>894</i>&nbsp;        } else {
+<b class="nc"><i>895</i>&nbsp;            short var2 = getLCIDFromLocale(var1);</b>
+<i>896</i>&nbsp;            String var3 = this.lookupName(var2, 4);
+<i>897</i>&nbsp;            return var3 == null?this.fullName:var3;
+<i>898</i>&nbsp;        }
+<i>899</i>&nbsp;    }
+<i>900</i>&nbsp;
+<i>901</i>&nbsp;    private static void addLCIDMapEntry(Map&lt;String, Short&gt; var0, String var1, short var2) {
+<b class="nc"><i>902</i>&nbsp;        var0.put(var1, Short.valueOf(var2));</b>
+<i>903</i>&nbsp;    }
+<i>904</i>&nbsp;
+<i>905</i>&nbsp;    private static synchronized void createLCIDMap() {
+<i>906</i>&nbsp;        if(lcidMap == null) {
+<i>907</i>&nbsp;            HashMap var0 = new HashMap(200);
+<i>908</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar&quot;, (short)1025);
+<i>909</i>&nbsp;            addLCIDMapEntry(var0, &quot;bg&quot;, (short)1026);
+<i>910</i>&nbsp;            addLCIDMapEntry(var0, &quot;ca&quot;, (short)1027);
+<i>911</i>&nbsp;            addLCIDMapEntry(var0, &quot;zh&quot;, (short)1028);
+<i>912</i>&nbsp;            addLCIDMapEntry(var0, &quot;cs&quot;, (short)1029);
+<i>913</i>&nbsp;            addLCIDMapEntry(var0, &quot;da&quot;, (short)1030);
+<i>914</i>&nbsp;            addLCIDMapEntry(var0, &quot;de&quot;, (short)1031);
+<i>915</i>&nbsp;            addLCIDMapEntry(var0, &quot;el&quot;, (short)1032);
+<i>916</i>&nbsp;            addLCIDMapEntry(var0, &quot;es&quot;, (short)1034);
+<i>917</i>&nbsp;            addLCIDMapEntry(var0, &quot;fi&quot;, (short)1035);
+<i>918</i>&nbsp;            addLCIDMapEntry(var0, &quot;fr&quot;, (short)1036);
+<i>919</i>&nbsp;            addLCIDMapEntry(var0, &quot;iw&quot;, (short)1037);
+<i>920</i>&nbsp;            addLCIDMapEntry(var0, &quot;hu&quot;, (short)1038);
+<b class="nc"><i>921</i>&nbsp;            addLCIDMapEntry(var0, &quot;is&quot;, (short)1039);</b>
+<b class="nc"><i>922</i>&nbsp;            addLCIDMapEntry(var0, &quot;it&quot;, (short)1040);</b>
+<i>923</i>&nbsp;            addLCIDMapEntry(var0, &quot;ja&quot;, (short)1041);
+<i>924</i>&nbsp;            addLCIDMapEntry(var0, &quot;ko&quot;, (short)1042);
+<b class="nc"><i>925</i>&nbsp;            addLCIDMapEntry(var0, &quot;nl&quot;, (short)1043);</b>
+<b class="nc"><i>926</i>&nbsp;            addLCIDMapEntry(var0, &quot;no&quot;, (short)1044);</b>
+<b class="nc"><i>927</i>&nbsp;            addLCIDMapEntry(var0, &quot;pl&quot;, (short)1045);</b>
+<b class="nc"><i>928</i>&nbsp;            addLCIDMapEntry(var0, &quot;pt&quot;, (short)1046);</b>
+<i>929</i>&nbsp;            addLCIDMapEntry(var0, &quot;rm&quot;, (short)1047);
+<i>930</i>&nbsp;            addLCIDMapEntry(var0, &quot;ro&quot;, (short)1048);
+<i>931</i>&nbsp;            addLCIDMapEntry(var0, &quot;ru&quot;, (short)1049);
+<b class="nc"><i>932</i>&nbsp;            addLCIDMapEntry(var0, &quot;hr&quot;, (short)1050);</b>
+<i>933</i>&nbsp;            addLCIDMapEntry(var0, &quot;sk&quot;, (short)1051);
+<b class="nc"><i>934</i>&nbsp;            addLCIDMapEntry(var0, &quot;sq&quot;, (short)1052);</b>
+<i>935</i>&nbsp;            addLCIDMapEntry(var0, &quot;sv&quot;, (short)1053);
+<b class="nc"><i>936</i>&nbsp;            addLCIDMapEntry(var0, &quot;th&quot;, (short)1054);</b>
+<i>937</i>&nbsp;            addLCIDMapEntry(var0, &quot;tr&quot;, (short)1055);
+<b class="nc"><i>938</i>&nbsp;            addLCIDMapEntry(var0, &quot;ur&quot;, (short)1056);</b>
+<i>939</i>&nbsp;            addLCIDMapEntry(var0, &quot;in&quot;, (short)1057);
+<i>940</i>&nbsp;            addLCIDMapEntry(var0, &quot;uk&quot;, (short)1058);
+<b class="nc"><i>941</i>&nbsp;            addLCIDMapEntry(var0, &quot;be&quot;, (short)1059);</b>
+<i>942</i>&nbsp;            addLCIDMapEntry(var0, &quot;sl&quot;, (short)1060);
+<b class="nc"><i>943</i>&nbsp;            addLCIDMapEntry(var0, &quot;et&quot;, (short)1061);</b>
+<b class="nc"><i>944</i>&nbsp;            addLCIDMapEntry(var0, &quot;lv&quot;, (short)1062);</b>
+<i>945</i>&nbsp;            addLCIDMapEntry(var0, &quot;lt&quot;, (short)1063);
+<b class="nc"><i>946</i>&nbsp;            addLCIDMapEntry(var0, &quot;fa&quot;, (short)1065);</b>
+<i>947</i>&nbsp;            addLCIDMapEntry(var0, &quot;vi&quot;, (short)1066);
+<i>948</i>&nbsp;            addLCIDMapEntry(var0, &quot;hy&quot;, (short)1067);
+<i>949</i>&nbsp;            addLCIDMapEntry(var0, &quot;eu&quot;, (short)1069);
+<b class="nc"><i>950</i>&nbsp;            addLCIDMapEntry(var0, &quot;mk&quot;, (short)1071);</b>
+<i>951</i>&nbsp;            addLCIDMapEntry(var0, &quot;tn&quot;, (short)1074);
+<b class="nc"><i>952</i>&nbsp;            addLCIDMapEntry(var0, &quot;xh&quot;, (short)1076);</b>
+<i>953</i>&nbsp;            addLCIDMapEntry(var0, &quot;zu&quot;, (short)1077);
+<b class="nc"><i>954</i>&nbsp;            addLCIDMapEntry(var0, &quot;af&quot;, (short)1078);</b>
+<i>955</i>&nbsp;            addLCIDMapEntry(var0, &quot;ka&quot;, (short)1079);
+<b class="nc"><i>956</i>&nbsp;            addLCIDMapEntry(var0, &quot;fo&quot;, (short)1080);</b>
+<i>957</i>&nbsp;            addLCIDMapEntry(var0, &quot;hi&quot;, (short)1081);
+<i>958</i>&nbsp;            addLCIDMapEntry(var0, &quot;mt&quot;, (short)1082);
+<i>959</i>&nbsp;            addLCIDMapEntry(var0, &quot;se&quot;, (short)1083);
+<i>960</i>&nbsp;            addLCIDMapEntry(var0, &quot;gd&quot;, (short)1084);
+<i>961</i>&nbsp;            addLCIDMapEntry(var0, &quot;ms&quot;, (short)1086);
+<i>962</i>&nbsp;            addLCIDMapEntry(var0, &quot;kk&quot;, (short)1087);
+<b class="nc"><i>963</i>&nbsp;            addLCIDMapEntry(var0, &quot;ky&quot;, (short)1088);</b>
+<b class="nc"><i>964</i>&nbsp;            addLCIDMapEntry(var0, &quot;sw&quot;, (short)1089);</b>
+<b class="nc"><i>965</i>&nbsp;            addLCIDMapEntry(var0, &quot;tt&quot;, (short)1092);</b>
+<i>966</i>&nbsp;            addLCIDMapEntry(var0, &quot;bn&quot;, (short)1093);
+<i>967</i>&nbsp;            addLCIDMapEntry(var0, &quot;pa&quot;, (short)1094);
+<b class="nc"><i>968</i>&nbsp;            addLCIDMapEntry(var0, &quot;gu&quot;, (short)1095);</b>
+<b class="nc"><i>969</i>&nbsp;            addLCIDMapEntry(var0, &quot;ta&quot;, (short)1097);</b>
+<b class="nc"><i>970</i>&nbsp;            addLCIDMapEntry(var0, &quot;te&quot;, (short)1098);</b>
+<i>971</i>&nbsp;            addLCIDMapEntry(var0, &quot;kn&quot;, (short)1099);
+<i>972</i>&nbsp;            addLCIDMapEntry(var0, &quot;ml&quot;, (short)1100);
+<i>973</i>&nbsp;            addLCIDMapEntry(var0, &quot;mr&quot;, (short)1102);
+<b class="nc"><i>974</i>&nbsp;            addLCIDMapEntry(var0, &quot;sa&quot;, (short)1103);</b>
+<b class="nc"><i>975</i>&nbsp;            addLCIDMapEntry(var0, &quot;mn&quot;, (short)1104);</b>
+<b class="nc"><i>976</i>&nbsp;            addLCIDMapEntry(var0, &quot;cy&quot;, (short)1106);</b>
+<i>977</i>&nbsp;            addLCIDMapEntry(var0, &quot;gl&quot;, (short)1110);
+<i>978</i>&nbsp;            addLCIDMapEntry(var0, &quot;dv&quot;, (short)1125);
+<b class="nc"><i>979</i>&nbsp;            addLCIDMapEntry(var0, &quot;qu&quot;, (short)1131);</b>
+<b class="nc"><i>980</i>&nbsp;            addLCIDMapEntry(var0, &quot;mi&quot;, (short)1153);</b>
+<b class="nc"><i>981</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_IQ&quot;, (short)2049);</b>
+<i>982</i>&nbsp;            addLCIDMapEntry(var0, &quot;zh_CN&quot;, (short)2052);
+<i>983</i>&nbsp;            addLCIDMapEntry(var0, &quot;de_CH&quot;, (short)2055);
+<i>984</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_GB&quot;, (short)2057);
+<i>985</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_MX&quot;, (short)2058);
+<b class="nc"><i>986</i>&nbsp;            addLCIDMapEntry(var0, &quot;fr_BE&quot;, (short)2060);</b>
+<i>987</i>&nbsp;            addLCIDMapEntry(var0, &quot;it_CH&quot;, (short)2064);
+<b class="nc"><i>988</i>&nbsp;            addLCIDMapEntry(var0, &quot;nl_BE&quot;, (short)2067);</b>
+<b class="nc"><i>989</i>&nbsp;            addLCIDMapEntry(var0, &quot;no_NO_NY&quot;, (short)2068);</b>
+<b class="nc"><i>990</i>&nbsp;            addLCIDMapEntry(var0, &quot;pt_PT&quot;, (short)2070);</b>
+<b class="nc"><i>991</i>&nbsp;            addLCIDMapEntry(var0, &quot;ro_MD&quot;, (short)2072);</b>
+<b class="nc"><i>992</i>&nbsp;            addLCIDMapEntry(var0, &quot;ru_MD&quot;, (short)2073);</b>
+<b class="nc"><i>993</i>&nbsp;            addLCIDMapEntry(var0, &quot;sr_CS&quot;, (short)2074);</b>
+<b class="nc"><i>994</i>&nbsp;            addLCIDMapEntry(var0, &quot;sv_FI&quot;, (short)2077);</b>
+<i>995</i>&nbsp;            addLCIDMapEntry(var0, &quot;az_AZ&quot;, (short)2092);
+<i>996</i>&nbsp;            addLCIDMapEntry(var0, &quot;se_SE&quot;, (short)2107);
+<i>997</i>&nbsp;            addLCIDMapEntry(var0, &quot;ga_IE&quot;, (short)2108);
+<b class="nc"><i>998</i>&nbsp;            addLCIDMapEntry(var0, &quot;ms_BN&quot;, (short)2110);</b>
+<b class="nc"><i>999</i>&nbsp;            addLCIDMapEntry(var0, &quot;uz_UZ&quot;, (short)2115);</b>
+<i>1000</i>&nbsp;            addLCIDMapEntry(var0, &quot;qu_EC&quot;, (short)2155);
+<b class="nc"><i>1001</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_EG&quot;, (short)3073);</b>
+<b class="nc"><i>1002</i>&nbsp;            addLCIDMapEntry(var0, &quot;zh_HK&quot;, (short)3076);</b>
+<i>1003</i>&nbsp;            addLCIDMapEntry(var0, &quot;de_AT&quot;, (short)3079);
+<i>1004</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_AU&quot;, (short)3081);
+<b class="nc"><i>1005</i>&nbsp;            addLCIDMapEntry(var0, &quot;fr_CA&quot;, (short)3084);</b>
+<b class="nc"><i>1006</i>&nbsp;            addLCIDMapEntry(var0, &quot;sr_CS&quot;, (short)3098);</b>
+<i>1007</i>&nbsp;            addLCIDMapEntry(var0, &quot;se_FI&quot;, (short)3131);
+<b class="nc"><i>1008</i>&nbsp;            addLCIDMapEntry(var0, &quot;qu_PE&quot;, (short)3179);</b>
+<b class="nc"><i>1009</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_LY&quot;, (short)4097);</b>
+<i>1010</i>&nbsp;            addLCIDMapEntry(var0, &quot;zh_SG&quot;, (short)4100);
+<i>1011</i>&nbsp;            addLCIDMapEntry(var0, &quot;de_LU&quot;, (short)4103);
+<i>1012</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_CA&quot;, (short)4105);
+<i>1013</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_GT&quot;, (short)4106);
+<i>1014</i>&nbsp;            addLCIDMapEntry(var0, &quot;fr_CH&quot;, (short)4108);
+<i>1015</i>&nbsp;            addLCIDMapEntry(var0, &quot;hr_BA&quot;, (short)4122);
+<i>1016</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_DZ&quot;, (short)5121);
+<i>1017</i>&nbsp;            addLCIDMapEntry(var0, &quot;zh_MO&quot;, (short)5124);
+<i>1018</i>&nbsp;            addLCIDMapEntry(var0, &quot;de_LI&quot;, (short)5127);
+<i>1019</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_NZ&quot;, (short)5129);
+<b class="nc"><i>1020</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_CR&quot;, (short)5130);</b>
+<b class="nc"><i>1021</i>&nbsp;            addLCIDMapEntry(var0, &quot;fr_LU&quot;, (short)5132);</b>
+<b class="nc"><i>1022</i>&nbsp;            addLCIDMapEntry(var0, &quot;bs_BA&quot;, (short)5146);</b>
+<b class="nc"><i>1023</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_MA&quot;, (short)6145);</b>
+<b class="nc"><i>1024</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_IE&quot;, (short)6153);</b>
+<b class="nc"><i>1025</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_PA&quot;, (short)6154);</b>
+<b class="nc"><i>1026</i>&nbsp;            addLCIDMapEntry(var0, &quot;fr_MC&quot;, (short)6156);</b>
+<b class="nc"><i>1027</i>&nbsp;            addLCIDMapEntry(var0, &quot;sr_BA&quot;, (short)6170);</b>
+<i>1028</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_TN&quot;, (short)7169);
+<i>1029</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_ZA&quot;, (short)7177);
+<i>1030</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_DO&quot;, (short)7178);
+<i>1031</i>&nbsp;            addLCIDMapEntry(var0, &quot;sr_BA&quot;, (short)7194);
+<i>1032</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_OM&quot;, (short)8193);
+<b class="nc"><i>1033</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_JM&quot;, (short)8201);</b>
+<b class="nc"><i>1034</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_VE&quot;, (short)8202);</b>
+<b class="nc"><i>1035</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_YE&quot;, (short)9217);</b>
+<b class="nc"><i>1036</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_CO&quot;, (short)9226);</b>
+<b class="nc"><i>1037</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_SY&quot;, (short)10241);</b>
+<b class="nc"><i>1038</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_BZ&quot;, (short)10249);</b>
+<b class="nc"><i>1039</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_PE&quot;, (short)10250);</b>
+<b class="nc"><i>1040</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_JO&quot;, (short)11265);</b>
+<b class="nc"><i>1041</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_TT&quot;, (short)11273);</b>
+<i>1042</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_AR&quot;, (short)11274);
+<i>1043</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_LB&quot;, (short)12289);
+<i>1044</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_ZW&quot;, (short)12297);
+<b class="nc"><i>1045</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_EC&quot;, (short)12298);</b>
+<b class="nc"><i>1046</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_KW&quot;, (short)13313);</b>
+<b class="nc"><i>1047</i>&nbsp;            addLCIDMapEntry(var0, &quot;en_PH&quot;, (short)13321);</b>
+<b class="nc"><i>1048</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_CL&quot;, (short)13322);</b>
+<i>1049</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_AE&quot;, (short)14337);
+<b class="nc"><i>1050</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_UY&quot;, (short)14346);</b>
+<b class="nc"><i>1051</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_BH&quot;, (short)15361);</b>
+<b class="nc"><i>1052</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_PY&quot;, (short)15370);</b>
+<i>1053</i>&nbsp;            addLCIDMapEntry(var0, &quot;ar_QA&quot;, (short)16385);
+<i>1054</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_BO&quot;, (short)16394);
+<i>1055</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_SV&quot;, (short)17418);
+<i>1056</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_HN&quot;, (short)18442);
+<i>1057</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_NI&quot;, (short)19466);
+<b class="nc"><i>1058</i>&nbsp;            addLCIDMapEntry(var0, &quot;es_PR&quot;, (short)20490);</b>
+<b class="nc"><i>1059</i>&nbsp;            lcidMap = var0;</b>
+<i>1060</i>&nbsp;        }
+<b class="nc"><i>1061</i>&nbsp;    }</b>
+<b class="nc"><i>1062</i>&nbsp;</b>
+<b class="nc"><i>1063</i>&nbsp;    private static short getLCIDFromLocale(Locale var0) {</b>
+<b class="nc"><i>1064</i>&nbsp;        if(var0.equals(Locale.US)) {</b>
+<i>1065</i>&nbsp;            return (short)1033;
+<i>1066</i>&nbsp;        } else {
+<i>1067</i>&nbsp;            if(lcidMap == null) {
+<i>1068</i>&nbsp;                createLCIDMap();
+<i>1069</i>&nbsp;            }
+<b class="nc"><i>1070</i>&nbsp;</b>
+<b class="nc"><i>1071</i>&nbsp;            int var3;</b>
+<b class="nc"><i>1072</i>&nbsp;            for(String var1 = var0.toString(); !&quot;&quot;.equals(var1); var1 = var1.substring(0, var3)) {</b>
+<b class="nc"><i>1073</i>&nbsp;                Short var2 = (Short)lcidMap.get(var1);</b>
+<b class="nc"><i>1074</i>&nbsp;                if(var2 != null) {</b>
+<b class="nc"><i>1075</i>&nbsp;                    return var2.shortValue();</b>
+<i>1076</i>&nbsp;                }
+<b class="nc"><i>1077</i>&nbsp;</b>
+<b class="nc"><i>1078</i>&nbsp;                var3 = var1.lastIndexOf(95);</b>
+<b class="nc"><i>1079</i>&nbsp;                if(var3 &lt; 1) {</b>
+<b class="nc"><i>1080</i>&nbsp;                    return (short)1033;</b>
+<b class="nc"><i>1081</i>&nbsp;                }</b>
+<i>1082</i>&nbsp;            }
+<b class="nc"><i>1083</i>&nbsp;</b>
+<i>1084</i>&nbsp;            return (short)1033;
+<i>1085</i>&nbsp;        }
+<i>1086</i>&nbsp;    }
+<b class="nc"><i>1087</i>&nbsp;</b>
+<b class="nc"><i>1088</i>&nbsp;    public String getFamilyName(Locale var1) {</b>
+<b class="nc"><i>1089</i>&nbsp;        if(var1 == null) {</b>
+<b class="nc"><i>1090</i>&nbsp;            return this.familyName;</b>
+<i>1091</i>&nbsp;        } else if(var1.equals(this.nameLocale) &amp;&amp; this.localeFamilyName != null) {
+<i>1092</i>&nbsp;            return this.localeFamilyName;
+<i>1093</i>&nbsp;        } else {
+<i>1094</i>&nbsp;            short var2 = getLCIDFromLocale(var1);
+<i>1095</i>&nbsp;            String var3 = this.lookupName(var2, 1);
+<i>1096</i>&nbsp;            return var3 == null?this.familyName:var3;
+<i>1097</i>&nbsp;        }
+<i>1098</i>&nbsp;    }
+<i>1099</i>&nbsp;
+<i>1100</i>&nbsp;    public CharToGlyphMapper getMapper() {
+<i>1101</i>&nbsp;        if(this.mapper == null) {
+<i>1102</i>&nbsp;            this.mapper = new TrueTypeGlyphMapper(this);
+<i>1103</i>&nbsp;        }
+<i>1104</i>&nbsp;
+<i>1105</i>&nbsp;        return this.mapper;
+<i>1106</i>&nbsp;    }
+<i>1107</i>&nbsp;
+<b class="nc"><i>1108</i>&nbsp;    protected void initAllNames(int var1, HashSet var2) {</b>
+<b class="nc"><i>1109</i>&nbsp;        byte[] var3 = new byte[256];</b>
+<b class="nc"><i>1110</i>&nbsp;        ByteBuffer var4 = this.getTableBuffer(1851878757);</b>
+<b class="nc"><i>1111</i>&nbsp;        if(var4 != null) {</b>
+<i>1112</i>&nbsp;            ShortBuffer var5 = var4.asShortBuffer();
+<i>1113</i>&nbsp;            var5.get();
+<i>1114</i>&nbsp;            short var6 = var5.get();
+<i>1115</i>&nbsp;            int var7 = var5.get() &amp; &#39;\uffff&#39;;
+<i>1116</i>&nbsp;
+<i>1117</i>&nbsp;            for(int var8 = 0; var8 &lt; var6; ++var8) {
+<i>1118</i>&nbsp;                short var9 = var5.get();
+<i>1119</i>&nbsp;                if(var9 != 3) {
+<i>1120</i>&nbsp;                    var5.position(var5.position() + 5);
+<i>1121</i>&nbsp;                } else {
+<i>1122</i>&nbsp;                    short var10 = var5.get();
+<i>1123</i>&nbsp;                    short var11 = var5.get();
+<i>1124</i>&nbsp;                    short var12 = var5.get();
+<i>1125</i>&nbsp;                    int var13 = var5.get() &amp; &#39;\uffff&#39;;
+<b class="nc"><i>1126</i>&nbsp;                    int var14 = (var5.get() &amp; &#39;\uffff&#39;) + var7;</b>
+<b class="nc"><i>1127</i>&nbsp;                    if(var12 == var1) {</b>
+<i>1128</i>&nbsp;                        var4.position(var14);
+<b class="nc"><i>1129</i>&nbsp;                        var4.get(var3, 0, var13);</b>
+<b class="nc"><i>1130</i>&nbsp;                        var2.add(this.makeString(var3, var13, var10));</b>
+<b class="nc"><i>1131</i>&nbsp;                    }</b>
+<b class="nc"><i>1132</i>&nbsp;                }</b>
+<b class="nc"><i>1133</i>&nbsp;            }</b>
+<i>1134</i>&nbsp;        }
+<i>1135</i>&nbsp;
+<i>1136</i>&nbsp;    }
+<i>1137</i>&nbsp;
+<i>1138</i>&nbsp;    String[] getAllFamilyNames() {
+<i>1139</i>&nbsp;        HashSet var1 = new HashSet();
+<b class="nc"><i>1140</i>&nbsp;</b>
+<i>1141</i>&nbsp;        try {
+<b class="nc"><i>1142</i>&nbsp;            this.initAllNames(1, var1);</b>
+<b class="nc"><i>1143</i>&nbsp;        } catch (Exception var3) {</b>
+<b class="nc"><i>1144</i>&nbsp;            ;</b>
+<b class="nc"><i>1145</i>&nbsp;        }</b>
+<b class="nc"><i>1146</i>&nbsp;</b>
+<i>1147</i>&nbsp;        return (String[])((String[])var1.toArray(new String[0]));
+<b class="nc"><i>1148</i>&nbsp;    }</b>
+<b class="nc"><i>1149</i>&nbsp;</b>
+<b class="nc"><i>1150</i>&nbsp;    String[] getAllFullNames() {</b>
+<b class="nc"><i>1151</i>&nbsp;        HashSet var1 = new HashSet();</b>
+<b class="nc"><i>1152</i>&nbsp;</b>
+<b class="nc"><i>1153</i>&nbsp;        try {</b>
+<i>1154</i>&nbsp;            this.initAllNames(4, var1);
+<i>1155</i>&nbsp;        } catch (Exception var3) {
+<b class="nc"><i>1156</i>&nbsp;            ;</b>
+<b class="nc"><i>1157</i>&nbsp;        }</b>
+<b class="nc"><i>1158</i>&nbsp;</b>
+<b class="nc"><i>1159</i>&nbsp;        return (String[])((String[])var1.toArray(new String[0]));</b>
+<b class="nc"><i>1160</i>&nbsp;    }</b>
+<i>1161</i>&nbsp;
+<i>1162</i>&nbsp;    Float getGlyphPoint(long var1, int var3, int var4) {
+<i>1163</i>&nbsp;        try {
+<i>1164</i>&nbsp;            return this.getScaler().getGlyphPoint(var1, var3, var4);
+<b class="nc"><i>1165</i>&nbsp;        } catch (FontScalerException var6) {</b>
+<i>1166</i>&nbsp;            return null;
+<i>1167</i>&nbsp;        }
+<i>1168</i>&nbsp;    }
+<i>1169</i>&nbsp;
+<i>1170</i>&nbsp;    private char[] getGaspTable() {
+<i>1171</i>&nbsp;        if(this.gaspTable != null) {
+<b class="nc"><i>1172</i>&nbsp;            return this.gaspTable;</b>
+<i>1173</i>&nbsp;        } else {
+<i>1174</i>&nbsp;            ByteBuffer var1 = this.getTableBuffer(1734439792);
+<i>1175</i>&nbsp;            if(var1 == null) {
+<i>1176</i>&nbsp;                return this.gaspTable = new char[0];
+<i>1177</i>&nbsp;            } else {
+<b class="nc"><i>1178</i>&nbsp;                CharBuffer var2 = var1.asCharBuffer();</b>
+<b class="nc"><i>1179</i>&nbsp;                char var3 = var2.get();</b>
+<b class="nc"><i>1180</i>&nbsp;                if(var3 &gt; 1) {</b>
+<b class="nc"><i>1181</i>&nbsp;                    return this.gaspTable = new char[0];</b>
+<b class="nc"><i>1182</i>&nbsp;                } else {</b>
+<i>1183</i>&nbsp;                    char var4 = var2.get();
+<i>1184</i>&nbsp;                    if(4 + var4 * 4 &gt; this.getTableSize(1734439792)) {
+<i>1185</i>&nbsp;                        return this.gaspTable = new char[0];
+<i>1186</i>&nbsp;                    } else {
+<i>1187</i>&nbsp;                        this.gaspTable = new char[2 * var4];
+<i>1188</i>&nbsp;                        var2.get(this.gaspTable);
+<i>1189</i>&nbsp;                        return this.gaspTable;
+<b class="nc"><i>1190</i>&nbsp;                    }</b>
+<b class="nc"><i>1191</i>&nbsp;                }</b>
+<b class="nc"><i>1192</i>&nbsp;            }</b>
+<b class="nc"><i>1193</i>&nbsp;        }</b>
+<b class="nc"><i>1194</i>&nbsp;    }</b>
+<i>1195</i>&nbsp;
+<b class="nc"><i>1196</i>&nbsp;    public boolean useAAForPtSize(int var1) {</b>
+<b class="nc"><i>1197</i>&nbsp;        char[] var2 = this.getGaspTable();</b>
+<i>1198</i>&nbsp;        if(var2.length &gt; 0) {
+<i>1199</i>&nbsp;            for(int var3 = 0; var3 &lt; var2.length; var3 += 2) {
+<b class="nc"><i>1200</i>&nbsp;                if(var1 &lt;= var2[var3]) {</b>
+<i>1201</i>&nbsp;                    return (var2[var3 + 1] &amp; 2) != 0;
+<i>1202</i>&nbsp;                }
+<i>1203</i>&nbsp;            }
+<i>1204</i>&nbsp;
+<i>1205</i>&nbsp;            return true;
+<i>1206</i>&nbsp;        } else {
+<i>1207</i>&nbsp;            return this.style == 1?true:var1 &lt;= 8 || var1 &gt;= 18;
+<b class="nc"><i>1208</i>&nbsp;        }</b>
+<b class="nc"><i>1209</i>&nbsp;    }</b>
+<b class="nc"><i>1210</i>&nbsp;</b>
+<i>1211</i>&nbsp;    public boolean hasSupplementaryChars() {
+<b class="nc"><i>1212</i>&nbsp;        return ((TrueTypeGlyphMapper)this.getMapper()).hasSupplementaryChars();</b>
+<i>1213</i>&nbsp;    }
+<i>1214</i>&nbsp;
+<i>1215</i>&nbsp;    public String toString() {
+<i>1216</i>&nbsp;        return &quot;** TrueType Font: Family=&quot; + this.familyName + &quot; Name=&quot; + this.fullName + &quot; style=&quot; + this.style + &quot; fileName=&quot; + this.getPublicFileName();
+<b class="nc"><i>1217</i>&nbsp;    }</b>
+<b class="nc"><i>1218</i>&nbsp;</b>
+<i>1219</i>&nbsp;    private static class TTDisposerRecord implements DisposerRecord {
+<b class="nc"><i>1220</i>&nbsp;        FileChannel channel;</b>
+<b class="nc"><i>1221</i>&nbsp;</b>
+<b class="nc"><i>1222</i>&nbsp;        private TTDisposerRecord() {</b>
+<b class="nc"><i>1223</i>&nbsp;            this.channel = null;</b>
+<i>1224</i>&nbsp;        }
+<b class="nc"><i>1225</i>&nbsp;</b>
+<i>1226</i>&nbsp;        public synchronized void dispose() {
+<i>1227</i>&nbsp;            try {
+<i>1228</i>&nbsp;                if(this.channel != null) {
+<i>1229</i>&nbsp;                    this.channel.close();
+<i>1230</i>&nbsp;                }
+<b class="nc"><i>1231</i>&nbsp;            } catch (IOException var5) {</b>
+<b class="nc"><i>1232</i>&nbsp;                ;</b>
+<i>1233</i>&nbsp;            } finally {
+<b class="nc"><i>1234</i>&nbsp;                this.channel = null;</b>
+<b class="nc"><i>1235</i>&nbsp;            }</b>
+<b class="nc"><i>1236</i>&nbsp;</b>
+<b class="nc"><i>1237</i>&nbsp;        }</b>
+<i>1238</i>&nbsp;    }
+<b class="nc"><i>1239</i>&nbsp;</b>
+<i>1240</i>&nbsp;    class DirectoryEntry {
+<i>1241</i>&nbsp;        int tag;
+<i>1242</i>&nbsp;        int offset;
+<i>1243</i>&nbsp;        int length;
+<i>1244</i>&nbsp;
+<b class="nc"><i>1245</i>&nbsp;        DirectoryEntry() {</b>
+<b class="nc"><i>1246</i>&nbsp;        }</b>
+<i>1247</i>&nbsp;    }
+<b class="nc"><i>1248</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-10 02:35</div>
+</div>
+</body>
+</html>

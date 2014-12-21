@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DumpTube</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.util.pipe</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DumpTube (com.sun.xml.internal.ws.util.pipe)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DumpTube</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DumpTube$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.util.pipe;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.ws.api.message.Packet;
+<i>9</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.NextAction;
+<i>10</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.Tube;
+<i>11</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.TubeCloner;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.helper.AbstractFilterTubeImpl;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.helper.AbstractTubeImpl;
+<i>14</i>&nbsp;import java.io.PrintStream;
+<i>15</i>&nbsp;import java.lang.reflect.Constructor;
+<i>16</i>&nbsp;import javax.xml.stream.XMLOutputFactory;
+<i>17</i>&nbsp;import javax.xml.stream.XMLStreamException;
+<i>18</i>&nbsp;import javax.xml.stream.XMLStreamWriter;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public class DumpTube extends AbstractFilterTubeImpl {
+<i>21</i>&nbsp;    private final String name;
+<i>22</i>&nbsp;    private final PrintStream out;
+<i>23</i>&nbsp;    private final XMLOutputFactory staxOut;
+<i>24</i>&nbsp;    private static boolean warnStaxUtils;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public DumpTube(String name, PrintStream out, Tube next) {
+<i>27</i>&nbsp;        super(next);
+<i>28</i>&nbsp;        this.name = name;
+<i>29</i>&nbsp;        this.out = out;
+<i>30</i>&nbsp;        this.staxOut = XMLOutputFactory.newInstance();
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    protected DumpTube(DumpTube that, TubeCloner cloner) {
+<i>34</i>&nbsp;        super(that, cloner);
+<i>35</i>&nbsp;        this.name = that.name;
+<i>36</i>&nbsp;        this.out = that.out;
+<i>37</i>&nbsp;        this.staxOut = that.staxOut;
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public NextAction processRequest(Packet request) {
+<i>41</i>&nbsp;        this.dump(&quot;request&quot;, request);
+<i>42</i>&nbsp;        return super.processRequest(request);
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public NextAction processResponse(Packet response) {
+<i>46</i>&nbsp;        this.dump(&quot;response&quot;, response);
+<i>47</i>&nbsp;        return super.processResponse(response);
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    protected void dump(String header, Packet packet) {
+<i>51</i>&nbsp;        this.out.println(&quot;====[&quot; + this.name + &quot;:&quot; + header + &quot;]====&quot;);
+<i>52</i>&nbsp;        if(packet.getMessage() == null) {
+<i>53</i>&nbsp;            this.out.println(&quot;(none)&quot;);
+<i>54</i>&nbsp;        } else {
+<i>55</i>&nbsp;            try {
+<i>56</i>&nbsp;                XMLStreamWriter e = this.staxOut.createXMLStreamWriter(new PrintStream(this.out) {
+<i>57</i>&nbsp;                    public void close() {
+<i>58</i>&nbsp;                    }
+<i>59</i>&nbsp;                });
+<i>60</i>&nbsp;                e = this.createIndenter(e);
+<i>61</i>&nbsp;                packet.getMessage().copy().writeTo(e);
+<i>62</i>&nbsp;                e.close();
+<i>63</i>&nbsp;            } catch (XMLStreamException var4) {
+<i>64</i>&nbsp;                var4.printStackTrace(this.out);
+<i>65</i>&nbsp;            }
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;        this.out.println(&quot;============&quot;);</b>
+<b class="nc"><i>69</i>&nbsp;    }</b>
+<b class="nc"><i>70</i>&nbsp;</b>
+<b class="nc"><i>71</i>&nbsp;    private XMLStreamWriter createIndenter(XMLStreamWriter writer) {</b>
+<i>72</i>&nbsp;        try {
+<i>73</i>&nbsp;            Class e = this.getClass().getClassLoader().loadClass(&quot;javanet.staxutils.IndentingXMLStreamWriter&quot;);
+<i>74</i>&nbsp;            Constructor c = e.getConstructor(new Class[]{XMLStreamWriter.class});
+<i>75</i>&nbsp;            writer = (XMLStreamWriter)c.newInstance(new Object[]{writer});
+<i>76</i>&nbsp;        } catch (Exception var4) {
+<i>77</i>&nbsp;            if(!warnStaxUtils) {
+<i>78</i>&nbsp;                warnStaxUtils = true;
+<b class="nc"><i>79</i>&nbsp;                this.out.println(&quot;WARNING: put stax-utils.jar to the classpath to indent the dump output&quot;);</b>
+<b class="nc"><i>80</i>&nbsp;            }</b>
+<b class="nc"><i>81</i>&nbsp;        }</b>
+<b class="nc"><i>82</i>&nbsp;</b>
+<i>83</i>&nbsp;        return writer;
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public AbstractTubeImpl copy(TubeCloner cloner) {
+<b class="nc"><i>87</i>&nbsp;        return new DumpTube(this, cloner);</b>
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:49</div>
+</div>
+</body>
+</html>

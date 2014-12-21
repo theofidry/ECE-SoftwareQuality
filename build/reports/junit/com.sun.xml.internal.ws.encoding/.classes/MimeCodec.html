@@ -1,0 +1,218 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MimeCodec</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.ws.encoding</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MimeCodec (com.sun.xml.internal.ws.encoding)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MimeCodec</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 60)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.ws.encoding;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.ws.api.SOAPVersion;
+<i>9</i>&nbsp;import com.sun.xml.internal.ws.api.WSBinding;
+<i>10</i>&nbsp;import com.sun.xml.internal.ws.api.message.Attachment;
+<i>11</i>&nbsp;import com.sun.xml.internal.ws.api.message.Message;
+<i>12</i>&nbsp;import com.sun.xml.internal.ws.api.message.Packet;
+<i>13</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.Codec;
+<i>14</i>&nbsp;import com.sun.xml.internal.ws.api.pipe.ContentType;
+<i>15</i>&nbsp;import com.sun.xml.internal.ws.developer.StreamingAttachmentFeature;
+<i>16</i>&nbsp;import com.sun.xml.internal.ws.encoding.ContentTypeImpl;
+<i>17</i>&nbsp;import com.sun.xml.internal.ws.encoding.MimeMultipartParser;
+<i>18</i>&nbsp;import java.io.IOException;
+<i>19</i>&nbsp;import java.io.InputStream;
+<i>20</i>&nbsp;import java.io.OutputStream;
+<i>21</i>&nbsp;import java.nio.channels.ReadableByteChannel;
+<i>22</i>&nbsp;import java.util.Iterator;
+<i>23</i>&nbsp;import java.util.UUID;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;abstract class MimeCodec implements Codec {
+<i>26</i>&nbsp;    public static final String MULTIPART_RELATED_MIME_TYPE = &quot;multipart/related&quot;;
+<i>27</i>&nbsp;    private String boundary;
+<i>28</i>&nbsp;    private String messageContentType;
+<i>29</i>&nbsp;    private boolean hasAttachments;
+<i>30</i>&nbsp;    protected Codec rootCodec;
+<i>31</i>&nbsp;    protected final SOAPVersion version;
+<i>32</i>&nbsp;    protected final WSBinding binding;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    protected MimeCodec(SOAPVersion version, WSBinding binding) {
+<i>35</i>&nbsp;        this.version = version;
+<i>36</i>&nbsp;        this.binding = binding;
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public String getMimeType() {
+<i>40</i>&nbsp;        return &quot;multipart/related&quot;;
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public ContentType encode(Packet packet, OutputStream out) throws IOException {
+<i>44</i>&nbsp;        Message msg = packet.getMessage();
+<i>45</i>&nbsp;        if(msg == null) {
+<i>46</i>&nbsp;            return null;
+<i>47</i>&nbsp;        } else {
+<i>48</i>&nbsp;            ContentType primaryCt;
+<i>49</i>&nbsp;            if(this.hasAttachments) {
+<i>50</i>&nbsp;                writeln(&quot;--&quot; + this.boundary, out);
+<i>51</i>&nbsp;                primaryCt = this.rootCodec.getStaticContentType(packet);
+<i>52</i>&nbsp;                String i$ = primaryCt != null?primaryCt.getContentType():this.rootCodec.getMimeType();
+<i>53</i>&nbsp;                writeln(&quot;Content-Type: &quot; + i$, out);
+<i>54</i>&nbsp;                writeln(out);
+<i>55</i>&nbsp;            }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;            primaryCt = this.rootCodec.encode(packet, out);
+<i>58</i>&nbsp;            if(this.hasAttachments) {
+<i>59</i>&nbsp;                writeln(out);
+<i>60</i>&nbsp;                Iterator i$1 = msg.getAttachments().iterator();
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;                while(i$1.hasNext()) {
+<i>63</i>&nbsp;                    Attachment att = (Attachment)i$1.next();
+<i>64</i>&nbsp;                    writeln(&quot;--&quot; + this.boundary, out);
+<i>65</i>&nbsp;                    String cid = att.getContentId();
+<i>66</i>&nbsp;                    if(cid != null &amp;&amp; cid.length() &gt; 0 &amp;&amp; cid.charAt(0) != 60) {
+<b class="nc"><i>67</i>&nbsp;                        cid = &#39;&lt;&#39; + cid + &#39;&gt;&#39;;</b>
+<b class="nc"><i>68</i>&nbsp;                    }</b>
+<b class="nc"><i>69</i>&nbsp;</b>
+<b class="nc"><i>70</i>&nbsp;                    writeln(&quot;Content-Id:&quot; + cid, out);</b>
+<b class="nc"><i>71</i>&nbsp;                    writeln(&quot;Content-Type: &quot; + att.getContentType(), out);</b>
+<i>72</i>&nbsp;                    writeln(&quot;Content-Transfer-Encoding: binary&quot;, out);
+<b class="nc"><i>73</i>&nbsp;                    writeln(out);</b>
+<i>74</i>&nbsp;                    att.writeTo(out);
+<b class="nc"><i>75</i>&nbsp;                    writeln(out);</b>
+<i>76</i>&nbsp;                }
+<b class="nc"><i>77</i>&nbsp;</b>
+<i>78</i>&nbsp;                writeAsAscii(&quot;--&quot; + this.boundary, out);
+<i>79</i>&nbsp;                writeAsAscii(&quot;--&quot;, out);
+<b class="nc"><i>80</i>&nbsp;            }</b>
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;            return (ContentType)(this.hasAttachments?new ContentTypeImpl(this.messageContentType, packet.soapAction, (String)null):primaryCt);</b>
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public ContentType getStaticContentType(Packet packet) {
+<i>87</i>&nbsp;        Message msg = packet.getMessage();
+<i>88</i>&nbsp;        this.hasAttachments = !msg.getAttachments().isEmpty();
+<i>89</i>&nbsp;        if(this.hasAttachments) {
+<i>90</i>&nbsp;            this.boundary = &quot;uuid:&quot; + UUID.randomUUID().toString();
+<i>91</i>&nbsp;            String boundaryParameter = &quot;boundary=\&quot;&quot; + this.boundary + &quot;\&quot;&quot;;
+<i>92</i>&nbsp;            this.messageContentType = &quot;multipart/related; type=\&quot;&quot; + this.rootCodec.getMimeType() + &quot;\&quot;; &quot; + boundaryParameter;
+<i>93</i>&nbsp;            return new ContentTypeImpl(this.messageContentType, packet.soapAction, (String)null);
+<b class="nc"><i>94</i>&nbsp;        } else {</b>
+<b class="nc"><i>95</i>&nbsp;            return this.rootCodec.getStaticContentType(packet);</b>
+<b class="nc"><i>96</i>&nbsp;        }</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    protected MimeCodec(MimeCodec that) {
+<b class="nc"><i>100</i>&nbsp;        this.version = that.version;</b>
+<i>101</i>&nbsp;        this.binding = that.binding;
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public void decode(InputStream in, String contentType, Packet packet) throws IOException {
+<i>105</i>&nbsp;        MimeMultipartParser parser = new MimeMultipartParser(in, contentType, (StreamingAttachmentFeature)this.binding.getFeature(StreamingAttachmentFeature.class));
+<b class="nc"><i>106</i>&nbsp;        this.decode(parser, packet);</b>
+<b class="nc"><i>107</i>&nbsp;    }</b>
+<b class="nc"><i>108</i>&nbsp;</b>
+<i>109</i>&nbsp;    public void decode(ReadableByteChannel in, String contentType, Packet packet) {
+<i>110</i>&nbsp;        throw new UnsupportedOperationException();
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<b class="nc"><i>112</i>&nbsp;</b>
+<b class="nc"><i>113</i>&nbsp;    protected abstract void decode(MimeMultipartParser var1, Packet var2) throws IOException;</b>
+<b class="nc"><i>114</i>&nbsp;</b>
+<i>115</i>&nbsp;    public abstract MimeCodec copy();
+<b class="nc"><i>116</i>&nbsp;</b>
+<i>117</i>&nbsp;    public static void writeln(String s, OutputStream out) throws IOException {
+<b class="nc"><i>118</i>&nbsp;        writeAsAscii(s, out);</b>
+<b class="nc"><i>119</i>&nbsp;        writeln(out);</b>
+<i>120</i>&nbsp;    }
+<b class="nc"><i>121</i>&nbsp;</b>
+<b class="nc"><i>122</i>&nbsp;    public static void writeAsAscii(String s, OutputStream out) throws IOException {</b>
+<i>123</i>&nbsp;        int len = s.length();
+<i>124</i>&nbsp;
+<b class="nc"><i>125</i>&nbsp;        for(int i = 0; i &lt; len; ++i) {</b>
+<b class="nc"><i>126</i>&nbsp;            out.write((byte)s.charAt(i));</b>
+<b class="nc"><i>127</i>&nbsp;        }</b>
+<b class="nc"><i>128</i>&nbsp;</b>
+<b class="nc"><i>129</i>&nbsp;    }</b>
+<b class="nc"><i>130</i>&nbsp;</b>
+<b class="nc"><i>131</i>&nbsp;    public static void writeln(OutputStream out) throws IOException {</b>
+<b class="nc"><i>132</i>&nbsp;        out.write(13);</b>
+<b class="nc"><i>133</i>&nbsp;        out.write(10);</b>
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<b class="nc"><i>135</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

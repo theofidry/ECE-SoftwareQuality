@@ -1,0 +1,142 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CastCall</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.xalan.internal.xsltc.compiler</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CastCall (com.sun.org.apache.xalan.internal.xsltc.compiler)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CastCall</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.xalan.internal.xsltc.compiler;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.CHECKCAST;
+<i>9</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.ConstantPoolGen;
+<i>10</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.InstructionList;
+<i>11</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.Expression;
+<i>12</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.FunctionCall;
+<i>13</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.LiteralExpr;
+<i>14</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.QName;
+<i>15</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.SymbolTable;
+<i>16</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ClassGenerator;
+<i>17</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
+<i>18</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.util.MethodGenerator;
+<i>19</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ObjectType;
+<i>20</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
+<i>21</i>&nbsp;import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TypeCheckError;
+<i>22</i>&nbsp;import java.util.Vector;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;final class CastCall extends FunctionCall {
+<i>25</i>&nbsp;    private String _className;
+<i>26</i>&nbsp;    private Expression _right;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public CastCall(QName fname, Vector arguments) {
+<i>29</i>&nbsp;        super(fname, arguments);
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+<i>33</i>&nbsp;        if(this.argumentCount() != 2) {
+<i>34</i>&nbsp;            throw new TypeCheckError(new ErrorMsg(&quot;ILLEGAL_ARG_ERR&quot;, this.getName(), this));
+<i>35</i>&nbsp;        } else {
+<i>36</i>&nbsp;            Expression exp = this.argument(0);
+<i>37</i>&nbsp;            if(exp instanceof LiteralExpr) {
+<i>38</i>&nbsp;                this._className = ((LiteralExpr)exp).getValue();
+<i>39</i>&nbsp;                this._type = Type.newObjectType(this._className);
+<i>40</i>&nbsp;                this._right = this.argument(1);
+<i>41</i>&nbsp;                Type tright = this._right.typeCheck(stable);
+<i>42</i>&nbsp;                if(tright != Type.Reference &amp;&amp; !(tright instanceof ObjectType)) {
+<i>43</i>&nbsp;                    throw new TypeCheckError(new ErrorMsg(&quot;DATA_CONVERSION_ERR&quot;, tright, this._type, this));
+<i>44</i>&nbsp;                } else {
+<i>45</i>&nbsp;                    return this._type;
+<i>46</i>&nbsp;                }
+<i>47</i>&nbsp;            } else {
+<i>48</i>&nbsp;                throw new TypeCheckError(new ErrorMsg(&quot;NEED_LITERAL_ERR&quot;, this.getName(), this));
+<i>49</i>&nbsp;            }
+<i>50</i>&nbsp;        }
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+<b class="nc"><i>54</i>&nbsp;        ConstantPoolGen cpg = classGen.getConstantPool();</b>
+<i>55</i>&nbsp;        InstructionList il = methodGen.getInstructionList();
+<i>56</i>&nbsp;        this._right.translate(classGen, methodGen);
+<i>57</i>&nbsp;        il.append(new CHECKCAST(cpg.addClass(this._className)));
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,613 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AttachmentPartImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.xml.internal.messaging.saaj.soap</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AttachmentPartImpl (com.sun.xml.internal.messaging.saaj.soap)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AttachmentPartImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 208)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.xml.internal.messaging.saaj.soap;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.xml.internal.messaging.saaj.SOAPExceptionImpl;
+<i>9</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.InternetHeaders;
+<i>10</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeBodyPart;
+<i>11</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimePartDataSource;
+<i>12</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
+<i>13</i>&nbsp;import com.sun.xml.internal.messaging.saaj.packaging.mime.util.ASCIIUtility;
+<i>14</i>&nbsp;import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+<i>15</i>&nbsp;import com.sun.xml.internal.messaging.saaj.util.FinalArrayList;
+<i>16</i>&nbsp;import com.sun.xml.internal.org.jvnet.mimepull.Header;
+<i>17</i>&nbsp;import com.sun.xml.internal.org.jvnet.mimepull.MIMEPart;
+<i>18</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>19</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>20</i>&nbsp;import java.io.IOException;
+<i>21</i>&nbsp;import java.io.InputStream;
+<i>22</i>&nbsp;import java.io.OutputStream;
+<i>23</i>&nbsp;import java.util.Iterator;
+<i>24</i>&nbsp;import java.util.List;
+<i>25</i>&nbsp;import java.util.logging.Level;
+<i>26</i>&nbsp;import java.util.logging.Logger;
+<i>27</i>&nbsp;import javax.activation.CommandInfo;
+<i>28</i>&nbsp;import javax.activation.CommandMap;
+<i>29</i>&nbsp;import javax.activation.DataHandler;
+<i>30</i>&nbsp;import javax.activation.DataSource;
+<i>31</i>&nbsp;import javax.activation.MailcapCommandMap;
+<i>32</i>&nbsp;import javax.xml.soap.AttachmentPart;
+<i>33</i>&nbsp;import javax.xml.soap.MimeHeader;
+<i>34</i>&nbsp;import javax.xml.soap.MimeHeaders;
+<i>35</i>&nbsp;import javax.xml.soap.SOAPException;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;public class AttachmentPartImpl extends AttachmentPart {
+<i>38</i>&nbsp;    protected static final Logger log = Logger.getLogger(&quot;com.sun.xml.internal.messaging.saaj.soap&quot;, &quot;com.sun.xml.internal.messaging.saaj.soap.LocalStrings&quot;);
+<i>39</i>&nbsp;    private final MimeHeaders headers = new MimeHeaders();
+<i>40</i>&nbsp;    private MimeBodyPart rawContent = null;
+<i>41</i>&nbsp;    private DataHandler dataHandler = null;
+<i>42</i>&nbsp;    private MIMEPart mimePart = null;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public AttachmentPartImpl() {
+<i>45</i>&nbsp;        initializeJavaActivationHandlers();
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public AttachmentPartImpl(MIMEPart part) {
+<i>49</i>&nbsp;        this.mimePart = part;
+<i>50</i>&nbsp;        List hdrs = part.getAllHeaders();
+<i>51</i>&nbsp;        Iterator i$ = hdrs.iterator();
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;        while(i$.hasNext()) {
+<i>54</i>&nbsp;            Header hd = (Header)i$.next();
+<i>55</i>&nbsp;            this.headers.addHeader(hd.getName(), hd.getValue());
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public int getSize() throws SOAPException {
+<i>61</i>&nbsp;        if(this.mimePart != null) {
+<i>62</i>&nbsp;            try {
+<i>63</i>&nbsp;                return this.mimePart.read().available();
+<i>64</i>&nbsp;            } catch (IOException var4) {
+<i>65</i>&nbsp;                return -1;
+<i>66</i>&nbsp;            }
+<i>67</i>&nbsp;        } else if(this.rawContent == null &amp;&amp; this.dataHandler == null) {
+<b class="nc"><i>68</i>&nbsp;            return 0;</b>
+<i>69</i>&nbsp;        } else if(this.rawContent != null) {
+<i>70</i>&nbsp;            try {
+<i>71</i>&nbsp;                return this.rawContent.getSize();
+<i>72</i>&nbsp;            } catch (Exception var5) {
+<i>73</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0573.soap.attachment.getrawbytes.ioexception&quot;, new String[]{var5.getLocalizedMessage()});
+<b class="nc"><i>74</i>&nbsp;                throw new SOAPExceptionImpl(&quot;Raw InputStream Error: &quot; + var5);</b>
+<b class="nc"><i>75</i>&nbsp;            }</b>
+<b class="nc"><i>76</i>&nbsp;        } else {</b>
+<b class="nc"><i>77</i>&nbsp;            ByteOutputStream bout = new ByteOutputStream();</b>
+<b class="nc"><i>78</i>&nbsp;</b>
+<i>79</i>&nbsp;            try {
+<i>80</i>&nbsp;                this.dataHandler.writeTo(bout);
+<i>81</i>&nbsp;            } catch (IOException var6) {
+<b class="nc"><i>82</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0501.soap.data.handler.err&quot;, new String[]{var6.getLocalizedMessage()});</b>
+<i>83</i>&nbsp;                throw new SOAPExceptionImpl(&quot;Data handler error: &quot; + var6);
+<i>84</i>&nbsp;            }
+<i>85</i>&nbsp;
+<b class="nc"><i>86</i>&nbsp;            return bout.size();</b>
+<i>87</i>&nbsp;        }
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public void clearContent() {
+<i>91</i>&nbsp;        if(this.mimePart != null) {
+<i>92</i>&nbsp;            this.mimePart.close();
+<i>93</i>&nbsp;            this.mimePart = null;
+<i>94</i>&nbsp;        }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;        this.dataHandler = null;
+<i>97</i>&nbsp;        this.rawContent = null;
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public Object getContent() throws SOAPException {
+<i>101</i>&nbsp;        try {
+<i>102</i>&nbsp;            if(this.mimePart != null) {
+<b class="nc"><i>103</i>&nbsp;                return this.mimePart.read();</b>
+<i>104</i>&nbsp;            } else if(this.dataHandler != null) {
+<i>105</i>&nbsp;                return this.getDataHandler().getContent();
+<i>106</i>&nbsp;            } else if(this.rawContent != null) {
+<b class="nc"><i>107</i>&nbsp;                return this.rawContent.getContent();</b>
+<i>108</i>&nbsp;            } else {
+<i>109</i>&nbsp;                log.severe(&quot;SAAJ0572.soap.no.content.for.attachment&quot;);
+<i>110</i>&nbsp;                throw new SOAPExceptionImpl(&quot;No data handler/content associated with this attachment&quot;);
+<b class="nc"><i>111</i>&nbsp;            }</b>
+<b class="nc"><i>112</i>&nbsp;        } catch (Exception var2) {</b>
+<i>113</i>&nbsp;            log.log(Level.SEVERE, &quot;SAAJ0575.soap.attachment.getcontent.exception&quot;, var2);
+<b class="nc"><i>114</i>&nbsp;            throw new SOAPExceptionImpl(var2.getLocalizedMessage());</b>
+<b class="nc"><i>115</i>&nbsp;        }</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public void setContent(Object object, String contentType) throws IllegalArgumentException {
+<b class="nc"><i>119</i>&nbsp;        if(this.mimePart != null) {</b>
+<b class="nc"><i>120</i>&nbsp;            this.mimePart.close();</b>
+<i>121</i>&nbsp;            this.mimePart = null;
+<b class="nc"><i>122</i>&nbsp;        }</b>
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;        DataHandler dh = new DataHandler(object, contentType);</b>
+<i>125</i>&nbsp;        this.setDataHandler(dh);
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<b class="nc"><i>128</i>&nbsp;    public DataHandler getDataHandler() throws SOAPException {</b>
+<b class="nc"><i>129</i>&nbsp;        if(this.mimePart != null) {</b>
+<i>130</i>&nbsp;            return new DataHandler(new DataSource() {
+<b class="nc"><i>131</i>&nbsp;                public InputStream getInputStream() throws IOException {</b>
+<b class="nc"><i>132</i>&nbsp;                    return AttachmentPartImpl.this.mimePart.read();</b>
+<i>133</i>&nbsp;                }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;                public OutputStream getOutputStream() throws IOException {
+<i>136</i>&nbsp;                    throw new UnsupportedOperationException(&quot;getOutputStream cannot be supported : You have enabled LazyAttachments Option&quot;);
+<i>137</i>&nbsp;                }
+<b class="nc"><i>138</i>&nbsp;</b>
+<b class="nc"><i>139</i>&nbsp;                public String getContentType() {</b>
+<i>140</i>&nbsp;                    return AttachmentPartImpl.this.mimePart.getContentType();
+<b class="nc"><i>141</i>&nbsp;                }</b>
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;                public String getName() {</b>
+<b class="nc"><i>144</i>&nbsp;                    return &quot;MIMEPart Wrapper DataSource&quot;;</b>
+<b class="nc"><i>145</i>&nbsp;                }</b>
+<i>146</i>&nbsp;            });
+<i>147</i>&nbsp;        } else if(this.dataHandler == null) {
+<i>148</i>&nbsp;            if(this.rawContent != null) {
+<b class="nc"><i>149</i>&nbsp;                return new DataHandler(new MimePartDataSource(this.rawContent));</b>
+<i>150</i>&nbsp;            } else {
+<i>151</i>&nbsp;                log.severe(&quot;SAAJ0502.soap.no.handler.for.attachment&quot;);
+<b class="nc"><i>152</i>&nbsp;                throw new SOAPExceptionImpl(&quot;No data handler associated with this attachment&quot;);</b>
+<i>153</i>&nbsp;            }
+<b class="nc"><i>154</i>&nbsp;        } else {</b>
+<b class="nc"><i>155</i>&nbsp;            return this.dataHandler;</b>
+<b class="nc"><i>156</i>&nbsp;        }</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    public void setDataHandler(DataHandler dataHandler) throws IllegalArgumentException {
+<b class="nc"><i>160</i>&nbsp;        if(this.mimePart != null) {</b>
+<b class="nc"><i>161</i>&nbsp;            this.mimePart.close();</b>
+<b class="nc"><i>162</i>&nbsp;            this.mimePart = null;</b>
+<b class="nc"><i>163</i>&nbsp;        }</b>
+<b class="nc"><i>164</i>&nbsp;</b>
+<i>165</i>&nbsp;        if(dataHandler == null) {
+<b class="nc"><i>166</i>&nbsp;            log.severe(&quot;SAAJ0503.soap.no.null.to.dataHandler&quot;);</b>
+<i>167</i>&nbsp;            throw new IllegalArgumentException(&quot;Null dataHandler argument to setDataHandler&quot;);
+<i>168</i>&nbsp;        } else {
+<i>169</i>&nbsp;            this.dataHandler = dataHandler;
+<b class="nc"><i>170</i>&nbsp;            this.rawContent = null;</b>
+<b class="nc"><i>171</i>&nbsp;            log.log(Level.FINE, &quot;SAAJ0580.soap.set.Content-Type&quot;, new String[]{dataHandler.getContentType()});</b>
+<i>172</i>&nbsp;            this.setMimeHeader(&quot;Content-Type&quot;, dataHandler.getContentType());
+<i>173</i>&nbsp;        }
+<i>174</i>&nbsp;    }
+<i>175</i>&nbsp;
+<b class="nc"><i>176</i>&nbsp;    public void removeAllMimeHeaders() {</b>
+<b class="nc"><i>177</i>&nbsp;        this.headers.removeAllHeaders();</b>
+<b class="nc"><i>178</i>&nbsp;    }</b>
+<b class="nc"><i>179</i>&nbsp;</b>
+<i>180</i>&nbsp;    public void removeMimeHeader(String header) {
+<b class="nc"><i>181</i>&nbsp;        this.headers.removeHeader(header);</b>
+<b class="nc"><i>182</i>&nbsp;    }</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;    public String[] getMimeHeader(String name) {</b>
+<b class="nc"><i>185</i>&nbsp;        return this.headers.getHeader(name);</b>
+<b class="nc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    public void setMimeHeader(String name, String value) {
+<i>189</i>&nbsp;        this.headers.setHeader(name, value);
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;    public void addMimeHeader(String name, String value) {</b>
+<i>193</i>&nbsp;        this.headers.addHeader(name, value);
+<b class="nc"><i>194</i>&nbsp;    }</b>
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    public Iterator getAllMimeHeaders() {
+<i>197</i>&nbsp;        return this.headers.getAllHeaders();
+<i>198</i>&nbsp;    }
+<b class="nc"><i>199</i>&nbsp;</b>
+<b class="nc"><i>200</i>&nbsp;    public Iterator getMatchingMimeHeaders(String[] names) {</b>
+<b class="nc"><i>201</i>&nbsp;        return this.headers.getMatchingHeaders(names);</b>
+<i>202</i>&nbsp;    }
+<b class="nc"><i>203</i>&nbsp;</b>
+<b class="nc"><i>204</i>&nbsp;    public Iterator getNonMatchingMimeHeaders(String[] names) {</b>
+<i>205</i>&nbsp;        return this.headers.getNonMatchingHeaders(names);
+<b class="nc"><i>206</i>&nbsp;    }</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    boolean hasAllHeaders(MimeHeaders hdrs) {
+<i>209</i>&nbsp;        if(hdrs != null) {
+<i>210</i>&nbsp;            Iterator i = hdrs.getAllHeaders();
+<b class="nc"><i>211</i>&nbsp;</b>
+<b class="nc"><i>212</i>&nbsp;            while(i.hasNext()) {</b>
+<b class="nc"><i>213</i>&nbsp;                MimeHeader hdr = (MimeHeader)i.next();</b>
+<i>214</i>&nbsp;                String[] values = this.headers.getHeader(hdr.getName());
+<b class="nc"><i>215</i>&nbsp;                boolean found = false;</b>
+<b class="nc"><i>216</i>&nbsp;                if(values != null) {</b>
+<i>217</i>&nbsp;                    for(int j = 0; j &lt; values.length; ++j) {
+<b class="nc"><i>218</i>&nbsp;                        if(hdr.getValue().equalsIgnoreCase(values[j])) {</b>
+<i>219</i>&nbsp;                            found = true;
+<i>220</i>&nbsp;                            break;
+<i>221</i>&nbsp;                        }
+<b class="nc"><i>222</i>&nbsp;                    }</b>
+<i>223</i>&nbsp;                }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;                if(!found) {
+<b class="nc"><i>226</i>&nbsp;                    return false;</b>
+<i>227</i>&nbsp;                }
+<i>228</i>&nbsp;            }
+<i>229</i>&nbsp;        }
+<b class="nc"><i>230</i>&nbsp;</b>
+<i>231</i>&nbsp;        return true;
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<b class="nc"><i>234</i>&nbsp;    MimeBodyPart getMimePart() throws SOAPException {</b>
+<i>235</i>&nbsp;        try {
+<i>236</i>&nbsp;            if(this.mimePart != null) {
+<i>237</i>&nbsp;                return new MimeBodyPart(this.mimePart);
+<b class="nc"><i>238</i>&nbsp;            } else if(this.rawContent != null) {</b>
+<i>239</i>&nbsp;                copyMimeHeaders((MimeHeaders)this.headers, (MimeBodyPart)this.rawContent);
+<i>240</i>&nbsp;                return this.rawContent;
+<i>241</i>&nbsp;            } else {
+<b class="nc"><i>242</i>&nbsp;                MimeBodyPart ex = new MimeBodyPart();</b>
+<i>243</i>&nbsp;                ex.setDataHandler(this.dataHandler);
+<i>244</i>&nbsp;                copyMimeHeaders((MimeHeaders)this.headers, (MimeBodyPart)ex);
+<i>245</i>&nbsp;                return ex;
+<b class="nc"><i>246</i>&nbsp;            }</b>
+<i>247</i>&nbsp;        } catch (Exception var2) {
+<i>248</i>&nbsp;            log.severe(&quot;SAAJ0504.soap.cannot.externalize.attachment&quot;);
+<i>249</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Unable to externalize attachment&quot;, var2);
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    public static void copyMimeHeaders(MimeHeaders headers, MimeBodyPart mbp) throws SOAPException {
+<b class="nc"><i>254</i>&nbsp;        Iterator i = headers.getAllHeaders();</b>
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;        while(i.hasNext()) {
+<i>257</i>&nbsp;            try {
+<b class="nc"><i>258</i>&nbsp;                MimeHeader ex = (MimeHeader)i.next();</b>
+<b class="nc"><i>259</i>&nbsp;                mbp.setHeader(ex.getName(), ex.getValue());</b>
+<b class="nc"><i>260</i>&nbsp;            } catch (Exception var4) {</b>
+<b class="nc"><i>261</i>&nbsp;                log.severe(&quot;SAAJ0505.soap.cannot.copy.mime.hdr&quot;);</b>
+<b class="nc"><i>262</i>&nbsp;                throw new SOAPExceptionImpl(&quot;Unable to copy MIME header&quot;, var4);</b>
+<b class="nc"><i>263</i>&nbsp;            }</b>
+<i>264</i>&nbsp;        }
+<b class="nc"><i>265</i>&nbsp;</b>
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<b class="nc"><i>267</i>&nbsp;</b>
+<b class="nc"><i>268</i>&nbsp;    public static void copyMimeHeaders(MimeBodyPart mbp, AttachmentPartImpl ap) throws SOAPException {</b>
+<b class="nc"><i>269</i>&nbsp;        try {</b>
+<i>270</i>&nbsp;            FinalArrayList ex = mbp.getAllHeaders();
+<i>271</i>&nbsp;            int sz = ex.size();
+<i>272</i>&nbsp;
+<b class="nc"><i>273</i>&nbsp;            for(int i = 0; i &lt; sz; ++i) {</b>
+<b class="nc"><i>274</i>&nbsp;                com.sun.xml.internal.messaging.saaj.packaging.mime.Header h = (com.sun.xml.internal.messaging.saaj.packaging.mime.Header)ex.get(i);</b>
+<i>275</i>&nbsp;                if(!h.getName().equalsIgnoreCase(&quot;Content-Type&quot;)) {
+<b class="nc"><i>276</i>&nbsp;                    ap.addMimeHeader(h.getName(), h.getValue());</b>
+<i>277</i>&nbsp;                }
+<b class="nc"><i>278</i>&nbsp;            }</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;        } catch (Exception var6) {
+<i>281</i>&nbsp;            log.severe(&quot;SAAJ0506.soap.cannot.copy.mime.hdrs.into.attachment&quot;);
+<i>282</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Unable to copy MIME headers into attachment&quot;, var6);
+<b class="nc"><i>283</i>&nbsp;        }</b>
+<b class="nc"><i>284</i>&nbsp;    }</b>
+<b class="nc"><i>285</i>&nbsp;</b>
+<i>286</i>&nbsp;    public void setBase64Content(InputStream content, String contentType) throws SOAPException {
+<i>287</i>&nbsp;        if(this.mimePart != null) {
+<b class="nc"><i>288</i>&nbsp;            this.mimePart.close();</b>
+<i>289</i>&nbsp;            this.mimePart = null;
+<b class="nc"><i>290</i>&nbsp;        }</b>
+<b class="nc"><i>291</i>&nbsp;</b>
+<i>292</i>&nbsp;        this.dataHandler = null;
+<b class="nc"><i>293</i>&nbsp;        InputStream decoded = null;</b>
+<b class="nc"><i>294</i>&nbsp;</b>
+<b class="nc"><i>295</i>&nbsp;        try {</b>
+<b class="nc"><i>296</i>&nbsp;            decoded = MimeUtility.decode(content, &quot;base64&quot;);</b>
+<i>297</i>&nbsp;            InternetHeaders e = new InternetHeaders();
+<i>298</i>&nbsp;            e.setHeader(&quot;Content-Type&quot;, contentType);
+<i>299</i>&nbsp;            ByteOutputStream bos = new ByteOutputStream();
+<i>300</i>&nbsp;            bos.write(decoded);
+<i>301</i>&nbsp;            this.rawContent = new MimeBodyPart(e, bos.getBytes(), bos.getCount());
+<i>302</i>&nbsp;            this.setMimeHeader(&quot;Content-Type&quot;, contentType);
+<b class="nc"><i>303</i>&nbsp;        } catch (Exception var13) {</b>
+<i>304</i>&nbsp;            log.log(Level.SEVERE, &quot;SAAJ0578.soap.attachment.setbase64content.exception&quot;, var13);
+<b class="nc"><i>305</i>&nbsp;            throw new SOAPExceptionImpl(var13.getLocalizedMessage());</b>
+<i>306</i>&nbsp;        } finally {
+<b class="nc"><i>307</i>&nbsp;            try {</b>
+<i>308</i>&nbsp;                decoded.close();
+<b class="nc"><i>309</i>&nbsp;            } catch (IOException var12) {</b>
+<b class="nc"><i>310</i>&nbsp;                throw new SOAPException(var12);</b>
+<b class="nc"><i>311</i>&nbsp;            }</b>
+<b class="nc"><i>312</i>&nbsp;        }</b>
+<b class="nc"><i>313</i>&nbsp;</b>
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    public InputStream getBase64Content() throws SOAPException {
+<i>317</i>&nbsp;        InputStream stream;
+<i>318</i>&nbsp;        if(this.mimePart != null) {
+<b class="nc"><i>319</i>&nbsp;            stream = this.mimePart.read();</b>
+<b class="nc"><i>320</i>&nbsp;        } else if(this.rawContent != null) {</b>
+<b class="nc"><i>321</i>&nbsp;            try {</b>
+<b class="nc"><i>322</i>&nbsp;                stream = this.rawContent.getInputStream();</b>
+<b class="nc"><i>323</i>&nbsp;            } catch (Exception var19) {</b>
+<b class="nc"><i>324</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0579.soap.attachment.getbase64content.exception&quot;, var19);</b>
+<b class="nc"><i>325</i>&nbsp;                throw new SOAPExceptionImpl(var19.getLocalizedMessage());</b>
+<i>326</i>&nbsp;            }
+<b class="nc"><i>327</i>&nbsp;        } else {</b>
+<b class="nc"><i>328</i>&nbsp;            if(this.dataHandler == null) {</b>
+<b class="nc"><i>329</i>&nbsp;                log.severe(&quot;SAAJ0572.soap.no.content.for.attachment&quot;);</b>
+<i>330</i>&nbsp;                throw new SOAPExceptionImpl(&quot;No data handler/content associated with this attachment&quot;);
+<i>331</i>&nbsp;            }
+<b class="nc"><i>332</i>&nbsp;</b>
+<i>333</i>&nbsp;            try {
+<i>334</i>&nbsp;                stream = this.dataHandler.getInputStream();
+<i>335</i>&nbsp;            } catch (IOException var18) {
+<i>336</i>&nbsp;                log.severe(&quot;SAAJ0574.soap.attachment.datahandler.ioexception&quot;);
+<b class="nc"><i>337</i>&nbsp;                throw new SOAPExceptionImpl(&quot;DataHandler error&quot; + var18);</b>
+<i>338</i>&nbsp;            }
+<b class="nc"><i>339</i>&nbsp;        }</b>
+<b class="nc"><i>340</i>&nbsp;</b>
+<b class="nc"><i>341</i>&nbsp;        short size = 1024;</b>
+<i>342</i>&nbsp;        if(stream != null) {
+<i>343</i>&nbsp;            ByteArrayInputStream var7;
+<i>344</i>&nbsp;            try {
+<b class="nc"><i>345</i>&nbsp;                ByteArrayOutputStream e = new ByteArrayOutputStream(size);</b>
+<b class="nc"><i>346</i>&nbsp;                OutputStream ret = MimeUtility.encode(e, &quot;base64&quot;);</b>
+<b class="nc"><i>347</i>&nbsp;                byte[] buf = new byte[size];</b>
+<b class="nc"><i>348</i>&nbsp;</b>
+<b class="nc"><i>349</i>&nbsp;                int len;</b>
+<b class="nc"><i>350</i>&nbsp;                while((len = stream.read(buf, 0, size)) != -1) {</b>
+<b class="nc"><i>351</i>&nbsp;                    ret.write(buf, 0, len);</b>
+<b class="nc"><i>352</i>&nbsp;                }</b>
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;                ret.flush();
+<i>355</i>&nbsp;                buf = e.toByteArray();
+<i>356</i>&nbsp;                var7 = new ByteArrayInputStream(buf);
+<b class="nc"><i>357</i>&nbsp;            } catch (Exception var20) {</b>
+<i>358</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0579.soap.attachment.getbase64content.exception&quot;, var20);
+<b class="nc"><i>359</i>&nbsp;                throw new SOAPExceptionImpl(var20.getLocalizedMessage());</b>
+<b class="nc"><i>360</i>&nbsp;            } finally {</b>
+<b class="nc"><i>361</i>&nbsp;                try {</b>
+<b class="nc"><i>362</i>&nbsp;                    stream.close();</b>
+<b class="nc"><i>363</i>&nbsp;                } catch (IOException var17) {</b>
+<b class="nc"><i>364</i>&nbsp;                    ;</b>
+<i>365</i>&nbsp;                }
+<b class="nc"><i>366</i>&nbsp;</b>
+<b class="nc"><i>367</i>&nbsp;            }</b>
+<b class="nc"><i>368</i>&nbsp;</b>
+<b class="nc"><i>369</i>&nbsp;            return var7;</b>
+<b class="nc"><i>370</i>&nbsp;        } else {</b>
+<i>371</i>&nbsp;            log.log(Level.SEVERE, &quot;SAAJ0572.soap.no.content.for.attachment&quot;);
+<b class="nc"><i>372</i>&nbsp;            throw new SOAPExceptionImpl(&quot;No data handler/content associated with this attachment&quot;);</b>
+<b class="nc"><i>373</i>&nbsp;        }</b>
+<i>374</i>&nbsp;    }
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;    public void setRawContent(InputStream content, String contentType) throws SOAPException {
+<i>377</i>&nbsp;        if(this.mimePart != null) {
+<i>378</i>&nbsp;            this.mimePart.close();
+<i>379</i>&nbsp;            this.mimePart = null;
+<b class="nc"><i>380</i>&nbsp;        }</b>
+<i>381</i>&nbsp;
+<b class="nc"><i>382</i>&nbsp;        this.dataHandler = null;</b>
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;        try {</b>
+<i>385</i>&nbsp;            InternetHeaders e = new InternetHeaders();
+<i>386</i>&nbsp;            e.setHeader(&quot;Content-Type&quot;, contentType);
+<b class="nc"><i>387</i>&nbsp;            ByteOutputStream bos = new ByteOutputStream();</b>
+<b class="nc"><i>388</i>&nbsp;            bos.write(content);</b>
+<b class="nc"><i>389</i>&nbsp;            this.rawContent = new MimeBodyPart(e, bos.getBytes(), bos.getCount());</b>
+<b class="nc"><i>390</i>&nbsp;            this.setMimeHeader(&quot;Content-Type&quot;, contentType);</b>
+<i>391</i>&nbsp;        } catch (Exception var12) {
+<b class="nc"><i>392</i>&nbsp;            log.log(Level.SEVERE, &quot;SAAJ0576.soap.attachment.setrawcontent.exception&quot;, var12);</b>
+<b class="nc"><i>393</i>&nbsp;            throw new SOAPExceptionImpl(var12.getLocalizedMessage());</b>
+<b class="nc"><i>394</i>&nbsp;        } finally {</b>
+<b class="nc"><i>395</i>&nbsp;            try {</b>
+<i>396</i>&nbsp;                content.close();
+<b class="nc"><i>397</i>&nbsp;            } catch (IOException var11) {</b>
+<b class="nc"><i>398</i>&nbsp;                throw new SOAPException(var11);</b>
+<i>399</i>&nbsp;            }
+<i>400</i>&nbsp;        }
+<i>401</i>&nbsp;
+<b class="nc"><i>402</i>&nbsp;    }</b>
+<b class="nc"><i>403</i>&nbsp;</b>
+<i>404</i>&nbsp;    public void setRawContentBytes(byte[] content, int off, int len, String contentType) throws SOAPException {
+<i>405</i>&nbsp;        if(this.mimePart != null) {
+<i>406</i>&nbsp;            this.mimePart.close();
+<i>407</i>&nbsp;            this.mimePart = null;
+<i>408</i>&nbsp;        }
+<b class="nc"><i>409</i>&nbsp;</b>
+<i>410</i>&nbsp;        if(content == null) {
+<b class="nc"><i>411</i>&nbsp;            throw new SOAPExceptionImpl(&quot;Null content passed to setRawContentBytes&quot;);</b>
+<b class="nc"><i>412</i>&nbsp;        } else {</b>
+<i>413</i>&nbsp;            this.dataHandler = null;
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;            try {
+<b class="nc"><i>416</i>&nbsp;                InternetHeaders e = new InternetHeaders();</b>
+<b class="nc"><i>417</i>&nbsp;                e.setHeader(&quot;Content-Type&quot;, contentType);</b>
+<b class="nc"><i>418</i>&nbsp;                this.rawContent = new MimeBodyPart(e, content, off, len);</b>
+<b class="nc"><i>419</i>&nbsp;                this.setMimeHeader(&quot;Content-Type&quot;, contentType);</b>
+<b class="nc"><i>420</i>&nbsp;            } catch (Exception var6) {</b>
+<b class="nc"><i>421</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0576.soap.attachment.setrawcontent.exception&quot;, var6);</b>
+<b class="nc"><i>422</i>&nbsp;                throw new SOAPExceptionImpl(var6.getLocalizedMessage());</b>
+<b class="nc"><i>423</i>&nbsp;            }</b>
+<i>424</i>&nbsp;        }
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    public InputStream getRawContent() throws SOAPException {
+<i>428</i>&nbsp;        if(this.mimePart != null) {
+<i>429</i>&nbsp;            return this.mimePart.read();
+<i>430</i>&nbsp;        } else if(this.rawContent != null) {
+<i>431</i>&nbsp;            try {
+<i>432</i>&nbsp;                return this.rawContent.getInputStream();
+<i>433</i>&nbsp;            } catch (Exception var2) {
+<i>434</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0577.soap.attachment.getrawcontent.exception&quot;, var2);
+<i>435</i>&nbsp;                throw new SOAPExceptionImpl(var2.getLocalizedMessage());
+<i>436</i>&nbsp;            }
+<i>437</i>&nbsp;        } else if(this.dataHandler != null) {
+<i>438</i>&nbsp;            try {
+<i>439</i>&nbsp;                return this.dataHandler.getInputStream();
+<i>440</i>&nbsp;            } catch (IOException var3) {
+<i>441</i>&nbsp;                log.severe(&quot;SAAJ0574.soap.attachment.datahandler.ioexception&quot;);
+<i>442</i>&nbsp;                throw new SOAPExceptionImpl(&quot;DataHandler error&quot; + var3);
+<i>443</i>&nbsp;            }
+<i>444</i>&nbsp;        } else {
+<i>445</i>&nbsp;            log.severe(&quot;SAAJ0572.soap.no.content.for.attachment&quot;);
+<i>446</i>&nbsp;            throw new SOAPExceptionImpl(&quot;No data handler/content associated with this attachment&quot;);
+<b class="nc"><i>447</i>&nbsp;        }</b>
+<b class="nc"><i>448</i>&nbsp;    }</b>
+<i>449</i>&nbsp;
+<b class="nc"><i>450</i>&nbsp;    public byte[] getRawContentBytes() throws SOAPException {</b>
+<i>451</i>&nbsp;        InputStream ret;
+<b class="nc"><i>452</i>&nbsp;        if(this.mimePart != null) {</b>
+<b class="nc"><i>453</i>&nbsp;            try {</b>
+<b class="nc"><i>454</i>&nbsp;                ret = this.mimePart.read();</b>
+<b class="nc"><i>455</i>&nbsp;                return ASCIIUtility.getBytes(ret);</b>
+<b class="nc"><i>456</i>&nbsp;            } catch (IOException var3) {</b>
+<b class="nc"><i>457</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0577.soap.attachment.getrawcontent.exception&quot;, var3);</b>
+<i>458</i>&nbsp;                throw new SOAPExceptionImpl(var3);
+<b class="nc"><i>459</i>&nbsp;            }</b>
+<b class="nc"><i>460</i>&nbsp;        } else if(this.rawContent != null) {</b>
+<i>461</i>&nbsp;            try {
+<i>462</i>&nbsp;                ret = this.rawContent.getInputStream();
+<i>463</i>&nbsp;                return ASCIIUtility.getBytes(ret);
+<b class="nc"><i>464</i>&nbsp;            } catch (Exception var4) {</b>
+<i>465</i>&nbsp;                log.log(Level.SEVERE, &quot;SAAJ0577.soap.attachment.getrawcontent.exception&quot;, var4);
+<b class="nc"><i>466</i>&nbsp;                throw new SOAPExceptionImpl(var4);</b>
+<b class="nc"><i>467</i>&nbsp;            }</b>
+<b class="nc"><i>468</i>&nbsp;        } else if(this.dataHandler != null) {</b>
+<b class="nc"><i>469</i>&nbsp;            try {</b>
+<i>470</i>&nbsp;                ret = this.dataHandler.getInputStream();
+<b class="nc"><i>471</i>&nbsp;                return ASCIIUtility.getBytes(ret);</b>
+<i>472</i>&nbsp;            } catch (IOException var5) {
+<b class="nc"><i>473</i>&nbsp;                log.severe(&quot;SAAJ0574.soap.attachment.datahandler.ioexception&quot;);</b>
+<b class="nc"><i>474</i>&nbsp;                throw new SOAPExceptionImpl(&quot;DataHandler error&quot; + var5);</b>
+<b class="nc"><i>475</i>&nbsp;            }</b>
+<b class="nc"><i>476</i>&nbsp;        } else {</b>
+<i>477</i>&nbsp;            log.severe(&quot;SAAJ0572.soap.no.content.for.attachment&quot;);
+<i>478</i>&nbsp;            throw new SOAPExceptionImpl(&quot;No data handler/content associated with this attachment&quot;);
+<b class="nc"><i>479</i>&nbsp;        }</b>
+<b class="nc"><i>480</i>&nbsp;    }</b>
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    public boolean equals(Object o) {
+<i>483</i>&nbsp;        return this == o;
+<i>484</i>&nbsp;    }
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;    public MimeHeaders getMimeHeaders() {
+<b class="nc"><i>487</i>&nbsp;        return this.headers;</b>
+<i>488</i>&nbsp;    }
+<b class="nc"><i>489</i>&nbsp;</b>
+<b class="nc"><i>490</i>&nbsp;    public static void initializeJavaActivationHandlers() {</b>
+<b class="nc"><i>491</i>&nbsp;        try {</b>
+<b class="nc"><i>492</i>&nbsp;            CommandMap t = CommandMap.getDefaultCommandMap();</b>
+<b class="nc"><i>493</i>&nbsp;            if(t instanceof MailcapCommandMap) {</b>
+<i>494</i>&nbsp;                MailcapCommandMap mailMap = (MailcapCommandMap)t;
+<b class="nc"><i>495</i>&nbsp;                if(!cmdMapInitialized(mailMap)) {</b>
+<i>496</i>&nbsp;                    mailMap.addMailcap(&quot;text/xml;;x-java-content-handler=com.sun.xml.internal.messaging.saaj.soap.XmlDataContentHandler&quot;);
+<b class="nc"><i>497</i>&nbsp;                    mailMap.addMailcap(&quot;application/xml;;x-java-content-handler=com.sun.xml.internal.messaging.saaj.soap.XmlDataContentHandler&quot;);</b>
+<b class="nc"><i>498</i>&nbsp;                    mailMap.addMailcap(&quot;application/fastinfoset;;x-java-content-handler=com.sun.xml.internal.messaging.saaj.soap.FastInfosetDataContentHandler&quot;);</b>
+<b class="nc"><i>499</i>&nbsp;                    mailMap.addMailcap(&quot;multipart/*;;x-java-content-handler=com.sun.xml.internal.messaging.saaj.soap.MultipartDataContentHandler&quot;);</b>
+<b class="nc"><i>500</i>&nbsp;                    mailMap.addMailcap(&quot;image/*;;x-java-content-handler=com.sun.xml.internal.messaging.saaj.soap.ImageDataContentHandler&quot;);</b>
+<b class="nc"><i>501</i>&nbsp;                    mailMap.addMailcap(&quot;text/plain;;x-java-content-handler=com.sun.xml.internal.messaging.saaj.soap.StringDataContentHandler&quot;);</b>
+<i>502</i>&nbsp;                }
+<i>503</i>&nbsp;            }
+<b class="nc"><i>504</i>&nbsp;        } catch (Throwable var2) {</b>
+<b class="nc"><i>505</i>&nbsp;            ;</b>
+<i>506</i>&nbsp;        }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;    private static boolean cmdMapInitialized(MailcapCommandMap mailMap) {
+<b class="nc"><i>511</i>&nbsp;        CommandInfo[] commands = mailMap.getAllCommands(&quot;application/fastinfoset&quot;);</b>
+<i>512</i>&nbsp;        if(commands != null &amp;&amp; commands.length != 0) {
+<i>513</i>&nbsp;            String saajClassName = &quot;com.sun.xml.internal.ws.binding.FastInfosetDataContentHandler&quot;;
+<i>514</i>&nbsp;            CommandInfo[] arr$ = commands;
+<b class="nc"><i>515</i>&nbsp;            int len$ = commands.length;</b>
+<i>516</i>&nbsp;
+<i>517</i>&nbsp;            for(int i$ = 0; i$ &lt; len$; ++i$) {
+<i>518</i>&nbsp;                CommandInfo command = arr$[i$];
+<i>519</i>&nbsp;                String commandClass = command.getCommandClass();
+<i>520</i>&nbsp;                if(saajClassName.equals(commandClass)) {
+<i>521</i>&nbsp;                    return true;
+<i>522</i>&nbsp;                }
+<i>523</i>&nbsp;            }
+<i>524</i>&nbsp;
+<i>525</i>&nbsp;            return false;
+<i>526</i>&nbsp;        } else {
+<i>527</i>&nbsp;            return false;
+<i>528</i>&nbsp;        }
+<i>529</i>&nbsp;    }
+<i>530</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:48</div>
+</div>
+</body>
+</html>

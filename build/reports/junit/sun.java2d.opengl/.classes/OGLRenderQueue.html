@@ -1,0 +1,288 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: OGLRenderQueue</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.java2d.opengl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: OGLRenderQueue (sun.java2d.opengl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OGLRenderQueue</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 39)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OGLRenderQueue$QueueFlusher</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 40)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 79)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.java2d.opengl;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.security.AccessController;
+<i>9</i>&nbsp;import java.security.PrivilegedAction;
+<i>10</i>&nbsp;import sun.java2d.opengl.OGLContext;
+<i>11</i>&nbsp;import sun.java2d.pipe.RenderBuffer;
+<i>12</i>&nbsp;import sun.java2d.pipe.RenderQueue;
+<i>13</i>&nbsp;import sun.misc.ThreadGroupUtils;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;public class OGLRenderQueue extends RenderQueue {
+<i>16</i>&nbsp;    private static OGLRenderQueue theInstance;
+<i>17</i>&nbsp;    private final OGLRenderQueue.QueueFlusher flusher = (OGLRenderQueue.QueueFlusher)AccessController.doPrivileged(new PrivilegedAction() {
+<i>18</i>&nbsp;        public OGLRenderQueue.QueueFlusher run() {
+<i>19</i>&nbsp;            return OGLRenderQueue.this.new QueueFlusher(ThreadGroupUtils.getRootThreadGroup());
+<b class="nc"><i>20</i>&nbsp;        }</b>
+<i>21</i>&nbsp;    });
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    private OGLRenderQueue() {
+<i>24</i>&nbsp;    }
+<b class="nc"><i>25</i>&nbsp;</b>
+<b class="nc"><i>26</i>&nbsp;    public static synchronized OGLRenderQueue getInstance() {</b>
+<i>27</i>&nbsp;        if(theInstance == null) {
+<i>28</i>&nbsp;            theInstance = new OGLRenderQueue();
+<i>29</i>&nbsp;        }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;        return theInstance;
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public static void sync() {
+<b class="nc"><i>35</i>&nbsp;        if(theInstance != null) {</b>
+<b class="nc"><i>36</i>&nbsp;            theInstance.lock();</b>
+<i>37</i>&nbsp;
+<b class="nc"><i>38</i>&nbsp;            try {</b>
+<i>39</i>&nbsp;                theInstance.ensureCapacity(4);
+<i>40</i>&nbsp;                theInstance.getBuffer().putInt(76);
+<i>41</i>&nbsp;                theInstance.flushNow();
+<i>42</i>&nbsp;            } finally {
+<i>43</i>&nbsp;                theInstance.unlock();
+<i>44</i>&nbsp;            }
+<i>45</i>&nbsp;        }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public static void disposeGraphicsConfig(long var0) {
+<i>50</i>&nbsp;        OGLRenderQueue var2 = getInstance();
+<b class="nc"><i>51</i>&nbsp;        var2.lock();</b>
+<b class="nc"><i>52</i>&nbsp;</b>
+<i>53</i>&nbsp;        try {
+<b class="nc"><i>54</i>&nbsp;            OGLContext.setScratchSurface(var0);</b>
+<b class="nc"><i>55</i>&nbsp;            RenderBuffer var3 = var2.getBuffer();</b>
+<b class="nc"><i>56</i>&nbsp;            var2.ensureCapacityAndAlignment(12, 4);</b>
+<i>57</i>&nbsp;            var3.putInt(74);
+<b class="nc"><i>58</i>&nbsp;            var3.putLong(var0);</b>
+<b class="nc"><i>59</i>&nbsp;            var2.flushNow();</b>
+<i>60</i>&nbsp;        } finally {
+<i>61</i>&nbsp;            var2.unlock();
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public static boolean isQueueFlusherThread() {
+<i>67</i>&nbsp;        return Thread.currentThread() == getInstance().flusher;
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<b class="nc"><i>69</i>&nbsp;</b>
+<i>70</i>&nbsp;    public void flushNow() {
+<i>71</i>&nbsp;        try {
+<i>72</i>&nbsp;            this.flusher.flushNow();
+<b class="nc"><i>73</i>&nbsp;        } catch (Exception var2) {</b>
+<i>74</i>&nbsp;            System.err.println(&quot;exception in flushNow:&quot;);
+<b class="nc"><i>75</i>&nbsp;            var2.printStackTrace();</b>
+<b class="nc"><i>76</i>&nbsp;        }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<b class="nc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public void flushAndInvokeNow(Runnable var1) {
+<b class="nc"><i>81</i>&nbsp;        try {</b>
+<i>82</i>&nbsp;            this.flusher.flushAndInvokeNow(var1);
+<b class="nc"><i>83</i>&nbsp;        } catch (Exception var3) {</b>
+<b class="nc"><i>84</i>&nbsp;            System.err.println(&quot;exception in flushAndInvokeNow:&quot;);</b>
+<i>85</i>&nbsp;            var3.printStackTrace();
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    private native void flushBuffer(long var1, int var3);
+<b class="nc"><i>91</i>&nbsp;</b>
+<i>92</i>&nbsp;    private void flushBuffer() {
+<i>93</i>&nbsp;        int var1 = this.buf.position();
+<i>94</i>&nbsp;        if(var1 &gt; 0) {
+<i>95</i>&nbsp;            this.flushBuffer(this.buf.getAddress(), var1);
+<i>96</i>&nbsp;        }
+<b class="nc"><i>97</i>&nbsp;</b>
+<b class="nc"><i>98</i>&nbsp;        this.buf.clear();</b>
+<b class="nc"><i>99</i>&nbsp;        this.refSet.clear();</b>
+<b class="nc"><i>100</i>&nbsp;    }</b>
+<b class="nc"><i>101</i>&nbsp;</b>
+<i>102</i>&nbsp;    private class QueueFlusher extends Thread {
+<i>103</i>&nbsp;        private boolean needsFlush;
+<i>104</i>&nbsp;        private Runnable task;
+<i>105</i>&nbsp;        private Error error;
+<i>106</i>&nbsp;
+<b class="nc"><i>107</i>&nbsp;        public QueueFlusher(ThreadGroup var2) {</b>
+<b class="nc"><i>108</i>&nbsp;            super(var2, &quot;Java2D Queue Flusher&quot;);</b>
+<b class="nc"><i>109</i>&nbsp;            this.setDaemon(true);</b>
+<b class="nc"><i>110</i>&nbsp;            this.setPriority(10);</b>
+<b class="nc"><i>111</i>&nbsp;            this.start();</b>
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;        public synchronized void flushNow() {
+<i>115</i>&nbsp;            this.needsFlush = true;
+<i>116</i>&nbsp;            this.notify();
+<i>117</i>&nbsp;
+<b class="nc"><i>118</i>&nbsp;            while(this.needsFlush) {</b>
+<b class="nc"><i>119</i>&nbsp;                try {</b>
+<i>120</i>&nbsp;                    this.wait();
+<b class="nc"><i>121</i>&nbsp;                } catch (InterruptedException var2) {</b>
+<i>122</i>&nbsp;                    ;
+<i>123</i>&nbsp;                }
+<b class="nc"><i>124</i>&nbsp;            }</b>
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;            if(this.error != null) {</b>
+<i>127</i>&nbsp;                throw this.error;
+<i>128</i>&nbsp;            }
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;        public synchronized void flushAndInvokeNow(Runnable var1) {
+<i>132</i>&nbsp;            this.task = var1;
+<i>133</i>&nbsp;            this.flushNow();
+<b class="nc"><i>134</i>&nbsp;        }</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<b class="nc"><i>136</i>&nbsp;        public synchronized void run() {</b>
+<b class="nc"><i>137</i>&nbsp;            boolean var1 = false;</b>
+<b class="nc"><i>138</i>&nbsp;</b>
+<i>139</i>&nbsp;            while(true) {
+<i>140</i>&nbsp;                while(this.needsFlush) {
+<i>141</i>&nbsp;                    try {
+<i>142</i>&nbsp;                        this.error = null;
+<b class="nc"><i>143</i>&nbsp;                        OGLRenderQueue.this.flushBuffer();</b>
+<b class="nc"><i>144</i>&nbsp;                        if(this.task != null) {</b>
+<i>145</i>&nbsp;                            this.task.run();
+<i>146</i>&nbsp;                        }
+<b class="nc"><i>147</i>&nbsp;                    } catch (Error var9) {</b>
+<i>148</i>&nbsp;                        this.error = var9;
+<b class="nc"><i>149</i>&nbsp;                    } catch (Exception var10) {</b>
+<b class="nc"><i>150</i>&nbsp;                        System.err.println(&quot;exception in QueueFlusher:&quot;);</b>
+<b class="nc"><i>151</i>&nbsp;                        var10.printStackTrace();</b>
+<i>152</i>&nbsp;                    } finally {
+<i>153</i>&nbsp;                        if(var1) {
+<i>154</i>&nbsp;                            OGLRenderQueue.this.unlock();
+<b class="nc"><i>155</i>&nbsp;                        }</b>
+<b class="nc"><i>156</i>&nbsp;</b>
+<i>157</i>&nbsp;                        this.task = null;
+<i>158</i>&nbsp;                        this.needsFlush = false;
+<i>159</i>&nbsp;                        this.notify();
+<i>160</i>&nbsp;                    }
+<b class="nc"><i>161</i>&nbsp;                }</b>
+<b class="nc"><i>162</i>&nbsp;</b>
+<i>163</i>&nbsp;                try {
+<i>164</i>&nbsp;                    var1 = false;
+<i>165</i>&nbsp;                    this.wait(100L);
+<b class="nc"><i>166</i>&nbsp;                    if(!this.needsFlush &amp;&amp; (var1 = OGLRenderQueue.this.tryLock())) {</b>
+<i>167</i>&nbsp;                        if(OGLRenderQueue.this.buf.position() &gt; 0) {
+<b class="nc"><i>168</i>&nbsp;                            this.needsFlush = true;</b>
+<i>169</i>&nbsp;                        } else {
+<b class="nc"><i>170</i>&nbsp;                            OGLRenderQueue.this.unlock();</b>
+<i>171</i>&nbsp;                        }
+<i>172</i>&nbsp;                    }
+<i>173</i>&nbsp;                } catch (InterruptedException var8) {
+<i>174</i>&nbsp;                    ;
+<i>175</i>&nbsp;                }
+<b class="nc"><i>176</i>&nbsp;            }</b>
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:53</div>
+</div>
+</body>
+</html>

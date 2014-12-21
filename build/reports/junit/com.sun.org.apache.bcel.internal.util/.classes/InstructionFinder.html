@@ -1,0 +1,341 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InstructionFinder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.org.apache.bcel.internal.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InstructionFinder (com.sun.org.apache.bcel.internal.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InstructionFinder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 140)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.org.apache.bcel.internal.util;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.org.apache.bcel.internal.Constants;
+<i>9</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.ClassGenException;
+<i>10</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.InstructionHandle;
+<i>11</i>&nbsp;import com.sun.org.apache.bcel.internal.generic.InstructionList;
+<i>12</i>&nbsp;import com.sun.org.apache.regexp.internal.RE;
+<i>13</i>&nbsp;import com.sun.org.apache.regexp.internal.RESyntaxException;
+<i>14</i>&nbsp;import java.util.ArrayList;
+<i>15</i>&nbsp;import java.util.HashMap;
+<i>16</i>&nbsp;import java.util.Iterator;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;public class InstructionFinder {
+<i>19</i>&nbsp;    private static final int OFFSET = 32767;
+<i>20</i>&nbsp;    private static final int NO_OPCODES = 256;
+<i>21</i>&nbsp;    private static final HashMap map = new HashMap();
+<i>22</i>&nbsp;    private InstructionList il;
+<i>23</i>&nbsp;    private String il_string;
+<i>24</i>&nbsp;    private InstructionHandle[] handles;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public InstructionFinder(InstructionList il) {
+<i>27</i>&nbsp;        this.il = il;
+<i>28</i>&nbsp;        this.reread();
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public final void reread() {
+<i>32</i>&nbsp;        int size = this.il.getLength();
+<i>33</i>&nbsp;        char[] buf = new char[size];
+<i>34</i>&nbsp;        this.handles = this.il.getInstructionHandles();
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;        for(int i = 0; i &lt; size; ++i) {
+<i>37</i>&nbsp;            buf[i] = makeChar(this.handles[i].getInstruction().getOpcode());
+<i>38</i>&nbsp;        }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;        this.il_string = new String(buf);
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    private static final String mapName(String pattern) {
+<i>44</i>&nbsp;        String result = (String)map.get(pattern);
+<i>45</i>&nbsp;        if(result != null) {
+<i>46</i>&nbsp;            return result;
+<i>47</i>&nbsp;        } else {
+<i>48</i>&nbsp;            for(short i = 0; i &lt; 256; ++i) {
+<i>49</i>&nbsp;                if(pattern.equals(Constants.OPCODE_NAMES[i])) {
+<i>50</i>&nbsp;                    return &quot;&quot; + makeChar(i);
+<i>51</i>&nbsp;                }
+<i>52</i>&nbsp;            }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;            throw new RuntimeException(&quot;Instruction unknown: &quot; + pattern);
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private static final String compilePattern(String pattern) {
+<i>59</i>&nbsp;        String lower = pattern.toLowerCase();
+<i>60</i>&nbsp;        StringBuffer buf = new StringBuffer();
+<i>61</i>&nbsp;        int size = pattern.length();
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;        for(int i = 0; i &lt; size; ++i) {
+<i>64</i>&nbsp;            char ch = lower.charAt(i);
+<i>65</i>&nbsp;            if(Character.isLetterOrDigit(ch)) {
+<i>66</i>&nbsp;                StringBuffer name;
+<i>67</i>&nbsp;                for(name = new StringBuffer(); (Character.isLetterOrDigit(ch) || ch == 95) &amp;&amp; i &lt; size; ch = lower.charAt(i)) {
+<i>68</i>&nbsp;                    name.append(ch);
+<i>69</i>&nbsp;                    ++i;
+<i>70</i>&nbsp;                    if(i &gt;= size) {
+<i>71</i>&nbsp;                        break;
+<i>72</i>&nbsp;                    }
+<i>73</i>&nbsp;                }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;                --i;
+<i>76</i>&nbsp;                buf.append(mapName(name.toString()));
+<i>77</i>&nbsp;            } else if(!Character.isWhitespace(ch)) {
+<i>78</i>&nbsp;                buf.append(ch);
+<i>79</i>&nbsp;            }
+<i>80</i>&nbsp;        }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;        return buf.toString();
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    private InstructionHandle[] getMatch(int matched_from, int match_length) {
+<i>86</i>&nbsp;        InstructionHandle[] match = new InstructionHandle[match_length];
+<i>87</i>&nbsp;        System.arraycopy(this.handles, matched_from, match, 0, match_length);
+<i>88</i>&nbsp;        return match;
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public final Iterator search(String pattern, InstructionHandle from, InstructionFinder.CodeConstraint constraint) {
+<i>92</i>&nbsp;        String search = compilePattern(pattern);
+<b class="nc"><i>93</i>&nbsp;        int start = -1;</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;        for(int e = 0; e &lt; this.handles.length; ++e) {
+<i>96</i>&nbsp;            if(this.handles[e] == from) {
+<i>97</i>&nbsp;                start = e;
+<i>98</i>&nbsp;                break;
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;
+<b class="nc"><i>102</i>&nbsp;        if(start == -1) {</b>
+<b class="nc"><i>103</i>&nbsp;            throw new ClassGenException(&quot;Instruction handle &quot; + from + &quot; not found in instruction list.&quot;);</b>
+<b class="nc"><i>104</i>&nbsp;        } else {</b>
+<i>105</i>&nbsp;            try {
+<i>106</i>&nbsp;                RE var13 = new RE(search);
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;                ArrayList matches;
+<i>109</i>&nbsp;                int endExpr;
+<i>110</i>&nbsp;                for(matches = new ArrayList(); start &lt; this.il_string.length() &amp;&amp; var13.match(this.il_string, start); start = endExpr) {
+<b class="nc"><i>111</i>&nbsp;                    int startExpr = var13.getParenStart(0);</b>
+<b class="nc"><i>112</i>&nbsp;                    endExpr = var13.getParenEnd(0);</b>
+<b class="nc"><i>113</i>&nbsp;                    int lenExpr = var13.getParenLength(0);</b>
+<i>114</i>&nbsp;                    InstructionHandle[] match = this.getMatch(startExpr, lenExpr);
+<i>115</i>&nbsp;                    if(constraint == null || constraint.checkCode(match)) {
+<b class="nc"><i>116</i>&nbsp;                        matches.add(match);</b>
+<b class="nc"><i>117</i>&nbsp;                    }</b>
+<i>118</i>&nbsp;                }
+<b class="nc"><i>119</i>&nbsp;</b>
+<i>120</i>&nbsp;                return matches.iterator();
+<i>121</i>&nbsp;            } catch (RESyntaxException var12) {
+<i>122</i>&nbsp;                System.err.println(var12);
+<i>123</i>&nbsp;                return null;
+<i>124</i>&nbsp;            }
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public final Iterator search(String pattern) {
+<b class="nc"><i>129</i>&nbsp;        return this.search(pattern, this.il.getStart(), (InstructionFinder.CodeConstraint)null);</b>
+<i>130</i>&nbsp;    }
+<b class="nc"><i>131</i>&nbsp;</b>
+<b class="nc"><i>132</i>&nbsp;    public final Iterator search(String pattern, InstructionHandle from) {</b>
+<i>133</i>&nbsp;        return this.search(pattern, from, (InstructionFinder.CodeConstraint)null);
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<b class="nc"><i>135</i>&nbsp;</b>
+<b class="nc"><i>136</i>&nbsp;    public final Iterator search(String pattern, InstructionFinder.CodeConstraint constraint) {</b>
+<i>137</i>&nbsp;        return this.search(pattern, this.il.getStart(), constraint);
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    private static final char makeChar(short opcode) {
+<i>141</i>&nbsp;        return (char)(opcode + 32767);
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public final InstructionList getInstructionList() {
+<i>145</i>&nbsp;        return this.il;
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    private static String precompile(short from, short to, short extra) {
+<b class="nc"><i>149</i>&nbsp;        StringBuffer buf = new StringBuffer(&quot;(&quot;);</b>
+<b class="nc"><i>150</i>&nbsp;</b>
+<b class="nc"><i>151</i>&nbsp;        for(short i = from; i &lt;= to; ++i) {</b>
+<i>152</i>&nbsp;            buf.append(makeChar(i));
+<b class="nc"><i>153</i>&nbsp;            buf.append(&#39;|&#39;);</b>
+<b class="nc"><i>154</i>&nbsp;        }</b>
+<i>155</i>&nbsp;
+<b class="nc"><i>156</i>&nbsp;        buf.append(makeChar(extra));</b>
+<b class="nc"><i>157</i>&nbsp;        buf.append(&quot;)&quot;);</b>
+<i>158</i>&nbsp;        return buf.toString();
+<b class="nc"><i>159</i>&nbsp;    }</b>
+<b class="nc"><i>160</i>&nbsp;</b>
+<i>161</i>&nbsp;    private static final String pattern2string(String pattern) {
+<b class="nc"><i>162</i>&nbsp;        return pattern2string(pattern, true);</b>
+<b class="nc"><i>163</i>&nbsp;    }</b>
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    private static final String pattern2string(String pattern, boolean make_string) {
+<i>166</i>&nbsp;        StringBuffer buf = new StringBuffer();
+<i>167</i>&nbsp;
+<b class="nc"><i>168</i>&nbsp;        for(int i = 0; i &lt; pattern.length(); ++i) {</b>
+<i>169</i>&nbsp;            char ch = pattern.charAt(i);
+<b class="nc"><i>170</i>&nbsp;            if(ch &gt;= 32767) {</b>
+<b class="nc"><i>171</i>&nbsp;                if(make_string) {</b>
+<b class="nc"><i>172</i>&nbsp;                    buf.append(Constants.OPCODE_NAMES[ch - 32767]);</b>
+<i>173</i>&nbsp;                } else {
+<i>174</i>&nbsp;                    buf.append(ch - 32767);
+<b class="nc"><i>175</i>&nbsp;                }</b>
+<i>176</i>&nbsp;            } else {
+<i>177</i>&nbsp;                buf.append(ch);
+<i>178</i>&nbsp;            }
+<i>179</i>&nbsp;        }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;        return buf.toString();
+<b class="nc"><i>182</i>&nbsp;    }</b>
+<b class="nc"><i>183</i>&nbsp;</b>
+<i>184</i>&nbsp;    static {
+<b class="nc"><i>185</i>&nbsp;        map.put(&quot;arithmeticinstruction&quot;, &quot;(irem|lrem|iand|ior|ineg|isub|lneg|fneg|fmul|ldiv|fadd|lxor|frem|idiv|land|ixor|ishr|fsub|lshl|fdiv|iadd|lor|dmul|lsub|ishl|imul|lmul|lushr|dneg|iushr|lshr|ddiv|drem|dadd|ladd|dsub)&quot;);</b>
+<i>186</i>&nbsp;        map.put(&quot;invokeinstruction&quot;, &quot;(invokevirtual|invokeinterface|invokestatic|invokespecial)&quot;);
+<i>187</i>&nbsp;        map.put(&quot;arrayinstruction&quot;, &quot;(baload|aastore|saload|caload|fastore|lastore|iaload|castore|iastore|aaload|bastore|sastore|faload|laload|daload|dastore)&quot;);
+<i>188</i>&nbsp;        map.put(&quot;gotoinstruction&quot;, &quot;(goto|goto_w)&quot;);
+<i>189</i>&nbsp;        map.put(&quot;conversioninstruction&quot;, &quot;(d2l|l2d|i2s|d2i|l2i|i2b|l2f|d2f|f2i|i2d|i2l|f2d|i2c|f2l|i2f)&quot;);
+<i>190</i>&nbsp;        map.put(&quot;localvariableinstruction&quot;, &quot;(fstore|iinc|lload|dstore|dload|iload|aload|astore|istore|fload|lstore)&quot;);
+<i>191</i>&nbsp;        map.put(&quot;loadinstruction&quot;, &quot;(fload|dload|lload|iload|aload)&quot;);
+<i>192</i>&nbsp;        map.put(&quot;fieldinstruction&quot;, &quot;(getfield|putstatic|getstatic|putfield)&quot;);
+<i>193</i>&nbsp;        map.put(&quot;cpinstruction&quot;, &quot;(ldc2_w|invokeinterface|multianewarray|putstatic|instanceof|getstatic|checkcast|getfield|invokespecial|ldc_w|invokestatic|invokevirtual|putfield|ldc|new|anewarray)&quot;);
+<i>194</i>&nbsp;        map.put(&quot;stackinstruction&quot;, &quot;(dup2|swap|dup2_x2|pop|pop2|dup|dup2_x1|dup_x2|dup_x1)&quot;);
+<i>195</i>&nbsp;        map.put(&quot;branchinstruction&quot;, &quot;(ifle|if_acmpne|if_icmpeq|if_acmpeq|ifnonnull|goto_w|iflt|ifnull|if_icmpne|tableswitch|if_icmple|ifeq|if_icmplt|jsr_w|if_icmpgt|ifgt|jsr|goto|ifne|ifge|lookupswitch|if_icmpge)&quot;);
+<i>196</i>&nbsp;        map.put(&quot;returninstruction&quot;, &quot;(lreturn|ireturn|freturn|dreturn|areturn|return)&quot;);
+<i>197</i>&nbsp;        map.put(&quot;storeinstruction&quot;, &quot;(istore|fstore|dstore|astore|lstore)&quot;);
+<i>198</i>&nbsp;        map.put(&quot;select&quot;, &quot;(tableswitch|lookupswitch)&quot;);
+<i>199</i>&nbsp;        map.put(&quot;ifinstruction&quot;, &quot;(ifeq|ifgt|if_icmpne|if_icmpeq|ifge|ifnull|ifne|if_icmple|if_icmpge|if_acmpeq|if_icmplt|if_acmpne|ifnonnull|iflt|if_icmpgt|ifle)&quot;);
+<i>200</i>&nbsp;        map.put(&quot;jsrinstruction&quot;, &quot;(jsr|jsr_w)&quot;);
+<i>201</i>&nbsp;        map.put(&quot;variablelengthinstruction&quot;, &quot;(tableswitch|jsr|goto|lookupswitch)&quot;);
+<i>202</i>&nbsp;        map.put(&quot;unconditionalbranch&quot;, &quot;(goto|jsr|jsr_w|athrow|goto_w)&quot;);
+<i>203</i>&nbsp;        map.put(&quot;constantpushinstruction&quot;, &quot;(dconst|bipush|sipush|fconst|iconst|lconst)&quot;);
+<i>204</i>&nbsp;        map.put(&quot;typedinstruction&quot;, &quot;(imul|lsub|aload|fload|lor|new|aaload|fcmpg|iand|iaload|lrem|idiv|d2l|isub|dcmpg|dastore|ret|f2d|f2i|drem|iinc|i2c|checkcast|frem|lreturn|astore|lushr|daload|dneg|fastore|istore|lshl|ldiv|lstore|areturn|ishr|ldc_w|invokeinterface|aastore|lxor|ishl|l2d|i2f|return|faload|sipush|iushr|caload|instanceof|invokespecial|putfield|fmul|ireturn|laload|d2f|lneg|ixor|i2l|fdiv|lastore|multianewarray|i2b|getstatic|i2d|putstatic|fcmpl|saload|ladd|irem|dload|jsr_w|dconst|dcmpl|fsub|freturn|ldc|aconst_null|castore|lmul|ldc2_w|dadd|iconst|f2l|ddiv|dstore|land|jsr|anewarray|dmul|bipush|dsub|sastore|d2i|i2s|lshr|iadd|l2i|lload|bastore|fstore|fneg|iload|fadd|baload|fconst|ior|ineg|dreturn|l2f|lconst|getfield|invokevirtual|invokestatic|iastore)&quot;);
+<i>205</i>&nbsp;        map.put(&quot;popinstruction&quot;, &quot;(fstore|dstore|pop|pop2|astore|putstatic|istore|lstore)&quot;);
+<i>206</i>&nbsp;        map.put(&quot;allocationinstruction&quot;, &quot;(multianewarray|new|anewarray|newarray)&quot;);
+<i>207</i>&nbsp;        map.put(&quot;indexedinstruction&quot;, &quot;(lload|lstore|fload|ldc2_w|invokeinterface|multianewarray|astore|dload|putstatic|instanceof|getstatic|checkcast|getfield|invokespecial|dstore|istore|iinc|ldc_w|ret|fstore|invokestatic|iload|putfield|invokevirtual|ldc|new|aload|anewarray)&quot;);
+<i>208</i>&nbsp;        map.put(&quot;pushinstruction&quot;, &quot;(dup|lload|dup2|bipush|fload|ldc2_w|sipush|lconst|fconst|dload|getstatic|ldc_w|aconst_null|dconst|iload|ldc|iconst|aload)&quot;);
+<i>209</i>&nbsp;        map.put(&quot;stackproducer&quot;, &quot;(imul|lsub|aload|fload|lor|new|aaload|fcmpg|iand|iaload|lrem|idiv|d2l|isub|dcmpg|dup|f2d|f2i|drem|i2c|checkcast|frem|lushr|daload|dneg|lshl|ldiv|ishr|ldc_w|invokeinterface|lxor|ishl|l2d|i2f|faload|sipush|iushr|caload|instanceof|invokespecial|fmul|laload|d2f|lneg|ixor|i2l|fdiv|getstatic|i2b|swap|i2d|dup2|fcmpl|saload|ladd|irem|dload|jsr_w|dconst|dcmpl|fsub|ldc|arraylength|aconst_null|tableswitch|lmul|ldc2_w|iconst|dadd|f2l|ddiv|land|jsr|anewarray|dmul|bipush|dsub|d2i|newarray|i2s|lshr|iadd|lload|l2i|fneg|iload|fadd|baload|fconst|lookupswitch|ior|ineg|lconst|l2f|getfield|invokevirtual|invokestatic)&quot;);
+<i>210</i>&nbsp;        map.put(&quot;stackconsumer&quot;, &quot;(imul|lsub|lor|iflt|fcmpg|if_icmpgt|iand|ifeq|if_icmplt|lrem|ifnonnull|idiv|d2l|isub|dcmpg|dastore|if_icmpeq|f2d|f2i|drem|i2c|checkcast|frem|lreturn|astore|lushr|pop2|monitorexit|dneg|fastore|istore|lshl|ldiv|lstore|areturn|if_icmpge|ishr|monitorenter|invokeinterface|aastore|lxor|ishl|l2d|i2f|return|iushr|instanceof|invokespecial|fmul|ireturn|d2f|lneg|ixor|pop|i2l|ifnull|fdiv|lastore|i2b|if_acmpeq|ifge|swap|i2d|putstatic|fcmpl|ladd|irem|dcmpl|fsub|freturn|ifgt|castore|lmul|dadd|f2l|ddiv|dstore|land|if_icmpne|if_acmpne|dmul|dsub|sastore|ifle|d2i|i2s|lshr|iadd|l2i|bastore|fstore|fneg|fadd|ior|ineg|ifne|dreturn|l2f|if_icmple|getfield|invokevirtual|invokestatic|iastore)&quot;);
+<i>211</i>&nbsp;        map.put(&quot;exceptionthrower&quot;, &quot;(irem|lrem|laload|putstatic|baload|dastore|areturn|getstatic|ldiv|anewarray|iastore|castore|idiv|saload|lastore|fastore|putfield|lreturn|caload|getfield|return|aastore|freturn|newarray|instanceof|multianewarray|athrow|faload|iaload|aaload|dreturn|monitorenter|checkcast|bastore|arraylength|new|invokevirtual|sastore|ldc_w|ireturn|invokespecial|monitorexit|invokeinterface|ldc|invokestatic|daload)&quot;);
+<i>212</i>&nbsp;        map.put(&quot;loadclass&quot;, &quot;(multianewarray|invokeinterface|instanceof|invokespecial|putfield|checkcast|putstatic|invokevirtual|new|getstatic|invokestatic|getfield|anewarray)&quot;);
+<i>213</i>&nbsp;        map.put(&quot;instructiontargeter&quot;, &quot;(ifle|if_acmpne|if_icmpeq|if_acmpeq|ifnonnull|goto_w|iflt|ifnull|if_icmpne|tableswitch|if_icmple|ifeq|if_icmplt|jsr_w|if_icmpgt|ifgt|jsr|goto|ifne|ifge|lookupswitch|if_icmpge)&quot;);
+<i>214</i>&nbsp;        map.put(&quot;if_icmp&quot;, &quot;(if_icmpne|if_icmpeq|if_icmple|if_icmpge|if_icmplt|if_icmpgt)&quot;);
+<i>215</i>&nbsp;        map.put(&quot;if_acmp&quot;, &quot;(if_acmpeq|if_acmpne)&quot;);
+<i>216</i>&nbsp;        map.put(&quot;if&quot;, &quot;(ifeq|ifne|iflt|ifge|ifgt|ifle)&quot;);
+<i>217</i>&nbsp;        map.put(&quot;iconst&quot;, precompile((short)3, (short)8, (short)2));
+<b class="nc"><i>218</i>&nbsp;        map.put(&quot;lconst&quot;, new String(new char[]{&#39;(&#39;, makeChar((short)9), &#39;|&#39;, makeChar((short)10), &#39;)&#39;}));</b>
+<b class="nc"><i>219</i>&nbsp;        map.put(&quot;dconst&quot;, new String(new char[]{&#39;(&#39;, makeChar((short)14), &#39;|&#39;, makeChar((short)15), &#39;)&#39;}));</b>
+<i>220</i>&nbsp;        map.put(&quot;fconst&quot;, new String(new char[]{&#39;(&#39;, makeChar((short)11), &#39;|&#39;, makeChar((short)12), &#39;)&#39;}));
+<b class="nc"><i>221</i>&nbsp;        map.put(&quot;iload&quot;, precompile((short)26, (short)29, (short)21));</b>
+<b class="nc"><i>222</i>&nbsp;        map.put(&quot;dload&quot;, precompile((short)38, (short)41, (short)24));</b>
+<b class="nc"><i>223</i>&nbsp;        map.put(&quot;fload&quot;, precompile((short)34, (short)37, (short)23));</b>
+<b class="nc"><i>224</i>&nbsp;        map.put(&quot;aload&quot;, precompile((short)42, (short)45, (short)25));</b>
+<i>225</i>&nbsp;        map.put(&quot;istore&quot;, precompile((short)59, (short)62, (short)54));
+<i>226</i>&nbsp;        map.put(&quot;dstore&quot;, precompile((short)71, (short)74, (short)57));
+<i>227</i>&nbsp;        map.put(&quot;fstore&quot;, precompile((short)67, (short)70, (short)56));
+<b class="nc"><i>228</i>&nbsp;        map.put(&quot;astore&quot;, precompile((short)75, (short)78, (short)58));</b>
+<b class="nc"><i>229</i>&nbsp;        Iterator buf = map.keySet().iterator();</b>
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        while(buf.hasNext()) {
+<b class="nc"><i>232</i>&nbsp;            String i = (String)buf.next();</b>
+<b class="nc"><i>233</i>&nbsp;            String value = (String)map.get(i);</b>
+<i>234</i>&nbsp;            char ch = value.charAt(1);
+<b class="nc"><i>235</i>&nbsp;            if(ch &lt; 32767) {</b>
+<b class="nc"><i>236</i>&nbsp;                map.put(i, compilePattern(value));</b>
+<b class="nc"><i>237</i>&nbsp;            }</b>
+<b class="nc"><i>238</i>&nbsp;        }</b>
+<i>239</i>&nbsp;
+<b class="nc"><i>240</i>&nbsp;        StringBuffer var4 = new StringBuffer(&quot;(&quot;);</b>
+<i>241</i>&nbsp;
+<b class="nc"><i>242</i>&nbsp;        for(short var5 = 0; var5 &lt; 256; ++var5) {</b>
+<b class="nc"><i>243</i>&nbsp;            if(Constants.NO_OF_OPERANDS[var5] != -1) {</b>
+<b class="nc"><i>244</i>&nbsp;                var4.append(makeChar(var5));</b>
+<b class="nc"><i>245</i>&nbsp;                if(var5 &lt; 255) {</b>
+<i>246</i>&nbsp;                    var4.append(&#39;|&#39;);
+<b class="nc"><i>247</i>&nbsp;                }</b>
+<b class="nc"><i>248</i>&nbsp;            }</b>
+<b class="nc"><i>249</i>&nbsp;        }</b>
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;        var4.append(&#39;)&#39;);
+<b class="nc"><i>252</i>&nbsp;        map.put(&quot;instruction&quot;, var4.toString());</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    public interface CodeConstraint {
+<i>256</i>&nbsp;        boolean checkCode(InstructionHandle[] var1);
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

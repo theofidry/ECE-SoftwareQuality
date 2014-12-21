@@ -1,0 +1,330 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Connections</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.jndi.ldap.pool</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Connections (com.sun.jndi.ldap.pool)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Connections</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 117)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package com.sun.jndi.ldap.pool;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.sun.jndi.ldap.LdapPoolManager;
+<i>9</i>&nbsp;import com.sun.jndi.ldap.pool.ConnectionDesc;
+<i>10</i>&nbsp;import com.sun.jndi.ldap.pool.Pool;
+<i>11</i>&nbsp;import com.sun.jndi.ldap.pool.PoolCallback;
+<i>12</i>&nbsp;import com.sun.jndi.ldap.pool.PooledConnection;
+<i>13</i>&nbsp;import com.sun.jndi.ldap.pool.PooledConnectionFactory;
+<i>14</i>&nbsp;import java.lang.ref.Reference;
+<i>15</i>&nbsp;import java.lang.ref.SoftReference;
+<i>16</i>&nbsp;import java.util.ArrayList;
+<i>17</i>&nbsp;import java.util.Iterator;
+<i>18</i>&nbsp;import java.util.List;
+<i>19</i>&nbsp;import javax.naming.CommunicationException;
+<i>20</i>&nbsp;import javax.naming.InterruptedNamingException;
+<i>21</i>&nbsp;import javax.naming.NamingException;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;final class Connections implements PoolCallback {
+<i>24</i>&nbsp;    private static final boolean debug;
+<i>25</i>&nbsp;    private static final boolean trace;
+<i>26</i>&nbsp;    private static final int DEFAULT_SIZE = 10;
+<i>27</i>&nbsp;    private final int maxSize;
+<i>28</i>&nbsp;    private final int prefSize;
+<i>29</i>&nbsp;    private final List conns;
+<i>30</i>&nbsp;    private boolean closed = false;
+<i>31</i>&nbsp;    private Reference ref;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    Connections(Object var1, int var2, int var3, int var4, PooledConnectionFactory var5) throws NamingException {
+<i>34</i>&nbsp;        this.maxSize = var4;
+<i>35</i>&nbsp;        if(var4 &gt; 0) {
+<i>36</i>&nbsp;            this.prefSize = Math.min(var3, var4);
+<i>37</i>&nbsp;            var2 = Math.min(var2, var4);
+<i>38</i>&nbsp;        } else {
+<i>39</i>&nbsp;            this.prefSize = var3;
+<i>40</i>&nbsp;        }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;        this.conns = new ArrayList(var4 &gt; 0?var4:10);
+<i>43</i>&nbsp;        this.ref = new SoftReference(var1);
+<i>44</i>&nbsp;        this.d(&quot;init size=&quot;, var2);
+<i>45</i>&nbsp;        this.d(&quot;max size=&quot;, var4);
+<i>46</i>&nbsp;        this.d(&quot;preferred size=&quot;, var3);
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;        for(int var7 = 0; var7 &lt; var2; ++var7) {
+<b class="nc"><i>49</i>&nbsp;            PooledConnection var6 = var5.createPooledConnection(this);</b>
+<b class="nc"><i>50</i>&nbsp;            this.td(&quot;Create &quot;, var6, var5);</b>
+<i>51</i>&nbsp;            this.conns.add(new ConnectionDesc(var6));
+<i>52</i>&nbsp;        }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    synchronized PooledConnection get(long var1, PooledConnectionFactory var3) throws NamingException {
+<i>57</i>&nbsp;        long var5 = var1 &gt; 0L?System.currentTimeMillis():0L;
+<b class="nc"><i>58</i>&nbsp;        long var7 = var1;</b>
+<i>59</i>&nbsp;        this.d(&quot;get(): before&quot;);
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;        PooledConnection var4;
+<i>62</i>&nbsp;        while((var4 = this.getOrCreateConnection(var3)) == null) {
+<i>63</i>&nbsp;            if(var1 &gt; 0L &amp;&amp; var7 &lt;= 0L) {
+<i>64</i>&nbsp;                throw new CommunicationException(&quot;Timeout exceeded while waiting for a connection: &quot; + var1 + &quot;ms&quot;);
+<i>65</i>&nbsp;            }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;            try {
+<i>68</i>&nbsp;                this.d(&quot;get(): waiting&quot;);
+<i>69</i>&nbsp;                if(var7 &gt; 0L) {
+<i>70</i>&nbsp;                    this.wait(var7);
+<i>71</i>&nbsp;                } else {
+<i>72</i>&nbsp;                    this.wait();
+<i>73</i>&nbsp;                }
+<b class="nc"><i>74</i>&nbsp;            } catch (InterruptedException var11) {</b>
+<i>75</i>&nbsp;                throw new InterruptedNamingException(&quot;Interrupted while waiting for a connection&quot;);
+<b class="nc"><i>76</i>&nbsp;            }</b>
+<b class="nc"><i>77</i>&nbsp;</b>
+<i>78</i>&nbsp;            if(var1 &gt; 0L) {
+<b class="nc"><i>79</i>&nbsp;                long var9 = System.currentTimeMillis();</b>
+<b class="nc"><i>80</i>&nbsp;                var7 = var1 - (var9 - var5);</b>
+<i>81</i>&nbsp;            }
+<b class="nc"><i>82</i>&nbsp;        }</b>
+<i>83</i>&nbsp;
+<b class="nc"><i>84</i>&nbsp;        this.d(&quot;get(): after&quot;);</b>
+<i>85</i>&nbsp;        return var4;
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;    private PooledConnection getOrCreateConnection(PooledConnectionFactory var1) throws NamingException {</b>
+<i>89</i>&nbsp;        int var2 = this.conns.size();
+<b class="nc"><i>90</i>&nbsp;        PooledConnection var3 = null;</b>
+<b class="nc"><i>91</i>&nbsp;        if(this.prefSize &lt;= 0 || var2 &gt;= this.prefSize) {</b>
+<b class="nc"><i>92</i>&nbsp;            for(int var5 = 0; var5 &lt; var2; ++var5) {</b>
+<i>93</i>&nbsp;                ConnectionDesc var4 = (ConnectionDesc)this.conns.get(var5);
+<i>94</i>&nbsp;                if((var3 = var4.tryUse()) != null) {
+<i>95</i>&nbsp;                    this.d(&quot;get(): use &quot;, var3);
+<b class="nc"><i>96</i>&nbsp;                    this.td(&quot;Use &quot;, var3);</b>
+<b class="nc"><i>97</i>&nbsp;                    return var3;</b>
+<b class="nc"><i>98</i>&nbsp;                }</b>
+<b class="nc"><i>99</i>&nbsp;            }</b>
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;        if(this.maxSize &gt; 0 &amp;&amp; var2 &gt;= this.maxSize) {
+<i>103</i>&nbsp;            return null;
+<i>104</i>&nbsp;        } else {
+<i>105</i>&nbsp;            var3 = var1.createPooledConnection(this);
+<i>106</i>&nbsp;            this.td(&quot;Create and use &quot;, var3, var1);
+<i>107</i>&nbsp;            this.conns.add(new ConnectionDesc(var3, true));
+<i>108</i>&nbsp;            return var3;
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public synchronized boolean releasePooledConnection(PooledConnection var1) {
+<i>113</i>&nbsp;        ConnectionDesc var2;
+<i>114</i>&nbsp;        int var3 = this.conns.indexOf(var2 = new ConnectionDesc(var1));
+<i>115</i>&nbsp;        this.d(&quot;release(): &quot;, var1);
+<i>116</i>&nbsp;        if(var3 &lt; 0) {
+<i>117</i>&nbsp;            return false;
+<i>118</i>&nbsp;        } else {
+<i>119</i>&nbsp;            if(!this.closed &amp;&amp; (this.prefSize &lt;= 0 || this.conns.size() &lt;= this.prefSize)) {
+<i>120</i>&nbsp;                this.d(&quot;release(): release &quot;, var1);
+<i>121</i>&nbsp;                this.td(&quot;Release &quot;, var1);
+<b class="nc"><i>122</i>&nbsp;                var2 = (ConnectionDesc)this.conns.get(var3);</b>
+<b class="nc"><i>123</i>&nbsp;                var2.release();</b>
+<i>124</i>&nbsp;            } else {
+<b class="nc"><i>125</i>&nbsp;                this.d(&quot;release(): closing &quot;, var1);</b>
+<b class="nc"><i>126</i>&nbsp;                this.td(&quot;Close &quot;, var1);</b>
+<b class="nc"><i>127</i>&nbsp;                this.conns.remove(var2);</b>
+<b class="nc"><i>128</i>&nbsp;                var1.closeConnection();</b>
+<i>129</i>&nbsp;            }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;            this.notifyAll();
+<i>132</i>&nbsp;            this.d(&quot;release(): notify&quot;);
+<b class="nc"><i>133</i>&nbsp;            return true;</b>
+<b class="nc"><i>134</i>&nbsp;        }</b>
+<b class="nc"><i>135</i>&nbsp;    }</b>
+<i>136</i>&nbsp;
+<b class="nc"><i>137</i>&nbsp;    public synchronized boolean removePooledConnection(PooledConnection var1) {</b>
+<i>138</i>&nbsp;        if(this.conns.remove(new ConnectionDesc(var1))) {
+<b class="nc"><i>139</i>&nbsp;            this.d(&quot;remove(): &quot;, var1);</b>
+<b class="nc"><i>140</i>&nbsp;            this.notifyAll();</b>
+<i>141</i>&nbsp;            this.d(&quot;remove(): notify&quot;);
+<b class="nc"><i>142</i>&nbsp;            this.td(&quot;Remove &quot;, var1);</b>
+<i>143</i>&nbsp;            if(this.conns.isEmpty()) {
+<b class="nc"><i>144</i>&nbsp;                this.ref = null;</b>
+<b class="nc"><i>145</i>&nbsp;            }</b>
+<b class="nc"><i>146</i>&nbsp;</b>
+<b class="nc"><i>147</i>&nbsp;            return true;</b>
+<i>148</i>&nbsp;        } else {
+<i>149</i>&nbsp;            this.d(&quot;remove(): not found &quot;, var1);
+<b class="nc"><i>150</i>&nbsp;            return false;</b>
+<b class="nc"><i>151</i>&nbsp;        }</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    synchronized boolean expire(long var1) {
+<i>155</i>&nbsp;        Iterator var3 = this.conns.iterator();
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;        while(var3.hasNext()) {
+<i>158</i>&nbsp;            ConnectionDesc var4 = (ConnectionDesc)var3.next();
+<i>159</i>&nbsp;            if(var4.expire(var1)) {
+<i>160</i>&nbsp;                this.d(&quot;expire(): removing &quot;, var4);
+<i>161</i>&nbsp;                this.td(&quot;Expired &quot;, var4);
+<i>162</i>&nbsp;                var3.remove();
+<b class="nc"><i>163</i>&nbsp;            }</b>
+<b class="nc"><i>164</i>&nbsp;        }</b>
+<i>165</i>&nbsp;
+<b class="nc"><i>166</i>&nbsp;        return this.conns.isEmpty();</b>
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    synchronized void close() {
+<b class="nc"><i>170</i>&nbsp;        this.expire(System.currentTimeMillis());</b>
+<b class="nc"><i>171</i>&nbsp;        this.closed = true;</b>
+<b class="nc"><i>172</i>&nbsp;    }</b>
+<b class="nc"><i>173</i>&nbsp;</b>
+<b class="nc"><i>174</i>&nbsp;    String getStats() {</b>
+<b class="nc"><i>175</i>&nbsp;        int var1 = 0;</b>
+<i>176</i>&nbsp;        int var2 = 0;
+<i>177</i>&nbsp;        int var3 = 0;
+<i>178</i>&nbsp;        long var4 = 0L;
+<i>179</i>&nbsp;        synchronized(this) {
+<i>180</i>&nbsp;            int var6 = this.conns.size();
+<b class="nc"><i>181</i>&nbsp;</b>
+<b class="nc"><i>182</i>&nbsp;            for(int var9 = 0; var9 &lt; var6; ++var9) {</b>
+<i>183</i>&nbsp;                ConnectionDesc var8 = (ConnectionDesc)this.conns.get(var9);
+<i>184</i>&nbsp;                var4 += var8.getUseCount();
+<b class="nc"><i>185</i>&nbsp;                switch(var8.getState()) {</b>
+<b class="nc"><i>186</i>&nbsp;                case 0:</b>
+<b class="nc"><i>187</i>&nbsp;                    ++var2;</b>
+<i>188</i>&nbsp;                    break;
+<b class="nc"><i>189</i>&nbsp;                case 1:</b>
+<i>190</i>&nbsp;                    ++var1;
+<i>191</i>&nbsp;                    break;
+<i>192</i>&nbsp;                case 2:
+<i>193</i>&nbsp;                    ++var3;
+<i>194</i>&nbsp;                }
+<i>195</i>&nbsp;            }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;            return &quot;size=&quot; + var6 + &quot;; use=&quot; + var4 + &quot;; busy=&quot; + var2 + &quot;; idle=&quot; + var1 + &quot;; expired=&quot; + var3;
+<i>198</i>&nbsp;        }
+<i>199</i>&nbsp;    }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;    private void d(String var1, Object var2) {
+<b class="nc"><i>202</i>&nbsp;        if(debug) {</b>
+<i>203</i>&nbsp;            this.d(var1 + var2);
+<b class="nc"><i>204</i>&nbsp;        }</b>
+<i>205</i>&nbsp;
+<b class="nc"><i>206</i>&nbsp;    }</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    private void d(String var1, int var2) {
+<b class="nc"><i>209</i>&nbsp;        if(debug) {</b>
+<i>210</i>&nbsp;            this.d(var1 + var2);
+<i>211</i>&nbsp;        }
+<b class="nc"><i>212</i>&nbsp;</b>
+<b class="nc"><i>213</i>&nbsp;    }</b>
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    private void d(String var1) {
+<b class="nc"><i>216</i>&nbsp;        if(debug) {</b>
+<b class="nc"><i>217</i>&nbsp;            System.err.println(this + &quot;.&quot; + var1 + &quot;; size: &quot; + this.conns.size());</b>
+<i>218</i>&nbsp;        }
+<i>219</i>&nbsp;
+<b class="nc"><i>220</i>&nbsp;    }</b>
+<b class="nc"><i>221</i>&nbsp;</b>
+<i>222</i>&nbsp;    private void td(String var1, Object var2, Object var3) {
+<i>223</i>&nbsp;        if(trace) {
+<b class="nc"><i>224</i>&nbsp;            this.td(var1 + var2 + &quot;[&quot; + var3 + &quot;]&quot;);</b>
+<i>225</i>&nbsp;        }
+<b class="nc"><i>226</i>&nbsp;</b>
+<i>227</i>&nbsp;    }
+<b class="nc"><i>228</i>&nbsp;</b>
+<b class="nc"><i>229</i>&nbsp;    private void td(String var1, Object var2) {</b>
+<b class="nc"><i>230</i>&nbsp;        if(trace) {</b>
+<i>231</i>&nbsp;            this.td(var1 + var2);
+<b class="nc"><i>232</i>&nbsp;        }</b>
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    private void td(String var1) {
+<i>237</i>&nbsp;        if(trace) {
+<i>238</i>&nbsp;            System.err.println(var1);
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    static {
+<i>244</i>&nbsp;        debug = Pool.debug;
+<i>245</i>&nbsp;        trace = LdapPoolManager.trace;
+<i>246</i>&nbsp;    }
+<b class="nc"><i>247</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:55</div>
+</div>
+</body>
+</html>

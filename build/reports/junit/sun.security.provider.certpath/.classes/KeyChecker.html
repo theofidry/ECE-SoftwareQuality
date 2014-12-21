@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KeyChecker</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">sun.security.provider.certpath</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KeyChecker (sun.security.provider.certpath)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeyChecker</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 35)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;//
+<i>2</i>&nbsp;// Source code recreated from a .class file by IntelliJ IDEA
+<i>3</i>&nbsp;// (powered by Fernflower decompiler)
+<i>4</i>&nbsp;//
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;package sun.security.provider.certpath;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.security.cert.CertPath;
+<i>9</i>&nbsp;import java.security.cert.CertPathValidatorException;
+<i>10</i>&nbsp;import java.security.cert.CertSelector;
+<i>11</i>&nbsp;import java.security.cert.Certificate;
+<i>12</i>&nbsp;import java.security.cert.PKIXCertPathChecker;
+<i>13</i>&nbsp;import java.security.cert.PKIXReason;
+<i>14</i>&nbsp;import java.security.cert.X509Certificate;
+<i>15</i>&nbsp;import java.util.Collection;
+<i>16</i>&nbsp;import java.util.Collections;
+<i>17</i>&nbsp;import java.util.HashSet;
+<i>18</i>&nbsp;import java.util.Set;
+<i>19</i>&nbsp;import sun.security.util.Debug;
+<i>20</i>&nbsp;import sun.security.x509.PKIXExtensions;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;class KeyChecker extends PKIXCertPathChecker {
+<i>23</i>&nbsp;    private static final Debug debug = Debug.getInstance(&quot;certpath&quot;);
+<i>24</i>&nbsp;    private static final int keyCertSign = 5;
+<i>25</i>&nbsp;    private final int certPathLen;
+<i>26</i>&nbsp;    private CertSelector targetConstraints;
+<i>27</i>&nbsp;    private int remainingCerts;
+<i>28</i>&nbsp;    private Set&lt;String&gt; supportedExts;
+<b class="nc"><i>29</i>&nbsp;</b>
+<i>30</i>&nbsp;    KeyChecker(int var1, CertSelector var2) throws CertPathValidatorException {
+<i>31</i>&nbsp;        this.certPathLen = var1;
+<i>32</i>&nbsp;        this.targetConstraints = var2;
+<i>33</i>&nbsp;        this.init(false);
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public void init(boolean var1) throws CertPathValidatorException {
+<i>37</i>&nbsp;        if(!var1) {
+<i>38</i>&nbsp;            this.remainingCerts = this.certPathLen;
+<i>39</i>&nbsp;        } else {
+<i>40</i>&nbsp;            throw new CertPathValidatorException(&quot;forward checking not supported&quot;);
+<i>41</i>&nbsp;        }
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public final boolean isForwardCheckingSupported() {
+<i>45</i>&nbsp;        return false;
+<i>46</i>&nbsp;    }
+<b class="nc"><i>47</i>&nbsp;</b>
+<b class="nc"><i>48</i>&nbsp;    public Set&lt;String&gt; getSupportedExtensions() {</b>
+<b class="nc"><i>49</i>&nbsp;        if(this.supportedExts == null) {</b>
+<b class="nc"><i>50</i>&nbsp;            this.supportedExts = new HashSet();</b>
+<i>51</i>&nbsp;            this.supportedExts.add(PKIXExtensions.KeyUsage_Id.toString());
+<i>52</i>&nbsp;            this.supportedExts.add(PKIXExtensions.ExtendedKeyUsage_Id.toString());
+<i>53</i>&nbsp;            this.supportedExts.add(PKIXExtensions.SubjectAlternativeName_Id.toString());
+<i>54</i>&nbsp;            this.supportedExts = Collections.unmodifiableSet(this.supportedExts);
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;        return this.supportedExts;
+<b class="nc"><i>58</i>&nbsp;    }</b>
+<b class="nc"><i>59</i>&nbsp;</b>
+<i>60</i>&nbsp;    public void check(Certificate var1, Collection&lt;String&gt; var2) throws CertPathValidatorException {
+<b class="nc"><i>61</i>&nbsp;        X509Certificate var3 = (X509Certificate)var1;</b>
+<i>62</i>&nbsp;        --this.remainingCerts;
+<i>63</i>&nbsp;        if(this.remainingCerts == 0) {
+<i>64</i>&nbsp;            if(this.targetConstraints != null &amp;&amp; !this.targetConstraints.match(var3)) {
+<i>65</i>&nbsp;                throw new CertPathValidatorException(&quot;target certificate constraints check failed&quot;);
+<b class="nc"><i>66</i>&nbsp;            }</b>
+<i>67</i>&nbsp;        } else {
+<i>68</i>&nbsp;            verifyCAKeyUsage(var3);
+<i>69</i>&nbsp;        }
+<b class="nc"><i>70</i>&nbsp;</b>
+<b class="nc"><i>71</i>&nbsp;        if(var2 != null &amp;&amp; !var2.isEmpty()) {</b>
+<b class="nc"><i>72</i>&nbsp;            var2.remove(PKIXExtensions.KeyUsage_Id.toString());</b>
+<b class="nc"><i>73</i>&nbsp;            var2.remove(PKIXExtensions.ExtendedKeyUsage_Id.toString());</b>
+<b class="nc"><i>74</i>&nbsp;            var2.remove(PKIXExtensions.SubjectAlternativeName_Id.toString());</b>
+<b class="nc"><i>75</i>&nbsp;        }</b>
+<i>76</i>&nbsp;
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    static void verifyCAKeyUsage(X509Certificate var0) throws CertPathValidatorException {
+<i>80</i>&nbsp;        String var1 = &quot;CA key usage&quot;;
+<i>81</i>&nbsp;        if(debug != null) {
+<i>82</i>&nbsp;            debug.println(&quot;KeyChecker.verifyCAKeyUsage() ---checking &quot; + var1 + &quot;...&quot;);
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;        boolean[] var2 = var0.getKeyUsage();
+<i>86</i>&nbsp;        if(var2 != null) {
+<i>87</i>&nbsp;            if(!var2[5]) {
+<i>88</i>&nbsp;                throw new CertPathValidatorException(var1 + &quot; check failed: keyCertSign bit is not set&quot;, (Throwable)null, (CertPath)null, -1, PKIXReason.INVALID_KEY_USAGE);
+<i>89</i>&nbsp;            } else {
+<i>90</i>&nbsp;                if(debug != null) {
+<i>91</i>&nbsp;                    debug.println(&quot;KeyChecker.verifyCAKeyUsage() &quot; + var1 + &quot; verified.&quot;);
+<b class="nc"><i>92</i>&nbsp;                }</b>
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;            }</b>
+<i>95</i>&nbsp;        }
+<i>96</i>&nbsp;    }
+<b class="nc"><i>97</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2014-12-21 15:47</div>
+</div>
+</body>
+</html>
