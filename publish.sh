@@ -4,7 +4,7 @@ REPO="theofidry/SoftwareQuality-ECEProject"
 
 if [ "$TRAVIS_REPO_SLUG" == ${REPO} ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
-  echo -e "Publishing javadoc...\n"
+  echo -e "Publishing build output...\n"
 
   cp -R build $HOME/build
 
@@ -18,7 +18,7 @@ if [ "$TRAVIS_REPO_SLUG" == ${REPO} ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8"
   git rm -rf ./build
   cp -Rf $HOME/build ./build
   git add -f .
-  git commit -m "Lastest javadoc on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
+  git commit -m "Lastest build output on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
   git push -fq origin gh-pages > /dev/null
 
   echo -e "Published Javadoc to gh-pages.\n"
