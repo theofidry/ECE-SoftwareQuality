@@ -1,5 +1,9 @@
-SOFTWARE QUALITY
+Software Quality
 ================
+
+<a href="http://www.ece.fr">
+    <img src="http://upload.wikimedia.org/wikipedia/fr/thumb/f/f8/Logo_ECE_Paris.svg/1024px-Logo_ECE_Paris.svg.png" width="auto" height="75px" />
+</a>
 
 ECE Project for Software Quality class: program a simple landing gear system (cf. [Case study](https://github.com/theofidry/Software-Quality/blob/master/Case%20study.pdf)).
 
